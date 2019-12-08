@@ -39,7 +39,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents a SPARQL Update INSERT command
+    /// Represents a SPARQL Update INSERT command.
     /// </summary>
     public class InsertCommand 
         : BaseModificationCommand
@@ -47,11 +47,11 @@ namespace VDS.RDF.Update.Commands
         private readonly GraphPattern _insertPattern, _wherePattern;
 
         /// <summary>
-        /// Creates a new INSERT command
+        /// Creates a new INSERT command.
         /// </summary>
-        /// <param name="insertions">Pattern to construct Triples to insert</param>
-        /// <param name="where">Pattern to select data which is then used in evaluating the insertions</param>
-        /// <param name="graphUri">URI of the affected Graph</param>
+        /// <param name="insertions">Pattern to construct Triples to insert.</param>
+        /// <param name="where">Pattern to select data which is then used in evaluating the insertions.</param>
+        /// <param name="graphUri">URI of the affected Graph.</param>
         public InsertCommand(GraphPattern insertions, GraphPattern where, Uri graphUri)
             : base(SparqlUpdateCommandType.Insert) 
         {
@@ -61,15 +61,15 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new INSERT command which operates on the Default Graph
+        /// Creates a new INSERT command which operates on the Default Graph.
         /// </summary>
-        /// <param name="insertions">Pattern to construct Triples to insert</param>
-        /// <param name="where">Pattern to select data which is then used in evaluating the insertions</param>
+        /// <param name="insertions">Pattern to construct Triples to insert.</param>
+        /// <param name="where">Pattern to select data which is then used in evaluating the insertions.</param>
         public InsertCommand(GraphPattern insertions, GraphPattern where)
             : this(insertions, where, null) { }
 
         /// <summary>
-        /// Gets whether the Command affects a single Graph
+        /// Gets whether the Command affects a single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -93,9 +93,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph the insertions are made to
+        /// Gets the URI of the Graph the insertions are made to.
         /// </summary>
         public Uri TargetUri
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the pattern used for insertions
+        /// Gets the pattern used for insertions.
         /// </summary>
         public GraphPattern InsertPattern
         {
@@ -143,7 +143,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the pattern used for the WHERE clause
+        /// Gets the pattern used for the WHERE clause.
         /// </summary>
         public GraphPattern WherePattern
         {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Optimises the Commands WHERE pattern
+        /// Optimises the Commands WHERE pattern.
         /// </summary>
         public override void Optimise(IQueryOptimiser optimiser)
         {
@@ -162,9 +162,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             bool datasetOk = false;
@@ -394,16 +394,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessInsertCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

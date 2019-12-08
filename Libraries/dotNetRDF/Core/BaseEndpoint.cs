@@ -32,7 +32,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base class for HTTP endpoints
+    /// Abstract Base class for HTTP endpoints.
     /// </summary>
     public abstract class BaseEndpoint
         : IConfigurationSerializable
@@ -41,7 +41,7 @@ namespace VDS.RDF
         private string _httpMode = "AUTO";
 
         /// <summary>
-        /// Creates a new Base Endpoint
+        /// Creates a new Base Endpoint.
         /// </summary>
         protected BaseEndpoint()
         {
@@ -49,35 +49,35 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Base Endpoint
+        /// Creates a new Base Endpoint.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         protected BaseEndpoint(Uri endpointUri)
         {
             Uri = endpointUri ?? throw new ArgumentNullException(nameof(endpointUri), "Endpoint URI cannot be null");
         }
 
         /// <summary>
-        /// Gets the Endpoints URI
+        /// Gets the Endpoints URI.
         /// </summary>
         public Uri Uri { get; }
 
         /// <summary>
-        /// Gets/Sets the HTTP authentication credentials to be used
+        /// Gets/Sets the HTTP authentication credentials to be used.
         /// </summary>
         public NetworkCredential Credentials { get; set; }
 
         /// <summary>
-        /// Gets/Sets the user agent string to pass in the request header
+        /// Gets/Sets the user agent string to pass in the request header.
         /// </summary>
-        /// <remarks>Defaults to null, which will not set the header</remarks>
+        /// <remarks>Defaults to null, which will not set the header.</remarks>
         public string UserAgent
         {
             get; set;
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Mode used for requests
+        /// Gets/Sets the HTTP Mode used for requests.
         /// </summary>
         /// <remarks>
         /// <para>This property defaults to the value AUTO. in AUTO mode GET will be used unless the total length of query parameters exceeeds 2048 characters
@@ -106,11 +106,11 @@ namespace VDS.RDF
 
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeouts used specified in milliseconds
+        /// Gets/Sets the HTTP Timeouts used specified in milliseconds.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Defaults to 30 Seconds (i.e. the default value is 30,000)
+        /// Defaults to 30 Seconds (i.e. the default value is 30,000).
         /// </para>
         /// <para>
         /// It is important to understand that this timeout only applies to the HTTP request portions of any operation performed and that the timeout may apply more than once if a POST operation is used since the timeout applies separately to obtaining the request stream to POST the request and obtaining the response stream.  Also the timeout does not in any way apply to subsequent work that may be carried out before the operation can return so if you need a hard timeout you should manage that yourself.
@@ -119,7 +119,7 @@ namespace VDS.RDF
         /// When set to a zero/negative value then the standard .Net timeout of 100 seconds will apply, use <see cref="int.MaxValue"/> if you want the maximum possible timeout i.e. if you expect to launch extremely long running operations.
         /// </para>
         /// <para>
-        /// Not supported under Silverlight, Windows Phone and Portable Class Library builds
+        /// Not supported under Silverlight, Windows Phone and Portable Class Library builds.
         /// </para>
         /// </remarks>
         public int Timeout
@@ -136,21 +136,21 @@ namespace VDS.RDF
 
         #region Credentials
         /// <summary>
-        /// Sets the HTTP Digest authentication credentials to be used
+        /// Sets the HTTP Digest authentication credentials to be used.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public void SetCredentials(string username, string password)
         {
             Credentials = new NetworkCredential(username, password);
         }
 
         /// <summary>
-        /// Sets the HTTP Digest authentication credentials to be used
+        /// Sets the HTTP Digest authentication credentials to be used.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="domain">Domain</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="domain">Domain.</param>
         public void SetCredentials(string username, string password, string domain)
         {
             Credentials = new NetworkCredential(username, password, domain);
@@ -158,7 +158,7 @@ namespace VDS.RDF
 
 
         /// <summary>
-        /// Clears any in-use credentials so subsequent requests will not use HTTP authentication
+        /// Clears any in-use credentials so subsequent requests will not use HTTP authentication.
         /// </summary>
         public void ClearCredentials()
         {
@@ -169,36 +169,36 @@ namespace VDS.RDF
         #region Credentials and Proxy Server
 
         /// <summary>
-        /// Controls whether the Credentials set with the <see cref="SetCredentials(string,string)">SetCredentials()</see> method or the <see cref="BaseEndpoint.Credentials">Credentials</see>are also used for a Proxy (if used)
+        /// Controls whether the Credentials set with the <see cref="SetCredentials(string,string)">SetCredentials()</see> method or the <see cref="BaseEndpoint.Credentials">Credentials</see>are also used for a Proxy (if used).
         /// </summary>
         public bool UseCredentialsForProxy { get; set; }
 
 
         /// <summary>
-        /// Sets a Proxy Server to be used
+        /// Sets a Proxy Server to be used.
         /// </summary>
-        /// <param name="address">Proxy Address</param>
+        /// <param name="address">Proxy Address.</param>
         public void SetProxy(string address)
         {
             Proxy = new WebProxy(address);
         }
 
         /// <summary>
-        /// Sets a Proxy Server to be used
+        /// Sets a Proxy Server to be used.
         /// </summary>
-        /// <param name="address">Proxy Address</param>
+        /// <param name="address">Proxy Address.</param>
         public void SetProxy(Uri address)
         {
             Proxy = new WebProxy(address);
         }
 
         /// <summary>
-        /// Gets/Sets a Proxy Server to be used
+        /// Gets/Sets a Proxy Server to be used.
         /// </summary>
         public IWebProxy Proxy { get; set; }
 
         /// <summary>
-        /// Clears any in-use credentials so subsequent requests will not use a proxy server
+        /// Clears any in-use credentials so subsequent requests will not use a proxy server.
         /// </summary>
         public void ClearProxy()
         {
@@ -206,10 +206,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Sets Credentials to be used for Proxy Server
+        /// Sets Credentials to be used for Proxy Server.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public void SetProxyCredentials(string username, string password)
         {
             if (Proxy != null)
@@ -223,11 +223,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Sets Credentials to be used for Proxy Server
+        /// Sets Credentials to be used for Proxy Server.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="domain">Domain</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="domain">Domain.</param>
         public void SetProxyCredentials(string username, string password, string domain)
         {
             if (Proxy != null)
@@ -241,7 +241,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets Credentials to be used for Proxy Server
+        /// Gets/Sets Credentials to be used for Proxy Server.
         /// </summary>
         public ICredentials ProxyCredentials
         {
@@ -260,7 +260,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Clears the in-use proxy credentials so subsequent requests still use the proxy server but without credentials
+        /// Clears the in-use proxy credentials so subsequent requests still use the proxy server but without credentials.
         /// </summary>
         public void ClearProxyCredentials()
         {
@@ -303,9 +303,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Applies generic request options (timeout, authorization and proxy server) to a request
+        /// Applies generic request options (timeout, authorization and proxy server) to a request.
         /// </summary>
-        /// <param name="httpRequest">HTTP Request</param>
+        /// <param name="httpRequest">HTTP Request.</param>
         protected void ApplyRequestOptions(HttpWebRequest httpRequest)
         {
             if (Timeout > 0) httpRequest.Timeout = Timeout;
@@ -352,9 +352,9 @@ namespace VDS.RDF
 
 
         /// <summary>
-        /// Serializes the endpoints Credential and Proxy information
+        /// Serializes the endpoints Credential and Proxy information.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             if (Credentials != null || Proxy != null)
@@ -373,11 +373,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Method which may be overridden in derived classes to add any additional custom request options/headers to the request
+        /// Method which may be overridden in derived classes to add any additional custom request options/headers to the request.
         /// </summary>
-        /// <param name="httpRequest">HTTP Request</param>
+        /// <param name="httpRequest">HTTP Request.</param>
         /// <remarks>
-        /// This is called at the end of <see cref="ApplyRequestOptions"/> so can also be used to override that methods default behaviour
+        /// This is called at the end of <see cref="ApplyRequestOptions"/> so can also be used to override that methods default behaviour.
         /// </remarks>
         protected virtual void ApplyCustomRequestOptions(HttpWebRequest httpRequest)
         {

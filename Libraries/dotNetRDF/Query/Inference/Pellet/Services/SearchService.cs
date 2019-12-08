@@ -35,7 +35,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Search Service provided by a Pellet Server
+    /// Represents the Search Service provided by a Pellet Server.
     /// </summary>
     public class SearchService
         : PelletService
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         private String _searchUri;
 
         /// <summary>
-        /// Creates a new Search Service
+        /// Creates a new Search Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal SearchService(String name, JObject obj)
             : base(name, obj) 
         {
@@ -54,10 +54,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the list of Search Results which match the given search term
+        /// Gets the list of Search Results which match the given search term.
         /// </summary>
-        /// <param name="text">Search Term</param>
-        /// <returns>A list of Search Results representing Nodes in the Knowledge Base that match the search term</returns>
+        /// <param name="text">Search Term.</param>
+        /// <returns>A list of Search Results representing Nodes in the Knowledge Base that match the search term.</returns>
         public List<SearchServiceResult> Search(String text)
         {
             String search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
@@ -116,11 +116,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the list of Search Results which match the given search term
+        /// Gets the list of Search Results which match the given search term.
         /// </summary>
-        /// <param name="text">Search Term</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="text">Search Term.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     }
 
     /// <summary>
-    /// Represents a Search Result returned from the
+    /// Represents a Search Result returned from the.
     /// </summary>
     public class SearchServiceResult
     {
@@ -207,10 +207,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         private double _score;
 
         /// <summary>
-        /// Creates a new Search Service Result
+        /// Creates a new Search Service Result.
         /// </summary>
-        /// <param name="node">Result Node</param>
-        /// <param name="score">Result Score</param>
+        /// <param name="node">Result Node.</param>
+        /// <param name="score">Result Score.</param>
         internal SearchServiceResult(INode node, double score)
         {
             _n = node;
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the Node for this Result
+        /// Gets the Node for this Result.
         /// </summary>
         public INode Node
         {
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the Score for this Result
+        /// Gets the Score for this Result.
         /// </summary>
         public double Score
         {
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the String representation of the Result
+        /// Gets the String representation of the Result.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

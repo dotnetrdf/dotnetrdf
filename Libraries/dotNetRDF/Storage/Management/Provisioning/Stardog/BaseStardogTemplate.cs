@@ -32,18 +32,18 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {
     /// <summary>
-    /// Abstract base implementation of a Store Template for creating Stardog Stores
+    /// Abstract base implementation of a Store Template for creating Stardog Stores.
     /// </summary>
     public abstract class BaseStardogTemplate
         : StoreTemplate
     {
         /// <summary>
-        /// Creates a new Stardog Template
+        /// Creates a new Stardog Template.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="name">Template Name</param>
-        /// <param name="descrip">Template Description</param>
-        /// <param name="dbtype">Stardog Database Type</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="name">Template Name.</param>
+        /// <param name="descrip">Template Description.</param>
+        /// <param name="dbtype">Stardog Database Type.</param>
         public BaseStardogTemplate(String id, String name, String descrip, String dbtype)
             : base(id, name, descrip)
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         // Sets the index type (memory or disk).
 
         /// <summary>
-        /// Gets the Database Type
+        /// Gets the Database Type.
         /// </summary>
         [Category("Index Options"), 
          DisplayName("Index Type"),
@@ -107,7 +107,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets the minimum differential index limit
+        /// Gets/Sets the minimum differential index limit.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMinDifferentialIndexLimit), 
          Category("Index Options"), 
@@ -120,7 +120,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets the maximum differential merge limit
+        /// Gets/Sets the maximum differential merge limit.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultMaxDifferentialIndexLimit), 
          Category("Index Options"),
@@ -133,7 +133,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets whether the database should canonicalise literals
+        /// Gets/Sets whether the database should canonicalise literals.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultCanonicaliseLiterals),
          Category("Index Options"),
@@ -146,7 +146,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets whether to optimize indexes for named graph queries
+        /// Gets/Sets whether to optimize indexes for named graph queries.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultNamedGraphIndexing),
          Category("Index Options"),
@@ -159,7 +159,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets whether to persist indexes
+        /// Gets/Sets whether to persist indexes.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndex),
          Category("Index Options"),
@@ -172,7 +172,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets whether to persist indexes synchronously
+        /// Gets/Sets whether to persist indexes synchronously.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPersistIndexSync),
          Category("Index Options"),
@@ -185,7 +185,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets whether to automatically update statistics
+        /// Gets/Sets whether to automatically update statistics.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats),
          Category("Index Options"),
@@ -209,7 +209,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         // Determines what "reasoning level" is used during IC validation.
 
         /// <summary>
-        /// Gets/Sets the active graphs for ICV
+        /// Gets/Sets the active graphs for ICV.
         /// </summary>
         [Category("Integrity Constraint Validation"),
          DisplayName("Active Graphs"), 
@@ -221,7 +221,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Enables/Disables ICV
+        /// Enables/Disables ICV.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvEnabled),
          Category("Integrity Constraint Validation"), 
@@ -234,7 +234,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets the reasoning mode for ICV
+        /// Gets/Sets the reasoning mode for ICV.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode),
          Category("Integrity Constraint Validation"),
@@ -258,7 +258,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         // Determines which, if any, named graph or graphs contains the "tbox", i.e., the schema part of the data.
 
         /// <summary>
-        /// Gets/Sets whether to perform automatic consistency checking on transactions
+        /// Gets/Sets whether to perform automatic consistency checking on transactions.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking),
          Category("Reasoning Options"),
@@ -271,7 +271,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Enables/Disables punning
+        /// Enables/Disables punning.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultPunning),
          Category("Reasoning Options"),
@@ -284,7 +284,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets the graphs that contain the schema (TBox) that are used for reasoning
+        /// Gets/Sets the graphs that contain the schema (TBox) that are used for reasoning.
         /// </summary>
         [Category("Reasoning Options"),
          DisplayName("Schema Graphs"),
@@ -306,7 +306,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         // Sets how search indexes are maintained.
 
         /// <summary>
-        /// Enables/Disables Full Text search
+        /// Enables/Disables Full Text search.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultFullTextSearch),
          Category("Search Options"),
@@ -319,7 +319,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets the Search re-indexing mode
+        /// Gets/Sets the Search re-indexing mode.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.SearchReIndexModeAsync),
          Category("Search Options"),
@@ -338,7 +338,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         // Enables durable transactions.
 
         /// <summary>
-        /// Gets/Sets whether to use durable transactions
+        /// Gets/Sets whether to use durable transactions.
         /// </summary>
         [DefaultValue(BaseStardogServer.DatabaseOptions.DefaultDurableTransactions),
          Category("Transaction Options"),
@@ -353,9 +353,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         #endregion
 
         /// <summary>
-        /// Validates that the template is filled out such that a store can be created from it
+        /// Validates that the template is filled out such that a store can be created from it.
         /// </summary>
-        /// <returns>Enumeration of errors that occurred</returns>
+        /// <returns>Enumeration of errors that occurred.</returns>
         public override IEnumerable<string> Validate()
         {
             List<String> errors = new List<string>();
@@ -390,13 +390,13 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Does any additional validation a derived template may require
+        /// Does any additional validation a derived template may require.
         /// </summary>
-        /// <param name="errors">Error collection to add to</param>
+        /// <param name="errors">Error collection to add to.</param>
         protected virtual void ValidateInternal(List<String> errors) { }
 
         /// <summary>
-        /// Gets the JSON Template for creating a store
+        /// Gets the JSON Template for creating a store.
         /// </summary>
         /// <returns></returns>
         public JObject GetTemplateJson()

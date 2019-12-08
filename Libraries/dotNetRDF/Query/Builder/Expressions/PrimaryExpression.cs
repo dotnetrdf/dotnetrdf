@@ -27,7 +27,7 @@
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a SPARQL expression (variable, function, operator, term or aggregate)
+    /// Represents a SPARQL expression (variable, function, operator, term or aggregate).
     /// </summary>
 #pragma warning disable 660,661
     public abstract class PrimaryExpression<TExpression>
@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// The undelrying expression
+        /// The undelrying expression.
         /// </summary>
         public TExpression Expression { get; set; }
     }

@@ -31,7 +31,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Tokeniser for tokenising TSV inputs
+    /// Tokeniser for tokenising TSV inputs.
     /// </summary>
     public class TsvTokeniser
         : BaseTokeniser
@@ -39,9 +39,9 @@ namespace VDS.RDF.Parsing.Tokens
         private ParsingTextReader _in;
 
         /// <summary>
-        /// Creates a new TSV Tokeniser
+        /// Creates a new TSV Tokeniser.
         /// </summary>
-        /// <param name="reader">Text Reader</param>
+        /// <param name="reader">Text Reader.</param>
         public TsvTokeniser(ParsingTextReader reader)
             : base(reader)
         {
@@ -49,14 +49,14 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new TSV Tokeniser
+        /// Creates a new TSV Tokeniser.
         /// </summary>
-        /// <param name="reader">Stream Reader</param>
+        /// <param name="reader">Stream Reader.</param>
         public TsvTokeniser(StreamReader reader)
             : this(ParsingTextReader.Create(reader)) { }
         
         /// <summary>
-        /// Gets the next available token from the input
+        /// Gets the next available token from the input.
         /// </summary>
         /// <returns></returns>
         public override IToken GetNextToken()

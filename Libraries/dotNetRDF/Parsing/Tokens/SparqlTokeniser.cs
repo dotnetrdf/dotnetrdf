@@ -31,7 +31,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// A Class for Reading an Input Stream and generating SPARQL Tokens
+    /// A Class for Reading an Input Stream and generating SPARQL Tokens.
     /// </summary>
     public class SparqlTokeniser 
         : BaseTokeniser
@@ -42,18 +42,18 @@ namespace VDS.RDF.Parsing.Tokens
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
 
         /// <summary>
-        /// Creates a new Instance of the Tokeniser
+        /// Creates a new Instance of the Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
-        /// <param name="syntax">Syntax Mode to use when parsing</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
+        /// <param name="syntax">Syntax Mode to use when parsing.</param>
         public SparqlTokeniser(StreamReader input, SparqlQuerySyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Creates a new Instance of the Tokeniser
+        /// Creates a new Instance of the Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
-        /// <param name="syntax">Syntax Mode to use when parsing</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
+        /// <param name="syntax">Syntax Mode to use when parsing.</param>
         public SparqlTokeniser(ParsingTextReader input, SparqlQuerySyntax syntax)
             : base(input)
         {
@@ -63,18 +63,18 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new Instance of the Tokeniser
+        /// Creates a new Instance of the Tokeniser.
         /// </summary>
-        /// <param name="input">The Input to generate Tokens from</param>
-        /// <param name="syntax">Syntax Mode to use when parsing</param>
+        /// <param name="input">The Input to generate Tokens from.</param>
+        /// <param name="syntax">Syntax Mode to use when parsing.</param>
         public SparqlTokeniser(TextReader input, SparqlQuerySyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Gets the next parseable Token from the Input or raises an Error
+        /// Gets the next parseable Token from the Input or raises an Error.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed</exception>
+        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed.</exception>
         public override IToken GetNextToken()
         {
             // Have we read anything yet?

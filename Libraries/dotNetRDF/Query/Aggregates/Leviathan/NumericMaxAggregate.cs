@@ -35,10 +35,10 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.Leviathan
 {
     /// <summary>
-    /// Class representing NMAX Aggregate Functions
+    /// Class representing NMAX Aggregate Functions.
     /// </summary>
     /// <remarks>
-    /// Only operates over numeric data which is typed to one of the supported SPARQL Numeric types (integers, decimals and doubles)
+    /// Only operates over numeric data which is typed to one of the supported SPARQL Numeric types (integers, decimals and doubles).
     /// </remarks>
     public class NumericMaxAggregate 
         : BaseAggregate
@@ -46,24 +46,24 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         private String _varname;
 
         /// <summary>
-        /// Creates a new NMAX Aggregate
+        /// Creates a new NMAX Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
+        /// <param name="expr">Variable Expression.</param>
         public NumericMaxAggregate(VariableTerm expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new NMAX Aggregate
+        /// Creates a new NMAX Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public NumericMaxAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new NMAX Aggregate
+        /// Creates a new NMAX Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Variable Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public NumericMaxAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
@@ -71,18 +71,18 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Creates a new NMAX Aggregate
+        /// Creates a new NMAX Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public NumericMaxAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
         /// <summary>
-        /// Applies the Numeric Max Aggregate function to the results
+        /// Applies the Numeric Max Aggregate function to the results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -232,7 +232,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

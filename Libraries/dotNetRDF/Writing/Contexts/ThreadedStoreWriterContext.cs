@@ -32,10 +32,10 @@ using System.Threading;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Writer Context for Store Writers which do multi-threaded writing
+    /// Writer Context for Store Writers which do multi-threaded writing.
     /// </summary>
     /// <remarks>
-    /// Provides a queue for queuing the URIs of Graphs from the Store that need writing and a thread safe way of retrieving the next Uri to be written from the Queue
+    /// Provides a queue for queuing the URIs of Graphs from the Store that need writing and a thread safe way of retrieving the next Uri to be written from the Queue.
     /// </remarks>
     public class ThreadedStoreWriterContext : BaseStoreWriterContext
     {
@@ -44,25 +44,25 @@ namespace VDS.RDF.Writing.Contexts
         private ThreadSafeQNameOutputMapper _qnameMapper;
 
         /// <summary>
-        /// Creates a new Threaded Store Writer Context with default settings
+        /// Creates a new Threaded Store Writer Context with default settings.
         /// </summary>
-        /// <param name="store">Store to be written</param>
-        /// <param name="output">TextWriter to write to</param>
+        /// <param name="store">Store to be written.</param>
+        /// <param name="output">TextWriter to write to.</param>
         public ThreadedStoreWriterContext(ITripleStore store, TextWriter output)
             : base(store, output) { }
 
         /// <summary>
-        /// Creates a new Threaded Store Writer Context with custom settings
+        /// Creates a new Threaded Store Writer Context with custom settings.
         /// </summary>
-        /// <param name="store">Store to be written</param>
-        /// <param name="output">TextWriter to write to</param>
-        /// <param name="prettyPrint">Pretty Print Mode</param>
-        /// <param name="hiSpeedAllowed">High Speed Mode</param>
+        /// <param name="store">Store to be written.</param>
+        /// <param name="output">TextWriter to write to.</param>
+        /// <param name="prettyPrint">Pretty Print Mode.</param>
+        /// <param name="hiSpeedAllowed">High Speed Mode.</param>
         public ThreadedStoreWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed)
             : base(store, output, prettyPrint, hiSpeedAllowed) { }
 
         /// <summary>
-        /// Gets the NamespaceMap used for reducing URIs to QNames since there may only be one shared map written to the output
+        /// Gets the NamespaceMap used for reducing URIs to QNames since there may only be one shared map written to the output.
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
@@ -73,10 +73,10 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the QName Mapper
+        /// Gets the QName Mapper.
         /// </summary>
         /// <remarks>
-        /// Must be manually initialised by the user
+        /// Must be manually initialised by the user.
         /// </remarks>
         public ThreadSafeQNameOutputMapper QNameMapper
         {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Adds a Uri to the list of URIs for Graphs that are waiting to be written
+        /// Adds a Uri to the list of URIs for Graphs that are waiting to be written.
         /// </summary>
         /// <param name="u"></param>
         public void Add(Uri u)
@@ -100,9 +100,9 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the next Uri for a Graph that is waiting to be written
+        /// Gets the next Uri for a Graph that is waiting to be written.
         /// </summary>
-        /// <returns>Uri of next Graph to be written</returns>
+        /// <returns>Uri of next Graph to be written.</returns>
         public bool TryGetNextUri(out Uri uri)
         {
             uri = null;

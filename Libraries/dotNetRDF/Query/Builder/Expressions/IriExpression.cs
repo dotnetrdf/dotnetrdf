@@ -31,7 +31,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a IRI expression
+    /// Represents a IRI expression.
     /// </summary>
     public class IriExpression : RdfTermExpression
     {
@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Wraps the <paramref name="expression"/> as an IRI expression
+        /// Wraps the <paramref name="expression"/> as an IRI expression.
         /// </summary>
         public IriExpression(ISparqlExpression expression) : base(expression)
         {

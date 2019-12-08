@@ -30,12 +30,12 @@ namespace VDS.RDF.Parsing.Tokens
 {
 
     /// <summary>
-    /// Interface for defining Token classes to be used in Parsing RDF
+    /// Interface for defining Token classes to be used in Parsing RDF.
     /// </summary>
     public interface IToken
     {
         /// <summary>
-        /// Gives some Integer representing the Token Type as understood by a specific Parser implementation
+        /// Gives some Integer representing the Token Type as understood by a specific Parser implementation.
         /// </summary>
         int TokenType
         {
@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gives the Value of the Token
+        /// Gives the Value of the Token.
         /// </summary>
         String Value
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gives the Line at which the Token starts
+        /// Gives the Line at which the Token starts.
         /// </summary>
         int StartLine
         {
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gives the Line at which the Token ends
+        /// Gives the Line at which the Token ends.
         /// </summary>
         int EndLine
         {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gives the Position within the Start Line that the Token starts
+        /// Gives the Position within the Start Line that the Token starts.
         /// </summary>
         int StartPosition
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gives the Position within the End Line that the Token ends
+        /// Gives the Position within the End Line that the Token ends.
         /// </summary>
         int EndPosition
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gives the Length of the Token
+        /// Gives the Length of the Token.
         /// </summary>
         int Length
         {

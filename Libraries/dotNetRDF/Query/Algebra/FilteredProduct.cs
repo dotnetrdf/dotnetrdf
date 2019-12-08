@@ -35,7 +35,7 @@ using VDS.RDF.Query.Optimisation;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Algebra operator which combines a Filter and a Product into a single operation for improved performance and reduced memory usage
+    /// Algebra operator which combines a Filter and a Product into a single operation for improved performance and reduced memory usage.
     /// </summary>
     public class FilteredProduct
         : IAbstractJoin
@@ -44,11 +44,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new Filtered Product
+        /// Creates a new Filtered Product.
         /// </summary>
-        /// <param name="lhs">LHS Algebra</param>
-        /// <param name="rhs">RHS Algebra</param>
-        /// <param name="expr">Expression to filter with</param>
+        /// <param name="lhs">LHS Algebra.</param>
+        /// <param name="rhs">RHS Algebra.</param>
+        /// <param name="expr">Expression to filter with.</param>
         public FilteredProduct(ISparqlAlgebra lhs, ISparqlAlgebra rhs, ISparqlExpression expr)
         {
             _lhs = lhs;
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the LHS Algebra
+        /// Gets the LHS Algebra.
         /// </summary>
         public ISparqlAlgebra Lhs
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the RHS Algebra
+        /// Gets the RHS Algebra.
         /// </summary>
         public ISparqlAlgebra Rhs
         {
@@ -79,9 +79,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the inner algebra with the given optimiser
+        /// Transforms the inner algebra with the given optimiser.
         /// </summary>
-        /// <param name="optimiser">Algebra Optimiser</param>
+        /// <param name="optimiser">Algebra Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -96,9 +96,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the LHS algebra only with the given optimiser
+        /// Transforms the LHS algebra only with the given optimiser.
         /// </summary>
-        /// <param name="optimiser">Algebra Optimiser</param>
+        /// <param name="optimiser">Algebra Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
@@ -106,9 +106,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the RHS algebra only with the given optimiser
+        /// Transforms the RHS algebra only with the given optimiser.
         /// </summary>
-        /// <param name="optimiser">Algebra Optimiser</param>
+        /// <param name="optimiser">Algebra Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the filtered product
+        /// Evaluates the filtered product.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query.Algebra
 #endif
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -254,7 +254,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -268,7 +268,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the algebra back into a query
+        /// Converts the algebra back into a query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -290,7 +290,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the algebra back into a Graph Pattern
+        /// Converts the algebra back into a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
@@ -300,7 +300,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string represenation of the algebra
+        /// Gets the string represenation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

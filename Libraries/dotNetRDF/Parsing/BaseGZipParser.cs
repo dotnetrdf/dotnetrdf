@@ -32,11 +32,11 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Abstract Base class for RDF parsers which can read GZipped input
+    /// Abstract Base class for RDF parsers which can read GZipped input.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such
+    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such.
     /// </para>
     /// </remarks>
     public abstract class BaseGZipParser
@@ -45,9 +45,9 @@ namespace VDS.RDF.Parsing
         private IRdfReader _parser;
 
         /// <summary>
-        /// Creates a new GZipped input parser
+        /// Creates a new GZipped input parser.
         /// </summary>
-        /// <param name="parser">Underlying parser</param>
+        /// <param name="parser">Underlying parser.</param>
         public BaseGZipParser(IRdfReader parser)
         {
             if (parser == null) throw new ArgumentNullException("parser");
@@ -56,10 +56,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph from GZipped input
+        /// Loads a Graph from GZipped input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to load from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Stream to load from.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
@@ -67,10 +67,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph from GZipped input
+        /// Loads a Graph from GZipped input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Reader to load from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Reader to load from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
@@ -78,10 +78,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph from GZipped input
+        /// Loads a Graph from GZipped input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
@@ -89,10 +89,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF using a RDF Handler from GZipped input
+        /// Loads RDF using a RDF Handler from GZipped input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Stream to load from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
@@ -111,10 +111,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF using a RDF Handler from GZipped input
+        /// Loads RDF using a RDF Handler from GZipped input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Reader to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Reader to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (input is StreamReader)
@@ -128,10 +128,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF using a RDF Handler from GZipped input
+        /// Loads RDF using a RDF Handler from GZipped input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse RDF from a null file");
@@ -139,7 +139,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising warning events
+        /// Helper method for raising warning events.
         /// </summary>
         /// <param name="message"></param>
         private void RaiseWarning(String message)
@@ -154,7 +154,7 @@ namespace VDS.RDF.Parsing
         public event RdfReaderWarning Warning;
 
         /// <summary>
-        /// Gets the description of the parser
+        /// Gets the description of the parser.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -164,92 +164,92 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// Parser for loading GZipped NTriples
+    /// Parser for loading GZipped NTriples.
     /// </summary>
     public class GZippedNTriplesParser
         : BaseGZipParser
     {
         /// <summary>
-        /// Creates a new GZipped NTriples parser
+        /// Creates a new GZipped NTriples parser.
         /// </summary>
         public GZippedNTriplesParser()
             : base(new NTriplesParser()) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped Turtle
+    /// Parser for loading GZipped Turtle.
     /// </summary>
     public class GZippedTurtleParser
         : BaseGZipParser
     {
         /// <summary>
-        /// Creates a new GZipped Turtle parser
+        /// Creates a new GZipped Turtle parser.
         /// </summary>
         public GZippedTurtleParser()
             : base(new TurtleParser()) { }
 
         /// <summary>
-        /// Creates a new GZipped Turtle parser
+        /// Creates a new GZipped Turtle parser.
         /// </summary>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public GZippedTurtleParser(TurtleSyntax syntax)
             : base(new TurtleParser(syntax)) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped Notation 3
+    /// Parser for loading GZipped Notation 3.
     /// </summary>
     public class GZippedNotation3Parser
         : BaseGZipParser
     {
         /// <summary>
-        /// Creates a new GZipped Notation 3 parser
+        /// Creates a new GZipped Notation 3 parser.
         /// </summary>
         public GZippedNotation3Parser()
             : base(new Notation3Parser()) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped RDF/XML
+    /// Parser for loading GZipped RDF/XML.
     /// </summary>
     public class GZippedRdfXmlParser
         : BaseGZipParser
     {
         /// <summary>
-        /// Creates a new GZipped RDF/XML parser
+        /// Creates a new GZipped RDF/XML parser.
         /// </summary>
         public GZippedRdfXmlParser()
             : base(new RdfXmlParser()) { }
 
         /// <summary>
-        /// Creates a new GZipped RDF/XML parser
+        /// Creates a new GZipped RDF/XML parser.
         /// </summary>
-        /// <param name="mode">RDF/XML parser mode</param>
+        /// <param name="mode">RDF/XML parser mode.</param>
         public GZippedRdfXmlParser(RdfXmlParserMode mode)
             : base(new RdfXmlParser(mode)) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped RDF/JSON
+    /// Parser for loading GZipped RDF/JSON.
     /// </summary>
     public class GZippedRdfJsonParser
         : BaseGZipParser
     {
         /// <summary>
-        /// Creates a new GZipped RDF/JSON parser
+        /// Creates a new GZipped RDF/JSON parser.
         /// </summary>
         public GZippedRdfJsonParser()
             : base(new RdfJsonParser()) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped RDFa
+    /// Parser for loading GZipped RDFa.
     /// </summary>
     public class GZippedRdfAParser
         : BaseGZipParser
     {
         /// <summary>
-        /// Creates a new GZipped RDFa parser
+        /// Creates a new GZipped RDFa parser.
         /// </summary>
         public GZippedRdfAParser()
             : base(new RdfAParser()) { }

@@ -30,7 +30,7 @@ using System.IO;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Tokeniser for TriG (Turtle with Named Graphs) RDF Syntax
+    /// Tokeniser for TriG (Turtle with Named Graphs) RDF Syntax.
     /// </summary>
     public class TriGTokeniser
         : BaseTokeniser
@@ -40,24 +40,24 @@ namespace VDS.RDF.Parsing.Tokens
         private TriGSyntax _syntax = TriGSyntax.Recommendation;
 
         /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
+        /// <param name="input">Stream to read Tokens from.</param>
         public TriGTokeniser(StreamReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream using the specified syntax
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream using the specified syntax.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        /// <param name="syntax">Syntax</param>
+        /// <param name="input">Stream to read Tokens from.</param>
+        /// <param name="syntax">Syntax.</param>
         public TriGTokeniser(StreamReader input, TriGSyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
+        /// <param name="input">Stream to read Tokens from.</param>
         public TriGTokeniser(ParsingTextReader input)
             : base(input)
         {
@@ -66,10 +66,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        /// <param name="syntax">Syntax</param>
+        /// <param name="input">Stream to read Tokens from.</param>
+        /// <param name="syntax">Syntax.</param>
         public TriGTokeniser(ParsingTextReader input, TriGSyntax syntax)
             : this(input) 
         {
@@ -77,22 +77,22 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Input
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Input.
         /// </summary>
-        /// <param name="input">Input to read Tokens from</param>
+        /// <param name="input">Input to read Tokens from.</param>
         public TriGTokeniser(TextReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new TriG Tokeniser which reads Tokens from the given Input
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Input.
         /// </summary>
-        /// <param name="input">Input to read Tokens from</param>
-        /// <param name="syntax">Syntax</param>
+        /// <param name="input">Input to read Tokens from.</param>
+        /// <param name="syntax">Syntax.</param>
         public TriGTokeniser(TextReader input, TriGSyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Gets the next available Token from the Input Stream
+        /// Gets the next available Token from the Input Stream.
         /// </summary>
         /// <returns></returns>
         public override IToken GetNextToken()

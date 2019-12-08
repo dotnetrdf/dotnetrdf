@@ -31,7 +31,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// A Valued Node with a numeric value
+    /// A Valued Node with a numeric value.
     /// </summary>
     public abstract class NumericNode
         : LiteralNode, IValuedNode
@@ -39,12 +39,12 @@ namespace VDS.RDF.Nodes
         private SparqlNumericType _numType = SparqlNumericType.NaN;
 
         /// <summary>
-        /// Creates a new numeric valued node
+        /// Creates a new numeric valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Lexical Value</param>
-        /// <param name="datatype">Datatype URI</param>
-        /// <param name="numType">SPARQL Numeric Type</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Lexical Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
+        /// <param name="numType">SPARQL Numeric Type.</param>
         protected NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType)
             : base(g, value, datatype) 
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the string value of the node
+        /// Gets the string value of the node.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -61,31 +61,31 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the integer value
+        /// Gets the integer value.
         /// </summary>
         /// <returns></returns>
         public abstract long AsInteger();
 
         /// <summary>
-        /// Gets the decimal value
+        /// Gets the decimal value.
         /// </summary>
         /// <returns></returns>
         public abstract decimal AsDecimal();
 
         /// <summary>
-        /// Gets the float value
+        /// Gets the float value.
         /// </summary>
         /// <returns></returns>
         public abstract float AsFloat();
 
         /// <summary>
-        /// Gets the double value
+        /// Gets the double value.
         /// </summary>
         /// <returns></returns>
         public abstract double AsDouble();
 
         /// <summary>
-        /// Gets the boolean value
+        /// Gets the boolean value.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -106,7 +106,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as numerics cannot be converted to date times
+        /// Throws an error as numerics cannot be converted to date times.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -115,7 +115,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as numerics cannot be converted to date times
+        /// Throws an error as numerics cannot be converted to date times.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -124,7 +124,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as numerics cannot be cast to a time span
+        /// Throws an error as numerics cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -133,7 +133,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -144,7 +144,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {

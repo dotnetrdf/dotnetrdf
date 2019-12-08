@@ -36,7 +36,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Filter
+    /// Represents a Filter.
     /// </summary>
     public class Filter 
         : IFilter
@@ -45,10 +45,10 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlFilter _filter;
 
         /// <summary>
-        /// Creates a new Filter
+        /// Creates a new Filter.
         /// </summary>
-        /// <param name="pattern">Algebra the Filter applies over</param>
-        /// <param name="filter">Filter to apply</param>
+        /// <param name="pattern">Algebra the Filter applies over.</param>
+        /// <param name="filter">Filter to apply.</param>
         public Filter(ISparqlAlgebra pattern, ISparqlFilter filter)
         {
             _pattern = pattern;
@@ -56,9 +56,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Applies the Filter over the results of evaluating the inner pattern
+        /// Applies the Filter over the results of evaluating the inner pattern.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -114,17 +114,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Filter to be used
+        /// Gets the Filter to be used.
         /// </summary>
         public ISparqlFilter SparqlFilter
         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the FILTER
+        /// Gets the String representation of the FILTER.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -169,7 +169,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a Graph Pattern
+        /// Converts the Algebra back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -182,9 +182,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

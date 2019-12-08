@@ -34,7 +34,7 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// Default SPARQL Update Processor provided by the library's Leviathan SPARQL Engine
+    /// Default SPARQL Update Processor provided by the library's Leviathan SPARQL Engine.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -45,23 +45,23 @@ namespace VDS.RDF.Update
         : ISparqlUpdateProcessor
     {
         /// <summary>
-        /// Dataset over which updates are applied
+        /// Dataset over which updates are applied.
         /// </summary>
         protected ISparqlDataset _dataset;
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         private bool _autoCommit = true, _canCommit = true;
 
         /// <summary>
-        /// Creates a new Leviathan Update Processor
+        /// Creates a new Leviathan Update Processor.
         /// </summary>
-        /// <param name="store">Triple Store</param>
+        /// <param name="store">Triple Store.</param>
         public LeviathanUpdateProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
         /// <summary>
-        /// Creates a new Leviathan Update Processor
+        /// Creates a new Leviathan Update Processor.
         /// </summary>
-        /// <param name="data">SPARQL Dataset</param>
+        /// <param name="data">SPARQL Dataset.</param>
         public LeviathanUpdateProcessor(ISparqlDataset data)
         {
             _dataset = data;
@@ -74,7 +74,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets/Sets whether Updates are automatically committed
+        /// Gets/Sets whether Updates are automatically committed.
         /// </summary>
         public bool AutoCommit
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Flushes any outstanding changes to the underlying dataset
+        /// Flushes any outstanding changes to the underlying dataset.
         /// </summary>
         public void Flush()
         {
@@ -98,7 +98,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Discards and outstanding changes from the underlying dataset
+        /// Discards and outstanding changes from the underlying dataset.
         /// </summary>
         public void Discard()
         {
@@ -107,9 +107,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new Evaluation Context
+        /// Creates a new Evaluation Context.
         /// </summary>
-        /// <param name="cmds">Update Commands</param>
+        /// <param name="cmds">Update Commands.</param>
         /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext(SparqlUpdateCommandSet cmds)
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new Evaluation Context
+        /// Creates a new Evaluation Context.
         /// </summary>
         /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext()
@@ -126,11 +126,11 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the Query Processor to be used
+        /// Gets the Query Processor to be used.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// By default <strong>null</strong> is returned which indicates that the default query processing behaviour is used, to use a specific processor extend this class and override this method.  If you do so you will have access to the dataset in use so generally you will want to use a query processor that accepts a <see cref="ISparqlDataset">ISparqlDataset</see> instance
+        /// By default <strong>null</strong> is returned which indicates that the default query processing behaviour is used, to use a specific processor extend this class and override this method.  If you do so you will have access to the dataset in use so generally you will want to use a query processor that accepts a <see cref="ISparqlDataset">ISparqlDataset</see> instance.
         /// </remarks>
         protected virtual ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetQueryProcessor()
         {
@@ -138,97 +138,97 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes an ADD command
+        /// Processes an ADD command.
         /// </summary>
-        /// <param name="cmd">Add Command</param>
+        /// <param name="cmd">Add Command.</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
             ProcessAddCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes an ADD command
+        /// Processes an ADD command.
         /// </summary>
-        /// <param name="cmd">Add Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Add Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessAddCommandInternal(AddCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a CLEAR command
+        /// Processes a CLEAR command.
         /// </summary>
-        /// <param name="cmd">Clear Command</param>
+        /// <param name="cmd">Clear Command.</param>
         public void ProcessClearCommand(ClearCommand cmd)
         {
             ProcessClearCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a CLEAR command
+        /// Processes a CLEAR command.
         /// </summary>
-        /// <param name="cmd">Clear Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Clear Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessClearCommandInternal(ClearCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a COPY command
+        /// Processes a COPY command.
         /// </summary>
-        /// <param name="cmd">Copy Command</param>
+        /// <param name="cmd">Copy Command.</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
             ProcessCopyCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a COPY command
+        /// Processes a COPY command.
         /// </summary>
-        /// <param name="cmd">Copy Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Copy Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessCopyCommandInternal(CopyCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a CREATE command
+        /// Processes a CREATE command.
         /// </summary>
-        /// <param name="cmd">Create Command</param>
+        /// <param name="cmd">Create Command.</param>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
             ProcessCreateCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a CREATE command
+        /// Processes a CREATE command.
         /// </summary>
-        /// <param name="cmd">Create Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Create Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessCreateCommandInternal(CreateCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a command
+        /// Processes a command.
         /// </summary>
-        /// <param name="cmd">Command</param>
+        /// <param name="cmd">Command.</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
             ProcessCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a command
+        /// Processes a command.
         /// </summary>
-        /// <param name="cmd">Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         /// <remarks>
-        /// Invokes the type specific method for the command type
+        /// Invokes the type specific method for the command type.
         /// </remarks>
         private void ProcessCommandInternal(SparqlUpdateCommand cmd, SparqlUpdateEvaluationContext context)
         {
@@ -316,11 +316,11 @@ namespace VDS.RDF.Update
          }
 
         /// <summary>
-        /// Processes a command set
+        /// Processes a command set.
         /// </summary>
-        /// <param name="commands">Command Set</param>
+        /// <param name="commands">Command Set.</param>
         /// <remarks>
-        /// Invokes <see cref="LeviathanUpdateProcessor.ProcessCommand">ProcessCommand()</see> on each command in turn
+        /// Invokes <see cref="LeviathanUpdateProcessor.ProcessCommand">ProcessCommand()</see> on each command in turn.
         /// </remarks>
         public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
@@ -397,152 +397,152 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a DELETE command
+        /// Processes a DELETE command.
         /// </summary>
-        /// <param name="cmd">Delete Command</param>
+        /// <param name="cmd">Delete Command.</param>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
             ProcessDeleteCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a DELETE command
+        /// Processes a DELETE command.
         /// </summary>
-        /// <param name="cmd">Delete Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Delete Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessDeleteCommandInternal(DeleteCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a DELETE DATA command
+        /// Processes a DELETE DATA command.
         /// </summary>
-        /// <param name="cmd">DELETE Data Command</param>
+        /// <param name="cmd">DELETE Data Command.</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
             ProcessDeleteDataCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a DELETE DATA command
+        /// Processes a DELETE DATA command.
         /// </summary>
-        /// <param name="cmd">Delete Data Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Delete Data Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessDeleteDataCommandInternal(DeleteDataCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a DROP command
+        /// Processes a DROP command.
         /// </summary>
-        /// <param name="cmd">Drop Command</param>
+        /// <param name="cmd">Drop Command.</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
             ProcessDropCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a DROP command
+        /// Processes a DROP command.
         /// </summary>
-        /// <param name="cmd">Drop Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Drop Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessDropCommandInternal(DropCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes an INSERT command
+        /// Processes an INSERT command.
         /// </summary>
-        /// <param name="cmd">Insert Command</param>
+        /// <param name="cmd">Insert Command.</param>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
             ProcessInsertCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes an INSERT command
+        /// Processes an INSERT command.
         /// </summary>
-        /// <param name="cmd">Insert Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Insert Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessInsertCommandInternal(InsertCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes an INSERT DATA command
+        /// Processes an INSERT DATA command.
         /// </summary>
-        /// <param name="cmd">Insert Data Command</param>
+        /// <param name="cmd">Insert Data Command.</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
             ProcessInsertDataCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes an INSERT DATA command
+        /// Processes an INSERT DATA command.
         /// </summary>
-        /// <param name="cmd">Insert Data Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Insert Data Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessInsertDataCommandInternal(InsertDataCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a LOAD command
+        /// Processes a LOAD command.
         /// </summary>
-        /// <param name="cmd">Load Command</param>
+        /// <param name="cmd">Load Command.</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
             ProcessLoadCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a LOAD command
+        /// Processes a LOAD command.
         /// </summary>
-        /// <param name="cmd">Load Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Load Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessLoadCommandInternal(LoadCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes an INSERT/DELETE command
+        /// Processes an INSERT/DELETE command.
         /// </summary>
-        /// <param name="cmd">Insert/Delete Command</param>
+        /// <param name="cmd">Insert/Delete Command.</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
             ProcessModifyCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes an INSERT/DELETE command
+        /// Processes an INSERT/DELETE command.
         /// </summary>
-        /// <param name="cmd">Insert/Delete Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Insert/Delete Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessModifyCommandInternal(ModifyCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
         /// <summary>
-        /// Processes a MOVE command
+        /// Processes a MOVE command.
         /// </summary>
-        /// <param name="cmd">Move Command</param>
+        /// <param name="cmd">Move Command.</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
             ProcessMoveCommandInternal(cmd, GetContext());
         }
 
         /// <summary>
-        /// Processes a MOVE command
+        /// Processes a MOVE command.
         /// </summary>
-        /// <param name="cmd">Move Command</param>
-        /// <param name="context">SPARQL Update Evaluation Context</param>
+        /// <param name="cmd">Move Command.</param>
+        /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessMoveCommandInternal(MoveCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);

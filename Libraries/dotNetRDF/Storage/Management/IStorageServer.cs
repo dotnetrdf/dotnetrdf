@@ -31,7 +31,7 @@ using VDS.RDF.Storage.Management.Provisioning;
 namespace VDS.RDF.Storage.Management
 {
     /// <summary>
-    /// Interface for storage servers which are systems capable of managing multiple stores which are exposed as <see cref="IStorageProvider"/> instances
+    /// Interface for storage servers which are systems capable of managing multiple stores which are exposed as <see cref="IStorageProvider"/> instances.
     /// </summary>
     /// <remarks>
     /// This interface may be implemented either separately or alongside <see cref="IStorageProvider"/>.  It is quite acceptable for an implementation of <see cref="IStorageProvider"/> that provides a connection to a store sitting on a server that manages multiple stores to also provide an implementation of this interface in order to allow access to other stores on the server.
@@ -40,7 +40,7 @@ namespace VDS.RDF.Storage.Management
         : IDisposable
     {
         /// <summary>
-        /// Returns information on the IO behaviour of a Server
+        /// Returns information on the IO behaviour of a Server.
         /// </summary>
         IOBehaviour IOBehaviour
         {
@@ -48,57 +48,57 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets the list of available stores
+        /// Gets the list of available stores.
         /// </summary>
         /// <returns></returns>
         IEnumerable<String> ListStores();
 
         /// <summary>
-        /// Gets a default template for creating a store with the given ID
+        /// Gets a default template for creating a store with the given ID.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         /// <returns></returns>
         IStoreTemplate GetDefaultTemplate(String id);
 
         /// <summary>
-        /// Gets all possible templates for creating a store with the given ID
+        /// Gets all possible templates for creating a store with the given ID.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         /// <returns></returns>
         IEnumerable<IStoreTemplate> GetAvailableTemplates(String id);
 
         /// <summary>
-        /// Creates a new Store with the given ID
+        /// Creates a new Store with the given ID.
         /// </summary>
-        /// <param name="template">Template for the new store</param>
-        /// <returns>Whether creation succeeded</returns>
+        /// <param name="template">Template for the new store.</param>
+        /// <returns>Whether creation succeeded.</returns>
         bool CreateStore(IStoreTemplate template);
 
         /// <summary>
-        /// Deletes the Store with the given ID
+        /// Deletes the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <remarks>
-        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation
+        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation.
         /// </remarks>
         void DeleteStore(string storeID);
 
         /// <summary>
-        /// Gets the Store with the given ID
+        /// Gets the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         IStorageProvider GetStore(string storeID);
     }
 
     /// <summary>
-    /// Interface for storage providers which are capable of managing multiple stores asynchronously
+    /// Interface for storage providers which are capable of managing multiple stores asynchronously.
     /// </summary>
     public interface IAsyncStorageServer
         : IDisposable
     {
         /// <summary>
-        /// Gets information on the IO Behaviour of the Server
+        /// Gets information on the IO Behaviour of the Server.
         /// </summary>
         IOBehaviour IOBehaviour
         {
@@ -106,54 +106,54 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Lists the available stores asynchronously
+        /// Lists the available stores asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         void ListStores(AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Gets a default template for creating a store with the given ID
+        /// Gets a default template for creating a store with the given ID.
         /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="id">ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         void GetDefaultTemplate(String id, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Gets all available templates for creating a store with the given ID
+        /// Gets all available templates for creating a store with the given ID.
         /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="id">ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Creates a store asynchronously
+        /// Creates a store asynchronously.
         /// </summary>
-        /// <param name="template">Template for the store to be created</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="template">Template for the store to be created.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
-        /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
+        /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments.
         /// </remarks>
         void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Deletes a store asynchronously
+        /// Deletes a store asynchronously.
         /// </summary>
-        /// <param name="storeID">ID of the store to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">ID of the store to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         void DeleteStore(String storeID, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Gets a store asynchronously
+        /// Gets a store asynchronously.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         void GetStore(String storeID, AsyncStorageCallback callback, Object state);
     }
 }

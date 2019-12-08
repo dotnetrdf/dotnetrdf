@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Possible Variable Context Types
+    /// Possible Variable Context Types.
     /// </summary>
     public enum VariableContextType
     {
@@ -44,11 +44,11 @@ namespace VDS.RDF
         /// <summary>
         /// Universal Variable Context
         /// </summary>
-        Universal
+        Universal,
     }
 
     /// <summary>
-    /// Represents the Variable Context for Triples
+    /// Represents the Variable Context for Triples.
     /// </summary>
     public class VariableContext : BasicTripleContext
     {
@@ -57,16 +57,16 @@ namespace VDS.RDF
         private VariableContext _innerContext;
 
         /// <summary>
-        /// Creates a new Variable Context
+        /// Creates a new Variable Context.
         /// </summary>
-        /// <param name="type">Context Type</param>
+        /// <param name="type">Context Type.</param>
         public VariableContext(VariableContextType type)
         {
             _type = type;
         }
 
         /// <summary>
-        /// Gets the Context Type
+        /// Gets the Context Type.
         /// </summary>
         public VariableContextType Type
         {
@@ -77,7 +77,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Variables in this Context
+        /// Gets the Variables in this Context.
         /// </summary>
         public IEnumerable<INode> Variables
         {
@@ -88,9 +88,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Variable to this Context
+        /// Adds a Variable to this Context.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         public void AddVariable(INode var)
         {
             if (var == null) return;
@@ -106,9 +106,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether a given Variable exists in this Context
+        /// Gets whether a given Variable exists in this Context.
         /// </summary>
-        /// <param name="var">Variable Node</param>
+        /// <param name="var">Variable Node.</param>
         /// <returns></returns>
         public bool IsVariable(INode var)
         {
@@ -123,10 +123,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Inner Context
+        /// Gets/Sets the Inner Context.
         /// </summary>
         /// <remarks>
-        /// When you set the Inner Context this sets the Inner Context of the most nested inner context, you can remove all nested contexts by setting this to null
+        /// When you set the Inner Context this sets the Inner Context of the most nested inner context, you can remove all nested contexts by setting this to null.
         /// </remarks>
         public VariableContext InnerContext
         {

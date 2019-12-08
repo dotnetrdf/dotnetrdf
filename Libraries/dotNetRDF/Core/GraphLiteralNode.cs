@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Serialization;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for Graph Literal Nodes
+    /// Abstract Base Class for Graph Literal Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="graphliteral")]
@@ -48,10 +48,10 @@ namespace VDS.RDF
         private IGraph _subgraph;
 
         /// <summary>
-        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph
+        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph.
         /// </summary>
-        /// <param name="g">Graph this node is in</param>
-        /// <param name="subgraph">Sub Graph this node represents</param>
+        /// <param name="g">Graph this node is in.</param>
+        /// <param name="subgraph">Sub Graph this node represents.</param>
         protected internal BaseGraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, NodeType.GraphLiteral)
         {
@@ -62,9 +62,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Graph Literal Node whose value is an empty Subgraph
+        /// Creates a new Graph Literal Node whose value is an empty Subgraph.
         /// </summary>
-        /// <param name="g">Graph this node is in</param>
+        /// <param name="g">Graph this node is in.</param>
         protected internal BaseGraphLiteralNode(IGraph g)
             : base(g, NodeType.GraphLiteral)
         {
@@ -76,10 +76,10 @@ namespace VDS.RDF
 
 #if !NETCORE
         /// <summary>
-        /// Deserializer Constructor
+        /// Deserializer Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected BaseGraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.GraphLiteral)
         {
@@ -90,13 +90,13 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Deserialization Only constructor
+        /// Deserialization Only constructor.
         /// </summary>
         protected BaseGraphLiteralNode()
             : base(null, NodeType.GraphLiteral) { }
 
         /// <summary>
-        /// Gets the Subgraph that this Node represents
+        /// Gets the Subgraph that this Node represents.
         /// </summary>
         public IGraph SubGraph
         {
@@ -107,9 +107,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of the Equals method for Graph Literal Nodes.  Graph Literals are considered Equal if their respective Subgraphs are equal
+        /// Implementation of the Equals method for Graph Literal Nodes.  Graph Literals are considered Equal if their respective Subgraphs are equal.
         /// </summary>
-        /// <param name="obj">Object to compare the Node with</param>
+        /// <param name="obj">Object to compare the Node with.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -129,9 +129,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of the Equals method for Graph Literal Nodes.  Graph Literals are considered Equal if their respective Subgraphs are equal
+        /// Implementation of the Equals method for Graph Literal Nodes.  Graph Literals are considered Equal if their respective Subgraphs are equal.
         /// </summary>
-        /// <param name="other">Object to compare the Node with</param>
+        /// <param name="other">Object to compare the Node with.</param>
         /// <returns></returns>
         public override bool Equals(INode other)
         {
@@ -151,9 +151,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Blank Node (should always be false)
+        /// Determines whether this Node is equal to a Blank Node (should always be false).
         /// </summary>
-        /// <param name="other">Blank Node</param>
+        /// <param name="other">Blank Node.</param>
         /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
@@ -162,9 +162,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node
+        /// Determines whether this Node is equal to a Graph Literal Node.
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
@@ -173,9 +173,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
@@ -184,9 +184,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// Determines whether this Node is equal to a URI Node (should always be false).
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
@@ -195,9 +195,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node (should always be false)
+        /// Determines whether this Node is equal to a Variable Node (should always be false).
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
@@ -206,9 +206,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node
+        /// Determines whether this Node is equal to a Graph Literal Node.
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public bool Equals(BaseGraphLiteralNode other)
         {
@@ -216,7 +216,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of ToString for Graph Literals which produces a String representation of the Subgraph in N3 style syntax
+        /// Implementation of ToString for Graph Literals which produces a String representation of the Subgraph in N3 style syntax.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -237,12 +237,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of CompareTo for Graph Literals
+        /// Implementation of CompareTo for Graph Literals.
         /// </summary>
-        /// <param name="other">Node to compare to</param>
+        /// <param name="other">Node to compare to.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Graph Literal Nodes are greater than Blank Nodes, Uri Nodes, Literal Nodes and Nulls
+        /// Graph Literal Nodes are greater than Blank Nodes, Uri Nodes, Literal Nodes and Nulls.
         /// </remarks>
         public override int CompareTo(INode other)
         {
@@ -272,9 +272,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
@@ -285,9 +285,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
@@ -295,9 +295,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
@@ -308,9 +308,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
@@ -321,9 +321,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
@@ -334,9 +334,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public int CompareTo(BaseGraphLiteralNode other)
         {
@@ -347,19 +347,19 @@ namespace VDS.RDF
         #region Serialization
 
         /// <summary>
-        /// Gets the Serialization Information
+        /// Gets the Serialization Information.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("subgraph", _subgraph);
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             reader.Read();
@@ -369,9 +369,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             _subgraph.SerializeGraph(writer);
@@ -383,7 +383,7 @@ namespace VDS.RDF
         #region IValuedNode Members
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a string
+        /// Throws an error as Graph Literals cannot be cast to a string.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -392,7 +392,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to an integer
+        /// Throws an error as Graph Literals cannot be cast to an integer.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -401,7 +401,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a decimal
+        /// Throws an error as Graph Literals cannot be cast to a decimal.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -410,7 +410,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a float
+        /// Throws an error as Graph Literals cannot be cast to a float.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -419,7 +419,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a double
+        /// Throws an error as Graph Literals cannot be cast to a double.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -428,7 +428,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a boolean
+        /// Throws an error as Graph Literals cannot be cast to a boolean.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -437,7 +437,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a date time
+        /// Throws an error as Graph Literals cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -446,7 +446,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a date time
+        /// Throws an error as Graph Literals cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -455,7 +455,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as Graph Literals cannot be cast to a time span
+        /// Throws an error as Graph Literals cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -464,7 +464,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -475,7 +475,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -489,7 +489,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3
+    /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="graphliteral")]
@@ -498,42 +498,42 @@ namespace VDS.RDF
         : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
     {
         /// <summary>
-        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph
+        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph.
         /// </summary>
-        /// <param name="g">Graph this node is in</param>
+        /// <param name="g">Graph this node is in.</param>
         protected internal GraphLiteralNode(IGraph g)
             : base(g) { }
 
         /// <summary>
-        /// Creates a new Graph Literal Node whose value is an empty Subgraph
+        /// Creates a new Graph Literal Node whose value is an empty Subgraph.
         /// </summary>
-        /// <param name="g">Graph this node is in</param>
-        /// <param name="subgraph">Sub-graph this node represents</param>
+        /// <param name="g">Graph this node is in.</param>
+        /// <param name="subgraph">Sub-graph this node represents.</param>
         protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, subgraph) { }
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected GraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected GraphLiteralNode()
             : base() { }
 
         /// <summary>
-        /// Implementation of Compare To for Graph Literal Nodes
+        /// Implementation of Compare To for Graph Literal Nodes.
         /// </summary>
-        /// <param name="other">Graph Literal Node to Compare To</param>
+        /// <param name="other">Graph Literal Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Simply invokes the more general implementation of this method
+        /// Simply invokes the more general implementation of this method.
         /// </remarks>
         public int CompareTo(GraphLiteralNode other)
         {
@@ -541,9 +541,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node
+        /// Determines whether this Node is equal to a Graph Literal Node.
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public bool Equals(GraphLiteralNode other)
         {

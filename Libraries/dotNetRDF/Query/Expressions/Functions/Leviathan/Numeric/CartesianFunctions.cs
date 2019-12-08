@@ -33,7 +33,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
-    /// Represents the Leviathan lfn:cartesian() function
+    /// Represents the Leviathan lfn:cartesian() function.
     /// </summary>
     public class CartesianFunction
         : ISparqlExpression
@@ -42,12 +42,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         private bool _3d = false;
 
         /// <summary>
-        /// Creates a new 2D Cartesian Function
+        /// Creates a new 2D Cartesian Function.
         /// </summary>
-        /// <param name="x1">Expression for X Coordinate of 1st point</param>
-        /// <param name="y1">Expression for Y Coordinate of 1st point</param>
-        /// <param name="x2">Expression for X Coordinate of 2nd point</param>
-        /// <param name="y2">Expression for Y Coordinate of 2nd point</param>
+        /// <param name="x1">Expression for X Coordinate of 1st point.</param>
+        /// <param name="y1">Expression for Y Coordinate of 1st point.</param>
+        /// <param name="x2">Expression for X Coordinate of 2nd point.</param>
+        /// <param name="y2">Expression for Y Coordinate of 2nd point.</param>
         public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression x2, ISparqlExpression y2)
         {
             _x1 = x1;
@@ -57,14 +57,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Creates a new 3D Cartesian Function
+        /// Creates a new 3D Cartesian Function.
         /// </summary>
-        /// <param name="x1">Expression for X Coordinate of 1st point</param>
-        /// <param name="y1">Expression for Y Coordinate of 1st point</param>
-        /// <param name="z1">Expression for Z Coordiante of 1st point</param>
-        /// <param name="x2">Expression for X Coordinate of 2nd point</param>
-        /// <param name="y2">Expression for Y Coordinate of 2nd point</param>
-        /// <param name="z2">Expression for Z Coordinate of 2nd point</param>
+        /// <param name="x1">Expression for X Coordinate of 1st point.</param>
+        /// <param name="y1">Expression for Y Coordinate of 1st point.</param>
+        /// <param name="z1">Expression for Z Coordiante of 1st point.</param>
+        /// <param name="x2">Expression for X Coordinate of 2nd point.</param>
+        /// <param name="y2">Expression for Y Coordinate of 2nd point.</param>
+        /// <param name="z2">Expression for Z Coordinate of 2nd point.</param>
         public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression z1, ISparqlExpression x2, ISparqlExpression y2, ISparqlExpression z2)
         {
             _x1 = x1;
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -97,10 +97,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Internal helper for calculating 2D Cartesian Distance
+        /// Internal helper for calculating 2D Cartesian Distance.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         private IValuedNode CartesianDistance2D(SparqlEvaluationContext context, int bindingID)
         {
@@ -120,10 +120,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Internal helper for calculating 3D Cartesian Distance
+        /// Internal helper for calculating 3D Cartesian Distance.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         private IValuedNode CartesianDistance3D(SparqlEvaluationContext context, int bindingID)
         {
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Variables used in the function
+        /// Gets the Variables used in the function.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -206,7 +206,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public string Functor
         {
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -253,9 +253,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

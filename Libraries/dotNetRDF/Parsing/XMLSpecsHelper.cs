@@ -31,12 +31,12 @@ namespace VDS.RDF.Parsing
 {
     /// <summary>
     /// Static Helper Class which contains a set of Functions which model Name and Character validations as laid
-    /// out in the W3C XML and XML Namespaces specification
+    /// out in the W3C XML and XML Namespaces specification.
     /// </summary>
     /// <remarks>
     /// These are needed in the XML/RDF Parser
     /// 
-    /// Also contains the Date Time format string used to format .Net's DateTime type into a String whose format conforms to the XML Schema Datatypes specification
+    /// Also contains the Date Time format string used to format .Net's DateTime type into a String whose format conforms to the XML Schema Datatypes specification.
     /// 
     /// 
     /// </remarks>
@@ -46,23 +46,23 @@ namespace VDS.RDF.Parsing
     public static class XmlSpecsHelper
     {
         /// <summary>
-        /// Namespace for XML
+        /// Namespace for XML.
         /// </summary>
         public const String NamespaceXml = "http://www.w3.org/XML/1998/namespace";
         /// <summary>
-        /// Namespace for XML Namespaces
+        /// Namespace for XML Namespaces.
         /// </summary>
         public const String NamespaceXmlNamespaces = "http://www.w3.org/2000/xmlns/";
         /// <summary>
-        /// Namespace for XML Schema
+        /// Namespace for XML Schema.
         /// </summary>
         public const String NamespaceXmlSchema = "http://www.w3.org/2001/XMLSchema#";
 
         /// <summary>
-        /// Date Time Formatting string which meets the specified format for xsd:dateTime
+        /// Date Time Formatting string which meets the specified format for xsd:dateTime.
         /// </summary>
         /// <remarks>
-        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
         public const String XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ss.ffffffK";
 
@@ -70,23 +70,23 @@ namespace VDS.RDF.Parsing
         /// Date Time Formatting string which meets the specified format for xsd:dateTime, this formatting string is imprecise in the sense that it does not preserve the fractional seconds.
         /// </summary>
         /// <remarks>
-        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
         public const String XmlSchemaDateTimeFormatImprecise = "yyyy-MM-dd\\THH:mm:ssK";
 
         /// <summary>
-        /// Date Time Formatting string which meets the specified format for xsd:date
+        /// Date Time Formatting string which meets the specified format for xsd:date.
         /// </summary>
         /// <remarks>
-        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
         public const String XmlSchemaDateFormat = "yyyy-MM-ddK";
 
         /// <summary>
-        /// Date Time Formatting string which meets the the specified format for xsd:time
+        /// Date Time Formatting string which meets the the specified format for xsd:time.
         /// </summary>
         /// <remarks>
-        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
         public const String XmlSchemaTimeFormat = "HH:mm:ss.ffffffK";
 
@@ -94,14 +94,14 @@ namespace VDS.RDF.Parsing
         /// Date Time Formatting string which meets the the specified format for xsd:time, this formatting string is imprecise in the sense that it does not preserve the fractional seconds.
         /// </summary>
         /// <remarks>
-        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
         public const String XmlSchemaTimeFormatImprecise = "HH:mm:ssK";
 
 
 
         /// <summary>
-        /// Data Type Uri Constants for XML Schema Data Types
+        /// Data Type Uri Constants for XML Schema Data Types.
         /// </summary>
         public const String XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
                             XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
@@ -131,7 +131,7 @@ namespace VDS.RDF.Parsing
                             XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
 
         /// <summary>
-        /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method
+        /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method.
         /// </summary>
         public static String[] SupportedTypes = new String[] {
             XmlSchemaDataTypeAnyUri,
@@ -165,9 +165,9 @@ namespace VDS.RDF.Parsing
         #region Name Validation
 
         /// <summary>
-        /// Returns whether a String is a Name as defined by the W3C XML Specification
+        /// Returns whether a String is a Name as defined by the W3C XML Specification.
         /// </summary>
-        /// <param name="name">String to test</param>
+        /// <param name="name">String to test.</param>
         /// <returns></returns>
         public static bool IsName(String name)
         {
@@ -200,22 +200,22 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Returns whether a String is a NCName as defined by the W3C XML Namespaces Specification
+        /// Returns whether a String is a NCName as defined by the W3C XML Namespaces Specification.
         /// </summary>
-        /// <param name="name">String to test</param>
+        /// <param name="name">String to test.</param>
         /// <returns></returns>
-        /// <see>http://www.w3.org/TR/REC-xml-names/#NT-NCName</see>
+        /// <see>http://www.w3.org/TR/REC-xml-names/#NT-NCName.</see>
         public static bool IsNCName(String name)
         {
             return IsName(name) && !name.Contains(":");
         }
 
         /// <summary>
-        /// Returns whether a Character is a NameChar as defined by the W3C XML Specification
+        /// Returns whether a Character is a NameChar as defined by the W3C XML Specification.
         /// </summary>
-        /// <param name="c">Character to Test</param>
+        /// <param name="c">Character to Test.</param>
         /// <returns></returns>
-        /// <see>http://www.w3.org/TR/REC-xml/#NT-NameChar</see>
+        /// <see>http://www.w3.org/TR/REC-xml/#NT-NameChar.</see>
         public static bool IsNameChar(char c)
         {
             if (IsNameStartChar(c))
@@ -255,11 +255,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Returns whether a Character is a NameChar as defined by the W3C XML Specification
+        /// Returns whether a Character is a NameChar as defined by the W3C XML Specification.
         /// </summary>
-        /// <param name="c">Character to test</param>
+        /// <param name="c">Character to test.</param>
         /// <returns></returns>
-        /// <see>http://www.w3.org/TR/REC-xml/#NT-NameChar</see>
+        /// <see>http://www.w3.org/TR/REC-xml/#NT-NameChar.</see>
         public static bool IsNameStartChar(char c)
         {
             if (c == '_' || c == ':')
@@ -307,9 +307,9 @@ namespace VDS.RDF.Parsing
         #endregion
 
         /// <summary>
-        /// Returns whether the given Type refers to one of the types supported by the <see cref="LiteralNode">LiteralNode</see> CompareTo method
+        /// Returns whether the given Type refers to one of the types supported by the <see cref="LiteralNode">LiteralNode</see> CompareTo method.
         /// </summary>
-        /// <param name="type">Data Type Uri</param>
+        /// <param name="type">Data Type Uri.</param>
         /// <returns></returns>
         public static bool IsSupportedType(String type)
         {
@@ -317,9 +317,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Returns whether the given Type refers to one of the types supported by the <see cref="LiteralNode">LiteralNode</see> CompareTo method
+        /// Returns whether the given Type refers to one of the types supported by the <see cref="LiteralNode">LiteralNode</see> CompareTo method.
         /// </summary>
-        /// <param name="type">Data Type Uri</param>
+        /// <param name="type">Data Type Uri.</param>
         /// <returns></returns>
         public static bool IsSupportedType(Uri type)
         {
@@ -328,16 +328,16 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the Data Type Uri of the given Node if it has a supported type
+        /// Gets the Data Type Uri of the given Node if it has a supported type.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Only <see cref="ILiteralNode">ILiteralNode</see>'s can have a Data Type
+        /// Only <see cref="ILiteralNode">ILiteralNode</see>'s can have a Data Type.
         /// </para>
         /// <para>
-        /// The function only returns the Data Type Uri (as a String) if the Data Type of the Literal is one of the supported Data Types
+        /// The function only returns the Data Type Uri (as a String) if the Data Type of the Literal is one of the supported Data Types.
         /// </para>
         /// </remarks>
         public static String GetSupportedDataType(INode n)
@@ -381,15 +381,15 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the Compatible Supported Data Type assuming the two Nodes are Literals with support types and that those types are compatible
+        /// Gets the Compatible Supported Data Type assuming the two Nodes are Literals with support types and that those types are compatible.
         /// </summary>
-        /// <param name="x">A Node</param>
-        /// <param name="y">A Node</param>
-        /// <param name="widen">Whether the compatible type should be the wider type</param>
+        /// <param name="x">A Node.</param>
+        /// <param name="y">A Node.</param>
+        /// <param name="widen">Whether the compatible type should be the wider type.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics
+        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
         public static String GetCompatibleSupportedDataType(INode x, INode y, bool widen)
@@ -398,14 +398,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the Compatible Supported Data Type assuming the two Nodes are Literals with support types and that those types are compatible
+        /// Gets the Compatible Supported Data Type assuming the two Nodes are Literals with support types and that those types are compatible.
         /// </summary>
-        /// <param name="x">A Node</param>
-        /// <param name="y">A Node</param>
+        /// <param name="x">A Node.</param>
+        /// <param name="y">A Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics
+        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
         public static String GetCompatibleSupportedDataType(INode x, INode y)
@@ -414,14 +414,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the Compatible Supported Data Type for the two Data Types
+        /// Gets the Compatible Supported Data Type for the two Data Types.
         /// </summary>
-        /// <param name="type1">A Data Type</param>
-        /// <param name="type2">A Data Type</param>
+        /// <param name="type1">A Data Type.</param>
+        /// <param name="type2">A Data Type.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics
+        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
         public static String GetCompatibleSupportedDataType(String type1, String type2)
@@ -430,15 +430,15 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the Compatible Supported Data Type for the two Data Types
+        /// Gets the Compatible Supported Data Type for the two Data Types.
         /// </summary>
-        /// <param name="type1">A Data Type</param>
-        /// <param name="type2">A Data Type</param>
-        /// <param name="widen">Whether the compatible type should be the wider type</param>
+        /// <param name="type1">A Data Type.</param>
+        /// <param name="type2">A Data Type.</param>
+        /// <param name="widen">Whether the compatible type should be the wider type.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics
+        /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
         public static String GetCompatibleSupportedDataType(String type1, String type2, bool widen)

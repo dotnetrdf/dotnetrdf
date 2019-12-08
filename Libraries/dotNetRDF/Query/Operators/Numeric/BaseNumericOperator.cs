@@ -31,15 +31,15 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Operators.Numeric
 {
     /// <summary>
-    /// Abstract base class for numeric operators
+    /// Abstract base class for numeric operators.
     /// </summary>
     public abstract class BaseNumericOperator
         : BaseOperator
     {
         /// <summary>
-        /// Operator is applicable if at least one input and all inputs are numeric
+        /// Operator is applicable if at least one input and all inputs are numeric.
         /// </summary>
-        /// <param name="ns">Inputs</param>
+        /// <param name="ns">Inputs.</param>
         /// <returns></returns>
         public override bool IsApplicable(params IValuedNode[] ns)
         {

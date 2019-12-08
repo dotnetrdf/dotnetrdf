@@ -36,31 +36,31 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating RDF in NTriples Concrete Syntax
+    /// Class for generating RDF in NTriples Concrete Syntax.
     /// </summary>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
     public class NTriplesWriter 
         : BaseRdfWriter, IFormatterBasedWriter
     {
         private bool _sort = false;
 
         /// <summary>
-        /// Creates a new writer
+        /// Creates a new writer.
         /// </summary>
-        /// <param name="syntax">NTriples Syntax Mode</param>
+        /// <param name="syntax">NTriples Syntax Mode.</param>
         public NTriplesWriter(NTriplesSyntax syntax)
         {
             Syntax = syntax;
         }
 
         /// <summary>
-        /// Creates a new writer
+        /// Creates a new writer.
         /// </summary>
         public NTriplesWriter()
             : this(NTriplesSyntax.Original) { }
 
         /// <summary>
-        /// Gets/Sets whether Triples are sorted before being Output
+        /// Gets/Sets whether Triples are sorted before being Output.
         /// </summary>
         public bool SortTriples
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by this writer
+        /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
         public Type TripleFormatterType
         {
@@ -86,15 +86,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the NTriples syntax mode
+        /// Gets/Sets the NTriples syntax mode.
         /// </summary>
         public NTriplesSyntax Syntax { get; set; }
 
         /// <summary>
-        /// Saves the Graph in NTriples Syntax to the given stream
+        /// Saves the Graph in NTriples Syntax to the given stream.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">File to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
@@ -104,10 +104,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves the Graph in NTriples Syntax to the given stream
+        /// Saves the Graph in NTriples Syntax to the given stream.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             NTriplesWriterContext context = new NTriplesWriterContext(g, output, Syntax);
@@ -121,10 +121,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Converts a Triple into relevant NTriples Syntax
+        /// Converts a Triple into relevant NTriples Syntax.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="t">Triple to convert</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="t">Triple to convert.</param>
         /// <returns></returns>
         private String TripleToNTriples(NTriplesWriterContext context, Triple t)
         {
@@ -140,11 +140,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Converts a Node into relevant NTriples Syntax
+        /// Converts a Node into relevant NTriples Syntax.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="n">Node to convert</param>
-        /// <param name="segment">Segment of the Triple being written</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="n">Node to convert.</param>
+        /// <param name="segment">Segment of the Triple being written.</param>
         /// <returns></returns>
         private String NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
         {
@@ -178,9 +178,9 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
+        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             RdfWriterWarning d = Warning;
@@ -191,7 +191,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

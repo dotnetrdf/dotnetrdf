@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Abstract Base Class for <see cref="IEvent">IEvent</see> implementations
+    /// Abstract Base Class for <see cref="IEvent">IEvent</see> implementations.
     /// </summary>
     public abstract class BaseEvent 
         : IEvent
@@ -39,10 +39,10 @@ namespace VDS.RDF.Parsing.Events
         private PositionInfo _pos;
 
         /// <summary>
-        /// Creates a new Event
+        /// Creates a new Event.
         /// </summary>
-        /// <param name="eventType">Event Type</param>
-        /// <param name="info">Position Information</param>
+        /// <param name="eventType">Event Type.</param>
+        /// <param name="info">Position Information.</param>
         public BaseEvent(int eventType, PositionInfo info)
         {
             _eventtype = eventType;
@@ -50,14 +50,14 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Creates a new Event
+        /// Creates a new Event.
         /// </summary>
-        /// <param name="eventType">Event Type</param>
+        /// <param name="eventType">Event Type.</param>
         public BaseEvent(int eventType)
             : this(eventType, null) { }
 
         /// <summary>
-        /// Gets the Type for this Event
+        /// Gets the Type for this Event.
         /// </summary>
         public int EventType
         {
@@ -68,10 +68,10 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the Position Information (if any)
+        /// Gets the Position Information (if any).
         /// </summary>
         /// <remarks>
-        /// Availability of Position Information depends on the how the source document was parsed
+        /// Availability of Position Information depends on the how the source document was parsed.
         /// </remarks>
         public PositionInfo Position
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// Abstract Base Class for <see cref="IRdfXmlEvent">IRdfXmlEvent</see> implementations
+    /// Abstract Base Class for <see cref="IRdfXmlEvent">IRdfXmlEvent</see> implementations.
     /// </summary>
     public abstract class BaseRdfXmlEvent 
         : BaseEvent, IRdfXmlEvent
@@ -91,11 +91,11 @@ namespace VDS.RDF.Parsing.Events
         private String _sourcexml;
 
         /// <summary>
-        /// Creates an Event and fills in its Values
+        /// Creates an Event and fills in its Values.
         /// </summary>
-        /// <param name="eventType">Type of the Event</param>
-        /// <param name="sourceXml">Source XML that generated the Event</param>
-        /// <param name="pos">Position of the XML Event</param>
+        /// <param name="eventType">Type of the Event.</param>
+        /// <param name="sourceXml">Source XML that generated the Event.</param>
+        /// <param name="pos">Position of the XML Event.</param>
         public BaseRdfXmlEvent(int eventType, String sourceXml, PositionInfo pos)
             : base(eventType, pos)
         {
@@ -103,15 +103,15 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Creates an Event and fills in its Values
+        /// Creates an Event and fills in its Values.
         /// </summary>
-        /// <param name="eventType">Type of the Event</param>
-        /// <param name="sourceXml">Source XML that generated the Event</param>
+        /// <param name="eventType">Type of the Event.</param>
+        /// <param name="sourceXml">Source XML that generated the Event.</param>
         public BaseRdfXmlEvent(int eventType, String sourceXml)
             : this(eventType, sourceXml, null) { }
 
         /// <summary>
-        /// Gets the XML that this Event was generated from
+        /// Gets the XML that this Event was generated from.
         /// </summary>
         public string SourceXml
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// Abstract Base Class for <see cref="IRdfAEvent">IRdfAEvent</see> implementations
+    /// Abstract Base Class for <see cref="IRdfAEvent">IRdfAEvent</see> implementations.
     /// </summary>
     public abstract class BaseRdfAEvent 
         : BaseEvent, IRdfAEvent
@@ -131,11 +131,11 @@ namespace VDS.RDF.Parsing.Events
         private Dictionary<String, String> _attributes;
 
         /// <summary>
-        /// Creates a new RDFa Event
+        /// Creates a new RDFa Event.
         /// </summary>
-        /// <param name="eventType">Event Type</param>
-        /// <param name="pos">Position Info</param>
-        /// <param name="attributes">Attributes</param>
+        /// <param name="eventType">Event Type.</param>
+        /// <param name="pos">Position Info.</param>
+        /// <param name="attributes">Attributes.</param>
         public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<String, String>> attributes)
             : base(eventType, pos)
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the attributes of the event i.e. the attributes of the source element
+        /// Gets the attributes of the event i.e. the attributes of the source element.
         /// </summary>
         public IEnumerable<KeyValuePair<string, string>> Attributes
         {
@@ -158,9 +158,9 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets whether the Event has a given attribute
+        /// Gets whether the Event has a given attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
+        /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
         public bool HasAttribute(String name)
         {
@@ -168,9 +168,9 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the value of a specific attribute
+        /// Gets the value of a specific attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
+        /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
         public String this[String name]
         {

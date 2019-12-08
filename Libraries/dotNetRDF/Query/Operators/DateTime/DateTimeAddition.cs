@@ -31,18 +31,18 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Operators.DateTime
 {
     /// <summary>
-    /// Represents the date time addition operator
+    /// Represents the date time addition operator.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Allows for queries to add durations to date times
+    /// Allows for queries to add durations to date times.
     /// </para>
     /// </remarks>
     public class DateTimeAddition
         : BaseDateTimeOperator
     {
         /// <summary>
-        /// Gets the operator type
+        /// Gets the operator type.
         /// </summary>
         public override SparqlOperatorType Operator
         {
@@ -53,9 +53,9 @@ namespace VDS.RDF.Query.Operators.DateTime
         }
 
         /// <summary>
-        /// Applies the operator
+        /// Applies the operator.
         /// </summary>
-        /// <param name="ns">Arguments</param>
+        /// <param name="ns">Arguments.</param>
         /// <returns></returns>
         public override IValuedNode Apply(params IValuedNode[] ns)
         {

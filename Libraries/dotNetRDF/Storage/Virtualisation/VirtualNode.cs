@@ -37,16 +37,16 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage.Virtualisation
 {
     /// <summary>
-    /// Abstract Base implementation of a Virtual Node which is a Node that is represented only by some ID until such time as its value actually needs materialising
+    /// Abstract Base implementation of a Virtual Node which is a Node that is represented only by some ID until such time as its value actually needs materialising.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     /// <remarks>
     /// <para>
     /// As far as possible equality checks are carried out using these IDs and limited comparisons may also be done this way.  More specific implementations may wish to derive from this class in order to override the default comparison implementation to further reduce the number of places where value materialisation is done.
     /// </para>
     /// <para>
-    /// Note that this class does not implement any of the specialised Node interfaces and instead relies on the casting of its materialised value to an appropriately typed node to provide the true values to code that needs it
+    /// Note that this class does not implement any of the specialised Node interfaces and instead relies on the casting of its materialised value to an appropriately typed node to provide the true values to code that needs it.
     /// </para>
     /// </remarks>
     public abstract class BaseVirtualNode<TNodeID, TGraphID> 
@@ -59,17 +59,17 @@ namespace VDS.RDF.Storage.Virtualisation
         private IVirtualRdfProvider<TNodeID, TGraphID> _provider;
         private NodeType _type;
         /// <summary>
-        /// The materialised value of the Virtual Node
+        /// The materialised value of the Virtual Node.
         /// </summary>
         protected INode _value;
 
         /// <summary>
-        /// Creates a new Base Virtual Node
+        /// Creates a new Base Virtual Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="type">Type of the node</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="type">Type of the node.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public BaseVirtualNode(IGraph g, NodeType type, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
         {
             this._g = g;
@@ -80,13 +80,13 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Creates a new Base Virtual Node
+        /// Creates a new Base Virtual Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="type">Type of the node</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="value">Materialised Value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="type">Type of the node.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="value">Materialised Value.</param>
         public BaseVirtualNode(IGraph g, NodeType type, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, INode value)
             : this(g, type, id, provider)
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Materialises the Value if it is not already materialised
+        /// Materialises the Value if it is not already materialised.
         /// </summary>
         protected void MaterialiseValue()
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Called after the value is materialised for the first time
+        /// Called after the value is materialised for the first time.
         /// </summary>
         protected virtual void OnMaterialise()
         {
@@ -120,7 +120,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IVirtualNode<TNodeID,TGraphID> Members
 
         /// <summary>
-        /// Gets the Virtual ID of the Node
+        /// Gets the Virtual ID of the Node.
         /// </summary>
         public TNodeID VirtualID
         {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the Virtual RDF Provider of the Node
+        /// Gets the Virtual RDF Provider of the Node.
         /// </summary>
         public IVirtualRdfProvider<TNodeID, TGraphID> Provider
         {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets whether the Nodes value has been materialised
+        /// Gets whether the Nodes value has been materialised.
         /// </summary>
         public bool IsMaterialised
         {
@@ -153,7 +153,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the materialised value of the Node forcing it to be materialised if it hasn't already
+        /// Gets the materialised value of the Node forcing it to be materialised if it hasn't already.
         /// </summary>
         public INode MaterialisedValue
         {
@@ -169,7 +169,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region INode Members
 
         /// <summary>
-        /// Gets the Type of the Node
+        /// Gets the Type of the Node.
         /// </summary>
         public NodeType NodeType
         {
@@ -180,7 +180,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the Graph the Node belongs to
+        /// Gets the Graph the Node belongs to.
         /// </summary>
         public IGraph Graph
         {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets/Sets the Graph URI of the Node
+        /// Gets/Sets the Graph URI of the Node.
         /// </summary>
         public Uri GraphUri
         {
@@ -206,9 +206,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// Gets the String representation of the Node formatted with the given Node formatter.
         /// </summary>
-        /// <param name="formatter">Formatter</param>
+        /// <param name="formatter">Formatter.</param>
         /// <returns></returns>
         public string ToString(INodeFormatter formatter)
         {
@@ -216,10 +216,10 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// Gets the String representation of the Node formatted with the given Node formatter.
         /// </summary>
-        /// <param name="formatter">Formatter</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="formatter">Formatter.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         public string ToString(INodeFormatter formatter, TripleSegment segment)
         {
@@ -231,9 +231,9 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IComparable Implementations
 
         /// <summary>
-        /// Compares this Node to another Virtual Node
+        /// Compares this Node to another Virtual Node.
         /// </summary>
-        /// <param name="other">Other Virtual Node</param>
+        /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -255,9 +255,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Virtual Node
+        /// Compares this Node to another Virtual Node.
         /// </summary>
-        /// <param name="other">Other Virtual Node</param>
+        /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -268,9 +268,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Node
+        /// Compares this Node to another Node.
         /// </summary>
-        /// <param name="other">Other Node</param>
+        /// <param name="other">Other Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -366,9 +366,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Blank Node
+        /// Compares this Node to another Blank Node.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -379,9 +379,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Graph LiteralNode
+        /// Compares this Node to another Graph LiteralNode.
         /// </summary>
-        /// <param name="other">Other Graph Literal Node</param>
+        /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -392,9 +392,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Literal Node
+        /// Compares this Node to another Literal Node.
         /// </summary>
-        /// <param name="other">Other Literal Node</param>
+        /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -405,9 +405,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another URI Node
+        /// Compares this Node to another URI Node.
         /// </summary>
-        /// <param name="other">Other URI Node</param>
+        /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -418,9 +418,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Variable Node
+        /// Compares this Node to another Variable Node.
         /// </summary>
-        /// <param name="other">Other Variable Node</param>
+        /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -435,9 +435,9 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IEquatable Implementations
 
         /// <summary>
-        /// Checks this Node for equality against another Object
+        /// Checks this Node for equality against another Object.
         /// </summary>
-        /// <param name="obj">Other Object</param>
+        /// <param name="obj">Other Object.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -458,9 +458,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Virtual Node
+        /// Checks this Node for equality against another Virtual Node.
         /// </summary>
-        /// <param name="other">Other Virtual Node</param>
+        /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -474,9 +474,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Virtual Node
+        /// Checks this Node for equality against another Virtual Node.
         /// </summary>
-        /// <param name="other">Other Virtual Node</param>
+        /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -487,9 +487,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Node
+        /// Checks this Node for equality against another Node.
         /// </summary>
-        /// <param name="other">Other Node</param>
+        /// <param name="other">Other Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -520,9 +520,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks the Node Types and if they are equal invokes the INode based comparison
+        /// Checks the Node Types and if they are equal invokes the INode based comparison.
         /// </summary>
-        /// <param name="other">Node to compare with for equality</param>
+        /// <param name="other">Node to compare with for equality.</param>
         /// <returns></returns>
         private bool TypedEquality(INode other)
         {
@@ -540,12 +540,12 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Tries to check for equality using virtual node IDs
+        /// Tries to check for equality using virtual node IDs.
         /// </summary>
-        /// <param name="other">Node to test against</param>
-        /// <param name="areEqual">Whether the virtual nodes are equal</param>
+        /// <param name="other">Node to test against.</param>
+        /// <param name="areEqual">Whether the virtual nodes are equal.</param>
         /// <returns>
-        /// Whether the virtual equality test was valid, if false then other means must be used to determine equality
+        /// Whether the virtual equality test was valid, if false then other means must be used to determine equality.
         /// </returns>
         protected bool TryVirtualEquality(INode other, out bool areEqual)
         {
@@ -570,9 +570,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Blank Node
+        /// Checks this Node for equality against another Blank Node.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -583,9 +583,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Graph Literal Node
+        /// Checks this Node for equality against another Graph Literal Node.
         /// </summary>
-        /// <param name="other">Other Graph Literal Node</param>
+        /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -596,9 +596,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Literal Node
+        /// Checks this Node for equality against another Literal Node.
         /// </summary>
-        /// <param name="other">Other Literal Node</param>
+        /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -609,9 +609,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another URI Node
+        /// Checks this Node for equality against another URI Node.
         /// </summary>
-        /// <param name="other">Other URI Node</param>
+        /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -622,9 +622,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Variable Node
+        /// Checks this Node for equality against another Variable Node.
         /// </summary>
-        /// <param name="other">Other Variable Node</param>
+        /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -638,15 +638,15 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #region ICopyNodes abstract Member
         /// <summary>
-        /// Copies the Virtual Node into another Graph
+        /// Copies the Virtual Node into another Graph.
         /// </summary>
-        /// <param name="target">Target Graph</param>
+        /// <param name="target">Target Graph.</param>
         /// <returns></returns>
         public abstract INode CopyNode(IGraph target);
         #endregion
 
         /// <summary>
-        /// Gets the Hash Code of the Virtual Node
+        /// Gets the Hash Code of the Virtual Node.
         /// </summary>
         /// <returns></returns>
         public sealed override int GetHashCode()
@@ -655,18 +655,18 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Method to be implemented in derived classes to provide comparison of VirtualId values
+        /// Method to be implemented in derived classes to provide comparison of VirtualId values.
         /// </summary>
         /// <param name="other">The other virtual ID value to be compared with this node's virtual ID value.</param>
         /// <returns>The comparison result.</returns>
         public abstract int CompareVirtualId(TNodeID other);
 
         /// <summary>
-        /// Attempt to compare this node with another node
+        /// Attempt to compare this node with another node.
         /// </summary>
-        /// <param name="other">The node to compare to</param>
-        /// <param name="comparisonResult">The comparison result</param>
-        /// <returns>True if the comparison could be performed, false otherwise</returns>
+        /// <param name="other">The node to compare to.</param>
+        /// <param name="comparisonResult">The comparison result.</param>
+        /// <returns>True if the comparison could be performed, false otherwise.</returns>
         /// <remarks>This node can only be compared to <paramref name="other"/> if <paramref name="other"/>
         /// is a <see cref="IVirtualNode{TNodeID,TGraphID}"/> from the same 
         /// <see cref="IVirtualRdfProvider{TNodeID,TGraphID}"/> as this node.</remarks>
@@ -693,7 +693,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the String representation of the Node
+        /// Gets the String representation of the Node.
         /// </summary>
         /// <returns></returns>
         public sealed override string ToString()
@@ -704,18 +704,18 @@ namespace VDS.RDF.Storage.Virtualisation
 
 #if !NETCORE
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
-        /// <exception cref="NotImplementedException">Thrown because serializing a Virtual Node would be lossy</exception>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
+        /// <exception cref="NotImplementedException">Thrown because serializing a Virtual Node would be lossy.</exception>
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException("This INode implementation does not support Serialization");
         }
 
         /// <summary>
-        /// Gets the schema for XML serialization
+        /// Gets the schema for XML serialization.
         /// </summary>
         /// <returns></returns>
         public XmlSchema GetSchema()
@@ -724,20 +724,20 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
-        /// <exception cref="NotImplementedException">Thrown because serializing a Virtual Node would be lossy</exception>
+        /// <param name="reader">XML Reader.</param>
+        /// <exception cref="NotImplementedException">Thrown because serializing a Virtual Node would be lossy.</exception>
         public virtual void ReadXml(XmlReader reader)
         {
             throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
 
         /// <summary>
-        /// Writes the data for XML deserialization
+        /// Writes the data for XML deserialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
-        /// <exception cref="NotImplementedException">Thrown because serializing a Virtual Node would be lossy</exception>
+        /// <param name="writer">XML Writer.</param>
+        /// <exception cref="NotImplementedException">Thrown because serializing a Virtual Node would be lossy.</exception>
         public virtual void WriteXml(XmlWriter writer)
         {
             throw new NotImplementedException("This INode implementation does not support XML Serialization");
@@ -746,10 +746,10 @@ namespace VDS.RDF.Storage.Virtualisation
     }
 
     /// <summary>
-    /// Abstract Base implementation of a Virtual Blank Node
+    /// Abstract Base implementation of a Virtual Blank Node.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class BaseVirtualBlankNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IBlankNode, 
           IEquatable<BaseVirtualBlankNode<TNodeID, TGraphID>>, IComparable<BaseVirtualBlankNode<TNodeID, TGraphID>>,
@@ -758,26 +758,26 @@ namespace VDS.RDF.Storage.Virtualisation
         private String _internalID;
 
         /// <summary>
-        /// Creates a new Virtual Blank Node
+        /// Creates a new Virtual Blank Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public BaseVirtualBlankNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Blank, id, provider) { }
 
         /// <summary>
-        /// Creates a new Virtual Blank Node
+        /// Creates a new Virtual Blank Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="value">Materialised Value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="value">Materialised Value.</param>
         public BaseVirtualBlankNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IBlankNode value)
             : base(g, NodeType.Blank, id, provider, value) { }
 
         /// <summary>
-        /// Takes post materialisation actions
+        /// Takes post materialisation actions.
         /// </summary>
         protected sealed override void OnMaterialise()
         {
@@ -786,7 +786,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the Internal ID of the Blank Node
+        /// Gets the Internal ID of the Blank Node.
         /// </summary>
         public string InternalID
         {
@@ -798,9 +798,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Blank Node
+        /// Compares this Node to another Blank Node.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -816,9 +816,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Blank Node
+        /// Checks this Node for equality against another Blank Node.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -834,9 +834,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Blank Node
+        /// Checks this Node for equality against another Blank Node.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -847,9 +847,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Blank Node
+        /// Compares this Node to another Blank Node.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -862,7 +862,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IValuedNode Members
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -871,7 +871,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -880,7 +880,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -889,7 +889,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -898,7 +898,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -907,7 +907,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -916,7 +916,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -925,7 +925,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to types
+        /// Throws an error as blank nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -934,7 +934,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as blank nodes cannot be cast to a time span
+        /// Throws an error as blank nodes cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -943,7 +943,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -954,7 +954,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -968,10 +968,10 @@ namespace VDS.RDF.Storage.Virtualisation
     }
 
     /// <summary>
-    /// Abstract Base implementation of a Virtual Graph Literal Node
+    /// Abstract Base implementation of a Virtual Graph Literal Node.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class BaseVirtualGraphLiteralNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IGraphLiteralNode,
           IEquatable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>,
@@ -980,26 +980,26 @@ namespace VDS.RDF.Storage.Virtualisation
         private IGraph _subgraph;
 
         /// <summary>
-        /// Creates a new Virtual Graph Literal Node
+        /// Creates a new Virtual Graph Literal Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.GraphLiteral, id, provider) { }
 
         /// <summary>
-        /// Creates a new Virtual Graph Literal Node
+        /// Creates a new Virtual Graph Literal Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="value">Materialised Value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="value">Materialised Value.</param>
         public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraphLiteralNode value)
             : base(g, NodeType.GraphLiteral, id, provider, value) { }
 
         /// <summary>
-        /// Takes post materialisation actions
+        /// Takes post materialisation actions.
         /// </summary>
         protected sealed override void OnMaterialise()
         {
@@ -1008,7 +1008,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the subgraph this Graph Literal represents
+        /// Gets the subgraph this Graph Literal represents.
         /// </summary>
         public IGraph SubGraph
         {
@@ -1020,9 +1020,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Graph Literal Node
+        /// Compares this Node to another Graph Literal Node.
         /// </summary>
-        /// <param name="other">Other Graph Literal Node</param>
+        /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1038,9 +1038,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Graph Literal Node
+        /// Checks this Node for equality against another Graph Literal Node.
         /// </summary>
-        /// <param name="other">Other Graph Literal Node</param>
+        /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1056,9 +1056,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Graph Literal Node
+        /// Checks this Node for equality against another Graph Literal Node.
         /// </summary>
-        /// <param name="other">Other Graph Literal Node</param>
+        /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1069,9 +1069,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Graph Literal Node
+        /// Compares this Node to another Graph Literal Node.
         /// </summary>
-        /// <param name="other">Other Graph Literal Node</param>
+        /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1084,7 +1084,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IValuedNode Members
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -1093,7 +1093,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -1102,7 +1102,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -1111,7 +1111,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -1120,7 +1120,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -1129,7 +1129,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -1138,7 +1138,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -1147,7 +1147,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literal nodes cannot be cast to types
+        /// Throws an error as graph literal nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -1156,7 +1156,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as graph literals cannot be cast to a time span
+        /// Throws an error as graph literals cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -1165,7 +1165,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -1176,7 +1176,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -1190,10 +1190,10 @@ namespace VDS.RDF.Storage.Virtualisation
     }
 
     /// <summary>
-    /// Abstract Base implementation of a Virtual Literal Node
+    /// Abstract Base implementation of a Virtual Literal Node.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class BaseVirtualLiteralNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, ILiteralNode,
           IEquatable<BaseVirtualLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualLiteralNode<TNodeID, TGraphID>>,
@@ -1204,26 +1204,26 @@ namespace VDS.RDF.Storage.Virtualisation
         private IValuedNode _strongValue;
 
         /// <summary>
-        /// Creates a new Virtual Literal Node
+        /// Creates a new Virtual Literal Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Literal, id, provider) { }
 
         /// <summary>
-        /// Creates a new Virtual Literal Node
+        /// Creates a new Virtual Literal Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="value">Materialised Value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="value">Materialised Value.</param>
         public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, ILiteralNode value)
             : base(g, NodeType.Literal, id, provider, value) { }
 
         /// <summary>
-        /// Takes post materialisation actions
+        /// Takes post materialisation actions.
         /// </summary>
         protected sealed override void OnMaterialise()
         {
@@ -1234,7 +1234,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the lexical value of the Literal
+        /// Gets the lexical value of the Literal.
         /// </summary>
         public String Value
         {
@@ -1246,7 +1246,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the language specifier (if any) of the Literal
+        /// Gets the language specifier (if any) of the Literal.
         /// </summary>
         public String Language
         {
@@ -1258,7 +1258,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the Datatype (if any) of the Literal
+        /// Gets the Datatype (if any) of the Literal.
         /// </summary>
         public Uri DataType
         {
@@ -1270,9 +1270,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Literal Node
+        /// Compares this Node to another Literal Node.
         /// </summary>
-        /// <param name="other">Other Literal Node</param>
+        /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1289,9 +1289,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Literal Node
+        /// Checks this Node for equality against another Literal Node.
         /// </summary>
-        /// <param name="other">Other Literal Node</param>
+        /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1307,9 +1307,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Literal Node
+        /// Checks this Node for equality against another Literal Node.
         /// </summary>
-        /// <param name="other">Other Literal Node</param>
+        /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1320,9 +1320,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Literal Node
+        /// Compares this Node to another Literal Node.
         /// </summary>
-        /// <param name="other">Other Literal Node</param>
+        /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1335,7 +1335,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IValuedNode Members
 
         /// <summary>
-        /// Ensures that a strong value has been determined for this node
+        /// Ensures that a strong value has been determined for this node.
         /// </summary>
         private void EnsureStrongValue()
         {
@@ -1347,11 +1347,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a string
+        /// Gets the value as a string.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public string AsString()
         {
@@ -1360,11 +1360,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as an integer
+        /// Gets the value as an integer.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public long AsInteger()
         {
@@ -1373,11 +1373,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a decimal
+        /// Gets the value as a decimal.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public decimal AsDecimal()
         {
@@ -1386,11 +1386,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a float
+        /// Gets the value as a float.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public float AsFloat()
         {
@@ -1399,11 +1399,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a double
+        /// Gets the value as a double.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public double AsDouble()
         {
@@ -1412,11 +1412,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a boolean
+        /// Gets the value as a boolean.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public bool AsBoolean()
         {
@@ -1425,11 +1425,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a date time
+        /// Gets the value as a date time.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public DateTime AsDateTime()
         {
@@ -1438,11 +1438,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a date time
+        /// Gets the value as a date time.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public DateTimeOffset AsDateTimeOffset()
         {
@@ -1451,11 +1451,11 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the value as a time span
+        /// Gets the value as a time span.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Forces a materialisation of the value
+        /// Forces a materialisation of the value.
         /// </remarks>
         public TimeSpan AsTimeSpan()
         {
@@ -1464,7 +1464,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -1476,7 +1476,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -1491,10 +1491,10 @@ namespace VDS.RDF.Storage.Virtualisation
     }
 
     /// <summary>
-    /// Abstract Base implementation of a Virtual URI Node
+    /// Abstract Base implementation of a Virtual URI Node.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class BaseVirtualUriNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IUriNode,
           IEquatable<BaseVirtualUriNode<TNodeID, TGraphID>>, IComparable<BaseVirtualUriNode<TNodeID, TGraphID>>,
@@ -1503,26 +1503,26 @@ namespace VDS.RDF.Storage.Virtualisation
         private Uri _u;
 
         /// <summary>
-        /// Creates a new Virtual URI Node
+        /// Creates a new Virtual URI Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Uri, id, provider) { }
 
         /// <summary>
-        /// Creates a new Virtual URI Node
+        /// Creates a new Virtual URI Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="value">Materialised Value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="value">Materialised Value.</param>
         public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IUriNode value)
             : base(g, NodeType.Uri, id, provider, value) { }
 
         /// <summary>
-        /// Takes post materialisation actions
+        /// Takes post materialisation actions.
         /// </summary>
         protected sealed override void OnMaterialise()
         {
@@ -1531,7 +1531,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the URI
+        /// Gets the URI.
         /// </summary>
         public Uri Uri
         {
@@ -1543,9 +1543,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another URI Node
+        /// Compares this Node to another URI Node.
         /// </summary>
-        /// <param name="other">Other URI Node</param>
+        /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1561,9 +1561,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another URI Node
+        /// Checks this Node for equality against another URI Node.
         /// </summary>
-        /// <param name="other">Other URI Node</param>
+        /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1579,9 +1579,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another URI Node
+        /// Checks this Node for equality against another URI Node.
         /// </summary>
-        /// <param name="other">Other URI Node</param>
+        /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1592,9 +1592,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another URI Node
+        /// Compares this Node to another URI Node.
         /// </summary>
-        /// <param name="other">Other URI Node</param>
+        /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1607,7 +1607,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IValuedNode Members
 
         /// <summary>
-        /// Gets the string value of the node
+        /// Gets the string value of the node.
         /// </summary>
         public string AsString()
         {
@@ -1615,7 +1615,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to numerics
+        /// Throws an error as URI nodes cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -1624,7 +1624,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to numerics
+        /// Throws an error as URI nodes cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -1633,7 +1633,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to numerics
+        /// Throws an error as URI nodes cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -1642,7 +1642,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to numerics
+        /// Throws an error as URI nodes cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -1651,7 +1651,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to a boolean
+        /// Throws an error as URI nodes cannot be cast to a boolean.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -1660,7 +1660,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to a date time
+        /// Throws an error as URI nodes cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -1669,7 +1669,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URI nodes cannot be cast to a date time
+        /// Throws an error as URI nodes cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -1678,7 +1678,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to a time span
+        /// Throws an error as URIs cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -1687,7 +1687,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -1698,7 +1698,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the numeric type of the expression
+        /// Gets the numeric type of the expression.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -1712,10 +1712,10 @@ namespace VDS.RDF.Storage.Virtualisation
     }
 
     /// <summary>
-    /// Abstract Base implementation of a Virtual Variable Node
+    /// Abstract Base implementation of a Virtual Variable Node.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class BaseVirtualVariableNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IVariableNode,
           IEquatable<BaseVirtualVariableNode<TNodeID, TGraphID>>, IComparable<BaseVirtualVariableNode<TNodeID, TGraphID>>,
@@ -1724,26 +1724,26 @@ namespace VDS.RDF.Storage.Virtualisation
         private String _var;
 
         /// <summary>
-        /// Creates a new Virtual Variable Node
+        /// Creates a new Virtual Variable Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Variable, id, provider) { }
 
         /// <summary>
-        /// Creates a new Virtual Variable Node
+        /// Creates a new Virtual Variable Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="id">Virtual ID</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="value">Materialised Value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="id">Virtual ID.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="value">Materialised Value.</param>
         public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IVariableNode value)
             : base(g, NodeType.Variable, id, provider, value) { }
 
         /// <summary>
-        /// Takes post materialisation actions
+        /// Takes post materialisation actions.
         /// </summary>
         protected sealed override void OnMaterialise()
         {
@@ -1752,7 +1752,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the Variable Name
+        /// Gets the Variable Name.
         /// </summary>
         public String VariableName
         {
@@ -1764,9 +1764,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Variable Node
+        /// Compares this Node to another Variable Node.
         /// </summary>
-        /// <param name="other">Other Variable Node</param>
+        /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1782,9 +1782,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Variable Node
+        /// Checks this Node for equality against another Variable Node.
         /// </summary>
-        /// <param name="other">Other Variable Node</param>
+        /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1800,9 +1800,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Checks this Node for equality against another Variable Node
+        /// Checks this Node for equality against another Variable Node.
         /// </summary>
-        /// <param name="other">Other Variable Node</param>
+        /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
@@ -1813,9 +1813,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Compares this Node to another Variable Node
+        /// Compares this Node to another Variable Node.
         /// </summary>
-        /// <param name="other">Other Variable Node</param>
+        /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
@@ -1828,7 +1828,7 @@ namespace VDS.RDF.Storage.Virtualisation
         #region IValuedNode Members
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -1837,7 +1837,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -1846,7 +1846,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -1855,7 +1855,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -1864,7 +1864,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -1873,7 +1873,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -1882,7 +1882,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -1891,7 +1891,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables nodes cannot be cast to types
+        /// Throws an error as variables nodes cannot be cast to types.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -1900,7 +1900,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be cast to a time span
+        /// Throws an error as variables cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -1909,7 +1909,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -1920,7 +1920,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {

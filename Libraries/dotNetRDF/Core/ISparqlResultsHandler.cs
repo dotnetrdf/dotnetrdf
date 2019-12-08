@@ -30,38 +30,38 @@ using VDS.RDF.Query;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Handlers which handle the SPARQL Results produced by parsers
+    /// Interface for Handlers which handle the SPARQL Results produced by parsers.
     /// </summary>
     public interface ISparqlResultsHandler : INodeFactory
     {
         /// <summary>
-        /// Starts the Handling of Results
+        /// Starts the Handling of Results.
         /// </summary>
         void StartResults();
 
         /// <summary>
-        /// Ends the Handling of Results
+        /// Ends the Handling of Results.
         /// </summary>
-        /// <param name="ok">Indicates whether parsing completed without error</param>
+        /// <param name="ok">Indicates whether parsing completed without error.</param>
         void EndResults(bool ok);
 
         /// <summary>
-        /// Handles a Boolean Result
+        /// Handles a Boolean Result.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         void HandleBooleanResult(bool result);
 
         /// <summary>
-        /// Handles a Variable Declaration
+        /// Handles a Variable Declaration.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         /// <returns></returns>
         bool HandleVariable(String var);
 
         /// <summary>
-        /// Handles a SPARQL Result
+        /// Handles a SPARQL Result.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         bool HandleResult(SparqlResult result);
     }

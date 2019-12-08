@@ -34,20 +34,20 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Grouping
 {
     /// <summary>
-    /// Abstract Base Class for classes representing Sparql GROUP BY clauses
+    /// Abstract Base Class for classes representing Sparql GROUP BY clauses.
     /// </summary>
     public abstract class BaseGroupBy
         : ISparqlGroupBy
     {
         /// <summary>
-        /// Child Grouping
+        /// Child Grouping.
         /// </summary>
         protected ISparqlGroupBy _child = null;
 
         private String _assignVariable;
 
         /// <summary>
-        /// Gets/Sets the Child GROUP BY Clause
+        /// Gets/Sets the Child GROUP BY Clause.
         /// </summary>
         public ISparqlGroupBy Child
         {
@@ -62,22 +62,22 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Applies the Grouping to the Binder
+        /// Applies the Grouping to the Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public abstract List<BindingGroup> Apply(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Applies the Grouping to the Binder subdividing Groups from a previous Grouping
+        /// Applies the Grouping to the Binder subdividing Groups from a previous Grouping.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="groups">Groups to subdivide</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="groups">Groups to subdivide.</param>
         /// <returns></returns>
         public abstract List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups);
 
         /// <summary>
-        /// Gets the Variables involved in this Group By
+        /// Gets the Variables involved in this Group By.
         /// </summary>
         public abstract IEnumerable<String> Variables
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
         public abstract IEnumerable<String> ProjectableVariables
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Expression used to GROUP BY
+        /// Gets the Expression used to GROUP BY.
         /// </summary>
         public abstract ISparqlExpression Expression
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets/Sets the Variable that the grouped upon value should be assigned to
+        /// Gets/Sets the Variable that the grouped upon value should be assigned to.
         /// </summary>
         public String AssignVariable
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Grouping
     }
 
     /// <summary>
-    /// Represents a Grouping on a given Variable
+    /// Represents a Grouping on a given Variable.
     /// </summary>
     public class GroupByVariable
         : BaseGroupBy
@@ -125,19 +125,19 @@ namespace VDS.RDF.Query.Grouping
         private String _name;
 
         /// <summary>
-        /// Creates a new Group By which groups by a given Variable
+        /// Creates a new Group By which groups by a given Variable.
         /// </summary>
-        /// <param name="name">Variable Name</param>
+        /// <param name="name">Variable Name.</param>
         public GroupByVariable(String name)
         {
             _name = name;
         }
 
         /// <summary>
-        /// Creates a new Group By which groups by a given Variable and assigns to another variable
+        /// Creates a new Group By which groups by a given Variable and assigns to another variable.
         /// </summary>
-        /// <param name="name">Variable Name</param>
-        /// <param name="assignVariable">Assign Variable</param>
+        /// <param name="name">Variable Name.</param>
+        /// <param name="assignVariable">Assign Variable.</param>
         public GroupByVariable(String name, String assignVariable)
             : this(name)
         {
@@ -145,9 +145,9 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Applies a Grouping on a given Variable to the Binder
+        /// Applies a Grouping on a given Variable to the Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context)
         {
@@ -194,10 +194,10 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Applies a Grouping on a given Variable to the Binder Groups from a previous Grouping
+        /// Applies a Grouping on a given Variable to the Binder Groups from a previous Grouping.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="groups">Binder Group to subgroup</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="groups">Binder Group to subgroup.</param>
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Variables used in the GROUP BY
+        /// Gets the Variables used in the GROUP BY.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
         public override IEnumerable<String> ProjectableVariables
         {
@@ -287,7 +287,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Variable Expression Term used by this GROUP BY
+        /// Gets the Variable Expression Term used by this GROUP BY.
         /// </summary>
         public override ISparqlExpression Expression
         {
@@ -298,7 +298,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the String representation of the GROUP BY
+        /// Gets the String representation of the GROUP BY.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -328,7 +328,7 @@ namespace VDS.RDF.Query.Grouping
     }
 
     /// <summary>
-    /// Represents a Grouping on a given Expression
+    /// Represents a Grouping on a given Expression.
     /// </summary>
     public class GroupByExpression
         : BaseGroupBy
@@ -336,18 +336,18 @@ namespace VDS.RDF.Query.Grouping
         private ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new Group By which groups by a given Expression
+        /// Creates a new Group By which groups by a given Expression.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public GroupByExpression(ISparqlExpression expr)
         {
             _expr = expr;
         }
 
         /// <summary>
-        /// Applies a Grouping on a given Expression to the Binder
+        /// Applies a Grouping on a given Expression to the Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context)
         {
@@ -410,10 +410,10 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Applies a Grouping on a given Variable to the Binder Groups from a previous Grouping
+        /// Applies a Grouping on a given Variable to the Binder Groups from a previous Grouping.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="groups">Binder Group to subgroup</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="groups">Binder Group to subgroup.</param>
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
@@ -486,7 +486,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Fixed Variables used in the Grouping
+        /// Gets the Fixed Variables used in the Grouping.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -504,7 +504,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
         public override IEnumerable<String> ProjectableVariables
         {
@@ -523,7 +523,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Expression used to GROUP BY
+        /// Gets the Expression used to GROUP BY.
         /// </summary>
         public override ISparqlExpression Expression
         {
@@ -534,7 +534,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the String representation of the GROUP BY
+        /// Gets the String representation of the GROUP BY.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

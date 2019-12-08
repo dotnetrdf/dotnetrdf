@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Represents a Triple that is queued for persistence (either insertion/deletion)
+    /// Represents a Triple that is queued for persistence (either insertion/deletion).
     /// </summary>
     public class TriplePersistenceAction
     {
@@ -37,10 +37,10 @@ namespace VDS.RDF
         private Triple _t;
 
         /// <summary>
-        /// Creates a new Triple Persistence Action (an insertion/deletion)
+        /// Creates a new Triple Persistence Action (an insertion/deletion).
         /// </summary>
-        /// <param name="t">Triple to persist</param>
-        /// <param name="toDelete">Whether the Triple is to be deleted</param>
+        /// <param name="t">Triple to persist.</param>
+        /// <param name="toDelete">Whether the Triple is to be deleted.</param>
         public TriplePersistenceAction(Triple t, bool toDelete)
         {
             if (t == null) throw new ArgumentNullException("t");
@@ -49,14 +49,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Triple Persistence Action (an insertion)
+        /// Creates a new Triple Persistence Action (an insertion).
         /// </summary>
-        /// <param name="t">Triple to persist</param>
+        /// <param name="t">Triple to persist.</param>
         public TriplePersistenceAction(Triple t)
             : this(t, false) { }
 
         /// <summary>
-        /// Gets the Triple to persist
+        /// Gets the Triple to persist.
         /// </summary>
         public Triple Triple
         {
@@ -67,7 +67,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the action is a Delete Action
+        /// Gets whether the action is a Delete Action.
         /// </summary>
         public bool IsDelete
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Possible Types of Graph Persistence Actions
+    /// Possible Types of Graph Persistence Actions.
     /// </summary>
     public enum GraphPersistenceActionType
     {
@@ -94,11 +94,11 @@ namespace VDS.RDF
         /// <summary>
         /// Graph was Modified
         /// </summary>
-        Modified
+        Modified,
     }
 
     /// <summary>
-    /// Represents a Graph that is queued for persistence (added/modified/removed)
+    /// Represents a Graph that is queued for persistence (added/modified/removed).
     /// </summary>
     public class GraphPersistenceAction
     {
@@ -106,18 +106,18 @@ namespace VDS.RDF
         private GraphPersistenceActionType _action;
 
         /// <summary>
-        /// Creates a new Graph Persistence action
+        /// Creates a new Graph Persistence action.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="action">Action Type</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="action">Action Type.</param>
         public GraphPersistenceAction(IGraph g, GraphPersistenceActionType action)
             : this(new GraphPersistenceWrapper(g), action) { }
 
         /// <summary>
-        /// Creates a new Graph Persistence action
+        /// Creates a new Graph Persistence action.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="action">Action Type</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="action">Action Type.</param>
         public GraphPersistenceAction(ITransactionalGraph g, GraphPersistenceActionType action)
         {
             _g = g;
@@ -125,7 +125,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph to be persisted
+        /// Gets the Graph to be persisted.
         /// </summary>
         public ITransactionalGraph Graph
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Action Type
+        /// Gets the Action Type.
         /// </summary>
         public GraphPersistenceActionType Action
         {
@@ -148,7 +148,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Represents an action on a Triple Store that is queued for persistence
+    /// Represents an action on a Triple Store that is queued for persistence.
     /// </summary>
     public class TripleStorePersistenceAction
     {
@@ -156,25 +156,25 @@ namespace VDS.RDF
         private TriplePersistenceAction _tripleAction;
 
         /// <summary>
-        /// Creates a new persistence action that pertains to a Graph
+        /// Creates a new persistence action that pertains to a Graph.
         /// </summary>
-        /// <param name="graphAction">Graph Action</param>
+        /// <param name="graphAction">Graph Action.</param>
         public TripleStorePersistenceAction(GraphPersistenceAction graphAction)
         {
             _graphAction = graphAction;
         }
 
         /// <summary>
-        /// Creates a new persistence action that pertains to a Triple
+        /// Creates a new persistence action that pertains to a Triple.
         /// </summary>
-        /// <param name="tripleAction">Triple Action</param>
+        /// <param name="tripleAction">Triple Action.</param>
         public TripleStorePersistenceAction(TriplePersistenceAction tripleAction)
         {
             _tripleAction = tripleAction;
         }
 
         /// <summary>
-        /// Gets whether this action pertains to a Graph
+        /// Gets whether this action pertains to a Graph.
         /// </summary>
         public bool IsGraphAction
         {
@@ -185,7 +185,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this action peratins to a Triple
+        /// Gets whether this action peratins to a Triple.
         /// </summary>
         public bool IsTripleAction
         {
@@ -196,7 +196,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph Action (if any)
+        /// Gets the Graph Action (if any).
         /// </summary>
         public GraphPersistenceAction GraphAction
         {
@@ -207,7 +207,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Triple Action (if any)
+        /// Gets the Triple Action (if any).
         /// </summary>
         public TriplePersistenceAction TripleAction
         {

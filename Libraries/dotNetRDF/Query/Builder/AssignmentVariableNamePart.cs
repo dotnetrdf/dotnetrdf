@@ -30,14 +30,14 @@ using VDS.RDF.Query.Builder.Expressions;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Exposes method for assigning a name to an expression variable
+    /// Exposes method for assigning a name to an expression variable.
     /// </summary>
     public interface IAssignmentVariableNamePart<out T>
     {
         /// <summary>
-        /// Set the expression's variable name
+        /// Set the expression's variable name.
         /// </summary>
-        /// <returns>the parent query or graph pattern builder</returns>
+        /// <returns>the parent query or graph pattern builder.</returns>
         T As(string variableName);
     }
 

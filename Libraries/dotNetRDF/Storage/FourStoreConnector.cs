@@ -42,7 +42,7 @@ using System.Web;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Class for connecting to 4store
+    /// Class for connecting to 4store.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -64,11 +64,11 @@ namespace VDS.RDF.Storage
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
         /// <summary>
-        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the 4store</param>
+        /// <param name="baseUri">Base Uri of the 4store.</param>
         /// <remarks>
-        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor
+        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor.
         /// </remarks>
         public FourStoreConnector(String baseUri)
         {
@@ -97,10 +97,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the 4store</param>
-        /// <param name="enableUpdateSupport">Indicates to the connector that you are using a 4store instance that supports Triple level updates</param>
+        /// <param name="baseUri">Base Uri of the 4store.</param>
+        /// <param name="enableUpdateSupport">Indicates to the connector that you are using a 4store instance that supports Triple level updates.</param>
         /// <remarks>
         /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
         /// </remarks>
@@ -111,12 +111,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the 4store</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the 4store.</param>
+        /// <param name="proxy">Proxy Server.</param>
         /// <remarks>
-        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor
+        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor.
         /// </remarks>
         public FourStoreConnector(String baseUri, IWebProxy proxy)
             : this(baseUri)
@@ -125,11 +125,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the 4store</param>
-        /// <param name="enableUpdateSupport">Indicates to the connector that you are using a 4store instance that supports Triple level updates</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the 4store.</param>
+        /// <param name="enableUpdateSupport">Indicates to the connector that you are using a 4store instance that supports Triple level updates.</param>
+        /// <param name="proxy">Proxy Server.</param>
         /// <remarks>
         /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
         /// </remarks>
@@ -140,7 +140,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns whether this connector has been instantiated with update support or not
+        /// Returns whether this connector has been instantiated with update support or not.
         /// </summary>
         /// <remarks>
         /// If this property returns true it does not guarantee that the 4store instance actually supports updates it simply indicates that the user has enabled updates on the connector.  If Updates are enabled and the 4store server being connected to does not support updates then errors will occur.
@@ -154,7 +154,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Connection is ready
+        /// Returns that the Connection is ready.
         /// </summary>
         public override bool IsReady
         {
@@ -165,7 +165,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Connection is not read-only
+        /// Returns that the Connection is not read-only.
         /// </summary>
         public override bool IsReadOnly
         {
@@ -176,7 +176,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of 4store
+        /// Gets the IO Behaviour of 4store.
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
@@ -187,7 +187,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting Graph is supported
+        /// Returns that deleting Graph is supported.
         /// </summary>
         public override bool DeleteSupported
         {
@@ -198,7 +198,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that Listing Graphs is supported
+        /// Returns that Listing Graphs is supported.
         /// </summary>
         public override bool ListGraphsSupported
         {
@@ -209,30 +209,30 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the 4store instance
+        /// Loads a Graph from the 4store instance.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">Uri of the Graph to load.</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph from the 4store instance using an RDF Handler
+        /// Loads a Graph from the 4store instance using an RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph from the 4store instance
+        /// Loads a Graph from the 4store instance.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null & !graphUri.Equals(String.Empty))
@@ -243,10 +243,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the 4store instance
+        /// Loads a Graph from the 4store instance.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (!graphUri.Equals(String.Empty))
@@ -260,18 +260,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph to a 4store instance (Warning: Completely replaces any existing Graph with the same URI)
+        /// Saves a Graph to a 4store instance (Warning: Completely replaces any existing Graph with the same URI).
         /// </summary>
-        /// <param name="g">Graph to save</param>
+        /// <param name="g">Graph to save.</param>
         /// <remarks>
         /// <para>
-        /// Completely replaces any existing Graph with the same Uri in the store
+        /// Completely replaces any existing Graph with the same Uri in the store.
         /// </para>
         /// <para>
-        /// Attempting to save a Graph which doesn't have a Base Uri will result in an error
+        /// Attempting to save a Graph which doesn't have a Base Uri will result in an error.
         /// </para>
         /// </remarks>
-        /// <exception cref="RdfStorageException">Thrown if you try and save a Graph without a Base Uri or if there is an error communicating with the 4store instance</exception>
+        /// <exception cref="RdfStorageException">Thrown if you try and save a Graph without a Base Uri or if there is an error communicating with the 4store instance.</exception>
         public void SaveGraph(IGraph g)
         {
             try
@@ -313,11 +313,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the store
+        /// Updates a Graph in the store.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to Update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Uri of the Graph to Update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         /// <remarks>
         /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
         /// </remarks>
@@ -334,11 +334,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the store
+        /// Updates a Graph in the store.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to Update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Uri of the Graph to Update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         /// <remarks>
         /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
         /// </remarks>
@@ -413,10 +413,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying 4store Instance
+        /// Makes a SPARQL Query against the underlying 4store Instance.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <returns>A <see cref="Graph">Graph</see> or a <see cref="SparqlResultSet">SparqlResultSet</see></returns>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <returns>A <see cref="Graph">Graph</see> or a <see cref="SparqlResultSet">SparqlResultSet</see>.</returns>
         /// <remarks>
         /// Depending on the version of <a href="http://librdf.org/rasqal/">RASQAL</a> used and the options it was built with some kinds of queries may not suceed or return unexpected results.
         /// </remarks>
@@ -437,11 +437,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying 4store Instance processing the results with the appropriate handler from those provided
+        /// Makes a SPARQL Query against the underlying 4store Instance processing the results with the appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
@@ -475,9 +475,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the 4store server
+        /// Deletes a Graph from the 4store server.
         /// </summary>
-        /// <param name="graphUri">Uri of Graph to delete</param>
+        /// <param name="graphUri">Uri of Graph to delete.</param>
         public void DeleteGraph(Uri graphUri)
         {
             if (graphUri == null)
@@ -491,9 +491,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the 4store server
+        /// Deletes a Graph from the 4store server.
         /// </summary>
-        /// <param name="graphUri">Uri of Graph to delete</param>
+        /// <param name="graphUri">Uri of Graph to delete.</param>
         public void DeleteGraph(String graphUri)
         {
             try
@@ -530,7 +530,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the Graphs in the Store
+        /// Lists the Graphs in the Store.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
@@ -566,9 +566,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Applies a SPARQL Update against 4store
+        /// Applies a SPARQL Update against 4store.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
         /// <remarks>
         /// <strong>Note:</strong> Please be aware that some valid SPARQL Updates may not be accepted by 4store since the SPARQL parser used by 4store does not support some of the latest editors draft syntax changes.
         /// </remarks>
@@ -578,11 +578,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph to the Store asynchronously
+        /// Saves a Graph to the Store asynchronously.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             // Set up the Request
@@ -605,12 +605,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store asynchronously
+        /// Loads a Graph from the Store asynchronously.
         /// </summary>
-        /// <param name="handler">Handler to load with</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">Handler to load with.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             if (!graphUri.Equals(String.Empty))
@@ -627,13 +627,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously
+        /// Updates a Graph in the Store asychronously.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             if (!_updatesEnabled)
@@ -719,11 +719,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the Store
+        /// Deletes a Graph from the Store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             // Set up the Request
@@ -742,11 +742,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates the store asynchronously
+        /// Updates the store asynchronously.
         /// </summary>
-        /// <param name="sparqlUpdates">SPARQL Update</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="sparqlUpdates">SPARQL Update.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             try
@@ -763,11 +763,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Queries the store asynchronously
+        /// Queries the store asynchronously.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
@@ -786,13 +786,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Queries the store asynchronously
+        /// Queries the store asynchronously.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             try
@@ -894,7 +894,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Disposes of a 4store connection
+        /// Disposes of a 4store connection.
         /// </summary>
         public override void Dispose()
         {
@@ -902,7 +902,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a String which gives details of the Connection
+        /// Gets a String which gives details of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -911,7 +911,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
         /// <param name="context"></param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)

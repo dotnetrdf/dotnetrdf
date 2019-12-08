@@ -30,30 +30,30 @@ using System.IO;
 namespace VDS.RDF
 {    
     /// <summary>
-    /// Interface to be implemented by Triple Store Writers
+    /// Interface to be implemented by Triple Store Writers.
     /// </summary>
     public interface IStoreWriter
     {
         /// <summary>
-        /// Method for saving data to a Triple Store
+        /// Method for saving data to a Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="filename">File to save to.</param>
         void Save(ITripleStore store, string filename);
 
         /// <summary>
-        /// Method for saving data to a Triple Store
+        /// Method for saving data to a Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="output">Write to save to</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="output">Write to save to.</param>
         void Save(ITripleStore store, TextWriter output);
 
         /// <summary>
-        /// Method for saving data to a Triple Store
+        /// Method for saving data to a Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="output">Write to save to</param>
-        /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="output">Write to save to.</param>
+        /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes.</param>
         void Save(ITripleStore store, TextWriter output, bool leaveOpen);
 
         /// <summary>

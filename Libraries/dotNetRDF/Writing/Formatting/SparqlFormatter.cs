@@ -43,7 +43,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting Nodes for use in SPARQL and for formatting SPARQL Queries
+    /// Formatter for formatting Nodes for use in SPARQL and for formatting SPARQL Queries.
     /// </summary>
     public class SparqlFormatter 
         : TurtleFormatter, IQueryFormatter, IResultFormatter
@@ -51,29 +51,29 @@ namespace VDS.RDF.Writing.Formatting
         private Uri _tempBaseUri;
 
         /// <summary>
-        /// Creates a new SPARQL Formatter
+        /// Creates a new SPARQL Formatter.
         /// </summary>
         public SparqlFormatter()
             : base("SPARQL", new QNameOutputMapper()) { }
 
         /// <summary>
-        /// Creates a new SPARQL Formatter using the given Graph
+        /// Creates a new SPARQL Formatter using the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public SparqlFormatter(IGraph g)
             : base("SPARQL", new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
-        /// Creates a new SPARQL Formatter using the given Namespace Map
+        /// Creates a new SPARQL Formatter using the given Namespace Map.
         /// </summary>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="nsmap">Namespace Map.</param>
         public SparqlFormatter(INamespaceMapper nsmap)
             : base("SPARQL", new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
-        /// Determines whether a QName is valid
+        /// Determines whether a QName is valid.
         /// </summary>
-        /// <param name="value">Value</param>
+        /// <param name="value">Value.</param>
         /// <returns></returns>
         protected override bool IsValidQName(string value)
         {
@@ -81,10 +81,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Variable Node in SPARQL Syntax
+        /// Formats a Variable Node in SPARQL Syntax.
         /// </summary>
-        /// <param name="v">Variable Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="v">Variable Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
@@ -92,10 +92,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Namespace Declaration
+        /// Formats a Namespace Declaration.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         public override string FormatNamespace(string prefix, Uri namespaceUri)
         {
@@ -103,9 +103,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Base URI Declaration
+        /// Formats a Base URI Declaration.
         /// </summary>
-        /// <param name="u">Base URI</param>
+        /// <param name="u">Base URI.</param>
         /// <returns></returns>
         public override string FormatBaseUri(Uri u)
         {
@@ -115,9 +115,9 @@ namespace VDS.RDF.Writing.Formatting
         #region Query Formatting
 
         /// <summary>
-        /// Formats a Query in nicely formatted SPARQL syntax
+        /// Formats a Query in nicely formatted SPARQL syntax.
         /// </summary>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
         public virtual String Format(SparqlQuery query)
         {
@@ -281,9 +281,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Graph Pattern in nicely formatted SPARQL syntax
+        /// Formats a Graph Pattern in nicely formatted SPARQL syntax.
         /// </summary>
-        /// <param name="gp">Graph Pattern</param>
+        /// <param name="gp">Graph Pattern.</param>
         /// <returns></returns>
         public virtual String Format(GraphPattern gp)
         {
@@ -462,9 +462,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Triple Pattern in nicely formatted SPARQL syntax
+        /// Formats a Triple Pattern in nicely formatted SPARQL syntax.
         /// </summary>
-        /// <param name="tp">Triple Pattern</param>
+        /// <param name="tp">Triple Pattern.</param>
         /// <returns></returns>
         public virtual String Format(ITriplePattern tp)
         {
@@ -560,10 +560,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Pattern Item in nicely formatted SPARQL syntax
+        /// Formats a Pattern Item in nicely formatted SPARQL syntax.
         /// </summary>
-        /// <param name="item">Pattern Item</param>
-        /// <param name="segment">Triple Pattern Segment</param>
+        /// <param name="item">Pattern Item.</param>
+        /// <param name="segment">Triple Pattern Segment.</param>
         /// <returns></returns>
         public virtual String Format(PatternItem item, TripleSegment? segment)
         {
@@ -598,9 +598,9 @@ namespace VDS.RDF.Writing.Formatting
         #region Protected Helper functions which can be overridden to change specific parts of the formatting
 
         /// <summary>
-        /// Formats the Variable List for a SPARQL Query
+        /// Formats the Variable List for a SPARQL Query.
         /// </summary>
-        /// <param name="vars">Variables</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         protected virtual String FormatVariablesList(IEnumerable<SparqlVariable> vars)
         {
@@ -651,9 +651,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats the Variable/QName/URI for a SPARQL DESCRIBE Query
+        /// Formats the Variable/QName/URI for a SPARQL DESCRIBE Query.
         /// </summary>
-        /// <param name="q">SPARQL Query</param>
+        /// <param name="q">SPARQL Query.</param>
         /// <returns></returns>
         protected virtual String FormatDescribeVariablesList(SparqlQuery q)
         {
@@ -717,9 +717,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL Expression
+        /// Formats a SPARQL Expression.
         /// </summary>
-        /// <param name="expr">SPARQL Expression</param>
+        /// <param name="expr">SPARQL Expression.</param>
         /// <returns></returns>
         protected virtual String FormatExpression(ISparqlExpression expr)
         {
@@ -881,9 +881,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL Aggregate
+        /// Formats a SPARQL Aggregate.
         /// </summary>
-        /// <param name="agg">SPARQL Aggregate</param>
+        /// <param name="agg">SPARQL Aggregate.</param>
         /// <returns></returns>
         protected virtual String FormatAggregate(ISparqlAggregate agg)
         {
@@ -923,9 +923,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL Property Path
+        /// Formats a SPARQL Property Path.
         /// </summary>
-        /// <param name="path">SPARQL Property Path</param>
+        /// <param name="path">SPARQL Property Path.</param>
         /// <returns></returns>
         protected virtual String FormatPath(ISparqlPath path)
         {
@@ -1053,9 +1053,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL GROUP BY Clause
+        /// Formats a SPARQL GROUP BY Clause.
         /// </summary>
-        /// <param name="groupBy">GROUP BY Clause</param>
+        /// <param name="groupBy">GROUP BY Clause.</param>
         /// <returns></returns>
         protected virtual String FormatGroupBy(ISparqlGroupBy groupBy)
         {
@@ -1085,9 +1085,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL ORDER BY Clause
+        /// Formats a SPARQL ORDER BY Clause.
         /// </summary>
-        /// <param name="orderBy">ORDER BY Clause</param>
+        /// <param name="orderBy">ORDER BY Clause.</param>
         /// <returns></returns>
         protected virtual String FormatOrderBy(ISparqlOrderBy orderBy)
         {
@@ -1116,9 +1116,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats the Inline Data portion of a Query
+        /// Formats the Inline Data portion of a Query.
         /// </summary>
-        /// <param name="data">Inline Data</param>
+        /// <param name="data">Inline Data.</param>
         /// <returns></returns>
         protected virtual String FormatInlineData(BindingsPattern data)
         {
@@ -1189,9 +1189,9 @@ namespace VDS.RDF.Writing.Formatting
         #region Result Formatting
 
         /// <summary>
-        /// Formats a SPARQL Result using this Formatter to format the Node values for each Variable
+        /// Formats a SPARQL Result using this Formatter to format the Node values for each Variable.
         /// </summary>
-        /// <param name="result">SPARQL Result</param>
+        /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
         public override String Format(SparqlResult result)
         {
@@ -1199,9 +1199,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Boolean Result
+        /// Formats a Boolean Result.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         /// <returns></returns>
         public override String FormatBooleanResult(bool result)
         {

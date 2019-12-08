@@ -35,7 +35,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Similarity Service provided by a Pellet Knowledge Base
+    /// Represents the Similarity Service provided by a Pellet Knowledge Base.
     /// </summary>
     public class SimilarityService
         : PelletService
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         private String _similarityUri;
 
         /// <summary>
-        /// Creates a new Similarity Service for a Pellet Knowledge Base
+        /// Creates a new Similarity Service for a Pellet Knowledge Base.
         /// </summary>
-        /// <param name="serviceName">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="serviceName">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal SimilarityService(String serviceName, JObject obj)
             : base(serviceName, obj)
         {
@@ -61,10 +61,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores
+        /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores.
         /// </summary>
-        /// <param name="number">Number of Similar Individuals</param>
-        /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
+        /// <param name="number">Number of Similar Individuals.</param>
+        /// <param name="individual">QName of a Individual to find Similar Individuals to.</param>
         /// <returns></returns>
         public List<KeyValuePair<INode, double>> Similarity(int number, String individual)
         {
@@ -108,10 +108,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the raw Similarity Graph for the Knowledge Base
+        /// Gets the raw Similarity Graph for the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Similar Individuals</param>
-        /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
+        /// <param name="number">Number of Similar Individuals.</param>
+        /// <param name="individual">QName of a Individual to find Similar Individuals to.</param>
         /// <returns></returns>
         public IGraph SimilarityRaw(int number, String individual)
         {
@@ -138,12 +138,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores
+        /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores.
         /// </summary>
-        /// <param name="number">Number of Similar Individuals</param>
-        /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="number">Number of Similar Individuals.</param>
+        /// <param name="individual">QName of a Individual to find Similar Individuals to.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -185,12 +185,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the raw Similarity Graph for the Knowledge Base
+        /// Gets the raw Similarity Graph for the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Similar Individuals</param>
-        /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="number">Number of Similar Individuals.</param>
+        /// <param name="individual">QName of a Individual to find Similar Individuals to.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

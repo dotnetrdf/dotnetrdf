@@ -31,22 +31,22 @@ using VDS.RDF.Query;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Writer classes which serialize Sparql Result Sets into concrete results set syntaxes
+    /// Interface for Writer classes which serialize Sparql Result Sets into concrete results set syntaxes.
     /// </summary>
     public interface ISparqlResultsWriter
     {
         /// <summary>
-        /// Saves the Result Set to the given File
+        /// Saves the Result Set to the given File.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
         void Save(SparqlResultSet results, String filename);
 
         /// <summary>
-        /// Saves the Result Set to the given Stream
+        /// Saves the Result Set to the given Stream.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="output">Stream to save to.</param>
         void Save(SparqlResultSet results, TextWriter output);
 
         /// <summary>

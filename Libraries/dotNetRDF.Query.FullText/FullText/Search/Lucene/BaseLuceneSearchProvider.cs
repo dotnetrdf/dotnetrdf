@@ -40,10 +40,10 @@ using VDS.RDF.Query.FullText.Schema;
 namespace VDS.RDF.Query.FullText.Search.Lucene
 {
     /// <summary>
-    /// Abstract Base Implementation of a Full Text Search Provider using Lucene.Net
+    /// Abstract Base Implementation of a Full Text Search Provider using Lucene.Net.
     /// </summary>
     /// <remarks>
-    /// Derived Implementations may only need to call the base constructor as the <see cref="LuceneSearchProvider">LuceneSearchProvider</see> does but if you've implemented custom indexing you may need to extend more of this class
+    /// Derived Implementations may only need to call the base constructor as the <see cref="LuceneSearchProvider">LuceneSearchProvider</see> does but if you've implemented custom indexing you may need to extend more of this class.
     /// </remarks>
     public abstract class BaseLuceneSearchProvider
         : IFullTextSearchProvider, IConfigurationSerializable
@@ -58,13 +58,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         private UriComparer _uriComparer = new UriComparer();
 
         /// <summary>
-        /// Creates a new Base Lucene Search Provider
+        /// Creates a new Base Lucene Search Provider.
         /// </summary>
-        /// <param name="ver">Lucene Version</param>
-        /// <param name="indexDir">Directory</param>
-        /// <param name="analyzer">Analyzer</param>
-        /// <param name="schema">Index Schema</param>
-        /// <param name="autoSync">Whether the Search Provider should stay in sync with the underlying index</param>
+        /// <param name="ver">Lucene Version.</param>
+        /// <param name="indexDir">Directory.</param>
+        /// <param name="analyzer">Analyzer.</param>
+        /// <param name="schema">Index Schema.</param>
+        /// <param name="autoSync">Whether the Search Provider should stay in sync with the underlying index.</param>
         public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
         {
             this._version = ver;
@@ -79,12 +79,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Creates a new Base Lucene Search Provider
+        /// Creates a new Base Lucene Search Provider.
         /// </summary>
-        /// <param name="ver">Lucene Version</param>
-        /// <param name="indexDir">Directory</param>
-        /// <param name="analyzer">Analyzer</param>
-        /// <param name="schema">Index Schema</param>
+        /// <param name="ver">Lucene Version.</param>
+        /// <param name="indexDir">Directory.</param>
+        /// <param name="analyzer">Analyzer.</param>
+        /// <param name="schema">Index Schema.</param>
         public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
             : this(ver, indexDir, analyzer, schema, true) { }
 
@@ -97,11 +97,11 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query with the score threshold and limit applied
+        /// Gets results that match the given query with the score threshold and limit applied.
         /// </summary>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
         {
@@ -115,10 +115,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query with the score threshold applied
+        /// Gets results that match the given query with the score threshold applied.
         /// </summary>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
         {
@@ -131,10 +131,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query with a limit applied
+        /// Gets results that match the given query with a limit applied.
         /// </summary>
-        /// <param name="text">Search Query</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, int limit)
         {
@@ -147,9 +147,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query
+        /// Gets results that match the given query.
         /// </summary>
-        /// <param name="text">Search Query</param>
+        /// <param name="text">Search Query.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text)
         {
@@ -162,12 +162,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query with the score threshold and limit applied
+        /// Gets results that match the given query with the score threshold and limit applied.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
         {
@@ -183,11 +183,11 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query with the score threshold applied
+        /// Gets results that match the given query with the score threshold applied.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
         {
@@ -201,11 +201,11 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query with a limit applied
+        /// Gets results that match the given query with a limit applied.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
         {
@@ -220,10 +220,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets results that match the given query
+        /// Gets results that match the given query.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
         {
@@ -237,10 +237,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Filters a set of results to ensure they occur in the given Graph(s)
+        /// Filters a set of results to ensure they occur in the given Graph(s).
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="results">Results</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="results">Results.</param>
         /// <returns></returns>
         private IEnumerable<IFullTextSearchResult> FilterByGraph(IEnumerable<Uri> graphUris, IEnumerable<IFullTextSearchResult> results)
         {
@@ -257,7 +257,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets whether this search provider is always seeing the latest state of the index
+        /// Gets whether this search provider is always seeing the latest state of the index.
         /// </summary>
         public bool IsAutoSynced
         {
@@ -268,7 +268,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Ensures that the Index Searcher is searching the current Index unless this feature has been disabled by the user
+        /// Ensures that the Index Searcher is searching the current Index unless this feature has been disabled by the user.
         /// </summary>
         private void EnsureCurrent()
         {
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Disposes of the Search Provider
+        /// Disposes of the Search Provider.
         /// </summary>
         public void Dispose()
         {
@@ -292,9 +292,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Disposes of the Search Provider
+        /// Disposes of the Search Provider.
         /// </summary>
-        /// <param name="disposing">Whether this was called by the Dispose method</param>
+        /// <param name="disposing">Whether this was called by the Dispose method.</param>
         private void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
@@ -305,14 +305,14 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Virtual method that can be overridden to add implementation specific dispose logic
+        /// Virtual method that can be overridden to add implementation specific dispose logic.
         /// </summary>
         protected virtual void DisposeInternal() { }
 
         /// <summary>
-        /// Serializes Configuration of this Provider
+        /// Serializes Configuration of this Provider.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));

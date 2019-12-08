@@ -33,7 +33,7 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Possible NQuads Syntax modes
+    /// Possible NQuads Syntax modes.
     /// </summary>
     public enum NQuadsSyntax
     {
@@ -45,15 +45,15 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Standardized NQuads as specified in the <a href="http://www.w3.org/TR/n-quads/">RDF 1.1 NQuads</a> specification
         /// </summary>
-        Rdf11
+        Rdf11,
     }
 
     /// <summary>
-    /// Parser for parsing NQuads (NTriples with an additional Context i.e. Named Graphs)
+    /// Parser for parsing NQuads (NTriples with an additional Context i.e. Named Graphs).
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Default Graph (if any) will be given the special Uri <strong>nquads:default-graph</strong>
+    /// The Default Graph (if any) will be given the special Uri. <strong>nquads:default-graph</strong>
     /// </para>
     /// <para>
     /// NQuads permits Blank Nodes and Literals to be used as Context, since the library only supports Graphs named with URIs these are translated into URIs of the following form:
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
         : IStoreReader, ITraceableTokeniser, ITokenisingParser
     {
         /// <summary>
-        /// Creates a new NQuads parser
+        /// Creates a new NQuads parser.
         /// </summary>
         public NQuadsParser()
             : this(NQuadsSyntax.Rdf11)
@@ -80,9 +80,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new NQuads parser
+        /// Creates a new NQuads parser.
         /// </summary>
-        /// <param name="syntax">NQuads syntax mode</param>
+        /// <param name="syntax">NQuads syntax mode.</param>
         public NQuadsParser(NQuadsSyntax syntax)
         {
             Syntax = syntax;
@@ -91,9 +91,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new NQuads parser
+        /// Creates a new NQuads parser.
         /// </summary>
-        /// <param name="queueMode">Token Queue Mode</param>
+        /// <param name="queueMode">Token Queue Mode.</param>
         public NQuadsParser(TokenQueueMode queueMode)
             : this(NQuadsSyntax.Rdf11)
         {
@@ -101,10 +101,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new NQuads parser
+        /// Creates a new NQuads parser.
         /// </summary>
-        /// <param name="queueMode">Token Queue Mode</param>
-        /// <param name="syntax">NQuads syntax mode</param>
+        /// <param name="queueMode">Token Queue Mode.</param>
+        /// <param name="syntax">NQuads syntax mode.</param>
         public NQuadsParser(NQuadsSyntax syntax, TokenQueueMode queueMode)
             : this(syntax)
         {
@@ -112,25 +112,25 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing is used
+        /// Gets/Sets whether Tokeniser Tracing is used.
         /// </summary>
         public bool TraceTokeniser { get; set; }
 
         /// <summary>
-        /// Gets/Sets the token queue mode used
+        /// Gets/Sets the token queue mode used.
         /// </summary>
         public TokenQueueMode TokenQueueMode { get; set; }
 
         /// <summary>
-        /// Gets/Sets the NQuads syntax mode
+        /// Gets/Sets the NQuads syntax mode.
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
         /// <summary>
-        /// Loads a RDF Dataset from the NQuads input into the given Triple Store
+        /// Loads a RDF Dataset from the NQuads input into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -140,10 +140,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF Dataset from the NQuads input into the given Triple Store
+        /// Loads a RDF Dataset from the NQuads input into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(ITripleStore store, TextReader input)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -152,10 +152,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF Dataset from the NQuads input using a RDF Handler
+        /// Loads a RDF Dataset from the NQuads input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -179,10 +179,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF Dataset from the NQuads input using a RDF Handler
+        /// Loads a RDF Dataset from the NQuads input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
@@ -248,9 +248,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Converts syntax enumeration values from NQuads to NTriples
+        /// Converts syntax enumeration values from NQuads to NTriples.
         /// </summary>
-        /// <param name="syntax">NQuads Syntax</param>
+        /// <param name="syntax">NQuads Syntax.</param>
         /// <returns></returns>
         internal static NTriplesSyntax AsNTriplesSyntax(NQuadsSyntax syntax)
         {
@@ -487,11 +487,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse a URI
+        /// Tries to parse a URI.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="uri">URI</param>
-        /// <returns>URI Node if parsed successfully</returns>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="uri">URI.</param>
+        /// <returns>URI Node if parsed successfully.</returns>
         private static INode TryParseUri(IRdfHandler handler, String uri)
         {
             try
@@ -508,9 +508,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method used to raise the Warning event if there is an event handler registered
+        /// Helper method used to raise the Warning event if there is an event handler registered.
         /// </summary>
-        /// <param name="message">Warning message</param>
+        /// <param name="message">Warning message.</param>
         private void RaiseWarning(String message)
         {
             StoreReaderWarning d = Warning;
@@ -526,7 +526,7 @@ namespace VDS.RDF.Parsing
         public event StoreReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

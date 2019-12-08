@@ -27,14 +27,14 @@
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
     /// <summary>
-    /// Represents the SPARQL NOW() Function
+    /// Represents the SPARQL NOW() Function.
     /// </summary>
     public class NowFunction
         : Arq.NowFunction
     {
 
         /// <summary>
-        /// Gets the Functor of this Expression
+        /// Gets the Functor of this Expression.
         /// </summary>
         public override string Functor
         {
@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

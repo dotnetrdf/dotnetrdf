@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Class of Sparql Variables
+    /// Class of Sparql Variables.
     /// </summary>
     public class SparqlVariable
     {
@@ -42,10 +42,10 @@ namespace VDS.RDF.Query
         private ISparqlExpression _expr = null;
 
         /// <summary>
-        /// Creates a new Sparql Variable
+        /// Creates a new Sparql Variable.
         /// </summary>
-        /// <param name="name">Variable Name</param>
-        /// <param name="isResultVar">Does this Variable appear in the Result Set?</param>
+        /// <param name="name">Variable Name.</param>
+        /// <param name="isResultVar">Does this Variable appear in the Result Set?.</param>
         public SparqlVariable(String name, bool isResultVar) {
             _name = name;
             _isResultVar = isResultVar;
@@ -58,18 +58,18 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Sparql Variable
+        /// Creates a new Sparql Variable.
         /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed)</param>
+        /// <param name="name">Variable Name (with leading ?/$ removed).</param>
         public SparqlVariable(String name) 
             : this(name, false) { }
 
         /// <summary>
-        /// Creates a new Sparql Variable which is an Aggregate
+        /// Creates a new Sparql Variable which is an Aggregate.
         /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed)</param>
-        /// <param name="aggregate">Aggregate Function</param>
-        /// <remarks>All Aggregate Variables are automatically considered as Result Variables</remarks>
+        /// <param name="name">Variable Name (with leading ?/$ removed).</param>
+        /// <param name="aggregate">Aggregate Function.</param>
+        /// <remarks>All Aggregate Variables are automatically considered as Result Variables.</remarks>
         public SparqlVariable(String name, ISparqlAggregate aggregate)
             : this(name, true)
         {
@@ -77,10 +77,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Sparql Variable which is a Projection Expression
+        /// Creates a new Sparql Variable which is a Projection Expression.
         /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed)</param>
-        /// <param name="expr">Projection Expression</param>
+        /// <param name="name">Variable Name (with leading ?/$ removed).</param>
+        /// <param name="expr">Projection Expression.</param>
         public SparqlVariable(String name, ISparqlExpression expr)
             : this(name, true)
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Variable Name
+        /// Variable Name.
         /// </summary>
         public String Name
         {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Variable appears in the Result Set
+        /// Gets whether the Variable appears in the Result Set.
         /// </summary>
         public bool IsResultVariable
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Variable is an Aggregate 
+        /// Gets whether the Variable is an Aggregate. 
         /// </summary>
         public bool IsAggregate
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Variable is a Projection Expression
+        /// Gets whether the Variable is a Projection Expression.
         /// </summary>
         public bool IsProjection
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Aggregate Function for this Variable
+        /// Gets the Aggregate Function for this Variable.
         /// </summary>
         public ISparqlAggregate Aggregate
         {
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Projection Expression for this Variable
+        /// Gets the Projection Expression for this Variable.
         /// </summary>
         public ISparqlExpression Projection
         {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query
         }
         
         /// <summary>
-        /// Get the String representation of the Variable
+        /// Get the String representation of the Variable.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -30,24 +30,24 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
-    /// Represents the ARQ max() function
+    /// Represents the ARQ max() function.
     /// </summary>
     public class MaxFunction
         : BaseBinaryExpression
     {
         /// <summary>
-        /// Creates a new ARQ max() function
+        /// Creates a new ARQ max() function.
         /// </summary>
-        /// <param name="arg1">First Argument</param>
-        /// <param name="arg2">Second Argument</param>
+        /// <param name="arg1">First Argument.</param>
+        /// <param name="arg2">Second Argument.</param>
         public MaxFunction(ISparqlExpression arg1, ISparqlExpression arg2)
             : base(arg1, arg2) { }
 
         /// <summary>
-        /// Gets the numeric value of the function in the given Evaluation Context for the given Binding ID
+        /// Gets the numeric value of the function in the given Evaluation Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -103,9 +103,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

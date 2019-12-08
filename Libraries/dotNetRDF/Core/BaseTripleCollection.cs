@@ -31,7 +31,7 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for Triple Collections
+    /// Abstract Base Class for Triple Collections.
     /// </summary>
     /// <remarks>
     /// Designed to allow the underlying storage of a Triple Collection to be changed at a later date without affecting classes that use it.
@@ -40,21 +40,21 @@ namespace VDS.RDF
         : IEnumerable<Triple>, IDisposable
     {
         /// <summary>
-        /// Adds a Triple to the Collection
+        /// Adds a Triple to the Collection.
         /// </summary>
-        /// <param name="t">Triple to add</param>
-        /// <remarks>Adding a Triple that already exists should be permitted though it is not necessary to persist the duplicate to underlying storage</remarks>
+        /// <param name="t">Triple to add.</param>
+        /// <remarks>Adding a Triple that already exists should be permitted though it is not necessary to persist the duplicate to underlying storage.</remarks>
         protected abstract internal bool Add(Triple t);
 
         /// <summary>
-        /// Determines whether a given Triple is in the Triple Collection
+        /// Determines whether a given Triple is in the Triple Collection.
         /// </summary>
-        /// <param name="t">The Triple to test</param>
-        /// <returns>True if the Triple already exists in the Triple Collection</returns>
+        /// <param name="t">The Triple to test.</param>
+        /// <returns>True if the Triple already exists in the Triple Collection.</returns>
         public abstract bool Contains(Triple t);
 
         /// <summary>
-        /// Gets the Number of Triples in the Triple Collection
+        /// Gets the Number of Triples in the Triple Collection.
         /// </summary>
         public abstract int Count 
         { 
@@ -62,25 +62,25 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a Triple from the Collection
+        /// Deletes a Triple from the Collection.
         /// </summary>
-        /// <param name="t">Triple to remove</param>
-        /// <remarks>Deleting something that doesn't exist should have no effect and give no error</remarks>
+        /// <param name="t">Triple to remove.</param>
+        /// <remarks>Deleting something that doesn't exist should have no effect and give no error.</remarks>
         protected abstract internal bool Delete(Triple t);
 
         /// <summary>
-        /// Gets the given Triple
+        /// Gets the given Triple.
         /// </summary>
-        /// <param name="t">Triple to retrieve</param>
+        /// <param name="t">Triple to retrieve.</param>
         /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if the given Triple doesn't exist</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if the given Triple doesn't exist.</exception>
         public abstract Triple this[Triple t]
         {
             get;
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Objects of Triples in the Triple Collection
+        /// Gets all the Nodes which are Objects of Triples in the Triple Collection.
         /// </summary>
         public abstract IEnumerable<INode> ObjectNodes 
         { 
@@ -88,7 +88,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection
+        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
         /// </summary>
         public abstract IEnumerable<INode> PredicateNodes 
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection
+        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
         /// </summary>
         public abstract IEnumerable<INode> SubjectNodes 
         { 
@@ -104,9 +104,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Subject
+        /// Gets all the Triples with the given Subject.
         /// </summary>
-        /// <param name="subj">ubject to lookup</param>
+        /// <param name="subj">ubject to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubject(INode subj)
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Predicate
+        /// Gets all the Triples with the given Predicate.
         /// </summary>
-        /// <param name="pred">Predicate to lookup</param>
+        /// <param name="pred">Predicate to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithPredicate(INode pred)
         {
@@ -128,9 +128,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Object
+        /// Gets all the Triples with the given Object.
         /// </summary>
-        /// <param name="obj">Object to lookup</param>
+        /// <param name="obj">Object to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithObject(INode obj)
         {
@@ -140,10 +140,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Subject Predicate pair
+        /// Gets all the Triples with the given Subject Predicate pair.
         /// </summary>
-        /// <param name="subj">Subject to lookup</param>
-        /// <param name="pred">Predicate to lookup</param>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <param name="pred">Predicate to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
@@ -153,10 +153,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Predicate Object pair
+        /// Gets all the Triples with the given Predicate Object pair.
         /// </summary>
-        /// <param name="pred">Predicate to lookup</param>
-        /// <param name="obj">Object to lookup</param>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <param name="obj">Object to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
@@ -166,10 +166,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Subject Object pair
+        /// Gets all the Triples with the given Subject Object pair.
         /// </summary>
-        /// <param name="subj">Subject to lookup</param>
-        /// <param name="obj">Object to lookup</param>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <param name="obj">Object to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
@@ -179,18 +179,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Diposes of a Triple Collection
+        /// Diposes of a Triple Collection.
         /// </summary>
         public abstract void Dispose();
 
         /// <summary>
-        /// Gets the typed Enumerator for the Triple Collection
+        /// Gets the typed Enumerator for the Triple Collection.
         /// </summary>
         /// <returns></returns>
         public abstract IEnumerator<Triple> GetEnumerator();
 
         /// <summary>
-        /// Gets the non-generic Enumerator for the Triple Collection
+        /// Gets the non-generic Enumerator for the Triple Collection.
         /// </summary>
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -209,9 +209,9 @@ namespace VDS.RDF
         public event TripleEventHandler TripleRemoved;
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleAdded">Triple Added</see> event
+        /// Helper method for raising the <see cref="TripleAdded">Triple Added</see> event.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         protected void RaiseTripleAdded(Triple t)
         {
             TripleEventHandler d = TripleAdded;
@@ -222,9 +222,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleRemoved">Triple Removed</see> event
+        /// Helper method for raising the <see cref="TripleRemoved">Triple Removed</see> event.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         protected void RaiseTripleRemoved(Triple t)
         {
             TripleEventHandler d = TripleRemoved;

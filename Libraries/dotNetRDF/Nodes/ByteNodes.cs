@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Valued node representing a byte (8-bit unsigned integer)
+    /// Valued node representing a byte (8-bit unsigned integer).
     /// </summary>
     public class ByteNode
         : NumericNode
@@ -40,11 +40,11 @@ namespace VDS.RDF.Nodes
         private byte _value;
 
         /// <summary>
-        /// Creates a new byte valued node
+        /// Creates a new byte valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Byte value</param>
-        /// <param name="lexicalValue">Lexical value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Byte value.</param>
+        /// <param name="lexicalValue">Lexical value.</param>
         public ByteNode(IGraph g, byte value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte), SparqlNumericType.Integer)
         {
@@ -52,16 +52,16 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new byte valued node
+        /// Creates a new byte valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Byte value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Byte value.</param>
         public ByteNode(IGraph g, byte value)
             : this(g, value, value.ToString()) { }
 
         
         /// <summary>
-        /// Gets the integer value of the byte
+        /// Gets the integer value of the byte.
         /// </summary>
         /// <returns></returns>
         public override long AsInteger()
@@ -77,7 +77,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the decimal value of the byte
+        /// Gets the decimal value of the byte.
         /// </summary>
         /// <returns></returns>
         public override decimal AsDecimal()
@@ -93,7 +93,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the float value of the byte
+        /// Gets the float value of the byte.
         /// </summary>
         /// <returns></returns>
         public override float AsFloat()
@@ -109,7 +109,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the float value of the double
+        /// Gets the float value of the double.
         /// </summary>
         /// <returns></returns>
         public override double AsDouble()
@@ -126,7 +126,7 @@ namespace VDS.RDF.Nodes
     }
 
     /// <summary>
-    /// Value node representing a signed byte (8-bit signed integer)
+    /// Value node representing a signed byte (8-bit signed integer).
     /// </summary>
     public class SignedByteNode
         : NumericNode
@@ -134,11 +134,11 @@ namespace VDS.RDF.Nodes
         private sbyte _value;
 
         /// <summary>
-        /// Creates a new signed byte node
+        /// Creates a new signed byte node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Signed Byte value</param>
-        /// <param name="lexicalValue">Lexical value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Signed Byte value.</param>
+        /// <param name="lexicalValue">Lexical value.</param>
         public SignedByteNode(IGraph g, sbyte value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte), SparqlNumericType.Integer)
         {
@@ -146,15 +146,15 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new signed byte node
+        /// Creates a new signed byte node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Signed Byte value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Signed Byte value.</param>
         public SignedByteNode(IGraph g, sbyte value)
             : this(g, value, value.ToString()) { }
 
         /// <summary>
-        /// Gets the integer value of the signed byte
+        /// Gets the integer value of the signed byte.
         /// </summary>
         /// <returns></returns>
         public override long AsInteger()
@@ -170,7 +170,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the decimal value of the signed byte
+        /// Gets the decimal value of the signed byte.
         /// </summary>
         /// <returns></returns>
         public override decimal AsDecimal()
@@ -186,7 +186,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the float value of the signed byte
+        /// Gets the float value of the signed byte.
         /// </summary>
         /// <returns></returns>
         public override float AsFloat()
@@ -202,7 +202,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the double value of the signed byte
+        /// Gets the double value of the signed byte.
         /// </summary>
         /// <returns></returns>
         public override double AsDouble()

@@ -30,15 +30,15 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
-    /// Represents the ARQ afn:sha1sum() function
+    /// Represents the ARQ afn:sha1sum() function.
     /// </summary>
     public class Sha1Function 
         : BaseHashFunction
     {
         /// <summary>
-        /// Creates a new ARQ SHA1 Sum function
+        /// Creates a new ARQ SHA1 Sum function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public Sha1Function(ISparqlExpression expr)
 #if NETCORE
             :base(expr, SHA1.Create()) { }
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
 #endif
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -67,9 +67,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -29,14 +29,14 @@ using System;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// Utility extension methods for the <see cref="IHttpContext"/> class
+    /// Utility extension methods for the <see cref="IHttpContext"/> class.
     /// </summary>
     public static class HttpContextExtensions
     {
         /// <summary>
-        /// Retrieves the Accept Types to be used to determine the content format to be used in responding to requests
+        /// Retrieves the Accept Types to be used to determine the content format to be used in responding to requests.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <returns></returns>
         public static string[] GetAcceptTypes(this IHttpContext context)
         {

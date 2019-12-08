@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which wraps another Handler allowing handling to be cancelled
+    /// A RDF Handler which wraps another Handler allowing handling to be cancelled.
     /// </summary>
     public class CancellableHandler : BaseRdfHandler, IWrappingRdfHandler
     {
@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _cancelled = false;
 
         /// <summary>
-        /// Creates a new Cancellable Handler
+        /// Creates a new Cancellable Handler.
         /// </summary>
         /// <param name="handler"></param>
         public CancellableHandler(IRdfHandler handler)
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Inner Handler wrapped by this Handler
+        /// Gets the Inner Handler wrapped by this Handler.
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts RDF Handling on the inner Handler
+        /// Starts RDF Handling on the inner Handler.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -70,9 +70,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends RDF Handling on the inner Handler
+        /// Ends RDF Handling on the inner Handler.
         /// </summary>
-        /// <param name="ok">Indicates whether parsing completed without error</param>
+        /// <param name="ok">Indicates whether parsing completed without error.</param>
         protected override void EndRdfInternal(bool ok)
         {
             _cancelled = false;
@@ -80,9 +80,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Base URIs by passing them to the inner handler and cancelling handling if it has been requested
+        /// Handles Base URIs by passing them to the inner handler and cancelling handling if it has been requested.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -91,10 +91,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Namespace Declarations by passing them to the inner handler and cancelling handling if it has been requested
+        /// Handles Namespace Declarations by passing them to the inner handler and cancelling handling if it has been requested.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -103,9 +103,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by passing them to the inner handler and cancelling handling if it has been requested
+        /// Handles Triples by passing them to the inner handler and cancelling handling if it has been requested.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that this Handler does not accept all Triples
+        /// Gets that this Handler does not accept all Triples.
         /// </summary>
         public override bool AcceptsAll
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Informs the Handler that it should cancel handling at the next point possible assuming handling has not already completed
+        /// Informs the Handler that it should cancel handling at the next point possible assuming handling has not already completed.
         /// </summary>
         public void Cancel()
         {

@@ -36,9 +36,9 @@ namespace VDS.RDF.Parsing
 
 
     /// <summary>
-    /// Parser for parsing TriG (Turtle with Named Graphs) RDF Syntax into a Triple Store
+    /// Parser for parsing TriG (Turtle with Named Graphs) RDF Syntax into a Triple Store.
     /// </summary>
-    /// <remarks>The Default Graph (if any) will be given the special Uri <strong>trig:default-graph</strong></remarks>
+    /// <remarks>The Default Graph (if any) will be given the special Uri. <strong>trig:default-graph</strong></remarks>
     public class TriGParser
         : IStoreReader, ITraceableTokeniser, ITokenisingParser
     {
@@ -47,22 +47,22 @@ namespace VDS.RDF.Parsing
         private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
 
         /// <summary>
-        /// Creates a TriG Parser than uses the default syntax
+        /// Creates a TriG Parser than uses the default syntax.
         /// </summary>
         public TriGParser()
         { }
 
         /// <summary>
-        /// Creates a TriG Parser which uses the specified syntax
+        /// Creates a TriG Parser which uses the specified syntax.
         /// </summary>
-        /// <param name="syntax">Syntax</param>
+        /// <param name="syntax">Syntax.</param>
         public TriGParser(TriGSyntax syntax)
         {
             _syntax = syntax;
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing is used
+        /// Gets/Sets whether Tokeniser Tracing is used.
         /// </summary>
         public bool TraceTokeniser
         {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the TriG syntax used
+        /// Gets/Sets the TriG syntax used.
         /// </summary>
         public TriGSyntax Syntax
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the token queue mode used
+        /// Gets/Sets the token queue mode used.
         /// </summary>
         public TokenQueueMode TokenQueueMode
         {
@@ -107,10 +107,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the named Graphs from the TriG input into the given Triple Store
+        /// Loads the named Graphs from the TriG input into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -118,10 +118,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the named Graphs from the TriG input into the given Triple Store
+        /// Loads the named Graphs from the TriG input into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(ITripleStore store, TextReader input)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -130,10 +130,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the named Graphs from the TriG input using the given RDF Handler
+        /// Loads the named Graphs from the TriG input using the given RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -141,10 +141,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the named Graphs from the TriG input using the given RDF Handler
+        /// Loads the named Graphs from the TriG input using the given RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
@@ -260,7 +260,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse a directive
+        /// Tries to parse a directive.
         /// </summary>
         /// <param name="context"></param>
         private void TryParseDirective(TriGParserContext context)
@@ -270,12 +270,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse directives
+        /// Tries to parse directives.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="directive"></param>
         /// <remarks>
-        /// This overload is needed because in some cases we may dequeue a token before we know it is a directive
+        /// This overload is needed because in some cases we may dequeue a token before we know it is a directive.
         /// </remarks>
         private void TryParseDirective(TriGParserContext context, IToken directive)
         {
@@ -886,9 +886,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method used to raise the Warning event if there is an event handler registered
+        /// Helper method used to raise the Warning event if there is an event handler registered.
         /// </summary>
-        /// <param name="message">Warning message</param>
+        /// <param name="message">Warning message.</param>
         private void RaiseWarning(String message)
         {
             StoreReaderWarning d = Warning;
@@ -904,7 +904,7 @@ namespace VDS.RDF.Parsing
         public event StoreReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

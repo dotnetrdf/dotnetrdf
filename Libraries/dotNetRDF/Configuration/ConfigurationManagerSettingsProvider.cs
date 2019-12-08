@@ -29,12 +29,12 @@ using System.Configuration;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Reads configuration using System.Configuration.ConfigurationManager
+    /// Reads configuration using System.Configuration.ConfigurationManager.
     /// </summary>
     public class ConfigurationManagerSettingsProvider : ISettingsProvider
     {
         /// <summary>
-        /// Gets the setting from %lt;appSettings%gt; configuration section
+        /// Gets the setting from %lt;appSettings%gt; configuration section.
         /// </summary>
         public string GetSetting(string key)
         {

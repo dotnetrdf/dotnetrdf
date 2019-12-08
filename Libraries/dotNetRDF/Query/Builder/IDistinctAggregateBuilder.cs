@@ -30,127 +30,127 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for creating aggregates expressions but only those allowing DISTINCT
+    /// Provides methods for creating aggregates expressions but only those allowing DISTINCT.
     /// </summary>
     public interface IDistinctAggregateBuilder
     {
         /// <summary>
-        /// Creates a SUM aggregate
+        /// Creates a SUM aggregate.
         /// </summary>
         AggregateExpression Sum(VariableTerm variable);
 
         /// <summary>
-        /// Creates a SUM aggregate
+        /// Creates a SUM aggregate.
         /// </summary>
         AggregateExpression Sum(string variable);
 
         /// <summary>
-        /// Creates a SUM aggregate
+        /// Creates a SUM aggregate.
         /// </summary>
         AggregateExpression Sum(SparqlVariable variable);
 
         /// <summary>
-        /// Creates a SUM aggregate
+        /// Creates a SUM aggregate.
         /// </summary>
         AggregateExpression Sum(SparqlExpression expression);
 
         /// <summary>
-        /// Creates a AVG aggregate
+        /// Creates a AVG aggregate.
         /// </summary>
         AggregateExpression Avg(VariableTerm variable);
 
         /// <summary>
-        /// Creates a AVG aggregate
+        /// Creates a AVG aggregate.
         /// </summary>
         AggregateExpression Avg(string variable);
 
         /// <summary>
-        /// Creates a AVG aggregate
+        /// Creates a AVG aggregate.
         /// </summary>
         AggregateExpression Avg(SparqlVariable variable);
 
         /// <summary>
-        /// Creates a AVG aggregate
+        /// Creates a AVG aggregate.
         /// </summary>
         AggregateExpression Avg(SparqlExpression expression);
 
         /// <summary>
-        /// Creates a MIN aggregate
+        /// Creates a MIN aggregate.
         /// </summary>
         AggregateExpression Min(VariableTerm variable);
 
         /// <summary>
-        /// Creates a MIN aggregate
+        /// Creates a MIN aggregate.
         /// </summary>
         AggregateExpression Min(string variable);
 
         /// <summary>
-        /// Creates a MIN aggregate
+        /// Creates a MIN aggregate.
         /// </summary>
         AggregateExpression Min(SparqlVariable variable);
 
         /// <summary>
-        /// Creates a MIN aggregate
+        /// Creates a MIN aggregate.
         /// </summary>
         AggregateExpression Min(SparqlExpression expression);
 
         /// <summary>
-        /// Creates a MAX aggregate
+        /// Creates a MAX aggregate.
         /// </summary>
         AggregateExpression Max(VariableTerm variable);
 
         /// <summary>
-        /// Creates a MAX aggregate
+        /// Creates a MAX aggregate.
         /// </summary>
         AggregateExpression Max(string variable);
 
         /// <summary>
-        /// Creates a MAX aggregate
+        /// Creates a MAX aggregate.
         /// </summary>
         AggregateExpression Max(SparqlVariable variable);
 
         /// <summary>
-        /// Creates a MAX aggregate
+        /// Creates a MAX aggregate.
         /// </summary>
         AggregateExpression Max(SparqlExpression expression);
 
         /// <summary>
-        /// Creates a GROUP_CONCAT aggregate
+        /// Creates a GROUP_CONCAT aggregate.
         /// </summary>
         AggregateExpression GroupConcat(VariableTerm variable, string separator = " ");
 
         /// <summary>
-        /// Creates a GROUP_CONCAT aggregate
+        /// Creates a GROUP_CONCAT aggregate.
         /// </summary>
         AggregateExpression GroupConcat(string variable, string separator = " ");
 
         /// <summary>
-        /// Creates a GROUP_CONCAT aggregate
+        /// Creates a GROUP_CONCAT aggregate.
         /// </summary>
         AggregateExpression GroupConcat(SparqlExpression expression, string separator = " ");
 
         /// <summary>
-        /// Creates a COUNT(*) aggregate
+        /// Creates a COUNT(*) aggregate.
         /// </summary>
         AggregateExpression Count();
 
         /// <summary>
-        /// Creates a COUNT aggregate
+        /// Creates a COUNT aggregate.
         /// </summary>
         AggregateExpression Count(VariableTerm variable);
 
         /// <summary>
-        /// Creates a COUNT aggregate
+        /// Creates a COUNT aggregate.
         /// </summary>
         AggregateExpression Count(string variable);
 
         /// <summary>
-        /// Creates a COUNT aggregate
+        /// Creates a COUNT aggregate.
         /// </summary>
         AggregateExpression Count(SparqlVariable variable);
 
         /// <summary>
-        /// Creates a COUNT aggregate
+        /// Creates a COUNT aggregate.
         /// </summary>
         AggregateExpression Count(SparqlExpression expression);
     }

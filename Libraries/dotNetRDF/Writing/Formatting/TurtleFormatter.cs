@@ -32,28 +32,28 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter which formats Turtle without any compression
+    /// Formatter which formats Turtle without any compression.
     /// </summary>
     public class UncompressedTurtleFormatter
         : NTriplesFormatter
     {
         /// <summary>
-        /// Creates a new Uncompressed Turtle Formatter
+        /// Creates a new Uncompressed Turtle Formatter.
         /// </summary>
         public UncompressedTurtleFormatter()
             : base("Turtle (Uncompressed)") { }
 
         /// <summary>
-        /// Creates a new Uncompressed Formatter
+        /// Creates a new Uncompressed Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="formatName">Format Name.</param>
         protected UncompressedTurtleFormatter(string formatName)
             : base(formatName) { }
 
         /// <summary>
-        /// Formats characters
+        /// Formats characters.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public override string FormatChar(char c)
@@ -62,10 +62,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a sequence of characters as a String
+        /// Formats a sequence of characters as a String.
         /// </summary>
-        /// <param name="cs">Characters</param>
-        /// <returns>String</returns>
+        /// <param name="cs">Characters.</param>
+        /// <returns>String.</returns>
         public override string FormatChar(char[] cs)
         {
             return new string(cs);
@@ -73,14 +73,14 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
-    /// Formatter which formats Turtle with QName compression
+    /// Formatter which formats Turtle with QName compression.
     /// </summary>
     public class TurtleFormatter 
         : QNameFormatter, IBaseUriFormatter
     {
         private readonly BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
         /// <summary>
-        /// Set of characters that must be escaped for Long Literals
+        /// Set of characters that must be escaped for Long Literals.
         /// </summary>
         protected List<string[]> _longLitMustEscape = new List<string[]>
         { 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Writing.Formatting
         };
 
         /// <summary>
-        /// Set of characters that must be escaped for Literals
+        /// Set of characters that must be escaped for Literals.
         /// </summary>
         protected List<string[]> _litMustEscape = new List<string[]>
         { 
@@ -101,68 +101,68 @@ namespace VDS.RDF.Writing.Formatting
         };
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
         public TurtleFormatter() 
             : base("Turtle", new QNameOutputMapper()) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter that uses the given QName mapper
+        /// Creates a new Turtle Formatter that uses the given QName mapper.
         /// </summary>
-        /// <param name="qnameMapper">QName Mapper</param>
+        /// <param name="qnameMapper">QName Mapper.</param>
         public TurtleFormatter(QNameOutputMapper qnameMapper)
             : base("Turtle", qnameMapper) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter for the given Graph
+        /// Creates a new Turtle Formatter for the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public TurtleFormatter(IGraph g)
             : base("Turtle", new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter for the given Namespace Map
+        /// Creates a new Turtle Formatter for the given Namespace Map.
         /// </summary>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="nsmap">Namespace Map.</param>
         public TurtleFormatter(INamespaceMapper nsmap)
             : base("Turtle", new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="formatName">Format Name.</param>
         protected TurtleFormatter(string formatName)
             : base(formatName, new QNameOutputMapper()) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="g">Graph</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="g">Graph.</param>
         protected TurtleFormatter(string formatName, IGraph g)
             : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="nsmap">Namespace Map.</param>
         protected TurtleFormatter(string formatName, INamespaceMapper nsmap)
             : base(formatName, new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="qnameMapper">QName Map</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="qnameMapper">QName Map.</param>
         protected TurtleFormatter(string formatName, QNameOutputMapper qnameMapper)
             : base(formatName, qnameMapper) { }
 
         /// <summary>
-        /// Formats a Literal Node as a String
+        /// Formats a Literal Node as a String.
         /// </summary>
-        /// <param name="l">Literal Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="l">Literal Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
@@ -240,10 +240,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Blank Node as a String
+        /// Formats a Blank Node as a String.
         /// </summary>
-        /// <param name="b">Blank Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="b">Blank Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
@@ -251,10 +251,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Namespace Decalaration as a @prefix declaration
+        /// Formats a Namespace Decalaration as a @prefix declaration.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         public override string FormatNamespace(string prefix, Uri namespaceUri)
         {
@@ -262,9 +262,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Base URI declaration as a @base declaration
+        /// Formats a Base URI declaration as a @base declaration.
         /// </summary>
-        /// <param name="u">Base URI</param>
+        /// <param name="u">Base URI.</param>
         /// <returns></returns>
         public virtual string FormatBaseUri(Uri u)
         {
@@ -273,73 +273,73 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
-    /// Formatter which formats Turtle with QName compression using the newer W3C syntax which permits a wider range of valid QNames
+    /// Formatter which formats Turtle with QName compression using the newer W3C syntax which permits a wider range of valid QNames.
     /// </summary>
     public class TurtleW3CFormatter
         : TurtleFormatter
     {
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
         public TurtleW3CFormatter() 
             : base("Turtle (W3C)", new QNameOutputMapper()) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter that uses the given QName mapper
+        /// Creates a new Turtle Formatter that uses the given QName mapper.
         /// </summary>
-        /// <param name="qnameMapper">QName Mapper</param>
+        /// <param name="qnameMapper">QName Mapper.</param>
         public TurtleW3CFormatter(QNameOutputMapper qnameMapper)
             : base("Turtle (W3C)", qnameMapper) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter for the given Graph
+        /// Creates a new Turtle Formatter for the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public TurtleW3CFormatter(IGraph g)
             : base("Turtle (W3C)", new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter for the given Namespace Map
+        /// Creates a new Turtle Formatter for the given Namespace Map.
         /// </summary>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="nsmap">Namespace Map.</param>
         public TurtleW3CFormatter(INamespaceMapper nsmap)
             : base("Turtle (W3C)", new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="formatName">Format Name.</param>
         protected TurtleW3CFormatter(string formatName)
             : base(formatName, new QNameOutputMapper()) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="g">Graph</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="g">Graph.</param>
         protected TurtleW3CFormatter(string formatName, IGraph g)
             : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="nsmap">Namespace Map.</param>
         protected TurtleW3CFormatter(string formatName, INamespaceMapper nsmap)
             : base(formatName, new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
-        /// Creates a new Turtle Formatter
+        /// Creates a new Turtle Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="qnameMapper">QName Map</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="qnameMapper">QName Map.</param>
         protected TurtleW3CFormatter(string formatName, QNameOutputMapper qnameMapper)
             : base(formatName, qnameMapper) { }
 
         /// <summary>
-        /// Gets whether a QName is valid in Turtle as specified by the W3C
+        /// Gets whether a QName is valid in Turtle as specified by the W3C.
         /// </summary>
-        /// <param name="value">QName</param>
+        /// <param name="value">QName.</param>
         /// <returns></returns>
         protected override bool IsValidQName(string value)
         {

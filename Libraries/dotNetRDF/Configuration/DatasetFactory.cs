@@ -30,7 +30,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// An Object Factory for creating SPARQL Datasets
+    /// An Object Factory for creating SPARQL Datasets.
     /// </summary>
     public class DatasetFactory 
         : IObjectFactory
@@ -40,12 +40,12 @@ namespace VDS.RDF.Configuration
                              WebDemandDataset = "VDS.RDF.Query.Datasets.WebDemandDataset";
 
         /// <summary>
-        /// Tries to load a SPARQL Dataset based on information from the Configuration Graph
+        /// Tries to load a SPARQL Dataset based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -133,9 +133,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

@@ -33,7 +33,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Expressions.Primary
 {
     /// <summary>
-    /// Class for representing Graph Pattern Terms (as used in EXISTS/NOT EXISTS)
+    /// Class for representing Graph Pattern Terms (as used in EXISTS/NOT EXISTS).
     /// </summary>
     public class GraphPatternTerm
         : ISparqlExpression
@@ -41,16 +41,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         private GraphPattern _pattern;
 
         /// <summary>
-        /// Creates a new Graph Pattern Term
+        /// Creates a new Graph Pattern Term.
         /// </summary>
-        /// <param name="pattern">Graph Pattern</param>
+        /// <param name="pattern">Graph Pattern.</param>
         public GraphPatternTerm(GraphPattern pattern)
         {
             _pattern = pattern;
         }
 
         /// <summary>
-        /// Gets the value of this Term as evaluated for the given Bindings in the given Context
+        /// Gets the value of this Term as evaluated for the given Bindings in the given Context.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="bindingID"></param>
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Graph Pattern this term represents
+        /// Gets the Graph Pattern this term represents.
         /// </summary>
         public GraphPattern Pattern
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Variables used in the Expression
+        /// Gets the Variables used in the Expression.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public string Functor
         {
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -127,9 +127,9 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -35,7 +35,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for SPARQL Query parser
+    /// Parser Context for SPARQL Query parser.
     /// </summary>
     public class SparqlQueryParserContext : TokenisingParserContext
     {
@@ -54,44 +54,44 @@ namespace VDS.RDF.Parsing.Contexts
         private bool _checkBNodeScope = true;
 
         /// <summary>
-        /// Creates a new SPARQL Query Parser Context with default settings
+        /// Creates a new SPARQL Query Parser Context with default settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public SparqlQueryParserContext(ITokeniser tokeniser)
             : base(new NullHandler(), tokeniser) { }
 
         /// <summary>
-        /// Creates a new SPARQL Query Parser Context with custom settings
+        /// Creates a new SPARQL Query Parser Context with custom settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public SparqlQueryParserContext(ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(new NullHandler(), tokeniser, queueMode) { }
 
         /// <summary>
-        /// Creates a new SPARQL Query Parser Context with custom settings
+        /// Creates a new SPARQL Query Parser Context with custom settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public SparqlQueryParserContext(ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : base(new NullHandler(), tokeniser, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Creates a new SPARQL Query Parser Context with custom settings
+        /// Creates a new SPARQL Query Parser Context with custom settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public SparqlQueryParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Creates a new SPARQL Query Parser Context for parsing sub-queries
+        /// Creates a new SPARQL Query Parser Context for parsing sub-queries.
         /// </summary>
-        /// <param name="parent">Parent Query Parser Context</param>
-        /// <param name="tokens">Tokens that need parsing to form a subquery</param>
+        /// <param name="parent">Parent Query Parser Context.</param>
+        /// <param name="tokens">Tokens that need parsing to form a subquery.</param>
         protected internal SparqlQueryParserContext(SparqlQueryParserContext parent, ITokenQueue tokens)
             : base(new NullHandler(), null)
         {
@@ -106,9 +106,9 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Query Parser Context from the given Token Queue
+        /// Creates a new Query Parser Context from the given Token Queue.
         /// </summary>
-        /// <param name="tokens">Token Queue</param>
+        /// <param name="tokens">Token Queue.</param>
         protected internal SparqlQueryParserContext(ITokenQueue tokens)
             : base(new NullHandler(), null)
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Query that this Parser Context is populating
+        /// Gets the Query that this Parser Context is populating.
         /// </summary>
         public SparqlQuery Query
         {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether the Query Verb has been seen
+        /// Gets/Sets whether the Query Verb has been seen.
         /// </summary>
         public bool VerbSeen
         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Returns whether this Parser Context is for a sub-query
+        /// Returns whether this Parser Context is for a sub-query.
         /// </summary>
         public bool SubQueryMode
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Syntax that should be supported
+        /// Gets/Sets the Syntax that should be supported.
         /// </summary>
         public SparqlQuerySyntax SyntaxMode
         {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the default Base Uri to resolve relative URIs against
+        /// Gets/Sets the default Base Uri to resolve relative URIs against.
         /// </summary>
         public Uri DefaultBaseUri
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Expression Parser
+        /// Gets the Expression Parser.
         /// </summary>
         internal SparqlExpressionParser ExpressionParser
         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Property Path Parser
+        /// Gets the Property Path Parser.
         /// </summary>
         internal SparqlPathParser PathParser
         {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the current Graph Pattern ID
+        /// Gets/Sets the current Graph Pattern ID.
         /// </summary>
         public int GraphPatternID
         {
@@ -227,7 +227,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets a new Blank Node ID
+        /// Gets a new Blank Node ID.
         /// </summary>
         /// <returns></returns>
         public String GetNewBlankNodeID()
@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the mapping of in use Blank Nodes IDs
+        /// Gets the mapping of in use Blank Nodes IDs.
         /// </summary>
         public Dictionary<String, int> BlankNodeIDUsages
         {
@@ -255,7 +255,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the last Blank Node ID that was issued
+        /// Gets the last Blank Node ID that was issued.
         /// </summary>
         public int BlankNodeID
         {
@@ -266,10 +266,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether Blank Node scoping must be checked
+        /// Gets/Sets whether Blank Node scoping must be checked.
         /// </summary>
         /// <remarks>
-        /// If false then only name tracking will be done to prevent auto-generated IDs colliding with user allocated IDs
+        /// If false then only name tracking will be done to prevent auto-generated IDs colliding with user allocated IDs.
         /// </remarks>
         public bool CheckBlankNodeScope
         {
@@ -284,7 +284,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Next Available Alias ID for aliasing Project Expressions and Aggregates which don't have an Aggregate Specified
+        /// Gets the Next Available Alias ID for aliasing Project Expressions and Aggregates which don't have an Aggregate Specified.
         /// </summary>
         public int NextAliasID
         {
@@ -297,7 +297,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Custom Expression Factories valid for this Parser
+        /// Gets the Custom Expression Factories valid for this Parser.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {

@@ -27,13 +27,13 @@
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting as TSV
+    /// Formatter for formatting as TSV.
     /// </summary>
     public class TsvFormatter 
         : DeliminatedLineFormatter
     {
         /// <summary>
-        /// Creates a new TSV Formatter
+        /// Creates a new TSV Formatter.
         /// </summary>
         public TsvFormatter()
             : base("TSV", '\t', '\\', '<', '>', '"', '"', null, true) { }

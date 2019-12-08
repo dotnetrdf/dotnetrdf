@@ -32,7 +32,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Primary
 {
     /// <summary>
-    /// Class representing Variable value expressions
+    /// Class representing Variable value expressions.
     /// </summary>
     public class VariableTerm
         : ISparqlExpression
@@ -40,9 +40,9 @@ namespace VDS.RDF.Query.Expressions.Primary
         private String _name;
 
         /// <summary>
-        /// Creates a new Variable Expression
+        /// Creates a new Variable Expression.
         /// </summary>
-        /// <param name="name">Variable Name</param>
+        /// <param name="name">Variable Name.</param>
         public VariableTerm(String name)
         {
             _name = name;
@@ -55,10 +55,10 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
         
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the enumeration containing the single variable that this expression term represents
+        /// Gets the enumeration containing the single variable that this expression term represents.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public String Functor
         {
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -131,9 +131,9 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

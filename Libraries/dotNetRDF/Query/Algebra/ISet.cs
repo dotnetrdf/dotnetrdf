@@ -32,43 +32,43 @@ using System.Text;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Interface for Sets which represents a possible solution during SPARQL evaluation
+    /// Interface for Sets which represents a possible solution during SPARQL evaluation.
     /// </summary>
     public interface ISet 
         : IEquatable<ISet>
     {
         /// <summary>
-        /// Adds a Value for a Variable to the Set
+        /// Adds a Value for a Variable to the Set.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
+        /// <param name="variable">Variable.</param>
+        /// <param name="value">Value.</param>
         void Add(string variable, INode value);
 
         /// <summary>
-        /// Checks whether the Set contains a given Variable
+        /// Checks whether the Set contains a given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         /// <returns></returns>
         bool ContainsVariable(string variable);
 
         /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// Gets whether the Set is compatible with a given set based on the given variables.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// Gets whether the Set is minus compatible with a given set based on the given variables.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
-        /// Gets/Sets the ID of the Set
+        /// Gets/Sets the ID of the Set.
         /// </summary>
         int ID 
         { 
@@ -77,23 +77,23 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes a Value for a Variable from the Set
+        /// Removes a Value for a Variable from the Set.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         void Remove(string variable);
 
         /// <summary>
-        /// Retrieves the Value in this set for the given Variable
+        /// Retrieves the Value in this set for the given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <returns>Either a Node or a null</returns>
+        /// <param name="variable">Variable.</param>
+        /// <returns>Either a Node or a null.</returns>
         INode this[string variable] 
         { 
             get; 
         }
 
         /// <summary>
-        /// Gets the Values in the Set
+        /// Gets the Values in the Set.
         /// </summary>
         IEnumerable<INode> Values 
         { 
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables in the Set
+        /// Gets the Variables in the Set.
         /// </summary>
         IEnumerable<string> Variables 
         { 
@@ -109,21 +109,21 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Joins the set to another set
+        /// Joins the set to another set.
         /// </summary>
-        /// <param name="other">Other Set</param>
+        /// <param name="other">Other Set.</param>
         /// <returns></returns>
         ISet Join(ISet other);
 
         /// <summary>
-        /// Copies the Set
+        /// Copies the Set.
         /// </summary>
         /// <returns></returns>
         ISet Copy();
     }
 
     /// <summary>
-    /// Abstract Base Class for implementations of the <see cref="ISet">ISet</see> interface
+    /// Abstract Base Class for implementations of the <see cref="ISet">ISet</see> interface.
     /// </summary>
     public abstract class BaseSet
         : ISet
@@ -131,37 +131,37 @@ namespace VDS.RDF.Query.Algebra
         private int _id = 0;
 
         /// <summary>
-        /// Adds a Value for a Variable to the Set
+        /// Adds a Value for a Variable to the Set.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
+        /// <param name="variable">Variable.</param>
+        /// <param name="value">Value.</param>
         public abstract void Add(string variable, INode value);
 
         /// <summary>
-        /// Checks whether the Set contains a given Variable
+        /// Checks whether the Set contains a given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         /// <returns></returns>
         public abstract bool ContainsVariable(string variable);
 
         /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// Gets whether the Set is compatible with a given set based on the given variables.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         public abstract bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// Gets whether the Set is minus compatible with a given set based on the given variables.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
-        /// Gets/Sets the ID of the Set
+        /// Gets/Sets the ID of the Set.
         /// </summary>
         public int ID
         {
@@ -176,23 +176,23 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes a Value for a Variable from the Set
+        /// Removes a Value for a Variable from the Set.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public abstract void Remove(string variable);
 
         /// <summary>
-        /// Retrieves the Value in this set for the given Variable
+        /// Retrieves the Value in this set for the given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <returns>Either a Node or a null</returns>
+        /// <param name="variable">Variable.</param>
+        /// <returns>Either a Node or a null.</returns>
         public abstract INode this[string variable]
         {
             get;
         }
 
         /// <summary>
-        /// Gets the Values in the Set
+        /// Gets the Values in the Set.
         /// </summary>
         public abstract IEnumerable<INode> Values
         {
@@ -200,7 +200,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables in the Set
+        /// Gets the Variables in the Set.
         /// </summary>
         public abstract IEnumerable<string> Variables
         {
@@ -208,22 +208,22 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Joins the set to another set
+        /// Joins the set to another set.
         /// </summary>
-        /// <param name="other">Other Set</param>
+        /// <param name="other">Other Set.</param>
         /// <returns></returns>
         public abstract ISet Join(ISet other);
 
         /// <summary>
-        /// Copies the Set
+        /// Copies the Set.
         /// </summary>
         /// <returns></returns>
         public abstract ISet Copy();
 
         /// <summary>
-        /// Gets whether the Set is equal to another set
+        /// Gets whether the Set is equal to another set.
         /// </summary>
-        /// <param name="other">Set to compare with</param>
+        /// <param name="other">Set to compare with.</param>
         /// <returns></returns>
         public bool Equals(ISet other)
         {
@@ -233,9 +233,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Set is equal to another object
+        /// Gets whether the Set is equal to another object.
         /// </summary>
-        /// <param name="obj">Object to compare with</param>
+        /// <param name="obj">Object to compare with.</param>
         /// <returns></returns>
         public sealed override bool Equals(object obj)
         {
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Hash Code of the Set
+        /// Gets the Hash Code of the Set.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Set
+        /// Gets the String representation of the Set.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

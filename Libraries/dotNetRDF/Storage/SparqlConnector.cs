@@ -42,7 +42,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Controls how the <see cref="SparqlConnector">SparqlConnector</see> loads Graphs from the Endpoint
+    /// Controls how the <see cref="SparqlConnector">SparqlConnector</see> loads Graphs from the Endpoint.
     /// </summary>
     public enum SparqlConnectorLoadMethod 
     {
@@ -53,15 +53,15 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Graphs are loaded by issuing a CONSTRUCT FROM query using the Graph URI
         /// </summary>
-        Construct
+        Construct,
     }
 
     /// <summary>
-    /// Class for connecting to any SPARQL Endpoint as a read-only Store
+    /// Class for connecting to any SPARQL Endpoint as a read-only Store.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class is effectively a read-only wrapper around a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> using it with it's default settings, if you only need to query an endpoint and require more control over the settings used to access the endpoint you should use that class directly or use the constructors which allow you to provide your own pre-configure <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance
+    /// This class is effectively a read-only wrapper around a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> using it with it's default settings, if you only need to query an endpoint and require more control over the settings used to access the endpoint you should use that class directly or use the constructors which allow you to provide your own pre-configure <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance.
     /// </para>
     /// <para>
     /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="SparqlConnector.Endpoint">Endpoint</see> property and programmatically adding the settings.
@@ -71,26 +71,26 @@ namespace VDS.RDF.Storage
         : IQueryableStorage, IConfigurationSerializable
     {
         /// <summary>
-        /// Underlying SPARQL query endpoint
+        /// Underlying SPARQL query endpoint.
         /// </summary>
         protected SparqlRemoteEndpoint _endpoint;
         /// <summary>
-        /// Method for loading graphs
+        /// Method for loading graphs.
         /// </summary>
         protected SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
         /// <summary>
-        /// Whether to skip local parsing
+        /// Whether to skip local parsing.
         /// </summary>
         protected bool _skipLocalParsing = false;
         /// <summary>
-        /// Timeout for endpoints
+        /// Timeout for endpoints.
         /// </summary>
         protected int _timeout;
 
         /// <summary>
-        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint
+        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
         /// </summary>
-        /// <param name="endpoint">Endpoint</param>
+        /// <param name="endpoint">Endpoint.</param>
         public SparqlConnector(SparqlRemoteEndpoint endpoint)
         {
             if (endpoint == null) throw new ArgumentNullException("endpoint", "A valid Endpoint must be specified");
@@ -99,10 +99,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint
+        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
         /// </summary>
-        /// <param name="endpoint">Endpoint</param>
-        /// <param name="mode">Load Method to use</param>
+        /// <param name="endpoint">Endpoint.</param>
+        /// <param name="mode">Load Method to use.</param>
         public SparqlConnector(SparqlRemoteEndpoint endpoint, SparqlConnectorLoadMethod mode)
             : this(endpoint)
         {
@@ -110,22 +110,22 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint
+        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public SparqlConnector(Uri endpointUri)
             : this(new SparqlRemoteEndpoint(endpointUri)) { }
 
         /// <summary>
-        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint
+        /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
-        /// <param name="mode">Load Method to use</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
+        /// <param name="mode">Load Method to use.</param>
         public SparqlConnector(Uri endpointUri, SparqlConnectorLoadMethod mode)
             : this(new SparqlRemoteEndpoint(endpointUri), mode) { }
 
         /// <summary>
-        /// Gets the parent server (if any)
+        /// Gets the parent server (if any).
         /// </summary>
         public IStorageServer ParentServer
         {
@@ -136,10 +136,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Controls whether the Query will be parsed locally to accurately determine its Query Type for processing the response
+        /// Controls whether the Query will be parsed locally to accurately determine its Query Type for processing the response.
         /// </summary>
         /// <remarks>
-        /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries
+        /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries.
         /// </remarks>
         [Description("Determines whether queries are parsed locally before being sent to the remote endpoint.  Should be disabled if the remote endpoint supports non-standard extensions that won't parse locally.")]
         public bool SkipLocalParsing
@@ -155,7 +155,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint
+        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
         /// </summary>
         public virtual int Timeout
         {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the underlying <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> which this class is a wrapper around
+        /// Gets the underlying <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> which this class is a wrapper around.
         /// </summary>
         [Description("The Remote Endpoint to which queries are sent using HTTP."),TypeConverter(typeof(ExpandableObjectConverter))]
         public SparqlRemoteEndpoint Endpoint 
@@ -183,9 +183,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a Query against the SPARQL Endpoint
+        /// Makes a Query against the SPARQL Endpoint.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public object Query(String sparqlQuery)
         {
@@ -204,11 +204,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a Query against the SPARQL Endpoint processing the results with an appropriate handler from those provided
+        /// Makes a Query against the SPARQL Endpoint processing the results with an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
@@ -272,30 +272,30 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint
+        /// Loads a Graph from the SPARQL Endpoint.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint
+        /// Loads a Graph from the SPARQL Endpoint.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint
+        /// Loads a Graph from the SPARQL Endpoint.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
@@ -306,10 +306,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the SPARQL Endpoint
+        /// Loads a Graph from the SPARQL Endpoint.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             String query;
@@ -343,10 +343,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an error since this Manager is read-only
+        /// Throws an error since this Manager is read-only.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection</exception>
+        /// <param name="g">Graph to save.</param>
+        /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection.</exception>
         public virtual void SaveGraph(IGraph g)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
@@ -354,7 +354,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of SPARQL Connections
+        /// Gets the IO Behaviour of SPARQL Connections.
         /// </summary>
         public virtual IOBehaviour IOBehaviour
         {
@@ -365,29 +365,29 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an error since this Manager is read-only
+        /// Throws an error since this Manager is read-only.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
 
         /// <summary>
-        /// Throws an error since this Manager is read-only
+        /// Throws an error since this Manager is read-only.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
 
         /// <summary>
-        /// Returns that Updates are not supported since this connection is read-only
+        /// Returns that Updates are not supported since this connection is read-only.
         /// </summary>
         public virtual bool UpdateSupported
         {
@@ -398,27 +398,27 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an exception as this connector provides a read-only connection
+        /// Throws an exception as this connector provides a read-only connection.
         /// </summary>
-        /// <param name="graphUri">URI of this Graph to delete</param>
-        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it</exception>
+        /// <param name="graphUri">URI of this Graph to delete.</param>
+        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
         public virtual void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
 
         /// <summary>
-        /// Throws an exception as this connector provides a read-only connection
+        /// Throws an exception as this connector provides a read-only connection.
         /// </summary>
-        /// <param name="graphUri">URI of this Graph to delete</param>
-        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it</exception>
+        /// <param name="graphUri">URI of this Graph to delete.</param>
+        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
         public virtual void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
 
         /// <summary>
-        /// Returns that deleting graphs is not supported
+        /// Returns that deleting graphs is not supported.
         /// </summary>
         public virtual bool DeleteSupported
         {
@@ -429,7 +429,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the Graphs in the Store
+        /// Lists the Graphs in the Store.
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<Uri> ListGraphs()
@@ -467,7 +467,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that listing graphs is supported
+        /// Returns that listing graphs is supported.
         /// </summary>
         public virtual bool ListGraphsSupported
         {
@@ -478,7 +478,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Connection is ready
+        /// Returns that the Connection is ready.
         /// </summary>
         public virtual bool IsReady
         {
@@ -489,7 +489,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Connection is read-only
+        /// Returns that the Connection is read-only.
         /// </summary>
         public virtual bool IsReadOnly
         {
@@ -500,7 +500,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Disposes of the Connection
+        /// Disposes of the Connection.
         /// </summary>
         public void Dispose()
         {
@@ -508,7 +508,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a String which gives details of the Connection
+        /// Gets a String which gives details of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -517,9 +517,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
@@ -574,7 +574,7 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// Class for connecting to any SPARQL server that provides both a query and update endpoint
+    /// Class for connecting to any SPARQL server that provides both a query and update endpoint.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -591,11 +591,11 @@ namespace VDS.RDF.Storage
         private readonly SparqlRemoteUpdateEndpoint _updateEndpoint;
 
         /// <summary>
-        /// Creates a new connection
+        /// Creates a new connection.
         /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint</param>
-        /// <param name="updateEndpoint">Update Endpoint</param>
-        /// <param name="mode">Method for loading graphs</param>
+        /// <param name="queryEndpoint">Query Endpoint.</param>
+        /// <param name="updateEndpoint">Update Endpoint.</param>
+        /// <param name="mode">Method for loading graphs.</param>
         public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
             : base(queryEndpoint, mode)
         {
@@ -603,32 +603,32 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection
+        /// Creates a new connection.
         /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint</param>
-        /// <param name="updateEndpoint">Update Endpoint</param>
+        /// <param name="queryEndpoint">Query Endpoint.</param>
+        /// <param name="updateEndpoint">Update Endpoint.</param>
         public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
             : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
 
         /// <summary>
-        /// Creates a new connection
+        /// Creates a new connection.
         /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint</param>
-        /// <param name="updateEndpoint">Update Endpoint</param>
-        /// <param name="mode">Method for loading graphs</param>
+        /// <param name="queryEndpoint">Query Endpoint.</param>
+        /// <param name="updateEndpoint">Update Endpoint.</param>
+        /// <param name="mode">Method for loading graphs.</param>
         public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint, SparqlConnectorLoadMethod mode)
             : this(new SparqlRemoteEndpoint(queryEndpoint), new SparqlRemoteUpdateEndpoint(updateEndpoint), mode) { }
 
         /// <summary>
-        /// Creates a new connection
+        /// Creates a new connection.
         /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint</param>
-        /// <param name="updateEndpoint">Update Endpoint</param>
+        /// <param name="queryEndpoint">Query Endpoint.</param>
+        /// <param name="updateEndpoint">Update Endpoint.</param>
         public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint)
             : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
 
         /// <summary>
-        /// Gets the underlying <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> which this class is a wrapper around
+        /// Gets the underlying <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> which this class is a wrapper around.
         /// </summary>
         [Description("The Remote Update Endpoint to which queries are sent using HTTP."), TypeConverter(typeof(ExpandableObjectConverter))]
         public SparqlRemoteUpdateEndpoint UpdateEndpoint
@@ -640,7 +640,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint
+        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
         /// </summary>
         public override int Timeout
         {
@@ -657,7 +657,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that deleting graphs is supported
+        /// Gets that deleting graphs is supported.
         /// </summary>
         public override bool DeleteSupported
         {
@@ -668,7 +668,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that the store is not read-only
+        /// Gets that the store is not read-only.
         /// </summary>
         public override bool IsReadOnly
         {
@@ -679,7 +679,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO behaviour for the store
+        /// Gets the IO behaviour for the store.
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
@@ -690,7 +690,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that triple level updates are supported, see the remarks section of the <see cref="ReadWriteSparqlConnector"/> for exactly what is and isn't supported
+        /// Gets that triple level updates are supported, see the remarks section of the <see cref="ReadWriteSparqlConnector"/> for exactly what is and isn't supported.
         /// </summary>
         public override bool UpdateSupported
         {
@@ -701,18 +701,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a graph from the store
+        /// Deletes a graph from the store.
         /// </summary>
-        /// <param name="graphUri">URI of the graph to delete</param>
+        /// <param name="graphUri">URI of the graph to delete.</param>
         public override void DeleteGraph(string graphUri)
         {
             DeleteGraph(graphUri.ToSafeUri());
         }
 
         /// <summary>
-        /// Deletes a graph from the store
+        /// Deletes a graph from the store.
         /// </summary>
-        /// <param name="graphUri">URI of the graph to delete</param>
+        /// <param name="graphUri">URI of the graph to delete.</param>
         public override void DeleteGraph(Uri graphUri)
         {
             if (graphUri == null)
@@ -726,9 +726,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a graph to the store
+        /// Saves a graph to the store.
         /// </summary>
-        /// <param name="g">Graph to save</param>
+        /// <param name="g">Graph to save.</param>
         public override void SaveGraph(IGraph g)
         {
             StringBuilder updates = new StringBuilder();
@@ -766,22 +766,22 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a graph in the store
+        /// Updates a graph in the store.
         /// </summary>
-        /// <param name="graphUri">URI of the graph to update</param>
-        /// <param name="additions">Triples to add</param>
-        /// <param name="removals">Triples to remove</param>
+        /// <param name="graphUri">URI of the graph to update.</param>
+        /// <param name="additions">Triples to add.</param>
+        /// <param name="removals">Triples to remove.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             UpdateGraph(graphUri.ToSafeUri(), additions, removals);
         }
 
         /// <summary>
-        /// Updates a graph in the store
+        /// Updates a graph in the store.
         /// </summary>
-        /// <param name="graphUri">URI of the graph to update</param>
-        /// <param name="additions">Triples to add</param>
-        /// <param name="removals">Triples to remove</param>
+        /// <param name="graphUri">URI of the graph to update.</param>
+        /// <param name="additions">Triples to add.</param>
+        /// <param name="removals">Triples to remove.</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             StringBuilder updates = new StringBuilder();
@@ -845,9 +845,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Update against the store
+        /// Makes a SPARQL Update against the store.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
         public void Update(string sparqlUpdate)
         {
             if (!_skipLocalParsing)
@@ -867,7 +867,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a String which gives details of the Connection
+        /// Gets a String which gives details of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -876,9 +876,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             // Call base SerializeConfiguration() first

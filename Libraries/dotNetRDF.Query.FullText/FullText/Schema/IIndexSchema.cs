@@ -29,15 +29,15 @@ using System;
 namespace VDS.RDF.Query.FullText.Schema
 {
     /// <summary>
-    /// Interface for Index Schemas
+    /// Interface for Index Schemas.
     /// </summary>
     /// <remarks>
-    /// Index Schemas are used to provide the set of field names that is used to encode indexed data onto a document in the index
+    /// Index Schemas are used to provide the set of field names that is used to encode indexed data onto a document in the index.
     /// </remarks>
     public interface IFullTextIndexSchema
     {
         /// <summary>
-        /// Gets the field in which the full text is indexed
+        /// Gets the field in which the full text is indexed.
         /// </summary>
         String IndexField
         {
@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Graph URI is indexed
+        /// Gets the field in which the Graph URI is indexed.
         /// </summary>
         String GraphField
         {
@@ -53,10 +53,10 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the hash is stored
+        /// Gets the field in which the hash is stored.
         /// </summary>
         /// <remarks>
-        /// Used for unindexing
+        /// Used for unindexing.
         /// </remarks>
         String HashField
         {
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Node type is stored
+        /// Gets the field in which the Node type is stored.
         /// </summary>
         String NodeTypeField
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Node value is stored
+        /// Gets the field in which the Node value is stored.
         /// </summary>
         String NodeValueField
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Node meta is stored
+        /// Gets the field in which the Node meta is stored.
         /// </summary>
         String NodeMetaField
         {

@@ -38,7 +38,7 @@ using VDS.RDF.Storage.Management;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Abstract Base Class for HTTP based Storage API implementations
+    /// Abstract Base Class for HTTP based Storage API implementations.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -51,7 +51,7 @@ namespace VDS.RDF.Storage
     public abstract class BaseHttpConnector
     {
         /// <summary>
-        /// Creates a new connector
+        /// Creates a new connector.
         /// </summary>
         protected BaseHttpConnector()
         {
@@ -59,32 +59,32 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Whether the User has provided credentials for accessing the Store using authentication
+        /// Whether the User has provided credentials for accessing the Store using authentication.
         /// </summary>
         private bool _hasCredentials;
 
         private IWebProxy _proxy;
 
         /// <summary>
-        /// Sets a Proxy Server to be used
+        /// Sets a Proxy Server to be used.
         /// </summary>
-        /// <param name="address">Proxy Address</param>
+        /// <param name="address">Proxy Address.</param>
         public void SetProxy(String address)
         {
             _proxy = new WebProxy(address);
         }
 
         /// <summary>
-        /// Sets a Proxy Server to be used
+        /// Sets a Proxy Server to be used.
         /// </summary>
-        /// <param name="address">Proxy Address</param>
+        /// <param name="address">Proxy Address.</param>
         public void SetProxy(Uri address)
         {
             _proxy = new WebProxy(address);
         }
 
         /// <summary>
-        /// Gets/Sets a Proxy Server to be used
+        /// Gets/Sets a Proxy Server to be used.
         /// </summary>
         public IWebProxy Proxy
         {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Clears any in-use credentials so subsequent requests will not use a proxy server
+        /// Clears any in-use credentials so subsequent requests will not use a proxy server.
         /// </summary>
         public void ClearProxy()
         {
@@ -107,10 +107,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Sets Credentials to be used for Proxy Server
+        /// Sets Credentials to be used for Proxy Server.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public void SetProxyCredentials(String username, String password)
         {
             if (_proxy != null)
@@ -124,11 +124,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Sets Credentials to be used for Proxy Server
+        /// Sets Credentials to be used for Proxy Server.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="domain">Domain</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="domain">Domain.</param>
         public void SetProxyCredentials(String username, String password, String domain)
         {
             if (_proxy != null)
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets/Sets Credentials to be used for Proxy Server
+        /// Gets/Sets Credentials to be used for Proxy Server.
         /// </summary>
         public ICredentials ProxyCredentials
         {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Clears the in-use proxy credentials so subsequent requests still use the proxy server but without credentials
+        /// Clears the in-use proxy credentials so subsequent requests still use the proxy server but without credentials.
         /// </summary>
         public void ClearProxyCredentials()
         {
@@ -182,11 +182,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Timeouts used specified in milliseconds
+        /// Gets/Sets the HTTP Timeouts used specified in milliseconds.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Defaults to 30 seconds (i.e. the default value is 30,000)
+        /// Defaults to 30 seconds (i.e. the default value is 30,000).
         /// </para>
         /// <para>
         /// It is important to understand that this timeout only applies to the HTTP request portions of any operation performed and that the timeout may apply more than once if a POST operation is used since the timeout applies separately to obtaining the request stream to POST the request and obtaining the response stream.  Also the timeout does not in any way apply to subsequent work that may be carried out before the operation can return so if you need a hard timeout on an operation you should manage that yourself.
@@ -195,26 +195,26 @@ namespace VDS.RDF.Storage
         /// When set to a zero/negative value then the standard .Net timeout of 100 seconds will apply, use <see cref="int.MaxValue"/> if you want the maximum possible timeout i.e. if you expect to launch extremely long running operations.
         /// </para>
         /// <para>
-        /// Not supported under Silverlight, Windows Phone and Portable Class Library builds
+        /// Not supported under Silverlight, Windows Phone and Portable Class Library builds.
         /// </para>
         /// </remarks>
         public int Timeout { get; set; }
 
         /// <summary>
-        /// Password for accessing the Store
+        /// Password for accessing the Store.
         /// </summary>
         protected string Username { get; private set; }
 
         /// <summary>
-        /// Password for accessing the Store
+        /// Password for accessing the Store.
         /// </summary>
         protected string Password { get; private set; }
 
         /// <summary>
-        /// Helper method which applies standard request options to the request, these currently include proxy settings and HTTP timeout
+        /// Helper method which applies standard request options to the request, these currently include proxy settings and HTTP timeout.
         /// </summary>
-        /// <param name="request">HTTP Web Request</param>
-        /// <returns>HTTP Web Request with standard options applied</returns>
+        /// <param name="request">HTTP Web Request.</param>
+        /// <returns>HTTP Web Request with standard options applied.</returns>
         protected HttpWebRequest ApplyRequestOptions(HttpWebRequest request)
         {
             if (Timeout > 0) request.Timeout = Timeout;
@@ -246,10 +246,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Helper method which adds standard configuration information (proxy and timeout settings) to serialized configuration
+        /// Helper method which adds standard configuration information (proxy and timeout settings) to serialized configuration.
         /// </summary>
-        /// <param name="objNode">Object Node representing the <see cref="IStorageProvider">IStorageProvider</see> whose configuration is being serialized</param>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="objNode">Object Node representing the <see cref="IStorageProvider">IStorageProvider</see> whose configuration is being serialized.</param>
+        /// <param name="context">Serialization Context.</param>
         protected void SerializeStandardConfig(INode objNode, ConfigurationSerializationContext context)
         {
             // Basic Authentication
@@ -297,11 +297,11 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// Abstract Base Class for HTTP Based <see cref="IAsyncStorageProvider">IAsyncStorageProvider</see> implementations
+    /// Abstract Base Class for HTTP Based <see cref="IAsyncStorageProvider">IAsyncStorageProvider</see> implementations.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// It is expected that most classes extending from this will also then implement <see cref="IStorageProvider"/> separately for their synchronous communication, this class purely provides partial helper implementations for the asynchronous communication
+    /// It is expected that most classes extending from this will also then implement <see cref="IStorageProvider"/> separately for their synchronous communication, this class purely provides partial helper implementations for the asynchronous communication.
     /// </para>
     /// </remarks>
     public abstract class BaseAsyncHttpConnector
@@ -310,7 +310,7 @@ namespace VDS.RDF.Storage
         private readonly DoRequestSequenceDelgate _d;
 
         /// <summary>
-        /// Creates a new Base Async HTTP Connector
+        /// Creates a new Base Async HTTP Connector.
         /// </summary>
         protected BaseAsyncHttpConnector()
         {
@@ -318,7 +318,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the parent server (if any)
+        /// Gets the parent server (if any).
         /// </summary>
         public virtual IStorageServer ParentServer
         {
@@ -329,7 +329,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the parent server (if any)
+        /// Gets the parent server (if any).
         /// </summary>
         public virtual IAsyncStorageServer AsyncParentServer
         {
@@ -340,57 +340,57 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store asynchronously
+        /// Loads a Graph from the Store asynchronously.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             LoadGraph(g, graphUri.ToSafeString(), callback, state);
         }
 
         /// <summary>
-        /// Loads a Graph from the Store asynchronously
+        /// Loads a Graph from the Store asynchronously.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state)
         {
             LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) => callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st), state);
         }
 
         /// <summary>
-        /// Loads a Graph from the Store asynchronously
+        /// Loads a Graph from the Store asynchronously.
         /// </summary>
-        /// <param name="handler">Handler to load with</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">Handler to load with.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             LoadGraph(handler, graphUri.ToSafeString(), callback, state);
         }
 
         /// <summary>
-        /// Loads a Graph from the Store asynchronously
+        /// Loads a Graph from the Store asynchronously.
         /// </summary>
-        /// <param name="handler">Handler to load with</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">Handler to load with.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public abstract void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Helper method for doing async load operations, callers just need to provide an appropriately prepared HTTP request
+        /// Helper method for doing async load operations, callers just need to provide an appropriately prepared HTTP request.
         /// </summary>
-        /// <param name="request">HTTP Request</param>
-        /// <param name="handler">Handler to load with</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="request">HTTP Request.</param>
+        /// <param name="handler">Handler to load with.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         protected internal void LoadGraphAsync(HttpWebRequest request, IRdfHandler handler, AsyncStorageCallback callback, Object state)
         {
             Tools.HttpDebugRequest(request);
@@ -430,21 +430,21 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph to the Store asynchronously
+        /// Saves a Graph to the Store asynchronously.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public abstract void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Helper method for doing async save operations, callers just need to provide an appropriately perpared HTTP requests and a RDF writer which will be used to write the data to the request body
+        /// Helper method for doing async save operations, callers just need to provide an appropriately perpared HTTP requests and a RDF writer which will be used to write the data to the request body.
         /// </summary>
-        /// <param name="request">HTTP request</param>
-        /// <param name="writer">RDF Writer</param>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="request">HTTP request.</param>
+        /// <param name="writer">RDF Writer.</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         protected internal void SaveGraphAsync(HttpWebRequest request, IRdfWriter writer, IGraph g, AsyncStorageCallback callback, Object state)
         {
             request.BeginGetRequestStream(r =>
@@ -488,37 +488,37 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously
+        /// Updates a Graph in the Store asychronously.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
             UpdateGraph(graphUri.ToSafeString(), additions, removals, callback, state);
         }
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously
+        /// Updates a Graph in the Store asychronously.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public abstract void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Helper method for doing async update operations, callers just need to provide an appropriately prepared HTTP request and a RDF writer which will be used to write the data to the request body
+        /// Helper method for doing async update operations, callers just need to provide an appropriately prepared HTTP request and a RDF writer which will be used to write the data to the request body.
         /// </summary>
-        /// <param name="request">HTTP Request</param>
-        /// <param name="writer">RDF writer</param>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="ts">Triples</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="request">HTTP Request.</param>
+        /// <param name="writer">RDF writer.</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="ts">Triples.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         protected internal void UpdateGraphAsync(HttpWebRequest request, IRdfWriter writer, Uri graphUri, IEnumerable<Triple> ts, AsyncStorageCallback callback, Object state)
         {
             Graph g = new Graph();
@@ -565,32 +565,32 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the Store
+        /// Deletes a Graph from the Store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             DeleteGraph(graphUri.ToSafeString(), callback, state);
         }
 
         /// <summary>
-        /// Deletes a Graph from the Store
+        /// Deletes a Graph from the Store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public abstract void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Helper method for doing async delete operations, callers just need to provide an appropriately prepared HTTP request
+        /// Helper method for doing async delete operations, callers just need to provide an appropriately prepared HTTP request.
         /// </summary>
-        /// <param name="request">HTTP request</param>
-        /// <param name="allow404">Whether a 404 response counts as success</param>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="request">HTTP request.</param>
+        /// <param name="allow404">Whether a 404 response counts as success.</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         protected internal void DeleteGraphAsync(HttpWebRequest request, bool allow404, String graphUri, AsyncStorageCallback callback, Object state)
         {
             Tools.HttpDebugRequest(request);
@@ -626,10 +626,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the Graphs in the Store asynchronously
+        /// Lists the Graphs in the Store asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void ListGraphs(AsyncStorageCallback callback, object state)
         {
             if (this is IAsyncQueryableStorage)
@@ -655,7 +655,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Indicates whether the Store is ready to accept requests
+        /// Indicates whether the Store is ready to accept requests.
         /// </summary>
         public abstract bool IsReady
         {
@@ -663,7 +663,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store is read only
+        /// Gets whether the Store is read only.
         /// </summary>
         public abstract bool IsReadOnly
         {
@@ -671,7 +671,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the Store
+        /// Gets the IO Behaviour of the Store.
         /// </summary>
         public abstract IOBehaviour IOBehaviour
         {
@@ -679,7 +679,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncHttpConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple},AsyncStorageCallback,Object)">UpdateGraph()</see> method
+        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncHttpConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple},AsyncStorageCallback,Object)">UpdateGraph()</see> method.
         /// </summary>
         public abstract bool UpdateSupported
         {
@@ -687,7 +687,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncHttpConnector.DeleteGraph(Uri, AsyncStorageCallback, Object)">DeleteGraph()</see> method
+        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncHttpConnector.DeleteGraph(Uri, AsyncStorageCallback, Object)">DeleteGraph()</see> method.
         /// </summary>
         public abstract bool DeleteSupported
         {
@@ -695,7 +695,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncHttpConnector.ListGraphs(AsyncStorageCallback, Object)">ListGraphs()</see> method
+        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncHttpConnector.ListGraphs(AsyncStorageCallback, Object)">ListGraphs()</see> method.
         /// </summary>
         public abstract bool ListGraphsSupported
         {
@@ -703,16 +703,16 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Diposes of the Store
+        /// Diposes of the Store.
         /// </summary>
         public abstract void Dispose();
 
         /// <summary>
-        /// Helper method for doing async operations where a sequence of HTTP requests must be run
+        /// Helper method for doing async operations where a sequence of HTTP requests must be run.
         /// </summary>
-        /// <param name="requests">HTTP requests</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="requests">HTTP requests.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         protected internal void MakeRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state)
         {
             _d.BeginInvoke(requests, callback, state, MakeRequestSequenceCallback, callback);

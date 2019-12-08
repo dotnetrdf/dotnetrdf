@@ -31,15 +31,15 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper Class for loading RDF Files into Graphs/Triple Stores
+    /// Static Helper Class for loading RDF Files into Graphs/Triple Stores.
     /// </summary>
     public static class FileLoader
     {
         /// <summary>
-        /// Loads the contents of the given File into a Graph providing the RDF format can be determined
+        /// Loads the contents of the given File into a Graph providing the RDF format can be determined.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="filename">File to load from.</param>
         /// <remarks>
         /// <para>
         /// The <see cref="FileLoader">FileLoader</see> first attempts to select a RDF Parser by examining the file extension to select the most likely MIME type for the file.  This assumes that the file extension corresponds to one of the recognized file extensions for a RDF format the library supports.  If this suceeds then a parser is chosen and will be used to attempt to parse the input.
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
         /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
         /// <para>
-        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
         public static void Load(IGraph g, String filename)
@@ -60,17 +60,17 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File into a Graph using the given RDF Parser
+        /// Loads the contents of the given File into a Graph using the given RDF Parser.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to load from</param>
-        /// <param name="parser">Parser to use</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="parser">Parser to use.</param>
         /// <remarks>
         /// <para>
         /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
         /// <para>
-        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
         public static void Load(IGraph g, String filename, IRdfReader parser)
@@ -107,10 +107,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File using a RDF Handler providing the RDF format can be determined
+        /// Loads the contents of the given File using a RDF Handler providing the RDF format can be determined.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         /// <remarks>
         /// <para>
         /// The <see cref="FileLoader">FileLoader</see> first attempts to select a RDF Parser by examining the file extension to select the most likely MIME type for the file.  This assumes that the file extension corresponds to one of the recognized file extensions for a RDF format the library supports.  If this suceeds then a parser is chosen and will be used to attempt to parse the input.
@@ -125,17 +125,17 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File using a RDF Handler using the given RDF Parser
+        /// Loads the contents of the given File using a RDF Handler using the given RDF Parser.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        /// <param name="parser">Parser to use</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="parser">Parser to use.</param>
         /// <remarks>
         /// <para>
         /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
         /// <para>
-        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
         public static void Load(IRdfHandler handler, String filename, IRdfReader parser)
@@ -180,11 +180,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File into a Triple Store providing the RDF dataset format can be determined
+        /// Loads the contents of the given File into a Triple Store providing the RDF dataset format can be determined.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
-        /// <param name="parser">Parser to use to parse the given file</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="parser">Parser to use to parse the given file.</param>
         /// <remarks>
         /// <para>
         /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
@@ -197,10 +197,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File into a Triple Store providing the RDF dataset format can be determined
+        /// Loads the contents of the given File into a Triple Store providing the RDF dataset format can be determined.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="filename">File to load from.</param>
         /// <remarks>
         /// <para>
         /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
@@ -212,11 +212,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined
+        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
-        /// <param name="parser">Parser to use to parse the given file</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="parser">Parser to use to parse the given file.</param>
         /// <remarks>
         /// <para>
         /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
@@ -278,10 +278,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined
+        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         /// <remarks>
         /// <para>
         /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
@@ -293,9 +293,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Raises warning messages
+        /// Raises warning messages.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
@@ -306,9 +306,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Raises Store Warning messages
+        /// Raises Store Warning messages.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         static void RaiseStoreWarning(String message)
         {
             StoreReaderWarning d = StoreWarning;

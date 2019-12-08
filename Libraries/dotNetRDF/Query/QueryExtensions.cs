@@ -34,17 +34,17 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Static Helper class containing extension methods related to queries
+    /// Static Helper class containing extension methods related to queries.
     /// </summary>
     static class QueryExtensions
     {
         /// <summary>
-        /// Determines whether an Expresion uses the Default Dataset
+        /// Determines whether an Expresion uses the Default Dataset.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Almost all Expressions use the Default Dataset.  The only ones that does are EXISTS/NOT EXISTS expressions where the graph pattern does not use the default dataset
+        /// Almost all Expressions use the Default Dataset.  The only ones that does are EXISTS/NOT EXISTS expressions where the graph pattern does not use the default dataset.
         /// </remarks>
         internal static bool UsesDefaultDataset(this ISparqlExpression expr)
         {

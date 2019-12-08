@@ -34,7 +34,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing BIND assignments in SPARQL Queries
+    /// Class for representing BIND assignments in SPARQL Queries.
     /// </summary>
     public class BindPattern
         : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Patterns
         private readonly ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new BIND Pattern
+        /// Creates a new BIND Pattern.
         /// </summary>
-        /// <param name="var">Variable to assign to</param>
-        /// <param name="expr">Expression which generates a value which will be assigned to the variable</param>
+        /// <param name="var">Variable to assign to.</param>
+        /// <param name="expr">Expression which generates a value which will be assigned to the variable.</param>
         public BindPattern(String var, ISparqlExpression expr)
         {
             _var = var;
@@ -56,9 +56,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Evaluates a BIND assignment in the given Evaluation Context
+        /// Evaluates a BIND assignment in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset)
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Pattern Type
+        /// Gets the Pattern Type.
         /// </summary>
         public override TriplePatternType PatternType
         {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns that this is not an accept all since it is a BIND assignment
+        /// Returns that this is not an accept all since it is a BIND assignment.
         /// </summary>
         public override bool IsAcceptAll
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Expression that is used to generate values to be assigned
+        /// Gets the Expression that is used to generate values to be assigned.
         /// </summary>
         public ISparqlExpression AssignExpression
         {
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Name of the Variable to which values will be assigned
+        /// Gets the Name of the Variable to which values will be assigned.
         /// </summary>
         public String VariableName
         {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns an empty enumeration as any evaluation error will result in an unbound value so we can't guarantee any variables are bound
+        /// Returns an empty enumeration as any evaluation error will result in an unbound value so we can't guarantee any variables are bound.
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns the variable being assigned to as any evaluation error will result in an unbound value so we can't guarantee it is bound
+        /// Returns the variable being assigned to as any evaluation error will result in an unbound value so we can't guarantee it is bound.
         /// </summary>
         public override IEnumerable<string> FloatingVariables
         {
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern uses the Default Dataset
+        /// Gets whether the Pattern uses the Default Dataset.
         /// </summary>
         public override bool UsesDefaultDataset
         {
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns true as a BIND can never contain a Blank Variable
+        /// Returns true as a BIND can never contain a Blank Variable.
         /// </summary>
         public override bool HasNoBlankVariables
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the string representation of the LET assignment
+        /// Gets the string representation of the LET assignment.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -206,20 +206,20 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares this Bind to another Bind
+        /// Compares this Bind to another Bind.
         /// </summary>
-        /// <param name="other">Bind to compare to</param>
-        /// <returns>Just calls the base compare method since that implements all the logic we need</returns>
+        /// <param name="other">Bind to compare to.</param>
+        /// <returns>Just calls the base compare method since that implements all the logic we need.</returns>
         public int CompareTo(BindPattern other)
         {
             return base.CompareTo(other);
         }
 
         /// <summary>
-        /// Compares this Bind to another Bind
+        /// Compares this Bind to another Bind.
         /// </summary>
-        /// <param name="other">Bind to compare to</param>
-        /// <returns>Just calls the base compare method since that implements all the logic we need</returns>
+        /// <param name="other">Bind to compare to.</param>
+        /// <returns>Just calls the base compare method since that implements all the logic we need.</returns>
         public int CompareTo(IAssignmentPattern other)
         {
             return base.CompareTo(other);

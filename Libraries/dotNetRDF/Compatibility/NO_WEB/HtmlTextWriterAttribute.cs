@@ -27,7 +27,7 @@
 namespace System.Web.UI
 {
     /// <summary>
-    /// HTML Attributes
+    /// HTML Attributes.
     /// </summary>
     public enum HtmlTextWriterAttribute
     {
@@ -246,6 +246,6 @@ namespace System.Web.UI
         /// <summary>
         /// VCard Name
         /// </summary>
-        VCardName
+        VCardName,
     }
 }

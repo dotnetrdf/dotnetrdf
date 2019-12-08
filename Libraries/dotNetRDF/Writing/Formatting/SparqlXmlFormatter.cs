@@ -32,7 +32,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// A Result Format that formats using the official SPARQL XML Results format
+    /// A Result Format that formats using the official SPARQL XML Results format.
     /// </summary>
     public class SparqlXmlFormatter 
         : IResultSetFormatter
@@ -44,9 +44,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats the Header for a SPARQL Result Set
+        /// Formats the Header for a SPARQL Result Set.
         /// </summary>
-        /// <param name="variables">Variables</param>
+        /// <param name="variables">Variables.</param>
         /// <returns></returns>
         public string FormatResultSetHeader(IEnumerable<string> variables)
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats the Header for a SPARQL Result Set
+        /// Formats the Header for a SPARQL Result Set.
         /// </summary>
         /// <returns></returns>
         public string FormatResultSetHeader()
@@ -76,7 +76,7 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats the Footer for a SPARQL Result Set
+        /// Formats the Footer for a SPARQL Result Set.
         /// </summary>
         /// <returns></returns>
         public string FormatResultSetFooter()
@@ -85,9 +85,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL Result
+        /// Formats a SPARQL Result.
         /// </summary>
-        /// <param name="result">SPARQL Result</param>
+        /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
         public string Format(SparqlResult result)
         {
@@ -141,9 +141,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Boolean Result
+        /// Formats a Boolean Result.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         /// <returns></returns>
         public string FormatBooleanResult(bool result)
         {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Gets the string representation of the formatter
+        /// Gets the string representation of the formatter.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

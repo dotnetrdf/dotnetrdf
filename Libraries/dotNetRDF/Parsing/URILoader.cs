@@ -32,7 +32,7 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper Class for dereferencing URIs and attempting to parse the results of a HTTP GET request to the URI into RDF
+    /// Static Helper Class for dereferencing URIs and attempting to parse the results of a HTTP GET request to the URI into RDF.
     /// </summary>
     /// <remarks>
     /// <h3>Caching</h3>
@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing
     /// As of the 0.2.2 release the loader has support for caching retrieved data locally built into it (for Graphs only), caching is done using ETags where the remote server provides them or just by a user-defineable 'freshness' criteria (i.e. number of hours retrieved resources should be cached for).  By default this caching happens in the system temporary directory which means it is non-persistent i.e. if you run your application using dotNetRDF it may cache stuff during the session but once the application is closed the operating system may freely delete the cached data.  If you wish to have a persistent cache then you can use the <see cref="UriLoader.CacheDirectory">CacheDirectory</see> property to set your own cache directory.  Even when you set your own cache directory dotNetRDF will delete obsolete data from it over time though this will only happen when a new request invalidates previously cached data.
     /// </para>
     /// <para>
-    /// If you wish to completely control the Cache you can implement your own <see cref="IUriLoaderCache">IUriLoaderCache</see> implementation and use it by setting the <see cref="UriLoader.Cache">Cache</see> property
+    /// If you wish to completely control the Cache you can implement your own <see cref="IUriLoaderCache">IUriLoaderCache</see> implementation and use it by setting the <see cref="UriLoader.Cache">Cache</see> property.
     /// </para>
     /// </remarks>
     public static partial class UriLoader
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
         private static IUriLoaderCache _cache = new UriLoaderCache();
 
         /// <summary>
-        /// Gets/Sets the Directory used for caching Graphs loaded from URIs
+        /// Gets/Sets the Directory used for caching Graphs loaded from URIs.
         /// </summary>
         public static String CacheDirectory
         {
@@ -66,10 +66,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the amount of time Graphs are cached for
+        /// Gets/Sets the amount of time Graphs are cached for.
         /// </summary>
         /// <remarks>
-        /// This duration only applies to URIs which don't return an ETag as part of the HTTP response when they are deferenced
+        /// This duration only applies to URIs which don't return an ETag as part of the HTTP response when they are deferenced.
         /// </remarks>
         public static TimeSpan CacheDuration
         {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the Cache that is in use
+        /// Gets/Sets the Cache that is in use.
         /// </summary>
         /// <remarks>
         /// Setting the Cache to null does not disable it, to disable caching use the <see cref="Options.UriLoaderCaching">Options.UriLoaderCaching</see> property.
@@ -105,13 +105,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether the RDF behind the given URI is cached
+        /// Determines whether the RDF behind the given URI is cached.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> This does not guarantee that the cached content will be used if you load from the URI using the UriLoader.  Whether the cached copy is used will depend on whether 
+        /// <strong>Note:</strong> This does not guarantee that the cached content will be used if you load from the URI using the UriLoader.  Whether the cached copy is used will depend on whether. 
         /// </para>
         /// </remarks>
         public static bool IsCached(Uri u)
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing
         #endregion
 
         /// <summary>
-        /// Gets/Sets an optional User Agent string that will be appended to HTTP Requests
+        /// Gets/Sets an optional User Agent string that will be appended to HTTP Requests.
         /// </summary>
         public static String UserAgent
         {
@@ -137,10 +137,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from the given URI into the given Graph
+        /// Attempts to load a RDF Graph from the given URI into the given Graph.
         /// </summary>
-        /// <param name="g">Graph to assert Triples in</param>
-        /// <param name="u">URI to attempt to get RDF from</param>
+        /// <param name="g">Graph to assert Triples in.</param>
+        /// <param name="u">URI to attempt to get RDF from.</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Parser based on the Content Type header returned in the HTTP Response.
@@ -161,14 +161,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from the given URI into the given Graph
+        /// Attempts to load a RDF Graph from the given URI into the given Graph.
         /// </summary>
-        /// <param name="g">Graph to assert Triples in</param>
-        /// <param name="u">URI to attempt to get RDF from</param>
-        /// <param name="parser">Parser to use</param>
+        /// <param name="g">Graph to assert Triples in.</param>
+        /// <param name="u">URI to attempt to get RDF from.</param>
+        /// <param name="parser">Parser to use.</param>
         /// <remarks>
         /// <para>
-        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned.
         /// </para>
         /// <para>
         /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead.  If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
@@ -210,10 +210,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from the given URI using a RDF Handler
+        /// Attempts to load a RDF Graph from the given URI using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get RDF from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to attempt to get RDF from.</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Parser based on the Content Type header returned in the HTTP Response.
@@ -231,17 +231,17 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from the given URI using a RDF Handler
+        /// Attempts to load a RDF Graph from the given URI using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get RDF from</param>
-        /// <param name="parser">Parser to use</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to attempt to get RDF from.</param>
+        /// <param name="parser">Parser to use.</param>
         /// <remarks>
         /// <para>
-        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned.
         /// </para>
         /// <para>
-        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead.
         /// </para>
         /// <para>
         /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
@@ -490,11 +490,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset from the given URI into the given Triple Store
+        /// Attempts to load a RDF dataset from the given URI into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="parser">Parser to use to parse the RDF dataset</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset.</param>
         /// <remarks>
         /// <para>
         /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -511,10 +511,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset from the given URI into the given Triple Store
+        /// Attempts to load a RDF dataset from the given URI into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -526,11 +526,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset from the given URI using a RDF Handler
+        /// Attempts to load a RDF dataset from the given URI using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="parser">Parser to use to parse the RDF dataset</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset.</param>
         /// <remarks>
         /// <para>
         /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -651,10 +651,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset from the given URI using a RDF Handler
+        /// Attempts to load a RDF dataset from the given URI using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -668,9 +668,9 @@ namespace VDS.RDF.Parsing
         #region Warning Events
 
         /// <summary>
-        /// Raises warning messages
+        /// Raises warning messages.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
@@ -681,9 +681,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Raises store warning messages
+        /// Raises store warning messages.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         static void RaiseStoreWarning(String message)
         {
             StoreReaderWarning d = StoreWarning;

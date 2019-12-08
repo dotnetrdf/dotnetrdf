@@ -39,7 +39,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Property Function which does full text matching
+    /// Property Function which does full text matching.
     /// </summary>
     public class FullTextMatchPropertyFunction
         : ISparqlPropertyFunction
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         private double? _threshold;
 
         /// <summary>
-        /// Constructs a Full Text Match property function
+        /// Constructs a Full Text Match property function.
         /// </summary>
-        /// <param name="info">Property Function information</param>
+        /// <param name="info">Property Function information.</param>
         public FullTextMatchPropertyFunction(PropertyFunctionInfo info)
         {
             if (info == null) throw new ArgumentNullException("info");
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the Function URI for the property function
+        /// Gets the Function URI for the property function.
         /// </summary>
         public Uri FunctionUri
         {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the Variables used in the property function
+        /// Gets the Variables used in the property function.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Evaluates the property function
+        /// Evaluates the property function.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -238,11 +238,11 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the Full Text Results for a specific search query
+        /// Gets the Full Text Results for a specific search query.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="provider">Search Provider</param>
-        /// <param name="search">Search Query</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="provider">Search Provider.</param>
+        /// <param name="search">Search Query.</param>
         /// <returns></returns>
         protected IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search)
         {
@@ -258,12 +258,12 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the Full Text Results for a specific search query
+        /// Gets the Full Text Results for a specific search query.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="provider">Search Provider</param>
-        /// <param name="search">Search Query</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="provider">Search Provider.</param>
+        /// <param name="search">Search Query.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         protected virtual IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search, int limit)
         {

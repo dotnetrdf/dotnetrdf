@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Represents information about a property function
+    /// Represents information about a property function.
     /// </summary>
     public class PropertyFunctionInfo
     {
@@ -41,16 +41,16 @@ namespace VDS.RDF.Query.PropertyFunctions
         private List<PatternItem> _objArgs = new List<PatternItem>();
 
         /// <summary>
-        /// Creates new function information
+        /// Creates new function information.
         /// </summary>
-        /// <param name="u">Function URI</param>
+        /// <param name="u">Function URI.</param>
         public PropertyFunctionInfo(Uri u)
         {
             _funcUri = u;
         }
 
         /// <summary>
-        /// Gets the function URI
+        /// Gets the function URI.
         /// </summary>
         public Uri FunctionUri
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the triple patterns that compose the property function
+        /// Gets the triple patterns that compose the property function.
         /// </summary>
         public List<IMatchTriplePattern> Patterns
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the subject arguments to the function
+        /// Gets the subject arguments to the function.
         /// </summary>
         public List<PatternItem> SubjectArgs
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets the object arguments to the function
+        /// Gets the object arguments to the function.
         /// </summary>
         public List<PatternItem> ObjectArgs
         {

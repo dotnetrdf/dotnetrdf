@@ -30,7 +30,7 @@ using VDS.RDF.Query.Expressions.Arithmetic;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a numeric expression of known type
+    /// Represents a numeric expression of known type.
     /// </summary>
     public sealed class NumericExpression<T> : TypedLiteralExpression<T>
     {
@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Wraps the <paramref name="expression"/> as a typed numeric expression
+        /// Wraps the <paramref name="expression"/> as a typed numeric expression.
         /// </summary>
         public NumericExpression(ISparqlExpression expression)
             : base(expression)
@@ -180,12 +180,12 @@ namespace VDS.RDF.Query.Builder.Expressions
     }
 
     /// <summary>
-    /// Represents a numeric expression of undefined type
+    /// Represents a numeric expression of undefined type.
     /// </summary>
     public class NumericExpression : LiteralExpression
     {
         /// <summary>
-        /// Wraps the <paramref name="expression"/> as a numeric expression
+        /// Wraps the <paramref name="expression"/> as a numeric expression.
         /// </summary>
         public NumericExpression(ISparqlExpression expression)
             : base(expression)

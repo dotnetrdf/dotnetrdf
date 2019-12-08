@@ -32,7 +32,7 @@ using Lucene.Net.Search;
 namespace VDS.RDF.Query.FullText.Search.Lucene
 {
     /// <summary>
-    /// Collector Implementation used as part of our Lucene.Net integration
+    /// Collector Implementation used as part of our Lucene.Net integration.
     /// </summary>
     class DocCollector
         : Collector
@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         private readonly double _scoreThreshold = Double.NaN;
 
         /// <summary>
-        /// Creates a new Collector
+        /// Creates a new Collector.
         /// </summary>
         public DocCollector()
         {
@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Creates a new Collector with a given score threshold
+        /// Creates a new Collector with a given score threshold.
         /// </summary>
-        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
         public DocCollector(double scoreThreshold)
             : this()
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets the Documents that have been collected
+        /// Gets the Documents that have been collected.
         /// </summary>
         public IEnumerable<KeyValuePair<int,double>> Documents
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Gets the number of collected documents
+        /// Gets the number of collected documents.
         /// </summary>
         public int Count
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Returns that documents are accepted out of order
+        /// Returns that documents are accepted out of order.
         /// </summary>
         /// <returns></returns>
         public override bool AcceptsDocsOutOfOrder
@@ -95,9 +95,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Collects a document if it meets the score threshold (if any)
+        /// Collects a document if it meets the score threshold (if any).
         /// </summary>
-        /// <param name="doc">Document ID</param>
+        /// <param name="doc">Document ID.</param>
         public override void Collect(int doc)
         {
             double score = this._scorer.Score();
@@ -115,19 +115,19 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
-        /// Sets the Next Reader
+        /// Sets the Next Reader.
         /// </summary>
-        /// <param name="reader">Index Reader</param>
-        /// <param name="docBase">Document Base</param>
+        /// <param name="reader">Index Reader.</param>
+        /// <param name="docBase">Document Base.</param>
         public override void SetNextReader(IndexReader reader, int docBase)
         {
             this._currBase = docBase;
         }
 
         /// <summary>
-        /// Sets the Scorer
+        /// Sets the Scorer.
         /// </summary>
-        /// <param name="scorer">Scorer</param>
+        /// <param name="scorer">Scorer.</param>
         public override void SetScorer(Scorer scorer)
         {
             this._scorer = scorer;

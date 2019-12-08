@@ -31,10 +31,10 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A SPARQL Results Handler which loads directly into a <see cref="Multiset">Multiset</see>
+    /// A SPARQL Results Handler which loads directly into a <see cref="Multiset">Multiset</see>.
     /// </summary>
     /// <remarks>
-    /// Primarily intended for internal usage for future optimisation of some SPARQL evaluation
+    /// Primarily intended for internal usage for future optimisation of some SPARQL evaluation.
     /// </remarks>
     public class MultisetHandler 
         : BaseResultsHandler
@@ -42,9 +42,9 @@ namespace VDS.RDF.Parsing.Handlers
         private Multiset _mset;
 
         /// <summary>
-        /// Creates a new Multiset Handler
+        /// Creates a new Multiset Handler.
         /// </summary>
-        /// <param name="mset">Multiset</param>
+        /// <param name="mset">Multiset.</param>
         public MultisetHandler(Multiset mset)
         {
             if (mset == null) throw new ArgumentNullException("mset", "Multiset to load into cannot be null");
@@ -52,18 +52,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Boolean Result by doing nothing
+        /// Handles a Boolean Result by doing nothing.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             // Does Nothing
         }
 
         /// <summary>
-        /// Handles a Variable by adding it to the Multiset
+        /// Handles a Variable by adding it to the Multiset.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
@@ -72,9 +72,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Result by adding it to the Multiset
+        /// Handles a Result by adding it to the Multiset.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {

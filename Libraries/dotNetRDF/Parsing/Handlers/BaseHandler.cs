@@ -30,7 +30,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// Abstract Base Class for Handlers
+    /// Abstract Base Class for Handlers.
     /// </summary>
     public abstract class BaseHandler
         : INodeFactory
@@ -38,15 +38,15 @@ namespace VDS.RDF.Parsing.Handlers
         private INodeFactory _factory;
 
         /// <summary>
-        /// Creates a new Handler
+        /// Creates a new Handler.
         /// </summary>
         public BaseHandler()
             : this(new NodeFactory()) { }
 
         /// <summary>
-        /// Creates a new Handler using the given Node Factory
+        /// Creates a new Handler using the given Node Factory.
         /// </summary>
-        /// <param name="factory">Node Factory</param>
+        /// <param name="factory">Node Factory.</param>
         public BaseHandler(INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets/Sets the in-use Node Factory
+        /// Gets/Sets the in-use Node Factory.
         /// </summary>
         protected INodeFactory NodeFactory
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
         #region INodeFactory Members
 
         /// <summary>
-        /// Creates a Blank Node
+        /// Creates a Blank Node.
         /// </summary>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
@@ -81,9 +81,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Blank Node with the given ID
+        /// Creates a Blank Node with the given ID.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
+        /// <param name="nodeId">Node ID.</param>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(string nodeId)
         {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Graph Literal Node
+        /// Creates a Graph Literal Node.
         /// </summary>
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
@@ -100,9 +100,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Graph Literal Node with the given sub-graph
+        /// Creates a Graph Literal Node with the given sub-graph.
         /// </summary>
-        /// <param name="subgraph">Sub-graph</param>
+        /// <param name="subgraph">Sub-graph.</param>
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
@@ -110,10 +110,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Literal Node with the given Datatype
+        /// Creates a Literal Node with the given Datatype.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="literal">Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
@@ -121,9 +121,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Literal Node
+        /// Creates a Literal Node.
         /// </summary>
-        /// <param name="literal">Value</param>
+        /// <param name="literal">Value.</param>
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal)
         {
@@ -131,10 +131,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Literal Node with the given Language
+        /// Creates a Literal Node with the given Language.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="langspec">Language</param>
+        /// <param name="literal">Value.</param>
+        /// <param name="langspec">Language.</param>
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a URI Node
+        /// Creates a URI Node.
         /// </summary>
-        /// <param name="uri">URI</param>
+        /// <param name="uri">URI.</param>
         /// <returns></returns>
         public virtual IUriNode CreateUriNode(Uri uri)
         {
@@ -152,9 +152,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Variable Node
+        /// Creates a Variable Node.
         /// </summary>
-        /// <param name="varname">Variable Name</param>
+        /// <param name="varname">Variable Name.</param>
         /// <returns></returns>
         public virtual IVariableNode CreateVariableNode(string varname)
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the next available Blank Node ID
+        /// Gets the next available Blank Node ID.
         /// </summary>
         /// <returns></returns>
         public virtual string GetNextBlankNodeID()
@@ -174,7 +174,7 @@ namespace VDS.RDF.Parsing.Handlers
     }
 
     /// <summary>
-    /// Abstract Base Class for RDF Handlers
+    /// Abstract Base Class for RDF Handlers.
     /// </summary>
     public abstract class BaseRdfHandler 
         : BaseHandler, IRdfHandler
@@ -182,22 +182,22 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _inUse = false;
 
         /// <summary>
-        /// Creates a new RDF Handler
+        /// Creates a new RDF Handler.
         /// </summary>
         public BaseRdfHandler()
             : this(new NodeFactory()) { }
 
         /// <summary>
-        /// Creates a new RDF Handler using the given Node Factory
+        /// Creates a new RDF Handler using the given Node Factory.
         /// </summary>
-        /// <param name="factory">Node Factory</param>
+        /// <param name="factory">Node Factory.</param>
         public BaseRdfHandler(INodeFactory factory)
             : base(factory) { }
 
         #region IRdfHandler Members
 
         /// <summary>
-        /// Starts the Handling of RDF
+        /// Starts the Handling of RDF.
         /// </summary>
         public void StartRdf()
         {
@@ -207,15 +207,15 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Optionally used by derived Handlers to do additional actions on starting RDF handling
+        /// Optionally used by derived Handlers to do additional actions on starting RDF handling.
         /// </summary>
         protected virtual void StartRdfInternal()
         { }
 
         /// <summary>
-        /// Ends the Handling of RDF
+        /// Ends the Handling of RDF.
         /// </summary>
-        /// <param name="ok">Whether the parsing completed without error</param>
+        /// <param name="ok">Whether the parsing completed without error.</param>
         public void EndRdf(bool ok)
         {
             if (!_inUse) throw new RdfParseException("Cannot End RDF Handling as this RDF Handler is not currently in-use");
@@ -224,17 +224,17 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Optionally used by derived Handlers to do additional actions on ending RDF handling
+        /// Optionally used by derived Handlers to do additional actions on ending RDF handling.
         /// </summary>
-        /// <param name="ok">Whether the parsing completed without error</param>
+        /// <param name="ok">Whether the parsing completed without error.</param>
         protected virtual void EndRdfInternal(bool ok)
         { }
 
         /// <summary>
-        /// Handles Namespace declarations
+        /// Handles Namespace declarations.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         public bool HandleNamespace(string prefix, Uri namespaceUri)
         {
@@ -244,10 +244,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Optionally used by derived Handlers to do additional actions on handling namespace declarations
+        /// Optionally used by derived Handlers to do additional actions on handling namespace declarations.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected virtual bool HandleNamespaceInternal(String prefix, Uri namespaceUri)
         {
@@ -255,9 +255,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Base URI declarations
+        /// Handles Base URI declarations.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         public bool HandleBaseUri(Uri baseUri)
         {
@@ -267,9 +267,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Optionally used by derived Handlers to do additional actions on handling Base URI declarations
+        /// Optionally used by derived Handlers to do additional actions on handling Base URI declarations.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected virtual bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -277,9 +277,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples
+        /// Handles Triples.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public bool HandleTriple(Triple t)
         {
@@ -289,14 +289,14 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Must be overridden by derived handlers to take appropriate Triple handling action
+        /// Must be overridden by derived handlers to take appropriate Triple handling action.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected abstract bool HandleTripleInternal(Triple t);
 
         /// <summary>
-        /// Gets whether the Handler will accept all Triples i.e. it will never abort handling early
+        /// Gets whether the Handler will accept all Triples i.e. it will never abort handling early.
         /// </summary>
         public abstract bool AcceptsAll
         {
@@ -307,7 +307,7 @@ namespace VDS.RDF.Parsing.Handlers
     }
 
     /// <summary>
-    /// Abstract Base Class for SPARQL Results Handlers
+    /// Abstract Base Class for SPARQL Results Handlers.
     /// </summary>
     public abstract class BaseResultsHandler
         : BaseHandler, ISparqlResultsHandler
@@ -315,14 +315,14 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _inUse = false;
 
         /// <summary>
-        /// Creates a new SPARQL Results Handler
+        /// Creates a new SPARQL Results Handler.
         /// </summary>
-        /// <param name="factory">Node Factory</param>
+        /// <param name="factory">Node Factory.</param>
         public BaseResultsHandler(INodeFactory factory)
             : base(factory) { }
 
         /// <summary>
-        /// Creates a new SPARQL Results Handler
+        /// Creates a new SPARQL Results Handler.
         /// </summary>
         public BaseResultsHandler()
             : this(new NodeFactory()) { }
@@ -330,7 +330,7 @@ namespace VDS.RDF.Parsing.Handlers
         #region ISparqlResultsHandler Members
 
         /// <summary>
-        /// Starts Results Handling
+        /// Starts Results Handling.
         /// </summary>
         public void StartResults()
         {
@@ -340,15 +340,15 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Optionally used by derived classes to take additional actions on starting Results Handling
+        /// Optionally used by derived classes to take additional actions on starting Results Handling.
         /// </summary>
         protected virtual void StartResultsInternal()
         { }
 
         /// <summary>
-        /// Ends Results Handling
+        /// Ends Results Handling.
         /// </summary>
-        /// <param name="ok">Whether parsing completed without error</param>
+        /// <param name="ok">Whether parsing completed without error.</param>
         public void EndResults(bool ok)
         {
             if (!_inUse) throw new RdfParseException("Cannot End Results Handling as this Results Handler is not currently in-use");
@@ -358,16 +358,16 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Optionally used by derived classes to take additional actions on ending Results Handling
+        /// Optionally used by derived classes to take additional actions on ending Results Handling.
         /// </summary>
-        /// <param name="ok">Whether parsing completed without error</param>
+        /// <param name="ok">Whether parsing completed without error.</param>
         protected virtual void EndResultsInternal(bool ok)
         { }
 
         /// <summary>
-        /// Handles a Boolean Results
+        /// Handles a Boolean Results.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         public void HandleBooleanResult(bool result)
         {
             if (!_inUse) throw new RdfParseException("Cannot Handle a Boolean Result as this Handler is not currently in-use");
@@ -375,15 +375,15 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Must be overridden by derived handlers to appropriately handle boolean results
+        /// Must be overridden by derived handlers to appropriately handle boolean results.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         protected abstract void HandleBooleanResultInternal(bool result);
 
         /// <summary>
-        /// Handles a Variable declaration
+        /// Handles a Variable declaration.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         /// <returns></returns>
         public bool HandleVariable(String var)
         {
@@ -392,16 +392,16 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Must be overridden by derived handlers to appropriately handle variable declarations
+        /// Must be overridden by derived handlers to appropriately handle variable declarations.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         /// <returns></returns>
         protected abstract bool HandleVariableInternal(String var);
 
         /// <summary>
-        /// Handlers SPARQL Results
+        /// Handlers SPARQL Results.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         public bool HandleResult(SparqlResult result)
         {
@@ -410,9 +410,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Must be overridden by derived handlers to appropriately handler SPARQL Results
+        /// Must be overridden by derived handlers to appropriately handler SPARQL Results.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         protected abstract bool HandleResultInternal(SparqlResult result);
 

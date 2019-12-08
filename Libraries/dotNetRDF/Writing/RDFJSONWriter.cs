@@ -34,20 +34,20 @@ using Newtonsoft.Json;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating RDF/Json Concrete Syntax
+    /// Class for generating RDF/Json Concrete Syntax.
     /// </summary>
     /// <remarks>
     /// <p>
     /// Uses the Json.Net library by <a href="http://james.newtonking.com">James Newton-King</a> to output RDF/Json according to the specification located on the <a href="http://n2.talis.com/wiki/RDF_JSON_Specification">Talis n2 Wiki</a>
     /// </p>
     /// </remarks>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
     public class RdfJsonWriter : BaseRdfWriter, IPrettyPrintingWriter
     {
         private bool _prettyprint = true;
 
         /// <summary>
-        /// Gets/Sets Pretty Print Mode for the Writer
+        /// Gets/Sets Pretty Print Mode for the Writer.
         /// </summary>
         public bool PrettyPrintMode
         {
@@ -62,10 +62,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph in RDF/Json syntax to the given File
+        /// Saves a Graph in RDF/Json syntax to the given File.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">Filename to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">Filename to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -75,10 +75,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph to an arbitrary output stream
+        /// Saves a Graph to an arbitrary output stream.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             // Always issue a Warning
@@ -88,10 +88,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal method which generates the RDF/Json Output for a Graph
+        /// Internal method which generates the RDF/Json Output for a Graph.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             // Get a Blank Node Output Mapper
@@ -270,9 +270,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal Helper method for raising the Warning event
+        /// Internal Helper method for raising the Warning event.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             if (Warning != null)
@@ -287,7 +287,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -34,15 +34,15 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
-    /// Abstract Base Class for SPARQL Describe Algorithms which provides BNode rewriting functionality
+    /// Abstract Base Class for SPARQL Describe Algorithms which provides BNode rewriting functionality.
     /// </summary>
     public abstract class BaseDescribeAlgorithm
         : ISparqlDescribe
     {
         /// <summary>
-        /// Gets the Description Graph based on the Query Results from the given Evaluation Context
+        /// Gets the Description Graph based on the Query Results from the given Evaluation Context.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public IGraph Describe(SparqlEvaluationContext context)
         {
@@ -52,10 +52,10 @@ namespace VDS.RDF.Query.Describe
         }
 
         /// <summary>
-        /// Gets the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler
+        /// Gets the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
         {
             try
@@ -97,18 +97,18 @@ namespace VDS.RDF.Query.Describe
         }
 
         /// <summary>
-        /// Generates the Description for each of the Nodes to be described
+        /// Generates the Description for each of the Nodes to be described.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="nodes">Nodes to be described</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="nodes">Nodes to be described.</param>
         protected abstract void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes);
 
         /// <summary>
-        /// Gets the Nodes that the algorithm should generate the descriptions for
+        /// Gets the Nodes that the algorithm should generate the descriptions for.
         /// </summary>
-        /// <param name="factory">Factory to create Nodes in</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="factory">Factory to create Nodes in.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         private List<INode> GetNodes(INodeFactory factory, SparqlEvaluationContext context)
         {
@@ -150,11 +150,11 @@ namespace VDS.RDF.Query.Describe
         // OPT: Replace with usage of MapTriple instead?
 
         /// <summary>
-        /// Helper method which rewrites Blank Node IDs for Describe Queries
+        /// Helper method which rewrites Blank Node IDs for Describe Queries.
         /// </summary>
-        /// <param name="t">Triple</param>
-        /// <param name="mapping">Mapping of IDs to new Blank Nodes</param>
-        /// <param name="factory">Factory to create Nodes in</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="mapping">Mapping of IDs to new Blank Nodes.</param>
+        /// <param name="factory">Factory to create Nodes in.</param>
         /// <returns></returns>
         protected Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, INodeFactory factory)
         {

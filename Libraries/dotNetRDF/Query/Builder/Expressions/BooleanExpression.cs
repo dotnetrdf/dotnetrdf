@@ -31,12 +31,12 @@ using VDS.RDF.Query.Expressions.Conditional;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a logical expression
+    /// Represents a logical expression.
     /// </summary>
     public sealed class BooleanExpression : TypedLiteralExpression<bool>
     {
         /// <summary>
-        /// Wraps the <paramref name="expression"/> as a boolean expression
+        /// Wraps the <paramref name="expression"/> as a boolean expression.
         /// </summary>
         public BooleanExpression(ISparqlExpression expression)
             : base(expression)

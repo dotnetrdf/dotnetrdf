@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which just determines whether any Triples are present terminating parsing as soon as the first triple is received
+    /// A RDF Handler which just determines whether any Triples are present terminating parsing as soon as the first triple is received.
     /// </summary>
     public class AnyHandler 
         : BaseRdfHandler
@@ -37,13 +37,13 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _any = false;
 
         /// <summary>
-        /// Creates a new Any Handler
+        /// Creates a new Any Handler.
         /// </summary>
         public AnyHandler()
             : base(new MockNodeFactory()) { }
 
         /// <summary>
-        /// Gets whether any Triples have been parsed
+        /// Gets whether any Triples have been parsed.
         /// </summary>
         public bool Any
         {
@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts handling RDF by resetting the <see cref="AnyHandler.Any">Any</see> flag to false
+        /// Starts handling RDF by resetting the <see cref="AnyHandler.Any">Any</see> flag to false.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -62,9 +62,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Base URIs by ignoring them
+        /// Handles Base URIs by ignoring them.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -72,10 +72,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Namespaces by ignoring them
+        /// Handles Namespaces by ignoring them.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -83,9 +83,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by setting the <see cref="AnyHandler.Any">Any</see> flag and terminating parsing
+        /// Handles Triples by setting the <see cref="AnyHandler.Any">Any</see> flag and terminating parsing.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that this handler does not accept all triples since it stops as soon as it sees the first triple
+        /// Gets that this handler does not accept all triples since it stops as soon as it sees the first triple.
         /// </summary>
         public override bool AcceptsAll
         {

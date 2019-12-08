@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents an Extend operation which is the formal algebraic form of the BIND operation
+    /// Represents an Extend operation which is the formal algebraic form of the BIND operation.
     /// </summary>
     public class Extend
         : IUnaryOperator
@@ -44,11 +44,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new Extend operator
+        /// Creates a new Extend operator.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="expr">Expression</param>
-        /// <param name="var">Variable to bind to</param>
+        /// <param name="pattern">Pattern.</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="var">Variable to bind to.</param>
         public Extend(ISparqlAlgebra pattern, ISparqlExpression expr, String var)
         {
             _inner = pattern;
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variable Name to be bound
+        /// Gets the Variable Name to be bound.
         /// </summary>
         public String VariableName
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Assignment Expression
+        /// Gets the Assignment Expression.
         /// </summary>
         public ISparqlExpression AssignExpression
         {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -95,9 +95,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -112,9 +112,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Algebra in the given context
+        /// Evaluates the Algebra in the given context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the variables used in the algebra
+        /// Gets the variables used in the algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -202,17 +202,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _inner.FloatingVariables.Concat(_var.AsEnumerable()); } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _inner.FixedVariables; } }
 
         /// <summary>
-        /// Converts the Algebra to a Query
+        /// Converts the Algebra to a Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra to a Graph Pattern
+        /// Converts the Algebra to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Extend
+        /// Gets the String representation of the Extend.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

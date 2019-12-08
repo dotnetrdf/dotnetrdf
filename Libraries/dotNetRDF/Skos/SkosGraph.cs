@@ -31,23 +31,23 @@ namespace VDS.RDF.Skos
     using VDS.RDF.Parsing;
 
     /// <summary>
-    /// Represents a wrapper around a SKOS graph providing convenient access to concepts, schemes, and collections
+    /// Represents a wrapper around a SKOS graph providing convenient access to concepts, schemes, and collections.
     /// </summary>
     public class SkosGraph : WrapperGraph
     {
         /// <summary>
-        /// Creates a new SKOS graph
+        /// Creates a new SKOS graph.
         /// </summary>
         public SkosGraph() : base() { }
 
         /// <summary>
-        /// Creates a new SKOS graph for the given graph
+        /// Creates a new SKOS graph for the given graph.
         /// </summary>
-        /// <param name="g">The graph this SKOS graph wraps</param>
+        /// <param name="g">The graph this SKOS graph wraps.</param>
         public SkosGraph(IGraph g) : base(g) { }
 
         /// <summary>
-        /// Gets concept schems contained in the graph
+        /// Gets concept schems contained in the graph.
         /// </summary>
         public IEnumerable<SkosConceptScheme> ConceptSchemes
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Skos
         }
 
         /// <summary>
-        /// Gets concepts contained in the graph
+        /// Gets concepts contained in the graph.
         /// </summary>
         public IEnumerable<SkosConcept> Concepts
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Skos
         }
 
         /// <summary>
-        /// Gets collections contained in the graph
+        /// Gets collections contained in the graph.
         /// </summary>
         public IEnumerable<SkosCollection> Collections
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Skos
         }
 
         /// <summary>
-        /// Gets ordered collections contained in the graph
+        /// Gets ordered collections contained in the graph.
         /// </summary>
         public IEnumerable<SkosOrderedCollection> OrderedCollections
         {

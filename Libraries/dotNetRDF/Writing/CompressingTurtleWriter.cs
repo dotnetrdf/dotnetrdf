@@ -37,12 +37,12 @@ namespace VDS.RDF.Writing
 {
 
     /// <summary>
-    /// Class for generating Turtle Concrete RDF Syntax which provides varying levels of Syntax Compression
+    /// Class for generating Turtle Concrete RDF Syntax which provides varying levels of Syntax Compression.
     /// </summary>
     /// <remarks>
-    /// Similar in speed to the standard <see cref="TurtleWriter">TurtleWriter</see> but capable of using more syntax compressions depending on the Compression level set
+    /// Similar in speed to the standard <see cref="TurtleWriter">TurtleWriter</see> but capable of using more syntax compressions depending on the Compression level set.
     /// </remarks>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
     public class CompressingTurtleWriter 
         : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
     {
@@ -53,7 +53,7 @@ namespace VDS.RDF.Writing
         private TurtleSyntax _syntax = TurtleSyntax.Original;
 
         /// <summary>
-        /// Creates a new Compressing Turtle Writer which uses the Default Compression Level
+        /// Creates a new Compressing Turtle Writer which uses the Default Compression Level.
         /// </summary>
         public CompressingTurtleWriter()
         {
@@ -61,30 +61,30 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Creates a new Compressing Turtle Writer which uses the given Compression Level
+        /// Creates a new Compressing Turtle Writer which uses the given Compression Level.
         /// </summary>
-        /// <param name="compressionLevel">Desired Compression Level</param>
-        /// <remarks>See Remarks for this classes <see cref="CompressingTurtleWriter.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have</remarks>
+        /// <param name="compressionLevel">Desired Compression Level.</param>
+        /// <remarks>See Remarks for this classes <see cref="CompressingTurtleWriter.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have.</remarks>
         public CompressingTurtleWriter(int compressionLevel)
         {
             _compressionLevel = compressionLevel;
         }
 
         /// <summary>
-        /// Creates a new compressing Turtle writer using the given syntax level
+        /// Creates a new compressing Turtle writer using the given syntax level.
         /// </summary>
-        /// <param name="syntax">Syntax Level</param>
+        /// <param name="syntax">Syntax Level.</param>
         public CompressingTurtleWriter(TurtleSyntax syntax)
         {
             _syntax = syntax;
         }
 
         /// <summary>
-        /// Creates a new Compressing Turtle Writer which uses the given Compression Level and Syntax Level
+        /// Creates a new Compressing Turtle Writer which uses the given Compression Level and Syntax Level.
         /// </summary>
-        /// <param name="compressionLevel">Desired Compression Level</param>
-        /// <param name="syntax">Syntax Level</param>
-        /// <remarks>See Remarks for this classes <see cref="CompressingTurtleWriter.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have</remarks>
+        /// <param name="compressionLevel">Desired Compression Level.</param>
+        /// <param name="syntax">Syntax Level.</param>
+        /// <remarks>See Remarks for this classes <see cref="CompressingTurtleWriter.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have.</remarks>
         public CompressingTurtleWriter(int compressionLevel, TurtleSyntax syntax)
             : this(compressionLevel)
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether Pretty Printing is used
+        /// Gets/Sets whether Pretty Printing is used.
         /// </summary>
         public bool PrettyPrintMode
         {
@@ -107,7 +107,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether High Speed Write Mode should be allowed
+        /// Gets/Sets whether High Speed Write Mode should be allowed.
         /// </summary>
         public bool HighSpeedModePermitted
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level to be used
+        /// Gets/Sets the Compression Level to be used.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the Default Namespaces that are always available
+        /// Gets/Sets the Default Namespaces that are always available.
         /// </summary>
         public INamespaceMapper DefaultNamespaces
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by the writer
+        /// Gets the type of the Triple Formatter used by the writer.
         /// </summary>
         public Type TripleFormatterType
         {
@@ -173,10 +173,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph to a file using Turtle Syntax
+        /// Saves a Graph to a file using Turtle Syntax.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">File to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -186,10 +186,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph to the given Stream using Turtle Syntax
+        /// Saves a Graph to the given Stream using Turtle Syntax.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             // Create the Writing Context
@@ -199,7 +199,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates the Turtle Syntax for the Graph
+        /// Generates the Turtle Syntax for the Graph.
         /// </summary>
         private void GenerateOutput(CompressingTurtleWriterContext context)
         {
@@ -326,12 +326,12 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates Output for Triples as a single "s p o." Triple
+        /// Generates Output for Triples as a single "s p o." Triple.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="t">Triple to output</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="t">Triple to output.</param>
         /// <returns></returns>
-        /// <remarks>Used only in High Speed Write Mode</remarks>
+        /// <remarks>Used only in High Speed Write Mode.</remarks>
         private String GenerateTripleOutput(CompressingTurtleWriterContext context, Triple t)
         {
             StringBuilder temp = new StringBuilder();
@@ -346,12 +346,12 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates Output for Nodes in Turtle syntax
+        /// Generates Output for Nodes in Turtle syntax.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="n">Node to generate output for</param>
-        /// <param name="segment">Segment of the Triple being written</param>
-        /// <param name="indent">Indentation</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="n">Node to generate output for.</param>
+        /// <param name="segment">Segment of the Triple being written.</param>
+        /// <param name="indent">Indentation.</param>
         /// <returns></returns>
         private String GenerateNodeOutput(CompressingTurtleWriterContext context, INode n, TripleSegment segment, int indent)
         {
@@ -391,11 +391,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal Helper method which converts a Collection into Turtle Syntax
+        /// Internal Helper method which converts a Collection into Turtle Syntax.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="c">Collection to convert</param>
-        /// <param name="indent">Indentation</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="c">Collection to convert.</param>
+        /// <param name="indent">Indentation.</param>
         /// <returns></returns>
         private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRdfCollection c, int indent)
         {
@@ -465,9 +465,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method for generating Parser Warning Events
+        /// Helper method for generating Parser Warning Events.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             if (Warning != null)
@@ -482,7 +482,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

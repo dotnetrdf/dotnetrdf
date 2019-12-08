@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>
+        /// Adds additional SELECT <paramref name="variables"/>.
         /// </summary>
         public ISelectBuilder And(params SparqlVariable[] variables)
         {
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds additional SELECT expression
+        /// Adds additional SELECT expression.
         /// </summary>
         public IAssignmentVariableNamePart<ISelectBuilder> And<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>
+        /// Adds additional SELECT <paramref name="variables"/>.
         /// </summary>
         public ISelectBuilder And(params string[] variables)
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
+        /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default).
         /// </summary>
         public ISelectBuilder Distinct()
         {

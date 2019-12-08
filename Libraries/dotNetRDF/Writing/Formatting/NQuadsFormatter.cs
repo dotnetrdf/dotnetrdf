@@ -30,29 +30,29 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple
+    /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple.
     /// </summary>
     public class NQuadsFormatter
         : NTriplesFormatter
     {
         /// <summary>
-        /// Creates a new NQuads Formatter
+        /// Creates a new NQuads Formatter.
         /// </summary>
         public NQuadsFormatter()
             : this(NQuadsSyntax.Original, GetName()) { }
 
         /// <summary>
-        /// Creates a new NQuads formatter
+        /// Creates a new NQuads formatter.
         /// </summary>
-        /// <param name="syntax">NQuads syntax to output</param>
+        /// <param name="syntax">NQuads syntax to output.</param>
         public NQuadsFormatter(NQuadsSyntax syntax)
             : this(syntax, GetName(syntax)) { }
 
         /// <summary>
-        /// Creates a new NQuads formatter
+        /// Creates a new NQuads formatter.
         /// </summary>
-        /// <param name="syntax">NQuads syntax to output</param>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="syntax">NQuads syntax to output.</param>
+        /// <param name="formatName">Format Name.</param>
         public NQuadsFormatter(NQuadsSyntax syntax, String formatName)
             : base(NQuadsParser.AsNTriplesSyntax(syntax), formatName) { }
 
@@ -73,9 +73,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Triple as a String
+        /// Formats a Triple as a String.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override string Format(Triple t)
         {
@@ -88,13 +88,13 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
-    /// Formatter which formats Triples as NQuads according to the RDF 1.1 NQuads specification
+    /// Formatter which formats Triples as NQuads according to the RDF 1.1 NQuads specification.
     /// </summary>
     public class NQuads11Formatter
         : NQuadsFormatter
     {
         /// <summary>
-        /// Creates a new formatter
+        /// Creates a new formatter.
         /// </summary>
         public NQuads11Formatter()
             : base(NQuadsSyntax.Rdf11) { }

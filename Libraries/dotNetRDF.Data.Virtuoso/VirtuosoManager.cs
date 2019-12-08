@@ -44,32 +44,32 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// A Manager for accessing the Native Virtuoso Quad Store
+    /// A Manager for accessing the Native Virtuoso Quad Store.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This class implements <see cref="IStorageProvider">IStorageProvider</see> allowing it to be used with any of the general classes that support this interface as well as the Virtuoso specific classes.
     /// </para>
     /// <para>
-    /// Although this class takes a Database Name to ensure compatability with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter
+    /// Although this class takes a Database Name to ensure compatability with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter.
     /// </para>
     /// <para>
     /// Virtuoso automatically assigns IDs to Blank Nodes input into it, these IDs are <strong>not</strong> based on the actual Blank Node ID so inputting a Blank Node with the same ID multiple times will result in multiple Nodes being created in Virtuoso.  This means that data containing Blank Nodes which is stored to Virtuoso and then retrieved will have different Blank Node IDs to those input.  In addition there is no guarentee that when you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs even if the Graph being saved was originally retrieved from Virtuoso.  Finally please see the remarks on the <see cref="VirtuosoManager.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
     /// </para>
     /// <para>
-    /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.BaseUri">BaseUri</see> property indicates that the Graph affects the Default Graph
+    /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.BaseUri">BaseUri</see> property indicates that the Graph affects the Default Graph.
     /// </para>
     /// </remarks>
     public class VirtuosoManager
         : BaseAsyncSafeConnector, IUpdateableStorage, IConfigurationSerializable
     {
         /// <summary>
-        /// Default Port for Virtuoso Servers
+        /// Default Port for Virtuoso Servers.
         /// </summary>
         public const int DefaultPort = 1111;
 
         /// <summary>
-        /// Default Database for Virtuoso Server Quad Store
+        /// Default Database for Virtuoso Server Quad Store.
         /// </summary>
         public const String DefaultDB = "DB";
 
@@ -87,23 +87,23 @@ namespace VDS.RDF.Storage
         private readonly int _dbport, _timeout = 0;
 
         /// <summary>
-        /// Indicates whether the Database Connection is currently being kept open
+        /// Indicates whether the Database Connection is currently being kept open.
         /// </summary>
         private bool _keepOpen = false;
 
         private readonly bool _customConnString = false;
 
         /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// Creates a Manager for a Virtuoso Native Quad Store.
         /// </summary>
-        /// <param name="server">Server</param>
-        /// <param name="port">Port</param>
-        /// <param name="db">Database Name</param>
-        /// <param name="user">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="timeout">Connection Timeout in Seconds</param>
+        /// <param name="server">Server.</param>
+        /// <param name="port">Port.</param>
+        /// <param name="db">Database Name.</param>
+        /// <param name="user">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="timeout">Connection Timeout in Seconds.</param>
         /// <remarks>
-        /// Timeouts less than equal to zero are ignored and treated as using the default timeout which is dictated by the underlying Virtuoso ADO.Net provider
+        /// Timeouts less than equal to zero are ignored and treated as using the default timeout which is dictated by the underlying Virtuoso ADO.Net provider.
         /// </remarks>
         public VirtuosoManager(String server, int port, String db, String user, String password, int timeout)
         {
@@ -137,27 +137,27 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// Creates a Manager for a Virtuoso Native Quad Store.
         /// </summary>
-        /// <param name="server">Server</param>
-        /// <param name="port">Port</param>
-        /// <param name="db">Database Name</param>
-        /// <param name="user">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="server">Server.</param>
+        /// <param name="port">Port.</param>
+        /// <param name="db">Database Name.</param>
+        /// <param name="user">Username.</param>
+        /// <param name="password">Password.</param>
         public VirtuosoManager(String server, int port, String db, String user, String password)
             : this(server, port, db, user, password, 0)
         {
         }
 
         /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// Creates a Manager for a Virtuoso Native Quad Store.
         /// </summary>
-        /// <param name="db">Database Name</param>
-        /// <param name="user">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="timeout">Connection Timeout in Seconds</param>
+        /// <param name="db">Database Name.</param>
+        /// <param name="user">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="timeout">Connection Timeout in Seconds.</param>
         /// <remarks>
-        /// Assumes the Server is on the localhost and the port is the default installation port of 1111
+        /// Assumes the Server is on the localhost and the port is the default installation port of 1111.
         /// </remarks>
         public VirtuosoManager(String db, String user, String password, int timeout)
             : this("localhost", VirtuosoManager.DefaultPort, db, user, password, timeout)
@@ -165,13 +165,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// Creates a Manager for a Virtuoso Native Quad Store.
         /// </summary>
-        /// <param name="db">Database Name</param>
-        /// <param name="user">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="db">Database Name.</param>
+        /// <param name="user">Username.</param>
+        /// <param name="password">Password.</param>
         /// <remarks>
-        /// Assumes the Server is on the localhost and the port is the default installation port of 1111
+        /// Assumes the Server is on the localhost and the port is the default installation port of 1111.
         /// </remarks>
         public VirtuosoManager(String db, String user, String password)
             : this("localhost", VirtuosoManager.DefaultPort, db, user, password, 0)
@@ -179,11 +179,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// Creates a Manager for a Virtuoso Native Quad Store.
         /// </summary>
-        /// <param name="connectionString">Connection String</param>
+        /// <param name="connectionString">Connection String.</param>
         /// <remarks>
-        /// Allows the end user to specify a customised connection string
+        /// Allows the end user to specify a customised connection string.
         /// </remarks>
         public VirtuosoManager(String connectionString)
         {
@@ -196,10 +196,10 @@ namespace VDS.RDF.Storage
         #region Triple Loading & Saving
 
         /// <summary>
-        /// Loads a Graph from the Quad Store
+        /// Loads a Graph from the Quad Store.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to Load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to Load.</param>
         public override void LoadGraph(IGraph g, Uri graphUri)
         {
             if (g.IsEmpty && graphUri != null)
@@ -210,10 +210,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Quad Store
+        /// Loads a Graph from the Quad Store.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to Load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to Load.</param>
         public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             if (graphUri == null) throw new RdfStorageException("Cannot load an unnamed Graph from Virtuoso as this would require loading the entirety of the Virtuoso Quad Store into memory!");
@@ -263,10 +263,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Quad Store
+        /// Loads a Graph from the Quad Store.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to Load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to Load.</param>
         public override void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -280,10 +280,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Quad Store
+        /// Loads a Graph from the Quad Store.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to Load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to Load.</param>
         public override void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -297,12 +297,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a Table of Triples that are in the given Graph
+        /// Gets a Table of Triples that are in the given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
+        /// <param name="graphUri">Graph Uri.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Assumes that the caller has opened the Database connection
+        /// Assumes that the caller has opened the Database connection.
         /// </remarks>
         private DataTable LoadTriples(Uri graphUri)
         {
@@ -332,10 +332,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Decodes an Object into an appropriate Node
+        /// Decodes an Object into an appropriate Node.
         /// </summary>
-        /// <param name="factory">Node Factory to use to create Node</param>
-        /// <param name="n">Object to convert</param>
+        /// <param name="factory">Node Factory to use to create Node.</param>
+        /// <param name="n">Object to convert.</param>
         /// <returns></returns>
         private INode LoadNode(INodeFactory factory, Object n)
         {
@@ -488,11 +488,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph into the Quad Store (Warning: Completely replaces any existing Graph with the same URI)
+        /// Saves a Graph into the Quad Store (Warning: Completely replaces any existing Graph with the same URI).
         /// </summary>
-        /// <param name="g">Graph to save</param>
+        /// <param name="g">Graph to save.</param>
         /// <remarks>
-        /// Completely replaces any previously saved Graph with the same Graph URI
+        /// Completely replaces any previously saved Graph with the same Graph URI.
         /// </remarks>
         public override void SaveGraph(IGraph g)
         {
@@ -529,7 +529,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the store
+        /// Gets the IO Behaviour of the store.
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
@@ -537,11 +537,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Quad Store
+        /// Updates a Graph in the Quad Store.
         /// </summary>
-        /// <param name="graphUri">Graph Uri of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Graph Uri of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         /// <remarks>
         /// <para>
         /// In the case of inserts where blank nodes are present the data will be inserted but new blank nodes will be created.  You cannot insert data that refers to existing blank nodes via this method, consider using a INSERT WHERE style SPARQL Update instead.
@@ -680,11 +680,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Quad Store
+        /// Updates a Graph in the Quad Store.
         /// </summary>
-        /// <param name="graphUri">Graph Uri of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Graph Uri of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             Uri u = (graphUri.Equals(String.Empty)) ? null : UriFactory.Create(graphUri);
@@ -692,7 +692,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Indicates that Updates are supported by the Virtuoso Native Quad Store
+        /// Indicates that Updates are supported by the Virtuoso Native Quad Store.
         /// </summary>
         public override bool UpdateSupported
         {
@@ -700,7 +700,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Manager is ready
+        /// Returns that the Manager is ready.
         /// </summary>
         public override bool IsReady
         {
@@ -708,7 +708,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Manager is not read-only
+        /// Returns that the Manager is not read-only.
         /// </summary>
         public override bool IsReadOnly
         {
@@ -720,9 +720,9 @@ namespace VDS.RDF.Storage
         #region Native Query & Update
 
         /// <summary>
-        /// Executes a SPARQL Query on the native Quad Store
+        /// Executes a SPARQL Query on the native Quad Store.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query to execute</param>
+        /// <param name="sparqlQuery">SPARQL Query to execute.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -735,7 +735,7 @@ namespace VDS.RDF.Storage
         /// If you use an aggregate query which has an Integer, Decimal or Double type result then you will receive a <see cref="SparqlResultSet">SparqlResultSet</see> containing a single <see cref="SparqlResult">SparqlResult</see> which has contains a binding for a variable named <strong>Result</strong> which contains a <see cref="LiteralNode">LiteralNode</see> typed to the appropriate datatype.
         /// </para>
         /// </remarks>
-        /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query</exception>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query.</exception>
         public Object Query(String sparqlQuery)
         {
             Graph g = new Graph();
@@ -750,11 +750,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the native Quad Store processing the results with an appropriate handler from those provided
+        /// Executes a SPARQL Query on the native Quad Store processing the results with an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query to execute</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query to execute.</param>
         /// <remarks>
         /// <para>
         /// This method will first attempt to parse the query into a <see cref="SparqlQuery">SparqlQuery</see> object.  If this succeeds then the Query Type can be used to determine how to handle the response.
@@ -766,7 +766,7 @@ namespace VDS.RDF.Storage
         /// If you use an aggregate query which has an Integer, Decimal or Double type result then you will receive a <see cref="SparqlResultSet">SparqlResultSet</see> containing a single <see cref="SparqlResult">SparqlResult</see> which has contains a binding for a variable named <strong>Result</strong> which contains a <see cref="LiteralNode">LiteralNode</see> typed to the appropriate datatype.
         /// </para>
         /// </remarks>
-        /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query</exception>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query.</exception>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
@@ -1170,9 +1170,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Update on the native Quad Store
+        /// Executes a SPARQL Update on the native Quad Store.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update to execute</param>
+        /// <param name="sparqlUpdate">SPARQL Update to execute.</param>
         /// <remarks>
         /// <para>
         /// This method will first attempt to parse the update into a <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> object.  If this succeeds then each command in the command set will be issued to Virtuoso.
@@ -1181,7 +1181,7 @@ namespace VDS.RDF.Storage
         /// If the parsing fails then the update will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL extensions which the library does not support and primarily supports SPARUL updates (the precusor to SPARQL 1.1 Update).
         /// </para>
         /// </remarks>
-        /// <exception cref="SparqlUpdateException">Thrown if an error occurs in making the update</exception>
+        /// <exception cref="SparqlUpdateException">Thrown if an error occurs in making the update.</exception>
         public void Update(String sparqlUpdate)
         {
             try
@@ -1238,18 +1238,18 @@ namespace VDS.RDF.Storage
         #endregion
 
         /// <summary>
-        /// Deletes a Graph from the Virtuoso store
+        /// Deletes a Graph from the Virtuoso store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
         public override void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(this.UnmarshalUri(graphUri));
         }
 
         /// <summary>
-        /// Deletes a Graph from the store
+        /// Deletes a Graph from the store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
         public override void DeleteGraph(String graphUri)
         {
             if (graphUri == null) return;
@@ -1269,7 +1269,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting Graphs is supported
+        /// Returns that deleting Graphs is supported.
         /// </summary>
         public override bool DeleteSupported
         {
@@ -1277,7 +1277,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the Graphs in the store
+        /// Lists the Graphs in the store.
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
@@ -1326,7 +1326,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that listing graphs is supported
+        /// Returns that listing graphs is supported.
         /// </summary>
         public override bool ListGraphsSupported
         {
@@ -1336,19 +1336,19 @@ namespace VDS.RDF.Storage
         #region Database IO
 
         /// <summary>
-        /// Opens a Connection to the Database
+        /// Opens a Connection to the Database.
         /// </summary>
-        /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started</param>
+        /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started.</param>
         private void Open(bool keepOpen)
         {
             this.Open(keepOpen, IsolationLevel.ReadCommitted);
         }
 
         /// <summary>
-        /// Opens a Connection to the Database
+        /// Opens a Connection to the Database.
         /// </summary>
-        /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started</param>
-        /// <param name="level">Isolation Level to use</param>
+        /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started.</param>
+        /// <param name="level">Isolation Level to use.</param>
         private void Open(bool keepOpen, IsolationLevel level)
         {
             switch (this._db.State)
@@ -1368,19 +1368,19 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Closes the Connection to the Database
+        /// Closes the Connection to the Database.
         /// </summary>
-        /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened</param>
+        /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened.</param>
         private void Close(bool forceClose)
         {
             this.Close(forceClose, false);
         }
 
         /// <summary>
-        /// Closes the Connection to the Database
+        /// Closes the Connection to the Database.
         /// </summary>
-        /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened</param>
-        /// <param name="rollbackTrans">Indicates that the Transaction should be rolled back because something has gone wrong</param>
+        /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened.</param>
+        /// <param name="rollbackTrans">Indicates that the Transaction should be rolled back because something has gone wrong.</param>
         private void Close(bool forceClose, bool rollbackTrans)
         {
             //Don't close if we're keeping open and not forcing Close or rolling back a Transaction
@@ -1416,9 +1416,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a Non-Query SQL Command against the database
+        /// Executes a Non-Query SQL Command against the database.
         /// </summary>
-        /// <param name="sqlCmd">SQL Command</param>
+        /// <param name="sqlCmd">SQL Command.</param>
         private void ExecuteNonQuery(string sqlCmd)
         {
             //Create the SQL Command
@@ -1435,10 +1435,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a Query SQL Command against the database and returns a DataTable
+        /// Executes a Query SQL Command against the database and returns a DataTable.
         /// </summary>
-        /// <param name="sqlCmd">SQL Command</param>
-        /// <returns>DataTable of results</returns>
+        /// <param name="sqlCmd">SQL Command.</param>
+        /// <returns>DataTable of results.</returns>
         private DataTable ExecuteQuery(string sqlCmd)
         {
             //Create the SQL Command
@@ -1459,10 +1459,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result)
+        /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result).
         /// </summary>
-        /// <param name="sqlCmd">SQL Command</param>
-        /// <returns>First Column of First Row of the Results</returns>
+        /// <param name="sqlCmd">SQL Command.</param>
+        /// <returns>First Column of First Row of the Results.</returns>
         private object ExecuteScalar(string sqlCmd)
         {
             //Create the SQL Command
@@ -1479,7 +1479,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether there is an active connection to the Virtuoso database
+        /// Gets whether there is an active connection to the Virtuoso database.
         /// </summary>
         public bool HasOpenConnection
         {
@@ -1487,7 +1487,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether there is any active transaction on the Virtuoso database
+        /// Gets whether there is any active transaction on the Virtuoso database.
         /// </summary>
         public bool HasActiveTransaction
         {
@@ -1499,7 +1499,7 @@ namespace VDS.RDF.Storage
         #region IDisposable Members
 
         /// <summary>
-        /// Disposes of the Manager
+        /// Disposes of the Manager.
         /// </summary>
         public override void Dispose()
         {
@@ -1509,7 +1509,7 @@ namespace VDS.RDF.Storage
         #endregion
 
         /// <summary>
-        /// Gets a String which gives details of the Connection
+        /// Gets a String which gives details of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -1522,9 +1522,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             if (this._customConnString)

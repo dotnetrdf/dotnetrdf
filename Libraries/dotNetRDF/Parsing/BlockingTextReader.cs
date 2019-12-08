@@ -30,13 +30,13 @@ using System.IO;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// An extended <see cref="TextReader"/> for use in parsing
+    /// An extended <see cref="TextReader"/> for use in parsing.
     /// </summary>
     public abstract class ParsingTextReader
         : TextReader
     {
         /// <summary>
-        /// Gets whether the end of the stream has been reached
+        /// Gets whether the end of the stream has been reached.
         /// </summary>
         public abstract bool EndOfStream
         {
@@ -44,12 +44,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Text Reader to wrap</param>
-        /// <param name="bufferSize">Buffer Size</param>
+        /// <param name="input">Text Reader to wrap.</param>
+        /// <param name="bufferSize">Buffer Size.</param>
         /// <remarks>
-        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
+        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op.
         /// </remarks>
         public static ParsingTextReader Create(TextReader input, int bufferSize)
         {
@@ -73,11 +73,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Text Reader to wrap</param>
+        /// <param name="input">Text Reader to wrap.</param>
         /// <remarks>
-        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
+        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op.
         /// </remarks>
         public static ParsingTextReader Create(TextReader input)
         {
@@ -85,10 +85,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer Size</param>
+        /// <param name="input">Input Stream.</param>
+        /// <param name="bufferSize">Buffer Size.</param>
         public static ParsingTextReader Create(Stream input, int bufferSize)
         {
             if (!Options.ForceBlockingIO && (input is FileStream || input is MemoryStream))
@@ -102,18 +102,18 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input Stream.</param>
         public static ParsingTextReader Create(Stream input)
         {
             return Create(input, BufferedTextReader.DefaultBufferSize);
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input reader</param>
+        /// <param name="input">Input reader.</param>
         /// <returns></returns>
         public static BlockingTextReader CreateBlocking(TextReader input)
         {
@@ -121,10 +121,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input reader</param>
-        /// <param name="bufferSize">Buffer Size</param>
+        /// <param name="input">Input reader.</param>
+        /// <param name="bufferSize">Buffer Size.</param>
         /// <returns></returns>
         public static BlockingTextReader CreateBlocking(TextReader input, int bufferSize)
         {
@@ -133,9 +133,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new non-blocking Text Reader
+        /// Creates a new non-blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input reader</param>
+        /// <param name="input">Input reader.</param>
         /// <returns></returns>
         public static NonBlockingTextReader CreateNonBlocking(TextReader input)
         {
@@ -144,10 +144,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new non-blocking Text Reader
+        /// Creates a new non-blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input reader</param>
-        /// <param name="bufferSize">Buffer Size</param>
+        /// <param name="input">Input reader.</param>
+        /// <param name="bufferSize">Buffer Size.</param>
         /// <returns></returns>
         public static NonBlockingTextReader CreateNonBlocking(TextReader input, int bufferSize)
         {
@@ -157,44 +157,44 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// Abstract class representing a text reader that provides buffering on top of another text reader
+    /// Abstract class representing a text reader that provides buffering on top of another text reader.
     /// </summary>
     public abstract class BufferedTextReader
         : ParsingTextReader
     {
         /// <summary>
-        /// Default Buffer Size
+        /// Default Buffer Size.
         /// </summary>
         public const int DefaultBufferSize = 1024;
 
         /// <summary>
-        /// Buffer array
+        /// Buffer array.
         /// </summary>
         protected char[] _buffer;
         /// <summary>
-        /// Current buffer position
+        /// Current buffer position.
         /// </summary>
         protected int _pos = -1;
         /// <summary>
-        /// Current buffer size (may be less than length of buffer array)
+        /// Current buffer size (may be less than length of buffer array).
         /// </summary>
         protected int _bufferAmount = -1;
         /// <summary>
-        /// Whether underlying reader has been exhausted
+        /// Whether underlying reader has been exhausted.
         /// </summary>
         protected bool _finished = false;
         /// <summary>
-        /// Underlying reader
+        /// Underlying reader.
         /// </summary>
         protected readonly TextReader _reader;
 
         /// <summary>
-        /// Creates a buffered reader
+        /// Creates a buffered reader.
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="bufferSize"></param>
-        /// <exception cref="ArgumentException">raised if <paramref name="bufferSize"/> is less than 1</exception>
-        /// <exception cref="ArgumentNullException">raised if <paramref name="reader"/> is null</exception>
+        /// <exception cref="ArgumentException">raised if <paramref name="bufferSize"/> is less than 1.</exception>
+        /// <exception cref="ArgumentNullException">raised if <paramref name="reader"/> is null.</exception>
         protected BufferedTextReader(TextReader reader, int bufferSize)
         {
             if (bufferSize < 1) throw new ArgumentException("bufferSize must be >= 1", nameof(bufferSize));
@@ -203,17 +203,17 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Requests that the buffer be filled
+        /// Requests that the buffer be filled.
         /// </summary>
         protected abstract void FillBuffer();
 
         /// <summary>
-        /// Reads a sequence of characters from the buffer in a blocking way
+        /// Reads a sequence of characters from the buffer in a blocking way.
         /// </summary>
-        /// <param name="buffer">Buffer</param>
-        /// <param name="index">Index at which to start writing to the Buffer</param>
-        /// <param name="count">Number of characters to read</param>
-        /// <returns>Number of characters read</returns>
+        /// <param name="buffer">Buffer.</param>
+        /// <param name="index">Index at which to start writing to the Buffer.</param>
+        /// <param name="count">Number of characters to read.</param>
+        /// <returns>Number of characters read.</returns>
         public override int ReadBlock(char[] buffer, int index, int count)
         {
             if (count == 0) return 0;
@@ -284,21 +284,21 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads a sequence of characters from the buffer
+        /// Reads a sequence of characters from the buffer.
         /// </summary>
-        /// <param name="buffer">Buffer</param>
-        /// <param name="index">Index at which to start writing to the Buffer</param>
-        /// <param name="count">Number of characters to read</param>
-        /// <returns>Number of characters read</returns>
+        /// <param name="buffer">Buffer.</param>
+        /// <param name="index">Index at which to start writing to the Buffer.</param>
+        /// <param name="count">Number of characters to read.</param>
+        /// <returns>Number of characters read.</returns>
         public override int Read(char[] buffer, int index, int count)
         {
             return ReadBlock(buffer, index, count);
         }
 
         /// <summary>
-        /// Reads a single character from the underlying Text Reader
+        /// Reads a single character from the underlying Text Reader.
         /// </summary>
-        /// <returns>Character read or -1 if at end of input</returns>
+        /// <returns>Character read or -1 if at end of input.</returns>
         public override int Read()
         {
             if (_bufferAmount == -1 || _pos >= _bufferAmount - 1)
@@ -319,9 +319,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Peeks at the next character from the underlying Text Reader
+        /// Peeks at the next character from the underlying Text Reader.
         /// </summary>
-        /// <returns>Character peeked or -1 if at end of input</returns>
+        /// <returns>Character peeked or -1 if at end of input.</returns>
         public override int Peek()
         {
             if (_bufferAmount == -1 || _pos >= _bufferAmount - 1)
@@ -341,7 +341,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether the end of the input has been reached
+        /// Gets whether the end of the input has been reached.
         /// </summary>
         public override bool EndOfStream
         {
@@ -361,7 +361,7 @@ namespace VDS.RDF.Parsing
         }
 #else
         /// <summary>
-        /// Closes the reader and the underlying reader
+        /// Closes the reader and the underlying reader.
         /// </summary>
         public override void Close()
         {
@@ -370,9 +370,9 @@ namespace VDS.RDF.Parsing
 #endif
 
         /// <summary>
-        /// Disposes of the reader and the underlying reader
+        /// Disposes of the reader and the underlying reader.
         /// </summary>
-        /// <param name="disposing">Whether this was called from the Dispose() method</param>
+        /// <param name="disposing">Whether this was called from the Dispose() method.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
@@ -394,37 +394,37 @@ namespace VDS.RDF.Parsing
         : BufferedTextReader
     {
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
-        /// <param name="bufferSize">Buffer Size</param>
+        /// <param name="reader">Text Reader to wrap.</param>
+        /// <param name="bufferSize">Buffer Size.</param>
         internal BlockingTextReader(TextReader reader, int bufferSize)
             : base(reader, bufferSize) { }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="reader">Text Reader to wrap.</param>
         internal BlockingTextReader(TextReader reader)
             : this(reader, DefaultBufferSize) { }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer Size</param>
+        /// <param name="input">Input Stream.</param>
+        /// <param name="bufferSize">Buffer Size.</param>
         internal BlockingTextReader(Stream input, int bufferSize)
             : this(new StreamReader(input), bufferSize) { }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a new Blocking Text Reader.
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input Stream.</param>
         internal BlockingTextReader(Stream input)
             : this(new StreamReader(input)) { }
 
         /// <summary>
-        /// Fills the Buffer
+        /// Fills the Buffer.
         /// </summary>
         protected override void FillBuffer()
         {
@@ -442,10 +442,10 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// The NonBlockingTextReader is an implementation of a <see cref="BufferedTextReader"/> designed to wrap other readers where latency is known not to be a problem and we don't expect to ever have an empty read occur before the actual end of the stream
+    /// The NonBlockingTextReader is an implementation of a <see cref="BufferedTextReader"/> designed to wrap other readers where latency is known not to be a problem and we don't expect to ever have an empty read occur before the actual end of the stream.
     /// </summary>
     /// <remarks>
-    /// Currently we only use this for file and network streams, you can force this to never be used with the global static <see cref="Options.ForceBlockingIO"/> option
+    /// Currently we only use this for file and network streams, you can force this to never be used with the global static <see cref="Options.ForceBlockingIO"/> option.
     /// </remarks>
     public sealed class NonBlockingTextReader
         : BufferedTextReader
@@ -463,7 +463,7 @@ namespace VDS.RDF.Parsing
             : this(new StreamReader(input)) { }
 
         /// <summary>
-        /// Fills the buffer in a non-blocking manner
+        /// Fills the buffer in a non-blocking manner.
         /// </summary>
         protected override void FillBuffer()
         {

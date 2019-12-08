@@ -27,7 +27,7 @@
 namespace System.Web.UI
 {
     /// <summary>
-    /// CSS Styles
+    /// CSS Styles.
     /// </summary>
     public enum HtmlTextWriterStyle
     {
@@ -202,6 +202,6 @@ namespace System.Web.UI
         /// <summary>
         /// Z Index
         /// </summary>
-        ZIndex
+        ZIndex,
     }
 }

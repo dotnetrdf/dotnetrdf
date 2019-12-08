@@ -32,17 +32,17 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Static Helper for the Storage API
+    /// Static Helper for the Storage API.
     /// </summary>
     public static class StorageHelper
     {
         /// <summary>
-        /// Template for posting form data as part of a HTTP multipart request
+        /// Template for posting form data as part of a HTTP multipart request.
         /// </summary>
         public const String HttpMultipartContentTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
 
         /// <summary>
-        /// Gets a new unique boundary for HTTP mutlipart requests
+        /// Gets a new unique boundary for HTTP mutlipart requests.
         /// </summary>
         public static String HttpMultipartBoundary
         {
@@ -58,9 +58,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Handles HTTP Query Errors obtaining additional information from the HTTP response if possible
+        /// Handles HTTP Query Errors obtaining additional information from the HTTP response if possible.
         /// </summary>
-        /// <param name="webEx">HTTP Error</param>
+        /// <param name="webEx">HTTP Error.</param>
         /// <returns></returns>
         public static RdfQueryException HandleHttpQueryError(WebException webEx)
         {
@@ -68,10 +68,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Handles HTTP Errors obtaining additional information from the HTTP response if possible
+        /// Handles HTTP Errors obtaining additional information from the HTTP response if possible.
         /// </summary>
-        /// <param name="webEx">HTTP Error</param>
-        /// <param name="action">Action being performed</param>
+        /// <param name="webEx">HTTP Error.</param>
+        /// <param name="action">Action being performed.</param>
         /// <returns></returns>
         public static RdfStorageException HandleHttpError(WebException webEx, String action)
         {
@@ -79,13 +79,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Handles HTTP Errors obtaining additional information from the HTTP response if possible
+        /// Handles HTTP Errors obtaining additional information from the HTTP response if possible.
         /// </summary>
-        /// <param name="webEx">HTTP Error</param>
-        /// <param name="action">Action being performed</param>
-        /// <param name="errorProvider">Function that generates the actual errors</param>
+        /// <param name="webEx">HTTP Error.</param>
+        /// <param name="action">Action being performed.</param>
+        /// <param name="errorProvider">Function that generates the actual errors.</param>
         /// <remarks>
-        /// Adapted from Ron Michael's Zettlemoyer's original patch for this in Stardog to use it across all operations as far as possible
+        /// Adapted from Ron Michael's Zettlemoyer's original patch for this in Stardog to use it across all operations as far as possible.
         /// </remarks>
         public static T HandleHttpError<T>(WebException webEx, String action, Func<String, Exception, T> errorProvider)
             where T : Exception
@@ -112,10 +112,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Tries to get the status line for inclusion in the HTTP error message
+        /// Tries to get the status line for inclusion in the HTTP error message.
         /// </summary>
-        /// <param name="webEx">Web exception</param>
-        /// <returns>Status line if available, empty string otherwise</returns>
+        /// <param name="webEx">Web exception.</param>
+        /// <returns>Status line if available, empty string otherwise.</returns>
         private static String GetStatusLine(WebException webEx)
         {
             if (webEx.Response != null)
@@ -131,9 +131,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Handles Query Errors
+        /// Handles Query Errors.
         /// </summary>
-        /// <param name="ex">Error</param>
+        /// <param name="ex">Error.</param>
         /// <returns></returns>
         public static RdfQueryException HandleQueryError(Exception ex)
         {
@@ -148,10 +148,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Handles Errors
+        /// Handles Errors.
         /// </summary>
-        /// <param name="ex">Error</param>
-        /// <param name="action">Action being performed</param>
+        /// <param name="ex">Error.</param>
+        /// <param name="action">Action being performed.</param>
         /// <returns></returns>
         public static RdfStorageException HandleError(Exception ex, String action)
         {
@@ -166,12 +166,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Handles Errors
+        /// Handles Errors.
         /// </summary>
-        /// <typeparam name="T">Error Type</typeparam>
-        /// <param name="ex">Error</param>
-        /// <param name="action">Action being performed</param>
-        /// <param name="errorProvider">Function that generates the actual errors</param>
+        /// <typeparam name="T">Error Type.</typeparam>
+        /// <param name="ex">Error.</param>
+        /// <param name="action">Action being performed.</param>
+        /// <param name="errorProvider">Function that generates the actual errors.</param>
         /// <returns></returns>
         public static T HandleError<T>(Exception ex, String action, Func<String, Exception, T> errorProvider)
             where T : Exception

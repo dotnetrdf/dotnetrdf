@@ -30,15 +30,15 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
 {
     /// <summary>
-    /// Represents the Leviathan lfn:md5hash() function
+    /// Represents the Leviathan lfn:md5hash() function.
     /// </summary>
     public class MD5HashFunction
         : BaseHashFunction
     {
         /// <summary>
-        /// Creates a new Leviathan MD5 Hash function
+        /// Creates a new Leviathan MD5 Hash function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public MD5HashFunction(ISparqlExpression expr)
 #if NETCORE || NETSTANDARD2_0
             : base(expr, MD5.Create()) { }
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
 #endif
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -67,9 +67,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

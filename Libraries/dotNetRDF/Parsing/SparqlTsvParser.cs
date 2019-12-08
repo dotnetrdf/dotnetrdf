@@ -35,16 +35,16 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for reading SPARQL Results that have been serialized in the SPARQL Results TSV format
+    /// Parser for reading SPARQL Results that have been serialized in the SPARQL Results TSV format.
     /// </summary>
     public class SparqlTsvParser
         : ISparqlResultsReader
     {
         /// <summary>
-        /// Loads a Result Set from an Input Stream
+        /// Loads a Result Set from an Input Stream.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="input">Input Stream to read from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="input">Input Stream to read from.</param>
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
@@ -60,10 +60,10 @@ namespace VDS.RDF.Parsing
 
 
         /// <summary>
-        /// Loads a Result Set from a File
+        /// Loads a Result Set from a File.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(SparqlResultSet results, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
@@ -71,10 +71,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from an Input
+        /// Loads a Result Set from an Input.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
@@ -83,10 +83,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from an Input Stream using a Results Handler
+        /// Loads a Result Set from an Input Stream using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input Stream to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input Stream to read from.</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
             if (input == null) throw new RdfParseException("Cannot parser SPARQL Results from a null input stream");
@@ -101,10 +101,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from a File using a Results Handler
+        /// Loads a Result Set from a File using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="filename">Filename to load from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="filename">Filename to load from.</param>
         public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
@@ -112,10 +112,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from an Input using a Results Handler
+        /// Loads a Result Set from an Input using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(ISparqlResultsHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Handler");
@@ -371,7 +371,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the String representation of the Parser
+        /// Gets the String representation of the Parser.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

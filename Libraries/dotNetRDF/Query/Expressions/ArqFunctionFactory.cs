@@ -33,22 +33,22 @@ using VDS.RDF.Query.Expressions.Functions.Arq;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Expression Factory which generates ARQ Function expressions
+    /// Expression Factory which generates ARQ Function expressions.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Designed to help provide feature parity with the ARQ query engine contained in Jena
+    /// Designed to help provide feature parity with the ARQ query engine contained in Jena.
     /// </para>
     /// </remarks>
     public class ArqFunctionFactory : ISparqlCustomExpressionFactory
     {
         /// <summary>
-        /// ARQ Function Namespace
+        /// ARQ Function Namespace.
         /// </summary>
         public const String ArqFunctionsNamespace = "http://jena.hpl.hp.com/ARQ/function#";
 
         /// <summary>
-        /// Constants for ARQ Numeric functions
+        /// Constants for ARQ Numeric functions.
         /// </summary>
         public const String Max = "max",
                             Min = "min",
@@ -56,27 +56,27 @@ namespace VDS.RDF.Query.Expressions
                             E = "e";
 
         /// <summary>
-        /// Constants for ARQ Graph functions
+        /// Constants for ARQ Graph functions.
         /// </summary>
         public const String BNode = "bnode",
                             LocalName = "localname",
                             Namespace = "namespace";
 
         /// <summary>
-        /// Constants for ARQ String functions
+        /// Constants for ARQ String functions.
         /// </summary>
         public const String Substr = "substr",
                             Substring = "substring",
                             StrJoin = "strjoin";
 
         /// <summary>
-        /// Constants for ARQ Miscellaneous functions
+        /// Constants for ARQ Miscellaneous functions.
         /// </summary>
         public const String Sha1Sum = "sha1sum",
                             Now = "now";
 
         /// <summary>
-        /// Array of Extension Function URIs
+        /// Array of Extension Function URIs.
         /// </summary>
         private String[] FunctionUris = {
                                             Max,
@@ -94,13 +94,13 @@ namespace VDS.RDF.Query.Expressions
                                         };
 
         /// <summary>
-        /// Tries to create an ARQ Function expression if the function Uri correseponds to a supported ARQ Function
+        /// Tries to create an ARQ Function expression if the function Uri correseponds to a supported ARQ Function.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">Function Arguments</param>
-        /// <param name="scalarArgs">Scalar Arguments</param>
-        /// <param name="expr">Generated Expression</param>
-        /// <returns>Whether an expression was successfully generated</returns>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">Function Arguments.</param>
+        /// <param name="scalarArgs">Scalar Arguments.</param>
+        /// <param name="expr">Generated Expression.</param>
+        /// <returns>Whether an expression was successfully generated.</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             // If any Scalar Arguments are present then can't possibly be an ARQ Function
@@ -246,7 +246,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Extension Function URIs supported by this Factory
+        /// Gets the Extension Function URIs supported by this Factory.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionFunctions
         {
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Extension Aggregate URIs supported by this Factory
+        /// Gets the Extension Aggregate URIs supported by this Factory.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionAggregates
         {

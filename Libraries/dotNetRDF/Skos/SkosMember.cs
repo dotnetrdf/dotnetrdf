@@ -30,7 +30,7 @@ namespace VDS.RDF.Skos
     using VDS.RDF.Parsing;
 
     /// <summary>
-    /// Represents SKOS resources that can be members of collections (concepts and collections)
+    /// Represents SKOS resources that can be members of collections (concepts and collections).
     /// </summary>
     public abstract class SkosMember : SkosResource
     {

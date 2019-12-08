@@ -34,7 +34,7 @@ using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Factory Class for generating Expressions for Sparql Extension Functions
+    /// Factory Class for generating Expressions for Sparql Extension Functions.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -44,10 +44,10 @@ namespace VDS.RDF.Query.Expressions
     public static class SparqlExpressionFactory
     {
         /// <summary>
-        /// List of Custom Expression factories
+        /// List of Custom Expression factories.
         /// </summary>
         /// <remarks>
-        /// All the standard function libraries (XPath, Leviathan and ARQ) included in dotNetRDF are automatically registered
+        /// All the standard function libraries (XPath, Leviathan and ARQ) included in dotNetRDF are automatically registered.
         /// </remarks>
         private static readonly List<ISparqlCustomExpressionFactory> CustomFactories = new List<ISparqlCustomExpressionFactory>() 
         {
@@ -58,14 +58,14 @@ namespace VDS.RDF.Query.Expressions
         };
 
         /// <summary>
-        /// Tries to create an Expression from the given function Uri and list of argument expressions
+        /// Tries to create an Expression from the given function Uri and list of argument expressions.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">List of Argument Expressions</param>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">List of Argument Expressions.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Uses only the globally scoped custom expression factories
+        /// Uses only the globally scoped custom expression factories.
         /// </para>
         /// </remarks>
         public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args)
@@ -74,15 +74,15 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Tries to create an Expression from the given function Uri and list of argument expressions
+        /// Tries to create an Expression from the given function Uri and list of argument expressions.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">List of Argument Expressions</param>
-        /// <param name="factories">Enumeration of locally scoped expression factories to use</param>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">List of Argument Expressions.</param>
+        /// <param name="factories">Enumeration of locally scoped expression factories to use.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used
+        /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used.
         /// </para>
         /// </remarks>
         public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories)
@@ -91,16 +91,16 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Tries to create an Expression from the given function Uri and list of argument expressions
+        /// Tries to create an Expression from the given function Uri and list of argument expressions.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">List of Argument Expressions</param>
-        /// <param name="scalarArgs">Scalar Arguments</param>
-        /// <param name="factories">Enumeration of locally scoped expression factories to use</param>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">List of Argument Expressions.</param>
+        /// <param name="scalarArgs">Scalar Arguments.</param>
+        /// <param name="factories">Enumeration of locally scoped expression factories to use.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used
+        /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used.
         /// </para>
         /// </remarks>
         public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories)
@@ -191,9 +191,9 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Registers a Custom Expression Factory
+        /// Registers a Custom Expression Factory.
         /// </summary>
-        /// <param name="factory">A Custom Expression Factory</param>
+        /// <param name="factory">A Custom Expression Factory.</param>
         public static void AddCustomFactory(ISparqlCustomExpressionFactory factory)
         {
             // Only register the factory if it is not already registered
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Global Custom Expression Factories that are in use
+        /// Gets the Global Custom Expression Factories that are in use.
         /// </summary>
         public static IEnumerable<ISparqlCustomExpressionFactory> Factories
         {

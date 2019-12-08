@@ -33,18 +33,18 @@ using VDS.RDF.Parsing.Events.RdfXml;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper class for providing Constants and Helper functions for use by RDF/XML parsers
+    /// Static Helper class for providing Constants and Helper functions for use by RDF/XML parsers.
     /// </summary>
     public static class RdfXmlSpecsHelper
     {
         private static Regex _isabsoluteuri = new Regex("^([a-zA-Z]+:(//)?|mailto:)", RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// Checks whether a Uri Reference is an absolute Uri
+        /// Checks whether a Uri Reference is an absolute Uri.
         /// </summary>
-        /// <param name="uriref">Uri Reference to Test</param>
+        /// <param name="uriref">Uri Reference to Test.</param>
         /// <returns></returns>
-        /// <remarks>Implemented by seeing if the Uri Reference starts with a Uri scheme specifier</remarks>
+        /// <remarks>Implemented by seeing if the Uri Reference starts with a Uri scheme specifier.</remarks>
         public static bool IsAbsoluteURI(String uriref)
         {
             return _isabsoluteuri.IsMatch(uriref);
@@ -54,46 +54,46 @@ namespace VDS.RDF.Parsing
         #region Uri Validity Test Grammar Productions
 
         /// <summary>
-        /// Array containing the Core Syntax Terms
+        /// Array containing the Core Syntax Terms.
         /// </summary>
         private static string[] coreSyntaxTerms = { "rdf:RDF", "rdf:ID", "rdf:about", "rdf:parseType", "rdf:resource", "rdf:nodeID", "rdf:datatype" };
 
         /// <summary>
-        /// The local name part of core syntax terms
+        /// The local name part of core syntax terms.
         /// </summary>
         private static readonly string[] CoreSyntaxLocalNames = { "RDF", "ID", "about", "parseType", "resource", "nodeID", "datatype" };
 
         /// <summary>
-        /// Array containing the other Syntax Terms
+        /// Array containing the other Syntax Terms.
         /// </summary>
         private static string[] syntaxTerms = { "rdf:Description", "rdf:li" };
 
         /// <summary>
-        /// The local name part of all syntax terms
+        /// The local name part of all syntax terms.
         /// </summary>
         private static readonly string[] SyntaxLocalNames =
             {"RDF", "ID", "about", "parseType", "resource", "nodeID", "datatype", "Description", "li"};
 
         /// <summary>
-        /// Array containing the Old Syntax Terms
+        /// Array containing the Old Syntax Terms.
         /// </summary>
         private static string[] oldTerms = { "rdf:aboutEach", "rdf:aboutEachPrefix", "rdf:bagID" };
 
         /// <summary>
-        /// The local name part of old syntax terms
+        /// The local name part of old syntax terms.
         /// </summary>
         private static readonly string[] OldLocalNames = {"aboutEach", "aboutEachPrefix", "bagID"};
 
         /// <summary>
-        /// Array containing Syntax Terms where the rdf: Prefix is mandated
+        /// Array containing Syntax Terms where the rdf: Prefix is mandated.
         /// </summary>
         private static string[] requiresRdfPrefix = { "about", "aboutEach", "ID", "bagID", "type", "resource", "parseType" };
 
         /// <summary>
-        /// Checks whether a given QName is a Core Syntax Term
+        /// Checks whether a given QName is a Core Syntax Term.
         /// </summary>
-        /// <param name="qname">QName to Test</param>
-        /// <returns>True if the QName is a Core Syntax Term</returns>
+        /// <param name="qname">QName to Test.</param>
+        /// <returns>True if the QName is a Core Syntax Term.</returns>
         [Obsolete("Use IsCoreSyntaxTerm(Uri, string) instead")]
         public static bool IsCoreSyntaxTerm(String qname)
         {
@@ -102,21 +102,21 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given expanded name is a Core Syntax Term
+        /// Checks whether a given expanded name is a Core Syntax Term.
         /// </summary>
-        /// <param name="nsUri">The namespace URI of the expanded name</param>
-        /// <param name="localName">The local name part of the expanded name</param>
-        /// <returns>True if the expanded name is a Core Syntax Term</returns>
+        /// <param name="nsUri">The namespace URI of the expanded name.</param>
+        /// <param name="localName">The local name part of the expanded name.</param>
+        /// <returns>True if the expanded name is a Core Syntax Term.</returns>
         public static bool IsCoreSyntaxTerm(Uri nsUri, string localName)
         {
             return nsUri.ToString().Equals(NamespaceMapper.RDF) && CoreSyntaxLocalNames.Contains(localName);
         }
 
         /// <summary>
-        /// Checks whether a given QName is a Syntax Term
+        /// Checks whether a given QName is a Syntax Term.
         /// </summary>
-        /// <param name="qname">QName to Test</param>
-        /// <returns>True if the QName is a Syntax Term</returns>
+        /// <param name="qname">QName to Test.</param>
+        /// <returns>True if the QName is a Syntax Term.</returns>
         [Obsolete("Use IsSyntaxTerm(Uri, string) instead")]
         public static bool IsSyntaxTerm(String qname)
         {
@@ -125,21 +125,21 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given expanded name is a Syntax Term
+        /// Checks whether a given expanded name is a Syntax Term.
         /// </summary>
-        /// <param name="nsUri">The namespace URI of the expanded name</param>
-        /// <param name="localName">The local name part of the expanded name</param>
-        /// <returns>True if the expanded name is a Syntax Term</returns>
+        /// <param name="nsUri">The namespace URI of the expanded name.</param>
+        /// <param name="localName">The local name part of the expanded name.</param>
+        /// <returns>True if the expanded name is a Syntax Term.</returns>
         public static bool IsSyntaxTerm(Uri nsUri, string localName)
         {
             return nsUri.ToString().Equals(NamespaceMapper.RDF) && SyntaxLocalNames.Contains(localName);
         }
 
         /// <summary>
-        /// Checks whether a given QName is a Old Syntax Term
+        /// Checks whether a given QName is a Old Syntax Term.
         /// </summary>
-        /// <param name="qname">QName to Test</param>
-        /// <returns>True if the QName is a Old Syntax Term</returns>
+        /// <param name="qname">QName to Test.</param>
+        /// <returns>True if the QName is a Old Syntax Term.</returns>
         [Obsolete("Use IsOldTerm(Uri, string) instead")]
         public static bool IsOldTerm(String qname)
         {
@@ -148,11 +148,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given expanded name is a Old Syntax Term
+        /// Checks whether a given expanded name is a Old Syntax Term.
         /// </summary>
-        /// <param name="nsUri">The namespace URI of the expanded name</param>
-        /// <param name="localName">The local name part of the expanded name</param>
-        /// <returns>True if the expanded name is a Old Syntax Term</returns>
+        /// <param name="nsUri">The namespace URI of the expanded name.</param>
+        /// <param name="localName">The local name part of the expanded name.</param>
+        /// <returns>True if the expanded name is a Old Syntax Term.</returns>
         public static bool IsOldTerm(Uri nsUri, string localName)
         {
             // Does the QName occur in the array of Old Syntax Terms?
@@ -160,10 +160,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given QName is valid as a Node Element Uri
+        /// Checks whether a given QName is valid as a Node Element Uri.
         /// </summary>
-        /// <param name="qname">QName to Test</param>
-        /// <returns>True if the QName is valid</returns>
+        /// <param name="qname">QName to Test.</param>
+        /// <returns>True if the QName is valid.</returns>
         [Obsolete("Use IsNodeElementUri(Uri, localName) instead")]
         public static bool IsNodeElementUri(String qname)
         {
@@ -180,11 +180,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given expanded name is valid as a Node Element Uri
+        /// Checks whether a given expanded name is valid as a Node Element Uri.
         /// </summary>
-        /// <param name="nsUri">The namespace URI of the expanded name</param>
-        /// <param name="localName">The local name part of the expanded name</param>
-        /// <returns>True if the expanded name is valid</returns>
+        /// <param name="nsUri">The namespace URI of the expanded name.</param>
+        /// <param name="localName">The local name part of the expanded name.</param>
+        /// <returns>True if the expanded name is valid.</returns>
         public static bool IsNodeElementUri(Uri nsUri, string localName)
         {
             // Not allowed to be a Core Syntax Term, rdf:li or an Old Syntax Term
@@ -202,10 +202,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given QName is valid as a Property Element Uri
+        /// Checks whether a given QName is valid as a Property Element Uri.
         /// </summary>
-        /// <param name="qname">QName to Test</param>
-        /// <returns>True if the QName is valid</returns>
+        /// <param name="qname">QName to Test.</param>
+        /// <returns>True if the QName is valid.</returns>
         [Obsolete("Use IsPropertyElement(ElementEvent, INamespaceMapper) instead")]
         public static bool IsPropertyElementURI(string qname)
         {
@@ -222,11 +222,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given element is a valid property element
+        /// Checks whether a given element is a valid property element.
         /// </summary>
-        /// <param name="e">The element to test</param>
-        /// <param name="nsMapper">The namespace mappings to use when expanding element QName prefixes</param>
-        /// <returns>True if the element is valid</returns>
+        /// <param name="e">The element to test.</param>
+        /// <param name="nsMapper">The namespace mappings to use when expanding element QName prefixes.</param>
+        /// <returns>True if the element is valid.</returns>
         public static bool IsPropertyElement(ElementEvent e, INamespaceMapper nsMapper)
         {
             if (nsMapper.HasNamespace(e.Namespace))
@@ -245,11 +245,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a give element is an rdf:li element
+        /// Checks whether a give element is an rdf:li element.
         /// </summary>
-        /// <param name="e">The element to test</param>
-        /// <param name="nsMapper">The namespace mappings to use when expanding element QName prefixes</param>
-        /// <returns>True if the element is an rdf:li element, false otherwise</returns>
+        /// <param name="e">The element to test.</param>
+        /// <param name="nsMapper">The namespace mappings to use when expanding element QName prefixes.</param>
+        /// <returns>True if the element is an rdf:li element, false otherwise.</returns>
         public static bool IsLiElement(ElementEvent e, INamespaceMapper nsMapper)
         {
             return nsMapper.HasNamespace(e.Namespace) &&
@@ -258,10 +258,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given QName is valid as a Property Attribute Uri
+        /// Checks whether a given QName is valid as a Property Attribute Uri.
         /// </summary>
-        /// <param name="qname">QName to Test</param>
-        /// <returns>True if the QName is valid</returns>
+        /// <param name="qname">QName to Test.</param>
+        /// <returns>True if the QName is valid.</returns>
         public static bool IsPropertyAttributeURI(String qname)
         {
             // Not allowed to be a Core Syntax Term, rdf:li, rdf:Description or an Old Syntax Term
@@ -277,11 +277,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given expanded name is valid as a Property Attribute Uri
+        /// Checks whether a given expanded name is valid as a Property Attribute Uri.
         /// </summary>
-        /// <param name="nsUri">The namespace URI of the expanded name</param>
-        /// <param name="localName">The local name part of the expanded name</param>
-        /// <returns>True if the expanded name is valid</returns>
+        /// <param name="nsUri">The namespace URI of the expanded name.</param>
+        /// <param name="localName">The local name part of the expanded name.</param>
+        /// <returns>True if the expanded name is valid.</returns>
         public static bool IsPropertyAttributeURI(Uri nsUri, string localName)
         {
             // Not allowed to be a Core Syntax Term, rdf:li, rdf:Description or an Old Syntax Term
@@ -297,11 +297,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given Local Name is potentially ambiguous
+        /// Checks whether a given Local Name is potentially ambiguous.
         /// </summary>
-        /// <param name="name">Local Name to Test</param>
-        /// <returns>True if the Local Name is ambiguous</returns>
-        /// <remarks>This embodies Local Names which must have an rdf prefix</remarks>
+        /// <param name="name">Local Name to Test.</param>
+        /// <returns>True if the Local Name is ambiguous.</returns>
+        /// <remarks>This embodies Local Names which must have an rdf prefix.</remarks>
         public static bool IsAmbigiousAttributeName(String name)
         {
             return requiresRdfPrefix.Contains(name);
@@ -309,20 +309,20 @@ namespace VDS.RDF.Parsing
 
 
         /// <summary>
-        /// Checks whether a given URIRef is encoded in Unicode Normal Form C
+        /// Checks whether a given URIRef is encoded in Unicode Normal Form C.
         /// </summary>
-        /// <param name="uriref">URIRef to Test</param>
-        /// <returns>True if the URIRef is encoded correctly</returns>
+        /// <param name="uriref">URIRef to Test.</param>
+        /// <returns>True if the URIRef is encoded correctly.</returns>
         public static bool IsValidUriRefEncoding(String uriref)
         {
             return uriref.IsNormalized();
         }
 
         /// <summary>
-        /// Checks whether a given Base Uri can be used for relative Uri resolution
+        /// Checks whether a given Base Uri can be used for relative Uri resolution.
         /// </summary>
-        /// <param name="baseUri">Base Uri to Test</param>
-        /// <returns>True if the Base Uri can be used for relative Uri resolution</returns>
+        /// <param name="baseUri">Base Uri to Test.</param>
+        /// <returns>True if the Base Uri can be used for relative Uri resolution.</returns>
         public static bool IsValidBaseUri(String baseUri)
         {
             if (baseUri.StartsWith("mailto:"))
@@ -336,9 +336,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether a QName is valid for use in RDF/XML
+        /// Determines whether a QName is valid for use in RDF/XML.
         /// </summary>
-        /// <param name="qname">QName</param>
+        /// <param name="qname">QName.</param>
         /// <returns></returns>
         public static bool IsValidQName(String qname)
         {
@@ -367,11 +367,11 @@ namespace VDS.RDF.Parsing
         #region Attribute Type Test Grammar Productions
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:ID attribute
+        /// Checks whether an attribute is an rdf:ID attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <returns>True if is an rdf:ID attribute</returns>
-        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <returns>True if is an rdf:ID attribute.</returns>
+        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing.</remarks>
         [Obsolete("Use IsIDAttribute(AttributeEvent, INamespaceMapper) instead")]
         public static bool IsIDAttribute(AttributeEvent attr)
         {
@@ -397,12 +397,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:ID attribute
+        /// Checks whether an attribute is an rdf:ID attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an rdf:ID attribute</returns>
-        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an rdf:ID attribute.</returns>
+        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing.</remarks>
         public static bool IsIDAttribute(AttributeEvent attr, INestedNamespaceMapper nsMapper)
         {
             // QName must be rdf:id
@@ -429,11 +429,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:type attribute
+        /// Checks whether an attribute is an rdf:type attribute.
         /// </summary>
-        /// <param name="attr">The attribute to check</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use to expand QNames</param>
-        /// <returns>True if the attribute is and rdf:type attribute, false otherwise</returns>
+        /// <param name="attr">The attribute to check.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use to expand QNames.</param>
+        /// <returns>True if the attribute is and rdf:type attribute, false otherwise.</returns>
         public static bool IsTypeAttribute(AttributeEvent attr, INamespaceMapper nsMapper)
         {
             return nsMapper.HasNamespace(attr.Namespace) && 
@@ -442,11 +442,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:nodeID attribute
+        /// Checks whether an attribute is an rdf:nodeID attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <returns>True if is an rdf:nodeID attribute</returns>
-        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <returns>True if is an rdf:nodeID attribute.</returns>
+        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing.</remarks>
         [Obsolete("Use IsNodeIDAttribute(AttributeEvent, INamespaceMapper) instead")]
         public static bool IsNodeIDAttribute(AttributeEvent attr)
         {
@@ -472,12 +472,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:nodeID attribute
+        /// Checks whether an attribute is an rdf:nodeID attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an rdf:nodeID attribute</returns>
-        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an rdf:nodeID attribute.</returns>
+        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing.</remarks>
         public static bool IsNodeIDAttribute(AttributeEvent attr, INamespaceMapper nsMapper)
         {
             // QName must be rdf:nodeID
@@ -502,10 +502,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:about attribute
+        /// Checks whether an attribute is an rdf:about attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <returns>True if is an rdf:about attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <returns>True if is an rdf:about attribute.</returns>
         [Obsolete("Use IsAboutAttribute(AttributeEvent, INamespaceMapper)")]
         public static bool IsAboutAttribute(AttributeEvent attr)
         {
@@ -522,11 +522,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:about attribute
+        /// Checks whether an attribute is an rdf:about attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an rdf:about attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an rdf:about attribute.</returns>
         public static bool IsAboutAttribute(AttributeEvent attr, INamespaceMapper nsMapper)
         {
             // QName must be rdf:id
@@ -544,11 +544,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:parseType attribute
+        /// Checks whether an attribute is an rdf:parseType attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an rdf:parseType attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an rdf:parseType attribute.</returns>
         public static bool IsParseTypeAttribute(AttributeEvent attr, INestedNamespaceMapper nsMapper)
         {
             return nsMapper.HasNamespace(attr.Namespace) &&
@@ -557,10 +557,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an property attribute
+        /// Checks whether an attribute is an property attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <returns>True if is an property attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <returns>True if is an property attribute.</returns>
         [Obsolete("Use IsPropertyAttribute(AttributeEvent, INamespaceMapper)")]
         public static bool IsPropertyAttribute(AttributeEvent attr)
         {
@@ -570,11 +570,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an property attribute
+        /// Checks whether an attribute is an property attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an property attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an property attribute.</returns>
         public static bool IsPropertyAttribute(AttributeEvent attr, INamespaceMapper nsMapper)
         {
             // QName must be a valid Property Attribute Uri
@@ -584,10 +584,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:resource attribute
+        /// Checks whether an attribute is an rdf:resource attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <returns>True if is an rdf:resource attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <returns>True if is an rdf:resource attribute.</returns>
         [Obsolete("Use IsResourceAttribute(AttributeEvent, INamespaceMapper)")]
         public static bool IsResourceAttribute(AttributeEvent attr)
         {
@@ -604,11 +604,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:resource attribute
+        /// Checks whether an attribute is an rdf:resource attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an rdf:resource attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="nsMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an rdf:resource attribute.</returns>
         public static bool IsResourceAttribute(AttributeEvent attr, INamespaceMapper nsMapper)
         {
             // QName must be rdf:resource
@@ -626,10 +626,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:datatype attribute
+        /// Checks whether an attribute is an rdf:datatype attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <returns>True if is an rdf:datatype attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <returns>True if is an rdf:datatype attribute.</returns>
         [Obsolete("Use IsDataTypeAttribute(AttributeEvent, INestedNamespaceMapper) instead.")]
         public static bool IsDataTypeAttribute(AttributeEvent attr)
         {
@@ -646,11 +646,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether an attribute is an rdf:datatype attribute
+        /// Checks whether an attribute is an rdf:datatype attribute.
         /// </summary>
-        /// <param name="attr">Attribute to Test</param>
-        /// <param name="namespaceMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute</param>
-        /// <returns>True if is an rdf:datatype attribute</returns>
+        /// <param name="attr">Attribute to Test.</param>
+        /// <param name="namespaceMapper">The namespace prefix mappings to use when expanding the namespace prefix of the attribute.</param>
+        /// <returns>True if is an rdf:datatype attribute.</returns>
         public static bool IsDataTypeAttribute(AttributeEvent attr, INestedNamespaceMapper namespaceMapper)
         {
             // QName must be rdf:datatype
@@ -666,10 +666,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Validates that an ID is a valid NCName
+        /// Validates that an ID is a valid NCName.
         /// </summary>
-        /// <param name="value">ID Value to Test</param>
-        /// <returns>True if the ID is valid</returns>
+        /// <param name="value">ID Value to Test.</param>
+        /// <returns>True if the ID is valid.</returns>
         public static bool IsRdfID(String value)
         {
             // Must be a valid NCName as defined in the XML Namespace Specification
@@ -678,12 +678,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Validates that a URIReference is valid
+        /// Validates that a URIReference is valid.
         /// </summary>
-        /// <param name="value">URIReference to Test</param>
-        /// <returns>True</returns>
+        /// <param name="value">URIReference to Test.</param>
+        /// <returns>True.</returns>
         /// <remarks>
-        /// Currently partially implemented, some invalid Uri References may be considered valid
+        /// Currently partially implemented, some invalid Uri References may be considered valid.
         /// </remarks>
         public static bool IsRdfUriReference(String value)
         {
@@ -701,20 +701,20 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Validates that a URI matches the RDF/XML namespace URI
+        /// Validates that a URI matches the RDF/XML namespace URI.
         /// </summary>
-        /// <param name="nsUri">The namespace URI to be validated</param>
-        /// <returns>True if the URI matches the RDF/XML namespace URI</returns>
+        /// <param name="nsUri">The namespace URI to be validated.</param>
+        /// <returns>True if the URI matches the RDF/XML namespace URI.</returns>
         public static bool IsRdfNamespace(Uri nsUri)
         {
             return nsUri != null && nsUri.ToString().Equals(NamespaceMapper.RDF);
         }
 
         /// <summary>
-        /// Validates that a URI matches the RDF/XML namespace URI
+        /// Validates that a URI matches the RDF/XML namespace URI.
         /// </summary>
-        /// <param name="nsUri">The namespace URI to be validated</param>
-        /// <returns>True if the URI matches the RDF/XML namespace URI</returns>
+        /// <param name="nsUri">The namespace URI to be validated.</param>
+        /// <returns>True if the URI matches the RDF/XML namespace URI.</returns>
         public static bool IsRdfNamespace(string nsUri)
         {
             return nsUri != null && nsUri.Equals(NamespaceMapper.RDF);

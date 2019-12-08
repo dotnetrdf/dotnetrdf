@@ -32,23 +32,23 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
     /// <summary>
-    /// Class representing an XPath Float Cast Function
+    /// Class representing an XPath Float Cast Function.
     /// </summary>
     public class FloatCast
         : BaseCast
     {
         /// <summary>
-        /// Creates a new XPath Float Cast Function Expression
+        /// Creates a new XPath Float Cast Function Expression.
         /// </summary>
-        /// <param name="expr">Expression to be cast</param>
+        /// <param name="expr">Expression to be cast.</param>
         public FloatCast(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Casts the value of the inner Expression to a Float
+        /// Casts the value of the inner Expression to a Float.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Vinding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Vinding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -147,9 +147,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

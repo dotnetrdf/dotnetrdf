@@ -31,13 +31,13 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.FullText.Schema
 {
     /// <summary>
-    /// Default Index Schema
+    /// Default Index Schema.
     /// </summary>
     public class DefaultIndexSchema
         : BaseIndexSchema, IConfigurationSerializable
     {
         /// <summary>
-        /// Constants for the Field Names used by the Default Index Schema
+        /// Constants for the Field Names used by the Default Index Schema.
         /// </summary>
         public const String DefaultIndexField = "nodeIndex",
                             DefaultGraphField = "nodeGraph",
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.FullText.Schema
                             DefaultNodeMetaField = "nodeMeta";
 
         /// <summary>
-        /// Creates a new Default Index Schema
+        /// Creates a new Default Index Schema.
         /// </summary>
         public DefaultIndexSchema()
         {
@@ -60,9 +60,9 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Serializes the Schemas Configuration
+        /// Serializes the Schemas Configuration.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));

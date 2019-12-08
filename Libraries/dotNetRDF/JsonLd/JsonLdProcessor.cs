@@ -33,7 +33,7 @@ using System.Net;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Implements the core JSON-LD processing 
+    /// Implements the core JSON-LD processing. 
     /// </summary>
     public class JsonLdProcessor
     {
@@ -86,9 +86,9 @@ namespace VDS.RDF.JsonLd
         private int _counter;
 
         /// <summary>
-        /// Create a new processor instance
+        /// Create a new processor instance.
         /// </summary>
-        /// <param name="options">JSON-LD processing options</param>
+        /// <param name="options">JSON-LD processing options.</param>
         private JsonLdProcessor(JsonLdProcessorOptions options) {
             if (options == null) options = new JsonLdProcessorOptions();
             _options = options;
@@ -98,7 +98,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Get or set the base IRI for processing
+        /// Get or set the base IRI for processing.
         /// </summary>
         /// <remarks>This value should be set to the IRI of the document being processed if available.
         /// </remarks>
@@ -112,7 +112,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Get or set the current processing mode
+        /// Get or set the current processing mode.
         /// </summary>
         public JsonLdProcessingMode? ProcessingMode
         {
@@ -120,9 +120,9 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Process a context in the scope of a current active context resulting in a new context
+        /// Process a context in the scope of a current active context resulting in a new context.
         /// </summary>
-        /// <param name="activeContext">The currently active context</param>
+        /// <param name="activeContext">The currently active context.</param>
         /// <param name="localContext">The context to be processed. May be a JSON object, string or array.</param>
         /// <param name="remoteContexts">The remote context's already processed. Used to detect circular references in the current context processing step.</param>
         /// <returns></returns>
@@ -1564,11 +1564,11 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Run the Compaction algorithm
+        /// Run the Compaction algorithm.
         /// </summary>
-        /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved</param>
-        /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved</param>
-        /// <param name="options">Additional processor options</param>
+        /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved.</param>
+        /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved.</param>
+        /// <param name="options">Additional processor options.</param>
         /// <returns></returns>
         public static JObject Compact(JToken input, JToken context, JsonLdProcessorOptions options)
         {
@@ -2073,7 +2073,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Flattens the given input and compacts it using the passed context according to the steps in the JSON-LD Flattening algorithm
+        /// Flattens the given input and compacts it using the passed context according to the steps in the JSON-LD Flattening algorithm.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="context"></param>
@@ -2150,9 +2150,9 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Applies the Node Map Generation algorithm to the specified input.
         /// </summary>
-        /// <param name="element">The element to be processed</param>
-        /// <param name="options">JSON-LD processor options</param>
-        /// <returns>The generated node map dictionary as a JObject instance</returns>
+        /// <param name="element">The element to be processed.</param>
+        /// <param name="options">JSON-LD processor options.</param>
+        /// <returns>The generated node map dictionary as a JObject instance.</returns>
         public static JObject GenerateNodeMap(JToken element, JsonLdProcessorOptions options = null)
         {
             var processor = new JsonLdProcessor(options);
@@ -2957,12 +2957,12 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Applies the JSON-LD Framing algorithm to the specified input JSON object
+        /// Applies the JSON-LD Framing algorithm to the specified input JSON object.
         /// </summary>
-        /// <param name="input">The RDF data to be framed as a JSON-LD document</param>
-        /// <param name="frame">The JSON-LD frame to be applied</param>
-        /// <param name="options">Processor options</param>
-        /// <returns>A JSON object representing the framed RDF data</returns>
+        /// <param name="input">The RDF data to be framed as a JSON-LD document.</param>
+        /// <param name="frame">The JSON-LD frame to be applied.</param>
+        /// <param name="options">Processor options.</param>
+        /// <returns>A JSON object representing the framed RDF data.</returns>
         public static JObject Frame(JToken input, JToken frame, JsonLdProcessorOptions options)
         {
             options.ProcessingMode = JsonLdProcessingMode.JsonLd11FrameExpansion;
@@ -3690,7 +3690,7 @@ namespace VDS.RDF.JsonLd
             // Frame provides default value
             DefaultMatch,
             // No match and abort further matching for the node (when a frame specifies no match for a property and the node has some values)
-            Abort
+            Abort,
         }
 
         private bool IsWildcard(JToken token)
@@ -3761,10 +3761,10 @@ namespace VDS.RDF.JsonLd
             return;
         }
         /// <summary>
-        /// Determine if a JSON token is a JSON-LD value object
+        /// Determine if a JSON token is a JSON-LD value object.
         /// </summary>
         /// <param name="token"></param>
-        /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a <code>@value</code> property, false otherwise.</returns>
+        /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a. <code>@value</code> property, false otherwise.</returns>
         public static bool IsValueObject(JToken token)
         {
             return ((token as JObject)?.Property("@value")) != null;
@@ -3772,10 +3772,10 @@ namespace VDS.RDF.JsonLd
 
 
         /// <summary>
-        /// Determine if a JSON token is a JSON-LD list object
+        /// Determine if a JSON token is a JSON-LD list object.
         /// </summary>
         /// <param name="token"></param>
-        /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a <code>@list</code> property, false otherwise.</returns>
+        /// <returns>True of <paramref name="token"/> is a <see cref="JObject"/> with a. <code>@list</code> property, false otherwise.</returns>
         public static bool IsListObject(JToken token)
         {
             return ((token as JObject)?.Property("@list")) != null;
@@ -3808,7 +3808,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Determine if the specified string is a relative IRI
+        /// Determine if the specified string is a relative IRI.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -3818,17 +3818,17 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Determine if the specified string is a JSON-LD keyword
+        /// Determine if the specified string is a JSON-LD keyword.
         /// </summary>
         /// <param name="value"></param>
-        /// <returns>True if <paramref name="value"/> is a JSON-LD keyword, false otherwise</returns>
+        /// <returns>True if <paramref name="value"/> is a JSON-LD keyword, false otherwise.</returns>
         public static bool IsKeyword(string value)
         {
             return JsonLdKeywords.Contains(value) || JsonLdFramingKeywords.Contains(value);
         }
 
         /// <summary>
-        /// Determine if the specified string is a JSON-LD framing keyword
+        /// Determine if the specified string is a JSON-LD framing keyword.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -3838,7 +3838,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Determine if the specified string is a blank node identifier
+        /// Determine if the specified string is a blank node identifier.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -3864,11 +3864,11 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Apply the JSON-LD context expansion algorithm to the context found at the specified URL
+        /// Apply the JSON-LD context expansion algorithm to the context found at the specified URL.
         /// </summary>
-        /// <param name="contextUrl">The URL to load the source context from</param>
-        /// <param name="options">Options to apply during the expansion processing</param>
-        /// <returns>The expanded JSON-LD contex</returns>
+        /// <param name="contextUrl">The URL to load the source context from.</param>
+        /// <param name="options">Options to apply during the expansion processing.</param>
+        /// <returns>The expanded JSON-LD contex.</returns>
         public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
         {
             var parsedJson = LoadJson(contextUrl, options);
@@ -3876,11 +3876,11 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Apply the JSON-LD expansion algorithm to a context JSON object
+        /// Apply the JSON-LD expansion algorithm to a context JSON object.
         /// </summary>
-        /// <param name="input">The context JSON object to be expanded</param>
-        /// <param name="options">Options to apply during the expansion processing</param>
-        /// <returns>The expanded JSON-LD contex</returns>
+        /// <param name="input">The context JSON object to be expanded.</param>
+        /// <param name="options">Options to apply during the expansion processing.</param>
+        /// <returns>The expanded JSON-LD contex.</returns>
         public static JArray Expand(JToken input, JsonLdProcessorOptions options = null)
         {
             if (input is JValue && (input as JValue).Type == JTokenType.String)

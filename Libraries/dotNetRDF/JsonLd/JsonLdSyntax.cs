@@ -27,7 +27,7 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported JSON-LD syntax versions
+    /// Enumeration of the supported JSON-LD syntax versions.
     /// </summary>
     public enum JsonLdSyntax
     {

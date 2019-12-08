@@ -27,7 +27,7 @@
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Represents an incomplete Triple as part of the RDFa parsing process
+    /// Represents an incomplete Triple as part of the RDFa parsing process.
     /// </summary>
     public class IncompleteTriple
     {
@@ -35,10 +35,10 @@ namespace VDS.RDF.Parsing.Contexts
         private IncompleteTripleDirection _dir;
 
         /// <summary>
-        /// Creates a new Incomplete Triple
+        /// Creates a new Incomplete Triple.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="direction">Direction</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="direction">Direction.</param>
         public IncompleteTriple(INode pred, IncompleteTripleDirection direction)
         {
             _pred = pred;
@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Predicate of the Incomplete Triple
+        /// Gets the Predicate of the Incomplete Triple.
         /// </summary>
         public INode Predicate
         {
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Direction of the Incomplete Triple
+        /// Gets the Direction of the Incomplete Triple.
         /// </summary>
         public IncompleteTripleDirection Direction
         {

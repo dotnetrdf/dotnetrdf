@@ -34,7 +34,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Predict Service of a Pellet Knowledge Base
+    /// Represents the Predict Service of a Pellet Knowledge Base.
     /// </summary>
     public class PredictService
         : PelletService
@@ -42,10 +42,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         private String _predictUri;
 
         /// <summary>
-        /// Creates a new Predict Service for a Pellet Knowledge Base
+        /// Creates a new Predict Service for a Pellet Knowledge Base.
         /// </summary>
-        /// <param name="serviceName">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="serviceName">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal PredictService(String serviceName, JObject obj)
             : base(serviceName, obj)
         {
@@ -60,10 +60,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the list of Predictions for the given Individual and Property
+        /// Gets the list of Predictions for the given Individual and Property.
         /// </summary>
-        /// <param name="individual">QName of an Inidividual</param>
-        /// <param name="property">QName of a Property</param>
+        /// <param name="individual">QName of an Inidividual.</param>
+        /// <param name="property">QName of a Property.</param>
         /// <returns></returns>
         public List<INode> Predict(String individual, String property)
         {
@@ -76,10 +76,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the Raw Predictions Graph from the Knowledge Base
+        /// Gets the Raw Predictions Graph from the Knowledge Base.
         /// </summary>
-        /// <param name="individual">QName of an Individual</param>
-        /// <param name="property">QName of a Property</param>
+        /// <param name="individual">QName of an Individual.</param>
+        /// <param name="property">QName of a Property.</param>
         /// <returns></returns>
         public IGraph PredictRaw(String individual, String property)
         {
@@ -113,12 +113,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the list of Predictions for the given Individual and Property
+        /// Gets the list of Predictions for the given Individual and Property.
         /// </summary>
-        /// <param name="individual">QName of an Inidividual</param>
-        /// <param name="property">QName of a Property</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="individual">QName of an Inidividual.</param>
+        /// <param name="property">QName of a Property.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -141,12 +141,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the Raw Predictions Graph from the Knowledge Base
+        /// Gets the Raw Predictions Graph from the Knowledge Base.
         /// </summary>
-        /// <param name="individual">QName of an Individual</param>
-        /// <param name="property">QName of a Property</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="individual">QName of an Individual.</param>
+        /// <param name="property">QName of a Property.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

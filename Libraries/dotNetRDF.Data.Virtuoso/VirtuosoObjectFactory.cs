@@ -30,7 +30,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// An Object Factory that can create objects of the classes provided by the dotNetRDF.Data.Virtuoso library
+    /// An Object Factory that can create objects of the classes provided by the dotNetRDF.Data.Virtuoso library.
     /// </summary>
     public class VirtuosoObjectFactory
         : IObjectFactory
@@ -38,13 +38,13 @@ namespace VDS.RDF.Configuration
         private const String Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
 
         /// <summary>
-        /// Attempts to load an Object of the given type identified by the given Node and returned as the Type that this loader generates
+        /// Attempts to load an Object of the given type identified by the given Node and returned as the Type that this loader generates.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Created Object</param>
-        /// <returns>True if the loader succeeded in creating an Object</returns>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Created Object.</param>
+        /// <returns>True if the loader succeeded in creating an Object.</returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
@@ -90,9 +90,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Returns whether this Factory is capable of creating objects of the given type
+        /// Returns whether this Factory is capable of creating objects of the given type.
         /// </summary>
-        /// <param name="t">Target Type</param>
+        /// <param name="t">Target Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

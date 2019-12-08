@@ -32,14 +32,14 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Factory for creating property functions
+    /// Factory for creating property functions.
     /// </summary>
     public static class PropertyFunctionFactory
     {
         private static List<IPropertyFunctionFactory> _factories = new List<IPropertyFunctionFactory>();
 
         /// <summary>
-        /// Gets the number of globally registered factories
+        /// Gets the number of globally registered factories.
         /// </summary>
         public static int FactoryCount
         {
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Adds a globally registered factory
+        /// Adds a globally registered factory.
         /// </summary>
-        /// <param name="factory">Factory</param>
+        /// <param name="factory">Factory.</param>
         public static void AddFactory(IPropertyFunctionFactory factory)
         {
             lock (_factories)
@@ -62,9 +62,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Removes a globally registered factory
+        /// Removes a globally registered factory.
         /// </summary>
-        /// <param name="factory">Factory</param>
+        /// <param name="factory">Factory.</param>
         public static void RemoveFactory(IPropertyFunctionFactory factory)
         {
             lock (_factories)
@@ -74,9 +74,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets whether a factory is registered
+        /// Gets whether a factory is registered.
         /// </summary>
-        /// <param name="factoryType">Factory Type</param>
+        /// <param name="factoryType">Factory Type.</param>
         /// <returns></returns>
         public static bool IsRegisteredFactory(Type factoryType)
         {
@@ -87,9 +87,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets whether a factory is registered
+        /// Gets whether a factory is registered.
         /// </summary>
-        /// <param name="factory">Factory</param>
+        /// <param name="factory">Factory.</param>
         /// <returns></returns>
         public static bool IsRegisteredFactory(IPropertyFunctionFactory factory)
         {
@@ -100,9 +100,9 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets whether a URI is considered a property function by the global factories
+        /// Gets whether a URI is considered a property function by the global factories.
         /// </summary>
-        /// <param name="u">Function URI</param>
+        /// <param name="u">Function URI.</param>
         /// <returns></returns>
         public static bool IsPropertyFunction(Uri u)
         {
@@ -110,10 +110,10 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets whether a URI is considered a property function by any global/local factory
+        /// Gets whether a URI is considered a property function by any global/local factory.
         /// </summary>
-        /// <param name="u">Function URI</param>
-        /// <param name="localFactories">Locally scoped factories</param>
+        /// <param name="u">Function URI.</param>
+        /// <param name="localFactories">Locally scoped factories.</param>
         /// <returns></returns>
         public static bool IsPropertyFunction(Uri u, IEnumerable<IPropertyFunctionFactory> localFactories)
         {
@@ -121,10 +121,10 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Tries to create a property function
+        /// Tries to create a property function.
         /// </summary>
-        /// <param name="info">Property Function information</param>
-        /// <param name="function">Property Function</param>
+        /// <param name="info">Property Function information.</param>
+        /// <param name="function">Property Function.</param>
         /// <returns></returns>
         public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, out IPropertyFunctionPattern function)
         {
@@ -132,11 +132,11 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Tries to create a property function
+        /// Tries to create a property function.
         /// </summary>
-        /// <param name="info">Property Function information</param>
-        /// <param name="localFactories">Locally Scoped factories</param>
-        /// <param name="function">Property Function</param>
+        /// <param name="info">Property Function information.</param>
+        /// <param name="localFactories">Locally Scoped factories.</param>
+        /// <param name="function">Property Function.</param>
         /// <returns></returns>
         public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, IEnumerable<IPropertyFunctionFactory> localFactories, out IPropertyFunctionPattern function)
         {

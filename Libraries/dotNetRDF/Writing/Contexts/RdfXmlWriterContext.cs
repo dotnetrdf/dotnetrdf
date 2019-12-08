@@ -35,29 +35,29 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Writer Context for RDF/XML Writers
+    /// Writer Context for RDF/XML Writers.
     /// </summary>
     public class RdfXmlWriterContext 
         : IWriterContext, ICollectionCompressingWriterContext
     {
         /// <summary>
-        /// Pretty Printing Mode setting
+        /// Pretty Printing Mode setting.
         /// </summary>
         protected bool _prettyPrint = true;
         /// <summary>
-        /// Graph being written
+        /// Graph being written.
         /// </summary>
         private IGraph _g;
         /// <summary>
-        /// TextWriter being written to
+        /// TextWriter being written to.
         /// </summary>
         private TextWriter _output;
         /// <summary>
-        /// XmlWriter being written to
+        /// XmlWriter being written to.
         /// </summary>
         private XmlWriter _writer;
         /// <summary>
-        /// Nested Namespace Mapper
+        /// Nested Namespace Mapper.
         /// </summary>
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
         private bool _useDTD = Options.UseDtd;
@@ -69,10 +69,10 @@ namespace VDS.RDF.Writing.Contexts
         private TripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
-        /// Creates a new RDF/XML Writer Context
+        /// Creates a new RDF/XML Writer Context.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="output">Output destination</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="output">Output destination.</param>
         public RdfXmlWriterContext(IGraph g, TextWriter output)
         {
             _g = g;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Generates the required settings for the <see cref="XmlWriter">XmlWriter</see>
+        /// Generates the required settings for the <see cref="XmlWriter">XmlWriter</see>.
         /// </summary>
         /// <returns></returns>
         private XmlWriterSettings GetSettings()
@@ -99,7 +99,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the Graph being written
+        /// Gets the Graph being written.
         /// </summary>
         public IGraph Graph
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the TextWriter being written to
+        /// Gets the TextWriter being written to.
         /// </summary>
         public TextWriter Output
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the XML Writer in use
+        /// Gets the XML Writer in use.
         /// </summary>
         public XmlWriter Writer
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used
+        /// Gets/Sets the Pretty Printing Mode used.
         /// </summary>
         public bool PrettyPrint
         {
@@ -147,10 +147,10 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Node Formatter
+        /// Gets/Sets the Node Formatter.
         /// </summary>
         /// <remarks>
-        /// Node Formatters are not used for RDF/XML output
+        /// Node Formatters are not used for RDF/XML output.
         /// </remarks>
         public INodeFormatter NodeFormatter
         {
@@ -165,10 +165,10 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the URI Formatter
+        /// Gets/Sets the URI Formatter.
         /// </summary>
         /// <remarks>
-        /// URI Formatters are not used for RDF/XML output
+        /// URI Formatters are not used for RDF/XML output.
         /// </remarks>
         public IUriFormatter UriFormatter
         {
@@ -183,7 +183,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map in use
+        /// Gets the Namespace Map in use.
         /// </summary>
         public NestedNamespaceMapper NamespaceMap
         {
@@ -194,7 +194,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the Blank Node map in use
+        /// Gets the Blank Node map in use.
         /// </summary>
         public BlankNodeOutputMapper BlankNodeMapper
         {
@@ -205,10 +205,10 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether High Speed Mode is permitted
+        /// Gets/Sets whether High Speed Mode is permitted.
         /// </summary>
         /// <remarks>
-        /// Not currently supported
+        /// Not currently supported.
         /// </remarks>
         public bool HighSpeedModePermitted
         {
@@ -223,10 +223,10 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level used
+        /// Gets/Sets the Compression Level used.
         /// </summary>
         /// <remarks>
-        /// Not currently supported
+        /// Not currently supported.
         /// </remarks>
         public int CompressionLevel
         {
@@ -241,7 +241,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the next ID to use for issuing Temporary Namespaces
+        /// Gets/Sets the next ID to use for issuing Temporary Namespaces.
         /// </summary>
         public int NextNamespaceID
         {
@@ -256,7 +256,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether a DTD is used
+        /// Gets/Sets whether a DTD is used.
         /// </summary>
         public bool UseDtd
         {
@@ -271,7 +271,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether attributes are used to encode the predicates and objects of triples with simple literal properties
+        /// Gets/Sets whether attributes are used to encode the predicates and objects of triples with simple literal properties.
         /// </summary>
         public bool UseAttributes
         {
@@ -286,7 +286,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Represents the mapping from Blank Nodes to Collections
+        /// Represents the mapping from Blank Nodes to Collections.
         /// </summary>
         public Dictionary<INode, OutputRdfCollection> Collections
         {
@@ -297,7 +297,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Stores the Triples that should be excluded from standard output as they are part of collections
+        /// Stores the Triples that should be excluded from standard output as they are part of collections.
         /// </summary>
         public BaseTripleCollection TriplesDone
         {

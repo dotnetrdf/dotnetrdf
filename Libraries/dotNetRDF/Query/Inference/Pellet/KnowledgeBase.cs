@@ -32,7 +32,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet
 {
     /// <summary>
-    /// Represents a Knowledge Base on a Pellet Server
+    /// Represents a Knowledge Base on a Pellet Server.
     /// </summary>
     public class KnowledgeBase
     {
@@ -40,9 +40,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         private List<PelletService> _services = new List<PelletService>();
 
         /// <summary>
-        /// Creates a new Knowledge Base
+        /// Creates a new Knowledge Base.
         /// </summary>
-        /// <param name="t">JSON Token for the Object that represents the Service</param>
+        /// <param name="t">JSON Token for the Object that represents the Service.</param>
         internal KnowledgeBase(JToken t)
         {
             _name = (String)t.SelectToken("name");
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Name of the Knowledge Base
+        /// Gets the Name of the Knowledge Base.
         /// </summary>
         public String Name
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Services provided by this Knowledge Base
+        /// Gets the Services provided by this Knowledge Base.
         /// </summary>
         public IEnumerable<PelletService> Services
         {
@@ -76,9 +76,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets whether a Service is supported by the Knowledge Base
+        /// Gets whether a Service is supported by the Knowledge Base.
         /// </summary>
-        /// <param name="t">Service Type</param>
+        /// <param name="t">Service Type.</param>
         /// <returns></returns>
         public bool SupportsService(Type t)
         {
@@ -90,9 +90,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets whether a Service is supported by the Knowledge Base
+        /// Gets whether a Service is supported by the Knowledge Base.
         /// </summary>
-        /// <typeparam name="T">Service Type</typeparam>
+        /// <typeparam name="T">Service Type.</typeparam>
         /// <returns></returns>
         public bool SupportsService<T>()
             where T : PelletService
@@ -102,9 +102,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets whether a Service is supported by the Knowledge Base
+        /// Gets whether a Service is supported by the Knowledge Base.
         /// </summary>
-        /// <param name="name">Service Name</param>
+        /// <param name="name">Service Name.</param>
         /// <returns></returns>
         public bool SupportsService(String name)
         {
@@ -112,11 +112,11 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the first available implementation of the given Service Type for this Knowledge Base
+        /// Gets the first available implementation of the given Service Type for this Knowledge Base.
         /// </summary>
-        /// <param name="t">Service Type</param>
+        /// <param name="t">Service Type.</param>
         /// <returns>
-        /// Either the Service or a Null if the Knowledge Base does not expose a Service of the given Type
+        /// Either the Service or a Null if the Knowledge Base does not expose a Service of the given Type.
         /// </returns>
         public PelletService GetService(Type t)
         {
@@ -128,9 +128,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the first available implementation of the desired Service Type
+        /// Gets the first available implementation of the desired Service Type.
         /// </summary>
-        /// <typeparam name="T">Desired Service Type</typeparam>
+        /// <typeparam name="T">Desired Service Type.</typeparam>
         /// <returns></returns>
         public T GetService<T>()
             where T : PelletService
@@ -144,11 +144,11 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the first available Service with the given name for this Knowledge Base
+        /// Gets the first available Service with the given name for this Knowledge Base.
         /// </summary>
-        /// <param name="name">Service Name</param>
+        /// <param name="name">Service Name.</param>
         /// <returns>
-        /// Either the Service or a Null if the Knowledge Base does not expose a Service with the given name
+        /// Either the Service or a Null if the Knowledge Base does not expose a Service with the given name.
         /// </returns>
         public PelletService GetService(String name)
         {
@@ -156,9 +156,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets all the available implementations of the given Service Type for this Knowledge Base
+        /// Gets all the available implementations of the given Service Type for this Knowledge Base.
         /// </summary>
-        /// <param name="t">Service Type</param>
+        /// <param name="t">Service Type.</param>
         /// <returns></returns>
         public IEnumerable<PelletService> GetServices(Type t)
         {
@@ -168,9 +168,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets all the available services with the given name for this Knowledge Base
+        /// Gets all the available services with the given name for this Knowledge Base.
         /// </summary>
-        /// <param name="name">Service Name</param>
+        /// <param name="name">Service Name.</param>
         /// <returns></returns>
         public IEnumerable<PelletService> GetServices(String name)
         {

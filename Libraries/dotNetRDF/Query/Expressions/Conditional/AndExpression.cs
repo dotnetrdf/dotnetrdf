@@ -32,23 +32,23 @@ namespace VDS.RDF.Query.Expressions.Conditional
 {
 
     /// <summary>
-    /// Class representing Conditional And expressions
+    /// Class representing Conditional And expressions.
     /// </summary>
     public class AndExpression
         : BaseBinaryExpression
     {
         /// <summary>
-        /// Creates a new Conditional And Expression
+        /// Creates a new Conditional And Expression.
         /// </summary>
-        /// <param name="leftExpr">Left Hand Expression</param>
-        /// <param name="rightExpr">Right Hand Expression</param>
+        /// <param name="leftExpr">Left Hand Expression.</param>
+        /// <param name="rightExpr">Right Hand Expression.</param>
         public AndExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -140,9 +140,9 @@ namespace VDS.RDF.Query.Expressions.Conditional
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

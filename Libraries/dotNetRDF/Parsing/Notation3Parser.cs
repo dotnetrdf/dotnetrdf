@@ -34,11 +34,11 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for Notation 3 syntax
+    /// Parser for Notation 3 syntax.
     /// </summary>
     /// <remarks>
     /// </remarks>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
     public class Notation3Parser 
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
@@ -47,23 +47,23 @@ namespace VDS.RDF.Parsing
         private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
 
         /// <summary>
-        /// The Uri for log:implies
+        /// The Uri for log:implies.
         /// </summary>
         private const String ImpliesUri = "http://www.w3.org/2000/10/swap/log#implies";
         /// <summary>
-        /// The Uri for owl:sameAs
+        /// The Uri for owl:sameAs.
         /// </summary>
         private const String SameAsUri = "http://www.w3.org/2002/07/owl#sameAs";
 
         /// <summary>
-        /// Creates a new Notation 3 Parser
+        /// Creates a new Notation 3 Parser.
         /// </summary>
         public Notation3Parser() { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser which uses the given Token Queue Mode
+        /// Creates a new Notation 3 Parser which uses the given Token Queue Mode.
         /// </summary>
-        /// <param name="queueMode">Queue Mode for Tokenising</param>
+        /// <param name="queueMode">Queue Mode for Tokenising.</param>
         public Notation3Parser(TokenQueueMode queueMode)
             : this()
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Parsing Trace is written to the Console
+        /// Gets/Sets whether Parsing Trace is written to the Console.
         /// </summary>
         public bool TraceParsing
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Trace is written to the Console
+        /// Gets/Sets whether Tokeniser Trace is written to the Console.
         /// </summary>
         public bool TraceTokeniser
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the token queue mode used
+        /// Gets/Sets the token queue mode used.
         /// </summary>
         public TokenQueueMode TokenQueueMode
         {
@@ -116,10 +116,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph by reading Notation 3 syntax from the given input
+        /// Loads a Graph by reading Notation 3 syntax from the given input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -127,10 +127,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph by reading Notation 3 syntax from the given input
+        /// Loads a Graph by reading Notation 3 syntax from the given input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -138,10 +138,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph by reading Notation 3 syntax from the given file
+        /// Loads a Graph by reading Notation 3 syntax from the given file.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -153,10 +153,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
+        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -172,10 +172,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input
+        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -203,10 +203,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given file
+        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given file.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -218,9 +218,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Internal method which does the parsing of the input
+        /// Internal method which does the parsing of the input.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void Parse(Notation3ParserContext context)
         {
             try
@@ -304,9 +304,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse declarations
+        /// Tries to parse declarations.
         /// </summary>
-        /// <param name="context">Parse Context</param>
+        /// <param name="context">Parse Context.</param>
         private void TryParseDirective(Notation3ParserContext context)
         {
             if (context.TraceParsing)
@@ -395,9 +395,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse forAll quantifiers
+        /// Tries to parse forAll quantifiers.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void TryParseForAll(Notation3ParserContext context)
         {
             // We know the Token we've just got off the Queue was a ForAllQuantifierToken
@@ -440,9 +440,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse forSome quantifiers
+        /// Tries to parse forSome quantifiers.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void TryParseForSome(Notation3ParserContext context)
         {
             // We know the Token we've just got off the Queue was a ForSomeQuantifierToken
@@ -487,9 +487,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Triples
+        /// Tries to parse Triples.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void TryParseTriples(Notation3ParserContext context)
         {
             IToken subjToken = context.Tokens.Dequeue();
@@ -596,11 +596,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Predicate Object lists
+        /// Tries to parse Predicate Object lists.
         /// </summary>
-        /// <param name="context">Parse Context</param>
-        /// <param name="subj">Subject of the Triples</param>
-        /// <param name="bnodeList">Whether this is a Blank Node Predicate Object list</param>
+        /// <param name="context">Parse Context.</param>
+        /// <param name="subj">Subject of the Triples.</param>
+        /// <param name="bnodeList">Whether this is a Blank Node Predicate Object list.</param>
         private void TryParsePredicateObjectList(Notation3ParserContext context, INode subj, bool bnodeList)
         {
             IToken predToken, next;
@@ -763,13 +763,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Object lists
+        /// Tries to parse Object lists.
         /// </summary>
-        /// <param name="context">Parse Context</param>
-        /// <param name="subj">Subject of the Triples</param>
-        /// <param name="pred">Predicate of the Triples</param>
-        /// <param name="bnodeList">Whether this is a Blank Node Object list</param>
-        /// <param name="reverse">Indicates whether the asserted triples should have it's subject and object swapped</param>
+        /// <param name="context">Parse Context.</param>
+        /// <param name="subj">Subject of the Triples.</param>
+        /// <param name="pred">Predicate of the Triples.</param>
+        /// <param name="bnodeList">Whether this is a Blank Node Object list.</param>
+        /// <param name="reverse">Indicates whether the asserted triples should have it's subject and object swapped.</param>
         private void TryParseObjectList(Notation3ParserContext context, INode subj, INode pred, bool bnodeList, bool reverse)
         {
             IToken objToken, next;
@@ -983,10 +983,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Collections
+        /// Tries to parse Collections.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="firstSubj">Blank Node which is the head of the collection</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="firstSubj">Blank Node which is the head of the collection.</param>
         private void TryParseCollection(Notation3ParserContext context, INode firstSubj)
         {
             // The opening bracket of the collection will already have been discarded when we get called
@@ -1121,7 +1121,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse a Graph Literal
+        /// Tries to parse a Graph Literal.
         /// </summary>
         /// <param name="context"></param>
         private INode TryParseGraphLiteral(Notation3ParserContext context)
@@ -1243,10 +1243,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Literal Tokens into Literal Nodes
+        /// Tries to parse Literal Tokens into Literal Nodes.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="lit">Literal Token</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="lit">Literal Token.</param>
         /// <returns></returns>
         private INode TryParseLiteral(Notation3ParserContext context, IToken lit)
         {
@@ -1357,7 +1357,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method which raises the Warning event if there is an event handler registered
+        /// Helper method which raises the Warning event if there is an event handler registered.
         /// </summary>
         /// <param name="message"></param>
         private void RaiseWarning(String message)
@@ -1375,7 +1375,7 @@ namespace VDS.RDF.Parsing
         public event RdfReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

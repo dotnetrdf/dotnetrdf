@@ -34,7 +34,7 @@ using VDS.RDF.Query.Paths;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing property patterns in SPARQL Queries
+    /// Class for representing property patterns in SPARQL Queries.
     /// </summary>
     public class PropertyPathPattern
         : BaseTriplePattern, IPropertyPathPattern, IComparable<PropertyPathPattern>
@@ -43,11 +43,11 @@ namespace VDS.RDF.Query.Patterns
         private readonly ISparqlPath _path;
 
         /// <summary>
-        /// Creates a new Property Path Pattern
+        /// Creates a new Property Path Pattern.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="path">Property Path</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="path">Property Path.</param>
+        /// <param name="obj">Object.</param>
         public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
         {
             _subj = subj;
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the pattern type
+        /// Gets the pattern type.
         /// </summary>
         public override TriplePatternType PatternType
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Subject of the Property Path
+        /// Gets the Subject of the Property Path.
         /// </summary>
         public PatternItem Subject
         {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Property Path
+        /// Gets the Property Path.
         /// </summary>
         public ISparqlPath Path
         {
@@ -102,24 +102,24 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Object of the Property Path
+        /// Gets the Object of the Property Path.
         /// </summary>
         public PatternItem Object => _obj;
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public override IEnumerable<string> FixedVariables => _vars;
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get; } = Enumerable.Empty<string>();
 
         /// <summary>
-        /// Evaluates a property path pattern
+        /// Evaluates a property path pattern.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             // Try and generate an Algebra expression
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern accepts all Triple Patterns
+        /// Gets whether the Pattern accepts all Triple Patterns.
         /// </summary>
         public override bool IsAcceptAll
         {
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns false a property path may always contain implicit blank variables
+        /// Returns false a property path may always contain implicit blank variables.
         /// </summary>
         public override bool HasNoBlankVariables
         {
@@ -194,9 +194,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a property path pattern to another
+        /// Compares a property path pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(PropertyPathPattern other)
         {
@@ -204,9 +204,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a property path pattern to another
+        /// Compares a property path pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(IPropertyPathPattern other)
         {
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of the Pattern
+        /// Gets the String representation of the Pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

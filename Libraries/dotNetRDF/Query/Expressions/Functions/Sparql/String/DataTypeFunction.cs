@@ -30,23 +30,23 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Class representing the SPARQL Datatype() function
+    /// Class representing the SPARQL Datatype() function.
     /// </summary>
     public class DataTypeFunction
         : BaseUnaryExpression
     {
         /// <summary>
-        /// Creates a new Datatype() function expression
+        /// Creates a new Datatype() function expression.
         /// </summary>
-        /// <param name="expr">Expression to apply the function to</param>
+        /// <param name="expr">Expression to apply the function to.</param>
         public DataTypeFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -115,9 +115,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
@@ -126,26 +126,26 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     }
 
     /// <summary>
-    /// Class representing the SPARQL Datatype() function in SPARQL 1.1
+    /// Class representing the SPARQL Datatype() function in SPARQL 1.1.
     /// </summary>
     /// <remarks>
-    /// This is required because the changes to the function in SPARQL 1.1 are not backwards compatible with SPARQL 1.0
+    /// This is required because the changes to the function in SPARQL 1.1 are not backwards compatible with SPARQL 1.0.
     /// </remarks>
     public class DataType11Function
         : DataTypeFunction
     {
         /// <summary>
-        /// Creates a new DataType function
+        /// Creates a new DataType function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public DataType11Function(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {

@@ -30,24 +30,24 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
     /// <summary>
-    /// Class representing the Sparql LangMatches() function
+    /// Class representing the Sparql LangMatches() function.
     /// </summary>
     public class LangMatchesFunction
         : BaseBinaryExpression
     {
         /// <summary>
-        /// Creates a new LangMatches() function expression
+        /// Creates a new LangMatches() function expression.
         /// </summary>
-        /// <param name="term">Expression to obtain the Language of</param>
-        /// <param name="langRange">Expression representing the Language Range to match</param>
+        /// <param name="term">Expression to obtain the Language of.</param>
+        /// <param name="langRange">Expression representing the Language Range to match.</param>
         public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange)
             : base(term, langRange) { }
 
         /// <summary>
-        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
+        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -112,9 +112,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

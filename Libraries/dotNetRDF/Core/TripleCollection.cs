@@ -33,35 +33,35 @@ using VDS.Common.Collections;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Basic Triple Collection which is not indexed
+    /// Basic Triple Collection which is not indexed.
     /// </summary>
     public class TripleCollection 
         : BaseTripleCollection, IEnumerable<Triple>
     {
         /// <summary>
-        /// Underlying Storage of the Triple Collection
+        /// Underlying Storage of the Triple Collection.
         /// </summary>
         protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
 
         /// <summary>
-        /// Creates a new Triple Collection
+        /// Creates a new Triple Collection.
         /// </summary>
         public TripleCollection() { }
 
         /// <summary>
-        /// Determines whether a given Triple is in the Triple Collection
+        /// Determines whether a given Triple is in the Triple Collection.
         /// </summary>
-        /// <param name="t">The Triple to test</param>
-        /// <returns>True if the Triple already exists in the Triple Collection</returns>
+        /// <param name="t">The Triple to test.</param>
+        /// <returns>True if the Triple already exists in the Triple Collection.</returns>
         public override bool Contains(Triple t)
         {
             return _triples.ContainsKey(t);
         }
 
         /// <summary>
-        /// Adds a Triple to the Collection
+        /// Adds a Triple to the Collection.
         /// </summary>
-        /// <param name="t">Triple to add</param>
+        /// <param name="t">Triple to add.</param>
         protected internal override bool Add(Triple t)
         {
             if (!Contains(t))
@@ -74,10 +74,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a Triple from the Colleciton
+        /// Deletes a Triple from the Colleciton.
         /// </summary>
-        /// <param name="t">Triple to remove</param>
-        /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
+        /// <param name="t">Triple to remove.</param>
+        /// <remarks>Deleting something that doesn't exist has no effect and gives no error.</remarks>
         protected internal override bool Delete(Triple t)
         {
             if (_triples.Remove(t))
@@ -89,7 +89,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Number of Triples in the Triple Collection
+        /// Gets the Number of Triples in the Triple Collection.
         /// </summary>
         public override int Count
         {
@@ -100,11 +100,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the given Triple
+        /// Gets the given Triple.
         /// </summary>
-        /// <param name="t">Triple to retrieve</param>
+        /// <param name="t">Triple to retrieve.</param>
         /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if the given Triple does not exist in the Triple Collection</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if the given Triple does not exist in the Triple Collection.</exception>
         public override Triple this[Triple t]
         {
             get 
@@ -122,7 +122,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection
+        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection
+        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
@@ -150,7 +150,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Objects of Triples in the Triple Collectio
+        /// Gets all the Nodes which are Objects of Triples in the Triple Collectio.
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
@@ -166,7 +166,7 @@ namespace VDS.RDF
         #region IEnumerable<Triple> Members
 
         /// <summary>
-        /// Gets the Enumerator for the Collection
+        /// Gets the Enumerator for the Collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
@@ -179,7 +179,7 @@ namespace VDS.RDF
         #region IEnumerable Members
 
         /// <summary>
-        /// Gets the Enumerator for the Collection
+        /// Gets the Enumerator for the Collection.
         /// </summary>
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -192,7 +192,7 @@ namespace VDS.RDF
         #region IDisposable Members
 
         /// <summary>
-        /// Disposes of a Triple Collection
+        /// Disposes of a Triple Collection.
         /// </summary>
         public override void Dispose()
         {
@@ -203,32 +203,32 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Thread Safe decorator for triple collections
+    /// Thread Safe decorator for triple collections.
     /// </summary>
     /// <remarks>
-    /// Depending on the platform this either uses <see cref="ReaderWriterLockSlim"/> to provide MRSW concurrency or it uses <see cref="Monitor"/> to provide exclusive access concurrency, either way usage is thread safe
+    /// Depending on the platform this either uses <see cref="ReaderWriterLockSlim"/> to provide MRSW concurrency or it uses <see cref="Monitor"/> to provide exclusive access concurrency, either way usage is thread safe.
     /// </remarks>
-    /// <threadsafety instance="true">This decorator provides thread safe access to any underlying triple collection</threadsafety>
+    /// <threadsafety instance="true">This decorator provides thread safe access to any underlying triple collection.</threadsafety>
     public class ThreadSafeTripleCollection 
         : WrapperTripleCollection
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         /// <summary>
-        /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>
+        /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>.
         /// </summary>
         public ThreadSafeTripleCollection()
             : base(new TripleCollection()) { }
 
         /// <summary>
-        /// Creates a new thread safe triple collection which wraps the provided triple collection
+        /// Creates a new thread safe triple collection which wraps the provided triple collection.
         /// </summary>
-        /// <param name="tripleCollection">Triple Collection</param>
+        /// <param name="tripleCollection">Triple Collection.</param>
         public ThreadSafeTripleCollection(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
         /// <summary>
-        /// Enters the write lock
+        /// Enters the write lock.
         /// </summary>
         protected void EnterWriteLock()
         {
@@ -236,7 +236,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Exists the write lock
+        /// Exists the write lock.
         /// </summary>
         protected void ExitWriteLock()
         {
@@ -244,7 +244,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Enters the read lock
+        /// Enters the read lock.
         /// </summary>
         protected void EnterReadLock()
         {
@@ -252,7 +252,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Exists the read lock
+        /// Exists the read lock.
         /// </summary>
         protected void ExitReadLock()
         {
@@ -260,9 +260,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Triple to the Collection
+        /// Adds a Triple to the Collection.
         /// </summary>
-        /// <param name="t">Triple to add</param>
+        /// <param name="t">Triple to add.</param>
         protected internal override bool Add(Triple t)
         {
             try
@@ -277,10 +277,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether a given Triple is in the Triple Collection
+        /// Determines whether a given Triple is in the Triple Collection.
         /// </summary>
-        /// <param name="t">The Triple to test</param>
-        /// <returns>True if the Triple already exists in the Triple Collection</returns>
+        /// <param name="t">The Triple to test.</param>
+        /// <returns>True if the Triple already exists in the Triple Collection.</returns>
         public override bool Contains(Triple t)
         {
             bool contains = false;
@@ -297,7 +297,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Number of Triples in the Triple Collection
+        /// Gets the Number of Triples in the Triple Collection.
         /// </summary>
         public override int Count
         {
@@ -318,9 +318,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the original instance of a specific Triple from the Triple Collection
+        /// Gets the original instance of a specific Triple from the Triple Collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override Triple this[Triple t]
         {
@@ -342,10 +342,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a Triple from the Collection
+        /// Deletes a Triple from the Collection.
         /// </summary>
-        /// <param name="t">Triple to remove</param>
-        /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
+        /// <param name="t">Triple to remove.</param>
+        /// <remarks>Deleting something that doesn't exist has no effect and gives no error.</remarks>
         protected internal override bool Delete(Triple t)
         {
             try
@@ -360,7 +360,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Enumerator for the Collection
+        /// Gets the Enumerator for the Collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
@@ -379,7 +379,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Objects of Triples in the Triple Collectio
+        /// Gets all the Nodes which are Objects of Triples in the Triple Collectio.
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
@@ -400,7 +400,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection
+        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
@@ -421,7 +421,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection
+        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
@@ -442,9 +442,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all triples with the given Object
+        /// Gets all triples with the given Object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
@@ -462,9 +462,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all triples with the given predicate
+        /// Gets all triples with the given predicate.
         /// </summary>
-        /// <param name="pred">Predicate</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
@@ -482,10 +482,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all triples with the given predicate object
+        /// Gets all triples with the given predicate object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
@@ -503,9 +503,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given subject
+        /// Gets all the triples with the given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
@@ -523,10 +523,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given subject and object
+        /// Gets all the triples with the given subject and object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
@@ -544,10 +544,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all triples with the given subject and predicate
+        /// Gets all triples with the given subject and predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
@@ -565,7 +565,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of a Triple Collection
+        /// Disposes of a Triple Collection.
         /// </summary>
         public override void Dispose()
         {

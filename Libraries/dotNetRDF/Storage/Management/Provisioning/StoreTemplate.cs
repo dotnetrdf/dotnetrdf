@@ -32,24 +32,24 @@ using System.Linq;
 namespace VDS.RDF.Storage.Management.Provisioning
 {
     /// <summary>
-    /// A basic store template where the only parameter is the Store ID
+    /// A basic store template where the only parameter is the Store ID.
     /// </summary>
     public class StoreTemplate
         : IStoreTemplate
     {
         /// <summary>
-        /// Creates a new template
+        /// Creates a new template.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         public StoreTemplate(String id)
             : this(id, "Unknown", String.Empty) { }
 
         /// <summary>
-        /// Creates a new template
+        /// Creates a new template.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="name">Template Name</param>
-        /// <param name="description">Template Description</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="name">Template Name.</param>
+        /// <param name="description">Template Description.</param>
         public StoreTemplate(String id, String name, String description)
         {
             ID = id;
@@ -58,7 +58,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Gets/Sets the Store ID
+        /// Gets/Sets the Store ID.
         /// </summary>
         [Category("Basic"), Description("The ID of the Store")]
         public String ID
@@ -68,7 +68,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Gets the name of the type of store the template will create
+        /// Gets the name of the type of store the template will create.
         /// </summary>
         [Category("Basic"), Description("Name of the type of store the template will create"), ReadOnly(true)]
         public String TemplateName
@@ -78,7 +78,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Gets the description of the type of store the template will create
+        /// Gets the description of the type of store the template will create.
         /// </summary>
         [Category("Basic"), Description("Description of the type of store the template will create"), ReadOnly(true)]
         public String TemplateDescription
@@ -88,11 +88,11 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Validates the template
+        /// Validates the template.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// This default implementation does no validation, derived classes must override this to add their required validation
+        /// This default implementation does no validation, derived classes must override this to add their required validation.
         /// </remarks>
         public virtual IEnumerable<String> Validate()
         {
@@ -100,7 +100,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Gets the string representation of the template which is the Template Name
+        /// Gets the string representation of the template which is the Template Name.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -30,26 +30,26 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Abstract Base Class for Unary Path operators
+    /// Abstract Base Class for Unary Path operators.
     /// </summary>
     public abstract class BaseUnaryPath : ISparqlPath
     {
         /// <summary>
-        /// Path
+        /// Path.
         /// </summary>
         protected ISparqlPath _path;
 
         /// <summary>
-        /// Creates a new Unary Path
+        /// Creates a new Unary Path.
         /// </summary>
-        /// <param name="path">Path</param>
+        /// <param name="path">Path.</param>
         public BaseUnaryPath(ISparqlPath path)
         {
             _path = path;
         }
 
         /// <summary>
-        /// Gets the Inner Path
+        /// Gets the Inner Path.
         /// </summary>
         public ISparqlPath Path
         {
@@ -60,14 +60,14 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public abstract override String ToString();

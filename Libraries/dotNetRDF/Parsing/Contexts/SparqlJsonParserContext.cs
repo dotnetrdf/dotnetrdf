@@ -32,17 +32,17 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// SPARQL JSON Parser Context
+    /// SPARQL JSON Parser Context.
     /// </summary>
     public class SparqlJsonParserContext : BaseResultsParserContext
     {
         private JsonTextReader _reader;
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="reader">JSON Text Reader</param>
-        /// <param name="handler">Results Handler</param>
+        /// <param name="reader">JSON Text Reader.</param>
+        /// <param name="handler">Results Handler.</param>
         public SparqlJsonParserContext(JsonTextReader reader, ISparqlResultsHandler handler)
             : base(handler)
         {
@@ -51,15 +51,15 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="reader">JSON Text Reader</param>
-        /// <param name="results">SPARQL Result Set</param>
+        /// <param name="reader">JSON Text Reader.</param>
+        /// <param name="results">SPARQL Result Set.</param>
         public SparqlJsonParserContext(JsonTextReader reader, SparqlResultSet results)
             : this(reader, new ResultSetHandler(results)) { }
 
         /// <summary>
-        /// Gets the JSON Text Reader
+        /// Gets the JSON Text Reader.
         /// </summary>
         public JsonTextReader Input
         {

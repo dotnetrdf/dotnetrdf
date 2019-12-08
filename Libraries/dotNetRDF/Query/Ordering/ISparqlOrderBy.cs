@@ -33,13 +33,13 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Ordering
 {
     /// <summary>
-    /// Interface for classes that represent SPARQL ORDER BY clauses
+    /// Interface for classes that represent SPARQL ORDER BY clauses.
     /// </summary>
     /// <remarks>A SPARQL Order By clause provides a list of orderings, when parsed into the dotNetRDF model this is represented as a single <see cref="ISparqlOrderBy">ISparqlOrderBy</see> for the first term in the clause chained to <see cref="ISparqlOrderBy">ISparqlOrderBy</see>'s for each subsequent term via the <see cref="ISparqlOrderBy.Child">Child</see> property.</remarks>
     public interface ISparqlOrderBy : IComparer<ISet>
     {
         /// <summary>
-        /// Gets/Sets the Child Ordering that applies if the two Objects are considered equal
+        /// Gets/Sets the Child Ordering that applies if the two Objects are considered equal.
         /// </summary>
         ISparqlOrderBy Child
         {
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Sets the Evaluation Context for the Order By
+        /// Sets the Evaluation Context for the Order By.
         /// </summary>
         SparqlEvaluationContext Context
         {
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Sets whether the Ordering is Descending
+        /// Sets whether the Ordering is Descending.
         /// </summary>
         bool Descending
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets whether the Ordering is simple (i.e. applies on variables only)
+        /// Gets whether the Ordering is simple (i.e. applies on variables only).
         /// </summary>
         bool IsSimple
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets all the Variables used in the Ordering
+        /// Gets all the Variables used in the Ordering.
         /// </summary>
         IEnumerable<String> Variables
         {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets the Expression used to do the Ordering
+        /// Gets the Expression used to do the Ordering.
         /// </summary>
         ISparqlExpression Expression
         {
@@ -89,9 +89,9 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
-        /// <param name="pattern">Triple Pattern</param>
+        /// <param name="pattern">Triple Pattern.</param>
         /// <returns></returns>
         IComparer<Triple> GetComparer(IMatchTriplePattern pattern);
     }

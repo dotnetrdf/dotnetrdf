@@ -628,7 +628,7 @@ namespace VDS.RDF.Shacl
         }
 
         /// <summary>
-        /// Gets the list of constraints
+        /// Gets the list of constraints.
         /// </summary>
         public static IEnumerable<IUriNode> Constraints
         {

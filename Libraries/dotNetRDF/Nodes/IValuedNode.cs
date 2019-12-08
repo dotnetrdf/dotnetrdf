@@ -31,7 +31,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Interface for Valued Nodes
+    /// Interface for Valued Nodes.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -42,74 +42,74 @@ namespace VDS.RDF.Nodes
         : INode
     {
         /// <summary>
-        /// Gets the String value of the Node
+        /// Gets the String value of the Node.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// This is distinct from <strong>ToString()</strong> because that method will typically include additional information like language specifier/datatype as appropriate whereas this method is used to produce a string as would be produced by applying the <strong>STR()</strong> function from SPARQL
+        /// This is distinct from <strong>ToString()</strong> because that method will typically include additional information like language specifier/datatype as appropriate whereas this method is used to produce a string as would be produced by applying the <strong>STR()</strong> function from SPARQL.
         /// </remarks>
         String AsString();
 
         /// <summary>
-        /// Gets the Long value of the Node
+        /// Gets the Long value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Long</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Long.</exception>
         long AsInteger();
 
         /// <summary>
-        /// Gets the Decimal value of the Node
+        /// Gets the Decimal value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Decimal</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Decimal.</exception>
         decimal AsDecimal();
 
         /// <summary>
-        /// Gets the Float value of the Node
+        /// Gets the Float value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Float</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Float.</exception>
         float AsFloat();
 
         /// <summary>
-        /// Gets the Double value of the Node
+        /// Gets the Double value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Double</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Double.</exception>
         double AsDouble();
 
         /// <summary>
-        /// Gets the Boolean value of the Node
+        /// Gets the Boolean value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Boolean</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Boolean.</exception>
         bool AsBoolean();
 
         /// <summary>
-        /// Gets the Date Time value of the Node
+        /// Gets the Date Time value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time.</exception>
         DateTime AsDateTime();
 
         /// <summary>
-        /// Gets the Date Time Offset value of the Node
+        /// Gets the Date Time Offset value of the Node.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time Offset</exception>
+        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time Offset.</exception>
         DateTimeOffset AsDateTimeOffset();
 
         /// <summary>
-        /// Gets the Time Span value of the Node
+        /// Gets the Time Span value of the Node.
         /// </summary>
         /// <returns></returns>
         TimeSpan AsTimeSpan();
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         /// <remarks>
-        /// Either String.Empty if no type or the string form of the type URI
+        /// Either String.Empty if no type or the string form of the type URI.
         /// </remarks>
         String EffectiveType
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the Numeric Type of the Node
+        /// Gets the Numeric Type of the Node.
         /// </summary>
         SparqlNumericType NumericType
         {

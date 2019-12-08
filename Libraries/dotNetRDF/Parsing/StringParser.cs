@@ -31,7 +31,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper Class which allows raw strings of RDF/SPARQL Results to be parsed directly
+    /// Static Helper Class which allows raw strings of RDF/SPARQL Results to be parsed directly.
     /// </summary>
     /// <remarks>
     /// The API structure for dotNetRDF means that our <see cref="IRdfReader">IRdfReader</see> classes which are our Parsers only have to support parsing from a file or a stream.  For most applications this is fine but there may be occassions when you wish to parse a small fragment of RDF and you don't want to have to put it into a file before you can parse it.
@@ -39,12 +39,12 @@ namespace VDS.RDF.Parsing
     public static class StringParser
     {
         /// <summary>
-        /// Parses a raw RDF String using the given <see cref="IRdfReader">IRdfReader</see>
+        /// Parses a raw RDF String using the given <see cref="IRdfReader">IRdfReader</see>.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="data">Raw RDF String</param>
-        /// <param name="reader">Parser to use to read the data</param>
-        /// <remarks>Use this when you have a raw RDF string and you know the syntax the RDF is in</remarks>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="data">Raw RDF String.</param>
+        /// <param name="reader">Parser to use to read the data.</param>
+        /// <remarks>Use this when you have a raw RDF string and you know the syntax the RDF is in.</remarks>
         public static void Parse(IGraph g, String data, IRdfReader reader)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -69,10 +69,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a raw RDF String (attempts to auto-detect the format)
+        /// Parses a raw RDF String (attempts to auto-detect the format).
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="data">Raw RDF String</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="data">Raw RDF String.</param>
         /// <remarks>
         /// <p>
         /// Auto-detection is based on testing the string to see if it contains certain keyword constructs which might indicate a particular syntax has been used.  This detection may not always be accurate and it may choose a parser which is less expressive than the actual syntax e.g. <see cref="TurtleParser">TurtleParser</see> instead of <see cref="Notation3Parser">Notation3Parser</see> as it tends to guess downwards.  
@@ -161,11 +161,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a raw RDF Dataset String using the given Parser
+        /// Parses a raw RDF Dataset String using the given Parser.
         /// </summary>
-        /// <param name="store">Store to load into</param>
-        /// <param name="data">Raw RDF Dataset String</param>
-        /// <param name="reader">Parser to use</param>
+        /// <param name="store">Store to load into.</param>
+        /// <param name="data">Raw RDF Dataset String.</param>
+        /// <param name="reader">Parser to use.</param>
         public static void ParseDataset(ITripleStore store, String data, IStoreReader reader)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
@@ -190,10 +190,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a raw RDF Dataset String (attempts to auto-detect the format)
+        /// Parses a raw RDF Dataset String (attempts to auto-detect the format).
         /// </summary>
-        /// <param name="store">Store to load into</param>
-        /// <param name="data">Raw RDF Dataset String</param>
+        /// <param name="store">Store to load into.</param>
+        /// <param name="data">Raw RDF Dataset String.</param>
         /// <remarks>
         /// <p>
         /// Auto-detection is based on testing the string to see if it contains certain keyword constructs which might indicate a particular syntax has been used.  This detection may not always be accurate.
@@ -236,10 +236,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a raw SPARQL Results String (attempts to auto-detect the format)
+        /// Parses a raw SPARQL Results String (attempts to auto-detect the format).
         /// </summary>
-        /// <param name="results">SPARQL Result Set to fill</param>
-        /// <param name="data">Raw SPARQL Results String</param>
+        /// <param name="results">SPARQL Result Set to fill.</param>
+        /// <param name="data">Raw SPARQL Results String.</param>
         /// <remarks>
         /// <p>
         /// Auto-detection is based on testing the string to see if it contains certain keyword constructs which might indicate a particular syntax has been used.  This detection may not always be accurate.
@@ -284,11 +284,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a raw SPARQL Results String using the given Parser
+        /// Parses a raw SPARQL Results String using the given Parser.
         /// </summary>
-        /// <param name="results">SPARQL Result Set to fill</param>
-        /// <param name="data">Raw SPARQL Results String</param>
-        /// <param name="reader">Parser to use</param>
+        /// <param name="results">SPARQL Result Set to fill.</param>
+        /// <param name="data">Raw SPARQL Results String.</param>
+        /// <param name="reader">Parser to use.</param>
         public static void ParseResultSet(SparqlResultSet results, String data, ISparqlResultsReader reader)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
@@ -319,9 +319,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Uses the rules described in the remarks for the <see cref="StringParser.Parse(IGraph, String)">Parse()</see> to return the most likely Parser
+        /// Uses the rules described in the remarks for the <see cref="StringParser.Parse(IGraph, String)">Parse()</see> to return the most likely Parser.
         /// </summary>
-        /// <param name="data">Raw RDF String</param>
+        /// <param name="data">Raw RDF String.</param>
         public static IRdfReader GetParser(String data)
         {
             if (data == null) throw new RdfParserSelectionException("Cannot select a parser for a null String");
@@ -369,9 +369,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Uses the format detection rules to determine the most likely RDF Dataset Parser
+        /// Uses the format detection rules to determine the most likely RDF Dataset Parser.
         /// </summary>
-        /// <param name="data">Raw RDF Dataset String</param>
+        /// <param name="data">Raw RDF Dataset String.</param>
         /// <returns></returns>
         public static IStoreReader GetDatasetParser(String data)
         {
@@ -396,9 +396,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Uses the format detection rules to return the most likely SPARQL Results parser
+        /// Uses the format detection rules to return the most likely SPARQL Results parser.
         /// </summary>
-        /// <param name="data">Raw SPARQL Results String</param>
+        /// <param name="data">Raw SPARQL Results String.</param>
         /// <returns></returns>
         public static ISparqlResultsReader GetResultSetParser(String data)
         {

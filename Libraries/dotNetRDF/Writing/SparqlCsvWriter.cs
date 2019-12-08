@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for saving SPARQL Result Sets to CSV format (not a standardised format)
+    /// Class for saving SPARQL Result Sets to CSV format (not a standardised format).
     /// </summary>
     public class SparqlCsvWriter
         : ISparqlResultsWriter
@@ -42,10 +42,10 @@ namespace VDS.RDF.Writing
         private CsvFormatter _formatter = new CsvFormatter();
 
         /// <summary>
-        /// Saves a SPARQL Result Set to CSV format
+        /// Saves a SPARQL Result Set to CSV format.
         /// </summary>
-        /// <param name="results">Result Set</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(SparqlResultSet results, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -55,10 +55,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a SPARQL Result Set to CSV format
+        /// Saves a SPARQL Result Set to CSV format.
         /// </summary>
-        /// <param name="results">Result Set</param>
-        /// <param name="output">Writer to save to</param>
+        /// <param name="results">Result Set.</param>
+        /// <param name="output">Writer to save to.</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
             try
@@ -124,9 +124,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -142,7 +142,7 @@ namespace VDS.RDF.Writing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

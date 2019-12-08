@@ -31,41 +31,41 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Valued node whose value is a string or can only be converted to a string
+    /// Valued node whose value is a string or can only be converted to a string.
     /// </summary>
     public class StringNode
         : LiteralNode, IValuedNode
     {
         /// <summary>
-        /// Creates a new String Node
+        /// Creates a new String Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="value">String value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="value">String value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         public StringNode(IGraph g, String value, Uri datatype)
             : base(g, value, datatype) { }
 
         /// <summary>
-        /// Creates a new String Node
+        /// Creates a new String Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="value">String value</param>
-        /// <param name="lang">Language Specifier</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="value">String value.</param>
+        /// <param name="lang">Language Specifier.</param>
         public StringNode(IGraph g, String value, String lang)
             : base(g, value, lang) { }
 
         /// <summary>
-        /// Creates a new String Node
+        /// Creates a new String Node.
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
-        /// <param name="value">String value</param>
+        /// <param name="g">Graph the Node belongs to.</param>
+        /// <param name="value">String value.</param>
         public StringNode(IGraph g, String value)
             : base(g, value) { }
 
         #region IValuedNode Members
 
         /// <summary>
-        /// Gets the string value
+        /// Gets the string value.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -74,7 +74,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to an integer
+        /// Throws an error as the string cannot be cast to an integer.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -83,7 +83,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to a decimal
+        /// Throws an error as the string cannot be cast to a decimal.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -92,7 +92,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to a float
+        /// Throws an error as the string cannot be cast to a float.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -101,7 +101,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to a double
+        /// Throws an error as the string cannot be cast to a double.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -110,7 +110,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the boolean value of the string
+        /// Gets the boolean value of the string.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -119,7 +119,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to a date time
+        /// Throws an error as the string cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -128,7 +128,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to a date time
+        /// Throws an error as the string cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -137,7 +137,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as the string cannot be cast to a time span
+        /// Throws an error as the string cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -146,7 +146,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the numeric type of the expression
+        /// Gets the numeric type of the expression.
         /// </summary>
         public SparqlNumericType NumericType
         {

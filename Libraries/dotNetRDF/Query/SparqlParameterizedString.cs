@@ -38,11 +38,11 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// A SPARQL Parameterized String is a String that can contain parameters in the same fashion as a SQL command string
+    /// A SPARQL Parameterized String is a String that can contain parameters in the same fashion as a SQL command string.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is intended for use in applications which may want to dynamically build SPARQL queries/updates where user input may comprise individual values in the triples patterns and the applications want to avoid SPARQL injection attacks which change the meaning of the query/update
+    /// This is intended for use in applications which may want to dynamically build SPARQL queries/updates where user input may comprise individual values in the triples patterns and the applications want to avoid SPARQL injection attacks which change the meaning of the query/update.
     /// </para>
     /// <para>
     /// It works broadly in the same way as a SqlCommand would in that you specify a string with paramters specified in the form <strong>@name</strong> and then use various set methods to set the actual values that should be used.  The values are only substituted for parameters when you actually call the <see cref="SparqlParameterizedString.ToString">ToString()</see> method to get the final string representation of the command. E.g.
@@ -66,13 +66,13 @@ namespace VDS.RDF.Query
     /// }
     /// </code>
     /// <para>
-    /// Calling a Set method to set a parameter that has already been set changes that value and the new value will be used next time you call <see cref="SparqlParameterizedString.ToString">ToString()</see> - this may be useful if you plan to execute a series of queries/updates using a series of values since you need not instantiate a completely new parameterized string each time
+    /// Calling a Set method to set a parameter that has already been set changes that value and the new value will be used next time you call <see cref="SparqlParameterizedString.ToString">ToString()</see> - this may be useful if you plan to execute a series of queries/updates using a series of values since you need not instantiate a completely new parameterized string each time.
     /// </para>
     /// <para>
-    /// This class was added to a library based on a suggestion by Alexander Sidorov and ideas from slides from <a href="http://www.slideshare.net/Morelab/sparqlrdqlsparul-injection">Slideshare</a> by Almedia et al
+    /// This class was added to a library based on a suggestion by Alexander Sidorov and ideas from slides from <a href="http://www.slideshare.net/Morelab/sparqlrdqlsparul-injection">Slideshare</a> by Almedia et al.
     /// </para>
     /// <para>
-    /// <strong>PERFORMANCE TIPS:</strong> if building the command text incrementaly, avoid using <c> CommandText += </c> and use the AppendSubQuery or Append methods instead
+    /// <strong>PERFORMANCE TIPS:</strong> if building the command text incrementaly, avoid using <c> CommandText += </c> and use the AppendSubQuery or Append methods instead.
     /// </para>
     /// </remarks>
     public class SparqlParameterizedString
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query
         private static Regex PreambleCapturePattern = new Regex("(BASE|PREFIX\\s+([\\w\\-_]*):)\\s*<([^>]+)>", RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// Creates a new empty parameterized String
+        /// Creates a new empty parameterized String.
         /// </summary>
         public SparqlParameterizedString()
         {
@@ -105,9 +105,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new parameterized String
+        /// Creates a new parameterized String.
         /// </summary>
-        /// <param name="command">Command Text</param>
+        /// <param name="command">Command Text.</param>
         public SparqlParameterizedString(String command)
             : this()
         {
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the command
+        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the command.
         /// </summary>
         public INamespaceMapper Namespaces
         {
@@ -130,13 +130,13 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Base URI which will be used to prepend BASE declarations to the command
+        /// Gets/Sets the Base URI which will be used to prepend BASE declarations to the command.
         /// </summary>
         public Uri BaseUri { get; set; }
 
 
         /// <summary>
-        /// Gets/Sets the parameterized Command Text
+        /// Gets/Sets the parameterized Command Text.
         /// </summary>
         public virtual String CommandText
         {
@@ -154,9 +154,9 @@ namespace VDS.RDF.Query
         #region Sparql extension methods
 
         /// <summary>
-        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query
+        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query.
         /// </summary>
-        /// <param name="query">Query</param>
+        /// <param name="query">Query.</param>
         public void AppendSubQuery(SparqlQuery query)
         {
             PreprocessText(TrimPreamble(_emptyFormatter.Format(new SubQueryPattern(query))));
@@ -164,9 +164,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
+        /// Appends the given query as a sub-query to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost.
         /// </summary>
-        /// <param name="query">Query</param>
+        /// <param name="query">Query.</param>
         public void AppendSubQuery(SparqlParameterizedString query)
         {
             // TODO shouldn't we ensure that the text is wrapped in { } to get a correct subquery pattern ?
@@ -175,9 +175,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Appends the given text to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost
+        /// Appends the given text to the existing command text, any prefixes in the sub-query are moved to the parent query but any parameter/variable assignments will be lost.
         /// </summary>
-        /// <param name="text">Text</param>
+        /// <param name="text">Text.</param>
         public void Append(SparqlParameterizedString text)
         {
             // Merges the instances caches and placeholders
@@ -188,9 +188,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Appends the given text to the existing command text, any prefixes in the command are moved to the parent query
+        /// Appends the given text to the existing command text, any prefixes in the command are moved to the parent query.
         /// </summary>
-        /// <param name="text">Text</param>
+        /// <param name="text">Text.</param>
         public void Append(String text)
         {
             PreprocessText(TrimPreamble(text));
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteQuery()">ExecuteQuery()</see> method
+        /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteQuery()">ExecuteQuery()</see> method.
         /// </summary>
         public ISparqlQueryProcessor QueryProcessor
         {
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteUpdate()">ExecuteUpdate()</see> method
+        /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteUpdate()">ExecuteUpdate()</see> method.
         /// </summary>
         public ISparqlUpdateProcessor UpdateProcessor
         {
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets an enumeration of the Variables for which Values have been set
+        /// Gets an enumeration of the Variables for which Values have been set.
         /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Variables
         {
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets an enumeration of the Parameters for which Values have been set
+        /// Gets an enumeration of the Parameters for which Values have been set.
         /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Parameters
         {
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query
         #region Parameters and Variables assignment methods
 
         /// <summary>
-        /// Clears all set Parameters and Variables
+        /// Clears all set Parameters and Variables.
         /// </summary>
         public virtual void Clear()
         {
@@ -262,7 +262,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Clears all set Parameters
+        /// Clears all set Parameters.
         /// </summary>
         public virtual void ClearParameters()
         {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Clears all set Variables
+        /// Clears all set Variables.
         /// </summary>
         public virtual void ClearVariables()
         {
@@ -278,12 +278,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Value of a Parameter 
+        /// Sets the Value of a Parameter. 
         /// </summary>
-        /// <param name="name">Parameter Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="name">Parameter Name.</param>
+        /// <param name="value">Value.</param>
         /// <remarks>
-        /// Can be used in derived classes to set the value of parameters if the derived class defines additional methods for adding values for parameters
+        /// Can be used in derived classes to set the value of parameters if the derived class defines additional methods for adding values for parameters.
         /// </remarks>
         public void SetParameter(String name, INode value)
         {
@@ -303,11 +303,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Removes a previously set value for a Parameter
+        /// Removes a previously set value for a Parameter.
         /// </summary>
-        /// <param name="name">Parameter Name</param>
+        /// <param name="name">Parameter Name.</param>
         /// <remarks>
-        /// There is generally no reason to do this since you can just set a parameters value to change it
+        /// There is generally no reason to do this since you can just set a parameters value to change it.
         /// </remarks>
         public void UnsetParameter(String name)
         {
@@ -317,11 +317,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Removes a previously set value for a Variable
+        /// Removes a previously set value for a Variable.
         /// </summary>
-        /// <param name="name">Variable Name</param>
+        /// <param name="name">Variable Name.</param>
         /// <remarks>
-        /// May be useful if you have a skeleton query/update into which you sometimes substitute values for variables but don't always do so
+        /// May be useful if you have a skeleton query/update into which you sometimes substitute values for variables but don't always do so.
         /// </remarks>
         public void UnsetVariable(String name)
         {
@@ -331,10 +331,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Value of a Variable
+        /// Sets the Value of a Variable.
         /// </summary>
-        /// <param name="name">Variable Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="name">Variable Name.</param>
+        /// <param name="value">Value.</param>
         public virtual void SetVariable(String name, INode value)
         {
             if (value == null)
@@ -351,132 +351,132 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Parameter to an Integer Literal
+        /// Sets the Parameter to an Integer Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, int value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to an Integer Literal
+        /// Sets the Parameter to an Integer Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, long value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to an Integer Literal
+        /// Sets the Parameter to an Integer Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, short value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Decimal Literal
+        /// Sets the Parameter to a Decimal Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, decimal value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Float Literal
+        /// Sets the Parameter to a Float Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, float value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Double Literal
+        /// Sets the Parameter to a Double Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, double value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Date Time Literal
+        /// Sets the Parameter to a Date Time Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, DateTime value)
         {
             SetLiteral(name, value, true);
         }
 
         /// <summary>
-        /// Sets the Parameter to a Date Time Literal
+        /// Sets the Parameter to a Date Time Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
-        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds.</param>
         public void SetLiteral(String name, DateTime value, bool precise)
         {
             SetParameter(name, value.ToLiteral(_g, precise));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Date Time Literal
+        /// Sets the Parameter to a Date Time Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, DateTimeOffset value)
         {
             SetLiteral(name, value, true);
         }
 
         /// <summary>
-        /// Sets the Parameter to a Date Time Literal
+        /// Sets the Parameter to a Date Time Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
-        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds.</param>
         public void SetLiteral(String name, DateTimeOffset value, bool precise)
         {
             SetParameter(name, value.ToLiteral(_g, precise));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Duration Literal
+        /// Sets the Parameter to a Duration Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, TimeSpan value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to a Boolean Literal
+        /// Sets the Parameter to a Boolean Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, bool value)
         {
             SetParameter(name, value.ToLiteral(_g));
         }
 
         /// <summary>
-        /// Sets the Parameter to an Untyped Literal
+        /// Sets the Parameter to an Untyped Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
         public void SetLiteral(String name, String value)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
@@ -484,11 +484,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Parameter to a Typed Literal
+        /// Sets the Parameter to a Typed Literal.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
+        /// <param name="datatype">Datatype URI.</param>
         public void SetLiteral(String name, String value, Uri datatype)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
@@ -496,11 +496,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Parameter to a Literal with a Language Specifier
+        /// Sets the Parameter to a Literal with a Language Specifier.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Integer</param>
-        /// <param name="lang">Language Specifier</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Integer.</param>
+        /// <param name="lang">Language Specifier.</param>
         public void SetLiteral(String name, String value, String lang)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
@@ -509,10 +509,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Parameter to a URI
+        /// Sets the Parameter to a URI.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">URI</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">URI.</param>
         public void SetUri(String name, Uri value)
         {
             if (value == null) throw new ArgumentNullException("value", "Cannot set a URI to be null");
@@ -520,10 +520,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Parameter to be a Blank Node with the given ID
+        /// Sets the Parameter to be a Blank Node with the given ID.
         /// </summary>
-        /// <param name="name">Parameter</param>
-        /// <param name="value">Node ID</param>
+        /// <param name="name">Parameter.</param>
+        /// <param name="value">Node ID.</param>
         /// <remarks>
         /// Only guarantees that the Blank Node ID will not clash with any other Blank Nodes added by other calls to this method or it's overload which generates anonymous Blank Nodes.  If the base query text into which you are inserting parameters contains Blank Nodes then the IDs generated here may clash with those IDs.
         /// </remarks>
@@ -535,9 +535,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Parameter to be a new anonymous Blank Node
+        /// Sets the Parameter to be a new anonymous Blank Node.
         /// </summary>
-        /// <param name="name">Parameter</param>
+        /// <param name="name">Parameter.</param>
         /// <remarks>
         /// Only guarantees that the Blank Node ID will not clash with any other Blank Nodes added by other calls to this method or it's overload which takes an explicit Node ID.  If the base query text into which you are inserting parameters contains Blank Nodes then the IDs generated here may clash with those IDs.
         /// </remarks>
@@ -551,7 +551,7 @@ namespace VDS.RDF.Query
         #region Runtime Evaluation
 
         /// <summary>
-        /// Executes this command as a query
+        /// Executes this command as a query.
         /// </summary>
         /// <returns></returns>
         public SparqlResultSet ExecuteQuery()
@@ -562,10 +562,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Executes this command as a query
+        /// Executes this command as a query.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
         {
             if (_queryProcessor == null) throw new RdfQueryException("Cannot call ExecuteQuery() when the QueryProcessor property has not been set");
@@ -576,7 +576,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Executes this command as an update
+        /// Executes this command as an update.
         /// </summary>
         public void ExecuteUpdate()
         {
@@ -592,7 +592,7 @@ namespace VDS.RDF.Query
         #region Command text processing and Serialization
 
         /// <summary>
-        /// Clears the preprocessing structures
+        /// Clears the preprocessing structures.
         /// </summary>
         private void ResetText()
         {
@@ -602,10 +602,10 @@ namespace VDS.RDF.Query
 
 
         /// <summary>
-        /// Trims out the SPARQL preamble (BASE and PREFIX definitions) from the command text
+        /// Trims out the SPARQL preamble (BASE and PREFIX definitions) from the command text.
         /// </summary>
         /// <remarks>
-        /// This is done so the instance can be directly merged into another SparqlParameterizedString through the Append methods
+        /// This is done so the instance can be directly merged into another SparqlParameterizedString through the Append methods.
         /// </remarks>
         private String TrimPreamble(String value)
         {
@@ -747,7 +747,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Returns the actual Query/Update String with parameter and variable values inserted
+        /// Returns the actual Query/Update String with parameter and variable values inserted.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

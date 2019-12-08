@@ -31,7 +31,7 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// A Namespace Mapper which has an explicit notion of Nesting
+    /// A Namespace Mapper which has an explicit notion of Nesting.
     /// </summary>
     public class NestedNamespaceMapper : INestedNamespaceMapper
     {
@@ -40,16 +40,16 @@ namespace VDS.RDF
         private int _level = 0;
 
         /// <summary>
-        /// Constructs a new Namespace Map
+        /// Constructs a new Namespace Map.
         /// </summary>
-        /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined</remarks>
+        /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined.</remarks>
         public NestedNamespaceMapper()
             : this(false) { }
 
         /// <summary>
-        /// Constructs a new Namespace Map which is optionally empty
+        /// Constructs a new Namespace Map which is optionally empty.
         /// </summary>
-        /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
+        /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined.</param>
         protected internal NestedNamespaceMapper(bool empty)
         {
             if (!empty)
@@ -62,10 +62,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Namespace at the Current Nesting Level
+        /// Adds a Namespace at the Current Nesting Level.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="uri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="uri">Namespace URI.</param>
         public void AddNamespace(string prefix, Uri uri)
         {
             if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
@@ -104,7 +104,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Clears the Namespace Map
+        /// Clears the Namespace Map.
         /// </summary>
         public void Clear()
         {
@@ -113,9 +113,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace URI for the given Prefix at the current Nesting Level
+        /// Gets the Namespace URI for the given Prefix at the current Nesting Level.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
+        /// <param name="prefix">Prefix.</param>
         /// <returns></returns>
         public Uri GetNamespaceUri(string prefix)
         {
@@ -130,9 +130,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace Prefix for the given URI at the current Nesting Level
+        /// Gets the Namespace Prefix for the given URI at the current Nesting Level.
         /// </summary>
-        /// <param name="uri">Namespace URI</param>
+        /// <param name="uri">Namespace URI.</param>
         /// <returns></returns>
         public string GetPrefix(Uri uri)
         {
@@ -148,9 +148,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Nesting Level at which the given Namespace is definition is defined
+        /// Gets the Nesting Level at which the given Namespace is definition is defined.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
+        /// <param name="prefix">Prefix.</param>
         /// <returns></returns>
         public int GetNestingLevel(String prefix)
         {
@@ -165,9 +165,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the given Namespace exists
+        /// Gets whether the given Namespace exists.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
+        /// <param name="prefix">Prefix.</param>
         /// <returns></returns>
         public bool HasNamespace(string prefix)
         {
@@ -175,9 +175,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Imports another Namespace Map into this one
+        /// Imports another Namespace Map into this one.
         /// </summary>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="nsmap">Namespace Map.</param>
         public void Import(INamespaceMapper nsmap)
         {
             String tempPrefix = "ns0";
@@ -207,7 +207,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Increments the Nesting Level
+        /// Increments the Nesting Level.
         /// </summary>
         public void IncrementNesting()
         {
@@ -215,10 +215,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Decrements the Nesting Level
+        /// Decrements the Nesting Level.
         /// </summary>
         /// <remarks>
-        /// When the Nesting Level is decremented any Namespaces defined at a greater Nesting Level are now out of scope and so are removed from the Mapper
+        /// When the Nesting Level is decremented any Namespaces defined at a greater Nesting Level are now out of scope and so are removed from the Mapper.
         /// </remarks>
         public void DecrementNesting()
         {
@@ -245,7 +245,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the current Nesting Level
+        /// Gets the current Nesting Level.
         /// </summary>
         public int NestingLevel
         {
@@ -271,10 +271,10 @@ namespace VDS.RDF
         public event NamespaceChanged NamespaceRemoved;
 
         /// <summary>
-        /// Internal Helper for the NamespaceAdded Event which raises it only when a Handler is registered
+        /// Internal Helper for the NamespaceAdded Event which raises it only when a Handler is registered.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         protected virtual void RaiseNamespaceAdded(String prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceAdded;
@@ -285,10 +285,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Helper for the NamespaceModified Event which raises it only when a Handler is registered
+        /// Internal Helper for the NamespaceModified Event which raises it only when a Handler is registered.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         protected virtual void RaiseNamespaceModified(String prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceModified;
@@ -299,10 +299,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Helper for the NamespaceRemoved Event which raises it only when a Handler is registered
+        /// Internal Helper for the NamespaceRemoved Event which raises it only when a Handler is registered.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         protected virtual void OnNamespaceRemoved(String prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceRemoved;
@@ -313,7 +313,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace Prefixes
+        /// Gets the Namespace Prefixes.
         /// </summary>
         public IEnumerable<string> Prefixes
         {
@@ -324,10 +324,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Tries to reduce a URI to a QName using this Namespace Map
+        /// Tries to reduce a URI to a QName using this Namespace Map.
         /// </summary>
-        /// <param name="uri">URI</param>
-        /// <param name="qname">Resulting QName</param>
+        /// <param name="uri">URI.</param>
+        /// <param name="qname">Resulting QName.</param>
         /// <returns></returns>
         public bool ReduceToQName(string uri, out string qname)
         {
@@ -354,9 +354,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Removes a Namespace provided that Namespace is defined on the current Nesting Level
+        /// Removes a Namespace provided that Namespace is defined on the current Nesting Level.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
+        /// <param name="prefix">Prefix.</param>
         public void RemoveNamespace(string prefix)
         {
             if (HasNamespace(prefix))
@@ -376,7 +376,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the Namespace Map
+        /// Disposes of the Namespace Map.
         /// </summary>
         public void Dispose()
         {
@@ -387,7 +387,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class used to hold Nested Namespace definition information
+    /// Class used to hold Nested Namespace definition information.
     /// </summary>
     class NestedMapping
     {
@@ -396,11 +396,11 @@ namespace VDS.RDF
         private Uri _uri;
 
         /// <summary>
-        /// Creates a new Nested Mapping
+        /// Creates a new Nested Mapping.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="uri">Namespace URI</param>
-        /// <param name="level">Nesting Level</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="uri">Namespace URI.</param>
+        /// <param name="level">Nesting Level.</param>
         public NestedMapping(String prefix, Uri uri, int level)
         {
             _prefix = prefix;
@@ -409,15 +409,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Nested Mapping
+        /// Creates a new Nested Mapping.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="uri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="uri">Namespace URI.</param>
         public NestedMapping(String prefix, Uri uri)
             : this(prefix, uri, 0) { }
 
         /// <summary>
-        /// Gets the Nesting Level
+        /// Gets the Nesting Level.
         /// </summary>
         public int Level
         {
@@ -428,7 +428,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace Prefix
+        /// Gets the Namespace Prefix.
         /// </summary>
         public String Prefix
         {
@@ -439,7 +439,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace URI
+        /// Gets the Namespace URI.
         /// </summary>
         public Uri Uri
         {

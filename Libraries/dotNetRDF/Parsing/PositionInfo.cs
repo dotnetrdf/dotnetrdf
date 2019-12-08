@@ -29,17 +29,17 @@ using System.Xml;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Represents Position Information from Parsers
+    /// Represents Position Information from Parsers.
     /// </summary>
     public class PositionInfo
     {
         private int _startLine, _endLine, _startPos, _endPos;
 
         /// <summary>
-        /// Creates a new set of Position Information
+        /// Creates a new set of Position Information.
         /// </summary>
-        /// <param name="line">Line</param>
-        /// <param name="position">Column</param>
+        /// <param name="line">Line.</param>
+        /// <param name="position">Column.</param>
         public PositionInfo(int line, int position)
         {
             _startLine = _endLine = line;
@@ -47,11 +47,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new set of Position Information
+        /// Creates a new set of Position Information.
         /// </summary>
-        /// <param name="line">Line</param>
-        /// <param name="startPosition">Start Column</param>
-        /// <param name="endPosition">End Column</param>
+        /// <param name="line">Line.</param>
+        /// <param name="startPosition">Start Column.</param>
+        /// <param name="endPosition">End Column.</param>
         public PositionInfo(int line, int startPosition, int endPosition)
             : this(line, startPosition)
         {
@@ -59,12 +59,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new set of Position Information
+        /// Creates a new set of Position Information.
         /// </summary>
-        /// <param name="startLine">Start Line</param>
-        /// <param name="endLine">End Line</param>
-        /// <param name="startPosition">Start Column</param>
-        /// <param name="endPosition">End Column</param>
+        /// <param name="startLine">Start Line.</param>
+        /// <param name="endLine">End Line.</param>
+        /// <param name="startPosition">Start Column.</param>
+        /// <param name="endPosition">End Column.</param>
         public PositionInfo(int startLine, int endLine, int startPosition, int endPosition)
             : this(startLine, startPosition, endPosition)
         {
@@ -72,14 +72,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new set of Position Information form some XML Line Information
+        /// Creates a new set of Position Information form some XML Line Information.
         /// </summary>
-        /// <param name="info">XML Line Information</param>
+        /// <param name="info">XML Line Information.</param>
         public PositionInfo(IXmlLineInfo info)
             : this(info.LineNumber, info.LinePosition) { }
 
         /// <summary>
-        /// Gets the Start Line
+        /// Gets the Start Line.
         /// </summary>
         public int StartLine
         {
@@ -90,7 +90,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the End Line
+        /// Gets the End Line.
         /// </summary>
         public int EndLine
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the Start Column
+        /// Gets the Start Column.
         /// </summary>
         public int StartPosition
         {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the End Column
+        /// Gets the End Column.
         /// </summary>
         public int EndPosition
         {

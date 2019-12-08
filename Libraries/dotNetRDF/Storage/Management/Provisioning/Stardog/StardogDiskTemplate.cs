@@ -29,15 +29,15 @@ using System;
 namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {
     /// <summary>
-    /// Template for creating Stardog Disk stores
+    /// Template for creating Stardog Disk stores.
     /// </summary>
     public class StardogDiskTemplate
         : BaseStardogTemplate
     {
         /// <summary>
-        /// Creates a new template
+        /// Creates a new template.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         public StardogDiskTemplate(String id)
             : base(id, "Stardog Disk", "A Stardog Disk based store", BaseStardogServer.DatabaseOptions.DatabaseTypeDisk) { }
     }

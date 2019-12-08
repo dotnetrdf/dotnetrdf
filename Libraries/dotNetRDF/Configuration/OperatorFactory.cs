@@ -34,7 +34,7 @@ using System.Reflection;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// SPARQL Operator factory which is capable of loading any implementation of ISparqlOperator which has a public unparameterized constructor
+    /// SPARQL Operator factory which is capable of loading any implementation of ISparqlOperator which has a public unparameterized constructor.
     /// </summary>
     public class OperatorFactory
         : IObjectFactory
@@ -42,12 +42,12 @@ namespace VDS.RDF.Configuration
         private Type _opType = typeof(ISparqlOperator);
 
         /// <summary>
-        /// Tries to load an object of the given type
+        /// Tries to load an object of the given type.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Returned Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Returned Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -65,9 +65,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this factory can load objects of the given type
+        /// Gets whether this factory can load objects of the given type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

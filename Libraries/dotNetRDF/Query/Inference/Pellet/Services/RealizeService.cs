@@ -33,20 +33,20 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Realize Service provided by a Pellet Server
+    /// Represents the Realize Service provided by a Pellet Server.
     /// </summary>
     public class RealizeService : PelletService
     {
         /// <summary>
-        /// Creates a new Realize Service
+        /// Creates a new Realize Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal RealizeService(String name, JObject obj)
             : base(name, obj) { }
 
         /// <summary>
-        /// Gets the Graph which comprises the class hierarchy and individuals of those classes
+        /// Gets the Graph which comprises the class hierarchy and individuals of those classes.
         /// </summary>
         /// <returns></returns>
         public IGraph Realize()
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the Graph which comprises the class hierarchy and individuals of those classes
+        /// Gets the Graph which comprises the class hierarchy and individuals of those classes.
         /// </summary>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

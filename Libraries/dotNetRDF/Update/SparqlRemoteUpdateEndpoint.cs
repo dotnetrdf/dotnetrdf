@@ -36,7 +36,7 @@ using System.Web;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// A Class for connecting to a remote SPARQL Update endpoint and executing Updates against it
+    /// A Class for connecting to a remote SPARQL Update endpoint and executing Updates against it.
     /// </summary>
     public class SparqlRemoteUpdateEndpoint 
         : BaseEndpoint
@@ -44,9 +44,9 @@ namespace VDS.RDF.Update
         const int LongUpdateLength = 2048;
 
         /// <summary>
-        /// Creates a new SPARQL Update Endpoint for the given URI
+        /// Creates a new SPARQL Update Endpoint for the given URI.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public SparqlRemoteUpdateEndpoint(Uri endpointUri)
             : base(endpointUri) 
         {
@@ -54,17 +54,17 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new SPARQL Update Endpoint for the given URI
+        /// Creates a new SPARQL Update Endpoint for the given URI.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public SparqlRemoteUpdateEndpoint(String endpointUri)
             : this(UriFactory.Create(endpointUri)) { }
 
         /// <summary>
-        /// Gets/Sets the HTTP Method used for requests
+        /// Gets/Sets the HTTP Method used for requests.
         /// </summary>
         /// <remarks>
-        /// The SPARQL 1.1 Protocol specification mandates that Update requests may only be POSTed, attempting to alter the HTTP Mode to anything other than POST will result in a <see cref="SparqlUpdateException">SparqlUpdateException</see>
+        /// The SPARQL 1.1 Protocol specification mandates that Update requests may only be POSTed, attempting to alter the HTTP Mode to anything other than POST will result in a <see cref="SparqlUpdateException">SparqlUpdateException</see>.
         /// </remarks>
         public override string HttpMode
         {
@@ -86,9 +86,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Makes an update request to the remote endpoint
+        /// Makes an update request to the remote endpoint.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
         public void Update(String sparqlUpdate)
         {
             try
@@ -153,11 +153,11 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Makes an update request asynchronously to the remote endpoint
+        /// Makes an update request asynchronously to the remote endpoint.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
-        /// <param name="callback">Callback to invoke when the update completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
+        /// <param name="callback">Callback to invoke when the update completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void Update(String sparqlUpdate, UpdateCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
@@ -231,9 +231,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Serializes configuration for the endpoint
+        /// Serializes configuration for the endpoint.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpoint = context.NextSubject;

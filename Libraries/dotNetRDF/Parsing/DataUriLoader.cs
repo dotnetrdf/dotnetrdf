@@ -32,11 +32,11 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// A Class for parsing RDF data from Data URIs
+    /// A Class for parsing RDF data from Data URIs.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Data URIs use the data: scheme and are defined by the IETF in <a href="http://tools.ietf.org/html/rfc2397">RFC 2397</a> and provide a means to embed data directly in a URI either in Base64 or ASCII encoded format.  This class can extract the data from such URIs and attempt to parse it as RDF using the <see cref="StringParser">StringParser</see>
+    /// Data URIs use the data: scheme and are defined by the IETF in <a href="http://tools.ietf.org/html/rfc2397">RFC 2397</a> and provide a means to embed data directly in a URI either in Base64 or ASCII encoded format.  This class can extract the data from such URIs and attempt to parse it as RDF using the <see cref="StringParser">StringParser</see>.
     /// </para>
     /// <para>
     /// The parsing process for data: URIs involves first extracting and decoding the data embedded in the URI - this may either be in Base64 or ASCII encoding - and then using the <see cref="StringParser">StringParser</see> to actually parse the data string.  If the data: URI defines a MIME type then a parser is selected (if one exists for the given MIME type) and that is used to parse the data, in the event that no MIME type is given or the one given does not have a corresponding parser then the <see cref="StringParser">StringParser</see> will use its basic heuristics to attempt to auto-detect the format and select an appropriate parser.
@@ -48,14 +48,14 @@ namespace VDS.RDF.Parsing
     public static class DataUriLoader
     {
         /// <summary>
-        /// Loads RDF data into a Graph from a data: URI
+        /// Loads RDF data into a Graph from a data: URI.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="u">URI to load from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="u">URI to load from.</param>
         /// <remarks>
-        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI
+        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI.
         /// </remarks>
-        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed</exception>
+        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed.</exception>
         public static void Load(IGraph g, Uri u)
         {
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
@@ -64,14 +64,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF data using an RDF Handler from a data: URI
+        /// Loads RDF data using an RDF Handler from a data: URI.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="u">URI to load from</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="u">URI to load from.</param>
         /// <remarks>
-        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI
+        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI.
         /// </remarks>
-        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed</exception>
+        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed.</exception>
         public static void Load(IRdfHandler handler, Uri u)
         {
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");

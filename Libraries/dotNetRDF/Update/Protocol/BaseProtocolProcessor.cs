@@ -34,32 +34,32 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// Abstract Base class for SPARQL Graph Store HTTP Protocol for Graph Management implementations
+    /// Abstract Base class for SPARQL Graph Store HTTP Protocol for Graph Management implementations.
     /// </summary>
     public abstract class BaseProtocolProcessor 
         : ISparqlHttpProtocolProcessor
     {
         /// <summary>
-        /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed
+        /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed.
         /// </summary>
         public const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
         /// <summary>
-        /// Processes a GET operation
+        /// Processes a GET operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public abstract void ProcessGet(IHttpContext context);
 
         /// <summary>
-        /// Processes a POST operation
+        /// Processes a POST operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public abstract void ProcessPost(IHttpContext context);
 
         /// <summary>
-        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
@@ -68,33 +68,33 @@ namespace VDS.RDF.Update.Protocol
         public abstract void ProcessPostCreate(IHttpContext context);
 
         /// <summary>
-        /// Processes a PUT operation
+        /// Processes a PUT operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public abstract void ProcessPut(IHttpContext context);
 
         /// <summary>
-        /// Processes a DELETE operation
+        /// Processes a DELETE operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public abstract void ProcessDelete(IHttpContext context);
 
         /// <summary>
-        /// Processes a HEAD operation
+        /// Processes a HEAD operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public abstract void ProcessHead(IHttpContext context);
 
         /// <summary>
-        /// Processes a PATCH operation
+        /// Processes a PATCH operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public abstract void ProcessPatch(IHttpContext context);
 
         /// <summary>
-        /// Gets the Graph URI that the request should affect
+        /// Gets the Graph URI that the request should affect.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <returns></returns>
         protected Uri ResolveGraphUri(IHttpContext context)
         {
@@ -127,13 +127,13 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Gets the Graph URI that the request should affect
+        /// Gets the Graph URI that the request should affect.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
-        /// <param name="g">Graph parsed from the request body</param>
+        /// <param name="context">HTTP Context.</param>
+        /// <param name="g">Graph parsed from the request body.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The Graph parameter may be null in which case the other overload of this method will be invoked
+        /// The Graph parameter may be null in which case the other overload of this method will be invoked.
         /// </remarks>
         protected Uri ResolveGraphUri(IHttpContext context, IGraph g)
         {
@@ -172,13 +172,13 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Generates a new Graph URI that should be used to create a new Graph in the Store in conjunction with the <see cref="ISparqlHttpProtocolProcessor.ProcessPostCreate">ProcessPostCreate()</see> operation
+        /// Generates a new Graph URI that should be used to create a new Graph in the Store in conjunction with the <see cref="ISparqlHttpProtocolProcessor.ProcessPostCreate">ProcessPostCreate()</see> operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
-        /// <param name="g">Graph parsed from the request body</param>
+        /// <param name="context">HTTP Context.</param>
+        /// <param name="g">Graph parsed from the request body.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Default behaviour is to mint a URI based on a hash of the Request IP and Date Time.  Implementations can override this method to control URI creation as they desire
+        /// Default behaviour is to mint a URI based on a hash of the Request IP and Date Time.  Implementations can override this method to control URI creation as they desire.
         /// </remarks>
         protected virtual Uri MintGraphUri(IHttpContext context, IGraph g)
         {
@@ -201,12 +201,12 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Gets the Graph which can be parsed from the request body
+        /// Gets the Graph which can be parsed from the request body.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <returns></returns>
         /// <remarks>
-        /// In the event that there is no request body a null will be returned
+        /// In the event that there is no request body a null will be returned.
         /// </remarks>
         protected IGraph ParsePayload(IHttpContext context)
         {
@@ -221,10 +221,10 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Sends the given Graph to the Client via the HTTP Response
+        /// Sends the given Graph to the Client via the HTTP Response.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
-        /// <param name="g">Graph to send</param>
+        /// <param name="context">HTTP Context.</param>
+        /// <param name="g">Graph to send.</param>
         protected void SendResultsToClient(IHttpContext context, IGraph g)
         {
             IRdfWriter writer;
@@ -262,21 +262,21 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Retrieves the Graph with the given URI
+        /// Retrieves the Graph with the given URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Helper method intended for use by the <see cref="BaseProtocolProcessor.ProcessGet">ProcessGet()</see> and <see cref="BaseProtocolProcessor.ProcessHead">ProcessHead()</see> methods
+        /// Helper method intended for use by the <see cref="BaseProtocolProcessor.ProcessGet">ProcessGet()</see> and <see cref="BaseProtocolProcessor.ProcessHead">ProcessHead()</see> methods.
         /// </para>
         /// </remarks>
         protected abstract IGraph GetGraph(Uri graphUri);
 
         /// <summary>
-        /// Determines whether a Graph with the given URI exists
+        /// Determines whether a Graph with the given URI exists.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected abstract bool HasGraph(Uri graphUri);
     }

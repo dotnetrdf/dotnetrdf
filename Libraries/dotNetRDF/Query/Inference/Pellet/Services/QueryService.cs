@@ -34,17 +34,17 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the SPARQL Query Service provided by a Pellet Server knowledge base
+    /// Represents the SPARQL Query Service provided by a Pellet Server knowledge base.
     /// </summary>
     public class QueryService : PelletService
     {
         private readonly String _sparqlUri;
 
         /// <summary>
-        /// Creates a new SPARQL Query Service
+        /// Creates a new SPARQL Query Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal QueryService(String name, JObject obj)
             : base(name, obj)
         {
@@ -52,9 +52,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the Knowledge Base
+        /// Makes a SPARQL Query against the Knowledge Base.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
@@ -84,11 +84,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Processes a SPARQL Query against the Knowledge Base passing the results to the RDF or Results handler as appropriate
+        /// Processes a SPARQL Query against the Knowledge Base passing the results to the RDF or Results handler as appropriate.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
@@ -110,12 +110,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the Knowledge Base
+        /// Makes a SPARQL Query against the Knowledge Base.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="graphCallback">Callback to invoke for queries that return a Graph</param>
-        /// <param name="resultsCallback">Callback to invoke for queries that return a Result Set</param>
-        /// <param name="state">State to pass to whichever callback function is invoked</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="graphCallback">Callback to invoke for queries that return a Graph.</param>
+        /// <param name="resultsCallback">Callback to invoke for queries that return a Result Set.</param>
+        /// <param name="state">State to pass to whichever callback function is invoked.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -146,13 +146,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Processes a SPARQL Query against the Knowledge Base passing the results to the RDF or Results handler as appropriate
+        /// Processes a SPARQL Query against the Knowledge Base passing the results to the RDF or Results handler as appropriate.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="callback">Callback to invoke once handling of results has completed</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="callback">Callback to invoke once handling of results has completed.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

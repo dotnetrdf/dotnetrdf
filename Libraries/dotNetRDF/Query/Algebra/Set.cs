@@ -32,7 +32,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents one possible set of values which is a solution to the query
+    /// Represents one possible set of values which is a solution to the query.
     /// </summary>
     public sealed class Set 
         : BaseSet, IEquatable<Set>
@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Algebra
         private Dictionary<String, INode> _values;
 
         /// <summary>
-        /// Creates a new Set
+        /// Creates a new Set.
         /// </summary>
         public Set()
         {
@@ -48,10 +48,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Set which is the Join of the two Sets
+        /// Creates a new Set which is the Join of the two Sets.
         /// </summary>
-        /// <param name="x">A Set</param>
-        /// <param name="y">A Set</param>
+        /// <param name="x">A Set.</param>
+        /// <param name="y">A Set.</param>
         internal Set(ISet x, ISet y)
         {
             _values = new Dictionary<string, INode>();
@@ -73,9 +73,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Set which is a copy of an existing Set
+        /// Creates a new Set which is a copy of an existing Set.
         /// </summary>
-        /// <param name="x">Set to copy</param>
+        /// <param name="x">Set to copy.</param>
         internal Set(ISet x)
         {
             _values = new Dictionary<string, INode>();
@@ -86,9 +86,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Set from a SPARQL Result
+        /// Creates a new Set from a SPARQL Result.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         internal Set(SparqlResult result)
         {
             _values = new Dictionary<string, INode>();
@@ -99,9 +99,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Set from a Binding Tuple
+        /// Creates a new Set from a Binding Tuple.
         /// </summary>
-        /// <param name="tuple">Tuple</param>
+        /// <param name="tuple">Tuple.</param>
         internal Set(BindingTuple tuple)
         {
             _values = new Dictionary<string, INode>();
@@ -112,10 +112,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Retrieves the Value in this set for the given Variable
+        /// Retrieves the Value in this set for the given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <returns>Either a Node or a null</returns>
+        /// <param name="variable">Variable.</param>
+        /// <returns>Either a Node or a null.</returns>
         public override INode this[String variable]
         {
             get
@@ -132,10 +132,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Value for a Variable to the Set
+        /// Adds a Value for a Variable to the Set.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
+        /// <param name="variable">Variable.</param>
+        /// <param name="value">Value.</param>
         public override void Add(String variable, INode value)
         {
             if (!_values.ContainsKey(variable))
@@ -149,18 +149,18 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes a Value for a Variable from the Set
+        /// Removes a Value for a Variable from the Set.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public override void Remove(String variable)
         {
             if (_values.ContainsKey(variable)) _values.Remove(variable);
         }
 
         /// <summary>
-        /// Checks whether the Set contains a given Variable
+        /// Checks whether the Set contains a given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         /// <returns></returns>
         public override bool ContainsVariable(String variable)
         {
@@ -168,10 +168,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// Gets whether the Set is compatible with a given set based on the given variables.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
         {
@@ -179,10 +179,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// Gets whether the Set is minus compatible with a given set based on the given variables.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="vars">Variables.</param>
         /// <returns></returns>
         public override bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars)
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables in the Set
+        /// Gets the Variables in the Set.
         /// </summary>
         public override IEnumerable<String> Variables
         {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Values in the Set
+        /// Gets the Values in the Set.
         /// </summary>
         public override IEnumerable<INode> Values
         {
@@ -214,9 +214,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Joins the set to another set
+        /// Joins the set to another set.
         /// </summary>
-        /// <param name="other">Other Set</param>
+        /// <param name="other">Other Set.</param>
         /// <returns></returns>
         public override ISet Join(ISet other)
         {
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Copies the Set
+        /// Copies the Set.
         /// </summary>
         /// <returns></returns>
         public override ISet Copy()
@@ -235,9 +235,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Set is equal to another set
+        /// Gets whether the Set is equal to another set.
         /// </summary>
-        /// <param name="other">Set to compare with</param>
+        /// <param name="other">Set to compare with.</param>
         /// <returns></returns>
         public bool Equals(Set other)
         {

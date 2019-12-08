@@ -31,18 +31,18 @@ using System.Threading;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Basic Token Queue which provides no Buffering except in the sense that it queues all possible Tokens when the InitialiseBuffer method is called
+    /// Basic Token Queue which provides no Buffering except in the sense that it queues all possible Tokens when the InitialiseBuffer method is called.
     /// </summary>
     public class TokenQueue 
         : BaseTokenQueue
     {
         /// <summary>
-        /// Internal Queue object which this class is a wrapper around
+        /// Internal Queue object which this class is a wrapper around.
         /// </summary>
         protected Queue<IToken> _tokens = new Queue<IToken>();
 
         /// <summary>
-        /// Creates a new Token Queue
+        /// Creates a new Token Queue.
         /// </summary>
         public TokenQueue()
         {
@@ -50,18 +50,18 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new Token Queue with the given Tokeniser
+        /// Creates a new Token Queue with the given Tokeniser.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser</param>
+        /// <param name="tokeniser">Tokeniser.</param>
         public TokenQueue(ITokeniser tokeniser)
         {
             _tokeniser = tokeniser;
         }
 
         /// <summary>
-        /// Removes and returns the first Token from the Queue
+        /// Removes and returns the first Token from the Queue.
         /// </summary>
-        /// <returns>First Token in the Queue</returns>
+        /// <returns>First Token in the Queue.</returns>
         public override IToken Dequeue()
         {
             _lasttokentype = _tokens.Peek().TokenType;
@@ -69,25 +69,25 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Adds a Token to the end of the Queue
+        /// Adds a Token to the end of the Queue.
         /// </summary>
-        /// <param name="t">Token to add</param>
+        /// <param name="t">Token to add.</param>
         public override void Enqueue(IToken t)
         {
             _tokens.Enqueue(t);
         }
 
         /// <summary>
-        /// Gets the first Token from the Queue without removing it
+        /// Gets the first Token from the Queue without removing it.
         /// </summary>
-        /// <returns>First Token in the Queue</returns>
+        /// <returns>First Token in the Queue.</returns>
         public override IToken Peek()
         {
             return _tokens.Peek();
         }
 
         /// <summary>
-        /// Empties the Token Queue
+        /// Empties the Token Queue.
         /// </summary>
         public override void Clear()
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the number of Tokens in the Queue
+        /// Gets the number of Tokens in the Queue.
         /// </summary>
         public override int Count
         {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Initialises the Token Queue Buffer
+        /// Initialises the Token Queue Buffer.
         /// </summary>
         public override void InitialiseBuffer()
         {
@@ -129,9 +129,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Initialises the Token Queue Buffer to the set Buffer Amount
+        /// Initialises the Token Queue Buffer to the set Buffer Amount.
         /// </summary>
-        /// <param name="amount">Amount of Tokens to Buffer</param>
+        /// <param name="amount">Amount of Tokens to Buffer.</param>
         public override void InitialiseBuffer(int amount)
         {
             // This Queue doesn't care about the Buffer amount
@@ -139,7 +139,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the underlying Queue of Tokens
+        /// Gets the underlying Queue of Tokens.
         /// </summary>
         public override Queue<IToken> Tokens
         {
@@ -150,7 +150,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper Method for Tokeniser Tracing
+        /// Internal Helper Method for Tokeniser Tracing.
         /// </summary>
         /// <param name="t"></param>
         protected void PrintTrace(IToken t)
@@ -160,15 +160,15 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token Queue which is not backed by a Tokeniser
+    /// Token Queue which is not backed by a Tokeniser.
     /// </summary>
     /// <remarks>
-    /// Designed to be explicitly populated with Tokens for when a Parser needs to be invoked on a subset of the overall Tokens
+    /// Designed to be explicitly populated with Tokens for when a Parser needs to be invoked on a subset of the overall Tokens.
     /// </remarks>
     public class NonTokenisedTokenQueue : TokenQueue
     {
         /// <summary>
-        /// Creates a new non-Tokenised Queue
+        /// Creates a new non-Tokenised Queue.
         /// </summary>
         public NonTokenisedTokenQueue()
         {
@@ -176,7 +176,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Removed and returns the first Token from the Queue
+        /// Removed and returns the first Token from the Queue.
         /// </summary>
         /// <returns></returns>
         public override IToken Dequeue()
@@ -194,9 +194,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the first Token from the Queue without removing it
+        /// Gets the first Token from the Queue without removing it.
         /// </summary>
-        /// <returns>First Token in the Queue</returns>
+        /// <returns>First Token in the Queue.</returns>
         public override IToken Peek()
         {
             // Discard Comments
@@ -209,7 +209,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Initialises the Buffer by doing nothing since there is no buffering on this Queue
+        /// Initialises the Buffer by doing nothing since there is no buffering on this Queue.
         /// </summary>
         public override void InitialiseBuffer()
         {
@@ -219,35 +219,35 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// A Buffered Queue for a Tokeniser which synchronously buffers a number of Tokens when the Queue is accessed and nothing is Buffered
+    /// A Buffered Queue for a Tokeniser which synchronously buffers a number of Tokens when the Queue is accessed and nothing is Buffered.
     /// </summary>
     public class BufferedTokenQueue : TokenQueue
     {
         /// <summary>
-        /// Variable storing the Buffer Size
+        /// Variable storing the Buffer Size.
         /// </summary>
         protected int _bufferAmount = 10;
 
         /// <summary>
-        /// Creates a new Buffered Queue for the given Tokeniser
+        /// Creates a new Buffered Queue for the given Tokeniser.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to Buffer</param>
+        /// <param name="tokeniser">Tokeniser to Buffer.</param>
         public BufferedTokenQueue(ITokeniser tokeniser)
         {
             _tokeniser = tokeniser;
         }
 
         /// <summary>
-        /// Creates a new Buffered Queue
+        /// Creates a new Buffered Queue.
         /// </summary>
         public BufferedTokenQueue()
         {
         }
 
         /// <summary>
-        /// Gets the next Token in the Queue and removes it from the Queue
+        /// Gets the next Token in the Queue and removes it from the Queue.
         /// </summary>
-        /// <returns>Token at the front of the Queue</returns>
+        /// <returns>Token at the front of the Queue.</returns>
         public override IToken Dequeue()
         {
             // Is there anything already buffered?
@@ -267,9 +267,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the next Token in the Queue without removing it from the Queue
+        /// Gets the next Token in the Queue without removing it from the Queue.
         /// </summary>
-        /// <returns>Token at the front of the Queue</returns>
+        /// <returns>Token at the front of the Queue.</returns>
         public override IToken Peek()
         {
             // Is there anything already buffered?
@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Causes the Buffer to be filled using the Default Buffering level of 10
+        /// Causes the Buffer to be filled using the Default Buffering level of 10.
         /// </summary>
         public override void InitialiseBuffer()
         {
@@ -298,10 +298,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Causes the Buffer to be filled and sets the Buffering level for the Queue
+        /// Causes the Buffer to be filled and sets the Buffering level for the Queue.
         /// </summary>
-        /// <param name="amount">Number of Tokens to Buffer</param>
-        /// <remarks>If a Buffer amount of less than zero is given then Buffer size will stay at default size (10) or existing size if it's previously been set</remarks>
+        /// <param name="amount">Number of Tokens to Buffer.</param>
+        /// <remarks>If a Buffer amount of less than zero is given then Buffer size will stay at default size (10) or existing size if it's previously been set.</remarks>
         public override void InitialiseBuffer(int amount)
         {
             if (amount > 0)
@@ -312,7 +312,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper Method which performs the Buffering
+        /// Internal Helper Method which performs the Buffering.
         /// </summary>
         protected virtual void BufferInternal()
         {
@@ -338,7 +338,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// An Asynchronous version of <see cref="BufferedTokenQueue">BufferedTokenQueue</see> which automatically Buffers as many Tokens as possible in a Background thread
+    /// An Asynchronous version of <see cref="BufferedTokenQueue">BufferedTokenQueue</see> which automatically Buffers as many Tokens as possible in a Background thread.
     /// </summary>
     /// <remarks>
     /// Periodic instablility is fixed to the best of my knowledge, it is still recommended to use a <see cref="BufferedTokenQueue">BufferedTokenQueue</see> or the basic <see cref="TokenQueue">TokenQueue</see>.  This implementation offers little/no performance improvement over the other types of Token Queue.
@@ -350,9 +350,9 @@ namespace VDS.RDF.Parsing.Tokens
         private Thread _bgbuffer;
 
         /// <summary>
-        /// Creates a new Asynchronous Buffered Queue with the given Tokeniser
+        /// Creates a new Asynchronous Buffered Queue with the given Tokeniser.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to Buffer</param>
+        /// <param name="tokeniser">Tokeniser to Buffer.</param>
         public AsynchronousBufferedTokenQueue(ITokeniser tokeniser)
             : base(tokeniser)
         {
@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new Asynchronous Buffered Queue
+        /// Creates a new Asynchronous Buffered Queue.
         /// </summary>
         public AsynchronousBufferedTokenQueue()
             : base()
@@ -369,9 +369,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the next Token in the Queue and removes it from the Queue
+        /// Gets the next Token in the Queue and removes it from the Queue.
         /// </summary>
-        /// <returns>Token at the front of the Queue</returns>
+        /// <returns>Token at the front of the Queue.</returns>
         public override IToken Dequeue()
         {
             if (_tokens.Count > 0)
@@ -409,9 +409,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the next Token in the Queue without removing it from the Queue
+        /// Gets the next Token in the Queue without removing it from the Queue.
         /// </summary>
-        /// <returns>Token at the front of the Queue</returns>
+        /// <returns>Token at the front of the Queue.</returns>
         public override IToken Peek()
         {
             if (_tokens.Count > 0)
@@ -449,7 +449,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper Method which starts the Background Buffering if not already running
+        /// Internal Helper Method which starts the Background Buffering if not already running.
         /// </summary>
         protected override void BufferInternal()
         {
@@ -463,7 +463,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Thread Method which does the Background Buffering
+        /// Internal Thread Method which does the Background Buffering.
         /// </summary>
         private void BufferBackground()
         {

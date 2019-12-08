@@ -29,10 +29,10 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A SPARQL Results Handler which just counts Results
+    /// A SPARQL Results Handler which just counts Results.
     /// </summary>
     /// <remarks>
-    /// <strong>Note: </strong> For a Boolean Result Set the counter will either be 1 for true or 0 for false
+    /// <strong>Note: </strong> For a Boolean Result Set the counter will either be 1 for true or 0 for false.
     /// </remarks>
     public class ResultCountHandler
         : BaseResultsHandler
@@ -40,13 +40,13 @@ namespace VDS.RDF.Parsing.Handlers
         private int _counter = 0;
 
         /// <summary>
-        /// Creates a new Result Count Handler
+        /// Creates a new Result Count Handler.
         /// </summary>
         public ResultCountHandler()
             : base(new MockNodeFactory()) { }
 
         /// <summary>
-        /// Starts Results Handling and resets the counter to zero
+        /// Starts Results Handling and resets the counter to zero.
         /// </summary>
         protected override void StartResultsInternal()
         {
@@ -54,18 +54,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Boolean Result
+        /// Handles a Boolean Result.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             _counter = result ? 1 : 0;
         }
 
         /// <summary>
-        /// Handles a Variable Declaration
+        /// Handles a Variable Declaration.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
@@ -73,9 +73,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a SPARQL Result by incrementing the counter
+        /// Handles a SPARQL Result by incrementing the counter.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
@@ -84,10 +84,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Count of Results 
+        /// Gets the Count of Results. 
         /// </summary>
         /// <remarks>
-        /// For Boolean Results counter will be either 1 or 0 depending on whether the result was True/False
+        /// For Boolean Results counter will be either 1 or 0 depending on whether the result was True/False.
         /// </remarks>
         public int Count
         {

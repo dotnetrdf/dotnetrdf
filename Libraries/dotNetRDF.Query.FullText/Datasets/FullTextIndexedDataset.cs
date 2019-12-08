@@ -31,7 +31,7 @@ using VDS.RDF.Query.FullText.Indexing;
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
-    /// A Full Text Indexed Dataset is a wrapper around another dataset and provides automatic full text indexing of data that is added and removed
+    /// A Full Text Indexed Dataset is a wrapper around another dataset and provides automatic full text indexing of data that is added and removed.
     /// </summary>
     public class FullTextIndexedDataset
         : WrapperDataset
@@ -40,13 +40,13 @@ namespace VDS.RDF.Query.Datasets
         private bool _indexNow = false;
 
         /// <summary>
-        /// Creates a new Full Text Indexed Dataset
+        /// Creates a new Full Text Indexed Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset to wrap</param>
-        /// <param name="indexer">Indexer to use</param>
-        /// <param name="indexNow">Whether the dataset provided should be indexed now, set to false if indexer is linked to an existing index for this data</param>
+        /// <param name="dataset">Dataset to wrap.</param>
+        /// <param name="indexer">Indexer to use.</param>
+        /// <param name="indexNow">Whether the dataset provided should be indexed now, set to false if indexer is linked to an existing index for this data.</param>
         /// <remarks>
-        /// If <paramref name="indexNow"/> is true then the provided dataset will be fully indexed when this constructor is called
+        /// If <paramref name="indexNow"/> is true then the provided dataset will be fully indexed when this constructor is called.
         /// </remarks>
         public FullTextIndexedDataset(ISparqlDataset dataset, IFullTextIndexer indexer, bool indexNow)
             : base(dataset)
@@ -65,20 +65,20 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Creates a new Full Text Indexed Dataset
+        /// Creates a new Full Text Indexed Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset to wrap</param>
-        /// <param name="indexer">Indexer to use</param>
+        /// <param name="dataset">Dataset to wrap.</param>
+        /// <param name="indexer">Indexer to use.</param>
         /// <remarks>
-        /// Does not do any indexing, assumes the provided dataset is already indexed.  When using this constructor only changes to the dataset affect the index
+        /// Does not do any indexing, assumes the provided dataset is already indexed.  When using this constructor only changes to the dataset affect the index.
         /// </remarks>
         public FullTextIndexedDataset(ISparqlDataset dataset, IFullTextIndexer indexer)
             : this(dataset, indexer, false) { }
 
         /// <summary>
-        /// Adds a Graph to the Dataset updating the Full Text Index appropriately
+        /// Adds a Graph to the Dataset updating the Full Text Index appropriately.
         /// </summary>
-        /// <param name="g">Graph to add</param>
+        /// <param name="g">Graph to add.</param>
         public override bool AddGraph(IGraph g)
         {
             this._indexer.Index(g);
@@ -86,9 +86,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Removes a Graph from the Dataset updating the Full Text Index appropriately
+        /// Removes a Graph from the Dataset updating the Full Text Index appropriately.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to remove</param>
+        /// <param name="graphUri">URI of the Graph to remove.</param>
         public override bool RemoveGraph(Uri graphUri)
         {
             if (this.HasGraph(graphUri))
@@ -99,9 +99,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets a modifiable graph from the store ensuring that modifications will update the Full Text Index
+        /// Gets a modifiable graph from the store ensuring that modifications will update the Full Text Index.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override IGraph GetModifiableGraph(Uri graphUri)
         {
@@ -115,27 +115,27 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Handles the updating of the index when a triple is added
+        /// Handles the updating of the index when a triple is added.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Event Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Event Arguments.</param>
         private void HandleTripleAdded(Object sender, TripleEventArgs args)
         {
             this._indexer.Index(args.Triple);
         }
 
         /// <summary>
-        /// Handles the updating of the index when a triple is removed
+        /// Handles the updating of the index when a triple is removed.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Event Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Event Arguments.</param>
         private void HandleTripleRemoved(Object sender, TripleEventArgs args)
         {
             this._indexer.Unindex(args.Triple);
         }
 
         /// <summary>
-        /// Flushes changes to the Dataset and ensures the Index is up to date
+        /// Flushes changes to the Dataset and ensures the Index is up to date.
         /// </summary>
         public override void Flush()
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Discards changes to the Dataset and ensures the Index is up to date
+        /// Discards changes to the Dataset and ensures the Index is up to date.
         /// </summary>
         public override void Discard()
         {
@@ -155,9 +155,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Serializes the Configuration of the Dataset
+        /// Serializes the Configuration of the Dataset.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             if (this._dataset is IConfigurationSerializable)

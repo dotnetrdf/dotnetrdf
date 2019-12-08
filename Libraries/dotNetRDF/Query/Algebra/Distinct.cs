@@ -33,7 +33,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Distinct modifier on a SPARQL Query
+    /// Represents a Distinct modifier on a SPARQL Query.
     /// </summary>
     public class Distinct
         : IUnaryOperator
@@ -42,19 +42,19 @@ namespace VDS.RDF.Query.Algebra
         private readonly bool _trimTemporaryVariables = true;
 
         /// <summary>
-        /// Creates a new Distinct Modifier
+        /// Creates a new Distinct Modifier.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
+        /// <param name="pattern">Pattern.</param>
         public Distinct(ISparqlAlgebra pattern)
         {
             _pattern = pattern;
         }
 
         /// <summary>
-        /// Creates a new Distinct Modifier
+        /// Creates a new Distinct Modifier.
         /// </summary>
-        /// <param name="algebra">Inner Algebra</param>
-        /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables</param>
+        /// <param name="algebra">Inner Algebra.</param>
+        /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables.</param>
         public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
             : this(algebra)
         {
@@ -62,9 +62,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Distinct Modifier
+        /// Evaluates the Distinct Modifier.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -103,17 +103,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -167,19 +167,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an exception since a Distinct() cannot be converted back to a Graph Pattern
+        /// Throws an exception since a Distinct() cannot be converted back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Distinct() cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since a Distinct() cannot be converted to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Distinct() cannot be converted to a GraphPattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents a Reduced modifier on a SPARQL Query
+    /// Represents a Reduced modifier on a SPARQL Query.
     /// </summary>
     public class Reduced 
         : IUnaryOperator
@@ -196,18 +196,18 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlAlgebra _pattern;
 
         /// <summary>
-        /// Creates a new Reduced Modifier
+        /// Creates a new Reduced Modifier.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
+        /// <param name="pattern">Pattern.</param>
         public Reduced(ISparqlAlgebra pattern)
         {
             _pattern = pattern;
         }
 
         /// <summary>
-        /// Evaluates the Reduced Modifier
+        /// Evaluates the Reduced Modifier.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -248,17 +248,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -278,7 +278,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -312,19 +312,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an exception since a Reduced() cannot be converted back to a Graph Pattern
+        /// Throws an exception since a Reduced() cannot be converted back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Reduced() cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since a Reduced() cannot be converted to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Reduced() cannot be converted to a GraphPattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

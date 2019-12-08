@@ -29,16 +29,16 @@ using System;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for building tuples within an inline data block (VALUES)
+    /// Provides methods for building tuples within an inline data block (VALUES).
     /// </summary>
     public interface IInlineDataBuilder
     {
         /// <summary>
-        /// Directly adds a tuple (plain literals or URIs) to a VALUES block
+        /// Directly adds a tuple (plain literals or URIs) to a VALUES block.
         /// </summary>
         IInlineDataBuilder Values(params object[] values);
         /// <summary>
-        /// Adds a tuple to VALUES block
+        /// Adds a tuple to VALUES block.
         /// </summary>
         IInlineDataBuilder Values(Action<IBindingTupleBuilder> builder);
     }

@@ -29,22 +29,22 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Represents the SPARQL STRLEN Function
+    /// Represents the SPARQL STRLEN Function.
     /// </summary>
     public class StrLenFunction
         : XPath.String.BaseUnaryStringFunction
     {
         /// <summary>
-        /// Creates a new STRLEN() function
+        /// Creates a new STRLEN() function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public StrLenFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Determines the Length of the given String Literal
+        /// Determines the Length of the given String Literal.
         /// </summary>
-        /// <param name="stringLit">String Literal</param>
+        /// <param name="stringLit">String Literal.</param>
         /// <returns></returns>
         protected override IValuedNode ValueInternal(ILiteralNode stringLit)
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -72,9 +72,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

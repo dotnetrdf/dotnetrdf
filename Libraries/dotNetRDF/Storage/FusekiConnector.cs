@@ -40,11 +40,11 @@ using System.Web;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Class for connecting to any dataset that can be exposed via Fuseki
+    /// Class for connecting to any dataset that can be exposed via Fuseki.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Uses all three Services provided by a Fuseki instance - Query, Update and HTTP Update
+    /// Uses all three Services provided by a Fuseki instance - Query, Update and HTTP Update.
     /// </para>
     /// </remarks>
     public class FusekiConnector 
@@ -58,18 +58,18 @@ namespace VDS.RDF.Storage
         private const String FusekiDefaultGraphUri = "?default";
 
         /// <summary>
-        /// Creates a new connection to a Fuseki Server
+        /// Creates a new connection to a Fuseki Server.
         /// </summary>
-        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML</param>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
+        /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML.</param>
         public FusekiConnector(Uri serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
             : this(serviceUri.ToSafeString(), writerMimeTypeDefinition) { }
 
         /// <summary>
-        /// Creates a new connection to a Fuseki Server
+        /// Creates a new connection to a Fuseki Server.
         /// </summary>
-        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML</param>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
+        /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML.</param>
         public FusekiConnector(String serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
             : base(serviceUri, writerMimeTypeDefinition) 
         {
@@ -80,18 +80,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Fuseki Server
+        /// Creates a new connection to a Fuseki Server.
         /// </summary>
-        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public FusekiConnector(Uri serviceUri, IWebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
 
         /// <summary>
-        /// Creates a new connection to a Fuseki Server
+        /// Creates a new connection to a Fuseki Server.
         /// </summary>
-        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public FusekiConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that Listing Graphs is supported
+        /// Returns that Listing Graphs is supported.
         /// </summary>
         public override bool ListGraphsSupported
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the Store
+        /// Gets the IO Behaviour of the Store.
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that Triple level updates are supported using Fuseki
+        /// Returns that Triple level updates are supported using Fuseki.
         /// </summary>
         public override bool UpdateSupported
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the List of Graphs from the store
+        /// Gets the List of Graphs from the store.
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
@@ -172,11 +172,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Fuseki store
+        /// Updates a Graph in the Fuseki store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
@@ -250,20 +250,20 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Fuseki store
+        /// Updates a Graph in the Fuseki store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Fuseki store
+        /// Executes a SPARQL Query on the Fuseki store.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
@@ -282,11 +282,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided
+        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
@@ -357,9 +357,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes SPARQL Updates against the Fuseki store
+        /// Executes SPARQL Updates against the Fuseki store.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
         public void Update(String sparqlUpdate)
         {
             try
@@ -390,12 +390,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying store
+        /// Makes a SPARQL Query against the underlying store.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query</returns>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
+        /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query.</returns>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
@@ -414,13 +414,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided
+        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state)
         {
@@ -514,11 +514,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes SPARQL Updates against the Fuseki store
+        /// Executes SPARQL Updates against the Fuseki store.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void Update(String sparqlUpdate, AsyncStorageCallback callback, Object state)
         {
             try
@@ -581,10 +581,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the graph sin the Store asynchronously
+        /// Lists the graph sin the Store asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void ListGraphs(AsyncStorageCallback callback, object state)
         {
             // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
@@ -603,13 +603,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph on the Fuseki Server
+        /// Updates a Graph on the Fuseki Server.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             try
@@ -679,7 +679,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a String which gives details of the Connection
+        /// Gets a String which gives details of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -690,9 +690,9 @@ namespace VDS.RDF.Storage
         #region IConfigurationSerializable Members
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

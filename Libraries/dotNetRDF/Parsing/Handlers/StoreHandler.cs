@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance
+    /// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance.
     /// </summary>
     public class StoreHandler
         : BaseRdfHandler
@@ -38,9 +38,9 @@ namespace VDS.RDF.Parsing.Handlers
         private INamespaceMapper _nsmap = new NamespaceMapper();
 
         /// <summary>
-        /// Creates a new Store Handler
+        /// Creates a new Store Handler.
         /// </summary>
-        /// <param name="store">Triple Store</param>
+        /// <param name="store">Triple Store.</param>
         public StoreHandler(ITripleStore store)
             : base()
         {
@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Triple Store that this Handler is populating
+        /// Gets the Triple Store that this Handler is populating.
         /// </summary>
         protected ITripleStore Store
         {
@@ -62,10 +62,10 @@ namespace VDS.RDF.Parsing.Handlers
         #region IRdfHandler Members
 
         /// <summary>
-        /// Handles namespaces by adding them to each graph
+        /// Handles namespaces by adding them to each graph.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -74,9 +74,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by asserting them into the appropriate Graph creating the Graph if necessary
+        /// Handles Triples by asserting them into the appropriate Graph creating the Graph if necessary.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts handling RDF
+        /// Starts handling RDF.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -100,9 +100,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends RDF handling and propogates all discovered namespaces to all discovered graphs
+        /// Ends RDF handling and propogates all discovered namespaces to all discovered graphs.
         /// </summary>
-        /// <param name="ok">Whether parsing completed successfully</param>
+        /// <param name="ok">Whether parsing completed successfully.</param>
         protected override void EndRdfInternal(bool ok)
         {
             // Propogate discovered namespaces to all graphs
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that the Handler accepts all Triples
+        /// Gets that the Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {

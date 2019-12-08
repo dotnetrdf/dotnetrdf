@@ -33,7 +33,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// Evaluation Context for SPARQL Updates evaluated by the libraries Leviathan SPARQL Engine
+    /// Evaluation Context for SPARQL Updates evaluated by the libraries Leviathan SPARQL Engine.
     /// </summary>
     public class SparqlUpdateEvaluationContext
     {
@@ -43,11 +43,11 @@ namespace VDS.RDF.Update
         private long _timeout;
 
         /// <summary>
-        /// Creates a new SPARQL Update Evaluation Context
+        /// Creates a new SPARQL Update Evaluation Context.
         /// </summary>
-        /// <param name="commands">Command Set</param>
-        /// <param name="data">SPARQL Dataset</param>
-        /// <param name="processor">Query Processor for WHERE clauses</param>
+        /// <param name="commands">Command Set.</param>
+        /// <param name="data">SPARQL Dataset.</param>
+        /// <param name="processor">Query Processor for WHERE clauses.</param>
         public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
             : this(commands, data)
         {
@@ -55,10 +55,10 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new SPARQL Update Evaluation Context
+        /// Creates a new SPARQL Update Evaluation Context.
         /// </summary>
-        /// <param name="commands">Command Set</param>
-        /// <param name="data">SPARQL Dataset</param>
+        /// <param name="commands">Command Set.</param>
+        /// <param name="data">SPARQL Dataset.</param>
         public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data)
             : this(data)
         {
@@ -66,10 +66,10 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new SPARQL Update Evaluation Context
+        /// Creates a new SPARQL Update Evaluation Context.
         /// </summary>
-        /// <param name="data">SPARQL Dataset</param>
-        /// <param name="processor">Query Processor for WHERE clauses</param>
+        /// <param name="data">SPARQL Dataset.</param>
+        /// <param name="processor">Query Processor for WHERE clauses.</param>
         public SparqlUpdateEvaluationContext(ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
             : this(data)
         {
@@ -77,16 +77,16 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new SPARQL Update Evaluation Context
+        /// Creates a new SPARQL Update Evaluation Context.
         /// </summary>
-        /// <param name="data">SPARQL Dataset</param>
+        /// <param name="data">SPARQL Dataset.</param>
         public SparqlUpdateEvaluationContext(ISparqlDataset data)
         {
             _data = data;
         }
 
         /// <summary>
-        /// Gets the Command Set (if any) that this context pertains to
+        /// Gets the Command Set (if any) that this context pertains to.
         /// </summary>
         public SparqlUpdateCommandSet Commands
         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Dataset upon which the Updates are applied
+        /// Dataset upon which the Updates are applied.
         /// </summary>
         public ISparqlDataset Data
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the Query Processor used to process the WHERE clauses of DELETE or INSERT commands
+        /// Gets the Query Processor used to process the WHERE clauses of DELETE or INSERT commands.
         /// </summary>
         public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> QueryProcessor
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Retrieves the Time in milliseconds the update took to evaluate
+        /// Retrieves the Time in milliseconds the update took to evaluate.
         /// </summary>
         public long UpdateTime
         {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Retrieves the Time in ticks the updates took to evaluate
+        /// Retrieves the Time in ticks the updates took to evaluate.
         /// </summary>
         public long UpdateTimeTicks
         {
@@ -169,7 +169,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the Remaining Timeout i.e. the Timeout taking into account time already elapsed
+        /// Gets the Remaining Timeout i.e. the Timeout taking into account time already elapsed.
         /// </summary>
         /// <remarks>
         /// If there is no timeout then this is always zero, if there is a timeout this is always >= 1 since any operation that wants to respect the timeout must have a non-zero timeout to actually timeout properly.
@@ -198,11 +198,11 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the Update Timeout used for the Command Set
+        /// Gets the Update Timeout used for the Command Set.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This is taken either from the <see cref="SparqlUpdateCommandSet.Timeout">Timeout</see> property of the <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> to which this evaluation context pertains or from the global option <see cref="Options.UpdateExecutionTimeout">Options.UpdateExecutionTimeout</see>.  To set the Timeout to be used set whichever of those is appropriate prior to evaluating the updates.  If there is a Command Set present then it's timeout takes precedence unless it is set to zero (no timeout) in which case the global timeout setting is applied.  You cannot set the Update Timeout to be higher than the global timeout unless the global timeout is set to zero (i.e. no global timeout)
+        /// This is taken either from the <see cref="SparqlUpdateCommandSet.Timeout">Timeout</see> property of the <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> to which this evaluation context pertains or from the global option <see cref="Options.UpdateExecutionTimeout">Options.UpdateExecutionTimeout</see>.  To set the Timeout to be used set whichever of those is appropriate prior to evaluating the updates.  If there is a Command Set present then it's timeout takes precedence unless it is set to zero (no timeout) in which case the global timeout setting is applied.  You cannot set the Update Timeout to be higher than the global timeout unless the global timeout is set to zero (i.e. no global timeout).
         /// </para>
         /// </remarks>
         public long UpdateTimeout
@@ -214,9 +214,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Checks whether Execution should Time out
+        /// Checks whether Execution should Time out.
         /// </summary>
-        /// <exception cref="SparqlUpdateTimeoutException">Thrown if the Update has exceeded the Execution Timeout</exception>
+        /// <exception cref="SparqlUpdateTimeoutException">Thrown if the Update has exceeded the Execution Timeout.</exception>
         public void CheckTimeout()
         {
             if (_timeout > 0)
@@ -230,7 +230,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Starts the Execution Timer
+        /// Starts the Execution Timer.
         /// </summary>
         public void StartExecution()
         {
@@ -239,7 +239,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Ends the Execution Timer
+        /// Ends the Execution Timer.
         /// </summary>
         public void EndExecution()
         {

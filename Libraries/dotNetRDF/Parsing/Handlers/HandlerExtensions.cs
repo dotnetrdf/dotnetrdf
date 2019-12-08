@@ -32,14 +32,14 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// Static Class of extension methods for use with Handler classes
+    /// Static Class of extension methods for use with Handler classes.
     /// </summary>
     public static class HandlerExtensions
     {
         /// <summary>
-        /// Gets the Base URI from the RDF Handler
+        /// Gets the Base URI from the RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
+        /// <param name="handler">RDF Handler.</param>
         /// <returns></returns>
         internal static Uri GetBaseUri(this IRdfHandler handler)
         {
@@ -66,10 +66,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Applies the triples of a Graph to an RDF Handler
+        /// Applies the triples of a Graph to an RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="g">Graph</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="g">Graph.</param>
         public static void Apply(this IRdfHandler handler, IGraph g)
         {
             try
@@ -108,10 +108,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Applies the triples to an RDF Handler
+        /// Applies the triples to an RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="ts">Triples</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="ts">Triples.</param>
         public static void Apply(this IRdfHandler handler, IEnumerable<Triple> ts)
         {
             try
@@ -135,10 +135,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Applies the result set to a Results Handler
+        /// Applies the result set to a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="results">Result Set</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="results">Result Set.</param>
         public static void Apply(this ISparqlResultsHandler handler, SparqlResultSet results)
         {
             try

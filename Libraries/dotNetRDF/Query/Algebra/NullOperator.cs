@@ -32,7 +32,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a part of the algebra that has been determined to not return any results in advance and so can be replaced with this operator which always returns null
+    /// Represents a part of the algebra that has been determined to not return any results in advance and so can be replaced with this operator which always returns null.
     /// </summary>
     /// <remarks>
     /// Primarily intended for use with Algebra Optimisers which are rewriting the algebra to run against an out of memory dataset (e.g. SQL based) where it may be easily possible to determine if a triple pattern will match in advance of actually returning the matches.
@@ -43,18 +43,18 @@ namespace VDS.RDF.Query.Algebra
         private List<String> _vars = new List<string>();
 
         /// <summary>
-        /// Creates a new Null Operator
+        /// Creates a new Null Operator.
         /// </summary>
-        /// <param name="variables">Variables in the algebra that this null is replacing</param>
+        /// <param name="variables">Variables in the algebra that this null is replacing.</param>
         public NullOperator(IEnumerable<String> variables)
         {
             _vars.AddRange(variables);
         }
 
         /// <summary>
-        /// Evaluates the Null operator which of course always returns a <see cref="NullMultiset">NullMultiset</see>
+        /// Evaluates the Null operator which of course always returns a <see cref="NullMultiset">NullMultiset</see>.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the variables used in this algebra
+        /// Gets the variables used in this algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<string> FixedVariables
         {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<string> FloatingVariables
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error since a null operator cannot be transformed back into a query
+        /// Throws an error since a null operator cannot be transformed back into a query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error since a null operator cannot be transformed back into a query
+        /// Throws an error since a null operator cannot be transformed back into a query.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string representation of the algebra
+        /// Gets the string representation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

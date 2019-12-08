@@ -38,18 +38,18 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents the SPARQL Update DELETE command
+    /// Represents the SPARQL Update DELETE command.
     /// </summary>
     public class DeleteCommand : BaseModificationCommand
     {
         private GraphPattern _deletePattern, _wherePattern;
 
         /// <summary>
-        /// Creates a new DELETE command
+        /// Creates a new DELETE command.
         /// </summary>
-        /// <param name="deletions">Pattern to construct Triples to delete</param>
-        /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern</param>
-        /// <param name="graphUri">URI of the affected Graph</param>
+        /// <param name="deletions">Pattern to construct Triples to delete.</param>
+        /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
+        /// <param name="graphUri">URI of the affected Graph.</param>
         public DeleteCommand(GraphPattern deletions, GraphPattern where, Uri graphUri)
             : base(SparqlUpdateCommandType.Delete)
         {
@@ -61,10 +61,10 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new DELETE command which operates on the Default Graph
+        /// Creates a new DELETE command which operates on the Default Graph.
         /// </summary>
-        /// <param name="deletions">Pattern to construct Triples to delete</param>
-        /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern</param>
+        /// <param name="deletions">Pattern to construct Triples to delete.</param>
+        /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
         public DeleteCommand(GraphPattern deletions, GraphPattern where)
             : base(SparqlUpdateCommandType.Delete)
         {
@@ -75,22 +75,22 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new DELETE command 
+        /// Creates a new DELETE command. 
         /// </summary>
-        /// <param name="where">Pattern to construct Triples to delete</param>
-        /// <param name="graphUri">URI of the affected Graph</param>
+        /// <param name="where">Pattern to construct Triples to delete.</param>
+        /// <param name="graphUri">URI of the affected Graph.</param>
         public DeleteCommand(GraphPattern where, Uri graphUri)
             : this(where, where, graphUri) { }
 
         /// <summary>
-        /// Createa a new DELETE command which operates on the Default Graph
+        /// Createa a new DELETE command which operates on the Default Graph.
         /// </summary>
-        /// <param name="where">Pattern to construct Triples to delete</param>
+        /// <param name="where">Pattern to construct Triples to delete.</param>
         public DeleteCommand(GraphPattern where)
             : this(where, where, null) { }
 
         /// <summary>
-        /// Gets whether the Command affects a single Graph
+        /// Gets whether the Command affects a single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -114,9 +114,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph the deletions are made from
+        /// Gets the URI of the Graph the deletions are made from.
         /// </summary>
         public Uri TargetUri
         {
@@ -153,7 +153,7 @@ namespace VDS.RDF.Update.Commands
         }
        
         /// <summary>
-        /// Gets the pattern used for Deletions
+        /// Gets the pattern used for Deletions.
         /// </summary>
         public GraphPattern DeletePattern
         {
@@ -164,7 +164,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the pattern used for the WHERE clause
+        /// Gets the pattern used for the WHERE clause.
         /// </summary>
         public GraphPattern WherePattern
         {
@@ -175,7 +175,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Optimises the Commands WHERE pattern
+        /// Optimises the Commands WHERE pattern.
         /// </summary>
         public override void Optimise(IQueryOptimiser optimiser)
         {
@@ -183,9 +183,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             bool defGraphOk = false;
@@ -380,16 +380,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessDeleteCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

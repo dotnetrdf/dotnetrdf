@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Node Type Values
+    /// Node Type Values.
     /// </summary>
     public enum NodeType
     {
@@ -57,11 +57,11 @@ namespace VDS.RDF
         /// <summary>
         /// A Variable Node (currently only used in N3)
         /// </summary>
-        Variable = 4
+        Variable = 4,
     }
 
     /// <summary>
-    /// Interface for Nodes
+    /// Interface for Nodes.
     /// </summary>
     public interface INode 
         : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
@@ -73,16 +73,16 @@ namespace VDS.RDF
 #endif
     {
         /// <summary>
-        /// Nodes have a Type
+        /// Nodes have a Type.
         /// </summary>
-        /// <remarks>Primarily provided so can do quick integer comparison to see what type of Node you have without having to do actual full blown Type comparison</remarks>
+        /// <remarks>Primarily provided so can do quick integer comparison to see what type of Node you have without having to do actual full blown Type comparison.</remarks>
         NodeType NodeType
         {
             get;
         }
 
         /// <summary>
-        /// Gets the Graph the Node belongs to
+        /// Gets the Graph the Node belongs to.
         /// </summary>
         IGraph Graph
         {
@@ -90,7 +90,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Graph URI associated with a Node
+        /// Gets/Sets the Graph URI associated with a Node.
         /// </summary>
         Uri GraphUri
         {
@@ -99,35 +99,35 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the String representation of the Node
+        /// Gets the String representation of the Node.
         /// </summary>
         /// <returns></returns>
         String ToString();
 
         /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// Gets the String representation of the Node formatted with the given Node formatter.
         /// </summary>
-        /// <param name="formatter">Formatter</param>
+        /// <param name="formatter">Formatter.</param>
         /// <returns></returns>
         String ToString(INodeFormatter formatter);
 
         /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// Gets the String representation of the Node formatted with the given Node formatter.
         /// </summary>
-        /// <param name="formatter">Formatter</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="formatter">Formatter.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         String ToString(INodeFormatter formatter, TripleSegment segment);
     }
 
     /// <summary>
-    /// Interface for URI Nodes
+    /// Interface for URI Nodes.
     /// </summary>
     public interface IUriNode
         : INode
     {
         /// <summary>
-        /// Gets the URI the Node represents
+        /// Gets the URI the Node represents.
         /// </summary>
         Uri Uri
         {
@@ -136,13 +136,13 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Blank Nodes
+    /// Interface for Blank Nodes.
     /// </summary>
     public interface IBlankNode 
         : INode
     {
         /// <summary>
-        /// Gets the Internal ID of the Blank Node
+        /// Gets the Internal ID of the Blank Node.
         /// </summary>
         String InternalID
         {
@@ -151,13 +151,13 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Literal Nodes
+    /// Interface for Literal Nodes.
     /// </summary>
     public interface ILiteralNode
         : INode
     {
         /// <summary>
-        /// Gets the Lexical Value of the Literal
+        /// Gets the Lexical Value of the Literal.
         /// </summary>
         String Value
         {
@@ -165,7 +165,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Language specifier (if any) of the Literal or the Empty String
+        /// Gets the Language specifier (if any) of the Literal or the Empty String.
         /// </summary>
         String Language
         {
@@ -173,7 +173,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the DataType URI (if any) of the Literal or null
+        /// Gets the DataType URI (if any) of the Literal or null.
         /// </summary>
         Uri DataType
         {
@@ -182,13 +182,13 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Graph Literal Nodes
+    /// Interface for Graph Literal Nodes.
     /// </summary>
     public interface IGraphLiteralNode
         : INode
     {
         /// <summary>
-        /// Gets the Sub-graph the Graph Literal represents
+        /// Gets the Sub-graph the Graph Literal represents.
         /// </summary>
         IGraph SubGraph
         {
@@ -197,13 +197,13 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Variable Nodes
+    /// Interface for Variable Nodes.
     /// </summary>
     public interface IVariableNode
         : INode
     {
         /// <summary>
-        /// Gets the Variable Name
+        /// Gets the Variable Name.
         /// </summary>
         String VariableName
         {

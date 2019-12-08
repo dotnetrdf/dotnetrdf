@@ -30,18 +30,18 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class for representing Triple Stores which are collections of RDF Graphs
+    /// Class for representing Triple Stores which are collections of RDF Graphs.
     /// </summary>
     /// <remarks>
-    /// The 'Web Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Web based on the URIs of Graphs that you ask it for
+    /// The 'Web Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Web based on the URIs of Graphs that you ask it for.
     /// </remarks>
     public class WebDemandTripleStore 
         : TripleStore
     {
         /// <summary>
-        /// Creates an Web Demand Triple Store
+        /// Creates an Web Demand Triple Store.
         /// </summary>
-        /// <param name="defaultGraphUri">A Uri for the Default Graph which should be loaded from the Web as the initial Graph</param>
+        /// <param name="defaultGraphUri">A Uri for the Default Graph which should be loaded from the Web as the initial Graph.</param>
         public WebDemandTripleStore(Uri defaultGraphUri)
             : this()
         {
@@ -53,9 +53,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates an Web Demand Triple Store
+        /// Creates an Web Demand Triple Store.
         /// </summary>
-        /// <param name="defaultGraphFile">A Filename for the Default Graph which should be loaded from a local File as the initial Graph</param>
+        /// <param name="defaultGraphFile">A Filename for the Default Graph which should be loaded from a local File as the initial Graph.</param>
         public WebDemandTripleStore(String defaultGraphFile)
             : this()
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Web Demand Triple Store
+        /// Creates a new Web Demand Triple Store.
         /// </summary>
         public WebDemandTripleStore()
             : base(new WebDemandGraphCollection()) { }

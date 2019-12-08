@@ -30,7 +30,7 @@ namespace VDS.RDF.Storage
 {
 
     /// <summary>
-    /// Structure for representing Triples that are waiting to be Batch written to the Database
+    /// Structure for representing Triples that are waiting to be Batch written to the Database.
     /// </summary>
     public struct BatchTriple
     {
@@ -38,10 +38,10 @@ namespace VDS.RDF.Storage
         private String _graphID;
 
         /// <summary>
-        /// Creates a new Batch Triple
+        /// Creates a new Batch Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
-        /// <param name="graphID">Graph ID to store Triple for</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="graphID">Graph ID to store Triple for.</param>
         public BatchTriple(Triple t, String graphID)
         {
             _t = t;
@@ -49,7 +49,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Triple
+        /// Triple.
         /// </summary>
         public Triple Triple
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Graph ID
+        /// Graph ID.
         /// </summary>
         public String GraphID
         {
@@ -71,9 +71,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Equality for Batch Triples
+        /// Equality for Batch Triples.
         /// </summary>
-        /// <param name="obj">Object to test</param>
+        /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Hash Code for Batch Triples
+        /// Hash Code for Batch Triples.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()

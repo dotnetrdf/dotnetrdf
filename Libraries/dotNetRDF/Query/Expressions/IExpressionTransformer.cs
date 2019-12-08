@@ -27,28 +27,28 @@
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// An Expression Transformer is a class that can traverse a SPARQL Expression tree and apply transformations to it
+    /// An Expression Transformer is a class that can traverse a SPARQL Expression tree and apply transformations to it.
     /// </summary>
     public interface IExpressionTransformer
     {
         /// <summary>
-        /// Transforms the expression using this transformer
+        /// Transforms the expression using this transformer.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         ISparqlExpression Transform(ISparqlExpression expr);
     }
 
     /// <summary>
-    /// Abstract implementation of an Expression Transformer which substitutes primary expressions
+    /// Abstract implementation of an Expression Transformer which substitutes primary expressions.
     /// </summary>
     public abstract class PrimaryExpressionSubstituter 
         : IExpressionTransformer
     {
         /// <summary>
-        /// Transforms an expression into a form where primary expressions may be substituted
+        /// Transforms an expression into a form where primary expressions may be substituted.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(ISparqlExpression expr)
         {
@@ -63,9 +63,9 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Returns the substitution for a given primary expression
+        /// Returns the substitution for a given primary expression.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         protected abstract ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr);
     }

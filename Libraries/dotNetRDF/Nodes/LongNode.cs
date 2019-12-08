@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// A Valued Node with a Long value
+    /// A Valued Node with a Long value.
     /// </summary>
     public class LongNode
         : NumericNode
@@ -40,21 +40,21 @@ namespace VDS.RDF.Nodes
         private long _value;
 
         /// <summary>
-        /// Creates a new long valued node
+        /// Creates a new long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Long value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Long value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public LongNode(IGraph g, long value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
 
         /// <summary>
-        /// Creates a new long valued node
+        /// Creates a new long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Long value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Long value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         public LongNode(IGraph g, long value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
@@ -62,15 +62,15 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new long valued node
+        /// Creates a new long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Long value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Long value.</param>
         public LongNode(IGraph g, long value)
             : this(g, value, value.ToString()) { }
 
         /// <summary>
-        /// Gets the long value
+        /// Gets the long value.
         /// </summary>
         /// <returns></returns>
         public override long AsInteger()
@@ -79,7 +79,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the decimal value of the long
+        /// Gets the decimal value of the long.
         /// </summary>
         /// <returns></returns>
         public override decimal AsDecimal()
@@ -95,7 +95,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the float value of the long
+        /// Gets the float value of the long.
         /// </summary>
         /// <returns></returns>
         public override float AsFloat()
@@ -111,7 +111,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the double value of the long
+        /// Gets the double value of the long.
         /// </summary>
         /// <returns></returns>
         public override double AsDouble()
@@ -128,7 +128,7 @@ namespace VDS.RDF.Nodes
     }
 
     /// <summary>
-    /// A Valued Node with a unsigned long value
+    /// A Valued Node with a unsigned long value.
     /// </summary>
     public class UnsignedLongNode
         : NumericNode
@@ -136,21 +136,21 @@ namespace VDS.RDF.Nodes
         private ulong _value;
 
         /// <summary>
-        /// Creates a new unsigned long valued node
+        /// Creates a new unsigned long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Unsigned Long value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Unsigned Long value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public UnsignedLongNode(IGraph g, ulong value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
 
         /// <summary>
-        /// Creates a new unsigned long valued node
+        /// Creates a new unsigned long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Unsigned Long value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Unsigned Long value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         public UnsignedLongNode(IGraph g, ulong value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
@@ -158,15 +158,15 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new usigned long valued node
+        /// Creates a new usigned long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Unsigned Long value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Unsigned Long value.</param>
         public UnsignedLongNode(IGraph g, ulong value)
             : this(g, value, value.ToString()) { }
 
         /// <summary>
-        /// Gets the long value of the ulong
+        /// Gets the long value of the ulong.
         /// </summary>
         /// <returns></returns>
         public override long AsInteger()
@@ -182,7 +182,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the decimal value of the ulong
+        /// Gets the decimal value of the ulong.
         /// </summary>
         /// <returns></returns>
         public override decimal AsDecimal()
@@ -198,7 +198,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the float value of the ulong
+        /// Gets the float value of the ulong.
         /// </summary>
         /// <returns></returns>
         public override float AsFloat()
@@ -214,7 +214,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the double value of the ulong
+        /// Gets the double value of the ulong.
         /// </summary>
         /// <returns></returns>
         public override double AsDouble()

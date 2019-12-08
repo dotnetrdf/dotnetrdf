@@ -31,16 +31,16 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Operators.DateTime
 {
     /// <summary>
-    /// Represents the date time subtraction operation
+    /// Represents the date time subtraction operation.
     /// </summary>
     /// <remarks>
-    /// Allows queries to subtract a duration from a date time
+    /// Allows queries to subtract a duration from a date time.
     /// </remarks>
     public class DateTimeSubtraction
         : BaseDateTimeOperator
     {
         /// <summary>
-        /// Gets the operator type
+        /// Gets the operator type.
         /// </summary>
         public override SparqlOperatorType Operator
         {
@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Operators.DateTime
         }
 
         /// <summary>
-        /// Applies the operator
+        /// Applies the operator.
         /// </summary>
-        /// <param name="ns">Arguments</param>
+        /// <param name="ns">Arguments.</param>
         /// <returns></returns>
         public override IValuedNode Apply(params IValuedNode[] ns)
         {

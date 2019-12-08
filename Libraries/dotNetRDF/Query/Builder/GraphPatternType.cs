@@ -34,6 +34,6 @@ namespace VDS.RDF.Query.Builder
         Minus,
         Union,
         Graph,
-        Service
+        Service,
     }
 }

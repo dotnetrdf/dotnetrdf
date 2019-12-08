@@ -30,28 +30,28 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
     /// <summary>
-    /// Abstract Base Class for Unary Trigonometric Functions in the Leviathan Function Library
+    /// Abstract Base Class for Unary Trigonometric Functions in the Leviathan Function Library.
     /// </summary>
     public abstract class BaseTrigonometricFunction
         : BaseUnaryExpression
     {
         /// <summary>
-        /// Trigonometric function
+        /// Trigonometric function.
         /// </summary>
         protected Func<double, double> _func;
 
         /// <summary>
-        /// Creates a new Unary Trigonometric Function
+        /// Creates a new Unary Trigonometric Function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public BaseTrigonometricFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Creates a new Unary Trigonometric Function
+        /// Creates a new Unary Trigonometric Function.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="func">Trigonometric Function</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="func">Trigonometric Function.</param>
         public BaseTrigonometricFunction(ISparqlExpression expr, Func<double, double> func)
             : base(expr)
         {
@@ -59,10 +59,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Gets the expression type
+        /// Gets the expression type.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Gets the string representation of the Function
+        /// Gets the string representation of the Function.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();

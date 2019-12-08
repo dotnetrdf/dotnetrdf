@@ -34,15 +34,15 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Extension Methods related to valued nodes
+    /// Extension Methods related to valued nodes.
     /// </summary>
     public static class ValuedNodeExtensions
     {
         /// <summary>
-        /// Takes a <see cref="INode">INode</see> and converts it to a <see cref="IValuedNode">IValuedNode</see> if it is not already an instance that implements the interface
+        /// Takes a <see cref="INode">INode</see> and converts it to a <see cref="IValuedNode">IValuedNode</see> if it is not already an instance that implements the interface.
         /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns>Valued Node</returns>
+        /// <param name="n">Node.</param>
+        /// <returns>Valued Node.</returns>
         public static IValuedNode AsValuedNode(this INode n)
         {
             if (n == null) return null;
@@ -247,10 +247,10 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Tries to get the result of calling <see cref="IValuedNode.AsBoolean()">AsBoolean()</see> on a node throwing an error if the node is null
+        /// Tries to get the result of calling <see cref="IValuedNode.AsBoolean()">AsBoolean()</see> on a node throwing an error if the node is null.
         /// </summary>
-        /// <param name="n">Node</param>
-        /// <exception cref="RdfQueryException">Thrown if the input is null of the specific valued node cannot be cast to a boolean</exception>
+        /// <param name="n">Node.</param>
+        /// <exception cref="RdfQueryException">Thrown if the input is null of the specific valued node cannot be cast to a boolean.</exception>
         /// <returns></returns>
         public static bool AsSafeBoolean(this IValuedNode n)
         {

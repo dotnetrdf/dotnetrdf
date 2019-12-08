@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Represents the SPARQL CONCAT function
+    /// Represents the SPARQL CONCAT function.
     /// </summary>
     public class ConcatFunction
         : ISparqlExpression
@@ -41,19 +41,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
         /// <summary>
-        /// Creates a new SPARQL Concatenation function
+        /// Creates a new SPARQL Concatenation function.
         /// </summary>
-        /// <param name="expressions">Enumeration of expressions</param>
+        /// <param name="expressions">Enumeration of expressions.</param>
         public ConcatFunction(IEnumerable<ISparqlExpression> expressions)
         {
             _exprs.AddRange(expressions);
         }
 
         /// <summary>
-        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID
+        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Arguments the function applies to
+        /// Gets the Arguments the function applies to.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Variables used in the function
+        /// Gets the Variables used in the function.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Type of the SPARQL Expression
+        /// Gets the Type of the SPARQL Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Functor of the expression
+        /// Gets the Functor of the expression.
         /// </summary>
         public string Functor
         {
@@ -185,9 +185,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

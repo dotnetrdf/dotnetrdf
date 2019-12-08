@@ -30,20 +30,20 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser that optimises Algebra to use <see cref="LazyBgp">LazyBgp</see>'s wherever possible
+    /// An Algebra Optimiser that optimises Algebra to use <see cref="LazyBgp">LazyBgp</see>'s wherever possible.
     /// </summary>
     public class LazyBgpOptimiser 
         : BaseAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible
+        /// Optimises an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
-        /// <param name="depth">Depth</param>
+        /// <param name="algebra">Algebra.</param>
+        /// <param name="depth">Depth.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// By transforming a query to use <see cref="LazyBgp">LazyBgp</see> we can achieve much more efficient processing of some forms of queries
+        /// By transforming a query to use <see cref="LazyBgp">LazyBgp</see> we can achieve much more efficient processing of some forms of queries.
         /// </para>
         /// </remarks>
         protected override ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth)
@@ -99,9 +99,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Determines whether the query can be optimised for lazy evaluation
+        /// Determines whether the query can be optimised for lazy evaluation.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public override bool IsApplicable(SparqlQuery q)
         {
@@ -114,9 +114,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser does not apply to SPARQL Updates
+        /// Returns that the optimiser does not apply to SPARQL Updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public override bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
@@ -125,20 +125,20 @@ namespace VDS.RDF.Query.Optimisation
     }
 
     /// <summary>
-    /// An Algebra Optimiser that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible
+    /// An Algebra Optimiser that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible.
     /// </summary>
     public class AskBgpOptimiser
         : BaseAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible
+        /// Optimises an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
-        /// <param name="depth">Depth</param>
+        /// <param name="algebra">Algebra.</param>
+        /// <param name="depth">Depth.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// By transforming a query to use <see cref="AskBgp">AskBgp</see> we can achieve much more efficient processing of some forms of queries
+        /// By transforming a query to use <see cref="AskBgp">AskBgp</see> we can achieve much more efficient processing of some forms of queries.
         /// </para>
         /// </remarks>
         protected override ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth)
@@ -204,9 +204,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Determines whether the query can be optimised for ASK evaluation
+        /// Determines whether the query can be optimised for ASK evaluation.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public override bool IsApplicable(SparqlQuery q)
         {
@@ -214,9 +214,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser does not apply to SPARQL Updates
+        /// Returns that the optimiser does not apply to SPARQL Updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public override bool IsApplicable(SparqlUpdateCommandSet cmds)
         {

@@ -32,7 +32,7 @@ using System.Text;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for RDFa Parsers
+    /// Parser Context for RDFa Parsers.
     /// </summary>
     public class RdfAParserContext<THtmlDocument> : BaseParserContext
     {
@@ -42,19 +42,19 @@ namespace VDS.RDF.Parsing.Contexts
         private IRdfAVocabulary _defaultVocabularly;
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="document">XML Document</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="document">XML Document.</param>
         public RdfAParserContext(IGraph g, THtmlDocument document)
             : this(g, document, false) { }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="document">HTML Document</param>
-        /// <param name="traceParsing">Whether to Trace Parsing</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="document">HTML Document.</param>
+        /// <param name="traceParsing">Whether to Trace Parsing.</param>
         public RdfAParserContext(IGraph g, THtmlDocument document, bool traceParsing)
             : base(g, traceParsing) 
         {
@@ -62,11 +62,11 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="document">HTML Document</param>
-        /// <param name="traceParsing">Whether to Trace Parsing</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="document">HTML Document.</param>
+        /// <param name="traceParsing">Whether to Trace Parsing.</param>
         public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing)
             : base(handler, traceParsing)
         {
@@ -74,15 +74,15 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="document">HTML Document</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="document">HTML Document.</param>
         public RdfAParserContext(IRdfHandler handler, THtmlDocument document)
             : this(handler, document, false) { }
 
         /// <summary>
-        /// Gets the HTML Document
+        /// Gets the HTML Document.
         /// </summary>
         public THtmlDocument Document
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether xml:base is allowed in the embedded RDF
+        /// Gets/Sets whether xml:base is allowed in the embedded RDF.
         /// </summary>
         public bool XmlBaseAllowed
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Default Vocabularly
+        /// Gets/Sets the Default Vocabularly.
         /// </summary>
         public IRdfAVocabulary DefaultVocabulary
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the RDFa syntax in use
+        /// Gets/Sets the RDFa syntax in use.
         /// </summary>
         public RdfASyntax Syntax
         {

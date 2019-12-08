@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler that rewrites the Graph URIs of Triples before passing them to an inner handler
+    /// A RDF Handler that rewrites the Graph URIs of Triples before passing them to an inner handler.
     /// </summary>
     public class GraphUriRewriteHandler
         : BaseRdfHandler, IWrappingRdfHandler
@@ -39,10 +39,10 @@ namespace VDS.RDF.Parsing.Handlers
         private Uri _graphUri;
 
         /// <summary>
-        /// Creates a new Graph URI rewriting handler
+        /// Creates a new Graph URI rewriting handler.
         /// </summary>
-        /// <param name="handler">Handler to wrap</param>
-        /// <param name="graphUri">Graph URI to rewrite to</param>
+        /// <param name="handler">Handler to wrap.</param>
+        /// <param name="graphUri">Graph URI to rewrite to.</param>
         public GraphUriRewriteHandler(IRdfHandler handler, Uri graphUri)
             : base()
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Inner Handler
+        /// Gets the Inner Handler.
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts handling of RDF
+        /// Starts handling of RDF.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -71,9 +71,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends handling of RDF
+        /// Ends handling of RDF.
         /// </summary>
-        /// <param name="ok">Whether parsing completed OK</param>
+        /// <param name="ok">Whether parsing completed OK.</param>
         protected override void EndRdfInternal(bool ok)
         {
             _handler.EndRdf(ok);
@@ -81,9 +81,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Base URI declaration
+        /// Handles a Base URI declaration.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -91,10 +91,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Namespace declaration
+        /// Handles a Namespace declaration.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -102,9 +102,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Triple by rewriting the Graph URI and passing it to the inner handler
+        /// Handles a Triple by rewriting the Graph URI and passing it to the inner handler.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Returns true since this handler accepts all triples
+        /// Returns true since this handler accepts all triples.
         /// </summary>
         public override bool AcceptsAll
         {

@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Inference
 {
     /// <summary>
-    /// An Inference Engine that uses SKOS Concept Hierarchies
+    /// An Inference Engine that uses SKOS Concept Hierarchies.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -43,12 +43,12 @@ namespace VDS.RDF.Query.Inference
         private IUriNode _rdfType, _skosConcept, _skosNarrower, _skosBroader;
 
         /// <summary>
-        /// Namespace for SKOS
+        /// Namespace for SKOS.
         /// </summary>
         public const String SKOSNamespace = "http://www.w3.org/2004/02/skos/core#";
 
         /// <summary>
-        /// Creates a new instance of the SKOS Reasoner
+        /// Creates a new instance of the SKOS Reasoner.
         /// </summary>
         public StaticSkosReasoner()
         {
@@ -61,19 +61,19 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Applies inference to the given Graph and outputs the inferred information to that Graph
+        /// Applies inference to the given Graph and outputs the inferred information to that Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public virtual void Apply(IGraph g)
         {
             Apply(g, g);
         }
 
         /// <summary>
-        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph
+        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph.
         /// </summary>
-        /// <param name="input">Graph to apply inference to</param>
-        /// <param name="output">Graph inferred information is output to</param>
+        /// <param name="input">Graph to apply inference to.</param>
+        /// <param name="output">Graph inferred information is output to.</param>
         public virtual void Apply(IGraph input, IGraph output)
         {
             List<Triple> inferences = new List<Triple>();
@@ -108,11 +108,11 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Imports any Concept heirarchy information from the given Graph into the Reasoners Knowledge Base in order to initialise the Reasoner
+        /// Imports any Concept heirarchy information from the given Graph into the Reasoners Knowledge Base in order to initialise the Reasoner.
         /// </summary>
-        /// <param name="g">Graph to import from</param>
+        /// <param name="g">Graph to import from.</param>
         /// <remarks>
-        /// Looks for Triples defining SKOS concepts and relating them to narrower and broader concepts
+        /// Looks for Triples defining SKOS concepts and relating them to narrower and broader concepts.
         /// </remarks>
         public void Initialise(IGraph g)
         {
@@ -158,15 +158,15 @@ namespace VDS.RDF.Query.Inference
     }
 
     /// <summary>
-    /// An Inference Engine that uses SKOS Concept Hierarchies
+    /// An Inference Engine that uses SKOS Concept Hierarchies.
     /// </summary>
     public class SkosReasoner : StaticSkosReasoner
     {
         /// <summary>
-        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph
+        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph.
         /// </summary>
-        /// <param name="input">Graph to apply inference to</param>
-        /// <param name="output">Graph inferred information is output to</param>
+        /// <param name="input">Graph to apply inference to.</param>
+        /// <param name="output">Graph inferred information is output to.</param>
         public override void Apply(IGraph input, IGraph output)
         {
             // Use this Graph to further initialise the Reasoner

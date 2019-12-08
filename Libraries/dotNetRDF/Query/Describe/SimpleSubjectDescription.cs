@@ -32,22 +32,22 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
-    /// Computes a Simple Subject Description for all Values resulting from the Query
+    /// Computes a Simple Subject Description for all Values resulting from the Query.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Description returned is all the Triples for which a Value is the Subject - this description does not expand any Blank Nodes
+    /// The Description returned is all the Triples for which a Value is the Subject - this description does not expand any Blank Nodes.
     /// </para>
     /// </remarks>
     public class SimpleSubjectDescription 
         : BaseDescribeAlgorithm
     {
         /// <summary>
-        /// Generates the Description for each of the Nodes to be described
+        /// Generates the Description for each of the Nodes to be described.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="nodes">Nodes to be described</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="nodes">Nodes to be described.</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results

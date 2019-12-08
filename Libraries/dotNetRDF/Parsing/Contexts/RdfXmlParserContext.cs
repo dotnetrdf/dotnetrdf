@@ -35,7 +35,7 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for RDF/XML Parser
+    /// Parser Context for RDF/XML Parser.
     /// </summary>
     public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXmlEvent>
     {
@@ -43,19 +43,19 @@ namespace VDS.RDF.Parsing.Contexts
         private Dictionary<String, List<INode>> _usedIDs = new Dictionary<String, List<INode>>();
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="document">XML Document</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="document">XML Document.</param>
         public RdfXmlParserContext(IGraph g, XmlDocument document)
             : this(g, document, false) { }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="document">XML Document</param>
-        /// <param name="traceParsing">Whether to Trace Parsing</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="document">XML Document.</param>
+        /// <param name="traceParsing">Whether to Trace Parsing.</param>
         public RdfXmlParserContext(IGraph g, XmlDocument document, bool traceParsing)
             : base(g) 
         {
@@ -67,19 +67,19 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="document">XML Document</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="document">XML Document.</param>
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document)
             : this(handler, document, false) { }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="document">XML Document</param>
-        /// <param name="traceParsing">Whether to Trace Parsing</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="document">XML Document.</param>
+        /// <param name="traceParsing">Whether to Trace Parsing.</param>
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing)
             : base(handler)
         {
@@ -91,10 +91,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing
+        /// Creates a new Parser Context which uses Streaming parsing.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="stream">Stream</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="stream">Stream.</param>
         public RdfXmlParserContext(IGraph g, Stream stream)
             : base(g)
         {
@@ -102,10 +102,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing
+        /// Creates a new Parser Context which uses Streaming parsing.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="stream">Stream</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="stream">Stream.</param>
         public RdfXmlParserContext(IRdfHandler handler, Stream stream)
             : base(handler)
         {
@@ -113,10 +113,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing
+        /// Creates a new Parser Context which uses Streaming parsing.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="input">Input</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="input">Input.</param>
         public RdfXmlParserContext(IGraph g, TextReader input)
             : base(g)
         {
@@ -124,10 +124,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context which uses Streaming parsing
+        /// Creates a new Parser Context which uses Streaming parsing.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="input">Input</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="input">Input.</param>
         public RdfXmlParserContext(IRdfHandler handler, TextReader input)
             : base(handler)
         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Event Queue
+        /// Gets the Event Queue.
         /// </summary>
         public IEventQueue<IRdfXmlEvent> Events
         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Mapping of in-use IDs
+        /// Gets the Mapping of in-use IDs.
         /// </summary>
         public Dictionary<String, List<INode>> IDs
         {

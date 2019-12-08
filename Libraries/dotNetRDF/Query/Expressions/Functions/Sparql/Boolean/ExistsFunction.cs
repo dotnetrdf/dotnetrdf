@@ -36,7 +36,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
     /// <summary>
-    /// Represents an EXIST/NOT EXISTS clause used as a Function in an Expression
+    /// Represents an EXIST/NOT EXISTS clause used as a Function in an Expression.
     /// </summary>
     public class ExistsFunction 
         : ISparqlExpression
@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         private HashSet<int> _exists;
 
         /// <summary>
-        /// Creates a new EXISTS/NOT EXISTS function
+        /// Creates a new EXISTS/NOT EXISTS function.
         /// </summary>
-        /// <param name="pattern">Graph Pattern</param>
-        /// <param name="mustExist">Whether this is an EXIST</param>
+        /// <param name="pattern">Graph Pattern.</param>
+        /// <param name="mustExist">Whether this is an EXIST.</param>
         public ExistsFunction(GraphPattern pattern, bool mustExist)
         {
             _pattern = pattern;
@@ -62,10 +62,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Value of this function which is a Boolean as a Literal Node
+        /// Gets the Value of this function which is a Boolean as a Literal Node.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -115,11 +115,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Internal method which evaluates the Graph Pattern
+        /// Internal method which evaluates the Graph Pattern.
         /// </summary>
-        /// <param name="origContext">Evaluation Context</param>
+        /// <param name="origContext">Evaluation Context.</param>
         /// <remarks>
-        /// We only ever need to evaluate the Graph Pattern once to get the Results
+        /// We only ever need to evaluate the Graph Pattern once to get the Results.
         /// </remarks>
         private void EvaluateInternal(SparqlEvaluationContext origContext)
         {
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Variables used in this Expression
+        /// Gets the Variables used in this Expression.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public string Functor
         {
@@ -292,7 +292,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -303,9 +303,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

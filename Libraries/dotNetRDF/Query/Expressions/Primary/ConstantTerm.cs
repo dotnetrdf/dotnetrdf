@@ -32,37 +32,37 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Primary
 {
     /// <summary>
-    /// Class for representing constant terms
+    /// Class for representing constant terms.
     /// </summary>
     public class ConstantTerm
         : ISparqlExpression
     {
         /// <summary>
-        /// Node this Term represents
+        /// Node this Term represents.
         /// </summary>
         protected IValuedNode _node;
 
         /// <summary>
-        /// Creates a new Constant
+        /// Creates a new Constant.
         /// </summary>
-        /// <param name="n">Valued Node</param>
+        /// <param name="n">Valued Node.</param>
         public ConstantTerm(IValuedNode n)
         {
             _node = n;
         }
 
         /// <summary>
-        /// Creates a new Constant
+        /// Creates a new Constant.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         public ConstantTerm(INode n)
             : this(n.AsValuedNode()) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets an Empty Enumerable since a Node Term does not use variables
+        /// Gets an Empty Enumerable since a Node Term does not use variables.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public String Functor
         {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Node this Term represents
+        /// Node this Term represents.
         /// </summary>
         internal IValuedNode Node
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

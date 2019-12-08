@@ -30,7 +30,7 @@ using VDS.RDF.Query.Optimisation;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// Possible SPARQL Update Command Types
+    /// Possible SPARQL Update Command Types.
     /// </summary>
     public enum SparqlUpdateCommandType
     {
@@ -85,27 +85,27 @@ namespace VDS.RDF.Update
         /// <summary>
         /// Unknown
         /// </summary>
-        Unknown
+        Unknown,
     }
 
     /// <summary>
-    /// Base Class of SPARQL Update Commands
+    /// Base Class of SPARQL Update Commands.
     /// </summary>
     public abstract class SparqlUpdateCommand
     {
         private SparqlUpdateCommandType _type = SparqlUpdateCommandType.Unknown;
 
         /// <summary>
-        /// Creates a new SPARQL Update Command
+        /// Creates a new SPARQL Update Command.
         /// </summary>
-        /// <param name="type">Command Type</param>
+        /// <param name="type">Command Type.</param>
         public SparqlUpdateCommand(SparqlUpdateCommandType type)
         {
             _type = type;
         }
 
         /// <summary>
-        /// Gets the Type of this Command
+        /// Gets the Type of this Command.
         /// </summary>
         public SparqlUpdateCommandType CommandType
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets whether the Command will only affect a single Graph
+        /// Gets whether the Command will only affect a single Graph.
         /// </summary>
         public abstract bool AffectsSingleGraph
         {
@@ -124,17 +124,17 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets whether the Command will potentially affect the given Graph
+        /// Gets whether the Command will potentially affect the given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// A return value of <strong>true</strong> does not guarantee that the Graph will be affected.  Some Commands (e.g. DROP ALL) affect all Graphs in the Dataset but the command itself doesn't know whether a Graph with the given URI is actually present in the dataset to which it is applied
+        /// A return value of <strong>true</strong> does not guarantee that the Graph will be affected.  Some Commands (e.g. DROP ALL) affect all Graphs in the Dataset but the command itself doesn't know whether a Graph with the given URI is actually present in the dataset to which it is applied.
         /// </remarks>
         public abstract bool AffectsGraph(Uri graphUri);
 
         /// <summary>
-        /// Optimises the Command
+        /// Optimises the Command.
         /// </summary>
         public virtual void Optimise(IQueryOptimiser optimiser)
         {
@@ -142,19 +142,19 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public abstract void Evaluate(SparqlUpdateEvaluationContext context);
 
         /// <summary>
-        /// Processes the Command Set using the given Update Processor
+        /// Processes the Command Set using the given Update Processor.
         /// </summary>
-        /// <param name="processor">Update Processor</param>
+        /// <param name="processor">Update Processor.</param>
         public abstract void Process(ISparqlUpdateProcessor processor);
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();

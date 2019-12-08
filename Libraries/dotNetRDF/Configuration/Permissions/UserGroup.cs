@@ -32,7 +32,7 @@ using System.Net;
 namespace VDS.RDF.Configuration.Permissions
 {
     /// <summary>
-    /// Represents a Group of Users and the permissions they have to perform actions
+    /// Represents a Group of Users and the permissions they have to perform actions.
     /// </summary>
     public class UserGroup
     {
@@ -43,7 +43,7 @@ namespace VDS.RDF.Configuration.Permissions
         private bool _guest = false;
 
         /// <summary>
-        /// Creates a new User Group
+        /// Creates a new User Group.
         /// </summary>
         public UserGroup()
         {
@@ -51,11 +51,11 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
-        /// Creates a new User Group which may allow guests
+        /// Creates a new User Group which may allow guests.
         /// </summary>
-        /// <param name="allowGuest">Are guests allowed?</param>
+        /// <param name="allowGuest">Are guests allowed?.</param>
         /// <remarks>
-        /// If guests are allowed then this Groups permissions apply to unauthenticated users
+        /// If guests are allowed then this Groups permissions apply to unauthenticated users.
         /// </remarks>
         public UserGroup(bool allowGuest)
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
-        /// Gets/Sets whether Guests are allowed
+        /// Gets/Sets whether Guests are allowed.
         /// </summary>
         public bool AllowGuests
         {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
-        /// Gets/Sets the in-use Permission Model
+        /// Gets/Sets the in-use Permission Model.
         /// </summary>
         public PermissionModel PermissionModel
         {
@@ -93,36 +93,36 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
-        /// Adds a User to the Group
+        /// Adds a User to the Group.
         /// </summary>
-        /// <param name="credentials">User Credentials</param>
+        /// <param name="credentials">User Credentials.</param>
         public void AddUser(NetworkCredential credentials)
         {
             _users.Add(credentials);
         }
 
         /// <summary>
-        /// Adds an allow action permission to the Group
+        /// Adds an allow action permission to the Group.
         /// </summary>
-        /// <param name="permission">Permission</param>
+        /// <param name="permission">Permission.</param>
         public void AddAllowedAction(IPermission permission)
         {
             _allowedActions.Add(permission);
         }
 
         /// <summary>
-        /// Adds a deny action permission to the Group
+        /// Adds a deny action permission to the Group.
         /// </summary>
-        /// <param name="permission">Permission</param>
+        /// <param name="permission">Permission.</param>
         public void AddDeniedAction(IPermission permission)
         {
             _deniedActions.Add(permission);
         }
 
         /// <summary>
-        /// Returns whether the Group has a member with the given username
+        /// Returns whether the Group has a member with the given username.
         /// </summary>
-        /// <param name="username">Username</param>
+        /// <param name="username">Username.</param>
         /// <returns></returns>
         public bool HasMember(String username)
         {
@@ -130,10 +130,10 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
-        /// Returns whether the Group has a member with the given credentials
+        /// Returns whether the Group has a member with the given credentials.
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         /// <returns></returns>
         public bool HasMember(String username, String password)
         {
@@ -141,9 +141,9 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
-        /// Gets whether the Group permits the action
+        /// Gets whether the Group permits the action.
         /// </summary>
-        /// <param name="action">Action</param>
+        /// <param name="action">Action.</param>
         /// <returns></returns>
         public bool IsActionPermitted(String action)
         {

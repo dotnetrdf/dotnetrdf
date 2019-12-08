@@ -34,19 +34,19 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Abstract Base Class for representing Multisets
+    /// Abstract Base Class for representing Multisets.
     /// </summary>
     public abstract class BaseMultiset
     {
         /// <summary>
-        /// List of IDs that is used to return the Sets in order if the Multiset has been sorted
+        /// List of IDs that is used to return the Sets in order if the Multiset has been sorted.
         /// </summary>
         protected List<int> _orderedIDs = null;
 
 
         private int _virtualCount = -1;
         /// <summary>
-        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member
+        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member.
         /// </summary>
         public int VirtualCount
         {
@@ -61,9 +61,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Joins this Multiset to another Multiset
+        /// Joins this Multiset to another Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public virtual BaseMultiset Join(BaseMultiset other)
         {
@@ -185,10 +185,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Does a Left Join of this Multiset to another Multiset where the Join is predicated on the given Expression
+        /// Does a Left Join of this Multiset to another Multiset where the Join is predicated on the given Expression.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
-        /// <param name="expr">Expression</param>
+        /// <param name="other">Other Multiset.</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
         {
@@ -422,10 +422,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Does an Exists Join of this Multiset to another Multiset where the Join is predicated on the existence/non-existence of a joinable solution on the RHS
+        /// Does an Exists Join of this Multiset to another Multiset where the Join is predicated on the existence/non-existence of a joinable solution on the RHS.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
-        /// <param name="mustExist">Whether a solution must exist in the Other Multiset for the join to be made</param>
+        /// <param name="other">Other Multiset.</param>
+        /// <param name="mustExist">Whether a solution must exist in the Other Multiset for the join to be made.</param>
         /// <returns></returns>
         public virtual BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
         {
@@ -582,9 +582,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Does a Minus Join of this Multiset to another Multiset where any joinable results are subtracted from this Multiset to give the resulting Multiset
+        /// Does a Minus Join of this Multiset to another Multiset where any joinable results are subtracted from this Multiset to give the resulting Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public virtual BaseMultiset MinusJoin(BaseMultiset other)
         {
@@ -701,9 +701,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Does a Product of this Multiset and another Multiset
+        /// Does a Product of this Multiset and another Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public virtual BaseMultiset Product(BaseMultiset other)
         {
@@ -773,9 +773,9 @@ namespace VDS.RDF.Query.Algebra
 #endif
 
         /// <summary>
-        /// Does a Union of this Multiset and another Multiset
+        /// Does a Union of this Multiset and another Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public virtual BaseMultiset Union(BaseMultiset other)
         {
@@ -791,55 +791,55 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Determines whether the Multiset contains the given Value for the given Variable
+        /// Determines whether the Multiset contains the given Value for the given Variable.
         /// </summary>
-        /// <param name="var">Variable</param>
-        /// <param name="n">Value</param>
+        /// <param name="var">Variable.</param>
+        /// <param name="n">Value.</param>
         /// <returns></returns>
         public abstract bool ContainsValue(String var, INode n);
 
         /// <summary>
-        /// Determines whether the Multiset contains the given Variable
+        /// Determines whether the Multiset contains the given Variable.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         public abstract bool ContainsVariable(String var);
 
         /// <summary>
-        /// Determines whether the Mutliset is disjoint with the given Multiset
+        /// Determines whether the Mutliset is disjoint with the given Multiset.
         /// </summary>
-        /// <param name="other">Multiset</param>
+        /// <param name="other">Multiset.</param>
         /// <returns></returns>
         public abstract bool IsDisjointWith(BaseMultiset other);
 
         /// <summary>
-        /// Adds a Set to the Mutliset
+        /// Adds a Set to the Mutliset.
         /// </summary>
-        /// <param name="s">Set to add</param>
+        /// <param name="s">Set to add.</param>
         public abstract void Add(ISet s);
 
         /// <summary>
-        /// Adds a Variable to the Multiset
+        /// Adds a Variable to the Multiset.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public abstract void AddVariable(String variable);
 
         /// <summary>
-        /// Sets the variable ordering for the multiset
+        /// Sets the variable ordering for the multiset.
         /// </summary>
-        /// <param name="variables">Variable Ordering</param>
+        /// <param name="variables">Variable Ordering.</param>
         public abstract void SetVariableOrder(IEnumerable<String> variables);
 
         /// <summary>
-        /// Removes a Set (by ID) from the Multiset
+        /// Removes a Set (by ID) from the Multiset.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         public abstract void Remove(int id);
 
         /// <summary>
-        /// Sorts a Set based on the given Comparer
+        /// Sorts a Set based on the given Comparer.
         /// </summary>
-        /// <param name="comparer">Comparer on Sets</param>
+        /// <param name="comparer">Comparer on Sets.</param>
         public virtual void Sort(IComparer<ISet> comparer)
         {
             if (comparer != null)
@@ -854,7 +854,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Returns whether the Multiset is Empty
+        /// Returns whether the Multiset is Empty.
         /// </summary>
         public abstract bool IsEmpty
         {
@@ -862,7 +862,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Count of Sets in the Multiset
+        /// Gets the Count of Sets in the Multiset.
         /// </summary>
         public virtual int Count
         {
@@ -873,7 +873,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Trims the Multiset of Temporary Variables
+        /// Trims the Multiset of Temporary Variables.
         /// </summary>
         public virtual void Trim()
         {
@@ -881,16 +881,16 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Trims the Multiset by removing all Values for the given Variable
+        /// Trims the Multiset by removing all Values for the given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public virtual void Trim(String variable)
         {
 
         }
 
         /// <summary>
-        /// Gets the Variables in the Multiset
+        /// Gets the Variables in the Multiset.
         /// </summary>
         public abstract IEnumerable<String> Variables
         {
@@ -898,7 +898,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Sets in the Multiset
+        /// Gets the Sets in the Multiset.
         /// </summary>
         public abstract IEnumerable<ISet> Sets
         {
@@ -906,7 +906,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the IDs of Sets in the Multiset
+        /// Gets the IDs of Sets in the Multiset.
         /// </summary>
         public abstract IEnumerable<int> SetIDs
         {
@@ -914,9 +914,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Retrieves the Set with the given ID
+        /// Retrieves the Set with the given ID.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         /// <returns></returns>
         public abstract ISet this[int id]
         {
@@ -924,7 +924,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string representation of the multiset (intended for debugging only)
+        /// Gets the string representation of the multiset (intended for debugging only).
         /// </summary>
         /// <returns></returns>
         public override string ToString()

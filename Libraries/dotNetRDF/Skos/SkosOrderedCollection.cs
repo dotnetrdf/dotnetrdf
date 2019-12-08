@@ -30,18 +30,18 @@ namespace VDS.RDF.Skos
     using System.Linq;
 
     /// <summary>
-    /// Represents an ordered group of SKOS concepts
+    /// Represents an ordered group of SKOS concepts.
     /// </summary>
     public class SkosOrderedCollection : SkosCollection
     {
         /// <summary>
-        /// Creates a new ordered collection for the given resource
+        /// Creates a new ordered collection for the given resource.
         /// </summary>
-        /// <param name="resource">Resource representing the ordered collection</param>
+        /// <param name="resource">Resource representing the ordered collection.</param>
         public SkosOrderedCollection(INode resource) : base(resource) { }
 
         /// <summary>
-        /// Gets the ordered list of members of the collection
+        /// Gets the ordered list of members of the collection.
         /// </summary>
         public IEnumerable<SkosMember> MemberList
         {

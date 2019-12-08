@@ -30,21 +30,21 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Interface for Formatters which Format SPARQL Results
+    /// Interface for Formatters which Format SPARQL Results.
     /// </summary>
     public interface IResultFormatter
     {
         /// <summary>
-        /// Formats a SPARQL Result as a String
+        /// Formats a SPARQL Result as a String.
         /// </summary>
-        /// <param name="result">SPARQL Result</param>
+        /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
         String Format(SparqlResult result);
 
         /// <summary>
-        /// Formats a Boolean Result as a String
+        /// Formats a Boolean Result as a String.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         /// <returns></returns>
         String FormatBooleanResult(bool result);
     }

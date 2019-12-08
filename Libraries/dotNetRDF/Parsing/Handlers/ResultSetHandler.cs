@@ -30,7 +30,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A SPARQL Results Handler which loads Results into a <see cref="SparqlResultSet">SparqlResultSet</see>
+    /// A SPARQL Results Handler which loads Results into a <see cref="SparqlResultSet">SparqlResultSet</see>.
     /// </summary>
     public class ResultSetHandler
         : BaseResultsHandler
@@ -38,9 +38,9 @@ namespace VDS.RDF.Parsing.Handlers
         private SparqlResultSet _results;
 
         /// <summary>
-        /// Creates a new Result Set Handler
+        /// Creates a new Result Set Handler.
         /// </summary>
-        /// <param name="results">Result Set</param>
+        /// <param name="results">Result Set.</param>
         public ResultSetHandler(SparqlResultSet results)
         {
             if (results == null) throw new ArgumentNullException("results");
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts Results Handling
+        /// Starts Results Handling.
         /// </summary>
         protected override void StartResultsInternal()
         {
@@ -60,18 +60,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Boolean Result by setting the <see cref="SparqlResultSet.Result">Result</see> property of the Result Set
+        /// Handles a Boolean Result by setting the <see cref="SparqlResultSet.Result">Result</see> property of the Result Set.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             _results.SetResult(result);
         }
 
         /// <summary>
-        /// Handles a Variable Declaration by adding the Variable to the Result Set
+        /// Handles a Variable Declaration by adding the Variable to the Result Set.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
@@ -80,9 +80,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Result by adding it to the Result Set
+        /// Handles a Result by adding it to the Result Set.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
@@ -92,20 +92,20 @@ namespace VDS.RDF.Parsing.Handlers
     }
 
     /// <summary>
-    /// A SPARQL Results Handler which allows you to load multiple Result Sets into a single <see cref="SparqlResultSet">SparqlResultSet</see> which the standard <see cref="ResultSetHandler">ResultSetHandler</see> does not permit
+    /// A SPARQL Results Handler which allows you to load multiple Result Sets into a single <see cref="SparqlResultSet">SparqlResultSet</see> which the standard <see cref="ResultSetHandler">ResultSetHandler</see> does not permit.
     /// </summary>
     public class MergingResultSetHandler
         : ResultSetHandler
     {
         /// <summary>
-        /// Creates a new Merging Result Set Handler
+        /// Creates a new Merging Result Set Handler.
         /// </summary>
-        /// <param name="results">Result Set</param>
+        /// <param name="results">Result Set.</param>
         public MergingResultSetHandler(SparqlResultSet results)
             : base(results) { }
 
         /// <summary>
-        /// Overrides the base classes logic to avoid the empty check on the Result Set thus allowing multiple result sets to be merged
+        /// Overrides the base classes logic to avoid the empty check on the Result Set thus allowing multiple result sets to be merged.
         /// </summary>
         protected override void StartResultsInternal()
         {

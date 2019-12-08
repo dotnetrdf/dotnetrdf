@@ -31,7 +31,7 @@ using System.Linq;
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
-    /// A Triple Collection which is a thin wrapper around a <see cref="BaseQuadDataset">BaseQuadDataset</see> to reduce much of the complexity for <see cref="ISparqlDataset">ISparqlDataset</see> implementors around returning of Graphs
+    /// A Triple Collection which is a thin wrapper around a <see cref="BaseQuadDataset">BaseQuadDataset</see> to reduce much of the complexity for <see cref="ISparqlDataset">ISparqlDataset</see> implementors around returning of Graphs.
     /// </summary>
     class QuadDatasetTripleCollection
         : BaseTripleCollection

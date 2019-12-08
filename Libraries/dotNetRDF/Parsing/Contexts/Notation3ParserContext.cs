@@ -32,7 +32,7 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for Notation 3 Parsers
+    /// Parser Context for Notation 3 Parsers.
     /// </summary>
     public class Notation3ParserContext : TokenisingParserContext
     {
@@ -45,83 +45,83 @@ namespace VDS.RDF.Parsing.Contexts
         private VariableContext _varContext = new VariableContext(VariableContextType.None);
         
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with default settings
+        /// Creates a new Notation 3 Parser Context with default settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public Notation3ParserContext(IGraph g, ITokeniser tokeniser)
             : base(g, tokeniser) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with custom settings
+        /// Creates a new Notation 3 Parser Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public Notation3ParserContext(IGraph g, ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(g, tokeniser, queueMode) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with custom settings
+        /// Creates a new Notation 3 Parser Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public Notation3ParserContext(IGraph g, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : base(g, tokeniser, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with custom settings
+        /// Creates a new Notation 3 Parser Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public Notation3ParserContext(IGraph g, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(g, tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with default settings
+        /// Creates a new Notation 3 Parser Context with default settings.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser)
             : base(handler, tokeniser) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with custom settings
+        /// Creates a new Notation 3 Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(handler, tokeniser, queueMode) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with custom settings
+        /// Creates a new Notation 3 Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : base(handler, tokeniser, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Parser Context with custom settings
+        /// Creates a new Notation 3 Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Gets/Sets whether Keywords Mode is in use
+        /// Gets/Sets whether Keywords Mode is in use.
         /// </summary>
         public bool KeywordsMode
         {
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the list of in-use Keywords
+        /// Gets the list of in-use Keywords.
         /// </summary>
         public List<String> Keywords
         {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Variable Context for Triples
+        /// Gets the Variable Context for Triples.
         /// </summary>
         public VariableContext VariableContext
         {
@@ -166,10 +166,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Pushes the current in-scope Graph onto the Graph stack and creates a new empty Graph to be the in-scope Graph
+        /// Pushes the current in-scope Graph onto the Graph stack and creates a new empty Graph to be the in-scope Graph.
         /// </summary>
         /// <remarks>
-        /// Used for Graph Literal parsing - Base Uri and Namespace Maps of the outermost Graph is propogated to the innermost Graph
+        /// Used for Graph Literal parsing - Base Uri and Namespace Maps of the outermost Graph is propogated to the innermost Graph.
         /// </remarks>
         public void PushGraph()
         {
@@ -190,10 +190,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Pops a Graph from the Graph stack to become the in-scope Graph
+        /// Pops a Graph from the Graph stack to become the in-scope Graph.
         /// </summary>
         /// <remarks>
-        /// Used for Graph Literal parsing
+        /// Used for Graph Literal parsing.
         /// </remarks>
         public void PopGraph()
         {
@@ -211,7 +211,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the current sub-graph (if any)
+        /// Gets the current sub-graph (if any).
         /// </summary>
         public IGraph SubGraph
         {
@@ -222,7 +222,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets whether the Context is currently for a Graph Literal
+        /// Gets whether the Context is currently for a Graph Literal.
         /// </summary>
         public bool GraphLiteralMode
         {

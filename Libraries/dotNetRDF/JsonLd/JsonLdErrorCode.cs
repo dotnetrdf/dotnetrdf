@@ -27,7 +27,7 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the error code defined in the JSON-LD specification
+    /// Enumeration of the error code defined in the JSON-LD specification.
     /// </summary>
     /// <remarks>
     /// The error codes are converted to C# canel-case as follows:
@@ -35,7 +35,7 @@ namespace VDS.RDF.JsonLd
     /// (2) Remove @ character
     /// (3) Replace "language-tagged" by "Language Tagged"
     /// (4) Split on space character and convert each token to Sentence case (first letter uppercase, remainder lower-case)
-    /// (5) Join tokens with no token separator
+    /// (5) Join tokens with no token separator.
     /// </remarks>
     public enum JsonLdErrorCode
     {
@@ -198,6 +198,6 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// A cycle in remote context inclusions has been detected.
         /// </summary>
-        RecursiveContextInclusion
+        RecursiveContextInclusion,
     };
 }

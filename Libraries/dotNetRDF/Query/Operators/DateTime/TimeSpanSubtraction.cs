@@ -32,16 +32,16 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Operators.DateTime
 {
     /// <summary>
-    /// Represents the time span subtraction operator
+    /// Represents the time span subtraction operator.
     /// </summary>
     /// <remarks>
-    /// Allows queries to subtract time spans from each other
+    /// Allows queries to subtract time spans from each other.
     /// </remarks>
     public class TimeSpanSubtraction
         : BaseTimeSpanOperator
     {
         /// <summary>
-        /// Gets the operator type
+        /// Gets the operator type.
         /// </summary>
         public override SparqlOperatorType Operator
         {
@@ -52,9 +52,9 @@ namespace VDS.RDF.Query.Operators.DateTime
         }
 
         /// <summary>
-        /// Applies the operator
+        /// Applies the operator.
         /// </summary>
-        /// <param name="ns">Arguments</param>
+        /// <param name="ns">Arguments.</param>
         /// <returns></returns>
         public override IValuedNode Apply(params IValuedNode[] ns)
         {

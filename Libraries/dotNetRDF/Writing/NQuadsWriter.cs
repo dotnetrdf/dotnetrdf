@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax
+    /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax.
     /// </summary>
     public class NQuadsWriter 
         : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
@@ -46,15 +46,15 @@ namespace VDS.RDF.Writing
         private int _threads = 4;
 
         /// <summary>
-        /// Creates a new writer
+        /// Creates a new writer.
         /// </summary>
         public NQuadsWriter()
             : this(NQuadsSyntax.Original) { }
 
         /// <summary>
-        /// Creates a new writer
+        /// Creates a new writer.
         /// </summary>
-        /// <param name="syntax">NQuads Syntax mode to use</param>
+        /// <param name="syntax">NQuads Syntax mode to use.</param>
         public NQuadsWriter(NQuadsSyntax syntax)
         {
             PrettyPrintMode = true;
@@ -63,20 +63,20 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Controls whether Pretty Printing is used
+        /// Controls whether Pretty Printing is used.
         /// </summary>
         /// <remarks>
-        /// For NQuads this simply means that Graphs in the output are separated with Whitespace and comments used before each Graph
+        /// For NQuads this simply means that Graphs in the output are separated with Whitespace and comments used before each Graph.
         /// </remarks>
         public bool PrettyPrintMode { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether Multi-Threaded Writing
+        /// Gets/Sets whether Multi-Threaded Writing.
         /// </summary>
         public bool UseMultiThreadedWriting { get; set; }
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by this writer
+        /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
         public Type TripleFormatterType
         {
@@ -87,15 +87,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the NQuads syntax mode
+        /// Gets/Sets the NQuads syntax mode.
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
 
         /// <summary>
-        /// Saves a Store in NQuads format
+        /// Saves a Store in NQuads format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
@@ -106,21 +106,21 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Store in NQuads format
+        /// Saves a Store in NQuads format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="writer">Writer to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="writer">Writer to save to.</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
             Save(store, writer, false);
         }
 
         /// <summary>
-        /// Saves a Store in NQuads format
+        /// Saves a Store in NQuads format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="writer">Writer to save to</param>
-        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is written</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="writer">Writer to save to.</param>
+        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is written.</param>
         public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
@@ -224,11 +224,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Converts a Triple into relevant NQuads Syntax
+        /// Converts a Triple into relevant NQuads Syntax.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="t">Triple to convert</param>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="t">Triple to convert.</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         private string TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
         {
@@ -251,11 +251,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Converts a Node into relevant NTriples Syntax
+        /// Converts a Node into relevant NTriples Syntax.
         /// </summary>
-        /// <param name="n">Node to convert</param>
-        /// <param name="context">Writer Context</param>
-        /// <param name="segment">Triple Segment being written</param>
+        /// <param name="n">Node to convert.</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="segment">Triple Segment being written.</param>
         /// <returns></returns>
         private string NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
         {
@@ -280,15 +280,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Delegate for the SaveGraphs method
+        /// Delegate for the SaveGraphs method.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
         private delegate void SaveGraphsDelegate(ThreadedStoreWriterContext globalContext);
 
         /// <summary>
-        /// Thread Worker method which writes Graphs to the output
+        /// Thread Worker method which writes Graphs to the output.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
         private void SaveGraphs(ThreadedStoreWriterContext globalContext)
         {
             try
@@ -339,16 +339,16 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
 
         /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
+        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
             Warning?.Invoke(message);
         }
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

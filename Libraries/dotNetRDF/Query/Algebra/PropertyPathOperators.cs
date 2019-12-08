@@ -33,28 +33,28 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Interface for Property Path Operators
+    /// Interface for Property Path Operators.
     /// </summary>
     public interface IPathOperator : ISparqlAlgebra
     {
         /// <summary>
-        /// Gets the Path Start
+        /// Gets the Path Start.
         /// </summary>
         PatternItem PathStart { get; }
 
         /// <summary>
-        /// Gets the Path End
+        /// Gets the Path End.
         /// </summary>
         PatternItem PathEnd { get; }
 
         /// <summary>
-        /// Gets the Property Path
+        /// Gets the Property Path.
         /// </summary>
         ISparqlPath Path { get; }
     }
 
     /// <summary>
-    /// Abstract Base Class for Path Operators
+    /// Abstract Base Class for Path Operators.
     /// </summary>
     public abstract class BasePathOperator
         : IPathOperator
@@ -64,11 +64,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly HashSet<String> _vars = new HashSet<string>();
 
         /// <summary>
-        /// Creates a new Path Operator
+        /// Creates a new Path Operator.
         /// </summary>
-        /// <param name="start">Path Start</param>
-        /// <param name="path">Property Path</param>
-        /// <param name="end">Path End</param>
+        /// <param name="start">Path Start.</param>
+        /// <param name="path">Property Path.</param>
+        /// <param name="end">Path End.</param>
         public BasePathOperator(PatternItem start, ISparqlPath path, PatternItem end)
         {
             _start = start;
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Path Start
+        /// Gets the Path Start.
         /// </summary>
         public PatternItem PathStart
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Path End
+        /// Gets the Path End.
         /// </summary>
         public PatternItem PathEnd
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Property Path
+        /// Gets the Property Path.
         /// </summary>
         public ISparqlPath Path
         {
@@ -104,14 +104,14 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Property Path
+        /// Evaluates the Property Path.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public abstract BaseMultiset Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Algebra back into a Query
+        /// Transforms the Algebra back into a Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -147,38 +147,38 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Algebra back into a Graph Pattern
+        /// Transforms the Algebra back into a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public abstract GraphPattern ToGraphPattern();
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
     }
 
     /// <summary>
-    /// Abstract Base Class for Arbitrary Length Path Operators
+    /// Abstract Base Class for Arbitrary Length Path Operators.
     /// </summary>
     public abstract class BaseArbitraryLengthPathOperator : BasePathOperator
     {
         /// <summary>
-        /// Creates a new Arbitrary Lengh Path Operator
+        /// Creates a new Arbitrary Lengh Path Operator.
         /// </summary>
-        /// <param name="start">Path Start</param>
-        /// <param name="end">Path End</param>
-        /// <param name="path">Property Path</param>
+        /// <param name="start">Path Start.</param>
+        /// <param name="end">Path End.</param>
+        /// <param name="path">Property Path.</param>
         public BaseArbitraryLengthPathOperator(PatternItem start, PatternItem end, ISparqlPath path)
             : base(start, path, end) {}
 
         /// <summary>
-        /// Determines the starting points for Path evaluation
+        /// Determines the starting points for Path evaluation.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="paths">Paths</param>
-        /// <param name="reverse">Whether to evaluate Paths in reverse</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="paths">Paths.</param>
+        /// <param name="reverse">Whether to evaluate Paths in reverse.</param>
         protected void GetPathStarts(SparqlEvaluationContext context, List<List<INode>> paths, bool reverse)
         {
             HashSet<KeyValuePair<INode, INode>> nodes = new HashSet<KeyValuePair<INode, INode>>();
@@ -231,11 +231,11 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates a setp of the Path
+        /// Evaluates a setp of the Path.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="path">Paths</param>
-        /// <param name="reverse">Whether to evaluate Paths in reverse</param>
+        /// <param name="context">Context.</param>
+        /// <param name="path">Paths.</param>
+        /// <param name="reverse">Whether to evaluate Paths in reverse.</param>
         /// <returns></returns>
         protected List<INode> EvaluateStep(SparqlEvaluationContext context, List<INode> path, bool reverse)
         {

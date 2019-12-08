@@ -30,24 +30,24 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Abstract Base Class for SPARQL String Testing functions which take two arguments
+    /// Abstract Base Class for SPARQL String Testing functions which take two arguments.
     /// </summary>
     public abstract class BaseBinaryStringFunction
         : BaseBinaryExpression
     {
         /// <summary>
-        /// Creates a new Base Binary SPARQL String Function
+        /// Creates a new Base Binary SPARQL String Function.
         /// </summary>
-        /// <param name="stringExpr">String Expression</param>
-        /// <param name="argExpr">Argument Expression</param>
+        /// <param name="stringExpr">String Expression.</param>
+        /// <param name="argExpr">Argument Expression.</param>
         public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr)
             : base(stringExpr, argExpr) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Abstract method that child classes must implement to 
+        /// Abstract method that child classes must implement to. 
         /// </summary>
         /// <param name="stringLit"></param>
         /// <param name="argLit"></param>
@@ -83,10 +83,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         protected abstract bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit);
 
         /// <summary>
-        /// Determines whether the Arguments are valid
+        /// Determines whether the Arguments are valid.
         /// </summary>
-        /// <param name="stringLit">String Literal</param>
-        /// <param name="argLit">Argument Literal</param>
+        /// <param name="stringLit">String Literal.</param>
+        /// <param name="argLit">Argument Literal.</param>
         /// <returns></returns>
         protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
         {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Expression Type
+        /// Gets the Expression Type.
         /// </summary>
         public override SparqlExpressionType Type
         {

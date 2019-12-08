@@ -29,26 +29,26 @@ using VDS.RDF.Web;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// Interface for SPARQL Graph Store HTTP Protocol for Graph Management processors
+    /// Interface for SPARQL Graph Store HTTP Protocol for Graph Management processors.
     /// </summary>
     public interface ISparqlHttpProtocolProcessor
     {
         /// <summary>
-        /// Processes a GET operation which should retrieve a Graph from the Store and return it
+        /// Processes a GET operation which should retrieve a Graph from the Store and return it.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         void ProcessGet(IHttpContext context);
 
         /// <summary>
-        /// Processes a POST operation which should add triples to a Graph in the Store
+        /// Processes a POST operation which should add triples to a Graph in the Store.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         void ProcessPost(IHttpContext context);
 
         /// <summary>
-        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
@@ -57,25 +57,25 @@ namespace VDS.RDF.Update.Protocol
         void ProcessPostCreate(IHttpContext context);
 
         /// <summary>
-        /// Processes a PUT operation which should save a Graph to the Store completely replacing any existing Graph with the same URI
+        /// Processes a PUT operation which should save a Graph to the Store completely replacing any existing Graph with the same URI.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         void ProcessPut(IHttpContext context);
 
         /// <summary>
-        /// Processes a DELETE operation which delete a Graph from the Store
+        /// Processes a DELETE operation which delete a Graph from the Store.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         void ProcessDelete(IHttpContext context);
 
         /// <summary>
-        /// Processes a HEAD operation which gets information about a Graph in the Store
+        /// Processes a HEAD operation which gets information about a Graph in the Store.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         void ProcessHead(IHttpContext context);
 
         /// <summary>
-        /// Processes a PATCH operation which may choose
+        /// Processes a PATCH operation which may choose.
         /// </summary>
         /// <param name="context"></param>
         void ProcessPatch(IHttpContext context);

@@ -33,7 +33,7 @@ using System.Reflection;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Object Factory for loading triple and graph collections
+    /// Object Factory for loading triple and graph collections.
     /// </summary>
     public class CollectionFactory
         : IObjectFactory
@@ -42,12 +42,12 @@ namespace VDS.RDF.Configuration
                      _graphCollectionType = typeof(BaseGraphCollection);
 
         /// <summary>
-        /// Tries to load a triple/graph collection which is specified in the given configuration graph
+        /// Tries to load a triple/graph collection which is specified in the given configuration graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target type</param>
-        /// <param name="obj">Returned Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target type.</param>
+        /// <param name="obj">Returned Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -118,9 +118,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this factory can load objects of the given type
+        /// Gets whether this factory can load objects of the given type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

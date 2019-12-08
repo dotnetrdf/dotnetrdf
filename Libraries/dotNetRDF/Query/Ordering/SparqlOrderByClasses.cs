@@ -36,27 +36,27 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Ordering
 {
     /// <summary>
-    /// Base Class for implementing Sparql ORDER BYs
+    /// Base Class for implementing Sparql ORDER BYs.
     /// </summary>
     public abstract class BaseOrderBy 
         : ISparqlOrderBy
     {
         /// <summary>
-        /// Holds the Child Order By (if any)
+        /// Holds the Child Order By (if any).
         /// </summary>
         protected ISparqlOrderBy _child = null;
         /// <summary>
-        /// Stores the Evaluation Context
+        /// Stores the Evaluation Context.
         /// </summary>
         protected SparqlEvaluationContext _context = null;
         /// <summary>
-        /// Modifier used to make ordering Descending
+        /// Modifier used to make ordering Descending.
         /// </summary>
-        /// <remarks>Implementations derived from this class should multiply their comparison results by the modifier to automatically provide Ascending/Descending order</remarks>
+        /// <remarks>Implementations derived from this class should multiply their comparison results by the modifier to automatically provide Ascending/Descending order.</remarks>
         protected int _modifier = 1;
 
         /// <summary>
-        /// Gets/Sets the Child Order By
+        /// Gets/Sets the Child Order By.
         /// </summary>
         public ISparqlOrderBy Child
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Sets the Evaluation Context for the Ordering
+        /// Sets the Evaluation Context for the Ordering.
         /// </summary>
         public SparqlEvaluationContext Context
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Sets the Ordering to Descending
+        /// Sets the Ordering to Descending.
         /// </summary>
         public bool Descending
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets whether the Ordering is Simple
+        /// Gets whether the Ordering is Simple.
         /// </summary>
         public abstract bool IsSimple
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets all the Variables used in the Ordering
+        /// Gets all the Variables used in the Ordering.
         /// </summary>
         public abstract IEnumerable<String> Variables
         {
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets the Expression used in the Ordering
+        /// Gets the Expression used in the Ordering.
         /// </summary>
         public abstract ISparqlExpression Expression
         {
@@ -132,29 +132,29 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Abstract Compare method which derived classes should implement their ordering in
+        /// Abstract Compare method which derived classes should implement their ordering in.
         /// </summary>
-        /// <param name="x">A Set</param>
-        /// <param name="y">A Set</param>
+        /// <param name="x">A Set.</param>
+        /// <param name="y">A Set.</param>
         /// <returns></returns>
         public abstract int Compare(ISet x, ISet y);
 
         /// <summary>
-        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
-        /// <param name="pattern">Triple Pattern</param>
+        /// <param name="pattern">Triple Pattern.</param>
         /// <returns></returns>
         public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern);
 
         /// <summary>
-        /// Gets the String representation of the Order By
+        /// Gets the String representation of the Order By.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
     }
 
     /// <summary>
-    /// An ORDER BY which orders on the values bound to a particular variable
+    /// An ORDER BY which orders on the values bound to a particular variable.
     /// </summary>
     public class OrderByVariable
         : BaseOrderBy
@@ -163,19 +163,19 @@ namespace VDS.RDF.Query.Ordering
         private String _varname = String.Empty;
 
         /// <summary>
-        /// Creates a new Ordering based on the Value of a given Variable
+        /// Creates a new Ordering based on the Value of a given Variable.
         /// </summary>
-        /// <param name="name">Variable to order upon</param>
+        /// <param name="name">Variable to order upon.</param>
         public OrderByVariable(String name)
         {
             _varname = name.TrimStart('?', '$');
         }
 
         /// <summary>
-        /// Compares Sets on the basis of their values for the Variable the class was instaniated with
+        /// Compares Sets on the basis of their values for the Variable the class was instaniated with.
         /// </summary>
-        /// <param name="x">A Set</param>
-        /// <param name="y">A Set</param>
+        /// <param name="x">A Set.</param>
+        /// <param name="y">A Set.</param>
         /// <returns></returns>
         public override int Compare(ISet x, ISet y)
         {
@@ -215,9 +215,9 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
-        /// <param name="pattern">Triple Pattern</param>
+        /// <param name="pattern">Triple Pattern.</param>
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
         {
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets whether the Ordering is Simple
+        /// Gets whether the Ordering is Simple.
         /// </summary>
         public override bool IsSimple
         {
@@ -262,7 +262,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets all the Variables used in the Ordering
+        /// Gets all the Variables used in the Ordering.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets the Variable Expression Term used in the Ordering
+        /// Gets the Variable Expression Term used in the Ordering.
         /// </summary>
         public override ISparqlExpression Expression
         {
@@ -291,7 +291,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets the String representation of the Order By
+        /// Gets the String representation of the Order By.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -324,7 +324,7 @@ namespace VDS.RDF.Query.Ordering
     }
 
     /// <summary>
-    /// An ORDER BY which orders based on the values of a Sparql Expression
+    /// An ORDER BY which orders based on the values of a Sparql Expression.
     /// </summary>
     public class OrderByExpression
         : BaseOrderBy
@@ -333,19 +333,19 @@ namespace VDS.RDF.Query.Ordering
         private ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new Order By using the given Expression
+        /// Creates a new Order By using the given Expression.
         /// </summary>
-        /// <param name="expr">Expression to order by</param>
+        /// <param name="expr">Expression to order by.</param>
         public OrderByExpression(ISparqlExpression expr)
         {
             _expr = expr;
         }
 
         /// <summary>
-        /// Orders the sets based on the values resulting from evaluating the expression for both solutions
+        /// Orders the sets based on the values resulting from evaluating the expression for both solutions.
         /// </summary>
-        /// <param name="x">A Set</param>
-        /// <param name="y">A Set</param>
+        /// <param name="x">A Set.</param>
+        /// <param name="y">A Set.</param>
         /// <returns></returns>
         public override int Compare(ISet x, ISet y)
         {
@@ -420,9 +420,9 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
-        /// <param name="pattern">Triple Pattern</param>
+        /// <param name="pattern">Triple Pattern.</param>
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
         {
@@ -454,7 +454,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets whether the Ordering is Simple
+        /// Gets whether the Ordering is Simple.
         /// </summary>
         public override bool IsSimple
         {
@@ -481,7 +481,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets all the Variables used in the Ordering
+        /// Gets all the Variables used in the Ordering.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -499,7 +499,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets the Expression used for Ordering
+        /// Gets the Expression used for Ordering.
         /// </summary>
         public override ISparqlExpression Expression
         {
@@ -510,7 +510,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Gets the String representation of the Order By
+        /// Gets the String representation of the Order By.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Class used to return information about a remote document or context
+    /// Class used to return information about a remote document or context.
     /// </summary>
     public class RemoteDocument
     {
@@ -49,7 +49,7 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// The retrieved document. This can either be the raw payload or the already parsed document.
         /// </summary>
-        /// <remarks>This property may be a JToken or a string. If it is a string, the string is parsed to a JToken</remarks>
+        /// <remarks>This property may be a JToken or a string. If it is a string, the string is parsed to a JToken.</remarks>
         public object Document { get; set; }
     }
 }

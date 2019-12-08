@@ -32,34 +32,34 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Aggregates.Leviathan
 {
     /// <summary>
-    /// A Custom aggregate which requires the Expression to evaluate to true for all Sets in the Group
+    /// A Custom aggregate which requires the Expression to evaluate to true for all Sets in the Group.
     /// </summary>
     public class AllAggregate
         : BaseAggregate
     {
         /// <summary>
-        /// Creates a new All Aggregate
+        /// Creates a new All Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public AllAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new All Aggregate
+        /// Creates a new All Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public AllAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
         /// <summary>
-        /// Applies the Aggregate to see if the expression evaluates true for every member of the Group
+        /// Applies the Aggregate to see if the expression evaluates true for every member of the Group.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Does lazy evaluation - as soon as it encounters a false/error it will return false
+        /// Does lazy evaluation - as soon as it encounters a false/error it will return false.
         /// </remarks>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the String Representation of the Aggregate
+        /// Gets the String Representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

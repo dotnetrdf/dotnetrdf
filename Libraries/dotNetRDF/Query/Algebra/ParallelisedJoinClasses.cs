@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Union which will be evaluated in parallel
+    /// Represents a Union which will be evaluated in parallel.
     /// </summary>
     public class ParallelUnion 
         : IUnion
@@ -42,10 +42,10 @@ namespace VDS.RDF.Query.Algebra
         private ISparqlAlgebra _lhs, _rhs;
 
         /// <summary>
-        /// Creates a new Union
+        /// Creates a new Union.
         /// </summary>
-        /// <param name="lhs">LHS Pattern</param>
-        /// <param name="rhs">RHS Pattern</param>
+        /// <param name="lhs">LHS Pattern.</param>
+        /// <param name="rhs">RHS Pattern.</param>
         public ParallelUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
             _lhs = lhs;
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Union
+        /// Evaluates the Union.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the LHS of the Join
+        /// Gets the LHS of the Join.
         /// </summary>
         public ISparqlAlgebra Lhs
         {
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the RHS of the Join
+        /// Gets the RHS of the Join.
         /// </summary>
         public ISparqlAlgebra Rhs
         {
@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -245,7 +245,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -258,9 +258,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser
+        /// Transforms both sides of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -268,9 +268,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser
+        /// Transforms the LHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
@@ -278,9 +278,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser
+        /// Transforms the RHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
@@ -289,7 +289,7 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents a Join which will be evaluated in parallel
+    /// Represents a Join which will be evaluated in parallel.
     /// </summary>
     public class ParallelJoin : IJoin
     {
@@ -299,10 +299,10 @@ namespace VDS.RDF.Query.Algebra
         private readonly ParallelEvaluateDelegate _d;
 
         /// <summary>
-        /// Creates a new Join
+        /// Creates a new Join.
         /// </summary>
-        /// <param name="lhs">Left Hand Side</param>
-        /// <param name="rhs">Right Hand Side</param>
+        /// <param name="lhs">Left Hand Side.</param>
+        /// <param name="rhs">Right Hand Side.</param>
         public ParallelJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
             if (!lhs.Variables.IsDisjoint(rhs.Variables)) throw new RdfQueryException("Cannot create a ParallelJoin between two algebra operators which are not distinct");
@@ -312,9 +312,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evalutes a Join
+        /// Evalutes a Join.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -464,7 +464,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -474,7 +474,7 @@ namespace VDS.RDF.Query.Algebra
             }
         }
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -488,7 +488,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -500,7 +500,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the LHS of the Join
+        /// Gets the LHS of the Join.
         /// </summary>
         public ISparqlAlgebra Lhs
         {
@@ -511,7 +511,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the RHS of the Join
+        /// Gets the RHS of the Join.
         /// </summary>
         public ISparqlAlgebra Rhs
         {
@@ -522,7 +522,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Join
+        /// Gets the String representation of the Join.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -531,7 +531,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -543,7 +543,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -554,9 +554,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser
+        /// Transforms both sides of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -564,9 +564,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser
+        /// Transforms the LHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
@@ -574,9 +574,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser
+        /// Transforms the RHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {

@@ -167,9 +167,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets a SHA256 Hash for a String
+        /// Gets a SHA256 Hash for a String.
         /// </summary>
-        /// <param name="s">String to hash</param>
+        /// <param name="s">String to hash.</param>
         /// <returns></returns>
         internal static String GetSha256Hash(this String s)
         {
@@ -238,30 +238,30 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets either the String form of the Object of the Empty String
+        /// Gets either the String form of the Object of the Empty String.
         /// </summary>
-        /// <param name="obj">Object</param>
-        /// <returns>Result of calling <strong>ToString()</strong> on non-null objects and the empty string for null objects</returns>
+        /// <param name="obj">Object.</param>
+        /// <returns>Result of calling <strong>ToString()</strong> on non-null objects and the empty string for null objects.</returns>
         internal static String ToSafeString(this Object obj)
         {
             return (obj != null ? obj.ToString() : String.Empty);
         }
 
         /// <summary>
-        /// Gets either the String form of the URI of the Empty String
+        /// Gets either the String form of the URI of the Empty String.
         /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns>Result of calling <strong>AbsoluteUri</strong> on non-null URIs and the empty string for null URIs</returns>
+        /// <param name="u">URI.</param>
+        /// <returns>Result of calling <strong>AbsoluteUri</strong> on non-null URIs and the empty string for null URIs.</returns>
         internal static String ToSafeString(this Uri u)
         {
             return (u != null ? u.AbsoluteUri : String.Empty);
         }
 
         /// <summary>
-        /// Ensures that a specific Object Factory type is registered in a Configuration Graph
+        /// Ensures that a specific Object Factory type is registered in a Configuration Graph.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
-        /// <param name="factoryType">Factory Type</param>
+        /// <param name="context">Configuration Serialization Context.</param>
+        /// <param name="factoryType">Factory Type.</param>
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));

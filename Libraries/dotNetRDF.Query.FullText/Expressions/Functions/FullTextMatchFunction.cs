@@ -32,7 +32,7 @@ using System.Text;
 namespace VDS.RDF.Query.Expressions.Functions
 {
     /// <summary>
-    /// Represents a Full Text Match function, not currently used - reserved as a future extension point
+    /// Represents a Full Text Match function, not currently used - reserved as a future extension point.
     /// </summary>
     public class FullTextMatchFunction
     {

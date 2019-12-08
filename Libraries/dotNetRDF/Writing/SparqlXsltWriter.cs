@@ -36,23 +36,23 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating arbitrary XML Output from SPARQL Result Sets by transforming the XML Results Format via an XSLT stylesheet
+    /// Class for generating arbitrary XML Output from SPARQL Result Sets by transforming the XML Results Format via an XSLT stylesheet.
     /// </summary>
     public class SparqlXsltWriter : SparqlXmlWriter
     {
         private XslCompiledTransform _transform;
 
         /// <summary>
-        /// Creates a new SPARQL XSLT Writer
+        /// Creates a new SPARQL XSLT Writer.
         /// </summary>
-        /// <param name="stylesheetUri">Stylesheet URI</param>
+        /// <param name="stylesheetUri">Stylesheet URI.</param>
         public SparqlXsltWriter(Uri stylesheetUri)
             : this(stylesheetUri.AbsoluteUri) { }
 
         /// <summary>
-        /// Creates a new SPARQL XSLT Writer
+        /// Creates a new SPARQL XSLT Writer.
         /// </summary>
-        /// <param name="stylesheetUri">Stylesheet URI</param>
+        /// <param name="stylesheetUri">Stylesheet URI.</param>
         public SparqlXsltWriter(String stylesheetUri)
         {
             // Load the Transform
@@ -62,20 +62,20 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a SPARQL Result Set to the given File
+        /// Saves a SPARQL Result Set to the given File.
         /// </summary>
-        /// <param name="results">Result Set</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set.</param>
+        /// <param name="filename">File to save to.</param>
         public override void Save(SparqlResultSet results, string filename)
         {
             Save(results, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
 
         /// <summary>
-        /// Saves a SPARQL Result Set to the given Text Writer
+        /// Saves a SPARQL Result Set to the given Text Writer.
         /// </summary>
-        /// <param name="results">Result Set</param>
-        /// <param name="output">Text Writer to write to</param>
+        /// <param name="results">Result Set.</param>
+        /// <param name="output">Text Writer to write to.</param>
         public override void Save(SparqlResultSet results, TextWriter output)
         {
             try
@@ -104,7 +104,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

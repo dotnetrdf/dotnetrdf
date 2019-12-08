@@ -36,11 +36,11 @@ using VDS.RDF.Query.Ordering;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for building queries with a fluent style API
+    /// Provides methods for building queries with a fluent style API.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
+    /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query.
     /// </para>
     /// </remarks>
     public class QueryBuilder : IQueryBuilder
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Builder
         private InlineDataBuilder _inlineDataOverQuery;
 
         /// <summary>
-        /// Gets or sets the namespace mappings for the SPARQL query being built
+        /// Gets or sets the namespace mappings for the SPARQL query being built.
         /// </summary>
         public INamespaceMapper Prefixes
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new ASK query
+        /// Creates a new ASK query.
         /// </summary>
         public static IQueryBuilder Ask()
         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new CONSTRUCT query
+        /// Creates a new CONSTRUCT query.
         /// </summary>
         public static IQueryBuilder Construct(Action<IDescribeGraphPatternBuilder> buildConstructTemplate)
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new CONSTRUCT WHERE query
+        /// Creates a new CONSTRUCT WHERE query.
         /// </summary>
         public static IQueryBuilder Construct()
         {
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new SELECT * query
+        /// Creates a new SELECT * query.
         /// </summary>
         public static ISelectBuilder SelectAll()
         {
@@ -127,9 +127,9 @@ namespace VDS.RDF.Query.Builder
 
         /// <summary>
         /// Creates a new SELECT query which will return the given 
-        /// <paramref name="variables"/>
+        /// <paramref name="variables"/>.
         /// </summary>
-        /// <param name="variables">query result variables</param>
+        /// <param name="variables">query result variables.</param>
         public static ISelectBuilder Select(params SparqlVariable[] variables)
         {
             return new SelectBuilder(SparqlQueryType.Select).And(variables);
@@ -137,9 +137,9 @@ namespace VDS.RDF.Query.Builder
 
         /// <summary>
         /// Creates a new SELECT query which will return the given 
-        /// <paramref name="variables"/>
+        /// <paramref name="variables"/>.
         /// </summary>
-        /// <param name="variables">query result variables</param>
+        /// <param name="variables">query result variables.</param>
         public static ISelectBuilder Select(params string[] variables)
         {
             SparqlVariable[] sparqlVariables = variables.Select(var => new SparqlVariable(var, true)).ToArray();
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new SELECT query which will return an expression
+        /// Creates a new SELECT query which will return an expression.
         /// </summary>
         public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new query, which will DESCRIBE the given <paramref name="uris"/>
+        /// Creates a new query, which will DESCRIBE the given <paramref name="uris"/>.
         /// </summary>
         public static IDescribeBuilder Describe(params Uri[] uris)
         {
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a new query, which will DESCRIBE the given <paramref name="variables"/>
+        /// Creates a new query, which will DESCRIBE the given <paramref name="variables"/>.
         /// </summary>
         public static IDescribeBuilder Describe(params string[] variables)
         {
@@ -172,9 +172,9 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Applies a LIMIT
+        /// Applies a LIMIT.
         /// </summary>
-        /// <param name="limit">Limit value. Pass negative to disable LIMIT</param>
+        /// <param name="limit">Limit value. Pass negative to disable LIMIT.</param>
         public IQueryBuilder Limit(int limit)
         {
             _queryLimit = limit;
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Applies an OFFSET
+        /// Applies an OFFSET.
         /// </summary>
         public IQueryBuilder Offset(int offset)
         {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds ascending ordering by a variable to the query
+        /// Adds ascending ordering by a variable to the query.
         /// </summary>
         public IQueryBuilder OrderBy(SparqlVariable variable)
         {
@@ -200,7 +200,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds ascending ordering by a variable to the query
+        /// Adds ascending ordering by a variable to the query.
         /// </summary>
         public IQueryBuilder OrderBy(string variableName)
         {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds descending ordering by a variable to the query
+        /// Adds descending ordering by a variable to the query.
         /// </summary>
         public IQueryBuilder OrderByDescending(SparqlVariable variable)
         {
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds descending ordering by a variable to the query
+        /// Adds descending ordering by a variable to the query.
         /// </summary>
         public IQueryBuilder OrderByDescending(string variableName)
         {
@@ -227,7 +227,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds ascending ordering by an expression to the query
+        /// Adds ascending ordering by an expression to the query.
         /// </summary>
         public IQueryBuilder OrderBy(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
@@ -236,7 +236,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Adds descending ordering by an expression to the query
+        /// Adds descending ordering by an expression to the query.
         /// </summary>
         public IQueryBuilder OrderByDescending(Func<IExpressionBuilder, SparqlExpression> buildOrderExpression)
         {

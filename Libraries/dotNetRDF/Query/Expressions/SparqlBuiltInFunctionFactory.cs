@@ -41,27 +41,27 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Expression Factory which generates SPARQL Function expressions
+    /// Expression Factory which generates SPARQL Function expressions.
     /// </summary>
     /// <remarks>
-    /// This supports the requirement of SPARQL 1.1 that all functions can be accessed via URI as well as by keyword.  This also means that SPARQL 1.1 functions can be used in SPARQL 1.0 mode by using their URIs instead of their keywords and they are then treated simply as extension functions
+    /// This supports the requirement of SPARQL 1.1 that all functions can be accessed via URI as well as by keyword.  This also means that SPARQL 1.1 functions can be used in SPARQL 1.0 mode by using their URIs instead of their keywords and they are then treated simply as extension functions.
     /// </remarks>
     public class SparqlBuiltInFunctionFactory 
         : ISparqlCustomExpressionFactory
     {
         /// <summary>
-        /// Namespace Uri for SPARQL Built In Functions Namespace
+        /// Namespace Uri for SPARQL Built In Functions Namespace.
         /// </summary>
         public const String SparqlFunctionsNamespace = "http://www.w3.org/ns/sparql#";
 
         /// <summary>
-        /// Tries to create a SPARQL Function expression if the function Uri correseponds to a supported SPARQL Function
+        /// Tries to create a SPARQL Function expression if the function Uri correseponds to a supported SPARQL Function.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">Function Arguments</param>
-        /// <param name="scalarArguments">Scalar Arguments</param>
-        /// <param name="expr">Generated Expression</param>
-        /// <returns>Whether an expression was successfully generated</returns>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">Function Arguments.</param>
+        /// <param name="scalarArguments">Scalar Arguments.</param>
+        /// <param name="expr">Generated Expression.</param>
+        /// <returns>Whether an expression was successfully generated.</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
         {
             String func = u.ToString();
@@ -646,7 +646,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the URIs of available SPARQL Functions
+        /// Gets the URIs of available SPARQL Functions.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionFunctions
         {
@@ -658,7 +658,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the URIs of available SPARQL Aggregates
+        /// Gets the URIs of available SPARQL Aggregates.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionAggregates
         {

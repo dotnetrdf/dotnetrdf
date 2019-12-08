@@ -31,13 +31,13 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Operators
 {
     /// <summary>
-    /// Abstract base class for SPARQL Operators which also makes their configuration serializable
+    /// Abstract base class for SPARQL Operators which also makes their configuration serializable.
     /// </summary>
     public abstract class BaseOperator
         : ISparqlOperator, IConfigurationSerializable
     {
         /// <summary>
-        /// Gets the operator this implementation represents
+        /// Gets the operator this implementation represents.
         /// </summary>
         public abstract SparqlOperatorType Operator
         {
@@ -45,23 +45,23 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Gets whether the operator can be applied to the given inputs
+        /// Gets whether the operator can be applied to the given inputs.
         /// </summary>
-        /// <param name="ns">Inputs</param>
-        /// <returns>True if applicable to the given inputs</returns>
+        /// <param name="ns">Inputs.</param>
+        /// <returns>True if applicable to the given inputs.</returns>
         public abstract bool IsApplicable(params IValuedNode[] ns);
 
         /// <summary>
-        /// Applies the operator
+        /// Applies the operator.
         /// </summary>
-        /// <param name="ns">Inputs</param>
+        /// <param name="ns">Inputs.</param>
         /// <returns></returns>
         public abstract IValuedNode Apply(params IValuedNode[] ns);
 
         /// <summary>
-        /// Serializes the configuration of the operator
+        /// Serializes the configuration of the operator.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode op = context.NextSubject;

@@ -31,15 +31,15 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Static Helper class for the writing of RDF Graphs and SPARQL Result Sets to Strings rather than Streams/Files
+    /// Static Helper class for the writing of RDF Graphs and SPARQL Result Sets to Strings rather than Streams/Files.
     /// </summary>
     public static class StringWriter
     {
         /// <summary>
-        /// Writes the Graph to a String and returns the output in your chosen concrete RDF Syntax
+        /// Writes the Graph to a String and returns the output in your chosen concrete RDF Syntax.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="writer">Writer to use to generate the concrete RDF Syntax</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="writer">Writer to use to generate the concrete RDF Syntax.</param>
         /// <returns></returns>
         /// <remarks>
         /// Since the API allows for any <see cref="TextWriter">TextWriter</see> to be passed to the <see cref="IRdfWriter.Save(IGraph, TextWriter)">Save()</see> method of a <see cref="IRdfWriter">IRdfWriter</see> you can just pass in a <see cref="StringWriter">StringWriter</see> to the Save() method to get the output as a String.  This method simply provides a wrapper to doing just that.
@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Writes the given Triple Store to a String and returns the output in your chosen concrete RDF dataset syntax
+        /// Writes the given Triple Store to a String and returns the output in your chosen concrete RDF dataset syntax.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="writer">Writer to use to generate conrete RDF Syntax</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="writer">Writer to use to generate conrete RDF Syntax.</param>
         /// <returns></returns>
         public static String Write(ITripleStore store, IStoreWriter writer)
         {
@@ -67,10 +67,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Writes the SPARQL Result Set to a String and returns the Output in your chosen format
+        /// Writes the SPARQL Result Set to a String and returns the Output in your chosen format.
         /// </summary>
-        /// <param name="results">SPARQL Result Set</param>
-        /// <param name="writer">Writer to use to generate the SPARQL Results output</param>
+        /// <param name="results">SPARQL Result Set.</param>
+        /// <param name="writer">Writer to use to generate the SPARQL Results output.</param>
         /// <returns></returns>
         public static String Write(SparqlResultSet results, ISparqlResultsWriter writer)
         {

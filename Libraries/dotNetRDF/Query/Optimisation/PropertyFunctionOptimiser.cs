@@ -35,7 +35,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An algebra optimiser that looks for property functions specified by simple triple patterns in BGPs and replaces them with actual property function patterns
+    /// An algebra optimiser that looks for property functions specified by simple triple patterns in BGPs and replaces them with actual property function patterns.
     /// </summary>
     public class PropertyFunctionOptimiser
         : IAlgebraOptimiser
@@ -43,9 +43,9 @@ namespace VDS.RDF.Query.Optimisation
         private ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>> _factories = new ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>>(() => Enumerable.Empty<IPropertyFunctionFactory>());
 
         /// <summary>
-        /// Optimises the algebra to include property functions
+        /// Optimises the algebra to include property functions.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -111,9 +111,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable
+        /// Returns that the optimiser is applicable.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -122,9 +122,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable
+        /// Returns that the optimiser is applicable.
         /// </summary>
-        /// <param name="cmds">Update Commands</param>
+        /// <param name="cmds">Update Commands.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {

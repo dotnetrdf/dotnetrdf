@@ -35,7 +35,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents the SPARQL Update INSERT DATA command
+    /// Represents the SPARQL Update INSERT DATA command.
     /// </summary>
     public class InsertDataCommand
         : SparqlUpdateCommand
@@ -43,9 +43,9 @@ namespace VDS.RDF.Update.Commands
         private readonly GraphPattern _pattern;
 
         /// <summary>
-        /// Creates a new INSERT DATA command
+        /// Creates a new INSERT DATA command.
         /// </summary>
-        /// <param name="pattern">Pattern containing concrete Triples to insert</param>
+        /// <param name="pattern">Pattern containing concrete Triples to insert.</param>
         public InsertDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.InsertData) 
         {
@@ -54,10 +54,10 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Determines whether a Graph Pattern is valid for use in an INSERT DATA command
+        /// Determines whether a Graph Pattern is valid for use in an INSERT DATA command.
         /// </summary>
-        /// <param name="p">Graph Pattern</param>
-        /// <param name="top">Is this the top level pattern?</param>
+        /// <param name="p">Graph Pattern.</param>
+        /// <param name="top">Is this the top level pattern?.</param>
         /// <returns></returns>
         private bool IsValidDataPattern(GraphPattern p, bool top)
         {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the Data Pattern containing Triples to insert
+        /// Gets the Data Pattern containing Triples to insert.
         /// </summary>
         public GraphPattern DataPattern
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a single Graph
+        /// Gets whether the Command affects a single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -110,9 +110,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -130,9 +130,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             // Split the Pattern into the set of Graph Patterns
@@ -206,16 +206,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessInsertDataCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

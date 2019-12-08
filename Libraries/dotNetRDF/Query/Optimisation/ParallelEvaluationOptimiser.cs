@@ -30,7 +30,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser which looks for unions and joins that can be evaluated in parallel to improve query evaluation speed in some cases
+    /// An Algebra Optimiser which looks for unions and joins that can be evaluated in parallel to improve query evaluation speed in some cases.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -47,9 +47,9 @@ namespace VDS.RDF.Query.Optimisation
         : IAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises the algebra to use parallelised variants of <see cref="Join">Join</see> and <see cref="Union">Union</see> where possible
+        /// Optimises the algebra to use parallelised variants of <see cref="Join">Join</see> and <see cref="Union">Union</see> where possible.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -88,9 +88,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimser is applicable to all queries
+        /// Returns that the optimser is applicable to all queries.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -98,9 +98,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is not applicable to updates
+        /// Returns that the optimiser is not applicable to updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {

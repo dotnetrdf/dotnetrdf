@@ -35,11 +35,11 @@ using VDS.RDF.Storage.Management;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Provides a Read-Only wrapper that can be placed around another <see cref="IStorageProvider">IStorageProvider</see> instance
+    /// Provides a Read-Only wrapper that can be placed around another <see cref="IStorageProvider">IStorageProvider</see> instance.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance
+    /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance.
     /// </para>
     /// </remarks>
     public class ReadOnlyConnector 
@@ -48,9 +48,9 @@ namespace VDS.RDF.Storage
         private IStorageProvider _manager;
 
         /// <summary>
-        /// Creates a new Read-Only connection which is a read-only wrapper around another store
+        /// Creates a new Read-Only connection which is a read-only wrapper around another store.
         /// </summary>
-        /// <param name="manager">Manager for the Store you want to wrap as read-only</param>
+        /// <param name="manager">Manager for the Store you want to wrap as read-only.</param>
         public ReadOnlyConnector(IStorageProvider manager)
         {
             _manager = manager;
@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
         #region IStorageProvider Members
 
         /// <summary>
-        /// Gets the parent server (if any)
+        /// Gets the parent server (if any).
         /// </summary>
         public virtual IStorageServer ParentServer
         {
@@ -70,57 +70,57 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the underlying Store
+        /// Loads a Graph from the underlying Store.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             _manager.LoadGraph(g, graphUri);
         }
 
         /// <summary>
-        /// Loads a Graph from the underlying Store
+        /// Loads a Graph from the underlying Store.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IGraph g, string graphUri)
         {
             _manager.LoadGraph(g, graphUri);
         }
 
         /// <summary>
-        /// Loads a Graph from the underlying Store
+        /// Loads a Graph from the underlying Store.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             _manager.LoadGraph(handler, graphUri);
         }
 
         /// <summary>
-        /// Loads a Graph from the underlying Store
+        /// Loads a Graph from the underlying Store.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             _manager.LoadGraph(handler, graphUri);
         }
 
         /// <summary>
-        /// Throws an exception since you cannot save a Graph using a read-only connection
+        /// Throws an exception since you cannot save a Graph using a read-only connection.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot save a Graph using a read-only connection</exception>
+        /// <param name="g">Graph to save.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot save a Graph using a read-only connection.</exception>
         public void SaveGraph(IGraph g)
         {
             throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the read-only connection taking into account the IO Behaviour of the underlying store
+        /// Gets the IO Behaviour of the read-only connection taking into account the IO Behaviour of the underlying store.
         /// </summary>
         public IOBehaviour IOBehaviour
         {
@@ -131,31 +131,31 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an exception since you cannot update a Graph using a read-only connection
+        /// Throws an exception since you cannot update a Graph using a read-only connection.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot update a Graph using a read-only connection</exception>
+        /// <param name="graphUri">URI of the Graph.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot update a Graph using a read-only connection.</exception>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         /// <summary>
-        /// Throws an exception since you cannot update a Graph using a read-only connection
+        /// Throws an exception since you cannot update a Graph using a read-only connection.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot update a Graph using a read-only connection</exception>
+        /// <param name="graphUri">URI of the Graph.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot update a Graph using a read-only connection.</exception>
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         /// <summary>
-        /// Returns that Update is not supported
+        /// Returns that Update is not supported.
         /// </summary>
         public bool UpdateSupported
         {
@@ -166,27 +166,27 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an exception as you cannot delete a Graph using a read-only connection
+        /// Throws an exception as you cannot delete a Graph using a read-only connection.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph using a read-only connection</exception>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph using a read-only connection.</exception>
         public void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         /// <summary>
-        /// Throws an exception as you cannot delete a Graph using a read-only connection
+        /// Throws an exception as you cannot delete a Graph using a read-only connection.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph using a read-only connection</exception>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph using a read-only connection.</exception>
         public void DeleteGraph(string graphUri)
         {
             throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         /// <summary>
-        /// Returns that deleting graphs is not supported
+        /// Returns that deleting graphs is not supported.
         /// </summary>
         public bool DeleteSupported
         {
@@ -197,7 +197,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the list of graphs in the underlying store
+        /// Gets the list of graphs in the underlying store.
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<Uri> ListGraphs()
@@ -206,7 +206,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns whether listing graphs is supported by the underlying store
+        /// Returns whether listing graphs is supported by the underlying store.
         /// </summary>
         public virtual bool ListGraphsSupported
         {
@@ -217,7 +217,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns whether the Store is ready
+        /// Returns whether the Store is ready.
         /// </summary>
         public bool IsReady
         {
@@ -229,7 +229,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Store is read-only
+        /// Returns that the Store is read-only.
         /// </summary>
         public bool IsReadOnly
         {
@@ -244,7 +244,7 @@ namespace VDS.RDF.Storage
         #region IDisposable Members
 
         /// <summary>
-        /// Disposes of the Store
+        /// Disposes of the Store.
         /// </summary>
         public void Dispose()
         {
@@ -254,7 +254,7 @@ namespace VDS.RDF.Storage
         #endregion
 
         /// <summary>
-        /// Gets the String representation of the Manager
+        /// Gets the String representation of the Manager.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -263,9 +263,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the Configuration of the Manager
+        /// Serializes the Configuration of the Manager.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
@@ -293,11 +293,11 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// Provides a Read-Only wrapper that can be placed around another <see cref="IQueryableStorage">IQueryableStorage</see> instance
+    /// Provides a Read-Only wrapper that can be placed around another <see cref="IQueryableStorage">IQueryableStorage</see> instance.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance
+    /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance.
     /// </para>
     /// </remarks>
     public class QueryableReadOnlyConnector
@@ -306,9 +306,9 @@ namespace VDS.RDF.Storage
         private IQueryableStorage _queryManager;
 
         /// <summary>
-        /// Creates a new Queryable Read-Only connection which is a read-only wrapper around another store
+        /// Creates a new Queryable Read-Only connection which is a read-only wrapper around another store.
         /// </summary>
-        /// <param name="manager">Manager for the Store you want to wrap as read-only</param>
+        /// <param name="manager">Manager for the Store you want to wrap as read-only.</param>
         public QueryableReadOnlyConnector(IQueryableStorage manager)
             : base(manager)
         {
@@ -316,9 +316,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the underlying Store
+        /// Executes a SPARQL Query on the underlying Store.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
@@ -326,11 +326,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the underlying Store processing the results with an appropriate handler from those provided
+        /// Executes a SPARQL Query on the underlying Store processing the results with an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
@@ -338,7 +338,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the Graphs in the Store
+        /// Lists the Graphs in the Store.
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
@@ -382,7 +382,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that listing Graphs is supported
+        /// Returns that listing Graphs is supported.
         /// </summary>
         public override bool ListGraphsSupported
         {

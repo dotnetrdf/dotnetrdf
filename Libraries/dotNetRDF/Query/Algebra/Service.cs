@@ -33,7 +33,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Service Clause
+    /// Represents a Service Clause.
     /// </summary>
     public class Service 
         : ITerminalOperator
@@ -43,11 +43,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly bool _silent = false;
 
         /// <summary>
-        /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern
+        /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern.
         /// </summary>
-        /// <param name="endpointSpecifier">Endpoint Specifier</param>
-        /// <param name="pattern">Graph Pattern</param>
-        /// <param name="silent">Whether Evaluation Errors are suppressed</param>
+        /// <param name="endpointSpecifier">Endpoint Specifier.</param>
+        /// <param name="pattern">Graph Pattern.</param>
+        /// <param name="silent">Whether Evaluation Errors are suppressed.</param>
         public Service(IToken endpointSpecifier, GraphPattern pattern, bool silent)
         {
             _endpointSpecifier = endpointSpecifier;
@@ -56,17 +56,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern
+        /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern.
         /// </summary>
-        /// <param name="endpointSpecifier">Endpoint Specifier</param>
-        /// <param name="pattern">Graph Pattern</param>
+        /// <param name="endpointSpecifier">Endpoint Specifier.</param>
+        /// <param name="pattern">Graph Pattern.</param>
         public Service(IToken endpointSpecifier, GraphPattern pattern)
             : this(endpointSpecifier, pattern, false) { }
 
         /// <summary>
-        /// Evaluates the Service Clause by generating instance(s) of <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> as required and issuing the query to the remote endpoint(s)
+        /// Evaluates the Service Clause by generating instance(s) of <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> as required and issuing the query to the remote endpoint(s).
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -232,7 +232,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -251,7 +251,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -263,12 +263,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
-        /// Gets the Endpoint Specifier
+        /// Gets the Endpoint Specifier.
         /// </summary>
         public IToken EndpointSpecifier
         {
@@ -279,7 +279,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Graph Pattern
+        /// Gets the Graph Pattern.
         /// </summary>
         public GraphPattern Pattern
         {
@@ -290,7 +290,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -299,7 +299,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra into a Graph Pattern
+        /// Converts the Algebra into a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()

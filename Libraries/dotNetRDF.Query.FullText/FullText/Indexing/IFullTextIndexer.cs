@@ -30,7 +30,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Query.FullText.Indexing
 {
     /// <summary>
-    /// Indicates the Indexing Mode used by an Indexer to index literals
+    /// Indicates the Indexing Mode used by an Indexer to index literals.
     /// </summary>
     public enum IndexingMode
     {
@@ -49,17 +49,17 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <summary>
         /// Indicates that the Indexer uses some other custom indexing strategy
         /// </summary>
-        Custom
+        Custom,
     }
 
     /// <summary>
-    /// Interface for classes that provide full text indexing functionality
+    /// Interface for classes that provide full text indexing functionality.
     /// </summary>
     public interface IFullTextIndexer
         : IDisposable
     {
         /// <summary>
-        /// Gets the Indexing Mode used
+        /// Gets the Indexing Mode used.
         /// </summary>
         IndexingMode IndexingMode
         {
@@ -67,61 +67,61 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Indexes a Triple
+        /// Indexes a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <remarks>
-        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation
+        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
         void Index(Triple t);
 
         /// <summary>
-        /// Indexes a Graph
+        /// Indexes a Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
         void Index(IGraph g);
 
         /// <summary>
-        /// Indexes a Dataset
+        /// Indexes a Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="dataset">Dataset.</param>
         /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
         void Index(ISparqlDataset dataset);
 
         /// <summary>
-        /// Unindexes a Triple
+        /// Unindexes a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <remarks>
-        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation
+        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
         void Unindex(Triple t);
 
         /// <summary>
-        /// Unindexes a Graph
+        /// Unindexes a Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
         void Unindex(IGraph g);
 
         /// <summary>
-        /// Unindexes a Dataset
+        /// Unindexes a Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="dataset">Dataset.</param>
         /// <remarks>
-        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
         void Unindex(ISparqlDataset dataset);
 
         /// <summary>
-        /// Flushes any outstanding changes to the Index
+        /// Flushes any outstanding changes to the Index.
         /// </summary>
         void Flush();
     }

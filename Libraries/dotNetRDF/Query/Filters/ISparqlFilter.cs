@@ -31,18 +31,18 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Filters
 {
     /// <summary>
-    /// Interface for Classes which implement SPARQL Filter Functions
+    /// Interface for Classes which implement SPARQL Filter Functions.
     /// </summary>
     public interface ISparqlFilter
     {
         /// <summary>
-        /// Evaluates a Filter in the given Evaluation Context
+        /// Evaluates a Filter in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         void Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the enumeration of Variables that are used in the Filter
+        /// Gets the enumeration of Variables that are used in the Filter.
         /// </summary>
         IEnumerable<String> Variables
         {
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Gets the Expression that this Filter uses
+        /// Gets the Expression that this Filter uses.
         /// </summary>
         ISparqlExpression Expression
         {

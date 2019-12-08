@@ -30,7 +30,7 @@ using VDS.RDF.Query.Expressions.Comparison;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a typed literal
+    /// Represents a typed literal.
     /// </summary>
 #pragma warning disable 660,661
     public class TypedLiteralExpression<T> : LiteralExpression
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Wraps the <paramref name="expression"/> as a typed literal expression
+        /// Wraps the <paramref name="expression"/> as a typed literal expression.
         /// </summary>
         public TypedLiteralExpression(ISparqlExpression expression)
             : base(expression)

@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Serialization;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class for representing RDF Triples in memory
+    /// Class for representing RDF Triples in memory.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="triple")]
@@ -55,13 +55,13 @@ namespace VDS.RDF
         private int _hashcode;
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory.
         /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        /// <param name="subj">Subject of the Triple.</param>
+        /// <param name="pred">Predicate of the Triple.</param>
+        /// <param name="obj">Object of the Triple.</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj)
         {
             // Require that all Nodes belong to the same Graph
@@ -85,14 +85,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory and associates this Triple with the given Graph (doesn't assert the Triple)
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory and associates this Triple with the given Graph (doesn't assert the Triple).
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
-        /// <param name="g">Graph</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <param name="g">Graph.</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj, IGraph g)
             : this(subj, pred, obj)
         {
@@ -100,14 +100,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context.
         /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <param name="context">Context Information for the Triple</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        /// <param name="subj">Subject of the Triple.</param>
+        /// <param name="pred">Predicate of the Triple.</param>
+        /// <param name="obj">Object of the Triple.</param>
+        /// <param name="context">Context Information for the Triple.</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj, ITripleContext context)
             : this(subj, pred, obj)
         {
@@ -115,14 +115,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Triple and associates it with the given Graph URI permanently (though not with a specific Graph as such)
+        /// Creates a Triple and associates it with the given Graph URI permanently (though not with a specific Graph as such).
         /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <param name="graphUri">Graph URI</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        /// <param name="subj">Subject of the Triple.</param>
+        /// <param name="pred">Predicate of the Triple.</param>
+        /// <param name="obj">Object of the Triple.</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj, Uri graphUri)
             : this(subj, pred, obj)
         {
@@ -130,15 +130,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context.
         /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <param name="context">Context Information for the Triple</param>
-        /// <param name="graphUri">Graph URI</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        /// <param name="subj">Subject of the Triple.</param>
+        /// <param name="pred">Predicate of the Triple.</param>
+        /// <param name="obj">Object of the Triple.</param>
+        /// <param name="context">Context Information for the Triple.</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
             : this(subj, pred, obj, graphUri)
         {
@@ -161,7 +161,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gets the Subject of the Triple
+        /// Gets the Subject of the Triple.
         /// </summary>
         public INode Subject
         {
@@ -172,7 +172,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Predicate of the Triple
+        /// Gets the Predicate of the Triple.
         /// </summary>
         public INode Predicate
         {
@@ -183,7 +183,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Object of the Triple
+        /// Gets the Object of the Triple.
         /// </summary>
         public INode Object
         {
@@ -194,7 +194,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph this Triple was created for
+        /// Gets the Graph this Triple was created for.
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
         public IGraph Graph
@@ -206,7 +206,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Uri of the Graph this Triple was created for
+        /// Gets the Uri of the Graph this Triple was created for.
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph Uri of the Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
         public Uri GraphUri
@@ -229,10 +229,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Context Information for this Triple
+        /// Gets the Context Information for this Triple.
         /// </summary>
         /// <remarks>
-        /// Context may be null where no Context for the Triple has been defined
+        /// Context may be null where no Context for the Triple has been defined.
         /// </remarks>
         public ITripleContext Context
         {
@@ -247,10 +247,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an enumeration of the Nodes in the Triple
+        /// Gets an enumeration of the Nodes in the Triple.
         /// </summary>
         /// <remarks>
-        /// Returned as subject, predicate, object
+        /// Returned as subject, predicate, object.
         /// </remarks>
         public IEnumerable<INode> Nodes
         {
@@ -261,7 +261,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Triple is a Ground Triple
+        /// Gets whether the Triple is a Ground Triple.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -277,20 +277,20 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether the Triple involves a given Node
+        /// Checks whether the Triple involves a given Node.
         /// </summary>
-        /// <param name="n">The Node to test upon</param>
-        /// <returns>True if the Triple contains the given Node</returns>
+        /// <param name="n">The Node to test upon.</param>
+        /// <returns>True if the Triple contains the given Node.</returns>
         public bool Involves(INode n)
         {
             return (_subject.Equals(n) || _predicate.Equals(n) || _object.Equals(n));
         }
 
         /// <summary>
-        /// Checks whether the Triple involves a given Uri
+        /// Checks whether the Triple involves a given Uri.
         /// </summary>
-        /// <param name="uri">The Uri to test upon</param>
-        /// <returns>True if the Triple has a UriNode with the given Uri</returns>
+        /// <param name="uri">The Uri to test upon.</param>
+        /// <returns>True if the Triple has a UriNode with the given Uri.</returns>
         public bool Involves(Uri uri)
         {
             IUriNode temp = new UriNode(null, uri);
@@ -306,9 +306,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Indicates whether the Triple has the given Node as the Subject
+        /// Indicates whether the Triple has the given Node as the Subject.
         /// </summary>
-        /// <param name="n">Node to test upon</param>
+        /// <param name="n">Node to test upon.</param>
         /// <returns></returns>
         public bool HasSubject(INode n)
         {
@@ -317,9 +317,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Indicates whether the Triple has the given Node as the Predicate
+        /// Indicates whether the Triple has the given Node as the Predicate.
         /// </summary>
-        /// <param name="n">Node to test upon</param>
+        /// <param name="n">Node to test upon.</param>
         /// <returns></returns>
         public bool HasPredicate(INode n)
         {
@@ -328,9 +328,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Indicates whether the Triple has the given Node as the Object
+        /// Indicates whether the Triple has the given Node as the Object.
         /// </summary>
-        /// <param name="n">Node to test upon</param>
+        /// <param name="n">Node to test upon.</param>
         /// <returns></returns>
         public bool HasObject(INode n)
         {
@@ -339,12 +339,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Equality for Triples
+        /// Implementation of Equality for Triples.
         /// </summary>
-        /// <param name="obj">Object to compare with</param>
+        /// <param name="obj">Object to compare with.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Triples are considered equal on the basis of two things:
+        /// Triples are considered equal on the basis of two things:.
         /// <ol>
         /// <li>The Hash Codes of the Triples are identical</li>
         /// <li>The logical conjunction (AND) of the equality of the Subject, Predicate and Object is true.  Each pair of Nodes must either be Equal using Node Equality or are both Blank Nodes and have identical Node IDs (i.e. are indistinguishable for equality purposes on a single Triple level)</li>
@@ -372,15 +372,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Hash Codes for Triples
+        /// Implementation of Hash Codes for Triples.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Returns the Hash Code of the Triple which is calculated as the Hash Code of the String formed by concatenating the Hash Codes of its constituent Nodes.  This Hash Code is precomputed in the Constructor of a Triple since it will be used a lot (in Triple Equality calculation, Triple Collections etc)
+        /// Returns the Hash Code of the Triple which is calculated as the Hash Code of the String formed by concatenating the Hash Codes of its constituent Nodes.  This Hash Code is precomputed in the Constructor of a Triple since it will be used a lot (in Triple Equality calculation, Triple Collections etc).
         /// </para>
         /// <para>
-        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Triple will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details)
+        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Triple will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details).
         /// </para>
         /// </remarks>
         public override int GetHashCode()
@@ -389,7 +389,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a String representation of a Triple in the form 'Subject , Predicate , Object'
+        /// Gets a String representation of a Triple in the form 'Subject , Predicate , Object'.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -405,9 +405,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a String representation of a Triple in the form 'Subject , Predicate , Object' with optional compression of URIs to QNames
+        /// Gets a String representation of a Triple in the form 'Subject , Predicate , Object' with optional compression of URIs to QNames.
         /// </summary>
-        /// <param name="compress">Controls whether URIs will be compressed to QNames in the String representation</param>
+        /// <param name="compress">Controls whether URIs will be compressed to QNames in the String representation.</param>
         /// <returns></returns>
         public string ToString(bool compress)
         {
@@ -423,9 +423,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the String representation of a Triple using the given Triple Formatter
+        /// Gets the String representation of a Triple using the given Triple Formatter.
         /// </summary>
-        /// <param name="formatter">Formatter</param>
+        /// <param name="formatter">Formatter.</param>
         /// <returns></returns>
         public string ToString(ITripleFormatter formatter)
         {
@@ -433,11 +433,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of CompareTo for Triples which allows Triples to be sorted
+        /// Implementation of CompareTo for Triples which allows Triples to be sorted.
         /// </summary>
-        /// <param name="other">Triple to compare to</param>
+        /// <param name="other">Triple to compare to.</param>
         /// <returns></returns>
-        /// <remarks>Triples are Ordered by Subjects, Predicates and then Objects.  Triples are only partially orderable since the CompareTo methods on Nodes only define a partial ordering over Nodes</remarks>
+        /// <remarks>Triples are Ordered by Subjects, Predicates and then Objects.  Triples are only partially orderable since the CompareTo methods on Nodes only define a partial ordering over Nodes.</remarks>
         public int CompareTo(Triple other)
         {
             if (other == null)
@@ -478,10 +478,10 @@ namespace VDS.RDF
         #region ISerializable Members
 
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serilization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serilization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("s", _subject);
@@ -494,7 +494,7 @@ namespace VDS.RDF
         #region IXmlSerializable Members
 
         /// <summary>
-        /// Gets the schema for XML serialization
+        /// Gets the schema for XML serialization.
         /// </summary>
         /// <returns></returns>
         public XmlSchema GetSchema()
@@ -503,9 +503,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public void ReadXml(XmlReader reader)
         {
             reader.Read();
@@ -518,9 +518,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public void WriteXml(XmlWriter writer)
         {
             _subject.SerializeNode(writer);

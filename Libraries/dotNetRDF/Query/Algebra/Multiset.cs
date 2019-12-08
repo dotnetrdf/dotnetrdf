@@ -31,33 +31,33 @@ using System.Linq;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Multiset of possible solutions
+    /// Represents a Multiset of possible solutions.
     /// </summary>
     public class Multiset 
         : BaseMultiset
     {
         /// <summary>
-        /// Variables contained in the Multiset
+        /// Variables contained in the Multiset.
         /// </summary>
         protected List<String> _variables = new List<string>();
         /// <summary>
-        /// Dictionary of Sets in the Multiset
+        /// Dictionary of Sets in the Multiset.
         /// </summary>
         protected Dictionary<int, ISet> _sets = new Dictionary<int,ISet>();
         /// <summary>
-        /// Counter used to assign Set IDs
+        /// Counter used to assign Set IDs.
         /// </summary>
         protected int _counter = 0;
         private Dictionary<String, HashSet<INode>> _containsCache;
         private bool _cacheInvalid = true;
 
         /// <summary>
-        /// Creates a new Empty Multiset
+        /// Creates a new Empty Multiset.
         /// </summary>
         public Multiset() { }
 
         /// <summary>
-        /// Creates a new Empty Mutliset that has the list of given Variables
+        /// Creates a new Empty Mutliset that has the list of given Variables.
         /// </summary>
         /// <param name="variables"></param>
         public Multiset(IEnumerable<String> variables)
@@ -69,9 +69,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Multiset from a SPARQL Result Set
+        /// Creates a new Multiset from a SPARQL Result Set.
         /// </summary>
-        /// <param name="results">Result Set</param>
+        /// <param name="results">Result Set.</param>
         internal Multiset(SparqlResultSet results)
         {
             foreach (String var in results.Variables)
@@ -85,9 +85,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Multiset by flattening a Group Multiset
+        /// Creates a new Multiset by flattening a Group Multiset.
         /// </summary>
-        /// <param name="multiset">Group Multiset</param>
+        /// <param name="multiset">Group Multiset.</param>
         internal Multiset(GroupMultiset multiset)
         {
             foreach (String var in multiset.Variables)
@@ -101,10 +101,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Determines whether a given Value is present for a given Variable in any Set in this Multiset
+        /// Determines whether a given Value is present for a given Variable in any Set in this Multiset.
         /// </summary>
-        /// <param name="var">Variable</param>
-        /// <param name="n">Value</param>
+        /// <param name="var">Variable.</param>
+        /// <param name="n">Value.</param>
         /// <returns></returns>
         public override bool ContainsValue(String var, INode n)
         {
@@ -130,9 +130,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Returns whether a given Variable is present in any Set in this Multiset
+        /// Returns whether a given Variable is present in any Set in this Multiset.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         public override bool ContainsVariable(string var)
         {
@@ -140,9 +140,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Determines whether this Multiset is disjoint with another Multiset
+        /// Determines whether this Multiset is disjoint with another Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public override bool IsDisjointWith(BaseMultiset other)
         {
@@ -152,9 +152,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Set to the Multiset
+        /// Adds a Set to the Multiset.
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Set.</param>
         public override void Add(ISet s)
         {
             int id;
@@ -203,18 +203,18 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Variable to the list of Variables present in this Multiset
+        /// Adds a Variable to the list of Variables present in this Multiset.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public override void AddVariable(string variable)
         {
             if (!_variables.Contains(variable)) _variables.Add(variable);
         }
 
         /// <summary>
-        /// Sets the variable ordering for the multiset
+        /// Sets the variable ordering for the multiset.
         /// </summary>
-        /// <param name="variables">Variable Ordering</param>
+        /// <param name="variables">Variable Ordering.</param>
         public override void SetVariableOrder(IEnumerable<string> variables)
         {
             // Validate that the ordering is applicable
@@ -228,9 +228,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes a Set from the Multiset
+        /// Removes a Set from the Multiset.
         /// </summary>
-        /// <param name="id">Set ID</param>
+        /// <param name="id">Set ID.</param>
         public override void Remove(int id)
         {
 #if NET40
@@ -252,7 +252,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Trims the Multiset to remove Temporary Variables
+        /// Trims the Multiset to remove Temporary Variables.
         /// </summary>
         public override void Trim()
         {
@@ -270,9 +270,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Trims the Multiset to remove the given Variable
+        /// Trims the Multiset to remove the given Variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public override void Trim(String variable)
         {
             if (variable == null) return;
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Multiset is empty
+        /// Gets whether the Multiset is empty.
         /// </summary>
         public override bool IsEmpty
         {
@@ -297,7 +297,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the number of Sets in the Multiset
+        /// Gets the number of Sets in the Multiset.
         /// </summary>
         public override int Count
         {
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables in the Multiset
+        /// Gets the Variables in the Multiset.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -321,7 +321,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Sets in the Multiset
+        /// Gets the Sets in the Multiset.
         /// </summary>
         public override IEnumerable<ISet> Sets
         {
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the IDs of Sets in the Multiset
+        /// Gets the IDs of Sets in the Multiset.
         /// </summary>
         public override IEnumerable<int> SetIDs
         {
@@ -360,9 +360,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets a Set from the Multiset
+        /// Gets a Set from the Multiset.
         /// </summary>
-        /// <param name="id">Set ID</param>
+        /// <param name="id">Set ID.</param>
         /// <returns></returns>
         public override ISet this[int id]
         {

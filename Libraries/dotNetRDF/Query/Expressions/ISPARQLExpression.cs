@@ -31,9 +31,9 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Numeric Types for Sparql Numeric Expressions
+    /// Numeric Types for Sparql Numeric Expressions.
     /// </summary>
-    /// <remarks>All Numeric expressions in Sparql are typed as Integer/Decimal/Double</remarks>
+    /// <remarks>All Numeric expressions in Sparql are typed as Integer/Decimal/Double.</remarks>
     public enum SparqlNumericType : int
     {
         /// <summary>
@@ -55,11 +55,11 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// A Double precision Floating Point
         /// </summary>
-        Double = 3
+        Double = 3,
     }
 
     /// <summary>
-    /// SPARQL Expression Types
+    /// SPARQL Expression Types.
     /// </summary>
     public enum SparqlExpressionType
     {
@@ -90,29 +90,29 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// The Expression is a Unary Operator that applies to a Graph Pattern
         /// </summary>
-        GraphOperator
+        GraphOperator,
     }
 
     /// <summary>
-    /// Interface for SPARQL Expression Terms that can be used in Expression Trees while evaluating Sparql Queries
+    /// Interface for SPARQL Expression Terms that can be used in Expression Trees while evaluating Sparql Queries.
     /// </summary>
     public interface ISparqlExpression
     {
         /// <summary>
-        /// Evalutes a SPARQL Expression for the given binding in a given context
+        /// Evalutes a SPARQL Expression for the given binding in a given context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Newly introduced in Version 0.6.0 to replace the variety of functions that were used previously for numeric vs non-numeric versions to allow our code to be simplified and improve performance
+        /// Newly introduced in Version 0.6.0 to replace the variety of functions that were used previously for numeric vs non-numeric versions to allow our code to be simplified and improve performance.
         /// </para>
         /// </remarks>
         IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>
-        /// Gets an enumeration of all the Variables used in an expression
+        /// Gets an enumeration of all the Variables used in an expression.
         /// </summary>
         IEnumerable<String> Variables
         {
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the SPARQL Expression Type
+        /// Gets the SPARQL Expression Type.
         /// </summary>
         SparqlExpressionType Type
         {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords or the empty string in the case of primary expressions
+        /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords or the empty string in the case of primary expressions.
         /// </summary>
         String Functor
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Arguments of this Expression
+        /// Gets the Arguments of this Expression.
         /// </summary>
         IEnumerable<ISparqlExpression> Arguments
         {
@@ -144,14 +144,14 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Transforms the arguments of the expression using the given transformer
+        /// Transforms the arguments of the expression using the given transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         ISparqlExpression Transform(IExpressionTransformer transformer);
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         bool CanParallelise
         {

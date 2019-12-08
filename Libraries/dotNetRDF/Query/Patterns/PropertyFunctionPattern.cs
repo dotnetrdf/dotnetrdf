@@ -33,7 +33,7 @@ using VDS.RDF.Query.PropertyFunctions;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing property function patterns in SPARQL Query
+    /// Class for representing property function patterns in SPARQL Query.
     /// </summary>
     public class PropertyFunctionPattern
         : BaseTriplePattern, IPropertyFunctionPattern, IComparable<PropertyFunctionPattern>
@@ -43,20 +43,20 @@ namespace VDS.RDF.Query.Patterns
         private readonly ISparqlPropertyFunction _function;
 
         /// <summary>
-        /// Creates a new Property Function pattern
+        /// Creates a new Property Function pattern.
         /// </summary>
-        /// <param name="info">Function information</param>
-        /// <param name="propertyFunction">Property Function</param>
+        /// <param name="info">Function information.</param>
+        /// <param name="propertyFunction">Property Function.</param>
         public PropertyFunctionPattern(PropertyFunctionInfo info, ISparqlPropertyFunction propertyFunction)
             : this(info.Patterns.OfType<ITriplePattern>(), info.SubjectArgs, info.ObjectArgs, propertyFunction) { }
 
         /// <summary>
-        /// Creates a new Property Function pattern
+        /// Creates a new Property Function pattern.
         /// </summary>
-        /// <param name="origPatterns">Original Triple Patterns</param>
-        /// <param name="lhsArgs">Subject Arguments</param>
-        /// <param name="rhsArgs">Object Arguments</param>
-        /// <param name="propertyFunction">Property Function</param>
+        /// <param name="origPatterns">Original Triple Patterns.</param>
+        /// <param name="lhsArgs">Subject Arguments.</param>
+        /// <param name="rhsArgs">Object Arguments.</param>
+        /// <param name="propertyFunction">Property Function.</param>
         public PropertyFunctionPattern(IEnumerable<ITriplePattern> origPatterns, IEnumerable<PatternItem> lhsArgs, IEnumerable<PatternItem> rhsArgs, ISparqlPropertyFunction propertyFunction)
         {
             _patterns = origPatterns.ToList();
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Pattern Type
+        /// Gets the Pattern Type.
         /// </summary>
         public override TriplePatternType PatternType
         {
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Subject arguments
+        /// Gets the Subject arguments.
         /// </summary>
         public IEnumerable<PatternItem> SubjectArgs
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Object arguments
+        /// Gets the Object arguments.
         /// </summary>
         public IEnumerable<PatternItem> ObjectArgs
         {
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the original triple patterns
+        /// Gets the original triple patterns.
         /// </summary>
         public IEnumerable<ITriplePattern> OriginalPatterns
         {
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the property function
+        /// Gets the property function.
         /// </summary>
         public ISparqlPropertyFunction PropertyFunction
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns the empty enumerable as cannot guarantee any variables are bound
+        /// Returns the empty enumerable as cannot guarantee any variables are bound.
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
@@ -134,21 +134,21 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns all variables mentioned in the property function as we can't guarantee they are bound
+        /// Returns all variables mentioned in the property function as we can't guarantee they are bound.
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return _vars; } }
 
         /// <summary>
-        /// Evaluates the property function
+        /// Evaluates the property function.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             context.OutputMultiset = _function.Evaluate(context);
         }
 
         /// <summary>
-        /// Returns false because property functions are not accept-alls
+        /// Returns false because property functions are not accept-alls.
         /// </summary>
         public override bool IsAcceptAll
         {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns true if none of the 
+        /// Returns true if none of the. 
         /// </summary>
         public override bool HasNoBlankVariables
         {
@@ -170,9 +170,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a property function pattern to another
+        /// Compares a property function pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(PropertyFunctionPattern other)
         {
@@ -180,9 +180,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a property function pattern to another
+        /// Compares a property function pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(IPropertyFunctionPattern other)
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the string representation of the pattern
+        /// Gets the string representation of the pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -29,32 +29,32 @@ using System;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents the SPARQL Update ADD Command
+    /// Represents the SPARQL Update ADD Command.
     /// </summary>
     public class AddCommand 
         : BaseTransferCommand
     {
         /// <summary>
-        /// Creates a Command which merges the data from the Source Graph into the Destination Graph
+        /// Creates a Command which merges the data from the Source Graph into the Destination Graph.
         /// </summary>
-        /// <param name="sourceUri">Source Graph URI</param>
-        /// <param name="destUri">Destination Graph URI</param>
-        /// <param name="silent">Whether errors should be suppressed</param>
+        /// <param name="sourceUri">Source Graph URI.</param>
+        /// <param name="destUri">Destination Graph URI.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
         public AddCommand(Uri sourceUri, Uri destUri, bool silent)
             : base(SparqlUpdateCommandType.Add, sourceUri, destUri, silent) { }
 
         /// <summary>
-        /// Creates a Command which merges the data from the Source Graph into the Destination Graph
+        /// Creates a Command which merges the data from the Source Graph into the Destination Graph.
         /// </summary>
-        /// <param name="sourceUri">Source Graph URI</param>
-        /// <param name="destUri">Destination Graph URI</param>
+        /// <param name="sourceUri">Source Graph URI.</param>
+        /// <param name="destUri">Destination Graph URI.</param>
         public AddCommand(Uri sourceUri, Uri destUri)
             : base(SparqlUpdateCommandType.Add, sourceUri, destUri) { }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             try
@@ -102,9 +102,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessAddCommand(this);

@@ -30,7 +30,7 @@ using Newtonsoft.Json;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// A subclass of <see cref="JsonTextReader">JsonTextReader</see> which automatically ignores all comments
+    /// A subclass of <see cref="JsonTextReader">JsonTextReader</see> which automatically ignores all comments.
     /// </summary>
     internal class CommentIgnoringJsonTextReader 
         : JsonTextReader
@@ -47,9 +47,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads the next non-comment Token if one is available
+        /// Reads the next non-comment Token if one is available.
         /// </summary>
-        /// <returns>True if a Token was read, False otherwise</returns>
+        /// <returns>True if a Token was read, False otherwise.</returns>
         public override bool Read()
         {
             // Read next token

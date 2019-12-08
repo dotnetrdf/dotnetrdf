@@ -32,12 +32,12 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Base Class for Store Parser Contexts
+    /// Base Class for Store Parser Contexts.
     /// </summary>
     public abstract class BaseStoreParserContext : IStoreParserContext
     {
         /// <summary>
-        /// Is Parsing Traced?
+        /// Is Parsing Traced?.
         /// </summary>
         protected bool _traceParsing = false;
 
@@ -46,10 +46,10 @@ namespace VDS.RDF.Parsing.Contexts
         private Uri _baseUri;
 
         /// <summary>
-        /// Creates a new Store Parser Context
+        /// Creates a new Store Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
         public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
         {
             if (handler == null) throw new ArgumentNullException("handler", "RDF Handler cannot be null");
@@ -58,29 +58,29 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Store Parser Context
+        /// Creates a new Store Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
+        /// <param name="handler">RDF Handler.</param>
         public BaseStoreParserContext(IRdfHandler handler)
             : this(handler, false) { }
 
         /// <summary>
-        /// Creates a new Base Store Parser Context
+        /// Creates a new Base Store Parser Context.
         /// </summary>
-        /// <param name="store">Triple Store</param>
+        /// <param name="store">Triple Store.</param>
         public BaseStoreParserContext(ITripleStore store)
             : this(new StoreHandler(store)) { }
 
         /// <summary>
-        /// Creates a new Base Parser Context
+        /// Creates a new Base Parser Context.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
         public BaseStoreParserContext(ITripleStore store, bool traceParsing)
             : this(new StoreHandler(store), traceParsing) { }
 
         /// <summary>
-        /// Gets/Sets whether to trace parsing
+        /// Gets/Sets whether to trace parsing.
         /// </summary>
         public bool TraceParsing
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the RDF Handler that is in-use
+        /// Gets the RDF Handler that is in-use.
         /// </summary>
         public IRdfHandler Handler
         {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the parser context
+        /// Gets the Namespace Map for the parser context.
         /// </summary>
         public INamespaceMapper Namespaces
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Base URI for the parser context
+        /// Gets the Base URI for the parser context.
         /// </summary>
         public Uri BaseUri
         {
@@ -133,28 +133,28 @@ namespace VDS.RDF.Parsing.Contexts
     }
 
     /// <summary>
-    /// Class for Store Parser Contexts for Tokeniser based Parsing
+    /// Class for Store Parser Contexts for Tokeniser based Parsing.
     /// </summary>
     public class TokenisingStoreParserContext : BaseStoreParserContext
     {
         /// <summary>
-        /// Tokeniser
+        /// Tokeniser.
         /// </summary>
         protected ITokenQueue _queue;
         /// <summary>
-        /// Is Tokeniser traced?
+        /// Is Tokeniser traced?.
         /// </summary>
         protected bool _traceTokeniser = false;
         /// <summary>
-        /// Local Tokens
+        /// Local Tokens.
         /// </summary>
         protected Stack<IToken> _localTokens;
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with default settings
+        /// Creates a new Tokenising Store Parser Context with default settings.
         /// </summary>
-        /// <param name="store">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="store">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser)
             : base(store)
         {
@@ -162,11 +162,11 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings
+        /// Creates a new Tokenising Store Parser Context with custom settings.
         /// </summary>
-        /// <param name="store">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="store">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(store)
         {
@@ -186,12 +186,12 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings
+        /// Creates a new Tokenising Store Parser Context with custom settings.
         /// </summary>
-        /// <param name="store">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="store">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(store, tokeniser)
         {
@@ -201,13 +201,13 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings
+        /// Creates a new Tokenising Store Parser Context with custom settings.
         /// </summary>
-        /// <param name="store">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="store">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(store, traceParsing)
         {
@@ -229,10 +229,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with default settings
+        /// Creates a new Tokenising Store Parser Context with default settings.
         /// </summary>
-        /// <param name="handler">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="handler">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser)
             : base(handler)
         {
@@ -240,11 +240,11 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings
+        /// Creates a new Tokenising Store Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="handler">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(handler)
         {
@@ -264,12 +264,12 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings
+        /// Creates a new Tokenising Store Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="handler">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(handler, tokeniser)
         {
@@ -279,13 +279,13 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Store Parser Context with custom settings
+        /// Creates a new Tokenising Store Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">Store to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="handler">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(handler, traceParsing)
         {
@@ -307,7 +307,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Token Queue
+        /// Gets the Token Queue.
         /// </summary>
         public ITokenQueue Tokens
         {
@@ -318,7 +318,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Local Tokens stack
+        /// Gets the Local Tokens stack.
         /// </summary>
         public Stack<IToken> LocalTokens
         {
@@ -330,7 +330,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether tokeniser tracing is used
+        /// Gets/Sets whether tokeniser tracing is used.
         /// </summary>
         public bool TraceTokeniser
         {

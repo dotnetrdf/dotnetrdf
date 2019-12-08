@@ -33,21 +33,21 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Consistency Service provided by a Pellet Server
+    /// Represents the Consistency Service provided by a Pellet Server.
     /// </summary>
     public class ConsistencyService 
         : PelletService
     {
         /// <summary>
-        /// Creates a new Consistency Service
+        /// Creates a new Consistency Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal ConsistencyService(String name, JObject obj)
             : base(name, obj) { }
 
         /// <summary>
-        /// Returns whether the Knowledge Base is consistent
+        /// Returns whether the Knowledge Base is consistent.
         /// </summary>
         public bool IsConsistent()
         {
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Determines whether the Knowledge Base is consistent
+        /// Determines whether the Knowledge Base is consistent.
         /// </summary>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to be passed to the callback</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to be passed to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

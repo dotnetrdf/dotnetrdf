@@ -30,19 +30,19 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents an Inverse Path
+    /// Represents an Inverse Path.
     /// </summary>
     public class InversePath : BaseUnaryPath
     {
         /// <summary>
-        /// Creates a new Inverse Path
+        /// Creates a new Inverse Path.
         /// </summary>
-        /// <param name="path">Path</param>
+        /// <param name="path">Path.</param>
         public InversePath(ISparqlPath path)
             : base(path) { }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {

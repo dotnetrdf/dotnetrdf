@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A decorator for handlers which ensures that all blank nodes get unique IDs even if a blank node identifier is reused
+    /// A decorator for handlers which ensures that all blank nodes get unique IDs even if a blank node identifier is reused.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Handlers
         private IRdfHandler _handler;
 
         /// <summary>
-        /// Creates a new Unique Blank Nodes handler
+        /// Creates a new Unique Blank Nodes handler.
         /// </summary>
         /// <param name="handler"></param>
         public UniqueBlankNodesHandler(IRdfHandler handler)
@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the inner handler
+        /// Gets the inner handler.
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
@@ -67,9 +67,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a Blank Node
+        /// Creates a Blank Node.
         /// </summary>
-        /// <param name="nodeId">Node ID which will be ignored by this Handler</param>
+        /// <param name="nodeId">Node ID which will be ignored by this Handler.</param>
         /// <returns></returns>
         public override IBlankNode CreateBlankNode(string nodeId)
         {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts handling RDF
+        /// Starts handling RDF.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -85,18 +85,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends handling RDF
+        /// Ends handling RDF.
         /// </summary>
-        /// <param name="ok">Whether parsing completed OK</param>
+        /// <param name="ok">Whether parsing completed OK.</param>
         protected override void EndRdfInternal(bool ok)
         {
             _handler.EndRdf(ok);
         }
 
         /// <summary>
-        /// Handles a Base URI declaration
+        /// Handles a Base URI declaration.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -104,10 +104,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Namespace declaration
+        /// Handles a Namespace declaration.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -115,9 +115,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles a Triple
+        /// Handles a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets whether the inner handler accepts all
+        /// Gets whether the inner handler accepts all.
         /// </summary>
         public override bool AcceptsAll
         {

@@ -30,23 +30,23 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Comparison
 {
     /// <summary>
-    /// Class representing Relational Non-Equality expressions
+    /// Class representing Relational Non-Equality expressions.
     /// </summary>
     public class NotEqualsExpression
         : BaseBinaryExpression
     {
         /// <summary>
-        /// Creates a new Non-Equality Expression
+        /// Creates a new Non-Equality Expression.
         /// </summary>
-        /// <param name="leftExpr">Left Hand Expression</param>
-        /// <param name="rightExpr">Right Hand Expression</param>
+        /// <param name="leftExpr">Left Hand Expression.</param>
+        /// <param name="rightExpr">Right Hand Expression.</param>
         public NotEqualsExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -106,9 +106,9 @@ namespace VDS.RDF.Query.Expressions.Comparison
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -30,19 +30,19 @@ using VDS.Common.Tries;
 namespace VDS.RDF
 {
     /// <summary>
-    /// A static helper class for interning URIs to reduce memory usage
+    /// A static helper class for interning URIs to reduce memory usage.
     /// </summary>
     public static class UriFactory
     {
         private static readonly ITrie<String, char, Uri> _uris = new SparseStringTrie<Uri>();
 
         /// <summary>
-        /// Creates a URI interning it if interning is enabled via the <see cref="Options.InternUris">Options.InternUris</see>
+        /// Creates a URI interning it if interning is enabled via the <see cref="Options.InternUris">Options.InternUris</see>.
         /// </summary>
-        /// <param name="uri">String URI</param>
+        /// <param name="uri">String URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// When URI interning is disabled this is equivalent to just invoking the constructor of the <see cref="Uri">Uri</see> class
+        /// When URI interning is disabled this is equivalent to just invoking the constructor of the <see cref="Uri">Uri</see> class.
         /// </remarks>
         public static Uri Create(String uri)
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Clears all interned URIs
+        /// Clears all interned URIs.
         /// </summary>
         public static void Clear()
         {

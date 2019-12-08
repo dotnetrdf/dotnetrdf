@@ -33,7 +33,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.Sparql
 {
     /// <summary>
-    /// Class representing GROUP_CONCAT Aggregate
+    /// Class representing GROUP_CONCAT Aggregate.
     /// </summary>
     public class GroupConcatAggregate
         : XPath.StringJoinAggregate
@@ -41,10 +41,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         private bool _customSeparator = false;
 
         /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate
+        /// Creates a new GROUP_CONCAT aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="distinct">Should a distinct modifer be applied</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="distinct">Should a distinct modifer be applied.</param>
         public GroupConcatAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, new ConstantTerm(new LiteralNode(null, " ")))
         {
@@ -52,18 +52,18 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate
+        /// Creates a new GROUP_CONCAT aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public GroupConcatAggregate(ISparqlExpression expr)
             : base(expr, new ConstantTerm(new LiteralNode(null, " "))) { }
 
         /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate
+        /// Creates a new GROUP_CONCAT aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="sepExpr">Separator Expression</param>
-        /// <param name="distinct">Should a distinct modifer be applied</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="sepExpr">Separator Expression.</param>
+        /// <param name="distinct">Should a distinct modifer be applied.</param>
         public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr, bool distinct)
             : base(expr, sepExpr)
         {
@@ -72,10 +72,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Creates a new GROUP_CONCAT aggregate
+        /// Creates a new GROUP_CONCAT aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="sepExpr">Separator Expression</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="sepExpr">Separator Expression.</param>
         public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
             : base(expr, sepExpr)
         {
@@ -83,10 +83,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Applies the aggregate over the given bindings
+        /// Applies the aggregate over the given bindings.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -114,10 +114,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the value of the aggregate for the given binding
+        /// Gets the value of the aggregate for the given binding.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         protected override string ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

@@ -32,34 +32,34 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Aggregates
 {
     /// <summary>
-    /// Abstract Base Class for Aggregate Functions
+    /// Abstract Base Class for Aggregate Functions.
     /// </summary>
     public abstract class BaseAggregate 
         : ISparqlAggregate
     {
         /// <summary>
-        /// Expression that the aggregate operates over
+        /// Expression that the aggregate operates over.
         /// </summary>
         protected ISparqlExpression _expr;
         /// <summary>
-        /// Whether a DISTINCT modifer is applied
+        /// Whether a DISTINCT modifer is applied.
         /// </summary>
         protected bool _distinct = false;
 
         /// <summary>
-        /// Base Constructor for Aggregates
+        /// Base Constructor for Aggregates.
         /// </summary>
-        /// <param name="expr">Expression that the aggregate is over</param>
+        /// <param name="expr">Expression that the aggregate is over.</param>
         public BaseAggregate(ISparqlExpression expr)
         {
             _expr = expr;
         }
 
         /// <summary>
-        /// Base Constructor for Aggregates
+        /// Base Constructor for Aggregates.
         /// </summary>
-        /// <param name="expr">Expression that the aggregate is over</param>
-        /// <param name="distinct">Whether a Distinct modifer is applied</param>
+        /// <param name="expr">Expression that the aggregate is over.</param>
+        /// <param name="distinct">Whether a Distinct modifer is applied.</param>
         public BaseAggregate(ISparqlExpression expr, bool distinct)
             : this(expr)
         {
@@ -67,9 +67,9 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Applies the Aggregate to the Result Binder
+        /// Applies the Aggregate to the Result Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public IValuedNode Apply(SparqlEvaluationContext context)
         {
@@ -77,15 +77,15 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Applies the Aggregate to the Result Binder
+        /// Applies the Aggregate to the Result Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Enumerable of Binding IDs over which the Aggregate applies</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Enumerable of Binding IDs over which the Aggregate applies.</param>
         /// <returns></returns>
         public abstract IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
 
         /// <summary>
-        /// Expression that the Aggregate executes over
+        /// Expression that the Aggregate executes over.
         /// </summary>
         public ISparqlExpression Expression
         {
@@ -96,13 +96,13 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public abstract String Functor
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public virtual IEnumerable<ISparqlExpression> Arguments
         {

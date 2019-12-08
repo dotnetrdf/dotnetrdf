@@ -32,28 +32,28 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing.Validation
 {
     /// <summary>
-    /// Syntax Validator for validating RDF Graph syntaxes
+    /// Syntax Validator for validating RDF Graph syntaxes.
     /// </summary>
     public class RdfSyntaxValidator : ISyntaxValidator
     {
         /// <summary>
-        /// Parser to use
+        /// Parser to use.
         /// </summary>
         protected IRdfReader _parser;
 
         /// <summary>
-        /// Creates a new RDF Syntax Validator using the given Parser
+        /// Creates a new RDF Syntax Validator using the given Parser.
         /// </summary>
-        /// <param name="parser">Parser</param>
+        /// <param name="parser">Parser.</param>
         public RdfSyntaxValidator(IRdfReader parser)
         {
             _parser = parser;
         }
 
         /// <summary>
-        /// Validates the given data to see if it is valid RDF Syntax
+        /// Validates the given data to see if it is valid RDF Syntax.
         /// </summary>
-        /// <param name="data">Data</param>
+        /// <param name="data">Data.</param>
         /// <returns></returns>
         public virtual ISyntaxValidationResults Validate(string data)
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing.Validation
     }
 
     /// <summary>
-    /// Syntax Validator for RDF Graph syntaxes which is strict (any warnings are treated as errors)
+    /// Syntax Validator for RDF Graph syntaxes which is strict (any warnings are treated as errors).
     /// </summary>
     public class RdfStrictSyntaxValidator : RdfSyntaxValidator
     {
@@ -93,9 +93,9 @@ namespace VDS.RDF.Parsing.Validation
         private List<String> _messages = new List<string>();
 
         /// <summary>
-        /// Creates a new Strict RDF Syntax Validator
+        /// Creates a new Strict RDF Syntax Validator.
         /// </summary>
-        /// <param name="parser">Parser</param>
+        /// <param name="parser">Parser.</param>
         public RdfStrictSyntaxValidator(IRdfReader parser)
             : base(parser)
         {
@@ -109,9 +109,9 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Validates the data to see if it is valid RDF syntax which does not produce any warnings
+        /// Validates the data to see if it is valid RDF syntax which does not produce any warnings.
         /// </summary>
-        /// <param name="data">Data</param>
+        /// <param name="data">Data.</param>
         /// <returns></returns>
         public override ISyntaxValidationResults Validate(string data)
         {

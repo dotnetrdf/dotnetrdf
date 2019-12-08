@@ -31,7 +31,7 @@ using System.Linq;
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
-    /// A Graph Collection which wraps an <see cref="ISparqlDataset">ISparqlDataset</see> implementation so it can be used as if it was a Graph Collection
+    /// A Graph Collection which wraps an <see cref="ISparqlDataset">ISparqlDataset</see> implementation so it can be used as if it was a Graph Collection.
     /// </summary>
     public class DatasetGraphCollection
         : BaseGraphCollection
@@ -39,18 +39,18 @@ namespace VDS.RDF.Query.Datasets
         private ISparqlDataset _dataset;
 
         /// <summary>
-        /// Creates a new Dataset Graph collection
+        /// Creates a new Dataset Graph collection.
         /// </summary>
-        /// <param name="dataset">SPARQL Dataset</param>
+        /// <param name="dataset">SPARQL Dataset.</param>
         public DatasetGraphCollection(ISparqlDataset dataset)
         {
             _dataset = dataset;
         }
 
         /// <summary>
-        /// Gets whether the Collection contains a Graph with the given URI
+        /// Gets whether the Collection contains a Graph with the given URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
@@ -58,11 +58,11 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Adds a Graph to the Collection
+        /// Adds a Graph to the Collection.
         /// </summary>
-        /// <param name="g">Graph to add</param>
-        /// <param name="mergeIfExists">Whether to merge the given Graph with any existing Graph with the same URI</param>
-        /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false</exception>
+        /// <param name="g">Graph to add.</param>
+        /// <param name="mergeIfExists">Whether to merge the given Graph with any existing Graph with the same URI.</param>
+        /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false.</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
             if (Contains(g.BaseUri))
@@ -94,9 +94,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Removes a Graph from the Collection
+        /// Removes a Graph from the Collection.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to removed</param>
+        /// <param name="graphUri">URI of the Graph to removed.</param>
         protected internal override bool Remove(Uri graphUri)
         {
             if (Contains(graphUri))
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the number of Graphs in the Collection
+        /// Gets the number of Graphs in the Collection.
         /// </summary>
         public override int Count
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the URIs of Graphs in the Collection
+        /// Gets the URIs of Graphs in the Collection.
         /// </summary>
         public override IEnumerable<Uri> GraphUris
         {
@@ -134,9 +134,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Graph with the given URI
+        /// Gets the Graph with the given URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override IGraph this[Uri graphUri]
         {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Disposes of the Graph Collection
+        /// Disposes of the Graph Collection.
         /// </summary>
         public override void Dispose()
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the enumeration of Graphs in this Collection
+        /// Gets the enumeration of Graphs in this Collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()

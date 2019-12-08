@@ -27,19 +27,19 @@
 namespace VDS.RDF.Skos
 {
     /// <summary>
-    /// Static Helper class for the SKOS API
+    /// Static Helper class for the SKOS API.
     /// </summary>
     public static class SkosHelper
     {
         /// <summary>
-        /// SKOS namespace and prefix
+        /// SKOS namespace and prefix.
         /// </summary>
         public const string
             Prefix = "skos",
             Namespace = "http://www.w3.org/2004/02/skos/core#";
 
         /// <summary>
-        /// Constant URIs for classes and properties exposed by the SKOS API and its derived classes
+        /// Constant URIs for classes and properties exposed by the SKOS API and its derived classes.
         /// </summary>
         public const string
             Concept = Namespace + "Concept",

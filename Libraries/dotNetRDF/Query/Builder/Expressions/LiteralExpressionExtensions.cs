@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Creates a typed literal term
+        /// Creates a typed literal term.
         /// </summary>
         internal static ConstantTerm ToConstantTerm<T>(this T value)
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Creates an untyped literal term (simple literal)
+        /// Creates an untyped literal term (simple literal).
         /// </summary>
         internal static ConstantTerm ToSimpleLiteral(this string value)
         {

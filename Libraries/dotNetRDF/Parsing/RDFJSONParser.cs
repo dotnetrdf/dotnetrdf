@@ -35,16 +35,16 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for RDF/JSON Syntax
+    /// Parser for RDF/JSON Syntax.
     /// </summary>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
     public class RdfJsonParser : IRdfReader 
     {
         /// <summary>
-        /// Read RDF/JSON Syntax from some Stream into a Graph
+        /// Read RDF/JSON Syntax from some Stream into a Graph.
         /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="g">Graph to read into.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -53,10 +53,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Read RDF/JSON Syntax from some Input into a Graph
+        /// Read RDF/JSON Syntax from some Input into a Graph.
         /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="g">Graph to read into.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -65,10 +65,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Read RDF/Json Syntax from some File into a Graph
+        /// Read RDF/Json Syntax from some File into a Graph.
         /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="g">Graph to read into.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -77,10 +77,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Read RDF/JSON Syntax from some Stream using a RDF Handler
+        /// Read RDF/JSON Syntax from some Stream using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -96,10 +96,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Read RDF/JSON Syntax from some Input using a RDF Handler
+        /// Read RDF/JSON Syntax from some Input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -128,10 +128,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Read RDF/JSON Syntax from a file using a RDF Handler
+        /// Read RDF/JSON Syntax from a file using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -140,10 +140,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Internal top level Parse method which parses the Json
+        /// Internal top level Parse method which parses the Json.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Stream to read from.</param>
         private void Parse(IRdfHandler handler, TextReader input)
         {
             JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
@@ -167,9 +167,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the top level Json Object which represents the overall Graph
+        /// Parser method which parses the top level Json Object which represents the overall Graph.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void ParseGraphObject(JsonParserContext context)
         {
             // Can we read the overall Graph Object
@@ -199,9 +199,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses Json Objects representing Triples
+        /// Parser method which parses Json Objects representing Triples.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void ParseTriples(JsonParserContext context)
         {
             PositionInfo startPos = context.CurrentPosition;
@@ -239,10 +239,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses Json Objects representing Predicate Object Lists
+        /// Parser method which parses Json Objects representing Predicate Object Lists.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="subj">Subject of Triples which comes from the parent Json Object</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="subj">Subject of Triples which comes from the parent Json Object.</param>
         private void ParsePredicateObjectList(JsonParserContext context, INode subj)
         {
             PositionInfo startPos = context.CurrentPosition;
@@ -282,11 +282,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses Json Arrays representing Object Lists
+        /// Parser method which parses Json Arrays representing Object Lists.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="subj">Subject of Triples which comes from the Grandparent Json Object</param>
-        /// <param name="pred">Predicate of Triples which comes form the Parent Json Object</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="subj">Subject of Triples which comes from the Grandparent Json Object.</param>
+        /// <param name="pred">Predicate of Triples which comes form the Parent Json Object.</param>
         private void ParseObjectList(JsonParserContext context, INode subj, INode pred)
         {
             PositionInfo startPos = context.CurrentPosition;
@@ -314,11 +314,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses Json Objects reprsenting Object Nodes
+        /// Parser method which parses Json Objects reprsenting Object Nodes.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="subj">Subject of Triples which comes from the Great-Grandparent Json Object</param>
-        /// <param name="pred">Predicate of Triples which comes form the Grandparent Json Object</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="subj">Subject of Triples which comes from the Great-Grandparent Json Object.</param>
+        /// <param name="pred">Predicate of Triples which comes form the Grandparent Json Object.</param>
         private void ParseObject(JsonParserContext context, INode subj, INode pred)
         {
             String token, nodeValue, nodeType, nodeLang, nodeDatatype;
@@ -462,10 +462,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising Error messages with attached Line Information
+        /// Helper method for raising Error messages with attached Line Information.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="message">Error Message</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="message">Error Message.</param>
         /// <returns></returns>
         private RdfParseException Error(JsonParserContext context, String message)
         {
@@ -480,11 +480,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising Error messages with attached Position Information
+        /// Helper method for raising Error messages with attached Position Information.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="message">Error Message</param>
-        /// <param name="startPos">Start Position</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="message">Error Message.</param>
+        /// <param name="startPos">Start Position.</param>
         /// <returns></returns>
         private RdfParseException Error(JsonParserContext context, String message, PositionInfo startPos)
         {
@@ -496,9 +496,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper Method for raising the <see cref="RdfJsonParser.Warning">Warning</see> event
+        /// Helper Method for raising the <see cref="RdfJsonParser.Warning">Warning</see> event.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
@@ -514,7 +514,7 @@ namespace VDS.RDF.Parsing
         public event RdfReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

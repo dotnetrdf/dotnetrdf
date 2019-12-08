@@ -31,11 +31,11 @@ using System.IO.Compression;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Abstract Base class for Dataset writers that produce GZipped Output
+    /// Abstract Base class for Dataset writers that produce GZipped Output.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// While the normal witers can be used with GZip streams directly this class just abstracts the wrapping of file/stream output into a GZip stream if it is not already passed as such
+    /// While the normal witers can be used with GZip streams directly this class just abstracts the wrapping of file/stream output into a GZip stream if it is not already passed as such.
     /// </para>
     /// </remarks>
     public abstract class BaseGZipDatasetWriter : IStoreWriter
@@ -43,9 +43,9 @@ namespace VDS.RDF.Writing
         private readonly IStoreWriter _writer;
 
         /// <summary>
-        /// Creates a new GZiped Writer
+        /// Creates a new GZiped Writer.
         /// </summary>
-        /// <param name="writer">Underlying writer</param>
+        /// <param name="writer">Underlying writer.</param>
         public BaseGZipDatasetWriter(IStoreWriter writer)
         {
             _writer = writer ?? throw new ArgumentNullException(nameof(writer));
@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a RDF Dataset as GZipped output
+        /// Saves a RDF Dataset as GZipped output.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
@@ -64,10 +64,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a RDF Dataset as GZipped output
+        /// Saves a RDF Dataset as GZipped output.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="output">Writer to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="output">Writer to save to.</param>
         public void Save(ITripleStore store, TextWriter output)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
@@ -92,11 +92,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a RDF Dataset as GZipped output
+        /// Saves a RDF Dataset as GZipped output.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="output">Writer to save to. Must be an instance of <see cref="StreamWriter"/></param>
-        /// <param name="leaveOpen">Boolean flag indicating if the output stream should remain open after the output is written</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="output">Writer to save to. Must be an instance of <see cref="StreamWriter"/>.</param>
+        /// <param name="leaveOpen">Boolean flag indicating if the output stream should remain open after the output is written.</param>
         public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
@@ -120,9 +120,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method for raising warning events
+        /// Helper method for raising warning events.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
             Warning?.Invoke(message);
@@ -134,7 +134,7 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
 
         /// <summary>
-        /// Gets the description of the writer
+        /// Gets the description of the writer.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -144,39 +144,39 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
-    /// Writer for creating GZipped NQuads output
+    /// Writer for creating GZipped NQuads output.
     /// </summary>
     public class GZippedNQuadsWriter
         : BaseGZipDatasetWriter
     {
         /// <summary>
-        /// Creates a new GZipped NQuads output
+        /// Creates a new GZipped NQuads output.
         /// </summary>
         public GZippedNQuadsWriter()
             : base(new NQuadsWriter()) { }
     }
 
     /// <summary>
-    /// Writer for creating GZipped TriG outptut
+    /// Writer for creating GZipped TriG outptut.
     /// </summary>
     public class GZippedTriGWriter
         : BaseGZipDatasetWriter
     {
         /// <summary>
-        /// Creates a new GZipped TriG output
+        /// Creates a new GZipped TriG output.
         /// </summary>
         public GZippedTriGWriter()
             : base(new TriGWriter()) { }
     }
 
     /// <summary>
-    /// Writer for creating GZipped TriX output
+    /// Writer for creating GZipped TriX output.
     /// </summary>
     public class GZippedTriXWriter
         : BaseGZipDatasetWriter
     {
         /// <summary>
-        /// Creates a new GZipped TriX output
+        /// Creates a new GZipped TriX output.
         /// </summary>
         public GZippedTriXWriter()
             : base(new TriXWriter()) { }

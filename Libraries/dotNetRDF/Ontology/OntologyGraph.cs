@@ -32,17 +32,17 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Represents a Graph with additional methods for extracting ontology based information from it
+    /// Represents a Graph with additional methods for extracting ontology based information from it.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class OntologyGraph : Graph
     {
         /// <summary>
-        /// Creates a new Ontology Graph
+        /// Creates a new Ontology Graph.
         /// </summary>
         public OntologyGraph() 
         {
@@ -50,9 +50,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an ontology resource in the Graph
+        /// Gets/Creates an ontology resource in the Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public virtual OntologyResource CreateOntologyResource(INode resource)
         {
@@ -60,9 +60,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an ontology resource in the Graph
+        /// Gets/Creates an ontology resource in the Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public virtual OntologyResource CreateOntologyResource(Uri resource)
         {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an anonymous ontology resource in the Graph
+        /// Gets/Creates an anonymous ontology resource in the Graph.
         /// </summary>
         /// <returns></returns>
         public virtual OntologyResource CreateOntologyResource()
@@ -79,9 +79,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an ontology class in the Graph
+        /// Gets/Creates an ontology class in the Graph.
         /// </summary>
-        /// <param name="resource">Class Resource</param>
+        /// <param name="resource">Class Resource.</param>
         /// <returns></returns>
         public virtual OntologyClass CreateOntologyClass(INode resource)
         {
@@ -89,9 +89,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an ontology class in the Graph
+        /// Gets/Creates an ontology class in the Graph.
         /// </summary>
-        /// <param name="resource">Class Resource</param>
+        /// <param name="resource">Class Resource.</param>
         /// <returns></returns>
         public virtual OntologyClass CreateOntologyClass(Uri resource)
         {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an anonymous ontology class in the Graph
+        /// Gets/Creates an anonymous ontology class in the Graph.
         /// </summary>
         /// <returns></returns>
         public virtual OntologyClass CreateOntologyClass()
@@ -108,9 +108,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an ontology property in the Graph
+        /// Gets/Creates an ontology property in the Graph.
         /// </summary>
-        /// <param name="resource">Property Resource</param>
+        /// <param name="resource">Property Resource.</param>
         /// <returns></returns>
         public virtual OntologyProperty CreateOntologyProperty(INode resource)
         {
@@ -118,9 +118,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an ontology property in the Graph
+        /// Gets/Creates an ontology property in the Graph.
         /// </summary>
-        /// <param name="resource">Property Resource</param>
+        /// <param name="resource">Property Resource.</param>
         /// <returns></returns>
         public virtual OntologyProperty CreateOntologyProperty(Uri resource)
         {
@@ -128,9 +128,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets an existing individual in the Graph
+        /// Gets an existing individual in the Graph.
         /// </summary>
-        /// <param name="resource">Individual Resource</param>
+        /// <param name="resource">Individual Resource.</param>
         /// <returns></returns>
         public virtual Individual CreateIndividual(INode resource)
         {
@@ -138,10 +138,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an individual in the Graph of the given class
+        /// Gets/Creates an individual in the Graph of the given class.
         /// </summary>
-        /// <param name="resource">Individual Resource</param>
-        /// <param name="class">Class</param>
+        /// <param name="resource">Individual Resource.</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         public virtual Individual CreateIndividual(INode resource, INode @class)
         {
@@ -149,9 +149,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets an existing individual in the Graph
+        /// Gets an existing individual in the Graph.
         /// </summary>
-        /// <param name="resource">Individual Resource</param>
+        /// <param name="resource">Individual Resource.</param>
         /// <returns></returns>
         public virtual Individual CreateIndividual(Uri resource)
         {
@@ -159,10 +159,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an individual in the Graph of the given class
+        /// Gets/Creates an individual in the Graph of the given class.
         /// </summary>
-        /// <param name="resource">Individual Resource</param>
-        /// <param name="class">Class</param>
+        /// <param name="resource">Individual Resource.</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         public virtual Individual CreateIndividual(Uri resource, Uri @class)
         {
@@ -170,7 +170,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Get all OWL classes defined in the graph
+        /// Get all OWL classes defined in the graph.
         /// </summary>
         public IEnumerable<OntologyClass> OwlClasses
         {
@@ -181,7 +181,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Get all the RDFS classes defined in the graph
+        /// Get all the RDFS classes defined in the graph.
         /// </summary>
         public IEnumerable<OntologyClass> RdfClasses
         {
@@ -192,7 +192,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all classes defined in the graph using the standard rdfs:Class and owl:Class types
+        /// Gets all classes defined in the graph using the standard rdfs:Class and owl:Class types.
         /// </summary>
         public IEnumerable<OntologyClass> AllClasses
         {
@@ -203,10 +203,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Get all classes defined in the graph where anything of a specific type is considered a class
+        /// Get all classes defined in the graph where anything of a specific type is considered a class.
         /// </summary>
-        /// <param name="classType">Type which represents classes</param>
-        /// <returns>Enumeration of classes</returns>
+        /// <param name="classType">Type which represents classes.</param>
+        /// <returns>Enumeration of classes.</returns>
         public IEnumerable<OntologyClass> GetClasses(INode classType)
         {
             INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -215,7 +215,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all RDF properties defined in the graph
+        /// Gets all RDF properties defined in the graph.
         /// </summary>
         public IEnumerable<OntologyProperty> RdfProperties
         {
@@ -226,7 +226,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all OWL Object properties defined in the graph
+        /// Gets all OWL Object properties defined in the graph.
         /// </summary>
         public IEnumerable<OntologyProperty> OwlObjectProperties
         {
@@ -237,7 +237,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all OWL Data properties defined in the graph
+        /// Gets all OWL Data properties defined in the graph.
         /// </summary>
         public IEnumerable<OntologyProperty> OwlDatatypeProperties
         {
@@ -248,7 +248,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all OWL Annotation properties defined in the graph
+        /// Gets all OWL Annotation properties defined in the graph.
         /// </summary>
         public IEnumerable<OntologyProperty> OwlAnnotationProperties
         {
@@ -259,7 +259,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all properties defined in the graph using any of the standard OWL property types (owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty)
+        /// Gets all properties defined in the graph using any of the standard OWL property types (owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
         /// </summary>
         public IEnumerable<OntologyProperty> OwlProperties
         {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty)
+        /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
         /// </summary>
         public IEnumerable<OntologyProperty> AllProperties
         {
@@ -281,10 +281,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Get all properties defined in the graph where anything of a specific type is considered a property
+        /// Get all properties defined in the graph where anything of a specific type is considered a property.
         /// </summary>
-        /// <param name="propertyType">Type which represents properties</param>
-        /// <returns>Enumeration of properties</returns>
+        /// <param name="propertyType">Type which represents properties.</param>
+        /// <returns>Enumeration of properties.</returns>
         public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
         {
             INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));

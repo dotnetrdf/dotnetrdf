@@ -33,7 +33,7 @@ using VDS.RDF.Query.Inference;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Factory class for producing Reasoners from Configuration Graphs
+    /// Factory class for producing Reasoners from Configuration Graphs.
     /// </summary>
     public class ReasonerFactory : IObjectFactory
     {
@@ -41,12 +41,12 @@ namespace VDS.RDF.Configuration
         private const String PelletReasonerType = "VDS.RDF.Query.Inference.PelletReasoner";
 
         /// <summary>
-        /// Tries to load a Reasoner based on information from the Configuration Graph
+        /// Tries to load a Reasoner based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -118,9 +118,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

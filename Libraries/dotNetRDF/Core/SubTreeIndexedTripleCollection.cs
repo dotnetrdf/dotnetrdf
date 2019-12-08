@@ -33,7 +33,7 @@ using VDS.Common.Trees;
 namespace VDS.RDF
 {
     /// <summary>
-    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TKey,TValue}"/> implementations under the hood for the index structures
+    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TKey,TValue}"/> implementations under the hood for the index structures.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -68,9 +68,9 @@ namespace VDS.RDF
         private int _count;
 
         /// <summary>
-        /// Indexes a Triple
+        /// Indexes a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         private void Index(Triple t)
         {
             Index(t.Subject, t, _s, _sHash, _sComparer);
@@ -79,13 +79,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper for indexing triples
+        /// Helper for indexing triples.
         /// </summary>
-        /// <param name="n">Node to index by</param>
-        /// <param name="t">Triple</param>
-        /// <param name="index">Index to insert into</param>
-        /// <param name="comparer">Comparer for the Index</param>
-        /// <param name="hashFunc">Hash Function for the Index</param>
+        /// <param name="n">Node to index by.</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="index">Index to insert into.</param>
+        /// <param name="comparer">Comparer for the Index.</param>
+        /// <param name="hashFunc">Hash Function for the Index.</param>
         private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
         {
             if (index.TryGetValue(n, out var subtree))
@@ -115,9 +115,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Unindexes a triple
+        /// Unindexes a triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         private void Unindex(Triple t)
         {
             Unindex(t.Subject, t, _s);
@@ -127,11 +127,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper for unindexing triples
+        /// Helper for unindexing triples.
         /// </summary>
-        /// <param name="n">Node to index by</param>
-        /// <param name="t">Triple</param>
-        /// <param name="index">Index to remove from</param>
+        /// <param name="n">Node to index by.</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="index">Index to remove from.</param>
         private void Unindex(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index)
         {
             if (index.TryGetValue(n, out MultiDictionary<Triple, List<Triple>> subtree))
@@ -144,9 +144,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Triple to the collection
+        /// Adds a Triple to the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
@@ -161,9 +161,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether the collection contains a given Triple
+        /// Checks whether the collection contains a given Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
@@ -171,7 +171,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the count of triples in the collection
+        /// Gets the count of triples in the collection.
         /// </summary>
         public override int Count
         {
@@ -183,9 +183,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a triple from the collection
+        /// Deletes a triple from the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
@@ -201,9 +201,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the specific instance of a Triple in the collection
+        /// Gets the specific instance of a Triple in the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override Triple this[Triple t]
         {
@@ -218,9 +218,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given object
+        /// Gets all the triples with a given object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
@@ -235,9 +235,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given predicate
+        /// Gets all the triples with a given predicate.
         /// </summary>
-        /// <param name="pred">Predicate</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
@@ -252,9 +252,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given subject
+        /// Gets all the triples with a given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
@@ -269,10 +269,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given predicate and object
+        /// Gets all the triples with a given predicate and object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
@@ -288,10 +288,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given subject and object
+        /// Gets all the triples with a given subject and object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
@@ -307,10 +307,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given subject and predicate
+        /// Gets all the triples with a given subject and predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
@@ -326,7 +326,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Object Nodes
+        /// Gets the Object Nodes.
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
@@ -337,17 +337,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Predicate Nodes
+        /// Gets the Predicate Nodes.
         /// </summary>
         public override IEnumerable<INode> PredicateNodes => _p.Keys;
 
         /// <summary>
-        /// Gets the Subject Nodes
+        /// Gets the Subject Nodes.
         /// </summary>
         public override IEnumerable<INode> SubjectNodes => _s.Keys;
 
         /// <summary>
-        /// Disposes of the collection
+        /// Disposes of the collection.
         /// </summary>
         public override void Dispose()
         {
@@ -358,7 +358,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumerator for the collection
+        /// Gets the enumerator for the collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()

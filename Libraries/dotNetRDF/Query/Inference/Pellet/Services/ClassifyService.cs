@@ -33,20 +33,20 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Classify Service provided by a Pellet Server
+    /// Represents the Classify Service provided by a Pellet Server.
     /// </summary>
     public class ClassifyService : PelletService
     {
         /// <summary>
-        /// Creates a new Classify Service
+        /// Creates a new Classify Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal ClassifyService(String name, JObject obj)
             : base(name, obj) { }
 
         /// <summary>
-        /// Extracts the Graph which comprises the class hierarchy
+        /// Extracts the Graph which comprises the class hierarchy.
         /// </summary>
         public IGraph Classify()
         {
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Extracts the Graph which comprises the class hierarchy
+        /// Extracts the Graph which comprises the class hierarchy.
         /// </summary>
-        /// <param name="callback">Callback for when the operation completes</param>
-        /// <param name="state">State to be passed to the callback</param>
+        /// <param name="callback">Callback for when the operation completes.</param>
+        /// <param name="state">State to be passed to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

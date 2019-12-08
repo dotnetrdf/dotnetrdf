@@ -32,22 +32,22 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Abstract Base Class for Formatters that can compress URIs to QNames
+    /// Abstract Base Class for Formatters that can compress URIs to QNames.
     /// </summary>
     public abstract class QNameFormatter 
         : BaseFormatter, INamespaceFormatter
     {
         /// <summary>
-        /// QName Map used for compressing URIs to QNames
+        /// QName Map used for compressing URIs to QNames.
         /// </summary>
         protected QNameOutputMapper _qnameMapper;
         private bool _allowAKeyword = true;
 
         /// <summary>
-        /// Creates a new QName Formatter
+        /// Creates a new QName Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="qnameMapper">QName Map</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="qnameMapper">QName Map.</param>
         public QNameFormatter(String formatName, QNameOutputMapper qnameMapper)
             : base(formatName)
         {
@@ -62,11 +62,11 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Creates a new QName Formatter
+        /// Creates a new QName Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="qnameMapper">QName Map</param>
-        /// <param name="allowAKeyword">Whether the 'a' keyword can be used for the RDF type predicate</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="qnameMapper">QName Map.</param>
+        /// <param name="allowAKeyword">Whether the 'a' keyword can be used for the RDF type predicate.</param>
         public QNameFormatter(String formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
             : this(formatName, qnameMapper)
         {
@@ -74,9 +74,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Determines whether a QName is valid
+        /// Determines whether a QName is valid.
         /// </summary>
-        /// <param name="value">Value</param>
+        /// <param name="value">Value.</param>
         /// <returns></returns>
         protected virtual bool IsValidQName(String value)
         {
@@ -84,10 +84,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a URI Node using QName compression if possible
+        /// Formats a URI Node using QName compression if possible.
         /// </summary>
-        /// <param name="u">URI</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="u">URI.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
@@ -121,18 +121,18 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Literal Node using QName compression for the datatype if possible
+        /// Formats a Literal Node using QName compression for the datatype if possible.
         /// </summary>
-        /// <param name="l">Literal Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="l">Literal Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected abstract override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
 
         /// <summary>
-        /// Formats a Namespace as a String
+        /// Formats a Namespace as a String.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         public abstract string FormatNamespace(String prefix, Uri namespaceUri);
     }

@@ -30,20 +30,20 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents a standard forwards path
+    /// Represents a standard forwards path.
     /// </summary>
     public class SequencePath : BaseBinaryPath
     {
         /// <summary>
-        /// Creates a new Sequence Path
+        /// Creates a new Sequence Path.
         /// </summary>
-        /// <param name="lhs">LHS Path</param>
-        /// <param name="rhs">RHS Path</param>
+        /// <param name="lhs">LHS Path.</param>
+        /// <param name="rhs">RHS Path.</param>
         public SequencePath(ISparqlPath lhs, ISparqlPath rhs)
             : base(lhs, rhs) { }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -56,9 +56,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {

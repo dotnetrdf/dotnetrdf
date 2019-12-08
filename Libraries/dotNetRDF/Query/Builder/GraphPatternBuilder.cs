@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Builder
         private readonly IToken _graphSpecifier;
 
         /// <summary>
-        /// Creates a builder of a normal graph patterns
+        /// Creates a builder of a normal graph patterns.
         /// </summary>
         public GraphPatternBuilder()
             : this(GraphPatternType.Normal)
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a builder of a graph pattern
+        /// Creates a builder of a graph pattern.
         /// </summary>
         /// <param name="graphPatternType">MINUS, GRAPH, SERVICE etc.</param>
         public GraphPatternBuilder(GraphPatternType graphPatternType)

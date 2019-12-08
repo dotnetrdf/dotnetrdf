@@ -30,12 +30,12 @@ using System.IO;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Interface for Store Writer Contexts
+    /// Interface for Store Writer Contexts.
     /// </summary>
     public interface IStoreWriterContext
     {
         /// <summary>
-        /// Gets the Store being written
+        /// Gets the Store being written.
         /// </summary>
         ITripleStore Store
         {
@@ -44,26 +44,26 @@ namespace VDS.RDF.Writing.Contexts
     }
 
     /// <summary>
-    /// Base Class for Store Writer Context Objects
+    /// Base Class for Store Writer Context Objects.
     /// </summary>
     public class BaseStoreWriterContext : IStoreWriterContext
     {
         private ITripleStore _store;
         private TextWriter _output;
         /// <summary>
-        /// Pretty Print Mode setting
+        /// Pretty Print Mode setting.
         /// </summary>
         protected bool _prettyPrint = true;
         /// <summary>
-        /// High Speed Mode setting
+        /// High Speed Mode setting.
         /// </summary>
         protected bool _hiSpeedAllowed = true;
 
         /// <summary>
-        /// Creates a new Base Store Writer Context with default settings
+        /// Creates a new Base Store Writer Context with default settings.
         /// </summary>
-        /// <param name="store">Store to write</param>
-        /// <param name="output">TextWriter being written to</param>
+        /// <param name="store">Store to write.</param>
+        /// <param name="output">TextWriter being written to.</param>
         public BaseStoreWriterContext(ITripleStore store, TextWriter output)
         {
             _store = store;
@@ -71,12 +71,12 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Base Store Writer Context with custom settings
+        /// Creates a new Base Store Writer Context with custom settings.
         /// </summary>
-        /// <param name="store">Store to write</param>
-        /// <param name="output">TextWriter being written to</param>
-        /// <param name="prettyPrint">Pretty Print Mode</param>
-        /// <param name="hiSpeedAllowed">High Speed Mode</param>
+        /// <param name="store">Store to write.</param>
+        /// <param name="output">TextWriter being written to.</param>
+        /// <param name="prettyPrint">Pretty Print Mode.</param>
+        /// <param name="hiSpeedAllowed">High Speed Mode.</param>
         public BaseStoreWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed)
             : this(store, output)
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used
+        /// Gets/Sets the Pretty Printing Mode used.
         /// </summary>
         public bool PrettyPrint
         {
@@ -100,7 +100,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the High Speed Mode used
+        /// Gets/Sets the High Speed Mode used.
         /// </summary>
         public bool HighSpeedModePermitted
         {
@@ -115,7 +115,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the Store being written
+        /// Gets the Store being written.
         /// </summary>
         public ITripleStore Store
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the TextWriter being written to
+        /// Gets the TextWriter being written to.
         /// </summary>
         public TextWriter Output
         {
@@ -137,9 +137,9 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Formats a URI as a String for full Output
+        /// Formats a URI as a String for full Output.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public virtual String FormatUri(String u)
         {
@@ -149,9 +149,9 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Formats a URI as a String for full Output
+        /// Formats a URI as a String for full Output.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public virtual String FormatUri(Uri u)
         {

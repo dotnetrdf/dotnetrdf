@@ -33,20 +33,20 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Integrity Constraint Validation Service provided by a Pellet Knowledge Base
+    /// Represents the Integrity Constraint Validation Service provided by a Pellet Knowledge Base.
     /// </summary>
     public class IntegrityConstraintValidationService : PelletService
     {
         /// <summary>
-        /// Creates a new Integrity Constraint Validation Service
+        /// Creates a new Integrity Constraint Validation Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal IntegrityConstraintValidationService(String name, JObject obj)
             : base(name, obj) { }
 
         /// <summary>
-        /// Extracts an RDF Dataset which details the Constraints violated (if any) and whether Constraints are satisified
+        /// Extracts an RDF Dataset which details the Constraints violated (if any) and whether Constraints are satisified.
         /// </summary>
         /// <returns></returns>
         public ITripleStore Validate()
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Extracts an RDF Dataset which details the Constraints violated (if any) and whether Constraints are satisified
+        /// Extracts an RDF Dataset which details the Constraints violated (if any) and whether Constraints are satisified.
         /// </summary>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

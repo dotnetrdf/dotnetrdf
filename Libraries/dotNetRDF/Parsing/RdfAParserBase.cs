@@ -38,7 +38,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Base class for the framework-specific RDFa parser implementations
+    /// Base class for the framework-specific RDFa parser implementations.
     /// </summary>
     /// <typeparam name="THtmlDocument"></typeparam>
     /// <typeparam name="TElement"></typeparam>
@@ -48,24 +48,24 @@ namespace VDS.RDF.Parsing
         where TElement : class, TNode
     {
         /// <summary>
-        /// XHTML Vocab Namespace
+        /// XHTML Vocab Namespace.
         /// </summary>
         public const string XHtmlVocabNamespace = "http://www.w3.org/1999/xhtml/vocab#";
         /// <summary>
-        /// URI for the XHTML+RDFa DTD
+        /// URI for the XHTML+RDFa DTD.
         /// </summary>
         public const string XHtmlPlusRdfADoctype = "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd";
         /// <summary>
-        /// Namespace URI for XHTML
+        /// Namespace URI for XHTML.
         /// </summary>
         public const string XHtmlNamespace = "http://www.w3.org/1999/xhtml#";
         /// <summary>
-        /// Namespace URI for RDFa
+        /// Namespace URI for RDFa.
         /// </summary>
         public const string RdfANamespace = "http://www.w3.org/ns/rdfa#";
 
         /// <summary>
-        /// RDFa Version Constants
+        /// RDFa Version Constants.
         /// </summary>
         public const string XHtmlPlusRdfA11Version = "XHTML+RDFa 1.1",
                              HtmlPlusRdfA11Version = "HTML+RDFa 1.1",
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
         private readonly RdfASyntax _syntax = RdfASyntax.AutoDetectLegacy;
 
         /// <summary>
-        /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified)
+        /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified).
         /// </summary>
         protected RdfAParserBase()
         {
@@ -83,19 +83,19 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new RDFa Parser which will use the specified RDFa syntax
+        /// Creates a new RDFa Parser which will use the specified RDFa syntax.
         /// </summary>
-        /// <param name="syntax">RDFa Syntax Version</param>
+        /// <param name="syntax">RDFa Syntax Version.</param>
         protected RdfAParserBase(RdfASyntax syntax)
         {
             _syntax = syntax;
         }
 
         /// <summary>
-        /// Parses RDFa by extracting it from the HTML from the given input
+        /// Parses RDFa by extracting it from the HTML from the given input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -103,10 +103,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses RDFa by extracting it from the HTML from the given input
+        /// Parses RDFa by extracting it from the HTML from the given input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -114,10 +114,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses RDFa by extracting it from the HTML from the given file
+        /// Parses RDFa by extracting it from the HTML from the given file.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -126,10 +126,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses RDFa by extracting it from the HTML from the given input
+        /// Parses RDFa by extracting it from the HTML from the given input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -138,10 +138,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses RDFa by extracting it from the HTML from the given input
+        /// Parses RDFa by extracting it from the HTML from the given input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -169,10 +169,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses RDFa by extracting it from the HTML from the given input
+        /// Parses RDFa by extracting it from the HTML from the given input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -181,125 +181,125 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parse the input stream as an HTML document
+        /// Parse the input stream as an HTML document.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         protected abstract THtmlDocument LoadAndParse(TextReader input);
 
         /// <summary>
-        /// Determine if an element has a particular attribute
+        /// Determine if an element has a particular attribute.
         /// </summary>
-        /// <param name="element">The element to check</param>
-        /// <param name="attributeName">The name of the attribute to check for</param>
-        /// <returns>True if the element has an attribute named <paramref name="attributeName"/>, false otherwise</returns>
+        /// <param name="element">The element to check.</param>
+        /// <param name="attributeName">The name of the attribute to check for.</param>
+        /// <returns>True if the element has an attribute named <paramref name="attributeName"/>, false otherwise.</returns>
         protected abstract bool HasAttribute(TElement element, string attributeName);
 
         /// <summary>
-        /// Get the value of a particular attribute of an element
+        /// Get the value of a particular attribute of an element.
         /// </summary>
-        /// <param name="element">The element</param>
-        /// <param name="attributeName">The name of the attribute on the element</param>
-        /// <returns>The value of the attribute</returns>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">The name of the attribute on the element.</param>
+        /// <returns>The value of the attribute.</returns>
         protected abstract string GetAttribute(TElement element, string attributeName);
 
         /// <summary>
-        /// Set the value of a particular attribute of an element
+        /// Set the value of a particular attribute of an element.
         /// </summary>
-        /// <param name="element">The element</param>
-        /// <param name="attributeName">The name of the attribute to set/update</param>
-        /// <param name="value">The new value for the attribute</param>
+        /// <param name="element">The element.</param>
+        /// <param name="attributeName">The name of the attribute to set/update.</param>
+        /// <param name="value">The new value for the attribute.</param>
         protected abstract void SetAttribute(TElement element, string attributeName, string value);
 
         /// <summary>
-        /// Get the base element of the specified document
+        /// Get the base element of the specified document.
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
         protected abstract TElement GetBaseElement(THtmlDocument document);
 
         /// <summary>
-        /// Deterine if the HTML document can have an xml:base element
+        /// Deterine if the HTML document can have an xml:base element.
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
         protected abstract bool IsXmlBaseIsPermissible(THtmlDocument document);
 
         /// <summary>
-        /// Get the html element of the document
+        /// Get the html element of the document.
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
         protected abstract TElement GetHtmlElement(THtmlDocument document);
 
         /// <summary>
-        /// Process the content of an HTML document
+        /// Process the content of an HTML document.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="evalContext"></param>
         protected abstract void ProcessDocument(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext);
 
         /// <summary>
-        /// Get all attributes of an element
+        /// Get all attributes of an element.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
         protected abstract IEnumerable<TAttribute> GetAttributes(TElement element);
 
         /// <summary>
-        /// Get the name of an attribute
+        /// Get the name of an attribute.
         /// </summary>
         /// <param name="attribute"></param>
         /// <returns></returns>
         protected abstract string GetAttributeName(TAttribute attribute);
 
         /// <summary>
-        /// Get the value of an attribute
+        /// Get the value of an attribute.
         /// </summary>
         /// <param name="attribute"></param>
         /// <returns></returns>
         protected abstract string GetAttributeValue(TAttribute attribute);
 
         /// <summary>
-        /// Get the name of an element
+        /// Get the name of an element.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
         protected abstract string GetElementName(TElement element);
 
         /// <summary>
-        /// Return the children of an element (in order)
+        /// Return the children of an element (in order).
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
         protected abstract IEnumerable<TNode> GetChildren(TElement element);
 
         /// <summary>
-        /// Get the inner text of an element or a text node
+        /// Get the inner text of an element or a text node.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
         protected abstract string GetInnerText(TNode node);
 
         /// <summary>
-        /// Get the HTML contained within an element as a string
+        /// Get the HTML contained within an element as a string.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
         protected abstract string GetInnerHtml(TElement element);
 
         /// <summary>
-        /// Determine if an element has children
+        /// Determine if an element has children.
         /// </summary>
         /// <param name="element"></param>
-        /// <returns>True if the element has children, false otherwise</returns>
+        /// <returns>True if the element has children, false otherwise.</returns>
         protected abstract bool HasChildren(TElement element);
 
         /// <summary>
-        /// Determine if a node in the parsed Html document tree is a text node
+        /// Determine if a node in the parsed Html document tree is a text node.
         /// </summary>
         /// <param name="node"></param>
-        /// <returns>True if <paramref name="node"/> is a text node, false otherwise</returns>
+        /// <returns>True if <paramref name="node"/> is a text node, false otherwise.</returns>
         protected abstract bool IsTextNode(TNode node);
 
         private void Parse(RdfAParserContext<THtmlDocument> context)
@@ -407,7 +407,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Process the content of an element of the document
+        /// Process the content of an element of the document.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="evalContext"></param>
@@ -986,11 +986,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Resolves a CURIE to a Node
+        /// Resolves a CURIE to a Node.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evalContext">Evaluation Context</param>
-        /// <param name="curie">CURIE</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evalContext">Evaluation Context.</param>
+        /// <param name="curie">CURIE.</param>
         /// <returns></returns>
         private INode ResolveCurie(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string curie)
         {
@@ -1034,11 +1034,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Resolves an Attribute which may be a CURIE/URI to a Node
+        /// Resolves an Attribute which may be a CURIE/URI to a Node.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evalContext">Evaluation Context</param>
-        /// <param name="uriref">URI/CURIE</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evalContext">Evaluation Context.</param>
+        /// <param name="uriref">URI/CURIE.</param>
         /// <returns></returns>
         private INode ResolveUriOrCurie(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string uriref)
         {
@@ -1069,11 +1069,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Resolves an Attribute which may be a Term/CURIE/URI to a Node where one/more of the values may be special values permissible in a complex attribute
+        /// Resolves an Attribute which may be a Term/CURIE/URI to a Node where one/more of the values may be special values permissible in a complex attribute.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evalContext">Evaluation Context</param>
-        /// <param name="curie">URI/CURIE/Term</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evalContext">Evaluation Context.</param>
+        /// <param name="curie">URI/CURIE/Term.</param>
         /// <returns></returns>
         private INode ResolveTermOrCurie(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string curie)
         {
@@ -1176,14 +1176,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses an complex attribute into a number of Nodes
+        /// Parses an complex attribute into a number of Nodes.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evalContext">Evaluation Context</param>
-        /// <param name="value">Attribute Value</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evalContext">Evaluation Context.</param>
+        /// <param name="value">Attribute Value.</param>
         /// <returns></returns>
         /// <remarks>
-        /// A complex attribute is any attribute which accepts multiple URIs, CURIEs or Terms
+        /// A complex attribute is any attribute which accepts multiple URIs, CURIEs or Terms.
         /// </remarks>
         private List<INode> ParseComplexAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
         {
@@ -1217,11 +1217,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses an attribute into a number of Nodes from the CURIEs contained in the Attribute
+        /// Parses an attribute into a number of Nodes from the CURIEs contained in the Attribute.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evalContext">Evaluation Context</param>
-        /// <param name="value">Attribute Value</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evalContext">Evaluation Context.</param>
+        /// <param name="value">Attribute Value.</param>
         /// <returns></returns>
         private List<INode> ParseAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
         {
@@ -1438,7 +1438,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Get the text content of a node and add it to the provided output buffer
+        /// Get the text content of a node and add it to the provided output buffer.
         /// </summary>
         /// <param name="output"></param>
         /// <param name="node"></param>
@@ -1515,9 +1515,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Internal Helper for raising the Warning Event
+        /// Internal Helper for raising the Warning Event.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void OnWarning(string message)
         {
             Warning?.Invoke(message);

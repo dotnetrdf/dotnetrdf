@@ -74,9 +74,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Method to be implemented in derived classes to perform the actual writing to a TextWriter
+        /// Method to be implemented in derived classes to perform the actual writing to a TextWriter.
         /// </summary>
-        /// <param name="graph">The graph to be saved</param>
+        /// <param name="graph">The graph to be saved.</param>
         /// <param name="output">The <see cref="TextWriter"/> to save the graph to.</param>
         protected abstract void SaveInternal(IGraph graph, TextWriter output);
 

@@ -31,23 +31,23 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Aggregates.Sparql
 {
     /// <summary>
-    /// Class representing the SAMPLE aggregate
+    /// Class representing the SAMPLE aggregate.
     /// </summary>
     public class SampleAggregate
         : BaseAggregate
     {
         /// <summary>
-        /// Creates a new SAMPLE Aggregate
+        /// Creates a new SAMPLE Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public SampleAggregate(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Applies the SAMPLE Aggregate
+        /// Applies the SAMPLE Aggregate.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the String representation
+        /// Gets the String representation.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

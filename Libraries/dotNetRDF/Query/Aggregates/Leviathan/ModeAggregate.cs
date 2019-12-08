@@ -35,7 +35,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.Leviathan
 {
     /// <summary>
-    /// Class representing MODE Aggregate Functions
+    /// Class representing MODE Aggregate Functions.
     /// </summary>
     public class ModeAggregate
         : BaseAggregate
@@ -43,42 +43,42 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         private String _varname;
 
         /// <summary>
-        /// Creates a new MODE Aggregate
+        /// Creates a new MODE Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
+        /// <param name="expr">Variable Expression.</param>
         public ModeAggregate(VariableTerm expr)
             : base(expr, false) { }
 
         /// <summary>
-        /// Creates a new MODE Aggregate
+        /// Creates a new MODE Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public ModeAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new MODE Aggregate
+        /// Creates a new MODE Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Variable Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public ModeAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
             _varname = expr.ToString().Substring(1);
         }
         /// <summary>
-        /// Creates a new MODE Aggregate
+        /// Creates a new MODE Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public ModeAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
         /// <summary>
-        /// Applies the Mode Aggregate function to the results
+        /// Applies the Mode Aggregate function to the results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

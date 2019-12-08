@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a BINDINGS modifier on a SPARQL Query
+    /// Represents a BINDINGS modifier on a SPARQL Query.
     /// </summary>
     public class Bindings
         : ITerminalOperator
@@ -40,9 +40,9 @@ namespace VDS.RDF.Query.Algebra
         private BaseMultiset _mset;
 
         /// <summary>
-        /// Creates a new BINDINGS modifier
+        /// Creates a new BINDINGS modifier.
         /// </summary>
-        /// <param name="bindings">Bindings</param>
+        /// <param name="bindings">Bindings.</param>
         public Bindings(BindingsPattern bindings)
         {
             if (bindings == null) throw new ArgumentNullException("bindings", "Bindings cannot be null");
@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the BINDINGS modifier
+        /// Evaluates the BINDINGS modifier.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -71,17 +71,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _bindings.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _bindings.FixedVariables; } } 
 
         /// <summary>
-        /// Gets the Bindings 
+        /// Gets the Bindings. 
         /// </summary>
         public BindingsPattern BindingsPattern
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Convers the Algebra back to a Graph Pattern
+        /// Convers the Algebra back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()

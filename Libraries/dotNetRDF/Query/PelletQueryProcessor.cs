@@ -31,7 +31,7 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// A SPARQL Query Processor which processes queries by parsing them to the SPARQL Query Service of a Knowledge Base on a Pellet Server
+    /// A SPARQL Query Processor which processes queries by parsing them to the SPARQL Query Service of a Knowledge Base on a Pellet Server.
     /// </summary>
     public class PelletQueryProcessor 
         : ISparqlQueryProcessor 
@@ -40,10 +40,10 @@ namespace VDS.RDF.Query
         private QueryService _svc;
 
         /// <summary>
-        /// Creates a new Pellet Query Processor
+        /// Creates a new Pellet Query Processor.
         /// </summary>
-        /// <param name="server">Pellet Server</param>
-        /// <param name="kbName">Knowledge Base Name</param>
+        /// <param name="server">Pellet Server.</param>
+        /// <param name="kbName">Knowledge Base Name.</param>
         public PelletQueryProcessor(PelletServer server, String kbName)
         {
             if (server.HasKnowledgeBase(kbName))
@@ -67,17 +67,17 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Pellet Query Processor
+        /// Creates a new Pellet Query Processor.
         /// </summary>
-        /// <param name="serverUri">Pellet Server URI</param>
-        /// <param name="kbName">Knowledge Base Name</param>
+        /// <param name="serverUri">Pellet Server URI.</param>
+        /// <param name="kbName">Knowledge Base Name.</param>
         public PelletQueryProcessor(Uri serverUri, String kbName)
             : this(new PelletServer(serverUri), kbName) { }
 
         ///<summary>
-        ///  Processes a SPARQL Query
+        ///  Processes a SPARQL Query.
         /// </summary>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
@@ -96,11 +96,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate
+        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query.</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
@@ -117,12 +117,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes.
         /// </summary>
-        /// <param name="query">SPARQL QUery</param>
-        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
-        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL QUery.</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph.</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
         {
             query.QueryExecutionTime = null;
@@ -139,13 +139,13 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
         {
             query.QueryExecutionTime = null;

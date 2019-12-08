@@ -31,12 +31,12 @@ namespace VDS.RDF.Parsing.Events
 {
 
     /// <summary>
-    /// Interface for RDFa events
+    /// Interface for RDFa events.
     /// </summary>
     public interface IRdfAEvent : IEvent
     {
         /// <summary>
-        /// Gets the attributes of the event i.e. the attributes of the source element
+        /// Gets the attributes of the event i.e. the attributes of the source element.
         /// </summary>
         IEnumerable<KeyValuePair<String, String>> Attributes
         {
@@ -44,16 +44,16 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets whether the Event has a given attribute
+        /// Gets whether the Event has a given attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
+        /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
         bool HasAttribute(String name);
 
         /// <summary>
-        /// Gets the value of a specific attribute
+        /// Gets the value of a specific attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
+        /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
         String this[String name]
         {

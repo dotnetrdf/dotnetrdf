@@ -62,12 +62,12 @@ terms.
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Interface for SPARQL Results Parser Contexts
+    /// Interface for SPARQL Results Parser Contexts.
     /// </summary>
     public interface IResultsParserContext
     {
         /// <summary>
-        /// Gets the SPARQL Results Handler to use
+        /// Gets the SPARQL Results Handler to use.
         /// </summary>
         ISparqlResultsHandler Handler
         {

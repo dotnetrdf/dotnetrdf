@@ -28,20 +28,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
 
     /// <summary>
-    /// Represents the SPARQL MD5() Function
+    /// Represents the SPARQL MD5() Function.
     /// </summary>
     public class MD5HashFunction
         : Leviathan.Hash.MD5HashFunction
     {
         /// <summary>
-        /// Creates a new MD5() Function
+        /// Creates a new MD5() Function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public MD5HashFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -61,9 +61,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

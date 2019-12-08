@@ -29,12 +29,12 @@ using System;
 namespace VDS.RDF.Query.FullText.Search
 {
     /// <summary>
-    /// Interface for representing Full Text Search Results
+    /// Interface for representing Full Text Search Results.
     /// </summary>
     public interface IFullTextSearchResult
     {
         /// <summary>
-        /// Gets the Node that was returned for this result
+        /// Gets the Node that was returned for this result.
         /// </summary>
         INode Node
         {
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.FullText.Search
         }
 
         /// <summary>
-        /// Gets the Score for this result
+        /// Gets the Score for this result.
         /// </summary>
         double Score
         {
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.FullText.Search
         }
 
         /// <summary>
-        /// Gets the Graph URI for this result
+        /// Gets the Graph URI for this result.
         /// </summary>
         Uri GraphUri
         {
@@ -59,17 +59,17 @@ namespace VDS.RDF.Query.FullText.Search
     }
 
     /// <summary>
-    /// Basic Implementation of a Full Text Search Result
+    /// Basic Implementation of a Full Text Search Result.
     /// </summary>
     public sealed class FullTextSearchResult
         : IFullTextSearchResult
     {
         /// <summary>
-        /// Creates a new Full Text Search Result
+        /// Creates a new Full Text Search Result.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="n">Node</param>
-        /// <param name="score">Score</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="n">Node.</param>
+        /// <param name="score">Score.</param>
         public FullTextSearchResult(Uri graphUri, INode n, double score)
         {
             this.GraphUri = graphUri;
@@ -78,15 +78,15 @@ namespace VDS.RDF.Query.FullText.Search
         }
 
         /// <summary>
-        /// Creates a new Full Text Search Result
+        /// Creates a new Full Text Search Result.
         /// </summary>
-        /// <param name="n">Node</param>
-        /// <param name="score">Score</param>
+        /// <param name="n">Node.</param>
+        /// <param name="score">Score.</param>
         public FullTextSearchResult(INode n, double score)
             : this(null, n, score) { }
 
         /// <summary>
-        /// Gets the Node
+        /// Gets the Node.
         /// </summary>
         public INode Node
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.FullText.Search
         }
 
         /// <summary>
-        /// Gets the Score
+        /// Gets the Score.
         /// </summary>
         public double Score
         {
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.FullText.Search
         }
 
         /// <summary>
-        /// Gets the Graph URI of the result
+        /// Gets the Graph URI of the result.
         /// </summary>
         public Uri GraphUri
         {

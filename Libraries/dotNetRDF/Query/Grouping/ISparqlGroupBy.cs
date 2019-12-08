@@ -31,27 +31,27 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Grouping
 {
     /// <summary>
-    /// Interface for Classes that represent SPARQL GROUP BY clauses
+    /// Interface for Classes that represent SPARQL GROUP BY clauses.
     /// </summary>
     public interface ISparqlGroupBy
     {
         /// <summary>
-        /// Applies the Grouping to a Result Binder
+        /// Applies the Grouping to a Result Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         List<BindingGroup> Apply(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Applies the Grouping to a Result Binder subdividing the Groups from the previous Group By clause into further Groups
+        /// Applies the Grouping to a Result Binder subdividing the Groups from the previous Group By clause into further Groups.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="groups">Groups</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="groups">Groups.</param>
         /// <returns></returns>
         List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups);
 
         /// <summary>
-        /// Gets/Sets the child GROUP BY Clause
+        /// Gets/Sets the child GROUP BY Clause.
         /// </summary>
         ISparqlGroupBy Child
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Variables used in the GROUP BY
+        /// Gets the Variables used in the GROUP BY.
         /// </summary>
         IEnumerable<String> Variables
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
         IEnumerable<String> ProjectableVariables
         {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Expression used to GROUP BY
+        /// Gets the Expression used to GROUP BY.
         /// </summary>
         ISparqlExpression Expression
         {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets/Sets the Variable the value of the GROUP BY expression should be bound to (may be null if not bound to anything)
+        /// Gets/Sets the Variable the value of the GROUP BY expression should be bound to (may be null if not bound to anything).
         /// </summary>
         String AssignVariable
         {

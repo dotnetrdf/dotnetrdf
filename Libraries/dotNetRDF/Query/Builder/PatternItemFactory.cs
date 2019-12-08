@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Class responsible for creating <see cref="PatternItem"/>s
+    /// Class responsible for creating <see cref="PatternItem"/>s.
     /// </summary>
     internal class PatternItemFactory
     {

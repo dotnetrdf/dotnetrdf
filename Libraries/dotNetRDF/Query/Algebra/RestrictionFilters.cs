@@ -38,7 +38,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Abstract Base Class for specialised Filters which restrict the value of a variable to some values
+    /// Abstract Base Class for specialised Filters which restrict the value of a variable to some values.
     /// </summary>
     public abstract class VariableRestrictionFilter 
         : IFilter
@@ -48,11 +48,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlFilter _filter;
 
         /// <summary>
-        /// Creates a new Variable Restriction Filter
+        /// Creates a new Variable Restriction Filter.
         /// </summary>
-        /// <param name="pattern">Algebra the filter applies over</param>
-        /// <param name="var">Variable to restrict on</param>
-        /// <param name="filter">Filter to use</param>
+        /// <param name="pattern">Algebra the filter applies over.</param>
+        /// <param name="var">Variable to restrict on.</param>
+        /// <param name="filter">Filter to use.</param>
         public VariableRestrictionFilter(ISparqlAlgebra pattern, String var, ISparqlFilter filter)
         {
             _pattern = pattern;
@@ -61,14 +61,14 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evalutes the algebra for the given evaluation context
+        /// Evalutes the algebra for the given evaluation context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public abstract BaseMultiset Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the Variable that this filter restricts the value of
+        /// Gets the Variable that this filter restricts the value of.
         /// </summary>
         public String RestrictionVariable
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -90,17 +90,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Filter to be used
+        /// Gets the Filter to be used.
         /// </summary>
         public ISparqlFilter SparqlFilter
         {
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the FILTER
+        /// Gets the String representation of the FILTER.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a Graph Pattern
+        /// Converts the Algebra back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -158,15 +158,15 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public abstract ISparqlAlgebra Transform(IAlgebraOptimiser optimiser);
     }
 
     /// <summary>
-    /// Abstract Base Class for specialised Filters which restrict the value of a variable to a single value
+    /// Abstract Base Class for specialised Filters which restrict the value of a variable to a single value.
     /// </summary>
     public abstract class SingleValueRestrictionFilter 
         : VariableRestrictionFilter
@@ -174,12 +174,12 @@ namespace VDS.RDF.Query.Algebra
         private ConstantTerm _term;
 
         /// <summary>
-        /// Creates a new Single Value Restriction Filter
+        /// Creates a new Single Value Restriction Filter.
         /// </summary>
-        /// <param name="pattern">Algebra the filter applies over</param>
-        /// <param name="var">Variable to restrict on</param>
-        /// <param name="term">Value to restrict to</param>
-        /// <param name="filter">Filter to use</param>
+        /// <param name="pattern">Algebra the filter applies over.</param>
+        /// <param name="var">Variable to restrict on.</param>
+        /// <param name="term">Value to restrict to.</param>
+        /// <param name="filter">Filter to use.</param>
         public SingleValueRestrictionFilter(ISparqlAlgebra pattern, String var, ConstantTerm term, ISparqlFilter filter)
             : base(pattern, var, filter)
         {
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Value Restriction which this filter applies
+        /// Gets the Value Restriction which this filter applies.
         /// </summary>
         public ConstantTerm RestrictionValue
         {
@@ -198,9 +198,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Applies the Filter over the results of evaluating the inner pattern
+        /// Applies the Filter over the results of evaluating the inner pattern.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public sealed override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -293,24 +293,24 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents a special case Filter where the Filter restricts a variable to just one value i.e. FILTER(?x = &lt;value&gt;)
+    /// Represents a special case Filter where the Filter restricts a variable to just one value i.e. FILTER(?x = &lt;value&gt;).
     /// </summary>
     public class IdentityFilter 
         : SingleValueRestrictionFilter
     {
         /// <summary>
-        /// Creates a new Identity Filter
+        /// Creates a new Identity Filter.
         /// </summary>
-        /// <param name="pattern">Algebra the Filter applies over</param>
-        /// <param name="var">Variable to restrict on</param>
-        /// <param name="term">Expression Term</param>
+        /// <param name="pattern">Algebra the Filter applies over.</param>
+        /// <param name="var">Variable to restrict on.</param>
+        /// <param name="term">Expression Term.</param>
         public IdentityFilter(ISparqlAlgebra pattern, String var, ConstantTerm term)
             : base(pattern, var, term, new UnaryExpressionFilter(new EqualsExpression(new VariableTerm(var), term))) { }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public override ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -326,24 +326,24 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents a special case Filter where the Filter is supposed to restrict a variable to just one value i.e. FILTER(SAMETERM(?x, &lt;value&gt;))
+    /// Represents a special case Filter where the Filter is supposed to restrict a variable to just one value i.e. FILTER(SAMETERM(?x, &lt;value&gt;)).
     /// </summary>
     public class SameTermFilter
         : SingleValueRestrictionFilter
     {
         /// <summary>
-        /// Creates a new Same Term Filter
+        /// Creates a new Same Term Filter.
         /// </summary>
-        /// <param name="pattern">Algebra the Filter applies over</param>
-        /// <param name="var">Variable to restrict on</param>
-        /// <param name="term">Expression Term</param>
+        /// <param name="pattern">Algebra the Filter applies over.</param>
+        /// <param name="var">Variable to restrict on.</param>
+        /// <param name="term">Expression Term.</param>
         public SameTermFilter(ISparqlAlgebra pattern, String var, ConstantTerm term)
             : base(pattern, var, term, new UnaryExpressionFilter(new SameTermFunction(new VariableTerm(var), term))) { }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public override ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

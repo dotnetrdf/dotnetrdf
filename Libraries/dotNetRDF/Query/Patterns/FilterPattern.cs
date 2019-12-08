@@ -34,10 +34,10 @@ using VDS.RDF.Query.Filters;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing Filter Patterns in SPARQL Queries
+    /// Class for representing Filter Patterns in SPARQL Queries.
     /// </summary>
     /// <remarks>
-    /// A Filter Pattern is any FILTER clause that can be executed during the process of executing Triple Patterns rather than after all the Triple Patterns and Child Graph Patterns have been executed
+    /// A Filter Pattern is any FILTER clause that can be executed during the process of executing Triple Patterns rather than after all the Triple Patterns and Child Graph Patterns have been executed.
     /// </remarks>
     public class FilterPattern 
         : BaseTriplePattern, IFilterPattern, IComparable<FilterPattern>
@@ -45,9 +45,9 @@ namespace VDS.RDF.Query.Patterns
         private readonly ISparqlFilter _filter;
 
         /// <summary>
-        /// Creates a new Filter Pattern with the given Filter
+        /// Creates a new Filter Pattern with the given Filter.
         /// </summary>
-        /// <param name="filter">Filter</param>
+        /// <param name="filter">Filter.</param>
         public FilterPattern(ISparqlFilter filter)
         {
             _filter = filter;
@@ -56,9 +56,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Evaluates a Filter in the given Evaluation Context
+        /// Evaluates a Filter in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset)
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Pattern Type
+        /// Gets the Pattern Type.
         /// </summary>
         public override TriplePatternType PatternType
         {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns that the Pattern is not an accept all (since it's a Filter)
+        /// Returns that the Pattern is not an accept all (since it's a Filter).
         /// </summary>
         public override bool IsAcceptAll
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Filter that this Pattern uses
+        /// Gets the Filter that this Pattern uses.
         /// </summary>
         public ISparqlFilter Filter
         {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns the empty enumerable as don't know which variables will be bound
+        /// Returns the empty enumerable as don't know which variables will be bound.
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
@@ -136,12 +136,12 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns the empty enumerable as don't know which variables will be bound
+        /// Returns the empty enumerable as don't know which variables will be bound.
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
-        /// Gets whether the Pattern uses the Default Dataset
+        /// Gets whether the Pattern uses the Default Dataset.
         /// </summary>
         public override bool UsesDefaultDataset
         {
@@ -152,10 +152,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns true as a FILTER cannot contain blank variables
+        /// Returns true as a FILTER cannot contain blank variables.
         /// </summary>
         /// <remarks>
-        /// Technically blank nodes may appear in a FILTER as part of an EXISTS/NOT EXISTS clause but in that case they would not be visible outside of the FILTER and so are not relevant
+        /// Technically blank nodes may appear in a FILTER as part of an EXISTS/NOT EXISTS clause but in that case they would not be visible outside of the FILTER and so are not relevant.
         /// </remarks>
         public override bool HasNoBlankVariables
         {
@@ -166,9 +166,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a filter pattern to another
+        /// Compares a filter pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(FilterPattern other)
         {
@@ -176,9 +176,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a filter pattern to another
+        /// Compares a filter pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(IFilterPattern other)
         {
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns the string representation of the Pattern
+        /// Returns the string representation of the Pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

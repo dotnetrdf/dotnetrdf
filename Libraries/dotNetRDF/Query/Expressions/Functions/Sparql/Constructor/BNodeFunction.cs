@@ -31,7 +31,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
     /// <summary>
-    /// Class representing the SPARQL BNODE() function
+    /// Class representing the SPARQL BNODE() function.
     /// </summary>
     public class BNodeFunction 
         : BaseUnaryExpression
@@ -39,23 +39,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         private BNodeFunctionContext _funcContext;
 
         /// <summary>
-        /// Creates a new BNode Function
+        /// Creates a new BNode Function.
         /// </summary>
         public BNodeFunction()
             : base(null) { }
 
         /// <summary>
-        /// Creates a new BNode Function
+        /// Creates a new BNode Function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public BNodeFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Gets the value of the expression as evaluated in a given Context for a given Binding
+        /// Gets the value of the expression as evaluated in a given Context for a given Binding.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets the Variables used in the Expression
+        /// Gets the Variables used in the Expression.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets whether the expression can be parallelised
+        /// Gets whether the expression can be parallelised.
         /// </summary>
         public override bool CanParallelise
         {
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -191,9 +191,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

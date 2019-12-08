@@ -33,7 +33,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents a Negated Property Set
+    /// Represents a Negated Property Set.
     /// </summary>
     public class NegatedSet : ISparqlPath
     {
@@ -41,10 +41,10 @@ namespace VDS.RDF.Query.Paths
         private List<Property> _inverseProperties = new List<Property>();
 
         /// <summary>
-        /// Creates a new Negated Property Set
+        /// Creates a new Negated Property Set.
         /// </summary>
-        /// <param name="properties">Negated Properties</param>
-        /// <param name="inverseProperties">Inverse Negated Properties</param>
+        /// <param name="properties">Negated Properties.</param>
+        /// <param name="inverseProperties">Inverse Negated Properties.</param>
         public NegatedSet(IEnumerable<Property> properties, IEnumerable<Property> inverseProperties)
         {
             _properties.AddRange(properties);
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Negated Properties
+        /// Gets the Negated Properties.
         /// </summary>
         public IEnumerable<Property> Properties
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Inverse Negated Properties
+        /// Gets the Inverse Negated Properties.
         /// </summary>
         public IEnumerable<Property> InverseProperties
         {
@@ -74,9 +74,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

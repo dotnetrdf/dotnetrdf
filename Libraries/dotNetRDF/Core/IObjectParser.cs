@@ -31,48 +31,48 @@ using VDS.RDF.Query;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for parsers that generate objects of some sort
+    /// Interface for parsers that generate objects of some sort.
     /// </summary>
-    /// <typeparam name="T">Generated Object Type</typeparam>
+    /// <typeparam name="T">Generated Object Type.</typeparam>
     /// <remarks>
     /// <para>
-    /// Primarily used as a marker interface in relation to <see cref="MimeTypesHelper">MimeTypesHelper</see> to provide a mechanism whereby parsers for arbitrary objects can be registered and associated with MIME Types and File Extensions
+    /// Primarily used as a marker interface in relation to <see cref="MimeTypesHelper">MimeTypesHelper</see> to provide a mechanism whereby parsers for arbitrary objects can be registered and associated with MIME Types and File Extensions.
     /// </para>
     /// </remarks>
     public interface IObjectParser<T>
     {
         /// <summary>
-        /// Parses an Object from an Input Stream
+        /// Parses an Object from an Input Stream.
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input Stream.</param>
         /// <returns></returns>
         T Parse(StreamReader input);
 
         /// <summary>
-        /// Parses an Object from a Text Stream
+        /// Parses an Object from a Text Stream.
         /// </summary>
-        /// <param name="input">Text Stream</param>
+        /// <param name="input">Text Stream.</param>
         /// <returns></returns>
         T Parse(TextReader input);
 
         /// <summary>
-        /// Parses an Object from a File
+        /// Parses an Object from a File.
         /// </summary>
-        /// <param name="file">Filename</param>
+        /// <param name="file">Filename.</param>
         /// <returns></returns>
         T ParseFromFile(String file);
 
         /// <summary>
-        /// Parses an Object from a String
+        /// Parses an Object from a String.
         /// </summary>
-        /// <param name="data">String</param>
+        /// <param name="data">String.</param>
         /// <returns></returns>
         T ParseFromString(String data);
 
         /// <summary>
-        /// Parses an Object from a Parameterized String
+        /// Parses an Object from a Parameterized String.
         /// </summary>
-        /// <param name="cmdString">Parameterized String</param>
+        /// <param name="cmdString">Parameterized String.</param>
         /// <returns></returns>
         T ParseFromString(SparqlParameterizedString cmdString);
     }

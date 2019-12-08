@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Possible Triple Index types
+    /// Possible Triple Index types.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Index types are given Integer values with the lowest being the least useful index and the highest being most useful index.  Non-Index based Patterns are given arbitrary high values since these will typically never be used as these items are usually inserted into a Graph Pattern after the ordering step
+    /// Index types are given Integer values with the lowest being the least useful index and the highest being most useful index.  Non-Index based Patterns are given arbitrary high values since these will typically never be used as these items are usually inserted into a Graph Pattern after the ordering step.
     /// </para>
     /// <para>
     /// When used to sort Patterns as part of query optimisation the patterns are partially ordered on the usefullness of their index since more useful indexes are considered more likely to return fewer results which will help restrict the query space earlier in the execution process.
@@ -74,23 +74,23 @@ namespace VDS.RDF
         /// <summary>
         /// Subject-Object Index should be used
         /// </summary>
-        SubjectObject = 4
+        SubjectObject = 4,
     }
 
     /// <summary>
-    /// A Comparer which sorts based on Triple Index Type
+    /// A Comparer which sorts based on Triple Index Type.
     /// </summary>
     class TripleIndexSorter
         : IComparer<TripleIndexType>
     {
         /// <summary>
-        /// Compares two Triple Index types to see which is greater
+        /// Compares two Triple Index types to see which is greater.
         /// </summary>
-        /// <param name="x">First Index type</param>
-        /// <param name="y">Second Index type</param>
+        /// <param name="x">First Index type.</param>
+        /// <param name="y">Second Index type.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Implemented by converting to Integers and then using the Integer comparison function
+        /// Implemented by converting to Integers and then using the Integer comparison function.
         /// </remarks>
         public int Compare(TripleIndexType x, TripleIndexType y)
         {
@@ -103,18 +103,18 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Helper Class for indexing related operations
+    /// Helper Class for indexing related operations.
     /// </summary>
     [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", true)]
     public static class IndexHelper
     {
         /// <summary>
-        /// Searches an Index using the given Comparer
+        /// Searches an Index using the given Comparer.
         /// </summary>
-        /// <typeparam name="T">Indexed Object Type</typeparam>
-        /// <param name="index">Index</param>
-        /// <param name="comparer">Comparer to use for binary search</param>
-        /// <param name="search">Item to search for</param>
+        /// <typeparam name="T">Indexed Object Type.</typeparam>
+        /// <param name="index">Index.</param>
+        /// <param name="comparer">Comparer to use for binary search.</param>
+        /// <param name="search">Item to search for.</param>
         /// <returns></returns>
         [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", true)]
         public static IEnumerable<T> SearchIndex<T>(this List<T> index, IComparer<T> comparer, T search)

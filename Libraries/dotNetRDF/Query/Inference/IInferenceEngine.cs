@@ -27,11 +27,11 @@
 namespace VDS.RDF.Query.Inference
 {
     /// <summary>
-    /// Interfaces for Inference Engines
+    /// Interfaces for Inference Engines.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// An Inference Engine is a class that given a Graph can infer extra information from that Graph based on fixed rules or rules computed from the Graphs it is performing inference on
+    /// An Inference Engine is a class that given a Graph can infer extra information from that Graph based on fixed rules or rules computed from the Graphs it is performing inference on.
     /// </para>
     /// <para>
     /// In general terms an implementation of an Inference Engine typically provides some form of forward chaining reasoner though implementations may do more advanced reasoning or wrap other kinds of reasoner.
@@ -40,22 +40,22 @@ namespace VDS.RDF.Query.Inference
     public interface IInferenceEngine
     {
         /// <summary>
-        /// Applies inference to the given Graph and outputs the inferred information to that Graph
+        /// Applies inference to the given Graph and outputs the inferred information to that Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         void Apply(IGraph g);
 
         /// <summary>
-        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph
+        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph.
         /// </summary>
-        /// <param name="input">Graph to apply inference to</param>
-        /// <param name="output">Graph inferred information is output to</param>
+        /// <param name="input">Graph to apply inference to.</param>
+        /// <param name="output">Graph inferred information is output to.</param>
         void Apply(IGraph input, IGraph output);
 
         /// <summary>
-        /// Initialises the Inference Engine using the given Graph
+        /// Initialises the Inference Engine using the given Graph.
         /// </summary>
-        /// <param name="g">Graph to initialise from</param>
+        /// <param name="g">Graph to initialise from.</param>
         void Initialise(IGraph g);
     }
 }

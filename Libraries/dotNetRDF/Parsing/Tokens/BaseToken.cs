@@ -29,30 +29,30 @@ using System;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Base Implementation of IToken used by all derived tokens for ease of implementation
+    /// Base Implementation of IToken used by all derived tokens for ease of implementation.
     /// </summary>
     public abstract class BaseToken : IToken
     {
 
         /// <summary>
-        /// Variables for representing the Type and Position of the Token
+        /// Variables for representing the Type and Position of the Token.
         /// </summary>
         protected int _tokentype, _startline, _endline, _startpos, _endpos;
         /// <summary>
-        /// Variable containg the value of the Token
+        /// Variable containg the value of the Token.
         /// </summary>
         protected String _value;
 
         /// <summary>
-        /// Creates a Token and fills in its Values
+        /// Creates a Token and fills in its Values.
         /// </summary>
-        /// <param name="tokenType">Integer denoting the Tokens Type</param>
-        /// <param name="value">String value that the Token represents (if any)</param>
-        /// <param name="startLine">Line at which the Token starts</param>
-        /// <param name="endLine">Line at which the Token ends</param>
-        /// <param name="startPos">Column at which the Token starts</param>
-        /// <param name="endPos">Column at which the Token ends</param>
-        /// <remarks>All the derived classes use this Constructor to fill in the basic values of a Token</remarks>
+        /// <param name="tokenType">Integer denoting the Tokens Type.</param>
+        /// <param name="value">String value that the Token represents (if any).</param>
+        /// <param name="startLine">Line at which the Token starts.</param>
+        /// <param name="endLine">Line at which the Token ends.</param>
+        /// <param name="startPos">Column at which the Token starts.</param>
+        /// <param name="endPos">Column at which the Token ends.</param>
+        /// <remarks>All the derived classes use this Constructor to fill in the basic values of a Token.</remarks>
         protected internal BaseToken(int tokenType, String value, int startLine, int endLine, int startPos, int endPos)
         {
             _tokentype = tokenType;
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets an arbitrary integer which indicates the Type of the Token
+        /// Gets an arbitrary integer which indicates the Type of the Token.
         /// </summary>
         public int TokenType
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the String Value which this Token represents (if any)
+        /// Gets the String Value which this Token represents (if any).
         /// </summary>
         public string Value
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Line at which this Token Starts
+        /// Gets the Line at which this Token Starts.
         /// </summary>
         public int StartLine
         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Line at which this Token Ends
+        /// Gets the Line at which this Token Ends.
         /// </summary>
         public int EndLine
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Column at which this Token Starts
+        /// Gets the Column at which this Token Starts.
         /// </summary>
         public int StartPosition
         {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Column at which this Token Ends
+        /// Gets the Column at which this Token Ends.
         /// </summary>
         public int EndPosition
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Length of the Tokens Value
+        /// Gets the Length of the Tokens Value.
         /// </summary>
         public int Length
         {
@@ -141,7 +141,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets a String representation of the Token Type and Value
+        /// Gets a String representation of the Token Type and Value.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -150,7 +150,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets a Hash Code for a Token
+        /// Gets a Hash Code for a Token.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()

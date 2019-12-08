@@ -37,7 +37,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Allows you to treat an RDF Dataset File - NQuads, TriG or TriX - as a read-only generic store
+    /// Allows you to treat an RDF Dataset File - NQuads, TriG or TriX - as a read-only generic store.
     /// </summary>
     public class DatasetFileManager 
         : BaseAsyncSafeConnector, IQueryableStorage, IConfigurationSerializable
@@ -47,10 +47,10 @@ namespace VDS.RDF.Storage
         private String _filename;
 
         /// <summary>
-        /// Creates a new Dataset File Manager
+        /// Creates a new Dataset File Manager.
         /// </summary>
-        /// <param name="filename">File to load from</param>
-        /// <param name="isAsync">Whether to load asynchronously</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="isAsync">Whether to load asynchronously.</param>
         public DatasetFileManager(string filename, bool isAsync)
         {
             if (!File.Exists(filename)) throw new RdfStorageException("Cannot connect to a Dataset File that doesn't exist");
@@ -69,9 +69,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Internal helper method for loading the data
+        /// Internal helper method for loading the data.
         /// </summary>
-        /// <param name="filename">File to load from</param>
+        /// <param name="filename">File to load from.</param>
         private void Initialise(String filename)
         {
             try
@@ -88,9 +88,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a query against the in-memory copy of the Stores data
+        /// Makes a query against the in-memory copy of the Stores data.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public object Query(string sparqlQuery)
         {
@@ -101,11 +101,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a query against the in-memory copy of the Stores data processing the results with one of the given handlers
+        /// Makes a query against the in-memory copy of the Stores data processing the results with one of the given handlers.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             var queryProcessor = new LeviathanQueryProcessor(_store);
@@ -115,20 +115,20 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Dataset
+        /// Loads a Graph from the Dataset.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public override void LoadGraph(IGraph g, Uri graphUri)
         {
             LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>
-        /// Loads a Graph from the Dataset with the given Handler
+        /// Loads a Graph from the Dataset with the given Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
@@ -149,10 +149,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Dataset
+        /// Loads a Graph from the Dataset.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public override void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri.Equals(String.Empty))
@@ -166,10 +166,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Dataset with the given Handler
+        /// Loads a Graph from the Dataset with the given Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public override void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri.Equals(String.Empty))
@@ -183,17 +183,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an error since this Manager is read-only
+        /// Throws an error since this Manager is read-only.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection</exception>
+        /// <param name="g">Graph to save.</param>
+        /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection.</exception>
         public override void SaveGraph(IGraph g)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
         /// <summary>
-        /// Gets the Save Behaviour of the Store
+        /// Gets the Save Behaviour of the Store.
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
@@ -204,29 +204,29 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an error since this Manager is read-only
+        /// Throws an error since this Manager is read-only.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
         /// <summary>
-        /// Throws an error since this Manager is read-only
+        /// Throws an error since this Manager is read-only.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
         /// <summary>
-        /// Returns that Updates are not supported since this is a read-only connection
+        /// Returns that Updates are not supported since this is a read-only connection.
         /// </summary>
         public override bool UpdateSupported
         {
@@ -237,27 +237,27 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an error since this connection is read-only
+        /// Throws an error since this connection is read-only.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection</exception>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection.</exception>
         public override void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
         /// <summary>
-        /// Throws an error since this connection is read-only
+        /// Throws an error since this connection is read-only.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection</exception>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection.</exception>
         public override void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
         /// <summary>
-        /// Returns that deleting graphs is not supported
+        /// Returns that deleting graphs is not supported.
         /// </summary>
         public override bool DeleteSupported
         {
@@ -268,7 +268,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Manager is ready if the underlying file has been loaded
+        /// Returns that the Manager is ready if the underlying file has been loaded.
         /// </summary>
         public override bool IsReady
         {
@@ -279,7 +279,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that the Manager is read-only
+        /// Returns that the Manager is read-only.
         /// </summary>
         public override bool IsReadOnly
         {
@@ -290,7 +290,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the list of URIs of Graphs in the Store
+        /// Gets the list of URIs of Graphs in the Store.
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
@@ -299,7 +299,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that listing graphs is supported
+        /// Returns that listing graphs is supported.
         /// </summary>
         public override bool ListGraphsSupported
         {
@@ -310,7 +310,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the Source File this manager represents a read-only view of
+        /// Gets the Source File this manager represents a read-only view of.
         /// </summary>
         [Description("The Source File from which the dataset originates")]
         public String SourceFile
@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the String representation of the Connection
+        /// Gets the String representation of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage
 
 
         /// <summary>
-        /// Disposes of the Manager
+        /// Disposes of the Manager.
         /// </summary>
         public override void Dispose()
         {
@@ -340,9 +340,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

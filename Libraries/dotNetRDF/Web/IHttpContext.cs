@@ -35,15 +35,15 @@ using System.Text;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// Interface which represents the context of some request to a HTTP server
+    /// Interface which represents the context of some request to a HTTP server.
     /// </summary>
     /// <remarks>
-    /// Abstraction which allows us to reuse code for request and response processing across different HTTP server environments
+    /// Abstraction which allows us to reuse code for request and response processing across different HTTP server environments.
     /// </remarks>
     public interface IHttpContext
     {
         /// <summary>
-        /// Gets the HTTP Request
+        /// Gets the HTTP Request.
         /// </summary>
         IHttpProtocolRequest Request
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the HTTP Response
+        /// Gets the HTTP Response.
         /// </summary>
         IHttpProtocolResponse Response
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Web
 
 #if NET40
         /// <summary>
-        /// Gets the User
+        /// Gets the User.
         /// </summary>
         IPrincipal User
         {
@@ -70,15 +70,15 @@ namespace VDS.RDF.Web
     }
 
     /// <summary>
-    /// Interface which represents a HTTP request
+    /// Interface which represents a HTTP request.
     /// </summary>
     /// <remarks>
-    /// Abstraction which allows us to reuse code for request processing across different HTTP server environments
+    /// Abstraction which allows us to reuse code for request processing across different HTTP server environments.
     /// </remarks>
     public interface IHttpProtocolRequest
     {
         /// <summary>
-        /// Gets the MIME Types specified in the Accept header
+        /// Gets the MIME Types specified in the Accept header.
         /// </summary>
         String[] AcceptTypes
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Content Length
+        /// Gets the Content Length.
         /// </summary>
         long ContentLength
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Content Type
+        /// Gets the Content Type.
         /// </summary>
         String ContentType
         {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Headers
+        /// Gets the Headers.
         /// </summary>
         NameValueCollection Headers
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the HTTP Method
+        /// Gets the HTTP Method.
         /// </summary>
         String HttpMethod
         {
@@ -118,7 +118,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Input Stream
+        /// Gets the Input Stream.
         /// </summary>
         Stream InputStream
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Querystring parameters
+        /// Gets the Querystring parameters.
         /// </summary>
         NameValueCollection QueryString
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the URL
+        /// Gets the URL.
         /// </summary>
         Uri Url
         {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Users Host Address
+        /// Gets the Users Host Address.
         /// </summary>
         String UserHostAddress
         {
@@ -151,33 +151,33 @@ namespace VDS.RDF.Web
     }
 
     /// <summary>
-    /// Interface which represents a HTTP response
+    /// Interface which represents a HTTP response.
     /// </summary>
     /// <remarks>
-    /// Abstraction which allows us to reuse code for response processing across different HTTP server environments
+    /// Abstraction which allows us to reuse code for response processing across different HTTP server environments.
     /// </remarks>
     public interface IHttpProtocolResponse
     {
         /// <summary>
-        /// Adds a Header to the resposne
+        /// Adds a Header to the resposne.
         /// </summary>
-        /// <param name="header">Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="header">Name.</param>
+        /// <param name="value">Value.</param>
         void AddHeader(String header, String value);
 
         /// <summary>
-        /// Clears the Response
+        /// Clears the Response.
         /// </summary>
         void Clear();
 
         /// <summary>
-        /// Writes a String to the response body
+        /// Writes a String to the response body.
         /// </summary>
-        /// <param name="data">Data to write</param>
+        /// <param name="data">Data to write.</param>
         void Write(String data);
 
         /// <summary>
-        /// Gets/Sets the Content Encoding for the response
+        /// Gets/Sets the Content Encoding for the response.
         /// </summary>
         Encoding ContentEncoding
         {
@@ -186,7 +186,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets/Sets the Content Type for the response
+        /// Gets/Sets the Content Type for the response.
         /// </summary>
         String ContentType
         {
@@ -195,7 +195,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the Headers for the response
+        /// Gets the Headers for the response.
         /// </summary>
         NameValueCollection Headers
         {
@@ -203,7 +203,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets the output stream
+        /// Gets the output stream.
         /// </summary>
         Stream OutputStream
         {
@@ -211,7 +211,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Gets/Sets the HTTP Status Code for the response
+        /// Gets/Sets the HTTP Status Code for the response.
         /// </summary>
         int StatusCode
         {

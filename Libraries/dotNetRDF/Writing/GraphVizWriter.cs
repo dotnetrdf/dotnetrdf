@@ -31,25 +31,25 @@ using VDS.RDF.Writing.Contexts;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// A Writer which generates GraphViz DOT Format files from an RDF Graph
+    /// A Writer which generates GraphViz DOT Format files from an RDF Graph.
     /// </summary>
     public class GraphVizWriter : BaseRdfWriter, IPrettyPrintingWriter, ICollapseLiteralsWriter
     {
         /// <summary>
-        /// Gets/Sets Pretty Print Mode for the Writer
+        /// Gets/Sets Pretty Print Mode for the Writer.
         /// </summary>
         public bool PrettyPrintMode { get; set; } = true;
 
         /// <summary>
-        /// Gets/Sets whether to collapse distinct literal nodes
+        /// Gets/Sets whether to collapse distinct literal nodes.
         /// </summary>
         public bool CollapseLiterals { get; set; } = true;
 
         /// <summary>
-        /// Saves a Graph into GraphViz DOT Format
+        /// Saves a Graph into GraphViz DOT Format.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">File to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             // Open the Stream for the File
@@ -60,10 +60,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph into GraphViz DOT Format
+        /// Saves a Graph into GraphViz DOT Format.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             var context = new BaseWriterContext(g, output) { PrettyPrint = this.PrettyPrintMode };
@@ -261,7 +261,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

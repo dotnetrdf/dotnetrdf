@@ -29,24 +29,24 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
-    /// Represents the XPath fn:contains() function
+    /// Represents the XPath fn:contains() function.
     /// </summary>
     public class ContainsFunction
         : BaseBinaryStringFunction
     {
         /// <summary>
-        /// Creates a new XPath Contains function
+        /// Creates a new XPath Contains function.
         /// </summary>
-        /// <param name="stringExpr">Expression</param>
-        /// <param name="searchExpr">Search Expression</param>
+        /// <param name="stringExpr">Expression.</param>
+        /// <param name="searchExpr">Search Expression.</param>
         public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
             : base(stringExpr, searchExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
         /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument
+        /// Gets the Value of the function as applied to the given String Literal and Argument.
         /// </summary>
-        /// <param name="stringLit">Simple/String typed Literal</param>
-        /// <param name="arg">Argument</param>
+        /// <param name="stringLit">Simple/String typed Literal.</param>
+        /// <param name="arg">Argument.</param>
         /// <returns></returns>
         public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -88,9 +88,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

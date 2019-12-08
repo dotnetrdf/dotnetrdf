@@ -27,7 +27,7 @@
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Possible Directions for Incomplete Triples
+    /// Possible Directions for Incomplete Triples.
     /// </summary>
     public enum IncompleteTripleDirection
     {
@@ -38,6 +38,6 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Reverse
         /// </summary>
-        Reverse
+        Reverse,
     }
 }

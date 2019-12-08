@@ -35,34 +35,34 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for reading SPARQL Results which have been encoded in the RDF schema for Result Sets and serialized as RDF
+    /// Parser for reading SPARQL Results which have been encoded in the RDF schema for Result Sets and serialized as RDF.
     /// </summary>
     public class SparqlRdfParser : ISparqlResultsReader
     {
         private IRdfReader _parser;
 
         /// <summary>
-        /// Creates a new SPARQL RDF Parser which will use auto-detection for determining the syntax of input streams/files
+        /// Creates a new SPARQL RDF Parser which will use auto-detection for determining the syntax of input streams/files.
         /// </summary>
         public SparqlRdfParser()
         { }
 
         /// <summary>
-        /// Creates a new SPARQL RDF Parser which will use the given RDF Parser
+        /// Creates a new SPARQL RDF Parser which will use the given RDF Parser.
         /// </summary>
-        /// <param name="parser">RDF Parser</param>
+        /// <param name="parser">RDF Parser.</param>
         public SparqlRdfParser(IRdfReader parser)
         {
             _parser = parser;
         }
 
         /// <summary>
-        /// Loads a SPARQL Result Set from RDF contained in the given Input
+        /// Loads a SPARQL Result Set from RDF contained in the given Input.
         /// </summary>
-        /// <param name="results">SPARQL Result Set to populate</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="results">SPARQL Result Set to populate.</param>
+        /// <param name="input">Input to read from.</param>
         /// <remarks>
-        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use
+        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
         public void Load(SparqlResultSet results, TextReader input)
         {
@@ -70,12 +70,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a SPARQL Result Set from RDF contained in the given Stream
+        /// Loads a SPARQL Result Set from RDF contained in the given Stream.
         /// </summary>
-        /// <param name="results">SPARQL Result Set to populate</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="results">SPARQL Result Set to populate.</param>
+        /// <param name="input">Stream to read from.</param>
         /// <remarks>
-        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use
+        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
         public void Load(SparqlResultSet results, StreamReader input)
         {
@@ -84,12 +84,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a SPARQL Result Set from RDF contained in the given File
+        /// Loads a SPARQL Result Set from RDF contained in the given File.
         /// </summary>
-        /// <param name="results">SPARQL Result Set to populate</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="results">SPARQL Result Set to populate.</param>
+        /// <param name="filename">File to read from.</param>
         /// <remarks>
-        /// Uses the <see cref="FileLoader">FileLoader</see> to load the RDF from the file which will attempt to determine the format of the RDF based on the file extension unless the parser was instantiated with a specific <see cref="IRdfReader">IRdfReader</see> to use
+        /// Uses the <see cref="FileLoader">FileLoader</see> to load the RDF from the file which will attempt to determine the format of the RDF based on the file extension unless the parser was instantiated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
         public void Load(SparqlResultSet results, string filename)
         {
@@ -98,12 +98,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a SPARQL Results from RDF contained in the given Input using a Results Handler
+        /// Loads a SPARQL Results from RDF contained in the given Input using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         /// <remarks>
-        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use
+        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
         public void Load(ISparqlResultsHandler handler, TextReader input)
         {
@@ -142,12 +142,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a SPARQL Results from RDF contained in the given Stream using a Results Handler
+        /// Loads a SPARQL Results from RDF contained in the given Stream using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Stream to read from.</param>
         /// <remarks>
-        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use
+        /// Uses the <see cref="StringParser">StringParser</see> which will use simple heuristics to 'guess' the format of the RDF unless the parser was instaniated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
@@ -155,12 +155,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a SPARQL Results from RDF contained in the given file using a Results Handler
+        /// Loads a SPARQL Results from RDF contained in the given file using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         /// <remarks>
-        /// Uses the <see cref="FileLoader">FileLoader</see> to load the RDF from the file which will attempt to determine the format of the RDF based on the file extension unless the parser was instantiated with a specific <see cref="IRdfReader">IRdfReader</see> to use
+        /// Uses the <see cref="FileLoader">FileLoader</see> to load the RDF from the file which will attempt to determine the format of the RDF based on the file extension unless the parser was instantiated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
         public void Load(ISparqlResultsHandler handler, String filename)
         {
@@ -180,9 +180,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Internal method which actually parses the Result Set by traversing the RDF Graph appropriately
+        /// Internal method which actually parses the Result Set by traversing the RDF Graph appropriately.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void Parse(SparqlRdfParserContext context)
         {
             try
@@ -348,9 +348,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -366,7 +366,7 @@ namespace VDS.RDF.Parsing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

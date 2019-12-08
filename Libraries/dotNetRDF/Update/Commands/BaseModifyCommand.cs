@@ -32,33 +32,33 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Abstract Base class for classes that represent SPARQL Update INSERT, DELETE and INSERT/DELETE commands
+    /// Abstract Base class for classes that represent SPARQL Update INSERT, DELETE and INSERT/DELETE commands.
     /// </summary>
     public abstract class BaseModificationCommand
         : SparqlUpdateCommand
     {
         /// <summary>
-        /// URI from the WITH statement
+        /// URI from the WITH statement.
         /// </summary>
         protected Uri _graphUri;
         /// <summary>
-        /// URIs for the USING clauses
+        /// URIs for the USING clauses.
         /// </summary>
         protected List<Uri> _usingUris;
         /// <summary>
-        /// URIS for the USING NAMED clauses
+        /// URIS for the USING NAMED clauses.
         /// </summary>
         protected List<Uri> _usingNamedUris;
 
         /// <summary>
-        /// Creates a new Base Modification Command
+        /// Creates a new Base Modification Command.
         /// </summary>
-        /// <param name="type">Update Command Type</param>
+        /// <param name="type">Update Command Type.</param>
         public BaseModificationCommand(SparqlUpdateCommandType type)
             : base(type) { }
 
         /// <summary>
-        /// Gets the URIs specified in USING clauses
+        /// Gets the URIs specified in USING clauses.
         /// </summary>
         public IEnumerable<Uri> UsingUris
         {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URIs specified in USING NAMED clauses
+        /// Gets the URIs specified in USING NAMED clauses.
         /// </summary>
         public IEnumerable<Uri> UsingNamedUris
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph specified in the WITH clause
+        /// Gets the URI of the Graph specified in the WITH clause.
         /// </summary>
         public Uri GraphUri
         {
@@ -109,9 +109,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Adds a new USING URI
+        /// Adds a new USING URI.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         public void AddUsingUri(Uri u)
         {
             if (_usingUris == null) _usingUris = new List<Uri>();
@@ -119,9 +119,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Adds a new USING NAMED URI
+        /// Adds a new USING NAMED URI.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         public void AddUsingNamedUri(Uri u)
         {
             if (_usingNamedUris == null) _usingNamedUris = new List<Uri>();
@@ -129,10 +129,10 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Determines whether a Graph Pattern is valid for use in an DELETE pattern
+        /// Determines whether a Graph Pattern is valid for use in an DELETE pattern.
         /// </summary>
-        /// <param name="p">Graph Pattern</param>
-        /// <param name="top">Is this the top level pattern?</param>
+        /// <param name="p">Graph Pattern.</param>
+        /// <param name="top">Is this the top level pattern?.</param>
         /// <returns></returns>
         protected bool IsValidDeletePattern(GraphPattern p, bool top)
         {

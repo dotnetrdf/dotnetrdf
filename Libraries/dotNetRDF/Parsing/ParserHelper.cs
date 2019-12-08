@@ -33,15 +33,15 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper class containing useful methods for Parsers
+    /// Static Helper class containing useful methods for Parsers.
     /// </summary>
     public static class ParserHelper
     {
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="t">Token to resolve</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
         public static INode TryResolveUri(IParserContext context, IToken t)
         {
@@ -49,11 +49,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="t">Token to resolve</param>
-        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="t">Token to resolve.</param>
+        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
         /// <returns></returns>
         public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback)
         {
@@ -61,12 +61,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="t">Token to resolve</param>
-        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI</param>
-        /// <param name="qnameUnescape">QName unescaping function</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="t">Token to resolve.</param>
+        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
+        /// <param name="qnameUnescape">QName unescaping function.</param>
         /// <returns></returns>
         public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<String, String> qnameUnescape)
         {
@@ -107,10 +107,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="t">Token to resolve</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
         public static INode TryResolveUri(IStoreParserContext context, IToken t)
         {
@@ -151,13 +151,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="t">Token to resolve</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
         /// <remarks>
-        /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames
+        /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames.
         /// </remarks>
         internal static INode TryResolveUri(IRdfHandler handler, IToken t)
         {
@@ -228,13 +228,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="t">Token to resolve</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
         /// <remarks>
-        /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames
+        /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames.
         /// </remarks>
         internal static INode TryResolveUri(ISparqlResultsHandler handler, IToken t)
         {
@@ -264,10 +264,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="t">Token to resolve</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
         public static INode TryResolveUri(IGraph g, IToken t)
         {
@@ -308,10 +308,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising informative standardised Parser Errors
+        /// Helper method for raising informative standardised Parser Errors.
         /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="t">The Token that is the cause of the Error</param>
+        /// <param name="msg">The Error Message.</param>
+        /// <param name="t">The Token that is the cause of the Error.</param>
         /// <returns></returns>
         public static RdfParseException Error(String msg, IToken t)
         {
@@ -333,10 +333,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper function which generates standardised Error Messages
+        /// Helper function which generates standardised Error Messages.
         /// </summary>
-        /// <param name="message">Error Message</param>
-        /// <param name="evt">Event causing the Error</param>
+        /// <param name="message">Error Message.</param>
+        /// <param name="evt">Event causing the Error.</param>
         /// <returns></returns>
         public static RdfParseException Error(String message, IRdfXmlEvent evt)
         {
@@ -344,11 +344,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper function which generates standardised Error Messages
+        /// Helper function which generates standardised Error Messages.
         /// </summary>
-        /// <param name="message">Error Message</param>
-        /// <param name="production">The Production where the Error occurred</param>
-        /// <param name="evt">Event causing the Error</param>
+        /// <param name="message">Error Message.</param>
+        /// <param name="production">The Production where the Error occurred.</param>
+        /// <param name="evt">Event causing the Error.</param>
         /// <returns></returns>
         public static RdfParseException Error(String message, String production, IRdfXmlEvent evt)
         {

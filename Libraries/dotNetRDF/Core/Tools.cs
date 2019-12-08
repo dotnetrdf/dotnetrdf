@@ -33,16 +33,16 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Tools class which contains a number of utility methods which are declared as static methods
+    /// Tools class which contains a number of utility methods which are declared as static methods.
     /// </summary>
     public static class Tools
     {
         /// <summary>
-        /// Checks whether a Uri is valid as a Base Uri for resolving Relative URIs against
+        /// Checks whether a Uri is valid as a Base Uri for resolving Relative URIs against.
         /// </summary>
-        /// <param name="baseUri">Base Uri to test</param>
-        /// <returns>True if the Base Uri can be used to resolve Relative URIs against</returns>
-        /// <remarks>A Base Uri is valid if it is an absolute Uri and not using the mailto: scheme</remarks>
+        /// <param name="baseUri">Base Uri to test.</param>
+        /// <returns>True if the Base Uri can be used to resolve Relative URIs against.</returns>
+        /// <remarks>A Base Uri is valid if it is an absolute Uri and not using the mailto: scheme.</remarks>
         public static bool IsValidBaseUri(Uri baseUri)
         {
             if (baseUri.Scheme.Equals("mailto"))
@@ -56,9 +56,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether a URI Reference appears malformed and if so fixes it
+        /// Checks whether a URI Reference appears malformed and if so fixes it.
         /// </summary>
-        /// <param name="uriref">URI Reference</param>
+        /// <param name="uriref">URI Reference.</param>
         /// <returns></returns>
         static String FixMalformedUriStrings(String uriref)
         {
@@ -83,9 +83,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns a URI with any Fragment ID removed from it
+        /// Returns a URI with any Fragment ID removed from it.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public static Uri StripUriFragment(Uri u)
         {
@@ -102,13 +102,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Generic Helper Function which Resolves Uri References against a Base Uri
+        /// Generic Helper Function which Resolves Uri References against a Base Uri.
         /// </summary>
-        /// <param name="uriref">Uri Reference to resolve</param>
-        /// <param name="baseUri">Base Uri to resolve against</param>
-        /// <returns>Resolved Uri as a String</returns>
-        /// <exception cref="RdfParseException">RDF Parse Exception if the Uri cannot be resolved for a know reason</exception>
-        /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed</exception>
+        /// <param name="uriref">Uri Reference to resolve.</param>
+        /// <param name="baseUri">Base Uri to resolve against.</param>
+        /// <returns>Resolved Uri as a String.</returns>
+        /// <exception cref="RdfParseException">RDF Parse Exception if the Uri cannot be resolved for a know reason.</exception>
+        /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed.</exception>
         public static String ResolveUri(String uriref, String baseUri)
         {
             if (!baseUri.Equals(String.Empty))
@@ -168,12 +168,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Generic Helper Function which Resolves Uri References against a Base Uri
+        /// Generic Helper Function which Resolves Uri References against a Base Uri.
         /// </summary>
-        /// <param name="uriref">Uri Reference to resolve</param>
-        /// <param name="baseUri">Base Uri to resolve against</param>
-        /// <returns>Resolved Uri as a String</returns>
-        /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed</exception>
+        /// <param name="uriref">Uri Reference to resolve.</param>
+        /// <param name="baseUri">Base Uri to resolve against.</param>
+        /// <returns>Resolved Uri as a String.</returns>
+        /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed.</exception>
         public static Uri ResolveUri(Uri uriref, Uri baseUri)
         {
             Uri result = new Uri(baseUri, uriref);
@@ -181,11 +181,11 @@ namespace VDS.RDF
         }
 
                 /// <summary>
-        /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided
+        /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided.
         /// </summary>
-        /// <param name="qname">QName to resolve</param>
-        /// <param name="nsmap">Namespace Map to resolve against</param>
-        /// <param name="baseUri">Base Uri to resolve against</param>
+        /// <param name="qname">QName to resolve.</param>
+        /// <param name="nsmap">Namespace Map to resolve against.</param>
+        /// <param name="baseUri">Base Uri to resolve against.</param>
         /// <returns></returns>
         public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri)
         {
@@ -193,12 +193,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided
+        /// Resolves a QName into a Uri using the Namespace Mapper and Base Uri provided.
         /// </summary>
-        /// <param name="qname">QName to resolve</param>
-        /// <param name="nsmap">Namespace Map to resolve against</param>
-        /// <param name="baseUri">Base Uri to resolve against</param>
-        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to Base URI</param>
+        /// <param name="qname">QName to resolve.</param>
+        /// <param name="nsmap">Namespace Map to resolve against.</param>
+        /// <param name="baseUri">Base Uri to resolve against.</param>
+        /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to Base URI.</param>
         /// <returns></returns>
         public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri, bool allowDefaultPrefixFallback)
         {
@@ -257,11 +257,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Resolves a QName/Uri into a Uri using the Namespace Mapper and Base Uri provided
+        /// Resolves a QName/Uri into a Uri using the Namespace Mapper and Base Uri provided.
         /// </summary>
-        /// <param name="t">QName/Uri to resolve</param>
-        /// <param name="nsmap">Namespace Map to resolve against</param>
-        /// <param name="baseUri">Base Uri to resolve against</param>
+        /// <param name="t">QName/Uri to resolve.</param>
+        /// <param name="nsmap">Namespace Map to resolve against.</param>
+        /// <param name="baseUri">Base Uri to resolve against.</param>
         /// <returns></returns>
         public static String ResolveUriOrQName(IToken t, INamespaceMapper nsmap, Uri baseUri)
         {
@@ -281,11 +281,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Copies a Node so it can be used in another Graph since by default Triples cannot contain Nodes from more than one Graph
+        /// Copies a Node so it can be used in another Graph since by default Triples cannot contain Nodes from more than one Graph.
         /// </summary>
-        /// <param name="original">Node to Copy</param>
-        /// <param name="target">Graph to Copy into</param>
-        /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Node being copied</param>
+        /// <param name="original">Node to Copy.</param>
+        /// <param name="target">Graph to Copy into.</param>
+        /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Node being copied.</param>
         /// <returns></returns>
         public static INode CopyNode(INode original, IGraph target, bool keepOriginalGraphUri)
         {
@@ -302,14 +302,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Copies a Node so it can be used in another Graph since by default Triples cannot contain Nodes from more than one Graph
+        /// Copies a Node so it can be used in another Graph since by default Triples cannot contain Nodes from more than one Graph.
         /// </summary>
-        /// <param name="original">Node to Copy</param>
-        /// <param name="target">Graph to Copy into</param>
+        /// <param name="original">Node to Copy.</param>
+        /// <param name="target">Graph to Copy into.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Graphs is done
+        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Graphs is done.
         /// </para>
         /// </remarks>
         public static INode CopyNode(INode original, IGraph target)
@@ -372,14 +372,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Copies a Node using another Node Factory
+        /// Copies a Node using another Node Factory.
         /// </summary>
-        /// <param name="original">Node to copy</param>
-        /// <param name="target">Factory to copy into</param>
+        /// <param name="original">Node to copy.</param>
+        /// <param name="target">Factory to copy into.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Factories is done
+        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Factories is done.
         /// </para>
         /// </remarks>
         public static INode CopyNode(INode original, INodeFactory target)
@@ -416,10 +416,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Copies a Triple from one Graph to another
+        /// Copies a Triple from one Graph to another.
         /// </summary>
-        /// <param name="t">Triple to copy</param>
-        /// <param name="target">Graph to copy to</param>
+        /// <param name="t">Triple to copy.</param>
+        /// <param name="target">Graph to copy to.</param>
         /// <returns></returns>
         public static Triple CopyTriple(Triple t, IGraph target)
         {
@@ -427,11 +427,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Copies a Triple from one Graph to another
+        /// Copies a Triple from one Graph to another.
         /// </summary>
-        /// <param name="t">Triple to copy</param>
-        /// <param name="target">Graph to copy to</param>
-        /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Nodes being copied</param>
+        /// <param name="t">Triple to copy.</param>
+        /// <param name="target">Graph to copy to.</param>
+        /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Nodes being copied.</param>
         /// <returns></returns>
         public static Triple CopyTriple(Triple t, IGraph target, bool keepOriginalGraphUri)
         {
@@ -449,10 +449,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Does a quick and simple combination of the Hash Codes of two Objects
+        /// Does a quick and simple combination of the Hash Codes of two Objects.
         /// </summary>
-        /// <param name="x">First Object</param>
-        /// <param name="y">Second Object</param>
+        /// <param name="x">First Object.</param>
+        /// <param name="y">Second Object.</param>
         /// <returns></returns>
         public static int CombineHashCodes(Object x, Object y)
         {
@@ -463,9 +463,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Prints Debugging Output to the Console Standard Out for a HTTP Web Request
+        /// Prints Debugging Output to the Console Standard Out for a HTTP Web Request.
         /// </summary>
-        /// <param name="httpRequest">HTTP Web Request</param>
+        /// <param name="httpRequest">HTTP Web Request.</param>
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
         public static void HttpDebugRequest(HttpWebRequest httpRequest)
         {
@@ -485,9 +485,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Prints Debugging Output to the Console Standard Out for a HTTP Web Response
+        /// Prints Debugging Output to the Console Standard Out for a HTTP Web Response.
         /// </summary>
-        /// <param name="httpResponse">HTTP Web Response</param>
+        /// <param name="httpResponse">HTTP Web Response.</param>
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
         public static void HttpDebugResponse(HttpWebResponse httpResponse)
         {

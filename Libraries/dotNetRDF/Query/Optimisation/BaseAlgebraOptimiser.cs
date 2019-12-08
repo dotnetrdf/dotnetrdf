@@ -31,14 +31,14 @@ namespace VDS.RDF.Query.Optimisation
 {
 
     /// <summary>
-    /// Abstract Base Class for Algebra Transformers where the Transformer may care about the depth of the Algebra in the Algebra Tree
+    /// Abstract Base Class for Algebra Transformers where the Transformer may care about the depth of the Algebra in the Algebra Tree.
     /// </summary>
     public abstract class BaseAlgebraOptimiser : IAlgebraOptimiser
     {
         /// <summary>
-        /// Attempts to optimise an Algebra to another more optimal form
+        /// Attempts to optimise an Algebra to another more optimal form.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public virtual ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -46,24 +46,24 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Transforms the Algebra to another form tracking the depth in the Algebra tree
+        /// Transforms the Algebra to another form tracking the depth in the Algebra tree.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
-        /// <param name="depth">Depth</param>
+        /// <param name="algebra">Algebra.</param>
+        /// <param name="depth">Depth.</param>
         /// <returns></returns>
         protected abstract ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth);
 
         /// <summary>
-        /// Determines whether the Optimiser can be applied to a given Query
+        /// Determines whether the Optimiser can be applied to a given Query.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public abstract bool IsApplicable(SparqlQuery q);
 
         /// <summary>
-        /// Determines whether the Optimiser can be applied to a given Update Command Set
+        /// Determines whether the Optimiser can be applied to a given Update Command Set.
         /// </summary>
-        /// <param name="cmds">Command Set</param>
+        /// <param name="cmds">Command Set.</param>
         /// <returns></returns>
         public abstract bool IsApplicable(SparqlUpdateCommandSet cmds);
     }

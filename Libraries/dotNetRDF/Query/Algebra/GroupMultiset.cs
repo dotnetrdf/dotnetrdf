@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Multiset which represents a Grouping of Sets from another Multiset
+    /// Multiset which represents a Grouping of Sets from another Multiset.
     /// </summary>
     public class GroupMultiset 
         : Multiset
@@ -39,16 +39,16 @@ namespace VDS.RDF.Query.Algebra
         private Dictionary<int, BindingGroup> _groups = new Dictionary<int, BindingGroup>();
 
         /// <summary>
-        /// Creates a new Group Multiset
+        /// Creates a new Group Multiset.
         /// </summary>
-        /// <param name="contents">Multiset which contains the sets that are being grouped</param>
+        /// <param name="contents">Multiset which contains the sets that are being grouped.</param>
         public GroupMultiset(BaseMultiset contents)
         {
             _contents = contents;
         }
 
         /// <summary>
-        /// Gets the enumeration of the Groups in the Multiset
+        /// Gets the enumeration of the Groups in the Multiset.
         /// </summary>
         public IEnumerable<BindingGroup> Groups
         {
@@ -59,9 +59,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of the IDs of Sets in the group with the given ID
+        /// Gets the enumeration of the IDs of Sets in the group with the given ID.
         /// </summary>
-        /// <param name="id">Group ID</param>
+        /// <param name="id">Group ID.</param>
         /// <returns></returns>
         public IEnumerable<int> GroupSetIDs(int id)
         {
@@ -69,9 +69,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Group with the given ID
+        /// Gets the Group with the given ID.
         /// </summary>
-        /// <param name="id">Group ID</param>
+        /// <param name="id">Group ID.</param>
         /// <returns></returns>
         public BindingGroup Group(int id)
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Group to the Multiset
+        /// Adds a Group to the Multiset.
         /// </summary>
         /// <param name="group"></param>
         public void AddGroup(BindingGroup group)
@@ -94,17 +94,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Set to the Group Multiset
+        /// Adds a Set to the Group Multiset.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <exception cref="RdfQueryException">Thrown since this action is invalid on a Group Multiset</exception>
+        /// <param name="s">Set.</param>
+        /// <exception cref="RdfQueryException">Thrown since this action is invalid on a Group Multiset.</exception>
         public override void Add(ISet s)
         {
             throw new RdfQueryException("Cannot add a Set to a Group Multiset");
         }
 
         /// <summary>
-        /// Gets the Multiset which contains the Sets who are the members of the Groups this Multiset represents
+        /// Gets the Multiset which contains the Sets who are the members of the Groups this Multiset represents.
         /// </summary>
         public BaseMultiset Contents
         {

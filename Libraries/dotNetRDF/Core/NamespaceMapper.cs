@@ -33,54 +33,54 @@ using VDS.Common.Collections;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Delegate Type for the Events of the Namespace Mapper
+    /// Delegate Type for the Events of the Namespace Mapper.
     /// </summary>
-    /// <param name="prefix">Namespace Prefix</param>
-    /// <param name="uri">Namespace Uri</param>
+    /// <param name="prefix">Namespace Prefix.</param>
+    /// <param name="uri">Namespace Uri.</param>
     public delegate void NamespaceChanged(String prefix, Uri uri);
 
     /// <summary>
-    /// Class for representing Mappings between Prefixes and Namespace URIs
+    /// Class for representing Mappings between Prefixes and Namespace URIs.
     /// </summary>
     public class NamespaceMapper : INamespaceMapper
     {
         /// <summary>
-        /// Constant Uri for the RDF Namespace
+        /// Constant Uri for the RDF Namespace.
         /// </summary>
         public const string RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
         /// <summary>
-        /// Constant Uri for the RDF Scheme Namespace
+        /// Constant Uri for the RDF Scheme Namespace.
         /// </summary>
         public const string RDFS = "http://www.w3.org/2000/01/rdf-schema#";
         /// <summary>
-        /// Constant Uri for the XML Scheme Namespace
+        /// Constant Uri for the XML Scheme Namespace.
         /// </summary>
         public const string XMLSCHEMA = "http://www.w3.org/2001/XMLSchema#";
         /// <summary>
-        /// Constant Uri for the OWL Namespace
+        /// Constant Uri for the OWL Namespace.
         /// </summary>
         public const string OWL = "http://www.w3.org/2002/07/owl#";
 
         /// <summary>
-        /// Mapping of Prefixes to URIs
+        /// Mapping of Prefixes to URIs.
         /// </summary>
         protected Dictionary<String, Uri> _uris;
         /// <summary>
-        /// Mapping of URIs to Prefixes
+        /// Mapping of URIs to Prefixes.
         /// </summary>
         protected Dictionary<int, String> _prefixes;
 
         /// <summary>
-        /// Constructs a new Namespace Map
+        /// Constructs a new Namespace Map.
         /// </summary>
-        /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined</remarks>
+        /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined.</remarks>
         public NamespaceMapper()
             : this(false) { }
 
         /// <summary>
-        /// Constructs a new Namespace Map which is optionally empty
+        /// Constructs a new Namespace Map which is optionally empty.
         /// </summary>
-        /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
+        /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined.</param>
         public NamespaceMapper(bool empty)
         {
             _uris = new Dictionary<string, Uri>();
@@ -96,7 +96,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Constructs a new Namespace Map which is based on an existing map
+        /// Constructs a new Namespace Map which is based on an existing map.
         /// </summary>
         /// <param name="nsmapper"></param>
         protected internal NamespaceMapper(INamespaceMapper nsmapper)
@@ -106,10 +106,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns the Prefix associated with the given Namespace URI
+        /// Returns the Prefix associated with the given Namespace URI.
         /// </summary>
-        /// <param name="uri">The Namespace URI to lookup the Prefix for</param>
-        /// <returns>String prefix for the Namespace</returns>
+        /// <param name="uri">The Namespace URI to lookup the Prefix for.</param>
+        /// <returns>String prefix for the Namespace.</returns>
         public virtual String GetPrefix(Uri uri)
         {
             int hash = uri.GetEnhancedHashCode();
@@ -124,10 +124,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns the Namespace URI associated with the given Prefix
+        /// Returns the Namespace URI associated with the given Prefix.
         /// </summary>
-        /// <param name="prefix">The Prefix to lookup the Namespace URI for</param>
-        /// <returns>URI for the Namespace</returns>
+        /// <param name="prefix">The Prefix to lookup the Namespace URI for.</param>
+        /// <returns>URI for the Namespace.</returns>
         public virtual Uri GetNamespaceUri(String prefix) 
         {
             if (_uris.ContainsKey(prefix))
@@ -141,10 +141,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Namespace to the Namespace Map
+        /// Adds a Namespace to the Namespace Map.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         public virtual void AddNamespace(String prefix, Uri uri)
         {
             if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
@@ -188,9 +188,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Removes a Namespace from the NamespaceMapper
+        /// Removes a Namespace from the NamespaceMapper.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix of the Namespace to remove</param>
+        /// <param name="prefix">Namespace Prefix of the Namespace to remove.</param>
         public virtual void RemoveNamespace(String prefix)
         {
             // Check the Namespace is defined
@@ -214,9 +214,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Method which checks whether a given Namespace Prefix is defined
+        /// Method which checks whether a given Namespace Prefix is defined.
         /// </summary>
-        /// <param name="prefix">Prefix to test</param>
+        /// <param name="prefix">Prefix to test.</param>
         /// <returns></returns>
         public virtual bool HasNamespace(String prefix)
         {
@@ -224,9 +224,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Method which checks whether a given Namespace is defined
+        /// Method which checks whether a given Namespace is defined.
         /// </summary>
-        /// <param name="ns">Namespace to test</param>
+        /// <param name="ns">Namespace to test.</param>
         public virtual bool HasNamespace(Uri ns)
         {
             int hash = ns.GetEnhancedHashCode();
@@ -234,7 +234,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Clears the Namespace Map
+        /// Clears the Namespace Map.
         /// </summary>
         public void Clear()
         {
@@ -243,7 +243,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a Enumerator of all the Prefixes
+        /// Gets a Enumerator of all the Prefixes.
         /// </summary>
         public IEnumerable<String> Prefixes
         {
@@ -254,10 +254,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// A Function which attempts to reduce a Uri to a QName
+        /// A Function which attempts to reduce a Uri to a QName.
         /// </summary>
-        /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
+        /// <param name="uri">The Uri to attempt to reduce.</param>
+        /// <param name="qname">The value to output the QName to if possible.</param>
         /// <returns></returns>
         /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
         public virtual bool ReduceToQName(String uri, out String qname)
@@ -285,9 +285,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Imports the contents of another Namespace Map into this Namespace Map
+        /// Imports the contents of another Namespace Map into this Namespace Map.
         /// </summary>
-        /// <param name="nsmap">Namespace Map to import</param>
+        /// <param name="nsmap">Namespace Map to import.</param>
         /// <remarks>
         /// Prefixes in the imported Map which are already defined in this Map are ignored, this may change in future releases.
         /// </remarks>
@@ -335,10 +335,10 @@ namespace VDS.RDF
         public event NamespaceChanged NamespaceRemoved;
 
         /// <summary>
-        /// Internal Helper for the NamespaceAdded Event which raises it only when a Handler is registered
+        /// Internal Helper for the NamespaceAdded Event which raises it only when a Handler is registered.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         protected virtual void OnNamespaceAdded(String prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceAdded;
@@ -349,10 +349,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Helper for the NamespaceModified Event which raises it only when a Handler is registered
+        /// Internal Helper for the NamespaceModified Event which raises it only when a Handler is registered.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         protected virtual void OnNamespaceModified(String prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceModified;
@@ -363,10 +363,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Helper for the NamespaceRemoved Event which raises it only when a Handler is registered
+        /// Internal Helper for the NamespaceRemoved Event which raises it only when a Handler is registered.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         protected virtual void OnNamespaceRemoved(String prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceRemoved;
@@ -379,7 +379,7 @@ namespace VDS.RDF
         #region IDisposable Members
 
         /// <summary>
-        /// Disposes of a Namespace Map
+        /// Disposes of a Namespace Map.
         /// </summary>
         public void Dispose()
         {
@@ -391,41 +391,41 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class for representing Mappings from URIs to QNames
+    /// Class for representing Mappings from URIs to QNames.
     /// </summary>
     /// <remarks>
-    /// Used primarily in outputting RDF syntax
+    /// Used primarily in outputting RDF syntax.
     /// </remarks>
     public class QNameOutputMapper 
         : NamespaceMapper
     {
         /// <summary>
-        /// Mapping of URIs to QNames
+        /// Mapping of URIs to QNames.
         /// </summary>
         protected MultiDictionary<String, QNameMapping> _mapping = new MultiDictionary<String, QNameMapping>();
         /// <summary>
-        /// Next available Temporary Namespace ID
+        /// Next available Temporary Namespace ID.
         /// </summary>
         protected int _nextNamespaceID = 0;
 
         /// <summary>
-        /// Creates a new QName Output Mapper using the given Namespace Map
+        /// Creates a new QName Output Mapper using the given Namespace Map.
         /// </summary>
-        /// <param name="nsmapper">Namespace Map</param>
+        /// <param name="nsmapper">Namespace Map.</param>
         public QNameOutputMapper(INamespaceMapper nsmapper)
             : base(nsmapper) { }
 
         /// <summary>
-        /// Creates a new QName Output Mapper which has an empty Namespace Map
+        /// Creates a new QName Output Mapper which has an empty Namespace Map.
         /// </summary>
         public QNameOutputMapper()
             : base(true) { }
 
         /// <summary>
-        /// A Function which attempts to reduce a Uri to a QName
+        /// A Function which attempts to reduce a Uri to a QName.
         /// </summary>
-        /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
+        /// <param name="uri">The Uri to attempt to reduce.</param>
+        /// <param name="qname">The value to output the QName to if possible.</param>
         /// <returns></returns>
         /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
         public override bool ReduceToQName(string uri, out string qname)
@@ -468,18 +468,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// A Function which attempts to reduce a Uri to a QName and issues a Temporary Namespace if required
+        /// A Function which attempts to reduce a Uri to a QName and issues a Temporary Namespace if required.
         /// </summary>
-        /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
-        /// <param name="tempNamespace">The Temporary Namespace issued (if any)</param>
+        /// <param name="uri">The Uri to attempt to reduce.</param>
+        /// <param name="qname">The value to output the QName to if possible.</param>
+        /// <param name="tempNamespace">The Temporary Namespace issued (if any).</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
         /// This function will always returns a possible QName for the URI if the format of the URI permits it.  It doesn't guarentee that the QName will be valid for the syntax it is being written to - it is up to implementers of writers to validate the QNames returned.
         /// </para>
         /// <para>
-        /// Where necessary a Temporary Namespace will be issued and the <paramref name="tempNamespace">tempNamespace</paramref> parameter will be set to the prefix of the new temporary namespace
+        /// Where necessary a Temporary Namespace will be issued and the <paramref name="tempNamespace">tempNamespace</paramref> parameter will be set to the prefix of the new temporary namespace.
         /// </para>
         /// </remarks>
         public bool ReduceToQName(String uri, out String qname, out String tempNamespace)
@@ -550,17 +550,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a QName mapping to the cache
+        /// Adds a QName mapping to the cache.
         /// </summary>
-        /// <param name="uri">URI</param>
-        /// <param name="mapping">Mapping</param>
+        /// <param name="uri">URI.</param>
+        /// <param name="mapping">Mapping.</param>
         protected virtual void AddToCache(String uri, QNameMapping mapping)
         {
             _mapping.Add(uri, mapping);
         }
 
         /// <summary>
-        /// Gets the next available Temporary Namespace ID
+        /// Gets the next available Temporary Namespace ID.
         /// </summary>
         /// <returns></returns>
         private String GetNextTemporaryNamespacePrefix()
@@ -575,23 +575,23 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Thread Safe version of the <see cref="QNameOutputMapper">QNameOutputMapper</see>
+    /// Thread Safe version of the <see cref="QNameOutputMapper">QNameOutputMapper</see>.
     /// </summary>
     public class ThreadSafeQNameOutputMapper
         : QNameOutputMapper
     {
         /// <summary>
-        /// Creates a new Thread Safe QName Output Mapper
+        /// Creates a new Thread Safe QName Output Mapper.
         /// </summary>
-        /// <param name="nsmapper">Namespace Mapper</param>
+        /// <param name="nsmapper">Namespace Mapper.</param>
         public ThreadSafeQNameOutputMapper(INamespaceMapper nsmapper)
             : base(nsmapper) { }
 
         /// <summary>
-        /// Adds a QName Mapping to the Cache in a Thread Safe way
+        /// Adds a QName Mapping to the Cache in a Thread Safe way.
         /// </summary>
-        /// <param name="key">Key</param>
-        /// <param name="value">Value</param>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
         protected override void AddToCache(String key, QNameMapping value)
         {
             try
@@ -606,10 +606,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Namespace to the QName Output Mapper
+        /// Adds a Namespace to the QName Output Mapper.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
-        /// <param name="uri">Namespace URI</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="uri">Namespace URI.</param>
         public override void AddNamespace(string prefix, Uri uri)
         {
             try
@@ -627,7 +627,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Represents a mapping from a URI to a QName
+    /// Represents a mapping from a URI to a QName.
     /// </summary>
     public class QNameMapping 
     {
@@ -635,16 +635,16 @@ namespace VDS.RDF
         private String _qname;
 
         /// <summary>
-        /// Creates a new QName Mapping
+        /// Creates a new QName Mapping.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         public QNameMapping(String u)
         {
             _u = u;
         }
 
         /// <summary>
-        /// URI this is a mapping for
+        /// URI this is a mapping for.
         /// </summary>
         public String Uri
         {
@@ -655,7 +655,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// QName this URI maps to
+        /// QName this URI maps to.
         /// </summary>
         public String QName
         {
@@ -670,7 +670,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the String representation of the URI
+        /// Gets the String representation of the URI.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -679,9 +679,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether this is equal to another Object
+        /// Checks whether this is equal to another Object.
         /// </summary>
-        /// <param name="obj">Object to test against</param>
+        /// <param name="obj">Object to test against.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

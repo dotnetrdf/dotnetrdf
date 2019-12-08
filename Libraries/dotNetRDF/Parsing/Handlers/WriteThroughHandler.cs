@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which writes the handled Triples out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="ITripleFormatter">ITripleFormatter</see>
+    /// A RDF Handler which writes the handled Triples out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="ITripleFormatter">ITripleFormatter</see>.
     /// </summary>
     public class WriteThroughHandler
         : BaseRdfHandler
@@ -50,11 +50,11 @@ namespace VDS.RDF.Parsing.Handlers
         private const int FlushInterval = 50000;
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatter">Triple Formatter to use</param>
-        /// <param name="writer">Text Writer to write to</param>
-        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling</param>
+        /// <param name="formatter">Triple Formatter to use.</param>
+        /// <param name="writer">Text Writer to write to.</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
         public WriteThroughHandler(ITripleFormatter formatter, TextWriter writer, bool closeOnEnd)
         {
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
@@ -71,19 +71,19 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatter">Triple Formatter to use</param>
-        /// <param name="writer">Text Writer to write to</param>
+        /// <param name="formatter">Triple Formatter to use.</param>
+        /// <param name="writer">Text Writer to write to.</param>
         public WriteThroughHandler(ITripleFormatter formatter, TextWriter writer)
             : this(formatter, writer, true) { }
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatterType">Type of the formatter to create</param>
-        /// <param name="writer">Text Writer to write to</param>
-        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling</param>
+        /// <param name="formatterType">Type of the formatter to create.</param>
+        /// <param name="writer">Text Writer to write to.</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
         public WriteThroughHandler(Type formatterType, TextWriter writer, bool closeOnEnd)
         {
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
@@ -94,15 +94,15 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatterType">Type of the formatter to create</param>
-        /// <param name="writer">Text Writer to write to</param>
+        /// <param name="formatterType">Type of the formatter to create.</param>
+        /// <param name="writer">Text Writer to write to.</param>
         public WriteThroughHandler(Type formatterType, TextWriter writer)
             : this(formatterType, writer, true) { }
 
         /// <summary>
-        /// Starts RDF Handling instantiating a Triple Formatter if necessary
+        /// Starts RDF Handling instantiating a Triple Formatter if necessary.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -158,9 +158,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends RDF Handling closing the <see cref="TextWriter">TextWriter</see> being used if the setting is enabled
+        /// Ends RDF Handling closing the <see cref="TextWriter">TextWriter</see> being used if the setting is enabled.
         /// </summary>
-        /// <param name="ok">Indicates whether parsing completed without error</param>
+        /// <param name="ok">Indicates whether parsing completed without error.</param>
         protected override void EndRdfInternal(bool ok)
         {
             if (_formatter is IGraphFormatter)
@@ -175,10 +175,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Namespace Declarations passing them to the underlying formatter if applicable
+        /// Handles Namespace Declarations passing them to the underlying formatter if applicable.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -196,9 +196,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Base URI Declarations passing them to the underlying formatter if applicable
+        /// Handles Base URI Declarations passing them to the underlying formatter if applicable.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -211,9 +211,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by writing them using the underlying formatter
+        /// Handles Triples by writing them using the underlying formatter.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -228,7 +228,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that the Handler accepts all Triples
+        /// Gets that the Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {
@@ -240,7 +240,7 @@ namespace VDS.RDF.Parsing.Handlers
     }
 
     /// <summary>
-    /// A Results Handler which writes the handled Results out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="IResultFormatter">IResultFormatter</see>
+    /// A Results Handler which writes the handled Results out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="IResultFormatter">IResultFormatter</see>.
     /// </summary>
     public class ResultWriteThroughHandler 
         : BaseResultsHandler
@@ -255,11 +255,11 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _headerWritten = false;
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatter">Triple Formatter to use</param>
-        /// <param name="writer">Text Writer to write to</param>
-        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling</param>
+        /// <param name="formatter">Triple Formatter to use.</param>
+        /// <param name="writer">Text Writer to write to.</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
         public ResultWriteThroughHandler(IResultFormatter formatter, TextWriter writer, bool closeOnEnd)
         {
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
@@ -276,19 +276,19 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatter">Triple Formatter to use</param>
-        /// <param name="writer">Text Writer to write to</param>
+        /// <param name="formatter">Triple Formatter to use.</param>
+        /// <param name="writer">Text Writer to write to.</param>
         public ResultWriteThroughHandler(IResultFormatter formatter, TextWriter writer)
             : this(formatter, writer, true) { }
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatterType">Type of the formatter to create</param>
-        /// <param name="writer">Text Writer to write to</param>
-        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling</param>
+        /// <param name="formatterType">Type of the formatter to create.</param>
+        /// <param name="writer">Text Writer to write to.</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
         public ResultWriteThroughHandler(Type formatterType, TextWriter writer, bool closeOnEnd)
         {
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
@@ -299,15 +299,15 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a new Write-Through Handler
+        /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatterType">Type of the formatter to create</param>
-        /// <param name="writer">Text Writer to write to</param>
+        /// <param name="formatterType">Type of the formatter to create.</param>
+        /// <param name="writer">Text Writer to write to.</param>
         public ResultWriteThroughHandler(Type formatterType, TextWriter writer)
             : this(formatterType, writer, true) { }
 
         /// <summary>
-        /// Starts writing results
+        /// Starts writing results.
         /// </summary>
         protected override void StartResultsInternal()
         {
@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends the writing of results closing the <see cref="TextWriter">TextWriter</see> depending on the option set when this instance was instantiated
+        /// Ends the writing of results closing the <see cref="TextWriter">TextWriter</see> depending on the option set when this instance was instantiated.
         /// </summary>
         /// <param name="ok"></param>
         protected override void EndResultsInternal(bool ok)
@@ -380,9 +380,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Writes a Boolean Result to the output
+        /// Writes a Boolean Result to the output.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             if (_currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
@@ -397,9 +397,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Writes a Variable declaration to the output
+        /// Writes a Variable declaration to the output.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
@@ -410,9 +410,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Writes a Result to the output
+        /// Writes a Result to the output.
         /// </summary>
-        /// <param name="result">SPARQL Result</param>
+        /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {

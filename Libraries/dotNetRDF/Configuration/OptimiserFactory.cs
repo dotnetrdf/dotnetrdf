@@ -34,7 +34,7 @@ using System.Reflection;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// An Object Factory that can generate SPARQL Query and Algebra Optimisers
+    /// An Object Factory that can generate SPARQL Query and Algebra Optimisers.
     /// </summary>
     public class OptimiserFactory
         : IObjectFactory
@@ -44,12 +44,12 @@ namespace VDS.RDF.Configuration
         private const String QueryOptimiserWeighted = "VDS.RDF.Query.Optimisation.WeightedOptimiser";
 
         /// <summary>
-        /// Tries to load a SPARQL Query/Algebra Optimiser based on information from the Configuration Graph
+        /// Tries to load a SPARQL Query/Algebra Optimiser based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -112,9 +112,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

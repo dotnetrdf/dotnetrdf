@@ -38,30 +38,30 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for parsing TriX (a named Graph XML format for RDF)
+    /// Parser for parsing TriX (a named Graph XML format for RDF).
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Default Graph (if any) will be given the special Uri <strong>trix:default-graph</strong>
+    /// The Default Graph (if any) will be given the special Uri. <strong>trix:default-graph</strong>
     /// </para>
     /// <para>
-    /// TriX permits Graphs to be named with Blank Node IDs, since the library only supports Graphs named with URIs these are converted to URIs of the form <strong>trix:local:ID</strong>
+    /// TriX permits Graphs to be named with Blank Node IDs, since the library only supports Graphs named with URIs these are converted to URIs of the form. <strong>trix:local:ID</strong>
     /// </para>
     /// </remarks>
     public class TriXParser
         : IStoreReader
     {
         /// <summary>
-        /// Current W3C Namespace Uri for TriX
+        /// Current W3C Namespace Uri for TriX.
         /// </summary>
         public const string TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
 
 
         /// <summary>
-        /// Loads the RDF Dataset from the TriX input into the given Triple Store
+        /// Loads the RDF Dataset from the TriX input into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -69,10 +69,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the RDF Dataset from the TriX input into the given Triple Store
+        /// Loads the RDF Dataset from the TriX input into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(ITripleStore store, TextReader input)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -81,10 +81,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the RDF Dataset from the TriX input using a RDF Handler
+        /// Loads the RDF Dataset from the TriX input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -425,10 +425,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising informative standardized Parser Errors
+        /// Helper method for raising informative standardized Parser Errors.
         /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="reader">The XML reader being used by the parser</param>
+        /// <param name="msg">The Error Message.</param>
+        /// <param name="reader">The XML reader being used by the parser.</param>
         /// <returns></returns>
         private RdfParseException Error(string msg, XmlReader reader)
         {
@@ -442,9 +442,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method used to raise the Warning event if there is an event handler registered
+        /// Helper method used to raise the Warning event if there is an event handler registered.
         /// </summary>
-        /// <param name="message">Warning message</param>
+        /// <param name="message">Warning message.</param>
         private void RaiseWarning(string message)
         {
             Warning?.Invoke(message);
@@ -456,7 +456,7 @@ namespace VDS.RDF.Parsing
         public event StoreReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

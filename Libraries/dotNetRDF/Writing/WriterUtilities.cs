@@ -34,7 +34,7 @@ using VDS.RDF.Writing.Contexts;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Possible URI Reference Types
+    /// Possible URI Reference Types.
     /// </summary>
     internal enum UriRefType : int
     {
@@ -53,91 +53,91 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// URI
         /// </summary>
-        Uri = 4
+        Uri = 4,
     }
 
     /// <summary>
-    /// Class containing constants for possible Compression Levels
+    /// Class containing constants for possible Compression Levels.
     /// </summary>
-    /// <remarks>These are intended as guidance only, Writer implementations are free to interpret these levels as they desire or to ignore them entirely and use their own levels</remarks>
+    /// <remarks>These are intended as guidance only, Writer implementations are free to interpret these levels as they desire or to ignore them entirely and use their own levels.</remarks>
     public static class WriterCompressionLevel
     {
         /// <summary>
-        /// No Compression should be used (-1)
+        /// No Compression should be used (-1).
         /// </summary>
         public const int None = -1;
         /// <summary>
-        /// Minimal Compression should be used (0)
+        /// Minimal Compression should be used (0).
         /// </summary>
         public const int Minimal = 0;
         /// <summary>
-        /// Default Compression should be used (1)
+        /// Default Compression should be used (1).
         /// </summary>
         public const int Default = 1;
         /// <summary>
-        /// Medium Compression should be used (3)
+        /// Medium Compression should be used (3).
         /// </summary>
         public const int Medium = 3;
         /// <summary>
-        /// More Compression should be used (5)
+        /// More Compression should be used (5).
         /// </summary>
         public const int More = 5;
         /// <summary>
-        /// High Compression should be used (10)
+        /// High Compression should be used (10).
         /// </summary>
         public const int High = 10;
     }
 
     /// <summary>
-    /// Class containing constants for standardised Writer Error Messages
+    /// Class containing constants for standardised Writer Error Messages.
     /// </summary>
     public static class WriterErrorMessages
     {
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing Graph Literals
+        /// Error message produced when a User attempts to serialize a Graph containing Graph Literals.
         /// </summary>
         private const string GraphLiteralsUnserializableError = "Graph Literal Nodes are not serializable in {0}";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing Unknown Node Types
+        /// Error message produced when a User attempts to serialize a Graph containing Unknown Node Types.
         /// </summary>
         private const string UnknownNodeTypeUnserializableError = "Unknown Node Types cannot be serialized as {0}";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Subjects
+        /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Subjects.
         /// </summary>
         private const string LiteralSubjectsUnserializableError = "Triples with a Literal Subject are not serializable in {0}";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Predicates
+        /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Predicates.
         /// </summary>
         private const string LiteralPredicatesUnserializableError = "Triples with a Literal Predicate are not serializable in {0}";
         /// <summary>
-        /// Error message produced when a User attempts to serialized a Graph containing Triples with Graph Literal Predicates
+        /// Error message produced when a User attempts to serialized a Graph containing Triples with Graph Literal Predicates.
         /// </summary>
         private const string GraphLiteralPredicatesUnserializableError = "Triples with a Graph Literal Predicate are not serializable in {0}";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing Triples with Blank Node Predicates
+        /// Error message produced when a User attempts to serialize a Graph containing Triples with Blank Node Predicates.
         /// </summary>
         private const string BlankPredicatesUnserializableError = "Triples with a Blank Node Predicate are not serializable in {0}";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing URIs which cannot be reduced to a URIRef or QName as required by the serialization
+        /// Error message produced when a User attempts to serialize a Graph containing URIs which cannot be reduced to a URIRef or QName as required by the serialization.
         /// </summary>
         public const string UnreducablePropertyURIUnserializable = "Unable to serialize this Graph since a Property has an unreducable URI";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Graph containing collections where a collection item has more than one rdf:first triple
+        /// Error message produced when a User attempts to serialize a Graph containing collections where a collection item has more than one rdf:first triple.
         /// </summary>
         public const string MalformedCollectionWithMultipleFirsts = "This RDF Graph contains more than one rdf:first Triple for an Item in a Collection which means the Graph is not serializable";
         /// <summary>
-        /// Error messages produced when errors occur in a multi-threaded writing process
+        /// Error messages produced when errors occur in a multi-threaded writing process.
         /// </summary>
         public const string ThreadedOutputError = "One/more errors occurred while outputting RDF in {0} using a multi-threaded writing process";
         /// <summary>
-        /// Error message produced when a User attempts to serialize a Variable Node in a format which does not support it
+        /// Error message produced when a User attempts to serialize a Variable Node in a format which does not support it.
         /// </summary>
         public const string VariableNodesUnserializableError = "Variable Nodes cannot be serialized as {0}";
 
         /// <summary>
-        /// Gets an Error message indicating that Graph Literals are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Graph Literals are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string GraphLiteralsUnserializable(string format)
         {
@@ -145,9 +145,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that Unknown Node Types are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Unknown Node Types are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string UnknownNodeTypeUnserializable(string format)
         {
@@ -155,9 +155,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that Variable Nodes are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Variable Nodes are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string VariableNodesUnserializable(string format)
         {
@@ -165,9 +165,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that Literal Subjects are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Literal Subjects are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string LiteralSubjectsUnserializable(string format)
         {
@@ -175,9 +175,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that Literal Predicates are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Literal Predicates are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string LiteralPredicatesUnserializable(string format)
         {
@@ -185,9 +185,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that Graph Literal Predicates are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Graph Literal Predicates are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string GraphLiteralPredicatesUnserializable(string format)
         {
@@ -195,9 +195,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that Blank Node Predicates are not serializable with the appropriate RDF format name inserted in the error
+        /// Gets an Error message indicating that Blank Node Predicates are not serializable with the appropriate RDF format name inserted in the error.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string BlankPredicatesUnserializable(string format)
         {
@@ -205,9 +205,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets an Error message indicating that a multi-threading writer process failed
+        /// Gets an Error message indicating that a multi-threading writer process failed.
         /// </summary>
-        /// <param name="format">RDF format (syntax)</param>
+        /// <param name="format">RDF format (syntax).</param>
         /// <returns></returns>
         public static string ThreadedOutputFailure(string format)
         {
@@ -216,10 +216,10 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
-    /// Indicates which Segment of a Triple Node Output is being generated for
+    /// Indicates which Segment of a Triple Node Output is being generated for.
     /// </summary>
     /// <remarks>
-    /// Used by Writers and Formatters to ensure restrictions on which Nodes can appear where in the syntax are enforced
+    /// Used by Writers and Formatters to ensure restrictions on which Nodes can appear where in the syntax are enforced.
     /// </remarks>
     public enum TripleSegment
     {
@@ -234,11 +234,11 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Object of the Triple
         /// </summary>
-        Object
+        Object,
     }
 
     /// <summary>
-    /// Controls what type of collections
+    /// Controls what type of collections.
     /// </summary>
     public enum CollectionSearchMode
     {
@@ -253,11 +253,11 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Find implicit collections only (those using rdf:first and rdf:rest)
         /// </summary>
-        ImplicitOnly
+        ImplicitOnly,
     }
 
     /// <summary>
-    /// Class used to store Collections as part of the writing process for Compressing Writers
+    /// Class used to store Collections as part of the writing process for Compressing Writers.
     /// </summary>
     public class OutputRdfCollection
     {
@@ -266,21 +266,21 @@ namespace VDS.RDF.Writing
         private List<Triple> _triples = new List<Triple>();
 
         /// <summary>
-        /// Creates a new Instance of a Collection
+        /// Creates a new Instance of a Collection.
         /// </summary>
-        /// <param name="explicitCollection">Whether the collection is explicit (specified using square bracket notation) or implicit (specified using normal parentheses)</param>
+        /// <param name="explicitCollection">Whether the collection is explicit (specified using square bracket notation) or implicit (specified using normal parentheses).</param>
         public OutputRdfCollection(bool explicitCollection)
         {
             _explicit = explicitCollection;
         }
 
         /// <summary>
-        /// Gets whether this is an Explicit collection (specified using square bracket notation)
+        /// Gets whether this is an Explicit collection (specified using square bracket notation).
         /// </summary>
         public bool IsExplicit => _explicit;
 
         /// <summary>
-        /// Gets/Sets whether the Collection has been written
+        /// Gets/Sets whether the Collection has been written.
         /// </summary>
         public bool HasBeenWritten
         {
@@ -289,13 +289,13 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the Triples that make up the Collection
+        /// Gets the Triples that make up the Collection.
         /// </summary>
         public List<Triple> Triples => _triples;
     }
 
     /// <summary>
-    /// Possible Output Formats for Nodes
+    /// Possible Output Formats for Nodes.
     /// </summary>
     public enum NodeFormat
     {
@@ -318,22 +318,22 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Format for Uncompressed Notation 3
         /// </summary>
-        UncompressedNotation3
+        UncompressedNotation3,
     }
 
     /// <summary>
-    /// Helper methods for writers
+    /// Helper methods for writers.
     /// </summary>
     public static class WriterHelper
     {
         private static string _uriEncodeForXmlPattern = @"&([^;&\s]*)(?=\s|$|&)";
 
         /// <summary>
-        /// Determines whether a Blank Node ID is valid as-is when serialised in NTriple like syntaxes (Turtle/N3/SPARQL)
+        /// Determines whether a Blank Node ID is valid as-is when serialised in NTriple like syntaxes (Turtle/N3/SPARQL).
         /// </summary>
-        /// <param name="id">ID to test</param>
+        /// <param name="id">ID to test.</param>
         /// <returns></returns>
-        /// <remarks>If false is returned then the writer will alter the ID in some way</remarks>
+        /// <remarks>If false is returned then the writer will alter the ID in some way.</remarks>
         public static bool IsValidBlankNodeID(string id)
         {
             if (id == null)
@@ -364,7 +364,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Determines whether a Blank Node ID is valid as-is when serialised as NTriples
+        /// Determines whether a Blank Node ID is valid as-is when serialised as NTriples.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -389,9 +389,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Determines whether a given Uri refers to one of the Default Graph URIs assigned to the default Graph when parsing from some RDF dataset syntax
+        /// Determines whether a given Uri refers to one of the Default Graph URIs assigned to the default Graph when parsing from some RDF dataset syntax.
         /// </summary>
-        /// <param name="u">Uri to test</param>
+        /// <param name="u">Uri to test.</param>
         /// <returns></returns>
         [Obsolete("No longer required since all code that uses 'magic' URIs to refer to the default graph has been removed from the API", true)]
         public static bool IsDefaultGraph(Uri u)
@@ -400,10 +400,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
+        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes.
         /// </summary>
-        /// <param name="g">Graph to find collections in</param>
-        /// <param name="triplesDone">Triple Collection in which Triples that have been output are to be listed</param>
+        /// <param name="g">Graph to find collections in.</param>
+        /// <param name="triplesDone">Triple Collection in which Triples that have been output are to be listed.</param>
         [Obsolete("Use the alternative overloads of this method which take an ICollectionCompressingWriterContext instead", true)]
         public static Dictionary<INode, OutputRdfCollection> FindCollections(IGraph g, BaseTripleCollection triplesDone)
         {
@@ -411,10 +411,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
+        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="mode">Collection Search Mode</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="mode">Collection Search Mode.</param>
         public static void FindCollections(ICollectionCompressingWriterContext context, CollectionSearchMode mode)
         {
             // Prepare the RDF Nodes we need
@@ -687,20 +687,20 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
+        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes.
         /// </summary>
-        /// <param name="context">Writer Context</param>
+        /// <param name="context">Writer Context.</param>
         public static void FindCollections(ICollectionCompressingWriterContext context)
         {
             FindCollections(context, CollectionSearchMode.All);
         }
 
         /// <summary>
-        /// Encodes values for use in XML
+        /// Encodes values for use in XML.
         /// </summary>
-        /// <param name="value">Value to encode</param>
+        /// <param name="value">Value to encode.</param>
         /// <returns>
-        /// The value with any ampersands escaped to &amp;
+        /// The value with any ampersands escaped to &amp;.
         /// </returns>
         public static string EncodeForXml(string value)
         {
@@ -722,7 +722,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Get a list of all triples in the specified graph, sorted by subject and then predicate.
         /// </summary>
-        /// <param name="graph">The graph whose triples are to be returned</param>
+        /// <param name="graph">The graph whose triples are to be returned.</param>
         /// <returns>A list of the triples in <paramref name="graph"/> sorted by their subject and then predicate.</returns>
         public static List<Triple> GetTriplesSortedBySubjectPredicate(IGraph graph)
         {
@@ -732,9 +732,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Sort the provided list of triples by subject and then predicate. The list is modified in-place
+        /// Sort the provided list of triples by subject and then predicate. The list is modified in-place.
         /// </summary>
-        /// <param name="ts">The list of triples to be sorted</param>
+        /// <param name="ts">The list of triples to be sorted.</param>
         public static void SortTriplesBySubjectPredicate(List<Triple> ts)
         {
             var capacity = ts.Count;

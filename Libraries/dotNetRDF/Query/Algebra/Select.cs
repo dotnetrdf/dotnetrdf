@@ -33,7 +33,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents the Selection step of Query Evaluation
+    /// Represents the Selection step of Query Evaluation.
     /// </summary>
     /// <remarks>
     /// Selection trims variables from the Multiset that are not needed in the final output.
@@ -45,11 +45,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly List<SparqlVariable> _variables = new List<SparqlVariable>();
 
         /// <summary>
-        /// Creates a new Select
+        /// Creates a new Select.
         /// </summary>
-        /// <param name="pattern">Inner Pattern</param>
-        /// <param name="selectAll">Whether we are selecting all variables</param>
-        /// <param name="variables">Variables to Select</param>
+        /// <param name="pattern">Inner Pattern.</param>
+        /// <param name="selectAll">Whether we are selecting all variables.</param>
+        /// <param name="variables">Variables to Select.</param>
         public Select(ISparqlAlgebra pattern, bool selectAll, IEnumerable<SparqlVariable> variables)
         {
             _pattern = pattern;
@@ -58,12 +58,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Does this operator select all variables?
+        /// Does this operator select all variables?.
         /// </summary>
         public bool IsSelectAll { get; private set; }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -74,9 +74,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Trims the Results of evaluating the inner pattern to remove Variables which are not Result Variables
+        /// Trims the Results of evaluating the inner pattern to remove Variables which are not Result Variables.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -179,10 +179,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the SPARQL Variables used
+        /// Gets the SPARQL Variables used.
         /// </summary>
         /// <remarks>
-        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null then it's Variables are used rather than these
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null then it's Variables are used rather than these.
         /// </remarks>
         public IEnumerable<SparqlVariable> SparqlVariables
         {
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -224,19 +224,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error as a Select() cannot be converted back to a Graph Pattern
+        /// Throws an error as a Select() cannot be converted back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Select() cannot be converted back to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since a Select() cannot be converted back to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Select() cannot be converted to a GraphPattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

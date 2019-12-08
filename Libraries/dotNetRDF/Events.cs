@@ -31,33 +31,33 @@ namespace VDS.RDF
     #region Reader and Writer Warning Events
 
     /// <summary>
-    /// Delegate Type for Warning Messages raised by RDF Readers
+    /// Delegate Type for Warning Messages raised by RDF Readers.
     /// </summary>
-    /// <param name="warning">Warning Message</param>
+    /// <param name="warning">Warning Message.</param>
     public delegate void RdfReaderWarning(String warning);
 
     /// <summary>
-    /// Delegate Type for Warning Messages raised by RDF Writers
+    /// Delegate Type for Warning Messages raised by RDF Writers.
     /// </summary>
-    /// <param name="message">Warning Message</param>
+    /// <param name="message">Warning Message.</param>
     public delegate void RdfWriterWarning(String message);
 
     /// <summary>
-    /// Delegate Type for Warning Events raised by RDF Dataset Writers
+    /// Delegate Type for Warning Events raised by RDF Dataset Writers.
     /// </summary>
-    /// <param name="message">Warning Message</param>
+    /// <param name="message">Warning Message.</param>
     public delegate void StoreWriterWarning(String message);
 
     /// <summary>
-    /// Delegate Type for Warning Events raised by RDF Dataset Readers
+    /// Delegate Type for Warning Events raised by RDF Dataset Readers.
     /// </summary>
-    /// <param name="message">Warning Message</param>
+    /// <param name="message">Warning Message.</param>
     public delegate void StoreReaderWarning(String message);
 
     /// <summary>
-    /// Delegate Type for Warning Events raised by SPARQL Readers and Writers for Queries, Updates and Results
+    /// Delegate Type for Warning Events raised by SPARQL Readers and Writers for Queries, Updates and Results.
     /// </summary>
-    /// <param name="message">Warning Message</param>
+    /// <param name="message">Warning Message.</param>
     public delegate void SparqlWarning(String message);
 
     #endregion
@@ -65,31 +65,31 @@ namespace VDS.RDF
     #region Triple, Graph and Triple Store Events
 
     /// <summary>
-    /// Delegate Type for Triple events raised by Graphs
+    /// Delegate Type for Triple events raised by Graphs.
     /// </summary>
-    /// <param name="sender">Originator of the Event</param>
-    /// <param name="args">Triple Event Arguments</param>
+    /// <param name="sender">Originator of the Event.</param>
+    /// <param name="args">Triple Event Arguments.</param>
     public delegate void TripleEventHandler(Object sender, TripleEventArgs args);
 
     /// <summary>
-    /// Delegate Type for Graph events raised by Graphs
+    /// Delegate Type for Graph events raised by Graphs.
     /// </summary>
-    /// <param name="sender">Originator of the Event</param>
-    /// <param name="args">Graph Event Arguments</param>
+    /// <param name="sender">Originator of the Event.</param>
+    /// <param name="args">Graph Event Arguments.</param>
     public delegate void GraphEventHandler(Object sender, GraphEventArgs args);
 
     /// <summary>
-    /// Delegate Type for Graph events raised by Graphs where event handlers may set a Cancel flag to cancel the subsequent operation
+    /// Delegate Type for Graph events raised by Graphs where event handlers may set a Cancel flag to cancel the subsequent operation.
     /// </summary>
-    /// <param name="sender">Originator of the Event</param>
-    /// <param name="args">Graph Event Arguments</param>
+    /// <param name="sender">Originator of the Event.</param>
+    /// <param name="args">Graph Event Arguments.</param>
     public delegate void CancellableGraphEventHandler(Object sender, CancellableGraphEventArgs args);
 
     /// <summary>
-    /// Delegate Type for Triple Store events raised by Triple Stores
+    /// Delegate Type for Triple Store events raised by Triple Stores.
     /// </summary>
-    /// <param name="sender">Originator of the event</param>
-    /// <param name="args">Triple Store Event Arguments</param>
+    /// <param name="sender">Originator of the event.</param>
+    /// <param name="args">Triple Store Event Arguments.</param>
     public delegate void TripleStoreEventHandler(Object sender, TripleStoreEventArgs args);
 
     #endregion
@@ -97,7 +97,7 @@ namespace VDS.RDF
     #region Event Argument Classes
 
     /// <summary>
-    /// Event Arguments for Events regarding the assertion and retraction of Triples
+    /// Event Arguments for Events regarding the assertion and retraction of Triples.
     /// </summary>
     public class TripleEventArgs : EventArgs
     {
@@ -106,10 +106,10 @@ namespace VDS.RDF
         private bool _added = true;
 
         /// <summary>
-        /// Creates a new set of Triple Event Arguments for the given Triple
+        /// Creates a new set of Triple Event Arguments for the given Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
-        /// <param name="g">Graph the Triple Event occurred in</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="g">Graph the Triple Event occurred in.</param>
         public TripleEventArgs(Triple t, IGraph g)
             : base()
         {
@@ -118,11 +118,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new set of Triple Event Arguments for the given Triple
+        /// Creates a new set of Triple Event Arguments for the given Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
-        /// <param name="g">Graph the Triple Event occurred in</param>
-        /// <param name="asserted">Was the Triple Asserted (if not then it was Retracted)</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="g">Graph the Triple Event occurred in.</param>
+        /// <param name="asserted">Was the Triple Asserted (if not then it was Retracted).</param>
         public TripleEventArgs(Triple t, IGraph g, bool asserted)
             : this(t, g)
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Triple
+        /// Gets the Triple.
         /// </summary>
         public Triple Triple
         {
@@ -141,7 +141,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph the Triple belongs to (may be null)
+        /// Gets the Graph the Triple belongs to (may be null).
         /// </summary>
         public IGraph Graph
         {
@@ -156,7 +156,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the URI of the Graph the Triple belongs to (may be null)
+        /// Gets the URI of the Graph the Triple belongs to (may be null).
         /// </summary>
         public Uri GraphUri
         {
@@ -167,7 +167,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Triple was asserted
+        /// Gets whether the Triple was asserted.
         /// </summary>
         public bool WasAsserted
         {
@@ -178,7 +178,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Triple was retracted
+        /// Gets whether the Triple was retracted.
         /// </summary>
         public bool WasRetracted
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Event Arguments for Events regarding Graphs
+    /// Event Arguments for Events regarding Graphs.
     /// </summary>
     public class GraphEventArgs : EventArgs
     {
@@ -198,9 +198,9 @@ namespace VDS.RDF
         private TripleEventArgs _args;
 
         /// <summary>
-        /// Creates a new set of Graph Event Arguments
+        /// Creates a new set of Graph Event Arguments.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public GraphEventArgs(IGraph g)
             : base()
         {
@@ -208,10 +208,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new set of Graph Event Arguments
+        /// Creates a new set of Graph Event Arguments.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="args">Triple Event Arguments</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="args">Triple Event Arguments.</param>
         public GraphEventArgs(IGraph g, TripleEventArgs args)
             : this(g)
         {
@@ -219,7 +219,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph
+        /// Gets the Graph.
         /// </summary>
         public IGraph Graph
         {
@@ -230,7 +230,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Triple Event Arguments (if any)
+        /// Gets the Triple Event Arguments (if any).
         /// </summary>
         public TripleEventArgs TripleEvent
         {
@@ -242,29 +242,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Event Arguments for Events regarding Graphs which may be cancelled
+    /// Event Arguments for Events regarding Graphs which may be cancelled.
     /// </summary>
     public class CancellableGraphEventArgs : GraphEventArgs
     {
         private bool _cancel;
 
         /// <summary>
-        /// Creates a new set of Cancellable Graph Event Arguments
+        /// Creates a new set of Cancellable Graph Event Arguments.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public CancellableGraphEventArgs(IGraph g)
             : base(g) { }
 
         /// <summary>
-        /// Creates a new set of Cancellable Graph Event Arguments
+        /// Creates a new set of Cancellable Graph Event Arguments.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="args">Triple Event Arguments</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="args">Triple Event Arguments.</param>
         public CancellableGraphEventArgs(IGraph g, TripleEventArgs args)
             : base(g, args) { }
 
         /// <summary>
-        /// Gets/Sets whether the Event should be cancelled
+        /// Gets/Sets whether the Event should be cancelled.
         /// </summary>
         public bool Cancel
         {
@@ -280,7 +280,7 @@ namespace VDS.RDF
     }
     
     /// <summary>
-    /// Event Arguments for Events regarding Graphs
+    /// Event Arguments for Events regarding Graphs.
     /// </summary>
     public class TripleStoreEventArgs : EventArgs
     {
@@ -288,9 +288,9 @@ namespace VDS.RDF
         private GraphEventArgs _args;
 
         /// <summary>
-        /// Creates a new set of Triple Store Event Arguments
+        /// Creates a new set of Triple Store Event Arguments.
         /// </summary>
-        /// <param name="store">Triple Store</param>
+        /// <param name="store">Triple Store.</param>
         public TripleStoreEventArgs(ITripleStore store)
             : base()
         {
@@ -298,10 +298,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new set of Triple Store Event Arguments
+        /// Creates a new set of Triple Store Event Arguments.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="args">Graph Event Arguments</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="args">Graph Event Arguments.</param>
         public TripleStoreEventArgs(ITripleStore store, GraphEventArgs args)
             : this(store)
         {
@@ -309,15 +309,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new set of Triple Store Event Arguments
+        /// Creates a new set of Triple Store Event Arguments.
         /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="g">Graph</param>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="g">Graph.</param>
         public TripleStoreEventArgs(ITripleStore store, IGraph g)
             : this(store, new GraphEventArgs(g)) { }
 
         /// <summary>
-        /// Gets the Triple Store
+        /// Gets the Triple Store.
         /// </summary>
         public ITripleStore TripleStore
         {
@@ -328,7 +328,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph Event Arguments (if any)
+        /// Gets the Graph Event Arguments (if any).
         /// </summary>
         public GraphEventArgs GraphEvent
         {

@@ -33,7 +33,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Valued Node representing a Date Time value
+    /// Valued Node representing a Date Time value.
     /// </summary>
     public class DateTimeNode
         : LiteralNode, IValuedNode
@@ -42,12 +42,12 @@ namespace VDS.RDF.Nodes
         private DateTimeOffset? _offsetValue;
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         protected DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
@@ -56,12 +56,12 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         protected DateTimeNode(IGraph g, DateTime value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
@@ -70,75 +70,75 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         protected DateTimeNode(IGraph g, DateTimeOffset value, Uri datatype)
             : this(g, value, GetStringForm(value, datatype), datatype) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         protected DateTimeNode(IGraph g, DateTime value, Uri datatype)
             : this(g, value, GetStringForm(value, datatype), datatype) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
         public DateTimeNode(IGraph g, DateTimeOffset value)
             : this(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
         public DateTimeNode(IGraph g, DateTime value)
             : this(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public DateTimeNode(IGraph g, DateTime value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="offsetValue">Date Time offset value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="offsetValue">Date Time offset value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, String lexicalValue)
             : this(g, value, offsetValue, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
-        /// Creates a new Date Time valued node
+        /// Creates a new Date Time valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="offsetValue">Date Time offset value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
-        /// <param name="datatype">Data Type URI</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="offsetValue">Date Time offset value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
+        /// <param name="datatype">Data Type URI.</param>
         public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
@@ -147,10 +147,10 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the String form of the Date Time
+        /// Gets the String form of the Date Time.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="value">Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         /// <returns></returns>
         private static String GetStringForm(DateTimeOffset value, Uri datatype)
         {
@@ -166,10 +166,10 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the String form of the Date Time
+        /// Gets the String form of the Date Time.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="value">Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         /// <returns></returns>
         private static String GetStringForm(DateTime value, Uri datatype)
         {
@@ -185,7 +185,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the date time value as a string
+        /// Gets the date time value as a string.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -194,7 +194,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to integers
+        /// Throws an error as date times cannot be converted to integers.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -203,7 +203,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to decimals
+        /// Throws an error as date times cannot be converted to decimals.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -212,7 +212,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to floats
+        /// Throws an error as date times cannot be converted to floats.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -221,7 +221,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to doubles
+        /// Throws an error as date times cannot be converted to doubles.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -230,7 +230,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to booleans
+        /// Throws an error as date times cannot be converted to booleans.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -239,7 +239,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the date time value of the node
+        /// Gets the date time value of the node.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -248,7 +248,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the date time value of the node
+        /// Gets the date time value of the node.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -269,7 +269,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be cast to a time span
+        /// Throws an error as date times cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -278,7 +278,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -289,7 +289,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -301,42 +301,42 @@ namespace VDS.RDF.Nodes
     }
 
     /// <summary>
-    /// Valued Node representing a Date value
+    /// Valued Node representing a Date value.
     /// </summary>
     public class DateNode
         : DateTimeNode
     {
         /// <summary>
-        /// Creates a new Date valued node
+        /// Creates a new Date valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
         public DateNode(IGraph g, DateTimeOffset value)
             : base(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
-        /// Creates a new Date valued node
+        /// Creates a new Date valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public DateNode(IGraph g, DateTimeOffset value, String lexicalValue)
             : base(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
-        /// Creates a new Date valued node
+        /// Creates a new Date valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
         public DateNode(IGraph g, DateTime value)
             : base(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
-        /// Creates a new Date valued node
+        /// Creates a new Date valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Date Time value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Date Time value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public DateNode(IGraph g, DateTime value, String lexicalValue)
             : base(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
     }

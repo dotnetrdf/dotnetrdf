@@ -30,14 +30,14 @@ using VDS.Common.Collections;
 namespace VDS.RDF.Query.Inference
 {
     /// <summary>
-    /// An Inference Engine which uses RDFS reasoning
+    /// An Inference Engine which uses RDFS reasoning.
     /// </summary>
     /// <remarks>
     /// <para>
     /// Does basic RDFS inferencing using the schema taken from the Graph(s) which are provided in calls to the reasoners <see cref="StaticRdfsReasoner.Initialise">Initialise()</see> method.
     /// </para>
     /// <para>
-    /// Types of inference performed are as follows:
+    /// Types of inference performed are as follows:.
     /// </para>
     /// <ul>
     ///     <li>Class hierarchy reasoning - asserts additional types triples for anything that is typed as the subclass of a class.</li>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Inference
         private readonly IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
 
         /// <summary>
-        /// Creates a new instance of the Static RdfsReasoner
+        /// Creates a new instance of the Static RdfsReasoner.
         /// </summary>
         public StaticRdfsReasoner()
         {
@@ -69,19 +69,19 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Applies inference to the given Graph and outputs the inferred information to that Graph
+        /// Applies inference to the given Graph and outputs the inferred information to that Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public virtual void Apply(IGraph g)
         {
             Apply(g, g);
         }
 
         /// <summary>
-        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph
+        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph.
         /// </summary>
-        /// <param name="input">Graph to apply inference to</param>
-        /// <param name="output">Graph inferred information is output to</param>
+        /// <param name="input">Graph to apply inference to.</param>
+        /// <param name="output">Graph inferred information is output to.</param>
         public virtual void Apply(IGraph input, IGraph output)
         {
             // Infer information
@@ -160,11 +160,11 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Imports any Class heirarchy information from the given Graph into the Reasoners Knowledge Base in order to initialise the Reasoner
+        /// Imports any Class heirarchy information from the given Graph into the Reasoners Knowledge Base in order to initialise the Reasoner.
         /// </summary>
-        /// <param name="g">Graph to import from</param>
+        /// <param name="g">Graph to import from.</param>
         /// <remarks>
-        /// Looks for Triples defining things to be classes and those defining that something is a subClass of something
+        /// Looks for Triples defining things to be classes and those defining that something is a subClass of something.
         /// </remarks>
         public void Initialise(IGraph g)
         {
@@ -257,12 +257,12 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Helper method which applies Class hierarchy inferencing
+        /// Helper method which applies Class hierarchy inferencing.
         /// </summary>
-        /// <param name="t">Triple defining the type for something</param>
-        /// <param name="input">Input Graph</param>
-        /// <param name="output">Output Graph</param>
-        /// <param name="inferences">List of Inferences</param>
+        /// <param name="t">Triple defining the type for something.</param>
+        /// <param name="input">Input Graph.</param>
+        /// <param name="output">Output Graph.</param>
+        /// <param name="inferences">List of Inferences.</param>
         private void InferClasses(Triple t, IGraph input, IGraph output, List<Triple> inferences)
         {
             INode type = t.Object;
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Inference
     }
 
     /// <summary>
-    /// An Inference Engine which uses RDFS reasoning
+    /// An Inference Engine which uses RDFS reasoning.
     /// </summary>
     /// <remarks>
     /// Does basic RDFS inferencing as detailed in the remarks for the <see cref="StaticRdfsReasoner">StaticRdfsReasoner</see> except every Graph that inference is applied to has the potential to alter the schema which is in use.
@@ -294,10 +294,10 @@ namespace VDS.RDF.Query.Inference
         : StaticRdfsReasoner
     {
         /// <summary>
-        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph
+        /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph.
         /// </summary>
-        /// <param name="input">Graph to apply inference to</param>
-        /// <param name="output">Graph inferred information is output to</param>
+        /// <param name="input">Graph to apply inference to.</param>
+        /// <param name="output">Graph inferred information is output to.</param>
         public override void Apply(IGraph input, IGraph output)
         {
             // Use this Graph to further initialise the Reasoner

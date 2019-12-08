@@ -29,30 +29,30 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Interface for implementing Token Queues which provide Bufferable wrappers to Tokenisers
+    /// Interface for implementing Token Queues which provide Bufferable wrappers to Tokenisers.
     /// </summary>
     public interface ITokenQueue
     {
         /// <summary>
-        /// Removes the first Token from the Queue
+        /// Removes the first Token from the Queue.
         /// </summary>
         /// <returns></returns>
         IToken Dequeue();
 
         /// <summary>
-        /// Adds a Token to the end of the Queue
+        /// Adds a Token to the end of the Queue.
         /// </summary>
-        /// <param name="t">Token to add</param>
+        /// <param name="t">Token to add.</param>
         void Enqueue(IToken t);
 
         /// <summary>
-        /// Gets the first Token from the Queue without removing it
+        /// Gets the first Token from the Queue without removing it.
         /// </summary>
         /// <returns></returns>
         IToken Peek();
 
         /// <summary>
-        /// Tokeniser that this is a Queue for
+        /// Tokeniser that this is a Queue for.
         /// </summary>
         ITokeniser Tokeniser
         {
@@ -61,12 +61,12 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Clears the Token Queue
+        /// Clears the Token Queue.
         /// </summary>
         void Clear();
 
         /// <summary>
-        /// Gets the number of Tokens in the Queue
+        /// Gets the number of Tokens in the Queue.
         /// </summary>
         int Count
         {
@@ -74,18 +74,18 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Initialises the Buffer
+        /// Initialises the Buffer.
         /// </summary>
         void InitialiseBuffer();
 
         /// <summary>
-        /// Initialises the Buffer and sets the Buffering Level
+        /// Initialises the Buffer and sets the Buffering Level.
         /// </summary>
-        /// <param name="amount">Buffering Amount</param>
+        /// <param name="amount">Buffering Amount.</param>
         void InitialiseBuffer(int amount);
 
         /// <summary>
-        /// Gets the underlying Queue of Tokens
+        /// Gets the underlying Queue of Tokens.
         /// </summary>
         Queue<IToken> Tokens
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing should be used
+        /// Gets/Sets whether Tokeniser Tracing should be used.
         /// </summary>
         bool Tracing
         {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Token Type of the last Token dequeued
+        /// Gets the Token Type of the last Token dequeued.
         /// </summary>
         int LastTokenType
         {
@@ -111,43 +111,43 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Abstract base implementation of a Token Queue
+    /// Abstract base implementation of a Token Queue.
     /// </summary>
     public abstract class BaseTokenQueue : ITokenQueue
     {
         /// <summary>
-        /// Tokeniser used to fill the Token Queue
+        /// Tokeniser used to fill the Token Queue.
         /// </summary>
         protected ITokeniser _tokeniser;
         /// <summary>
-        /// Variable indicating whether Tokeniser Tracing is enabled
+        /// Variable indicating whether Tokeniser Tracing is enabled.
         /// </summary>
         protected bool _tracing;
         /// <summary>
-        /// Type of Last Token dequeued
+        /// Type of Last Token dequeued.
         /// </summary>
         protected int _lasttokentype = Token.BOF;
 
         /// <summary>
-        /// Abstract Definition of Interface Method
+        /// Abstract Definition of Interface Method.
         /// </summary>
         /// <returns></returns>
         public abstract IToken Dequeue();
 
         /// <summary>
-        /// Abstract Definition of Interface Method
+        /// Abstract Definition of Interface Method.
         /// </summary>
         public abstract void Enqueue(IToken t);
 
         /// <summary>
-        /// Abstract Definition of Interface Method
+        /// Abstract Definition of Interface Method.
         /// </summary>
         public abstract IToken Peek();
 
         /// <summary>
-        /// Sets the Tokeniser used by the Queue
+        /// Sets the Tokeniser used by the Queue.
         /// </summary>
-        /// <remarks>Setting the Tokeniser causes the Queue to clear itself</remarks>
+        /// <remarks>Setting the Tokeniser causes the Queue to clear itself.</remarks>
         public ITokeniser Tokeniser
         {
             get
@@ -162,12 +162,12 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Abstract Definition of Interface Method
+        /// Abstract Definition of Interface Method.
         /// </summary>
         public abstract void Clear();
 
         /// <summary>
-        /// Abstract Definition of Interface Property
+        /// Abstract Definition of Interface Property.
         /// </summary>
         public abstract int Count
         {
@@ -175,18 +175,18 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Abstract Definition of Interface Method
+        /// Abstract Definition of Interface Method.
         /// </summary>
         public abstract void InitialiseBuffer();
 
         /// <summary>
-        /// Abstract Definition of Interface Method
+        /// Abstract Definition of Interface Method.
         /// </summary>
-        /// <param name="amount">Buffering Amount</param>
+        /// <param name="amount">Buffering Amount.</param>
         public abstract void InitialiseBuffer(int amount);
 
         /// <summary>
-        /// Abstract Definition of Interface Property
+        /// Abstract Definition of Interface Property.
         /// </summary>
         public abstract Queue<IToken> Tokens
         {
@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets/Sets Tracing for the Token Queue
+        /// Gets/Sets Tracing for the Token Queue.
         /// </summary>
         public bool Tracing
         {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Token Type of the last Token dequeued
+        /// Gets the Token Type of the last Token dequeued.
         /// </summary>
         public int LastTokenType
         {

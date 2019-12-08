@@ -36,7 +36,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for Blank Nodes
+    /// Abstract Base Class for Blank Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="bnode")]
@@ -48,9 +48,9 @@ namespace VDS.RDF
         private bool _autoassigned = false;
 
         /// <summary>
-        /// Internal Only Constructor for Blank Nodes
+        /// Internal Only Constructor for Blank Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
+        /// <param name="g">Graph this Node belongs to.</param>
         protected internal BaseBlankNode(IGraph g)
             : base(g, NodeType.Blank)
         {
@@ -62,10 +62,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only constructor for Blank Nodes
+        /// Internal Only constructor for Blank Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
-        /// <param name="nodeId">Custom Node ID to use</param>
+        /// <param name="g">Graph this Node belongs to.</param>
+        /// <param name="nodeId">Custom Node ID to use.</param>
         protected internal BaseBlankNode(IGraph g, String nodeId)
             : base(g, NodeType.Blank)
         {
@@ -77,9 +77,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only constructor for Blank Nodes
+        /// Internal Only constructor for Blank Nodes.
         /// </summary>
-        /// <param name="factory">Node Factory from which to obtain a Node ID</param>
+        /// <param name="factory">Node Factory from which to obtain a Node ID.</param>
         protected internal BaseBlankNode(INodeFactory factory)
             : base(null, NodeType.Blank)
         {
@@ -91,7 +91,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Unparameterized Constructor for deserialization usage only
+        /// Unparameterized Constructor for deserialization usage only.
         /// </summary>
         protected BaseBlankNode()
             : base(null, NodeType.Blank)
@@ -100,10 +100,10 @@ namespace VDS.RDF
 #if !NETCORE
 
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Blank)
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Returns the Internal Blank Node ID this Node has in the Graph
+        /// Returns the Internal Blank Node ID this Node has in the Graph.
         /// </summary>
         /// <remarks>
         /// Usually automatically assigned and of the form autosXXX where XXX is some number.  If an RDF document contains a Blank Node ID of this form that clashes with an existing auto-assigned ID it will be automatically remapped by the Graph using the <see cref="BlankNodeMapper">BlankNodeMapper</see> when it is created.
@@ -130,7 +130,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Indicates whether this Blank Node had its ID assigned for it by the Graph
+        /// Indicates whether this Blank Node had its ID assigned for it by the Graph.
         /// </summary>
         public bool HasAutoAssignedID
         {
@@ -141,12 +141,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Equals for Blank Nodes
+        /// Implementation of Equals for Blank Nodes.
         /// </summary>
-        /// <param name="obj">Object to compare with the Blank Node</param>
+        /// <param name="obj">Object to compare with the Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Blank Nodes are considered equal if their internal IDs match precisely and they originate from the same Graph
+        /// Blank Nodes are considered equal if their internal IDs match precisely and they originate from the same Graph.
         /// </remarks>
         public override bool Equals(object obj)
         {
@@ -166,12 +166,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Equals for Blank Nodes
+        /// Implementation of Equals for Blank Nodes.
         /// </summary>
-        /// <param name="other">Object to compare with the Blank Node</param>
+        /// <param name="other">Object to compare with the Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Blank Nodes are considered equal if their internal IDs match precisely and they originate from the same Graph
+        /// Blank Nodes are considered equal if their internal IDs match precisely and they originate from the same Graph.
         /// </remarks>
         public override bool Equals(INode other)
         {
@@ -193,9 +193,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to another
+        /// Determines whether this Node is equal to another.
         /// </summary>
-        /// <param name="other">Other Blank Node</param>
+        /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
@@ -203,9 +203,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Graph Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
@@ -214,9 +214,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
@@ -225,9 +225,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// Determines whether this Node is equal to a URI Node (should always be false).
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
@@ -236,9 +236,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node (should always be false)
+        /// Determines whether this Node is equal to a Variable Node (should always be false).
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
@@ -247,9 +247,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Blank Node
+        /// Determines whether this Node is equal to a Blank Node.
         /// </summary>
-        /// <param name="other">Blank Node</param>
+        /// <param name="other">Blank Node.</param>
         /// <returns></returns>
         public bool Equals(BaseBlankNode other)
         {
@@ -257,9 +257,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(INode other)
         {
@@ -290,9 +290,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
@@ -310,9 +310,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
@@ -330,9 +330,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
@@ -350,9 +350,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
@@ -370,9 +370,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
@@ -382,9 +382,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public int CompareTo(BaseBlankNode other)
         {
@@ -392,7 +392,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns a string representation of this Blank Node in QName form
+        /// Returns a string representation of this Blank Node in QName form.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -405,10 +405,10 @@ namespace VDS.RDF
         #region ISerializable Members
 
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("id", _id);
@@ -419,9 +419,9 @@ namespace VDS.RDF
         #region IXmlSerializable Members
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             _id = reader.ReadElementContentAsString();
@@ -430,9 +430,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteString(_id);
@@ -445,7 +445,7 @@ namespace VDS.RDF
         #region IValuedNode Members
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a String
+        /// Throws an error as a Blank Node cannot be cast to a String.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -454,7 +454,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to an integer
+        /// Throws an error as a Blank Node cannot be cast to an integer.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -463,7 +463,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a decimal
+        /// Throws an error as a Blank Node cannot be cast to a decimal.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -472,7 +472,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a float
+        /// Throws an error as a Blank Node cannot be cast to a float.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -481,7 +481,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a double
+        /// Throws an error as a Blank Node cannot be cast to a double.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -490,7 +490,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a boolean
+        /// Throws an error as a Blank Node cannot be cast to a boolean.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -499,7 +499,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a date time
+        /// Throws an error as a Blank Node cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -508,7 +508,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be cast to a date time offset
+        /// Throws an error as a Blank Node cannot be cast to a date time offset.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -517,7 +517,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as a Blank Node cannot be case to a time span
+        /// Throws an error as a Blank Node cannot be case to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -526,12 +526,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public string EffectiveType => string.Empty;
 
         /// <summary>
-        /// Gets the Numeric Type of the Node
+        /// Gets the Numeric Type of the Node.
         /// </summary>
         public SparqlNumericType NumericType => SparqlNumericType.NaN;
 
@@ -539,7 +539,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class for representing Blank RDF Nodes
+    /// Class for representing Blank RDF Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName = "bnode")]
@@ -548,29 +548,29 @@ namespace VDS.RDF
         : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
         /// <summary>
-        /// Internal Only Constructor for Blank Nodes
+        /// Internal Only Constructor for Blank Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
+        /// <param name="g">Graph this Node belongs to.</param>
         protected internal BlankNode(IGraph g)
             : base(g) { }
 
         /// <summary>
-        /// Internal Only constructor for Blank Nodes
+        /// Internal Only constructor for Blank Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
-        /// <param name="id">Custom Node ID to use</param>
+        /// <param name="g">Graph this Node belongs to.</param>
+        /// <param name="id">Custom Node ID to use.</param>
         protected internal BlankNode(IGraph g, String id)
             : base(g, id) { }
 
         /// <summary>
-        /// Internal Only constructor for Blank Nodes
+        /// Internal Only constructor for Blank Nodes.
         /// </summary>
-        /// <param name="factory">Node Factory from which to obtain a Node ID</param>
+        /// <param name="factory">Node Factory from which to obtain a Node ID.</param>
         protected internal BlankNode(INodeFactory factory)
             : base(factory) { }
 
         /// <summary>
-        /// Constructor for deserialization usage only
+        /// Constructor for deserialization usage only.
         /// </summary>
         protected BlankNode()
             : base()
@@ -578,21 +578,21 @@ namespace VDS.RDF
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected BlankNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
 
         /// <summary>
-        /// Implementation of Compare To for Blank Nodes
+        /// Implementation of Compare To for Blank Nodes.
         /// </summary>
-        /// <param name="other">Blank Node to Compare To</param>
+        /// <param name="other">Blank Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Simply invokes the more general implementation of this method
+        /// Simply invokes the more general implementation of this method.
         /// </remarks>
         public int CompareTo(BlankNode other)
         {
@@ -600,9 +600,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Blank Node
+        /// Determines whether this Node is equal to a Blank Node.
         /// </summary>
-        /// <param name="other">Blank Node</param>
+        /// <param name="other">Blank Node.</param>
         /// <returns></returns>
         public bool Equals(BlankNode other)
         {

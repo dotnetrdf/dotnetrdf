@@ -31,12 +31,12 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Interface for Parser Contexts
+    /// Interface for Parser Contexts.
     /// </summary>
     public interface IParserContext
     {
         /// <summary>
-        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF
+        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF.
         /// </summary>
         IRdfHandler Handler
         {
@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it)
+        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it).
         /// </summary>
         bool TraceParsing
         {
@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the Handler
+        /// Gets the Namespace Map for the Handler.
         /// </summary>
         INestedNamespaceMapper Namespaces
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Base URI for the Handler
+        /// Gets the Base URI for the Handler.
         /// </summary>
         Uri BaseUri
         {
@@ -71,12 +71,12 @@ namespace VDS.RDF.Parsing.Contexts
     }
 
     /// <summary>
-    /// Interface for Parser Contexts which use Tokeniser based parsing
+    /// Interface for Parser Contexts which use Tokeniser based parsing.
     /// </summary>
     public interface ITokenisingParserContext
     {
         /// <summary>
-        /// Gets/Sets whether Tokenisation is Traced
+        /// Gets/Sets whether Tokenisation is Traced.
         /// </summary>
         bool TraceTokeniser
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Local Tokens Stack
+        /// Gets the Local Tokens Stack.
         /// </summary>
         Stack<IToken> LocalTokens
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Token Queue
+        /// Gets the Token Queue.
         /// </summary>
         ITokenQueue Tokens
         {

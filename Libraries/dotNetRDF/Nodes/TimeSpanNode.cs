@@ -33,7 +33,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Valued Node representing a Time Span value
+    /// Valued Node representing a Time Span value.
     /// </summary>
     public class TimeSpanNode
         : LiteralNode, IValuedNode
@@ -41,29 +41,29 @@ namespace VDS.RDF.Nodes
         private TimeSpan _value;
 
         /// <summary>
-        /// Creates a new Time span node
+        /// Creates a new Time span node.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="value">Time Span</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="value">Time Span.</param>
         public TimeSpanNode(IGraph g, TimeSpan value)
             : this(g, value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
-        /// Creates a new Time span node 
+        /// Creates a new Time span node. 
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="value">Time Span</param>
-        /// <param name="lexicalValue">Lexical value</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="value">Time Span.</param>
+        /// <param name="lexicalValue">Lexical value.</param>
         public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
-        /// Creates a new Time span node
+        /// Creates a new Time span node.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="value">Time Span</param>
-        /// <param name="lexicalValue">Lexical value</param>
-        /// <param name="dtUri">Data type URI</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="value">Time Span.</param>
+        /// <param name="lexicalValue">Lexical value.</param>
+        /// <param name="dtUri">Data type URI.</param>
         public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue, Uri dtUri)
             : base(g, lexicalValue, dtUri)
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the date time value as a string
+        /// Gets the date time value as a string.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -80,7 +80,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to integers
+        /// Throws an error as date times cannot be converted to integers.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -89,7 +89,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to decimals
+        /// Throws an error as date times cannot be converted to decimals.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -98,7 +98,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to floats
+        /// Throws an error as date times cannot be converted to floats.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -107,7 +107,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to doubles
+        /// Throws an error as date times cannot be converted to doubles.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -116,7 +116,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as date times cannot be converted to booleans
+        /// Throws an error as date times cannot be converted to booleans.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -125,7 +125,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the date time value of the node
+        /// Gets the date time value of the node.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -134,7 +134,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the date time value of the node
+        /// Gets the date time value of the node.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -143,7 +143,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the time span value of the node
+        /// Gets the time span value of the node.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -152,7 +152,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {
