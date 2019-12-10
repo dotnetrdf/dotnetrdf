@@ -511,8 +511,6 @@ namespace VDS.RDF.Writing
                     }
 
                     List<Triple> ts = context.Graph.GetTriples(b).ToList();
-                    ts.RemoveAll(t => t.Predicate.Equals(first));
-                    ts.RemoveAll(t => t.Predicate.Equals(rest));
 
                     if (ts.Count <= 1)
                     {
@@ -522,6 +520,8 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
+                        ts.RemoveAll(t => t.Predicate.Equals(first));
+                        ts.RemoveAll(t => t.Predicate.Equals(rest));
                         if (context.Graph.GetTriplesWithObject(b).Count() == 1)
                         {
                             ts.RemoveAll(t => t.Object.Equals(b));
