@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+2.4
+---
+
+FIX: Reinstated support for multi-threaded writers for TRiG and NQuads under .NET Core (#136)
+
 2.3
 ---
 
