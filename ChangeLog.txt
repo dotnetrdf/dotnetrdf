@@ -19,6 +19,7 @@ FIX: Update to allow BaseTripleComparer to be used as an IEqualityComparer param
 FIX: Performance enhancement for sorting nodes in the TurtleWriter. Thanks to @MischaVreeburg for the PR (#239)
 FIX: Fix for incorrect IRI for the RDF langString datatype. Thanks to @langsamu for the report and PR (#223) 
 FIX: Fix for Leviathan SPARQL update on a named graph that does not exist in the store. Thanks to @langsamu for the report (#216)
+FIX: Fix for an edge-case in the CompressingTurtleWriter that caused incorrect serialization of certain blank nodes. Thanks to @langsamu for the report (#279)
 
 
 2.2
