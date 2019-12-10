@@ -32,7 +32,7 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Helper Class used in the execution of Sparql Queries
+    /// Helper Class used in the execution of Sparql Queries.
     /// </summary>
     /// <remarks>
     /// </remarks>
@@ -43,7 +43,7 @@ namespace VDS.RDF.Query
         private Dictionary<int,BindingGroup> _groups = null;
 
         /// <summary>
-        /// Internal Empty Constructor for derived classes
+        /// Internal Empty Constructor for derived classes.
         /// </summary>
         protected internal SparqlResultBinder()
         {
@@ -51,16 +51,16 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Results Binder
+        /// Creates a new Results Binder.
         /// </summary>
-        /// <param name="query">Query this provides Result Binding to</param>
+        /// <param name="query">Query this provides Result Binding to.</param>
         public SparqlResultBinder(SparqlQuery query)
         {
             _query = query;
         }
 
         /// <summary>
-        /// Gets the Variables that the Binder stores Bindings for
+        /// Gets the Variables that the Binder stores Bindings for.
         /// </summary>
         public abstract IEnumerable<String> Variables
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the enumeration of valid Binding IDs
+        /// Gets the enumeration of valid Binding IDs.
         /// </summary>
         public abstract IEnumerable<int> BindingIDs
         {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the set of Groups that result from the Query this Binder provides Binding to
+        /// Gets the set of Groups that result from the Query this Binder provides Binding to.
         /// </summary>
         public IEnumerable<BindingGroup> Groups
         {
@@ -95,17 +95,17 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Value bound to a given Variable for a given Binding ID
+        /// Gets the Value bound to a given Variable for a given Binding ID.
         /// </summary>
-        /// <param name="name">Variable Name</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="name">Variable Name.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public abstract INode Value(String name, int bindingID);
 
         /// <summary>
-        /// Gets the Group referred to by the given ID
+        /// Gets the Group referred to by the given ID.
         /// </summary>
-        /// <param name="groupID">Group ID</param>
+        /// <param name="groupID">Group ID.</param>
         /// <returns></returns>
         public virtual BindingGroup Group(int groupID)
         {
@@ -127,9 +127,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether the given ID refers to a Group
+        /// Checks whether the given ID refers to a Group.
         /// </summary>
-        /// <param name="groupID">Group ID</param>
+        /// <param name="groupID">Group ID.</param>
         /// <returns></returns>
         public virtual bool IsGroup(int groupID)
         {
@@ -144,15 +144,15 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Group Context for the Binder
+        /// Sets the Group Context for the Binder.
         /// </summary>
-        /// <param name="accessContents">Whether you want to access the Group Contents or the Groups themselves</param>
+        /// <param name="accessContents">Whether you want to access the Group Contents or the Groups themselves.</param>
         public virtual void SetGroupContext(bool accessContents)
         {
         }
 
         /// <summary>
-        /// Disposes of a Result Binder
+        /// Disposes of a Result Binder.
         /// </summary>
         public virtual void Dispose()
         {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Results Binder used by Leviathan
+    /// Results Binder used by Leviathan.
     /// </summary>
     public class LeviathanResultBinder
         : SparqlResultBinder
@@ -170,9 +170,9 @@ namespace VDS.RDF.Query
         private GroupMultiset _groupSet;
 
         /// <summary>
-        /// Creates a new Leviathan Results Binder
+        /// Creates a new Leviathan Results Binder.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public LeviathanResultBinder(SparqlEvaluationContext context)
             : base()
         {
@@ -180,10 +180,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Value for a given Variable from the Set with the given Binding ID
+        /// Gets the Value for a given Variable from the Set with the given Binding ID.
         /// </summary>
-        /// <param name="name">Variable</param>
-        /// <param name="bindingID">Set ID</param>
+        /// <param name="name">Variable.</param>
+        /// <param name="bindingID">Set ID.</param>
         /// <returns></returns>
         public override INode Value(string name, int bindingID)
         {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Variables contained in the Input
+        /// Gets the Variables contained in the Input.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the IDs of Sets
+        /// Gets the IDs of Sets.
         /// </summary>
         public override IEnumerable<int> BindingIDs
         {
@@ -213,9 +213,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Determines whether a given ID is for of a Group
+        /// Determines whether a given ID is for of a Group.
         /// </summary>
-        /// <param name="groupID">Group ID</param>
+        /// <param name="groupID">Group ID.</param>
         /// <returns></returns>
         public override bool IsGroup(int groupID)
         {
@@ -230,9 +230,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Returns the Group with the given ID
+        /// Returns the Group with the given ID.
         /// </summary>
-        /// <param name="groupID">Group ID</param>
+        /// <param name="groupID">Group ID.</param>
         /// <returns></returns>
         public override BindingGroup Group(int groupID)
         {
@@ -252,9 +252,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Group Context for the Binder
+        /// Sets the Group Context for the Binder.
         /// </summary>
-        /// <param name="accessContents">Whether you want to access the Group Contents or the Groups themselves</param>
+        /// <param name="accessContents">Whether you want to access the Group Contents or the Groups themselves.</param>
         public override void SetGroupContext(bool accessContents)
         {
             if (accessContents)
@@ -286,16 +286,16 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Special Temporary Results Binder used during LeftJoin's
+    /// Special Temporary Results Binder used during LeftJoin's.
     /// </summary>
     public class LeviathanLeftJoinBinder : SparqlResultBinder
     {
         private BaseMultiset _input;
 
         /// <summary>
-        /// Creates a new LeftJoin Binder
+        /// Creates a new LeftJoin Binder.
         /// </summary>
-        /// <param name="multiset">Input Multiset</param>
+        /// <param name="multiset">Input Multiset.</param>
         public LeviathanLeftJoinBinder(BaseMultiset multiset)
             : base()
         {
@@ -303,10 +303,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Value for a given Variable from the Set with the given Binding ID
+        /// Gets the Value for a given Variable from the Set with the given Binding ID.
         /// </summary>
-        /// <param name="name">Variable</param>
-        /// <param name="bindingID">Set ID</param>
+        /// <param name="name">Variable.</param>
+        /// <param name="bindingID">Set ID.</param>
         /// <returns></returns>
         public override INode Value(string name, int bindingID)
         {
@@ -314,7 +314,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Variables in the Input Multiset
+        /// Gets the Variables in the Input Multiset.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the IDs of Sets
+        /// Gets the IDs of Sets.
         /// </summary>
         public override IEnumerable<int> BindingIDs
         {

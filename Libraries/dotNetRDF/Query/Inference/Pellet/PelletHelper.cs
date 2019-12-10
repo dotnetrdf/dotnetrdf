@@ -29,12 +29,12 @@ using System;
 namespace VDS.RDF.Query.Inference.Pellet
 {
     /// <summary>
-    /// Helper class provided constants and helper methods for use with Pellet Server
+    /// Helper class provided constants and helper methods for use with Pellet Server.
     /// </summary>
     public static class PelletHelper
     {
         /// <summary>
-        /// Constants for Service Names for Services that may be provided by a Pellet Server
+        /// Constants for Service Names for Services that may be provided by a Pellet Server.
         /// </summary>
         public const String ServiceServerDescription = "ps-discovery",
                             ServiceKBDescription = "kb-discovery",

@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Represents a union of multiple Triple Collections
+    /// Represents a union of multiple Triple Collections.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The union consists of a <em>Base</em> collection which is the collection that Triples can actually be added to and deleted from and any number of additional collections which are read-only as far as the union is concerned (this does not mean they cannot be altered elsewhere by other code)
+    /// The union consists of a <em>Base</em> collection which is the collection that Triples can actually be added to and deleted from and any number of additional collections which are read-only as far as the union is concerned (this does not mean they cannot be altered elsewhere by other code).
     /// </para>
     /// </remarks>
     public class UnionTripleCollection 
@@ -45,10 +45,10 @@ namespace VDS.RDF
         private BaseTripleCollection _baseCollection;
 
         /// <summary>
-        /// Creates a new Union Triple Collection which is a union of two collections
+        /// Creates a new Union Triple Collection which is a union of two collections.
         /// </summary>
-        /// <param name="baseTriples">Base Triple Collection</param>
-        /// <param name="additionalTriples">Additional Triple Collection</param>
+        /// <param name="baseTriples">Base Triple Collection.</param>
+        /// <param name="additionalTriples">Additional Triple Collection.</param>
         public UnionTripleCollection(BaseTripleCollection baseTriples, BaseTripleCollection additionalTriples)
         {
             if (baseTriples == null) throw new ArgumentNullException("baseTriple");
@@ -59,10 +59,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Union Triple Collection which is a union of any number of collections
+        /// Creates a new Union Triple Collection which is a union of any number of collections.
         /// </summary>
-        /// <param name="baseTriples">Base Triple Collection</param>
-        /// <param name="additionalTriples">Additional Triple Collection(s)</param>
+        /// <param name="baseTriples">Base Triple Collection.</param>
+        /// <param name="additionalTriples">Additional Triple Collection(s).</param>
         public UnionTripleCollection(BaseTripleCollection baseTriples, IEnumerable<BaseTripleCollection> additionalTriples)
         {
             if (baseTriples == null) throw new ArgumentNullException("baseTriple");
@@ -72,18 +72,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Triple to the base collection
+        /// Adds a Triple to the base collection.
         /// </summary>
-        /// <param name="t">Triple to add</param>
+        /// <param name="t">Triple to add.</param>
         protected internal override bool Add(Triple t)
         {
             return _baseCollection.Add(t);
         }
 
         /// <summary>
-        /// Checks whether the union contains this Triple in any of the collections it comprises
+        /// Checks whether the union contains this Triple in any of the collections it comprises.
         /// </summary>
-        /// <param name="t">Triple to test</param>
+        /// <param name="t">Triple to test.</param>
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
@@ -91,10 +91,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the count of Triples in this union
+        /// Gets the count of Triples in this union.
         /// </summary>
         /// <remarks>
-        /// The Count is the total number of Triples, this may be different from the number of distinct triples
+        /// The Count is the total number of Triples, this may be different from the number of distinct triples.
         /// </remarks>
         public override int Count
         {
@@ -105,20 +105,20 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a Triple from the base collection
+        /// Deletes a Triple from the base collection.
         /// </summary>
-        /// <param name="t">Triple to delete</param>
+        /// <param name="t">Triple to delete.</param>
         protected internal override bool Delete(Triple t)
         {
             return _baseCollection.Delete(t);
         }
 
         /// <summary>
-        /// Retrieves a Triple from the union
+        /// Retrieves a Triple from the union.
         /// </summary>
-        /// <param name="t">Triple to retrieve</param>
+        /// <param name="t">Triple to retrieve.</param>
         /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if the Triple is not contained in any of the collections this union comprises</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if the Triple is not contained in any of the collections this union comprises.</exception>
         public override Triple this[Triple t]
         {
             get 
@@ -135,7 +135,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumeration of distinct objects of Triples
+        /// Gets the enumeration of distinct objects of Triples.
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
@@ -148,7 +148,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumeration of distinct predicates of Triples
+        /// Gets the enumeration of distinct predicates of Triples.
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
@@ -161,7 +161,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumeration of distinct subjects of Triples
+        /// Gets the enumeration of distinct subjects of Triples.
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
@@ -174,10 +174,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the collection
+        /// Disposes of the collection.
         /// </summary>
         /// <remarks>
-        /// This does nothing since we don't know where and how the collections we are the union of are being used and therefore to dispose of them could have unwanted/unexpected results
+        /// This does nothing since we don't know where and how the collections we are the union of are being used and therefore to dispose of them could have unwanted/unexpected results.
         /// </remarks>
         public override void Dispose()
         {
@@ -185,7 +185,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumeration of Triples in the union
+        /// Gets the enumeration of Triples in the union.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()

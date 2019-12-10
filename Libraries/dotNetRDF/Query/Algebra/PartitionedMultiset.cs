@@ -35,7 +35,7 @@ using System.Threading;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Implementation of a multiset which is suitable for multiple threads to write to in parallel, useful for parallelizing certain operations
+    /// Implementation of a multiset which is suitable for multiple threads to write to in parallel, useful for parallelizing certain operations.
     /// </summary>
     public class PartitionedMultiset
         : BaseMultiset
@@ -49,10 +49,10 @@ namespace VDS.RDF.Query.Algebra
         private bool _cacheInvalid = true;
 
         /// <summary>
-        /// Creates a new Partionted Multiset
+        /// Creates a new Partionted Multiset.
         /// </summary>
-        /// <param name="numPartitions">Number of partitions</param>
-        /// <param name="partitionSize">Partition Size</param>
+        /// <param name="numPartitions">Number of partitions.</param>
+        /// <param name="partitionSize">Partition Size.</param>
         public PartitionedMultiset(int numPartitions, int partitionSize)
         {
             this._numPartitions = numPartitions;
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the next Base ID to be used
+        /// Gets the next Base ID to be used.
         /// </summary>
         /// <returns></returns>
         public int GetNextBaseID()
@@ -81,9 +81,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Does a Union of this Multiset and another Multiset
+        /// Does a Union of this Multiset and another Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public override BaseMultiset Union(BaseMultiset other)
         {
@@ -104,10 +104,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Determines whether a given Value is present for a given Variable in any Set in this Multiset
+        /// Determines whether a given Value is present for a given Variable in any Set in this Multiset.
         /// </summary>
-        /// <param name="var">Variable</param>
-        /// <param name="n">Value</param>
+        /// <param name="var">Variable.</param>
+        /// <param name="n">Value.</param>
         /// <returns></returns>
         public override bool ContainsValue(String var, INode n)
         {
@@ -132,9 +132,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Returns whether a given Variable is present in any Set in this Multiset
+        /// Returns whether a given Variable is present in any Set in this Multiset.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         public override bool ContainsVariable(string var)
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Determines whether this Multiset is disjoint with another Multiset
+        /// Determines whether this Multiset is disjoint with another Multiset.
         /// </summary>
-        /// <param name="other">Other Multiset</param>
+        /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public override bool IsDisjointWith(BaseMultiset other)
         {
@@ -154,11 +154,11 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Set to the multiset
+        /// Adds a Set to the multiset.
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Set.</param>
         /// <remarks>
-        /// Assumes the caller has set the ID of the set appropriately and will use this to determine which partition to add to
+        /// Assumes the caller has set the ID of the set appropriately and will use this to determine which partition to add to.
         /// </remarks>
         public override void Add(ISet s)
         {
@@ -174,9 +174,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Adds a Variable to the multiset
+        /// Adds a Variable to the multiset.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public override void AddVariable(string variable)
         {
             if (this._variables.Count == 0) this._variables.Add(new HashSet<string>());
@@ -186,9 +186,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Sets the variable ordering for the multiset
+        /// Sets the variable ordering for the multiset.
         /// </summary>
-        /// <param name="variables">Variable Ordering</param>
+        /// <param name="variables">Variable Ordering.</param>
         public override void SetVariableOrder(IEnumerable<string> variables)
         {
             // Validate that the ordering is applicable
@@ -211,9 +211,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes a Set from the multiset
+        /// Removes a Set from the multiset.
         /// </summary>
-        /// <param name="id">Set ID</param>
+        /// <param name="id">Set ID.</param>
         public override void Remove(int id)
         {
             int p = id / this._partitionSize;
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the multiset is empty
+        /// Gets whether the multiset is empty.
         /// </summary>
         public override bool IsEmpty
         {
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the number of sets in the multiset
+        /// Gets the number of sets in the multiset.
         /// </summary>
         public override int Count
         {
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the variables in the multiset
+        /// Gets the variables in the multiset.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the sets in the multiset
+        /// Gets the sets in the multiset.
         /// </summary>
         public override IEnumerable<ISet> Sets
         {
@@ -290,7 +290,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Set IDs in the mutliset
+        /// Gets the Set IDs in the mutliset.
         /// </summary>
         public override IEnumerable<int> SetIDs
         {
@@ -310,7 +310,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets a Set from the multiset
+        /// Gets a Set from the multiset.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -339,7 +339,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes temporary variables from all sets the multiset
+        /// Removes temporary variables from all sets the multiset.
         /// </summary>
         public override void Trim()
         {
@@ -379,9 +379,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Removes a specific variable from all sets in the multiset
+        /// Removes a specific variable from all sets in the multiset.
         /// </summary>
-        /// <param name="variable">Variable</param>
+        /// <param name="variable">Variable.</param>
         public override void Trim(string variable)
         {
             if (variable == null) return;

@@ -34,7 +34,7 @@ using System.IO;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// A Class which creates GraphViz Graphs entirely dynamically
+    /// A Class which creates GraphViz Graphs entirely dynamically.
     /// </summary>
     public class GraphVizGenerator
     {
@@ -42,10 +42,10 @@ namespace VDS.RDF.Writing
         private String _graphvizdir = String.Empty;
 
         /// <summary>
-        /// Creates a new GraphVizGenerator
+        /// Creates a new GraphVizGenerator.
         /// </summary>
-        /// <param name="format">Format for the Output (svg is default)</param>
-        /// <remarks>Only use this form if you're certain that dot.exe is in your PATH otherwise the code will throw an error</remarks>
+        /// <param name="format">Format for the Output (svg is default).</param>
+        /// <remarks>Only use this form if you're certain that dot.exe is in your PATH otherwise the code will throw an error.</remarks>
         public GraphVizGenerator(String format)
         {
             LocateGraphViz();
@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Creates a new GraphVizGenerator
+        /// Creates a new GraphVizGenerator.
         /// </summary>
-        /// <param name="format">Format for the Output</param>
-        /// <param name="gvdir">Directory in which GraphViz is installed</param>
+        /// <param name="format">Format for the Output.</param>
+        /// <param name="gvdir">Directory in which GraphViz is installed.</param>
         public GraphVizGenerator(String format, String gvdir)
             : this(format)
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the Format for the Output
+        /// Gets/Sets the Format for the Output.
         /// </summary>
         public String Format
         {
@@ -86,11 +86,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates GraphViz Output for the given Graph
+        /// Generates GraphViz Output for the given Graph.
         /// </summary>
-        /// <param name="g">Graph to generated GraphViz Output for</param>
-        /// <param name="filename">File you wish to save the Output to</param>
-        /// <param name="open">Whether you want to open the Output in the default application (according to OS settings) for the filetype after it is Created</param>
+        /// <param name="g">Graph to generated GraphViz Output for.</param>
+        /// <param name="filename">File you wish to save the Output to.</param>
+        /// <param name="open">Whether you want to open the Output in the default application (according to OS settings) for the filetype after it is Created.</param>
         public void Generate(IGraph g, String filename, bool open)
         {
             // Prepare the Process
@@ -141,7 +141,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal Helper Method for locating the GraphViz Directory using the PATH Environment Variable
+        /// Internal Helper Method for locating the GraphViz Directory using the PATH Environment Variable.
         /// </summary>
         private void LocateGraphViz()
         {

@@ -30,7 +30,7 @@ using VDS.RDF.Query.Construct;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Pattern which matches Variables
+    /// Pattern which matches Variables.
     /// </summary>
     public class VariablePattern 
         : PatternItem
@@ -38,9 +38,9 @@ namespace VDS.RDF.Query.Patterns
         private String _varname;
 
         /// <summary>
-        /// Creates a new Variable Pattern
+        /// Creates a new Variable Pattern.
         /// </summary>
-        /// <param name="name">Variable name</param>
+        /// <param name="name">Variable name.</param>
         public VariablePattern(String name)
         {
             _varname = name;
@@ -53,10 +53,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Creates a new Variable Pattern
+        /// Creates a new Variable Pattern.
         /// </summary>
-        /// <param name="name">Variable name</param>
-        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation</param>
+        /// <param name="name">Variable name.</param>
+        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation.</param>
         public VariablePattern(String name, bool rigorousEvaluation)
             : this(name)
         {
@@ -64,10 +64,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Checks whether the given Node is a valid value for the Variable in the current Binding Context
+        /// Checks whether the given Node is a valid value for the Variable in the current Binding Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="obj">Node to test</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="obj">Node to test.</param>
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
@@ -93,10 +93,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Constructs a Node based on the given Set
+        /// Constructs a Node based on the given Set.
         /// </summary>
-        /// <param name="context">Construct Context</param>
-        /// <returns>The Node which is bound to this Variable in this Solution</returns>
+        /// <param name="context">Construct Context.</param>
+        /// <returns>The Node which is bound to this Variable in this Solution.</returns>
         protected internal override INode Construct(ConstructContext context)
         {
             INode value = context.Set[_varname];
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of this pattern
+        /// Gets the String representation of this pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Name of the Variable this Pattern matches
+        /// Gets the Name of the Variable this Pattern matches.
         /// </summary>
         public override string VariableName
         {

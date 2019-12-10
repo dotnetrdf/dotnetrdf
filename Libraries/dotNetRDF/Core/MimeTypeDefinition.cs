@@ -36,7 +36,7 @@ using VDS.RDF.Writing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Represents the definition of a MIME Type including mappings to relevant readers and writers
+    /// Represents the definition of a MIME Type including mappings to relevant readers and writers.
     /// </summary>
     public sealed class MimeTypeDefinition
     {
@@ -49,11 +49,11 @@ namespace VDS.RDF
         private Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
 
         /// <summary>
-        /// Creates a new MIME Type Definition
+        /// Creates a new MIME Type Definition.
         /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (mimeTypes == null) throw new ArgumentNullException("MIME Types enumeration cannot be null");
@@ -67,12 +67,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new MIME Type Definition
+        /// Creates a new MIME Type Definition.
         /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="formatUri">Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a></param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition.</param>
+        /// <param name="formatUri">Format URI as defined by the. <a href="http://www.w3.org/ns/formats/">W3C</a></param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
@@ -80,17 +80,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new MIME Type Definition
+        /// Creates a new MIME Type Definition.
         /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable)</param>
-        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable)</param>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
+        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable).</param>
+        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable).</param>
+        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable).</param>
+        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable).</param>
+        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable).</param>
+        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable).</param>
         public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
@@ -103,18 +103,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new MIME Type Definition
+        /// Creates a new MIME Type Definition.
         /// </summary>
-        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
-        /// <param name="formatUri">Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a></param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
-        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable)</param>
-        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
-        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable)</param>
-        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable)</param>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition.</param>
+        /// <param name="formatUri">Format URI as defined by the. <a href="http://www.w3.org/ns/formats/">W3C</a></param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
+        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable).</param>
+        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable).</param>
+        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable).</param>
+        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable).</param>
+        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable).</param>
+        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable).</param>
         public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
             : this(syntaxName, mimeTypes, fileExtensions, rdfParserType, rdfDatasetParserType, sparqlResultsParserType, rdfWriterType, rdfDatasetWriterType, sparqlResultsWriterType)
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the name of the Syntax to which this MIME Type Definition relates
+        /// Gets the name of the Syntax to which this MIME Type Definition relates.
         /// </summary>
         public String SyntaxName
         {
@@ -133,7 +133,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable)
+        /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable).
         /// </summary>
         public String FormatUri
         {
@@ -144,7 +144,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Encoding that should be used for reading and writing this Syntax
+        /// Gets the Encoding that should be used for reading and writing this Syntax.
         /// </summary>
         public Encoding Encoding
         {
@@ -168,7 +168,7 @@ namespace VDS.RDF
         #region MIME Type Management
 
         /// <summary>
-        /// Gets the MIME Types defined
+        /// Gets the MIME Types defined.
         /// </summary>
         public IEnumerable<String> MimeTypes
         {
@@ -179,9 +179,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks that MIME Types are valid
+        /// Checks that MIME Types are valid.
         /// </summary>
-        /// <param name="type">Type</param>
+        /// <param name="type">Type.</param>
         public String CheckValidMimeType(String type)
         {
             type = type.Trim().ToLowerInvariant();
@@ -193,9 +193,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a MIME Type to this definition
+        /// Adds a MIME Type to this definition.
         /// </summary>
-        /// <param name="type">MIME Type</param>
+        /// <param name="type">MIME Type.</param>
         public void AddMimeType(String type)
         {
             if (!_mimeTypes.Contains(CheckValidMimeType(type)))
@@ -205,7 +205,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Canonical MIME Type that should be used
+        /// Gets the Canonical MIME Type that should be used.
         /// </summary>
         public String CanonicalMimeType
         {
@@ -242,9 +242,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether the Definition supports a particular MIME type
+        /// Determines whether the Definition supports a particular MIME type.
         /// </summary>
-        /// <param name="mimeType">MIME Type</param>
+        /// <param name="mimeType">MIME Type.</param>
         /// <returns></returns>
         [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", false)]
         public bool SupportsMimeType(String mimeType)
@@ -255,9 +255,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether the definition supports the MIME type specified by the selector
+        /// Determines whether the definition supports the MIME type specified by the selector.
         /// </summary>
-        /// <param name="selector">MIME Type selector</param>
+        /// <param name="selector">MIME Type selector.</param>
         /// <returns></returns>
         public bool SupportsMimeType(MimeTypeSelector selector)
         {
@@ -279,7 +279,7 @@ namespace VDS.RDF
         #region File Extension Management
 
         /// <summary>
-        /// Gets the File Extensions associated with this Syntax
+        /// Gets the File Extensions associated with this Syntax.
         /// </summary>
         public IEnumerable<String> FileExtensions
         {
@@ -290,9 +290,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a File Extension for this Syntax
+        /// Adds a File Extension for this Syntax.
         /// </summary>
-        /// <param name="ext">File Extension</param>
+        /// <param name="ext">File Extension.</param>
         public void AddFileExtension(String ext)
         {
             if (!_fileExtensions.Contains(CheckFileExtension(ext)))
@@ -308,7 +308,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether any file extensions are associated with this syntax
+        /// Gets whether any file extensions are associated with this syntax.
         /// </summary>
         public bool HasFileExtensions
         {
@@ -319,7 +319,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Canonical File Extension for this Syntax
+        /// Gets/Sets the Canonical File Extension for this Syntax.
         /// </summary>
         public String CanonicalFileExtension
         {
@@ -356,9 +356,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether the Definition supports a particular File Extension
+        /// Determines whether the Definition supports a particular File Extension.
         /// </summary>
-        /// <param name="ext">File Extension</param>
+        /// <param name="ext">File Extension.</param>
         /// <returns></returns>
         public bool SupportsFileExtension(String ext)
         {
@@ -372,11 +372,11 @@ namespace VDS.RDF
         #region Parser and Writer Management
 
         /// <summary>
-        /// Ensures that a given Type implements a required Interface
+        /// Ensures that a given Type implements a required Interface.
         /// </summary>
-        /// <param name="property">Property to which we are assigning</param>
-        /// <param name="t">Type</param>
-        /// <param name="interfaceType">Required Interface Type</param>
+        /// <param name="property">Property to which we are assigning.</param>
+        /// <param name="t">Type.</param>
+        /// <param name="interfaceType">Required Interface Type.</param>
         private bool EnsureInterface(String property, Type t, Type interfaceType)
         {
             if (!t.GetInterfaces().Any(itype => itype.Equals(interfaceType)))
@@ -415,7 +415,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to parse RDF (or null if not applicable)
+        /// Gets/Sets the Type to use to parse RDF (or null if not applicable).
         /// </summary>
         public Type RdfParserType
         {
@@ -440,7 +440,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to parse RDF Datasets (or null if not applicable)
+        /// Gets/Sets the Type to use to parse RDF Datasets (or null if not applicable).
         /// </summary>
         public Type RdfDatasetParserType
         {
@@ -465,7 +465,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to parse SPARQL Results (or null if not applicable)
+        /// Gets/Sets the Type to use to parse SPARQL Results (or null if not applicable).
         /// </summary>
         public Type SparqlResultsParserType
         {
@@ -490,7 +490,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to writer RDF (or null if not applicable)
+        /// Gets/Sets the Type to use to writer RDF (or null if not applicable).
         /// </summary>
         public Type RdfWriterType
         {
@@ -515,7 +515,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to writer RDF Dataets (or null if not applicable)
+        /// Gets/Sets the Type to use to writer RDF Dataets (or null if not applicable).
         /// </summary>
         public Type RdfDatasetWriterType
         {
@@ -540,7 +540,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Type to use to write SPARQL Results (or null if not applicable)
+        /// Gets/Sets the Type to use to write SPARQL Results (or null if not applicable).
         /// </summary>
         public Type SparqlResultsWriterType
         {
@@ -565,7 +565,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this definition can instantiate a Parser that can parse RDF
+        /// Gets whether this definition can instantiate a Parser that can parse RDF.
         /// </summary>
         public bool CanParseRdf
         {
@@ -576,7 +576,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this definition can instantiate a Parser that can parse RDF Datasets
+        /// Gets whether this definition can instantiate a Parser that can parse RDF Datasets.
         /// </summary>
         public bool CanParseRdfDatasets
         {
@@ -587,7 +587,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this definition can instantiate a Parser that can parse SPARQL Results
+        /// Gets whether this definition can instantiate a Parser that can parse SPARQL Results.
         /// </summary>
         public bool CanParseSparqlResults
         {
@@ -598,7 +598,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the definition provides a RDF Writer
+        /// Gets whether the definition provides a RDF Writer.
         /// </summary>
         public bool CanWriteRdf
         {
@@ -609,7 +609,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Definition provides a RDF Dataset Writer
+        /// Gets whether the Definition provides a RDF Dataset Writer.
         /// </summary>
         public bool CanWriteRdfDatasets
         {
@@ -620,7 +620,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Definition provides a SPARQL Results Writer
+        /// Gets whether the Definition provides a SPARQL Results Writer.
         /// </summary>
         public bool CanWriteSparqlResults
         {
@@ -631,7 +631,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an instance of a RDF parser
+        /// Gets an instance of a RDF parser.
         /// </summary>
         /// <returns></returns>
         public IRdfReader GetRdfParser()
@@ -647,7 +647,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an instance of a RDF writer
+        /// Gets an instance of a RDF writer.
         /// </summary>
         /// <returns></returns>
         public IRdfWriter GetRdfWriter()
@@ -663,7 +663,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an instance of a RDF Dataset parser
+        /// Gets an instance of a RDF Dataset parser.
         /// </summary>
         /// <returns></returns>
         public IStoreReader GetRdfDatasetParser()
@@ -679,7 +679,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an instance of a RDF Dataset writer
+        /// Gets an instance of a RDF Dataset writer.
         /// </summary>
         /// <returns></returns>
         public IStoreWriter GetRdfDatasetWriter()
@@ -695,7 +695,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an instance of a SPARQL Results parser
+        /// Gets an instance of a SPARQL Results parser.
         /// </summary>
         /// <returns></returns>
         public ISparqlResultsReader GetSparqlResultsParser()
@@ -715,7 +715,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an instance of a SPARQL Results writer
+        /// Gets an instance of a SPARQL Results writer.
         /// </summary>
         /// <returns></returns>
         public ISparqlResultsWriter GetSparqlResultsWriter()
@@ -735,9 +735,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether a particular Type of Object can be parsed
+        /// Gets whether a particular Type of Object can be parsed.
         /// </summary>
-        /// <typeparam name="T">Object Type</typeparam>
+        /// <typeparam name="T">Object Type.</typeparam>
         /// <returns></returns>
         public bool CanParseObject<T>()
         {
@@ -745,9 +745,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an Object Parser for the given Type
+        /// Gets an Object Parser for the given Type.
         /// </summary>
-        /// <typeparam name="T">Object Type</typeparam>
+        /// <typeparam name="T">Object Type.</typeparam>
         /// <returns></returns>
         public Type GetObjectParserType<T>()
         {
@@ -764,10 +764,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Sets an Object Parser for the given Type
+        /// Sets an Object Parser for the given Type.
         /// </summary>
-        /// <typeparam name="T">Object Type</typeparam>
-        /// <param name="parserType">Parser Type</param>
+        /// <typeparam name="T">Object Type.</typeparam>
+        /// <param name="parserType">Parser Type.</param>
         public void SetObjectParserType<T>(Type parserType)
         {
             Type t = typeof(T);
@@ -795,9 +795,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets an Object Parser for the given Type
+        /// Gets an Object Parser for the given Type.
         /// </summary>
-        /// <typeparam name="T">Object Type</typeparam>
+        /// <typeparam name="T">Object Type.</typeparam>
         /// <returns></returns>
         public IObjectParser<T> GetObjectParser<T>()
         {
@@ -813,7 +813,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the registered Object Parser Types
+        /// Gets the registered Object Parser Types.
         /// </summary>
         public IEnumerable<KeyValuePair<Type, Type>> ObjectParserTypes
         {
@@ -828,7 +828,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Selector used in selecting which MIME type to use
+    /// Selector used in selecting which MIME type to use.
     /// </summary>
     public sealed class MimeTypeSelector
         : IComparable<MimeTypeSelector>
@@ -839,10 +839,10 @@ namespace VDS.RDF
         private bool _isSpecific = false, _isRange = false, _isAny = false, _isInvalid = false;
 
         /// <summary>
-        /// Creates a MIME Type selector
+        /// Creates a MIME Type selector.
         /// </summary>
-        /// <param name="contentType">MIME Type</param>
-        /// <param name="order">Order the selector appears in the input</param>
+        /// <param name="contentType">MIME Type.</param>
+        /// <param name="order">Order the selector appears in the input.</param>
         /// <returns></returns>
         public static MimeTypeSelector Create(String contentType, int order)
         {
@@ -880,9 +880,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates an enumeration of MIME type selectors
+        /// Creates an enumeration of MIME type selectors.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
+        /// <param name="ctypes">MIME Types.</param>
         /// <returns></returns>
         public static IEnumerable<MimeTypeSelector> CreateSelectors(IEnumerable<String> ctypes)
         {
@@ -914,12 +914,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new MIME Type Selector
+        /// Creates a new MIME Type Selector.
         /// </summary>
-        /// <param name="type">MIME Type to match</param>
-        /// <param name="charset">Charset</param>
-        /// <param name="quality">Quality (in range 0.0-1.0)</param>
-        /// <param name="order">Order of appearance (used as precendence tiebreaker where necessary)</param>
+        /// <param name="type">MIME Type to match.</param>
+        /// <param name="charset">Charset.</param>
+        /// <param name="quality">Quality (in range 0.0-1.0).</param>
+        /// <param name="order">Order of appearance (used as precendence tiebreaker where necessary).</param>
         public MimeTypeSelector(String type, String charset, double quality, int order)
         {
             if (type == null) throw new ArgumentNullException("type", "Type cannot be null");
@@ -963,9 +963,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the selected type
+        /// Gets the selected type.
         /// </summary>
-        /// <returns>A type string of the form <strong>type/subtype</strong> assuming the type if valid</returns>
+        /// <returns>A type string of the form <strong>type/subtype</strong> assuming the type if valid.</returns>
         public String Type
         {
             get
@@ -975,9 +975,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the range type if this is a range selector
+        /// Gets the range type if this is a range selector.
         /// </summary>
-        /// <returns>A type string of the form <strong>type/</strong> if this is a range selector, otherwise null</returns>
+        /// <returns>A type string of the form <strong>type/</strong> if this is a range selector, otherwise null.</returns>
         public String RangeType
         {
             get
@@ -987,7 +987,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Charset for the selector (may be null if none specified)
+        /// Gets the Charset for the selector (may be null if none specified).
         /// </summary>
         public String Charset
         {
@@ -998,7 +998,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the quality for the selector (range of 0.0-1.0)
+        /// Gets the quality for the selector (range of 0.0-1.0).
         /// </summary>
         public double Quality
         {
@@ -1009,7 +1009,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the order of apperance for the selector (used as precedence tiebreaker where necessary)
+        /// Gets the order of apperance for the selector (used as precedence tiebreaker where necessary).
         /// </summary>
         public int Order
         {
@@ -1020,7 +1020,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the selector if for a */* pattern i.e. accept any
+        /// Gets whether the selector if for a */* pattern i.e. accept any.
         /// </summary>
         public bool IsAny
         {
@@ -1031,7 +1031,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the selector is for a type/* pattern i.e. accept any sub-type of the given type
+        /// Gets whether the selector is for a type/* pattern i.e. accept any sub-type of the given type.
         /// </summary>
         public bool IsRange
         {
@@ -1042,7 +1042,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the selector is invalid
+        /// Gets whether the selector is invalid.
         /// </summary>
         public bool IsInvalid
         {
@@ -1053,7 +1053,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the selector is for a specific MIME type e.g. type/sub-type
+        /// Gets whether the selector is for a specific MIME type e.g. type/sub-type.
         /// </summary>
         public bool IsSpecific
         {
@@ -1064,9 +1064,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Sorts the selector in precedence order according to the content negotiation rules from the relevant RFCs
+        /// Sorts the selector in precedence order according to the content negotiation rules from the relevant RFCs.
         /// </summary>
-        /// <param name="other">Selector to compare against</param>
+        /// <param name="other">Selector to compare against.</param>
         /// <returns></returns>
         public int CompareTo(MimeTypeSelector other)
         {
@@ -1160,11 +1160,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the string representation of the selector as it would appear in an Accept header
+        /// Gets the string representation of the selector as it would appear in an Accept header.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Unless this is an invalid selector this will always be a valid selector that could be appended to a MIME type header
+        /// Unless this is an invalid selector this will always be a valid selector that could be appended to a MIME type header.
         /// </remarks>
         public override string ToString()
         {

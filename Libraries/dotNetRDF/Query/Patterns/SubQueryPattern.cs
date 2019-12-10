@@ -32,7 +32,7 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing Sub-queries which occur as part of a SPARQL query
+    /// Class for representing Sub-queries which occur as part of a SPARQL query.
     /// </summary>
     public class SubQueryPattern 
         : BaseTriplePattern, ISubQueryPattern, IComparable<SubQueryPattern>
@@ -40,9 +40,9 @@ namespace VDS.RDF.Query.Patterns
         private readonly SparqlQuery _subquery;
 
         /// <summary>
-        /// Creates a new Sub-query pattern which represents the given sub-query
+        /// Creates a new Sub-query pattern which represents the given sub-query.
         /// </summary>
-        /// <param name="subquery">Sub-query</param>
+        /// <param name="subquery">Sub-query.</param>
         public SubQueryPattern(SparqlQuery subquery)
         {
             _subquery = subquery;
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Sub-Query
+        /// Gets the Sub-Query.
         /// </summary>
         public SparqlQuery SubQuery
         {
@@ -70,17 +70,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public override IEnumerable<String> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public override IEnumerable<String> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
-        /// Gets the pattern type
+        /// Gets the pattern type.
         /// </summary>
         public override TriplePatternType PatternType
         {
@@ -91,9 +91,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Evaluates a Sub-query in the given Evaluation Context
+        /// Evaluates a Sub-query in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             // Use the same algebra optimisers as the parent query (if any)
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns that the Pattern is not an accept all since it is a Sub-query
+        /// Returns that the Pattern is not an accept all since it is a Sub-query.
         /// </summary>
         public override bool IsAcceptAll
         {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Sub-query is Thread Safe
+        /// Gets whether the Sub-query is Thread Safe.
         /// </summary>
         public override bool UsesDefaultDataset
         {
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns true as while a sub-query may contain blank node variables they will not be in scope here
+        /// Returns true as while a sub-query may contain blank node variables they will not be in scope here.
         /// </summary>
         public override bool HasNoBlankVariables
         {
@@ -183,9 +183,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a sub-query pattern to another
+        /// Compares a sub-query pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(SubQueryPattern other)
         {
@@ -193,9 +193,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a sub-query pattern to another
+        /// Compares a sub-query pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(ISubQueryPattern other)
         {
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the string representation of the sub-query
+        /// Gets the string representation of the sub-query.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

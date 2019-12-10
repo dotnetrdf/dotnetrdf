@@ -34,7 +34,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Represents the XPath fn:replace() function
+    /// Represents the XPath fn:replace() function.
     /// </summary>
     public class ReplaceFunction
         : ISparqlExpression
@@ -50,21 +50,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         private ISparqlExpression _replaceExpr = null;
 
         /// <summary>
-        /// Creates a new SPARQL Replace function
+        /// Creates a new SPARQL Replace function.
         /// </summary>
-        /// <param name="text">Text Expression</param>
-        /// <param name="find">Search Expression</param>
-        /// <param name="replace">Replace Expression</param>
+        /// <param name="text">Text Expression.</param>
+        /// <param name="find">Search Expression.</param>
+        /// <param name="replace">Replace Expression.</param>
         public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace)
             : this(text, find, replace, null) { }
 
         /// <summary>
-        /// Creates a new SPARQL Replace function
+        /// Creates a new SPARQL Replace function.
         /// </summary>
-        /// <param name="text">Text Expression</param>
-        /// <param name="find">Search Expression</param>
-        /// <param name="replace">Replace Expression</param>
-        /// <param name="options">Options Expression</param>
+        /// <param name="text">Text Expression.</param>
+        /// <param name="find">Search Expression.</param>
+        /// <param name="replace">Replace Expression.</param>
+        /// <param name="options">Options Expression.</param>
         public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace, ISparqlExpression options)
         {
             _textExpr = text;
@@ -119,10 +119,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Configures the Options for the Regular Expression
+        /// Configures the Options for the Regular Expression.
         /// </summary>
-        /// <param name="n">Node detailing the Options</param>
-        /// <param name="throwErrors">Whether errors should be thrown or suppressed</param>
+        /// <param name="n">Node detailing the Options.</param>
+        /// <param name="throwErrors">Whether errors should be thrown or suppressed.</param>
         private void ConfigureOptions(INode n, bool throwErrors)
         {
             // Start by resetting to no options
@@ -176,10 +176,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the enumeration of Variables involved in this Expression
+        /// Gets the enumeration of Variables involved in this Expression.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -339,7 +339,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -350,7 +350,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public string Functor
         {
@@ -361,7 +361,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -379,7 +379,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -390,9 +390,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

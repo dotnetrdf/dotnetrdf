@@ -32,7 +32,7 @@ using VDS.RDF.Query.Aggregates;
 namespace VDS.RDF.Query.Expressions.Primary
 {
     /// <summary>
-    /// Class for representing Aggregate Expressions which have Numeric Results
+    /// Class for representing Aggregate Expressions which have Numeric Results.
     /// </summary>
     public class AggregateTerm 
         : BaseUnaryExpression
@@ -40,9 +40,9 @@ namespace VDS.RDF.Query.Expressions.Primary
         private ISparqlAggregate _aggregate;
 
         /// <summary>
-        /// Creates a new Aggregate Expression Term that uses the given Aggregate
+        /// Creates a new Aggregate Expression Term that uses the given Aggregate.
         /// </summary>
-        /// <param name="aggregate">Aggregate</param>
+        /// <param name="aggregate">Aggregate.</param>
         public AggregateTerm(ISparqlAggregate aggregate)
             : base(null)
         {
@@ -50,10 +50,10 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Evaluates the aggregate expression
+        /// Evaluates the aggregate expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Aggregate this Expression represents
+        /// Gets the Aggregate this Expression represents.
         /// </summary>
         public ISparqlAggregate Aggregate
         {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate Expression
+        /// Gets the String representation of the Aggregate Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the enumeration of variables that are used in the the aggregate expression
+        /// Gets the enumeration of variables that are used in the the aggregate expression.
         /// </summary>
         public override IEnumerable<String> Variables
         {
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Gets whether the expression can be parallelised
+        /// Gets whether the expression can be parallelised.
         /// </summary>
         public override bool CanParallelise
         {
@@ -148,9 +148,9 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

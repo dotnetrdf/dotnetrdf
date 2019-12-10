@@ -38,7 +38,7 @@ using System.Web;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Class for connecting to any store that implements the SPARQL Graph Store HTTP Protocol for Managing Graphs
+    /// Class for connecting to any store that implements the SPARQL Graph Store HTTP Protocol for Managing Graphs.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -52,17 +52,20 @@ namespace VDS.RDF.Storage
         : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncStorageProvider, IStorageProvider
     {
         /// <summary>
-        /// URI of the Protocol Server
+        /// URI of the Protocol Server.
         /// </summary>
         protected string _serviceUri;
 
+        /// <summary>
+        /// The MIME type of the syntax to use when sending RDF data to the server.
+        /// </summary>
         protected MimeTypeDefinition _writerMimeTypeDefinition;
 
         /// <summary>
-        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector.
         /// </summary>
-        /// <param name="serviceUri">URI of the Protocol Server</param>
-        /// <param name="writerMimeTypeDefinition">The MIME type specifying the syntax to use when sending RDF data to the server. Defaults to "application/rdf+xml"</param>
+        /// <param name="serviceUri">URI of the Protocol Server.</param>
+        /// <param name="writerMimeTypeDefinition">The MIME type specifying the syntax to use when sending RDF data to the server. Defaults to "application/rdf+xml".</param>
         public SparqlHttpProtocolConnector(string serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
         {
             if (serviceUri == null)
@@ -78,17 +81,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector.
         /// </summary>
-        /// <param name="serviceUri">URI of the Protocol Server</param>
+        /// <param name="serviceUri">URI of the Protocol Server.</param>
         public SparqlHttpProtocolConnector(Uri serviceUri)
             : this(serviceUri.ToSafeString()) { }
 
         /// <summary>
-        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector.
         /// </summary>
-        /// <param name="serviceUri">URI of the Protocol Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="serviceUri">URI of the Protocol Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public SparqlHttpProtocolConnector(String serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
@@ -96,15 +99,15 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector.
         /// </summary>
-        /// <param name="serviceUri">URI of the Protocol Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="serviceUri">URI of the Protocol Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public SparqlHttpProtocolConnector(Uri serviceUri, IWebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
 
         /// <summary>
-        /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores
+        /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores.
         /// </summary>
         public override IOBehaviour IOBehaviour
         {
@@ -115,7 +118,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that Updates are supported
+        /// Gets that Updates are supported.
         /// </summary>
         public override bool UpdateSupported
         {
@@ -126,7 +129,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting Graphs is supported
+        /// Returns that deleting Graphs is supported.
         /// </summary>
         public override bool DeleteSupported
         {
@@ -137,7 +140,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that listing Graphs is not supported
+        /// Returns that listing Graphs is not supported.
         /// </summary>
         public override bool ListGraphsSupported
         {
@@ -148,7 +151,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that the Store is ready
+        /// Gets that the Store is ready.
         /// </summary>
         public override bool IsReady
         {
@@ -159,7 +162,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that the Store is not read-only
+        /// Gets that the Store is not read-only.
         /// </summary>
         public override bool IsReadOnly
         {
@@ -170,30 +173,30 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Protocol Server
+        /// Loads a Graph from the Protocol Server.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph from the Protocol Server
+        /// Loads a Graph from the Protocol Server.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph from the Protocol Server
+        /// Loads a Graph from the Protocol Server.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IGraph g, String graphUri)
         {
             Uri origUri = g.BaseUri;
@@ -206,10 +209,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Protocol Server
+        /// Loads a Graph from the Protocol Server.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             String retrievalUri = _serviceUri;
@@ -255,18 +258,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists
+        /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to check for</param>
+        /// <param name="graphUri">URI of the Graph to check for.</param>
         public virtual bool HasGraph(Uri graphUri)
         {
             return HasGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists
+        /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to check for</param>
+        /// <param name="graphUri">URI of the Graph to check for.</param>
         public virtual bool HasGraph(String graphUri)
         {
             String lookupUri = _serviceUri;
@@ -311,9 +314,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph to the Protocol Server
+        /// Saves a Graph to the Protocol Server.
         /// </summary>
-        /// <param name="g">Graph to save</param>
+        /// <param name="g">Graph to save.</param>
         public virtual void SaveGraph(IGraph g)
         {
             String saveUri = _serviceUri;
@@ -353,13 +356,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph on the Protocol Server
+        /// Updates a Graph on the Protocol Server.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         /// <remarks>
-        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown.
         /// </remarks>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
@@ -367,13 +370,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph on the Protocol Server
+        /// Updates a Graph on the Protocol Server.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         /// <remarks>
-        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown.
         /// </remarks>
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
@@ -421,18 +424,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the store
+        /// Deletes a Graph from the store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
         public virtual void DeleteGraph(Uri graphUri)
         {
             DeleteGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Deletes a Graph from the store
+        /// Deletes a Graph from the store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
         public virtual void DeleteGraph(String graphUri)
         {
             String deleteUri = _serviceUri;
@@ -471,22 +474,22 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an exception as listing graphs in a SPARQL Graph Store HTTP Protocol does not support listing graphs
+        /// Throws an exception as listing graphs in a SPARQL Graph Store HTTP Protocol does not support listing graphs.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs</exception>
+        /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs.</exception>
         public virtual IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
         }
 
         /// <summary>
-        /// Loads a Graph from the Protocol Server
+        /// Loads a Graph from the Protocol Server.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state)
         {
             Uri origUri = g.BaseUri;
@@ -502,12 +505,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Protocol Server
+        /// Loads a Graph from the Protocol Server.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state)
         {
             String retrievalUri = _serviceUri;
@@ -528,11 +531,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph to the Protocol Server
+        /// Saves a Graph to the Protocol Server.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state)
         {
             String saveUri = _serviceUri;
@@ -553,15 +556,15 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph on the Protocol Server
+        /// Updates a Graph on the Protocol Server.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
-        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown.
         /// </remarks>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
@@ -598,21 +601,21 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Lists the Graphs in the Store asynchronously
+        /// Lists the Graphs in the Store asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void ListGraphs(AsyncStorageCallback callback, Object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing graphs")), state);
         }
         
         /// <summary>
-        /// Deletes a Graph from the store asynchronously
+        /// Deletes a Graph from the store asynchronously.
         /// </summary>
-        /// <param name="graphUri">URI of the graph to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the graph to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state)
         {
             String deleteUri = _serviceUri;
@@ -648,7 +651,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Disposes of the Connection
+        /// Disposes of the Connection.
         /// </summary>
         public override void Dispose()
         {
@@ -656,7 +659,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a String representation of the connection
+        /// Gets a String representation of the connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -665,9 +668,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

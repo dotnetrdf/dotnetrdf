@@ -29,15 +29,15 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// A collection of cross-target extensions to the string class
+    /// A collection of cross-target extensions to the string class.
     /// </summary>
     public static class StringExtensions
     {
         /// <summary>
-        /// Return true if the character sequence starting at the specified offset is a URI hex-encoded character
+        /// Return true if the character sequence starting at the specified offset is a URI hex-encoded character.
         /// </summary>
-        /// <param name="str">The input string</param>
-        /// <param name="index">The character offset from which to start the check for a hex-encoded character</param>
+        /// <param name="str">The input string.</param>
+        /// <param name="index">The character offset from which to start the check for a hex-encoded character.</param>
         /// <returns></returns>
         public static bool IsHexEncoding(this string str, int index)
         {

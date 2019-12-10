@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A Handler which passes the RDF to be handled to multiple Handlers where Handling terminates in the handling request where one of the Handlers returns false
+    /// A Handler which passes the RDF to be handled to multiple Handlers where Handling terminates in the handling request where one of the Handlers returns false.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This differs from <see cref="ChainedHandler">ChainedHandler</see> in that even if one Handler indicates that handling should stop by returning false all the Handlers still have a chance to handle the Base URI/Namespace/Triple before handling is terminated.  All Handlers will always have their StartRdf and EndRdf methods called
+    /// This differs from <see cref="ChainedHandler">ChainedHandler</see> in that even if one Handler indicates that handling should stop by returning false all the Handlers still have a chance to handle the Base URI/Namespace/Triple before handling is terminated.  All Handlers will always have their StartRdf and EndRdf methods called.
     /// </para>
     /// </remarks>
     public class MultiHandler : BaseRdfHandler, IWrappingRdfHandler
@@ -43,9 +43,9 @@ namespace VDS.RDF.Parsing.Handlers
         private List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
         /// <summary>
-        /// Creates a new Multi Handler
+        /// Creates a new Multi Handler.
         /// </summary>
-        /// <param name="handlers">Inner Handlers for this Handler</param>
+        /// <param name="handlers">Inner Handlers for this Handler.</param>
         public MultiHandler(IEnumerable<IRdfHandler> handlers)
         {
             if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the MultiHandler");
@@ -64,17 +64,17 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a new Multi Handler with a known Node Factory
+        /// Creates a new Multi Handler with a known Node Factory.
         /// </summary>
-        /// <param name="handlers">Inner Handlers for this Handler</param>
-        /// <param name="factory">Node Factory to use for this Handler</param>
+        /// <param name="handlers">Inner Handlers for this Handler.</param>
+        /// <param name="factory">Node Factory to use for this Handler.</param>
         public MultiHandler(IEnumerable<IRdfHandler> handlers, INodeFactory factory) : this(handlers)
         {
             this.NodeFactory = factory ?? throw new ArgumentNullException("factory");
         }
 
         /// <summary>
-        /// Gets the Inner Handlers used by this Handler
+        /// Gets the Inner Handlers used by this Handler.
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts RDF Handling by starting handling on all inner handlers
+        /// Starts RDF Handling by starting handling on all inner handlers.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -93,21 +93,21 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends RDF Handling by ending handling on all inner handlers
+        /// Ends RDF Handling by ending handling on all inner handlers.
         /// </summary>
-        /// <param name="ok">Whether parsing completed without error</param>
+        /// <param name="ok">Whether parsing completed without error.</param>
         protected override void EndRdfInternal(bool ok)
         {
             _handlers.ForEach(h => h.EndRdf(ok));
         }
 
         /// <summary>
-        /// Handles Base URIs by getting all inner handlers to handle the Base URI
+        /// Handles Base URIs by getting all inner handlers to handle the Base URI.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first
+        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first.
         /// </remarks>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -116,13 +116,13 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Namespace Declarations by getting all inner handlers to handle it
+        /// Handles Namespace Declarations by getting all inner handlers to handle it.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first
+        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first.
         /// </remarks>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -131,12 +131,12 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by getting all inner handlers to handler it
+        /// Handles Triples by getting all inner handlers to handler it.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first
+        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first.
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets whether this Handler accepts all Triples based on whether all inner handlers do so
+        /// Gets whether this Handler accepts all Triples based on whether all inner handlers do so.
         /// </summary>
         public override bool AcceptsAll
         {

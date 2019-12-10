@@ -32,17 +32,17 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for SPARQL XML Results parsers
+    /// Parser Context for SPARQL XML Results parsers.
     /// </summary>
     public class SparqlXmlParserContext : BaseResultsParserContext
     {
         private XmlReader _reader;
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
-        /// <param name="handler">Results Handler</param>
+        /// <param name="reader">XML Reader.</param>
+        /// <param name="handler">Results Handler.</param>
         public SparqlXmlParserContext(XmlReader reader, ISparqlResultsHandler handler)
             : base(handler)
         {
@@ -52,15 +52,15 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Parser Context
+        /// Creates a new Parser Context.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
-        /// <param name="results">Results Set to load into</param>
+        /// <param name="reader">XML Reader.</param>
+        /// <param name="results">Results Set to load into.</param>
         public SparqlXmlParserContext(XmlReader reader, SparqlResultSet results)
             : this(reader, new ResultSetHandler(results)) { }
 
         /// <summary>
-        /// Gets the XML Reader
+        /// Gets the XML Reader.
         /// </summary>
         public XmlReader Input
         {

@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
     /// <summary>
-    /// Represents the Leviathan lfn:sin() or lfn:sin-1 function
+    /// Represents the Leviathan lfn:sin() or lfn:sin-1 function.
     /// </summary>
     public class SineFunction
         : BaseTrigonometricFunction
@@ -37,17 +37,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         private bool _inverse = false;
 
         /// <summary>
-        /// Creates a new Leviathan Sine Function
+        /// Creates a new Leviathan Sine Function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public SineFunction(ISparqlExpression expr)
             : base(expr, Math.Sin) { }
 
         /// <summary>
-        /// Creates a new Leviathan Sine Function
+        /// Creates a new Leviathan Sine Function.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="inverse">Whether this should be the inverse function</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="inverse">Whether this should be the inverse function.</param>
         public SineFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -97,9 +97,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -34,7 +34,7 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Possible NTriples syntax modes
+    /// Possible NTriples syntax modes.
     /// </summary>
     public enum NTriplesSyntax
     {
@@ -46,20 +46,20 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Standardized NTriples as specified in the <a href="http://www.w3.org/TR/n-triples/">RDF 1.1 NTriples</a> specification
         /// </summary>
-        Rdf11
+        Rdf11,
     }
 
     /// <summary>
-    /// Parser for NTriples syntax
+    /// Parser for NTriples syntax.
     /// </summary>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
     public class NTriplesParser
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
         #region Initialisation, Variables and Properties
 
         /// <summary>
-        /// Creates a new instance of the parser
+        /// Creates a new instance of the parser.
         /// </summary>
         public NTriplesParser()
             : this(NTriplesSyntax.Rdf11)
@@ -67,9 +67,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new instance of the parser
+        /// Creates a new instance of the parser.
         /// </summary>
-        /// <param name="syntax">NTriples syntax to parse</param>
+        /// <param name="syntax">NTriples syntax to parse.</param>
         public NTriplesParser(NTriplesSyntax syntax)
         {
             TokenQueueMode = Options.DefaultTokenQueueMode;
@@ -79,9 +79,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new instance of the parser using the given token queue mode
+        /// Creates a new instance of the parser using the given token queue mode.
         /// </summary>
-        /// <param name="qmode">Token Queue Mode</param>
+        /// <param name="qmode">Token Queue Mode.</param>
         public NTriplesParser(TokenQueueMode qmode)
             : this()
         {
@@ -89,11 +89,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new instance of the parser using the given syntax and token queue mode
+        /// Creates a new instance of the parser using the given syntax and token queue mode.
         /// </summary>
         /// 
-        /// <param name="qmode">Token Queue Mode</param>
-        /// <param name="syntax">NTriples syntax to parse</param>
+        /// <param name="qmode">Token Queue Mode.</param>
+        /// <param name="syntax">NTriples syntax to parse.</param>
         public NTriplesParser(NTriplesSyntax syntax, TokenQueueMode qmode)
             : this(syntax)
         {
@@ -101,32 +101,32 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Controls whether Tokeniser progress will be traced by writing output to the Console
+        /// Controls whether Tokeniser progress will be traced by writing output to the Console.
         /// </summary>
         public bool TraceTokeniser { get; set; }
 
         /// <summary>
-        /// Controls whether Parser progress will be traced by writing output to the Console
+        /// Controls whether Parser progress will be traced by writing output to the Console.
         /// </summary>
         public bool TraceParsing { get; set; }
 
         /// <summary>
-        /// Gets/Sets the token queue mode used
+        /// Gets/Sets the token queue mode used.
         /// </summary>
         public TokenQueueMode TokenQueueMode { get; set; }
 
         /// <summary>
-        /// Gets/Sets the desired NTriples syntax
+        /// Gets/Sets the desired NTriples syntax.
         /// </summary>
         public NTriplesSyntax Syntax { get; set; }
 
         #endregion
 
         /// <summary>
-        /// Parses NTriples Syntax from the given Input Stream into Triples in the given Graph
+        /// Parses NTriples Syntax from the given Input Stream into Triples in the given Graph.
         /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Arbitrary Input Stream to read input from</param>
+        /// <param name="g">Graph to create Triples in.</param>
+        /// <param name="input">Arbitrary Input Stream to read input from.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -135,10 +135,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses NTriples Syntax from the given Input into Triples in the given Graph
+        /// Parses NTriples Syntax from the given Input into Triples in the given Graph.
         /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Arbitrary Input to read input from</param>
+        /// <param name="g">Graph to create Triples in.</param>
+        /// <param name="input">Arbitrary Input to read input from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -147,11 +147,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses NTriples Syntax from the given File into Triples in the given Graph
+        /// Parses NTriples Syntax from the given File into Triples in the given Graph.
         /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="filename">Name of the file containing Turtle Syntax</param>
-        /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function</remarks>
+        /// <param name="g">Graph to create Triples in.</param>
+        /// <param name="filename">Name of the file containing Turtle Syntax.</param>
+        /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function.</remarks>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -175,10 +175,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses NTriples Syntax from the given Input Stream using a RDF Handler
+        /// Parses NTriples Syntax from the given Input Stream using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input Stream to read input from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input Stream to read input from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -206,10 +206,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses NTriples Syntax from the given Input using a RDF Handler
+        /// Parses NTriples Syntax from the given Input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to read input from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read input from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -239,10 +239,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses NTriples Syntax from the given file using a RDF Handler
+        /// Parses NTriples Syntax from the given file using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -427,11 +427,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse a URI
+        /// Tries to parse a URI.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="uri">URI</param>
-        /// <returns>URI Node if parsed successfully</returns>
+        /// <param name="context">Context.</param>
+        /// <param name="uri">URI.</param>
+        /// <returns>URI Node if parsed successfully.</returns>
         private static INode TryParseUri(TokenisingParserContext context, String uri)
         {
             try
@@ -448,10 +448,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising informative standardised Parser Errors
+        /// Helper method for raising informative standardised Parser Errors.
         /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="t">The Token that is the cause of the Error</param>
+        /// <param name="msg">The Error Message.</param>
+        /// <param name="t">The Token that is the cause of the Error.</param>
         /// <returns></returns>
         private static RdfParseException Error(String msg, IToken t)
         {
@@ -473,9 +473,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Internal Helper method which raises the Warning event if an event handler is registered to it
+        /// Internal Helper method which raises the Warning event if an event handler is registered to it.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             if (Warning != null)
@@ -491,7 +491,7 @@ namespace VDS.RDF.Parsing
         public event RdfReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

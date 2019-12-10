@@ -38,7 +38,7 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Possible RDF/XML Parse Types
+    /// Possible RDF/XML Parse Types.
     /// </summary>
     public enum RdfXmlParseType : int
     {
@@ -62,11 +62,11 @@ namespace VDS.RDF.Parsing
         /// Other Parse Type
         /// </summary>
         /// <remarks>This is never used since any other Parse Type encountered is assumed to be Literal as per the RDF/XML Specification</remarks>
-        Other = 3
+        Other = 3,
     }
 
     /// <summary>
-    /// Possible RDF/XML Parser Modes
+    /// Possible RDF/XML Parser Modes.
     /// </summary>
     public enum RdfXmlParserMode
     {
@@ -77,11 +77,11 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Uses Streaming Based parsing (default)
         /// </summary>
-        Streaming
+        Streaming,
     }
 
     /// <summary>
-    /// Parser for RDF/XML syntax
+    /// Parser for RDF/XML syntax.
     /// </summary>
     public class RdfXmlParser
         : IRdfReader, ITraceableParser
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
         private RdfXmlParserMode _mode = RdfXmlParserMode.Streaming;
 
         /// <summary>
-        /// Controls whether Parser progress will be traced by writing output to the Console
+        /// Controls whether Parser progress will be traced by writing output to the Console.
         /// </summary>
         public bool TraceParsing
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing
         #endregion
 
         /// <summary>
-        /// Creates a new RDF/XML Parser
+        /// Creates a new RDF/XML Parser.
         /// </summary>
         public RdfXmlParser()
         {
@@ -118,9 +118,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new RDF/XML Parser which uses the given parsing mode
+        /// Creates a new RDF/XML Parser which uses the given parsing mode.
         /// </summary>
-        /// <param name="mode">RDF/XML Parse Mode</param>
+        /// <param name="mode">RDF/XML Parse Mode.</param>
         public RdfXmlParser(RdfXmlParserMode mode)
         {
             _mode = mode;
@@ -129,10 +129,10 @@ namespace VDS.RDF.Parsing
         #region Load Method Implementations
 
         /// <summary>
-        /// Reads RDF/XML syntax from some Stream into the given Graph
+        /// Reads RDF/XML syntax from some Stream into the given Graph.
         /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Input Stream</param>
+        /// <param name="g">Graph to create Triples in.</param>
+        /// <param name="input">Input Stream.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -140,10 +140,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads RDF/XML syntax from some Input into the given Graph
+        /// Reads RDF/XML syntax from some Input into the given Graph.
         /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="g">Graph to create Triples in.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -151,11 +151,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads RDF/XML syntax from some File into the given Graph
+        /// Reads RDF/XML syntax from some File into the given Graph.
         /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="filename">Filename of File containg XML/RDF</param>
-        /// <remarks>Simply opens a Stream for the File then calls the other version of Load to do the actual parsing</remarks>
+        /// <param name="g">Graph to create Triples in.</param>
+        /// <param name="filename">Filename of File containg XML/RDF.</param>
+        /// <remarks>Simply opens a Stream for the File then calls the other version of Load to do the actual parsing.</remarks>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -167,10 +167,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads RDF/XML syntax from some Stream using a RDF Handler
+        /// Reads RDF/XML syntax from some Stream using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input Stream</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input Stream.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -186,10 +186,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads RDF/XML syntax from some Input using a RDF Handler
+        /// Reads RDF/XML syntax from some Input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -238,10 +238,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads RDF/XML syntax from a file using a RDF Handler
+        /// Reads RDF/XML syntax from a file using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -250,10 +250,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads RDF/XML from the given XML Document
+        /// Reads RDF/XML from the given XML Document.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="document">XML Document</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="document">XML Document.</param>
         public void Load(IGraph g, XmlDocument document)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -285,9 +285,9 @@ namespace VDS.RDF.Parsing
         #endregion
 
         /// <summary>
-        /// Helper Method for raising the <see cref="RdfXmlParser.Warning">Warning</see> event
+        /// Helper Method for raising the <see cref="RdfXmlParser.Warning">Warning</see> event.
         /// </summary>
-        /// <param name="warning">Warning Message</param>
+        /// <param name="warning">Warning Message.</param>
         private void RaiseWarning(String warning)
         {
             RdfReaderWarning d = Warning;
@@ -303,9 +303,9 @@ namespace VDS.RDF.Parsing
         public event RdfReaderWarning Warning;
 
         /// <summary>
-        /// Function which does the actual Parsing by invoking the various steps of the Parser
+        /// Function which does the actual Parsing by invoking the various steps of the Parser.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void Parse(RdfXmlParserContext context)
         {
             try
@@ -344,7 +344,7 @@ namespace VDS.RDF.Parsing
         #region Queue Processing
 
         /// <summary>
-        /// Starts the Parsing of the flattened Event Tree by calling the appropriate Grammar Production based on the type of the First Event in the Queue
+        /// Starts the Parsing of the flattened Event Tree by calling the appropriate Grammar Production based on the type of the First Event in the Queue.
         /// </summary>
         private void ProcessEventQueue(RdfXmlParserContext context)
         {
@@ -381,10 +381,10 @@ namespace VDS.RDF.Parsing
         #region Grammar Productions
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'doc'
+        /// Implementation of the RDF/XML Grammar Production 'doc'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="root">Root Event to start applying Productions from</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="root">Root Event to start applying Productions from.</param>
         private void GrammarProductionDoc(RdfXmlParserContext context, RootEvent root)
         {
             // Tracing
@@ -414,10 +414,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'RDF'
+        /// Implementation of the RDF/XML Grammar Production 'RDF'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="element">RDF Element to apply Production to</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="element">RDF Element to apply Production to.</param>
         private void GrammarProductionRDF(RdfXmlParserContext context, ElementEvent element)
         {
             // Tracing
@@ -469,10 +469,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'nodeElementList'
+        /// Implementation of the RDF/XML Grammar Production 'nodeElementList'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events to apply the Production to</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events to apply the Production to.</param>
         private void GrammarProductionNodeElementList(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist)
         {
             // Tracing
@@ -512,10 +512,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'nodeElement'
+        /// Implementation of the RDF/XML Grammar Production 'nodeElement'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Node Element and its Children to apply the Production to</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Node Element and its Children to apply the Production to.</param>
         private void GrammarProductionNodeElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist)
         {
             // Tracing
@@ -710,11 +710,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'propertyEltList'
+        /// Implementation of the RDF/XML Grammar Production 'propertyEltList'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events to apply the Production to</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Elements</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events to apply the Production to.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Elements.</param>
         private void GrammarProductionPropertyElementList(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -754,11 +754,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'propertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'propertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Property Element and its Children</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Property Element and its Children.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -862,11 +862,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'resourcePropertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'resourcePropertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Resource Property Element and its Children</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Resource Property Element and its Children.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionResourcePropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -972,11 +972,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'literalPropertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'literalPropertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Literal Property Element and its Children</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Literal Property Element and its Children.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionLiteralPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -1094,11 +1094,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'parseTypeLiteralPropertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'parseTypeLiteralPropertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Literal Parse Type Property Element and its Children</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Literal Parse Type Property Element and its Children.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionParseTypeLiteralPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -1198,11 +1198,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'parseTypeResourcePropertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'parseTypeResourcePropertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Resource Parse Type Property Element and its Children</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Resource Parse Type Property Element and its Children.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionParseTypeResourcePropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -1333,11 +1333,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'parseTypeCollectionPropertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'parseTypeCollectionPropertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="eventlist">Queue of Events that make up the Collection Parse Type Property Element and its Children</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="eventlist">Queue of Events that make up the Collection Parse Type Property Element and its Children.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionParseTypeCollectionPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             // Tracing
@@ -1522,11 +1522,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Implementation of the RDF/XML Grammar Production 'emptyPropertyElt'
+        /// Implementation of the RDF/XML Grammar Production 'emptyPropertyElt'.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="element">Element Event for the Empty Property Element</param>
-        /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="element">Element Event for the Empty Property Element.</param>
+        /// <param name="parent">Parent Event (ie. Node) of the Property Element.</param>
         private void GrammarProductionEmptyPropertyElement(RdfXmlParserContext context, ElementEvent element, IRdfXmlEvent parent)
         {
             // Tracing
@@ -1748,10 +1748,10 @@ namespace VDS.RDF.Parsing
         #region Useful Grammar Helper Functions
 
         /// <summary>
-        /// Applies the Namespace Attributes of an Element Event to the Namespace Map
+        /// Applies the Namespace Attributes of an Element Event to the Namespace Map.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evt">Element Event</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evt">Element Event.</param>
         private static void ApplyNamespaces(RdfXmlParserContext context, ElementEvent evt)
         {
             context.Namespaces.IncrementNesting();
@@ -1777,11 +1777,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Resolves a Uri Reference into a Uri Node against a given Base Uri
+        /// Resolves a Uri Reference into a Uri Node against a given Base Uri.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="uriref">Uri Reference to Resolve</param>
-        /// <param name="baseUri">Base Uri to Resolve against</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="uriref">Uri Reference to Resolve.</param>
+        /// <param name="baseUri">Base Uri to Resolve against.</param>
         /// <returns></returns>
         private IUriNode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, String baseUri)
         {
@@ -1815,13 +1815,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reifies a Triple
+        /// Reifies a Triple.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="uriref">Uri Reference for the Reified Triple</param>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="uriref">Uri Reference for the Reified Triple.</param>
+        /// <param name="subj">Subject of the Triple.</param>
+        /// <param name="pred">Predicate of the Triple.</param>
+        /// <param name="obj">Object of the Triple.</param>
         private void Reify(RdfXmlParserContext context, IUriNode uriref, INode subj, INode pred, INode obj)
         {
             if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfSubject)), subj))) ParserHelper.Stop();
@@ -1831,10 +1831,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper function which inserts an Element back on the front of a Queue
+        /// Helper function which inserts an Element back on the front of a Queue.
         /// </summary>
-        /// <param name="eventlist">Queue to insert onto the Front of</param>
-        /// <param name="evt">Event to put on the front of the Queue</param>
+        /// <param name="eventlist">Queue to insert onto the Front of.</param>
+        /// <param name="evt">Event to put on the front of the Queue.</param>
         private void QueueJump(IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent evt)
         {
             Stack<IRdfXmlEvent> temp = new Stack<IRdfXmlEvent>();
@@ -1852,11 +1852,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Applies List Expansion to the given Event
+        /// Applies List Expansion to the given Event.
         /// </summary>
-        /// <param name="evt">Element to apply List Expansion to</param>
-        /// <returns>Uri Reference for the List Item</returns>
-        /// <remarks>List Expansion only works on Element Events</remarks>
+        /// <param name="evt">Element to apply List Expansion to.</param>
+        /// <returns>Uri Reference for the List Item.</returns>
+        /// <remarks>List Expansion only works on Element Events.</remarks>
         private UriReferenceEvent ListExpand(IRdfXmlEvent evt, INamespaceMapper nsMapper)
         {
             if (evt is ElementEvent)
@@ -1881,11 +1881,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Validates that an ID is correctly formed and has only been used once in the context of a given Subject
+        /// Validates that an ID is correctly formed and has only been used once in the context of a given Subject.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="id">ID to Validate</param>
-        /// <param name="subj">Subject that the ID pertains to</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="id">ID to Validate.</param>
+        /// <param name="subj">Subject that the ID pertains to.</param>
         private void ValidateID(RdfXmlParserContext context, String id, INode subj)
         {
             // Validate the actual ID value
@@ -1919,9 +1919,9 @@ namespace VDS.RDF.Parsing
         #region Tracing Methods
 
         /// <summary>
-        /// Tracing function used when Parse Tracing is enabled
+        /// Tracing function used when Parse Tracing is enabled.
         /// </summary>
-        /// <param name="production">Production</param>
+        /// <param name="production">Production.</param>
         private void ProductionTrace(String production)
         {
             Console.WriteLine("Production '" + production + "' called");
@@ -1938,9 +1938,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tracing function used when Parse Tracing is enabled
+        /// Tracing function used when Parse Tracing is enabled.
         /// </summary>
-        /// <param name="production">Production</param>
+        /// <param name="production">Production.</param>
         /// <param name="evt"></param>
         private void ProductionTrace(String production, ElementEvent evt)
         {
@@ -1950,7 +1950,7 @@ namespace VDS.RDF.Parsing
         #endregion
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

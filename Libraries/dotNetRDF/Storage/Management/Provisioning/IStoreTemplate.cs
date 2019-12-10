@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Storage.Management.Provisioning
 {
     /// <summary>
-    /// Interface for templates for the provisioning of new stores
+    /// Interface for templates for the provisioning of new stores.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -43,7 +43,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
     public interface IStoreTemplate
     {
         /// <summary>
-        /// Gets/Sets the ID for the Store
+        /// Gets/Sets the ID for the Store.
         /// </summary>
         String ID
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Gets the name of the type of store the template will create
+        /// Gets the name of the type of store the template will create.
         /// </summary>
         String TemplateName
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Gets the description of the type of store the template will create
+        /// Gets the description of the type of store the template will create.
         /// </summary>
         String TemplateDescription
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
-        /// Validates the template returning an enumeration of error messages
+        /// Validates the template returning an enumeration of error messages.
         /// </summary>
         /// <returns></returns>
         IEnumerable<String> Validate();

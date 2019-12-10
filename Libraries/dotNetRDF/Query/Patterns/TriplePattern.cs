@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Patterns
 {
 
     /// <summary>
-    /// Class for representing Triple Patterns in SPARQL Queries
+    /// Class for representing Triple Patterns in SPARQL Queries.
     /// </summary>
     public class TriplePattern
         : BaseTriplePattern, IMatchTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
@@ -44,11 +44,11 @@ namespace VDS.RDF.Query.Patterns
         private readonly PatternItem _subj, _pred, _obj;
 
         /// <summary>
-        /// Creates a new Triple Pattern
+        /// Creates a new Triple Pattern.
         /// </summary>
-        /// <param name="subj">Subject Pattern</param>
-        /// <param name="pred">Predicate Pattern</param>
-        /// <param name="obj">Object Pattern</param>
+        /// <param name="subj">Subject Pattern.</param>
+        /// <param name="pred">Predicate Pattern.</param>
+        /// <param name="obj">Object Pattern.</param>
         public TriplePattern(PatternItem subj, PatternItem pred, PatternItem obj)
         {
             _subj = subj;
@@ -134,10 +134,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether a given Triple is accepted by this Pattern in the given Context
+        /// Gets whether a given Triple is accepted by this Pattern in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="obj">Triple to test</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="obj">Triple to test.</param>
         /// <returns></returns>
         public bool Accepts(SparqlEvaluationContext context, Triple obj)
         {
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the pattern type
+        /// Gets the pattern type.
         /// </summary>
         public override TriplePatternType PatternType
         {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Index Type we will use for this Pattern
+        /// Gets the Index Type we will use for this Pattern.
         /// </summary>
         public TripleIndexType IndexType
         {
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Subject Pattern
+        /// Subject Pattern.
         /// </summary>
         public PatternItem Subject
         {
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Predicate Pattern
+        /// Predicate Pattern.
         /// </summary>
         public PatternItem Predicate
         {
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Object Pattern
+        /// Object Pattern.
         /// </summary>
         public PatternItem Object
         {
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns all variables mentioned as a match guarantees all variables are bound
+        /// Returns all variables mentioned as a match guarantees all variables are bound.
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
@@ -223,15 +223,15 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns an empty enumeration as a match guarantees all variables are bound
+        /// Returns an empty enumeration as a match guarantees all variables are bound.
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<String>(); } }
 
         /// <summary>
-        /// Returns whether the Triple Pattern is an accept all
+        /// Returns whether the Triple Pattern is an accept all.
         /// </summary>
         /// <remarks>
-        /// True if all three Pattern Items are <see cref="VariablePattern">VariablePattern</see> and all the Variables names are distinct
+        /// True if all three Pattern Items are <see cref="VariablePattern">VariablePattern</see> and all the Variables names are distinct.
         /// </remarks>
         public override bool IsAcceptAll
         {
@@ -244,9 +244,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Evaluates a Triple Pattern in the given Evaluation Context
+        /// Evaluates a Triple Pattern in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             if (_indexType == TripleIndexType.NoVariables)
@@ -271,9 +271,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Enumeration of Triples that should be assessed for matching the pattern
+        /// Gets the Enumeration of Triples that should be assessed for matching the pattern.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(SparqlEvaluationContext context)
         {
@@ -551,10 +551,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Takes an enumerable and extracts Triples which match this pattern as results
+        /// Takes an enumerable and extracts Triples which match this pattern as results.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="ts">Enumerable of Triples</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="ts">Enumerable of Triples.</param>
         private void FindResults(SparqlEvaluationContext context, IEnumerable<Triple> ts)
         {
             foreach (Triple t in ts)
@@ -567,9 +567,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Generates a Result Set for a Triple that matches the Pattern
+        /// Generates a Result Set for a Triple that matches the Pattern.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public ISet CreateResult(Triple t)
         {
@@ -590,9 +590,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Constructs a Triple from a Set based on this Triple Pattern
+        /// Constructs a Triple from a Set based on this Triple Pattern.
         /// </summary>
-        /// <param name="context">Construct Context</param>
+        /// <param name="context">Construct Context.</param>
         /// <returns></returns>
         public Triple Construct(ConstructContext context)
         {
@@ -600,7 +600,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Variables of any kind
+        /// Gets whether the Pattern contains no Variables of any kind.
         /// </summary>
         public bool HasNoVariables
         {
@@ -611,7 +611,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
+        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored).
         /// </summary>
         public bool HasNoExplicitVariables
         {
@@ -624,7 +624,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
+        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored).
         /// </summary>
         public override bool HasNoBlankVariables
         {
@@ -637,9 +637,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a triple pattern to another
+        /// Compares a triple pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(TriplePattern other)
         {
@@ -647,9 +647,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Compares a triple pattern to another
+        /// Compares a triple pattern to another.
         /// </summary>
-        /// <param name="other">Pattern</param>
+        /// <param name="other">Pattern.</param>
         /// <returns></returns>
         public int CompareTo(IMatchTriplePattern other)
         {
@@ -657,7 +657,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of this Pattern
+        /// Gets the String representation of this Pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

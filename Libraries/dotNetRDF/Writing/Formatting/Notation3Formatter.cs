@@ -29,22 +29,22 @@ using System.Text;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting as Notation 3 without any compression
+    /// Formatter for formatting as Notation 3 without any compression.
     /// </summary>
     public class UncompressedNotation3Formatter
         : UncompressedTurtleFormatter
     {
         /// <summary>
-        /// Creates a new Uncompressed Notation 3 Formatter
+        /// Creates a new Uncompressed Notation 3 Formatter.
         /// </summary>
         public UncompressedNotation3Formatter()
             : base("Notation 3 (Uncompressed)") { }
 
         /// <summary>
-        /// Formats a Variable Node for Notation 3
+        /// Formats a Variable Node for Notation 3.
         /// </summary>
-        /// <param name="v">Variable</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="v">Variable.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
@@ -52,10 +52,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Graph Literal Node for Notation 3
+        /// Formats a Graph Literal Node for Notation 3.
         /// </summary>
-        /// <param name="glit">Graph Literal</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="glit">Graph Literal.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
         {
@@ -73,36 +73,36 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
-    /// Formatter for formatting as Notation 3
+    /// Formatter for formatting as Notation 3.
     /// </summary>
     public class Notation3Formatter 
         : TurtleFormatter
     {
         /// <summary>
-        /// Creates a new Notation 3 Formatter
+        /// Creates a new Notation 3 Formatter.
         /// </summary>
         public Notation3Formatter()
             : base("Notation 3", new QNameOutputMapper()) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Formatter using the given Graph
+        /// Creates a new Notation 3 Formatter using the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public Notation3Formatter(IGraph g)
             : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) { }
 
         /// <summary>
-        /// Creates a new Notation 3 Formatter using the given Namespace Map
+        /// Creates a new Notation 3 Formatter using the given Namespace Map.
         /// </summary>
-        /// <param name="nsmap">Namespace Map</param>
+        /// <param name="nsmap">Namespace Map.</param>
         public Notation3Formatter(INamespaceMapper nsmap)
             : base("Notation 3", new QNameOutputMapper(nsmap)) { }
 
         /// <summary>
-        /// Formats a Variable Node for Notation 3
+        /// Formats a Variable Node for Notation 3.
         /// </summary>
-        /// <param name="v">Variable</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="v">Variable.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
@@ -110,10 +110,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Graph Literal Node for Notation 3
+        /// Formats a Graph Literal Node for Notation 3.
         /// </summary>
-        /// <param name="glit">Graph Literal</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="glit">Graph Literal.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
         {

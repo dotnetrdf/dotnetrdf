@@ -27,12 +27,12 @@
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Static Class which defines the Integer Constants used for Token Types
+    /// Static Class which defines the Integer Constants used for Token Types.
     /// </summary>
     public static class Token
     {
         /// <summary>
-        /// Constants defining Token Types
+        /// Constants defining Token Types.
         /// </summary>
         public const int UNKNOWN = -1,
                           BOF = 0,

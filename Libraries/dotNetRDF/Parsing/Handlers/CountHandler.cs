@@ -27,7 +27,7 @@
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which simply counts the Triples
+    /// A RDF Handler which simply counts the Triples.
     /// </summary>
     public class CountHandler 
         : BaseRdfHandler
@@ -35,14 +35,14 @@ namespace VDS.RDF.Parsing.Handlers
         private int _counter = 0;
 
         /// <summary>
-        /// Creates a Handler which counts Triples
+        /// Creates a Handler which counts Triples.
         /// </summary>
         public CountHandler()
             : base(new MockNodeFactory())
         { }
 
         /// <summary>
-        /// Resets the current count to zero
+        /// Resets the current count to zero.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -50,9 +50,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles the Triple by incrementing the Triple count
+        /// Handles the Triple by incrementing the Triple count.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -61,10 +61,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Count of Triples handled in the most recent parsing operation
+        /// Gets the Count of Triples handled in the most recent parsing operation.
         /// </summary>
         /// <remarks>
-        /// Note that each time you reuse the handler the count is reset to 0
+        /// Note that each time you reuse the handler the count is reset to 0.
         /// </remarks>
         public int Count
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that the Handler accepts all Triples
+        /// Gets that the Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {

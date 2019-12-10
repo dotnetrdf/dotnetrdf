@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a SPARQL expression which is not an aggregate
+    /// Represents a SPARQL expression which is not an aggregate.
     /// </summary>
 #pragma warning disable 660, 661
     public abstract class SparqlExpression : PrimaryExpression<ISparqlExpression>
@@ -47,9 +47,9 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Creates a call to the IN function
+        /// Creates a call to the IN function.
         /// </summary>
-        /// <param name="expressions">the list of SPARQL expressions</param>
+        /// <param name="expressions">the list of SPARQL expressions.</param>
         public BooleanExpression In(params SparqlExpression[] expressions)
         {
             var inFunction = new InFunction(Expression, expressions.Select(v => v.Expression));
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 #pragma warning restore 1591
 
         /// <summary>
-        /// Creates a greater than operator usage
+        /// Creates a greater than operator usage.
         /// </summary>
         protected static BooleanExpression Gt(ISparqlExpression left, ISparqlExpression right)
         {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Creates a less than operator usage
+        /// Creates a less than operator usage.
         /// </summary>
         protected static BooleanExpression Lt(ISparqlExpression left, ISparqlExpression right)
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Creates a greater than or equal operator usage
+        /// Creates a greater than or equal operator usage.
         /// </summary>
         protected static BooleanExpression Ge(ISparqlExpression left, ISparqlExpression right)
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Creates a less than or equal operator usage
+        /// Creates a less than or equal operator usage.
         /// </summary>
         protected static BooleanExpression Le(ISparqlExpression left, ISparqlExpression right)
         {

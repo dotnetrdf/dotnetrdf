@@ -34,7 +34,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for Literal Nodes
+    /// Abstract Base Class for Literal Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="literal")]
@@ -47,26 +47,26 @@ namespace VDS.RDF
         private Uri _datatype;
 
         /// <summary>
-        /// Constants used to add salt to the hashes of different Literal Nodes
+        /// Constants used to add salt to the hashes of different Literal Nodes.
         /// </summary>
         private const String LangSpecLiteralHashCodeSalt = "languageSpecified",
                              DataTypedLiteralHashCodeSalt = "typed",
                              PlainLiteralHashCodeSalt = "plain";
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
         protected internal BaseLiteralNode(IGraph g, String literal)
             : this(g, literal, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal BaseLiteralNode(IGraph g, String literal, bool normalize)
             : base(g, NodeType.Literal)
         {
@@ -85,21 +85,21 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
         protected internal BaseLiteralNode(IGraph g, String literal, String langspec)
             : this(g, literal, langspec, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal BaseLiteralNode(IGraph g, String literal, String langspec, bool normalize)
             : base(g, NodeType.Literal)
         {
@@ -127,21 +127,21 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">Uri for the Literals Data Type</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="datatype">Uri for the Literals Data Type.</param>
         protected internal BaseLiteralNode(IGraph g, String literal, Uri datatype)
             : this(g, literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">Uri for the Literals Data Type</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="datatype">Uri for the Literals Data Type.</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal BaseLiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
             : base(g, NodeType.Literal)
         {
@@ -160,17 +160,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected BaseLiteralNode()
             : base(null, NodeType.Literal) { }
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected BaseLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Literal)
         {
@@ -200,7 +200,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gives the String Value of the Literal
+        /// Gives the String Value of the Literal.
         /// </summary>
         public String Value
         {
@@ -211,7 +211,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gives the Language Specifier for the Literal (if it exists) or the Empty String
+        /// Gives the Language Specifier for the Literal (if it exists) or the Empty String.
         /// </summary>
         public String Language
         {
@@ -222,7 +222,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gives the Data Type Uri for the Literal (if it exists) or a null
+        /// Gives the Data Type Uri for the Literal (if it exists) or a null.
         /// </summary>
         public Uri DataType
         {
@@ -233,9 +233,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of the Equals method for Literal Nodes
+        /// Implementation of the Equals method for Literal Nodes.
         /// </summary>
-        /// <param name="obj">Object to compare the Node with</param>
+        /// <param name="obj">Object to compare the Node with.</param>
         /// <returns></returns>
         /// <remarks>
         /// The default behaviour is for Literal Nodes to be considered equal IFF
@@ -264,9 +264,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of the Equals method for Literal Nodes
+        /// Implementation of the Equals method for Literal Nodes.
         /// </summary>
-        /// <param name="other">Object to compare the Node with</param>
+        /// <param name="other">Object to compare the Node with.</param>
         /// <returns></returns>
         /// <remarks>
         /// The default behaviour is for Literal Nodes to be considered equal IFF
@@ -295,9 +295,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Blank Node (should always be false)
+        /// Determines whether this Node is equal to a Blank Node (should always be false).
         /// </summary>
-        /// <param name="other">Blank Node</param>
+        /// <param name="other">Blank Node.</param>
         /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
@@ -306,9 +306,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Graph Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
@@ -317,9 +317,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node
+        /// Determines whether this Node is equal to a Literal Node.
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
@@ -330,9 +330,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// Determines whether this Node is equal to a URI Node (should always be false).
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
@@ -341,9 +341,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node (should always be false)
+        /// Determines whether this Node is equal to a Variable Node (should always be false).
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
@@ -352,9 +352,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node
+        /// Determines whether this Node is equal to a Literal Node.
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public bool Equals(BaseLiteralNode other)
         {
@@ -362,10 +362,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a String representation of a Literal Node
+        /// Gets a String representation of a Literal Node.
         /// </summary>
         /// <returns></returns>
-        /// <remarks>Gives a value without quotes (as some syntaxes use) with the Data Type/Language Specifier appended using Notation 3 syntax</remarks>
+        /// <remarks>Gives a value without quotes (as some syntaxes use) with the Data Type/Language Specifier appended using Notation 3 syntax.</remarks>
         public override string ToString()
         {
             StringBuilder stringOut = new StringBuilder();
@@ -385,9 +385,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of CompareTo for Literal Nodes
+        /// Implementation of CompareTo for Literal Nodes.
         /// </summary>
-        /// <param name="other">Node to Compare To</param>
+        /// <param name="other">Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
         /// Literal Nodes are greater than Blank Nodes, Uri Nodes and Nulls, they are less than Graph Literal Nodes.
@@ -423,9 +423,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
@@ -435,9 +435,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
@@ -446,9 +446,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
@@ -466,9 +466,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
@@ -478,9 +478,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
@@ -490,9 +490,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public int CompareTo(BaseLiteralNode other)
         {
@@ -504,10 +504,10 @@ namespace VDS.RDF
         #region ISerializable Members
 
         /// <summary>
-        /// Gets the serialization information
+        /// Gets the serialization information.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("value", _value);
@@ -532,9 +532,9 @@ namespace VDS.RDF
         #region IXmlSerializable Members
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             if (reader.HasAttributes)
@@ -576,9 +576,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             if (_datatype != null)
@@ -598,7 +598,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class for representing Literal Nodes
+    /// Class for representing Literal Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="literal")]
@@ -607,90 +607,90 @@ namespace VDS.RDF
         : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
         /// <summary>
-        /// Constants used to add salt to the hashes of different Literal Nodes
+        /// Constants used to add salt to the hashes of different Literal Nodes.
         /// </summary>
         private const String LangSpecLiteralHashCodeSalt = "languageSpecified",
                              DataTypedLiteralHashCodeSalt = "typed",
                              PlainLiteralHashCodeSalt = "plain";
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
         protected internal LiteralNode(IGraph g, String literal)
             : this(g, literal, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal LiteralNode(IGraph g, String literal, bool normalize)
             : base(g, literal, normalize) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
         protected internal LiteralNode(IGraph g, String literal, String langspec)
             : this(g, literal, langspec, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal LiteralNode(IGraph g, String literal, String langspec, bool normalize)
             : base(g, literal, langspec, normalize) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">Uri for the Literals Data Type</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="datatype">Uri for the Literals Data Type.</param>
         protected internal LiteralNode(IGraph g, String literal, Uri datatype)
             : this(g, literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">Uri for the Literals Data Type</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="datatype">Uri for the Literals Data Type.</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal LiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
             : base(g, literal, datatype, normalize) { }
 
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected LiteralNode()
             : base() { }
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected LiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
 
         /// <summary>
-        /// Implementation of Compare To for Literal Nodes
+        /// Implementation of Compare To for Literal Nodes.
         /// </summary>
-        /// <param name="other">Literal Node to Compare To</param>
+        /// <param name="other">Literal Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Simply invokes the more general implementation of this method
+        /// Simply invokes the more general implementation of this method.
         /// </remarks>
         public int CompareTo(LiteralNode other)
         {
@@ -698,9 +698,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node
+        /// Determines whether this Node is equal to a Literal Node.
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public bool Equals(LiteralNode other)
         {
@@ -709,7 +709,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class for representing Literal Nodes where the Literal values are not normalized
+    /// Class for representing Literal Nodes where the Literal values are not normalized.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="literal")]
@@ -718,54 +718,54 @@ namespace VDS.RDF
         : LiteralNode, IComparable<NonNormalizedLiteralNode>
     {
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
         protected internal NonNormalizedLiteralNode(IGraph g, String literal)
             : base(g, literal, false) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="langspec">Lanaguage Specifier for the Literal</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="langspec">Lanaguage Specifier for the Literal.</param>
         protected internal NonNormalizedLiteralNode(IGraph g, String literal, String langspec)
             : base(g, literal, langspec, false) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">Uri for the Literals Data Type</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="datatype">Uri for the Literals Data Type.</param>
         protected internal NonNormalizedLiteralNode(IGraph g, String literal, Uri datatype)
             : base(g, literal, datatype, false) { }
 
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected NonNormalizedLiteralNode()
             : base() { }
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected NonNormalizedLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
 
         /// <summary>
-        /// Implementation of Compare To for Literal Nodes
+        /// Implementation of Compare To for Literal Nodes.
         /// </summary>
-        /// <param name="other">Literal Node to Compare To</param>
+        /// <param name="other">Literal Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Simply invokes the more general implementation of this method
+        /// Simply invokes the more general implementation of this method.
         /// </remarks>
         public int CompareTo(NonNormalizedLiteralNode other)
         {

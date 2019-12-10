@@ -29,20 +29,20 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
     /// <summary>
-    /// Represents the SPARQL ISNUMERIC() Function
+    /// Represents the SPARQL ISNUMERIC() Function.
     /// </summary>
     public class IsNumericFunction
         : BaseUnaryExpression
     {
         /// <summary>
-        /// Creates a new SPARQL ISNUMERIC() Function
+        /// Creates a new SPARQL ISNUMERIC() Function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public IsNumericFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="bindingID"></param>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Type of this Expression
+        /// Gets the Type of this Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the Functor of this Expression
+        /// Gets the Functor of this Expression.
         /// </summary>
         public override string Functor
         {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -85,9 +85,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Represents the SPARQL SUBSTR Function
+    /// Represents the SPARQL SUBSTR Function.
     /// </summary>
     public class SubStrFunction
         : ISparqlExpression
@@ -41,19 +41,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         private ISparqlExpression _expr, _start, _length;
 
         /// <summary>
-        /// Creates a new XPath Substring function
+        /// Creates a new XPath Substring function.
         /// </summary>
-        /// <param name="stringExpr">Expression</param>
-        /// <param name="startExpr">Start</param>
+        /// <param name="stringExpr">Expression.</param>
+        /// <param name="startExpr">Start.</param>
         public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr)
             : this(stringExpr, startExpr, null) { }
 
         /// <summary>
-        /// Creates a new XPath Substring function
+        /// Creates a new XPath Substring function.
         /// </summary>
-        /// <param name="stringExpr">Expression</param>
-        /// <param name="startExpr">Start</param>
-        /// <param name="lengthExpr">Length</param>
+        /// <param name="stringExpr">Expression.</param>
+        /// <param name="startExpr">Start.</param>
+        /// <param name="lengthExpr">Length.</param>
         public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
         {
             _expr = stringExpr;
@@ -62,10 +62,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Variables used in the function
+        /// Gets the Variables used in the function.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -231,7 +231,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -247,7 +247,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public string Functor
         {
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Arguments of the Function
+        /// Gets the Arguments of the Function.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -287,7 +287,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -298,9 +298,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

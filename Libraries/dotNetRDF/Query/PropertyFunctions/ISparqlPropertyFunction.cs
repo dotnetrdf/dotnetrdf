@@ -31,12 +31,12 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Interface for SPARQL property functions
+    /// Interface for SPARQL property functions.
     /// </summary>
     public interface ISparqlPropertyFunction
     {
         /// <summary>
-        /// Gets the Function URI
+        /// Gets the Function URI.
         /// </summary>
         Uri FunctionUri
         {
@@ -44,14 +44,14 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Evaluates the function in the given context
+        /// Evaluates the function in the given context.
         /// </summary>
-        /// <param name="context">Context</param>
+        /// <param name="context">Context.</param>
         /// <returns></returns>
         BaseMultiset Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the variables used in the function
+        /// Gets the variables used in the function.
         /// </summary>
         IEnumerable<String> Variables
         {

@@ -32,7 +32,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql
 {
     /// <summary>
-    /// Class representing the SPARQL IF function
+    /// Class representing the SPARQL IF function.
     /// </summary>
     public class IfElseFunction 
         : ISparqlExpression
@@ -40,11 +40,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         private ISparqlExpression _condition, _ifBranch, _elseBranch;
 
         /// <summary>
-        /// Creates a new IF function
+        /// Creates a new IF function.
         /// </summary>
-        /// <param name="condition">Condition</param>
-        /// <param name="ifBranch">Expression to evaluate if condition evaluates to true</param>
-        /// <param name="elseBranch">Expression to evalaute if condition evaluates to false/error</param>
+        /// <param name="condition">Condition.</param>
+        /// <param name="ifBranch">Expression to evaluate if condition evaluates to true.</param>
+        /// <param name="elseBranch">Expression to evalaute if condition evaluates to false/error.</param>
         public IfElseFunction(ISparqlExpression condition, ISparqlExpression ifBranch, ISparqlExpression elseBranch)
         {
             _condition = condition;
@@ -53,10 +53,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the value of the expression as evaluated in the given Context for the given Binding ID
+        /// Gets the value of the expression as evaluated in the given Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the enumeration of variables used in the expression
+        /// Gets the enumeration of variables used in the expression.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the Expression Type
+        /// Gets the Expression Type.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the Functor for the Expression
+        /// Gets the Functor for the Expression.
         /// </summary>
         public string Functor
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -147,9 +147,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

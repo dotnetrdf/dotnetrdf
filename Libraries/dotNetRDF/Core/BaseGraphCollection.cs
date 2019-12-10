@@ -31,40 +31,40 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for Graph Collections
+    /// Abstract Base Class for Graph Collections.
     /// </summary>
-    /// <remarks>Designed to allow the underlying storage of a Graph Collection to be changed at a later date without affecting classes that use it</remarks>
+    /// <remarks>Designed to allow the underlying storage of a Graph Collection to be changed at a later date without affecting classes that use it.</remarks>
     public abstract class BaseGraphCollection 
         : IEnumerable<IGraph>, IDisposable
     {
         /// <summary>
-        /// Checks whether the Graph with the given Uri exists in this Graph Collection
+        /// Checks whether the Graph with the given Uri exists in this Graph Collection.
         /// </summary>
-        /// <param name="graphUri">Graph Uri to test</param>
+        /// <param name="graphUri">Graph Uri to test.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The null URI is used to reference the Default Graph
+        /// The null URI is used to reference the Default Graph.
         /// </remarks>
         public abstract bool Contains(Uri graphUri);
 
         /// <summary>
-        /// Adds a Graph to the Collection
+        /// Adds a Graph to the Collection.
         /// </summary>
-        /// <param name="g">Graph to add</param>
-        /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present</param>
+        /// <param name="g">Graph to add.</param>
+        /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present.</param>
         protected abstract internal bool Add(IGraph g, bool mergeIfExists);
 
         /// <summary>
-        /// Removes a Graph from the Collection
+        /// Removes a Graph from the Collection.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to remove</param>
+        /// <param name="graphUri">Uri of the Graph to remove.</param>
         /// <remarks>
-        /// The null URI is used to reference the Default Graph
+        /// The null URI is used to reference the Default Graph.
         /// </remarks>
         protected abstract internal bool Remove(Uri graphUri);
 
         /// <summary>
-        /// Gets the number of Graphs in the Collection
+        /// Gets the number of Graphs in the Collection.
         /// </summary>
         public abstract int Count
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Provides access to the Graph URIs of Graphs in the Collection
+        /// Provides access to the Graph URIs of Graphs in the Collection.
         /// </summary>
         public abstract IEnumerable<Uri> GraphUris
         {
@@ -80,12 +80,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a Graph from the Collection
+        /// Gets a Graph from the Collection.
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
+        /// <param name="graphUri">Graph Uri.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The null URI is used to reference the Default Graph
+        /// The null URI is used to reference the Default Graph.
         /// </remarks>
         public abstract IGraph this[Uri graphUri] 
         {
@@ -93,19 +93,19 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the Graph Collection
+        /// Disposes of the Graph Collection.
         /// </summary>
-        /// <remarks>Invokes the <see cref="IDisposable.Dispose()">Dispose()</see> method of all Graphs contained in the Collection</remarks>
+        /// <remarks>Invokes the <see cref="IDisposable.Dispose()">Dispose()</see> method of all Graphs contained in the Collection.</remarks>
         public abstract void Dispose();
 
         /// <summary>
-        /// Gets the Enumerator for the Collection
+        /// Gets the Enumerator for the Collection.
         /// </summary>
         /// <returns></returns>
         public abstract IEnumerator<IGraph> GetEnumerator();
 
         /// <summary>
-        /// Gets the Enumerator for this Collection
+        /// Gets the Enumerator for this Collection.
         /// </summary>
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -124,18 +124,18 @@ namespace VDS.RDF
         public event GraphEventHandler GraphRemoved;
 
         /// <summary>
-        /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually
+        /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         protected virtual void RaiseGraphAdded(IGraph g)
         {
             GraphAdded?.Invoke(this, new GraphEventArgs(g));
         }
 
         /// <summary>
-        /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually
+        /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         protected virtual void RaiseGraphRemoved(IGraph g)
         {
             GraphRemoved?.Invoke(this, new GraphEventArgs(g));

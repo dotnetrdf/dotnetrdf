@@ -34,7 +34,7 @@ using VDS.RDF.Query.Paths;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Internal class which parses SPARQL Paths into path expressions
+    /// Internal class which parses SPARQL Paths into path expressions.
     /// </summary>
     class SparqlPathParser
     {
@@ -598,6 +598,6 @@ namespace VDS.RDF.Parsing
         Modifier,
         Sequencer,
         Negation,
-        End
+        End,
     }
 }

@@ -32,26 +32,26 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Abstract Base class for SPARQL Views which are Graphs which are generated from SPARQL Queries and get automatically updated when the Store they are attached to changes
+    /// Abstract Base class for SPARQL Views which are Graphs which are generated from SPARQL Queries and get automatically updated when the Store they are attached to changes.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// CONSTRUCT, DESCRIBE or SELECT queries can be used to generate a Graph.  If you use a SELECT query the returned variables must contain ?s, ?p and ?o in order to generate a view correctly
+    /// CONSTRUCT, DESCRIBE or SELECT queries can be used to generate a Graph.  If you use a SELECT query the returned variables must contain ?s, ?p and ?o in order to generate a view correctly.
     /// </para>
     /// </remarks>
     public abstract class BaseSparqlView 
         : Graph
     {
         /// <summary>
-        /// SPARQL Query
+        /// SPARQL Query.
         /// </summary>
         protected SparqlQuery _q;
         /// <summary>
-        /// Graphs that are mentioned in the Query
+        /// Graphs that are mentioned in the Query.
         /// </summary>
         protected HashSet<String> _graphs;
         /// <summary>
-        /// Triple Store the query operates over
+        /// Triple Store the query operates over.
         /// </summary>
         protected ITripleStore _store;
 
@@ -61,10 +61,10 @@ namespace VDS.RDF.Query
         private Object _lock = new Object();
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         protected BaseSparqlView(String sparqlQuery, ITripleStore store)
         {
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -76,18 +76,18 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
             : this(sparqlQuery.ToString(), store) { }
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
         {
             _q = sparqlQuery;
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Initialises the SPARQL View
+        /// Initialises the SPARQL View.
         /// </summary>
         private void Initialise()
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Invalidates the View causing it to be updated
+        /// Invalidates the View causing it to be updated.
         /// </summary>
         private void InvalidateView()
         {
@@ -140,9 +140,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Callback for when asychronous invalidation completes
+        /// Callback for when asychronous invalidation completes.
         /// </summary>
-        /// <param name="result">Async call results</param>
+        /// <param name="result">Async call results.</param>
         private void InvalidateViewCompleted(IAsyncResult result)
         {
             try
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
         private delegate void UpdateViewDelegate();
 
         /// <summary>
-        /// Forces the view to be updated
+        /// Forces the view to be updated.
         /// </summary>
         public void UpdateView()
         {
@@ -178,12 +178,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Abstract method that derived classes should implement to update the view
+        /// Abstract method that derived classes should implement to update the view.
         /// </summary>
         protected abstract void UpdateViewInternal();
 
         /// <summary>
-        /// Gets the error that occurred during the last update (if any)
+        /// Gets the error that occurred during the last update (if any).
         /// </summary>
         public RdfQueryException LastError
         {
@@ -307,38 +307,38 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Represents a SPARQL View over an in-memory store
+    /// Represents a SPARQL View over an in-memory store.
     /// </summary>
     public class SparqlView
         : BaseSparqlView
     {
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         public SparqlView(String sparqlQuery, IInMemoryQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store)
             : this(sparqlQuery.ToString(), store) { }
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
-        /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store
+        /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store.
         /// </summary>
         protected override void UpdateViewInternal()
         {
@@ -378,37 +378,37 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Represents a SPARQL View over an arbitrary native Triple Store
+    /// Represents a SPARQL View over an arbitrary native Triple Store.
     /// </summary>
     public class NativeSparqlView
         : BaseSparqlView
     {
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         public NativeSparqlView(String sparqlQuery, INativelyQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         public NativeSparqlView(SparqlParameterizedString sparqlQuery, INativelyQueryableStore store)
             : this(sparqlQuery.ToString(), store) { }
 
         /// <summary>
-        /// Creates a new SPARQL View
+        /// Creates a new SPARQL View.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <param name="store">Triple Store to query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="store">Triple Store to query.</param>
         public NativeSparqlView(SparqlQuery sparqlQuery, INativelyQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
-        /// Updates the view by making the query over the Native Store (i.e. the query is handled by the stores SPARQL implementation)
+        /// Updates the view by making the query over the Native Store (i.e. the query is handled by the stores SPARQL implementation).
         /// </summary>
         protected override void UpdateViewInternal()
         {

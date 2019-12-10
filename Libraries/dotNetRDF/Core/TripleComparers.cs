@@ -39,10 +39,10 @@ namespace VDS.RDF
         : IComparer<INode>, IEqualityComparer<INode>
     {
         /// <summary>
-        /// Compares two Nodes
+        /// Compares two Nodes.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public int Compare(INode x, INode y)
         {
@@ -140,11 +140,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determine equality for two nodes
+        /// Determine equality for two nodes.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        /// <returns>True if the nodes compare equal, false otheriwse</returns>
+        /// <returns>True if the nodes compare equal, false otheriwse.</returns>
         public bool Equals(INode x, INode y)
         {
             return Compare(x, y) == 0;
@@ -158,16 +158,16 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// A Node Comparer which does faster comparisons since it only does lexical comparisons for literals rather than value comparisons
+    /// A Node Comparer which does faster comparisons since it only does lexical comparisons for literals rather than value comparisons.
     /// </summary>
     public class FastNodeComparer
         : IComparer<INode>, IEqualityComparer<INode>
     {
         /// <summary>
-        /// Compares two Nodes
+        /// Compares two Nodes.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public int Compare(INode x, INode y)
         {
@@ -270,16 +270,16 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Compares triples for equality
+    /// Compares triples for equality.
     /// </summary>
     public class TripleEqualityComparer : IEqualityComparer<Triple>
     {
 
         /// <summary>
-        /// Returns whether two Triples are equal
+        /// Returns whether two Triples are equal.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public bool Equals(Triple x, Triple y)
         {
@@ -287,9 +287,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns a predictable HashCode for the triple based on its components'
+        /// Returns a predictable HashCode for the triple based on its components'.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public int GetHashCode(Triple t)
         {
@@ -298,65 +298,65 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Abstract base class for Triple Comparers which provide for comparisons using different node comparers
+    /// Abstract base class for Triple Comparers which provide for comparisons using different node comparers.
     /// </summary>
     public abstract class BaseTripleComparer
         : TripleEqualityComparer, IComparer<Triple>
     {
         /// <summary>
-        /// Node Comparer
+        /// Node Comparer.
         /// </summary>
         protected readonly IComparer<INode> _nodeComparer;
 
         /// <summary>
-        /// Creates a new Triple Comparer
+        /// Creates a new Triple Comparer.
         /// </summary>
         protected BaseTripleComparer()
             : this(Comparer<INode>.Default) { }
 
         /// <summary>
-        /// Creates a new Triple Comparer
+        /// Creates a new Triple Comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node Comparer to use</param>
+        /// <param name="nodeComparer">Node Comparer to use.</param>
         protected BaseTripleComparer(IComparer<INode> nodeComparer)
         {
             _nodeComparer = nodeComparer ?? throw new ArgumentNullException(nameof(nodeComparer));
         }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public abstract int Compare(Triple x, Triple y);
 
     }
 
     /// <summary>
-    /// Triple comparer which compares on subjects, then predicates and finally objects
+    /// Triple comparer which compares on subjects, then predicates and finally objects.
     /// </summary>
     public class FullTripleComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Full Triple comparer
+        /// Creates a new Full Triple comparer.
         /// </summary>
         public FullTripleComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Full Triple comparer that uses a specific Node comparer
+        /// Creates a new Full Triple comparer that uses a specific Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node comparer</param>
+        /// <param name="nodeComparer">Node comparer.</param>
         public FullTripleComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -375,29 +375,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares only on subjects
+    /// Triple comparer which compares only on subjects.
     /// </summary>
     public class SubjectComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Subject comparer
+        /// Creates a new Subject comparer.
         /// </summary>
         public SubjectComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Subject comparer using the provided Node comparer
+        /// Creates a new Subject comparer using the provided Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node comparer</param>
+        /// <param name="nodeComparer">Node comparer.</param>
         public SubjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -406,29 +406,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares only on predicates
+    /// Triple comparer which compares only on predicates.
     /// </summary>
     public class PredicateComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Predicate comparer
+        /// Creates a new Predicate comparer.
         /// </summary>
         public PredicateComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Predicate comparer using the provided Node comparer
+        /// Creates a new Predicate comparer using the provided Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node Comparer</param>
+        /// <param name="nodeComparer">Node Comparer.</param>
         public PredicateComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -437,29 +437,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares only on objects
+    /// Triple comparer which compares only on objects.
     /// </summary>
     public class ObjectComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Object comparer
+        /// Creates a new Object comparer.
         /// </summary>
         public ObjectComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Object comparer using the provided Node comparer
+        /// Creates a new Object comparer using the provided Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node comparer</param>
+        /// <param name="nodeComparer">Node comparer.</param>
         public ObjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -468,29 +468,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares on subjects and then predicates
+    /// Triple comparer which compares on subjects and then predicates.
     /// </summary>
     public class SubjectPredicateComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Subject Predicate comparer
+        /// Creates a new Subject Predicate comparer.
         /// </summary>
         public SubjectPredicateComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Subject Predicate comparer using the provided Node comparer
+        /// Creates a new Subject Predicate comparer using the provided Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node Comparer</param>
+        /// <param name="nodeComparer">Node Comparer.</param>
         public SubjectPredicateComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -504,29 +504,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares on subjects and then objects
+    /// Triple comparer which compares on subjects and then objects.
     /// </summary>
     public class SubjectObjectComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Subject Object comparer
+        /// Creates a new Subject Object comparer.
         /// </summary>
         public SubjectObjectComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Subject Object comparer using the provided Node comparer
+        /// Creates a new Subject Object comparer using the provided Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node comparer</param>
+        /// <param name="nodeComparer">Node comparer.</param>
         public SubjectObjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -540,29 +540,29 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares on predicates and then objects
+    /// Triple comparer which compares on predicates and then objects.
     /// </summary>
     public class PredicateObjectComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Predicate Object comparer
+        /// Creates a new Predicate Object comparer.
         /// </summary>
         public PredicateObjectComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Predicate Object comparer using the provided Node comparer
+        /// Creates a new Predicate Object comparer using the provided Node comparer.
         /// </summary>
-        /// <param name="nodeComparer">Node comparer</param>
+        /// <param name="nodeComparer">Node comparer.</param>
         public PredicateObjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
@@ -576,28 +576,28 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Triple comparer which compares on objects and then subjects
+    /// Triple comparer which compares on objects and then subjects.
     /// </summary>
     public class ObjectSubjectComparer
         : BaseTripleComparer
     {
         /// <summary>
-        /// Creates a new Object Subject comparer
+        /// Creates a new Object Subject comparer.
         /// </summary>
         public ObjectSubjectComparer()
             : base() { }
 
         /// <summary>
-        /// Creates a new Object Subject comparer using the provided Node comparer
+        /// Creates a new Object Subject comparer using the provided Node comparer.
         /// </summary>
         public ObjectSubjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
         /// <summary>
-        /// Compares two Triples
+        /// Compares two Triples.
         /// </summary>
-        /// <param name="x">Triple</param>
-        /// <param name="y">Triple</param>
+        /// <param name="x">Triple.</param>
+        /// <param name="y">Triple.</param>
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {

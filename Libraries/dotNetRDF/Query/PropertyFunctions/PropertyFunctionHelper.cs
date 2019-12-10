@@ -32,14 +32,14 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Helper Class containing functions useful in working with property functions
+    /// Helper Class containing functions useful in working with property functions.
     /// </summary>
     public static class PropertyFunctionHelper
     {
         /// <summary>
-        /// Used to extract the patterns that make up property functions
+        /// Used to extract the patterns that make up property functions.
         /// </summary>
-        /// <param name="patterns">Triple Patterns</param>
+        /// <param name="patterns">Triple Patterns.</param>
         /// <returns></returns>
         public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
         {
@@ -47,10 +47,10 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Used to extract the patterns that make up property functions
+        /// Used to extract the patterns that make up property functions.
         /// </summary>
-        /// <param name="patterns">Triple Patterns</param>
-        /// <param name="localFactories">Locally scoped factories</param>
+        /// <param name="patterns">Triple Patterns.</param>
+        /// <param name="localFactories">Locally scoped factories.</param>
         /// <returns></returns>
         public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
         {
@@ -132,13 +132,13 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Used to help extract the patterns that make up a property function pattern
+        /// Used to help extract the patterns that make up a property function pattern.
         /// </summary>
-        /// <param name="key">Key</param>
-        /// <param name="subj">Subject</param>
-        /// <param name="ps">Patterns</param>
-        /// <param name="funcInfo">Function Information</param>
-        /// <param name="argList">Argument List to add discovered arguments to</param>
+        /// <param name="key">Key.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="ps">Patterns.</param>
+        /// <param name="funcInfo">Function Information.</param>
+        /// <param name="argList">Argument List to add discovered arguments to.</param>
         static void ExtractRelatedPatterns(PatternItem key, PatternItem subj, List<IMatchTriplePattern> ps, Dictionary<PatternItem, PropertyFunctionInfo> funcInfo, List<PatternItem> argList)
         {
             bool recurse = true, any = false, argSeen = false;

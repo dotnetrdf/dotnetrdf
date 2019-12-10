@@ -32,12 +32,12 @@ using System.Text;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// A collection of options for setting up the JSON-LD processor
+    /// A collection of options for setting up the JSON-LD processor.
     /// </summary>
     public class JsonLdProcessorOptions
     {
         /// <summary>
-        /// Overrides the base IRI of the document being processed
+        /// Overrides the base IRI of the document being processed.
         /// </summary>
         public Uri Base { get; set; }
 
@@ -45,13 +45,13 @@ namespace VDS.RDF.JsonLd
         /// Get or set the function to use to resolve an IRI reference to a document
         /// into parsed JSON.
         /// </summary>
-        /// <remarks>If the function returns null or throws an exception, it will be assumed that dereferencing the IRI has failed</remarks>
+        /// <remarks>If the function returns null or throws an exception, it will be assumed that dereferencing the IRI has failed.</remarks>
         public Func<Uri, RemoteDocument> Loader { get; set; }
 
         /// <summary>
         /// Get or set the syntax version that the processor will use.
         /// </summary>
-        /// <remarks>Defaults to <see cref="JsonLdProcessingMode.JsonLd11"/></remarks>
+        /// <remarks>Defaults to <see cref="JsonLdProcessingMode.JsonLd11"/>.</remarks>
         public JsonLdProcessingMode? ProcessingMode = JsonLdProcessingMode.JsonLd11;
 
         /// <summary>
@@ -62,17 +62,17 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Flag indicating if arrays of one element should be replaced by the single value during compaction.
         /// </summary>
-        /// <remarks>Defaults to <code>true</code></remarks>
+        /// <remarks>Defaults to. <code>true</code></remarks>
         public bool CompactArrays = true;
 
         /// <summary>
         /// If set to true, the JSON-LD processor may emit blank nodes for triple predicates, otherwise they will be omitted.
         /// </summary>
-        /// <remarks>Defaults to <code>true</code></remarks>
+        /// <remarks>Defaults to. <code>true</code></remarks>
         public bool ProduceGeneralizedRdf = true;
 
         /// <summary>
-        /// Sets the value object embed flag used in the Framing Algorithm
+        /// Sets the value object embed flag used in the Framing Algorithm.
         /// </summary>
         public JsonLdEmbed Embed = JsonLdEmbed.Last;
 
@@ -82,12 +82,12 @@ namespace VDS.RDF.JsonLd
         public bool Explicit = false;
         
         /// <summary>
-        /// Sets the value omit default flag used in the Framing Algorithm
+        /// Sets the value omit default flag used in the Framing Algorithm.
         /// </summary>
         public bool OmitDefault = false;
         
         /// <summary>
-        /// Sets the value require all flag used in the Framing Algorithm
+        /// Sets the value require all flag used in the Framing Algorithm.
         /// </summary>
         public bool RequireAll = false;
         

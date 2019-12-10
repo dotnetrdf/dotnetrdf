@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating TSV output from RDF Datasets
+    /// Class for generating TSV output from RDF Datasets.
     /// </summary>
     public class TsvStoreWriter 
         : IStoreWriter, IFormatterBasedWriter
@@ -45,7 +45,7 @@ namespace VDS.RDF.Writing
         private TsvFormatter _formatter = new TsvFormatter();
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by this writer
+        /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
         public Type TripleFormatterType
         {
@@ -56,10 +56,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Triple Store to TSV format
+        /// Saves a Triple Store to TSV format.
         /// </summary>
-        /// <param name="store">Triple Store to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="store">Triple Store to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
@@ -67,20 +67,20 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Triple Store to TSV format
+        /// Saves a Triple Store to TSV format.
         /// </summary>
-        /// <param name="store">Triple Store to save</param>
-        /// <param name="writer">Writer to save to</param>
+        /// <param name="store">Triple Store to save.</param>
+        /// <param name="writer">Writer to save to.</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
             Save(store, writer, false);
         }
 
         /// <summary>
-        /// Saves a Triple Store to TSV format
+        /// Saves a Triple Store to TSV format.
         /// </summary>
-        /// <param name="store">Triple Store to save</param>
-        /// <param name="writer">Writer to save to</param>
+        /// <param name="store">Triple Store to save.</param>
+        /// <param name="writer">Writer to save to.</param>
         /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is saved.</param>
         public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
@@ -137,15 +137,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Delegate for the SaveGraphs method
+        /// Delegate for the SaveGraphs method.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
         private delegate void SaveGraphsDelegate(ThreadedStoreWriterContext globalContext);
 
         /// <summary>
-        /// Thread Worker method which writes Graphs to the output
+        /// Thread Worker method which writes Graphs to the output.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
         private void SaveGraphs(ThreadedStoreWriterContext globalContext)
         {
             try
@@ -189,10 +189,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates the Output for a Graph as a String in TSV syntax
+        /// Generates the Output for a Graph as a String in TSV syntax.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
-        /// <param name="context">Context for writing the Graph</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
+        /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
         private String GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
         {
@@ -232,11 +232,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates Output for the given Node
+        /// Generates Output for the given Node.
         /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="n">Node</param>
-        /// <param name="segment">Triple Context</param>
+        /// <param name="context">Writer Context.</param>
+        /// <param name="n">Node.</param>
+        /// <param name="segment">Triple Context.</param>
         private void GenerateNodeOutput(BaseWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
@@ -259,7 +259,7 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

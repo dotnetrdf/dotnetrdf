@@ -33,16 +33,16 @@ using System.Threading.Tasks;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Static Helper class containing extensions used in the Algebra evaluation process
+    /// Static Helper class containing extensions used in the Algebra evaluation process.
     /// </summary>
     public static class AlgebraExtensions
     {
         /// <summary>
-        /// Calculates the product of two mutlisets asynchronously with a timeout to restrict long running computations
+        /// Calculates the product of two mutlisets asynchronously with a timeout to restrict long running computations.
         /// </summary>
-        /// <param name="multiset">Multiset</param>
-        /// <param name="other">Other Multiset</param>
-        /// <param name="timeout">Timeout, if &lt;=0 no timeout is used and product will be computed sychronously</param>
+        /// <param name="multiset">Multiset.</param>
+        /// <param name="other">Other Multiset.</param>
+        /// <param name="timeout">Timeout, if &lt;=0 no timeout is used and product will be computed sychronously.</param>
         /// <returns></returns>
         public static BaseMultiset ProductWithTimeout(this BaseMultiset multiset, BaseMultiset other, long timeout)
         {
@@ -104,21 +104,21 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Delegate for generating product of two multisets asynchronously
+        /// Delegate for generating product of two multisets asynchronously.
         /// </summary>
-        /// <param name="multiset">Multiset</param>
-        /// <param name="other">Other Multiset</param>
-        /// <param name="target">Mutliset to generate the product in</param>
-        /// <param name="stop">Stop Token</param>
+        /// <param name="multiset">Multiset.</param>
+        /// <param name="other">Other Multiset.</param>
+        /// <param name="target">Mutliset to generate the product in.</param>
+        /// <param name="stop">Stop Token.</param>
         private delegate void GenerateProductDelegate(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop);
 
         /// <summary>
-        /// Method for generating product of two multisets asynchronously
+        /// Method for generating product of two multisets asynchronously.
         /// </summary>
-        /// <param name="multiset">Multiset</param>
-        /// <param name="other">Other Multiset</param>
-        /// <param name="target">Mutliset to generate the product in</param>
-        /// <param name="stop">Stop Token</param>
+        /// <param name="multiset">Multiset.</param>
+        /// <param name="other">Other Multiset.</param>
+        /// <param name="target">Mutliset to generate the product in.</param>
+        /// <param name="stop">Stop Token.</param>
         private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
         {
 #if NET40
@@ -170,17 +170,17 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Token passed to asynchronous code to allow stop signalling
+    /// Token passed to asynchronous code to allow stop signalling.
     /// </summary>
     class StopToken
     {
         private bool _stop = false;
 
         /// <summary>
-        /// Gets/Sets whether the code should stop
+        /// Gets/Sets whether the code should stop.
         /// </summary>
         /// <remarks>
-        /// Once set to true cannot be reset
+        /// Once set to true cannot be reset.
         /// </remarks>
         public bool ShouldStop
         {

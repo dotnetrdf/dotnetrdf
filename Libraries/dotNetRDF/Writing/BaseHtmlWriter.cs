@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Abstract Base Class for HTML Writers which provides basic implementation of the IHtmlWriter interface
+    /// Abstract Base Class for HTML Writers which provides basic implementation of the IHtmlWriter interface.
     /// </summary>
     public abstract class BaseHtmlWriter 
         : IHtmlWriter
@@ -47,7 +47,7 @@ namespace VDS.RDF.Writing
 
 
         /// <summary>
-        /// Gets/Sets a path to a Stylesheet which is used to format the Graph output
+        /// Gets/Sets a path to a Stylesheet which is used to format the Graph output.
         /// </summary>
         public string Stylesheet
         {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes
+        /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes.
         /// </summary>
         public string CssClassUri
         {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs
+        /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs.
         /// </summary>
         public string CssClassBlankNode
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literals
+        /// Gets/Sets the CSS class used for the span tags used to display Literals.
         /// </summary>
         public string CssClassLiteral
         {
@@ -107,7 +107,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes
+        /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes.
         /// </summary>
         public string CssClassDatatype
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers
+        /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers.
         /// </summary>
         public string CssClassLangSpec
         {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the CSS class used for div tags used to group chunks of markup into a box
+        /// Gets/Sets the CSS class used for div tags used to group chunks of markup into a box.
         /// </summary>
         public String CssClassBox
         {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Writing
         }
         
         /// <summary>
-        /// Gets/Sets the Prefix applied to href attributes
+        /// Gets/Sets the Prefix applied to href attributes.
         /// </summary>
         public String UriPrefix
         {

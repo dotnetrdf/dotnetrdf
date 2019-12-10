@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Mode by which to clear Graphs
+    /// Mode by which to clear Graphs.
     /// </summary>
     public enum ClearMode
     {
@@ -48,11 +48,11 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Clears all Graphs of Triples
         /// </summary>
-        All
+        All,
     }
 
     /// <summary>
-    /// Represents the SPARQL Update CLEAR command
+    /// Represents the SPARQL Update CLEAR command.
     /// </summary>
     public class ClearCommand : SparqlUpdateCommand
     {
@@ -61,11 +61,11 @@ namespace VDS.RDF.Update.Commands
         private bool _silent = false;
 
         /// <summary>
-        /// Creates a Command which clears the given Graph or Graphs depending on the Clear Mode specified
+        /// Creates a Command which clears the given Graph or Graphs depending on the Clear Mode specified.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="mode">Clear Mode</param>
-        /// <param name="silent">Whether errors should be suppressed</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="mode">Clear Mode.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
         public ClearCommand(Uri graphUri, ClearMode mode, bool silent)
             : base(SparqlUpdateCommandType.Clear)
         {
@@ -77,35 +77,35 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a Command which clears the given Graph
+        /// Creates a Command which clears the given Graph.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to clear</param>
+        /// <param name="graphUri">URI of the Graph to clear.</param>
         public ClearCommand(Uri graphUri)
             : this(graphUri, ClearMode.Graph, false) { }
 
         /// <summary>
-        /// Creates a Command which clears the Default Graph (if any)
+        /// Creates a Command which clears the Default Graph (if any).
         /// </summary>
         public ClearCommand()
             : this(null, ClearMode.Default, false) { }
 
         /// <summary>
-        /// Creates a Command which performs the specified type of clear
+        /// Creates a Command which performs the specified type of clear.
         /// </summary>
-        /// <param name="mode">Clear Mode</param>
-        /// <param name="silent">Whether errors should be suppressed</param>
+        /// <param name="mode">Clear Mode.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
         public ClearCommand(ClearMode mode, bool silent)
             : this(null, mode, silent) { }
 
         /// <summary>
-        /// Creates a Command which performs the specified type of clear
+        /// Creates a Command which performs the specified type of clear.
         /// </summary>
-        /// <param name="mode">Clear Mode</param>
+        /// <param name="mode">Clear Mode.</param>
         public ClearCommand(ClearMode mode)
             : this(mode, false) { }
 
         /// <summary>
-        /// Gets whether this Command affects a Single Graph
+        /// Gets whether this Command affects a Single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether this Command affects the given Graph
+        /// Gets whether this Command affects the given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph to be cleared (or null if the default graph should be cleared)
+        /// Gets the URI of the Graph to be cleared (or null if the default graph should be cleared).
         /// </summary>
         public Uri TargetUri
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether errors should be suppressed
+        /// Gets whether errors should be suppressed.
         /// </summary>
         public bool Silent
         {
@@ -168,7 +168,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the Mode by which Graphs are to be cleared
+        /// Gets the Mode by which Graphs are to be cleared.
         /// </summary>
         public ClearMode Mode
         {
@@ -179,9 +179,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             try
@@ -219,16 +219,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessClearCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

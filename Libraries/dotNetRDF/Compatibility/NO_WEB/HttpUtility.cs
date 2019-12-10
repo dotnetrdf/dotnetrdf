@@ -31,19 +31,19 @@ using VDS.RDF.Parsing;
 namespace System.Web
 {
     /// <summary>
-    /// An implementation of HttpUtility for use with Silverlight builds which require it
+    /// An implementation of HttpUtility for use with Silverlight builds which require it.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The URL Encoding algorithm is partially based on an algorithm presented in this <a href="http://www.codeguru.com/cpp/cpp/cpp_mfc/article.php/c4029">CodeGuru</a> article
+    /// The URL Encoding algorithm is partially based on an algorithm presented in this <a href="http://www.codeguru.com/cpp/cpp/cpp_mfc/article.php/c4029">CodeGuru</a> article.
     /// </para>
     /// </remarks>
     public static class HttpUtility
     {
         /// <summary>
-        /// HTML Decodes a String so any character entities used are converted to their actual characters
+        /// HTML Decodes a String so any character entities used are converted to their actual characters.
         /// </summary>
-        /// <param name="value">Value to decode</param>
+        /// <param name="value">Value to decode.</param>
         /// <returns></returns>
         public static String HtmlDecode(String value)
         {
@@ -51,9 +51,9 @@ namespace System.Web
         }
 
         /// <summary>
-        /// HTML Encodes a String so any that requires entitzing are converted to character entities
+        /// HTML Encodes a String so any that requires entitzing are converted to character entities.
         /// </summary>
-        /// <param name="value">Value to encode</param>
+        /// <param name="value">Value to encode.</param>
         /// <returns></returns>
         public static String HtmlEncode(String value)
         {
@@ -61,9 +61,9 @@ namespace System.Web
         }
 
         /// <summary>
-        /// Encodes a URL string so any characters that require percent encoding are encoded
+        /// Encodes a URL string so any characters that require percent encoding are encoded.
         /// </summary>
-        /// <param name="value">Value to encode</param>
+        /// <param name="value">Value to encode.</param>
         /// <returns></returns>
         public static String UrlEncode(String value)
         {
@@ -120,9 +120,9 @@ namespace System.Web
         }
 
         /// <summary>
-        /// Decodes a URL string so any characters that are percent encoded are converted to actual characters
+        /// Decodes a URL string so any characters that are percent encoded are converted to actual characters.
         /// </summary>
-        /// <param name="value">Value to decode</param>
+        /// <param name="value">Value to decode.</param>
         /// <returns></returns>
         public static String UrlDecode(String value)
         {

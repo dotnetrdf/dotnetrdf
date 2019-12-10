@@ -30,19 +30,19 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Formatter for use in writing data to Virtuoso
+    /// Formatter for use in writing data to Virtuoso.
     /// </summary>
     /// <remarks>
-    /// Uses Virtuoso function calls for communicating BNodes back to Virtuoso
+    /// Uses Virtuoso function calls for communicating BNodes back to Virtuoso.
     /// </remarks>
     class VirtuosoFormatter
         : SparqlFormatter
     {
         /// <summary>
-        /// Formats a Blank Node by using the <strong>sql:rdf_make_iid_of_qname()</strong> function
+        /// Formats a Blank Node by using the <strong>sql:rdf_make_iid_of_qname()</strong> function.
         /// </summary>
-        /// <param name="b">Blank Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="b">Blank Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {

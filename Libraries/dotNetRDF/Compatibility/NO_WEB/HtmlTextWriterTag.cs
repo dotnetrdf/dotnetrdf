@@ -27,7 +27,7 @@
 namespace System.Web.UI
 {
     /// <summary>
-    /// HTML Tags
+    /// HTML Tags.
     /// </summary>
     public enum HtmlTextWriterTag
     {
@@ -418,6 +418,6 @@ namespace System.Web.UI
         /// <summary>
         /// XML
         /// </summary>
-        Xml
+        Xml,
     }
 }

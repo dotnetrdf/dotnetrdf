@@ -30,27 +30,27 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for creating aggregates expressions
+    /// Provides methods for creating aggregates expressions.
     /// </summary>
     public interface IAggregateBuilder : IDistinctAggregateBuilder
     {
         /// <summary>
-        /// Gets a builder which builds a DISTICT aggregate
+        /// Gets a builder which builds a DISTICT aggregate.
         /// </summary>
         IDistinctAggregateBuilder Distinct { get; }
 
         /// <summary>
-        /// Creates a SAMPLE aggregate
+        /// Creates a SAMPLE aggregate.
         /// </summary>
         AggregateExpression Sample(VariableTerm variable);
 
         /// <summary>
-        /// Creates a SAMPLE aggregate
+        /// Creates a SAMPLE aggregate.
         /// </summary>
         AggregateExpression Sample(string variable);
 
         /// <summary>
-        /// Creates a SAMPLE aggregate
+        /// Creates a SAMPLE aggregate.
         /// </summary>
         AggregateExpression Sample(SparqlExpression expression);
     }

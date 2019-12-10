@@ -29,13 +29,13 @@ using System;
 namespace VDS.RDF.Query.FullText.Schema
 {
     /// <summary>
-    /// Abstract Base Implementation of an Index Schema
+    /// Abstract Base Implementation of an Index Schema.
     /// </summary>
     public abstract class BaseIndexSchema
         : IFullTextIndexSchema
     {
         /// <summary>
-        /// Gets the field in which the full text is indexed
+        /// Gets the field in which the full text is indexed.
         /// </summary>
         public string IndexField
         {
@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Graph URI is indexed
+        /// Gets the field in which the Graph URI is indexed.
         /// </summary>
         public String GraphField
         {
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the hash is stored
+        /// Gets the field in which the hash is stored.
         /// </summary>
         public String HashField
         {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Node type is stored
+        /// Gets the field in which the Node type is stored.
         /// </summary>
         public string NodeTypeField
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Node value is stored
+        /// Gets the field in which the Node value is stored.
         /// </summary>
         public string NodeValueField
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
-        /// Gets the field in which the Node meta is stored
+        /// Gets the field in which the Node meta is stored.
         /// </summary>
         public string NodeMetaField
         {

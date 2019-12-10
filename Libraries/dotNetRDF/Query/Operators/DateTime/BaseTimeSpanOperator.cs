@@ -31,15 +31,15 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Operators.DateTime
 {
     /// <summary>
-    /// Abstract base operator for time span operations
+    /// Abstract base operator for time span operations.
     /// </summary>
     public abstract class BaseTimeSpanOperator
         : BaseOperator
     {
         /// <summary>
-        /// Gets whether the operator is applicable for the arguments
+        /// Gets whether the operator is applicable for the arguments.
         /// </summary>
-        /// <param name="ns">Arguments</param>
+        /// <param name="ns">Arguments.</param>
         /// <returns></returns>
         public override bool IsApplicable(params IValuedNode[] ns)
         {

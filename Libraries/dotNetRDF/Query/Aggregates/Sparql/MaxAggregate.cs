@@ -35,7 +35,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.Sparql
 {
     /// <summary>
-    /// Class representing MAX Aggregate Functions
+    /// Class representing MAX Aggregate Functions.
     /// </summary>
     public class MaxAggregate
         : BaseAggregate
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         private String _varname;
 
         /// <summary>
-        /// Creates a new MAX Aggregate
+        /// Creates a new MAX Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Variable Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public MaxAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
@@ -54,32 +54,32 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Creates a new MAX Aggregate
+        /// Creates a new MAX Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public MaxAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
         /// <summary>
-        /// Creates a new MAX Aggregate
+        /// Creates a new MAX Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
+        /// <param name="expr">Variable Expression.</param>
         public MaxAggregate(VariableTerm expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new MAX Aggregate
+        /// Creates a new MAX Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public MaxAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new MAX Aggregate
+        /// Creates a new MAX Aggregate.
         /// </summary>
-        /// <param name="distinct">Distinct Modifier</param>
-        /// <param name="expr">Expression</param>
+        /// <param name="distinct">Distinct Modifier.</param>
+        /// <param name="expr">Expression.</param>
         public MaxAggregate(ISparqlExpression distinct, ISparqlExpression expr)
             : base(expr)
         {
@@ -94,10 +94,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Applies the Max Aggregate function to the results
+        /// Applies the Max Aggregate function to the results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

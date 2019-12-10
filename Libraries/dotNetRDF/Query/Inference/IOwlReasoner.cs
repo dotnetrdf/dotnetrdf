@@ -31,7 +31,7 @@ using VDS.RDF.Ontology;
 namespace VDS.RDF.Query.Inference
 {
     /// <summary>
-    /// Proposed interface for OWL Reasoners - currently incomplete
+    /// Proposed interface for OWL Reasoners - currently incomplete.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -44,80 +44,80 @@ namespace VDS.RDF.Query.Inference
     public interface IOwlReasoner
     {
         /// <summary>
-        /// Adds a Graph to the reasoners knowledge base
+        /// Adds a Graph to the reasoners knowledge base.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <remarks>
         /// <para>
         /// A reasoner may choose to do nothing in this method if that reasoner especially if it operates using some pre-defined, remote or otherwise immutable knowledge base.
         /// </para>
         /// </remarks>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         void Add(IGraph g);
 
         /// <summary>
-        /// Extract a reasoning enhanced sub-graph from the given Graph rooted at the given Node
+        /// Extract a reasoning enhanced sub-graph from the given Graph rooted at the given Node.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="n">Root Node</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="n">Root Node.</param>
         /// <returns></returns>
         IGraph Extract(IGraph g, INode n);
 
         /// <summary>
-        /// Extracts all possible triples using the given extraction mode
+        /// Extracts all possible triples using the given extraction mode.
         /// </summary>
-        /// <param name="mode">Extraction Mode</param>
+        /// <param name="mode">Extraction Mode.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The <paramref name="mode">mode</paramref> permits for the specification of an extraction mode for reasoners that can extract specific subsets of reasoning.  Where this is not supported the reasoner should simply extract all triples that can be inferred by reasoning
+        /// The <paramref name="mode">mode</paramref> permits for the specification of an extraction mode for reasoners that can extract specific subsets of reasoning.  Where this is not supported the reasoner should simply extract all triples that can be inferred by reasoning.
         /// </remarks>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         IEnumerable<Triple> Extract(String mode);
 
         /// <summary>
-        /// Extracts all possible triples using the given extraction modes
+        /// Extracts all possible triples using the given extraction modes.
         /// </summary>
-        /// <param name="modes">Extraction Modes</param>
+        /// <param name="modes">Extraction Modes.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The <paramref name="modes">modes</paramref> permits for the specification of an extraction mode for reasoners that can extract specific subsets of reasoning.  Where this is not supported the reasoner should simply extract all triples that can be inferred by reasoning
+        /// The <paramref name="modes">modes</paramref> permits for the specification of an extraction mode for reasoners that can extract specific subsets of reasoning.  Where this is not supported the reasoner should simply extract all triples that can be inferred by reasoning.
         /// </remarks>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         IEnumerable<Triple> Extract(IEnumerable<String> modes);
 
         /// <summary>
-        /// Extracts the triples which comprise the class hierarchy
+        /// Extracts the triples which comprise the class hierarchy.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         IEnumerable<Triple> Classify();
 
         /// <summary>
-        /// Extracts the triples which comprise the class hierarchy and individuals of those classes
+        /// Extracts the triples which comprise the class hierarchy and individuals of those classes.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         IEnumerable<Triple> Realize();
 
         /// <summary>
-        /// Returns whether the underlying knowledge base is consistent
+        /// Returns whether the underlying knowledge base is consistent.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         bool IsConsistent();
 
         /// <summary>
-        /// Returns whether the given Graph is consistent with the underlying knowledge base
+        /// Returns whether the given Graph is consistent with the underlying knowledge base.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         bool IsConsistent(IGraph g);
 
         /// <summary>
-        /// Returns the enumeration of unsatisfiable classes
+        /// Returns the enumeration of unsatisfiable classes.
         /// </summary>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         IEnumerable<OntologyResource> Unsatisfiable
         {
             get;
@@ -125,16 +125,16 @@ namespace VDS.RDF.Query.Inference
     }
 
     /// <summary>
-    /// Interface for OWL Reasoners which have access to their own SPARQL implementations
+    /// Interface for OWL Reasoners which have access to their own SPARQL implementations.
     /// </summary>
     public interface IQueryableOwlReasoner : IOwlReasoner
     {
         /// <summary>
-        /// Executes a SPARQL Query using the reasoners SPARQL implementation
+        /// Executes a SPARQL Query using the reasoners SPARQL implementation.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation</exception>
+        /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
         Object ExecuteQuery(String sparqlQuery);
     }
 }

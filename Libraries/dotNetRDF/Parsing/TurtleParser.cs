@@ -34,9 +34,9 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for Turtle syntax
+    /// Parser for Turtle syntax.
     /// </summary>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue.</threadsafety>
     public class TurtleParser 
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
@@ -46,33 +46,33 @@ namespace VDS.RDF.Parsing
         private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
-        /// Creates a new Turtle Parser
+        /// Creates a new Turtle Parser.
         /// </summary>
         public TurtleParser() { }
 
         /// <summary>
-        /// Creates a new Turtle Parser
+        /// Creates a new Turtle Parser.
         /// </summary>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public TurtleParser(TurtleSyntax syntax) 
         {
             _syntax = syntax;
         }
 
         /// <summary>
-        /// Creates a new Turtle Parser which uses the given Token Queue Mode
+        /// Creates a new Turtle Parser which uses the given Token Queue Mode.
         /// </summary>
-        /// <param name="queueMode">Queue Mode for Turtle</param>
+        /// <param name="queueMode">Queue Mode for Turtle.</param>
         public TurtleParser(TokenQueueMode queueMode)
         {
             _queueMode = queueMode;
         }
 
         /// <summary>
-        /// Creates a new Turtle Parser which uses the given Token Queue Mode
+        /// Creates a new Turtle Parser which uses the given Token Queue Mode.
         /// </summary>
-        /// <param name="queueMode">Queue Mode for Turtle</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="queueMode">Queue Mode for Turtle.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax)
             : this(syntax)
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Parsing Trace is written to the Console
+        /// Gets/Sets whether Parsing Trace is written to the Console.
         /// </summary>
         public bool TraceParsing
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Trace is written to the Console
+        /// Gets/Sets whether Tokeniser Trace is written to the Console.
         /// </summary>
         public bool TraceTokeniser
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the token queue mode used
+        /// Gets/Sets the token queue mode used.
         /// </summary>
         public TokenQueueMode TokenQueueMode
         {
@@ -125,10 +125,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph by reading Turtle syntax from the given input
+        /// Loads a Graph by reading Turtle syntax from the given input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -136,10 +136,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph by reading Turtle syntax from the given input
+        /// Loads a Graph by reading Turtle syntax from the given input.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -147,10 +147,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Graph by reading Turtle syntax from the given file
+        /// Loads a Graph by reading Turtle syntax from the given file.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -159,10 +159,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
+        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handle to use</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">RDF Handle to use.</param>
+        /// <param name="input">Stream to read from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -178,10 +178,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
+        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handle to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">RDF Handle to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -211,10 +211,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler
+        /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handle to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">RDF Handle to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -223,9 +223,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Internal method which does the parsing of the input
+        /// Internal method which does the parsing of the input.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void Parse(TurtleParserContext context)
         {
             try
@@ -308,10 +308,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Base/Prefix declarations
+        /// Tries to parse Base/Prefix declarations.
         /// </summary>
-        /// <param name="context">Parse Context</param>
-        /// <param name="turtleStyle">Whether declarations are Turtle style (if false SPARQL style is assumed)</param>
+        /// <param name="context">Parse Context.</param>
+        /// <param name="turtleStyle">Whether declarations are Turtle style (if false SPARQL style is assumed).</param>
         private void TryParseDirective(TurtleParserContext context, bool turtleStyle)
         {
             if (context.TraceParsing)
@@ -406,9 +406,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Triples
+        /// Tries to parse Triples.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         private void TryParseTriples(TurtleParserContext context)
         {
             IToken subjToken = context.Tokens.Dequeue();
@@ -487,11 +487,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Predicate Object lists
+        /// Tries to parse Predicate Object lists.
         /// </summary>
-        /// <param name="context">Parse Context</param>
-        /// <param name="subj">Subject of the Triples</param>
-        /// <param name="bnodeList">Whether this is a Blank Node Predicate Object list</param>
+        /// <param name="context">Parse Context.</param>
+        /// <param name="subj">Subject of the Triples.</param>
+        /// <param name="bnodeList">Whether this is a Blank Node Predicate Object list.</param>
         private void TryParsePredicateObjectList(TurtleParserContext context, INode subj, bool bnodeList)
         {
             IToken predToken;
@@ -589,12 +589,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Object lists
+        /// Tries to parse Object lists.
         /// </summary>
-        /// <param name="context">Parse Context</param>
-        /// <param name="subj">Subject of the Triples</param>
-        /// <param name="pred">Predicate of the Triples</param>
-        /// <param name="bnodeList">Whether this is a Blank Node Object list</param>
+        /// <param name="context">Parse Context.</param>
+        /// <param name="subj">Subject of the Triples.</param>
+        /// <param name="pred">Predicate of the Triples.</param>
+        /// <param name="bnodeList">Whether this is a Blank Node Object list.</param>
         private void TryParseObjectList(TurtleParserContext context, INode subj, INode pred, bool bnodeList)
         {
             IToken objToken, next;
@@ -749,10 +749,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Collections
+        /// Tries to parse Collections.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="firstSubj">Blank Node which is the head of the collection</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="firstSubj">Blank Node which is the head of the collection.</param>
         private void TryParseCollection(TurtleParserContext context, INode firstSubj)
         {
             // The opening bracket of the collection will already have been discarded when we get called
@@ -858,10 +858,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse Literal Tokens into Literal Nodes
+        /// Tries to parse Literal Tokens into Literal Nodes.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="lit">Literal Token</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="lit">Literal Token.</param>
         /// <returns></returns>
         private INode TryParseLiteral(TurtleParserContext context, IToken lit)
         {
@@ -962,7 +962,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method which raises the Warning event if there is an event handler registered
+        /// Helper method which raises the Warning event if there is an event handler registered.
         /// </summary>
         /// <param name="message"></param>
         private void RaiseWarning(String message)
@@ -980,7 +980,7 @@ namespace VDS.RDF.Parsing
         public event RdfReaderWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

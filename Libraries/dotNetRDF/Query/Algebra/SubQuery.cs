@@ -32,25 +32,25 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a sub-query as an Algebra operator (only used when strict algebra is generated)
+    /// Represents a sub-query as an Algebra operator (only used when strict algebra is generated).
     /// </summary>
     public class SubQuery : ITerminalOperator
     {
         private readonly SparqlQuery _subquery;
 
         /// <summary>
-        /// Creates a new subquery operator
+        /// Creates a new subquery operator.
         /// </summary>
-        /// <param name="q">Subquery</param>
+        /// <param name="q">Subquery.</param>
         public SubQuery(SparqlQuery q)
         {
             _subquery = q;
         }
 
         /// <summary>
-        /// Evaluates the subquery in the given context
+        /// Evaluates the subquery in the given context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the variables used in the subquery which are projected out of it
+        /// Gets the variables used in the subquery which are projected out of it.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -120,17 +120,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
-        /// Converts the algebra back into a Query
+        /// Converts the algebra back into a Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the algebra back into a Subquery
+        /// Converts the algebra back into a Subquery.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string representation of the algebra
+        /// Gets the string representation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -33,7 +33,7 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Construct
 {
     /// <summary>
-    /// Context used for Constructing Triples in SPARQL Query/Update
+    /// Context used for Constructing Triples in SPARQL Query/Update.
     /// </summary>
     public class ConstructContext
     {
@@ -46,14 +46,14 @@ namespace VDS.RDF.Query.Construct
         private MultiDictionary<INode, INode> _nodeMap;
 
         /// <summary>
-        /// Creates a new Construct Context
+        /// Creates a new Construct Context.
         /// </summary>
-        /// <param name="g">Graph to construct Triples in</param>
-        /// <param name="s">Set to construct from</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is</param>
+        /// <param name="g">Graph to construct Triples in.</param>
+        /// <param name="s">Set to construct from.</param>
+        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
         /// <remarks>
         /// <para>
-        /// Either the <paramref name="s">Set</paramref>  or <paramref name="g">Graph</paramref> parameters may be null if required
+        /// Either the <paramref name="s">Set</paramref>  or <paramref name="g">Graph</paramref> parameters may be null if required.
         /// </para>
         /// </remarks>
         public ConstructContext(IGraph g, ISet s, bool preserveBNodes)
@@ -65,14 +65,14 @@ namespace VDS.RDF.Query.Construct
         }
 
         /// <summary>
-        /// Creates a new Construct Context
+        /// Creates a new Construct Context.
         /// </summary>
-        /// <param name="factory">Factory to create nodes with</param>
-        /// <param name="s">Set to construct from</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is</param>
+        /// <param name="factory">Factory to create nodes with.</param>
+        /// <param name="s">Set to construct from.</param>
+        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
         /// <remarks>
         /// <para>
-        /// Either the <paramref name="s">Set</paramref>  or <paramref name="factory">Factory</paramref> parameters may be null if required
+        /// Either the <paramref name="s">Set</paramref>  or <paramref name="factory">Factory</paramref> parameters may be null if required.
         /// </para>
         /// </remarks>
         public ConstructContext(INodeFactory factory, ISet s, bool preserveBNodes)
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Construct
         }
 
         /// <summary>
-        /// Gets the Set that this Context pertains to
+        /// Gets the Set that this Context pertains to.
         /// </summary>
         public ISet Set
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Construct
         }
 
         /// <summary>
-        /// Gets the Graph that Triples should be constructed in
+        /// Gets the Graph that Triples should be constructed in.
         /// </summary>
         public IGraph Graph
         {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Construct
         }
 
         /// <summary>
-        /// Gets whether Blank Nodes bound to variables should be preserved
+        /// Gets whether Blank Nodes bound to variables should be preserved.
         /// </summary>
         public bool PreserveBlankNodes
         {
@@ -124,13 +124,13 @@ namespace VDS.RDF.Query.Construct
         }
 
         /// <summary>
-        /// Creates a new Blank Node for this Context
+        /// Creates a new Blank Node for this Context.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// If the same Blank Node ID is used multiple times in this Context you will always get the same Blank Node for that ID
+        /// If the same Blank Node ID is used multiple times in this Context you will always get the same Blank Node for that ID.
         /// </para>
         /// </remarks>
         public INode GetBlankNode(String id)
@@ -161,13 +161,13 @@ namespace VDS.RDF.Query.Construct
         }
 
         /// <summary>
-        /// Creates a Node for the Context
+        /// Creates a Node for the Context.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// In effect all this does is ensure that all Nodes end up in the same Graph which may occassionally not happen otherwise when Graph wrappers are involved
+        /// In effect all this does is ensure that all Nodes end up in the same Graph which may occassionally not happen otherwise when Graph wrappers are involved.
         /// </para>
         /// </remarks>
         public INode GetNode(INode n)

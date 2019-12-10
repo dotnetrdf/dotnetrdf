@@ -34,16 +34,16 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for saving Sparql Result Sets to the Sparql Results XML Format
+    /// Class for saving Sparql Result Sets to the Sparql Results XML Format.
     /// </summary>
     public class SparqlXmlWriter : ISparqlResultsWriter
     {
 
         /// <summary>
-        /// Saves the Result Set to the given File in the Sparql Results XML Format
+        /// Saves the Result Set to the given File in the Sparql Results XML Format.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
         public virtual void Save(SparqlResultSet results, String filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -65,7 +65,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves the Result Set to the given Stream in the Sparql Results XML Format
+        /// Saves the Result Set to the given Stream in the Sparql Results XML Format.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="output"></param>
@@ -92,7 +92,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Method which generates the Sparql Query Results XML Format serialization of the Result Set
+        /// Method which generates the Sparql Query Results XML Format serialization of the Result Set.
         /// </summary>
         /// <returns></returns>
         protected void GenerateOutput(SparqlResultSet resultSet, XmlWriter writer)
@@ -219,9 +219,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         protected void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -237,7 +237,7 @@ namespace VDS.RDF.Writing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -34,7 +34,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser which implements the Filtered Product optimisation
+    /// An Algebra Optimiser which implements the Filtered Product optimisation.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -45,9 +45,9 @@ namespace VDS.RDF.Query.Optimisation
         : IAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises the Algebra to use implict joins where applicable
+        /// Optimises the Algebra to use implict joins where applicable.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -167,9 +167,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that this optimiser is applicable to all queries
+        /// Returns that this optimiser is applicable to all queries.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -177,9 +177,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that this optimiser is applicable to all updates
+        /// Returns that this optimiser is applicable to all updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {

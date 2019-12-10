@@ -33,7 +33,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions
 {
     /// <summary>
-    /// Represents an Unknown Function that is not supported by dotNetRDF
+    /// Represents an Unknown Function that is not supported by dotNetRDF.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -47,19 +47,19 @@ namespace VDS.RDF.Query.Expressions.Functions
         private List<ISparqlExpression> _args = new List<ISparqlExpression>();
 
         /// <summary>
-        /// Creates a new Unknown Function that has no Arguments
+        /// Creates a new Unknown Function that has no Arguments.
         /// </summary>
-        /// <param name="funcUri">Function URI</param>
+        /// <param name="funcUri">Function URI.</param>
         public UnknownFunction(Uri funcUri)
         {
             _funcUri = funcUri;
         }
 
         /// <summary>
-        /// Creates a new Unknown Function that has a Single Argument
+        /// Creates a new Unknown Function that has a Single Argument.
         /// </summary>
-        /// <param name="funcUri">Function URI</param>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="funcUri">Function URI.</param>
+        /// <param name="expr">Argument Expression.</param>
         public UnknownFunction(Uri funcUri, ISparqlExpression expr)
             : this(funcUri)
         {
@@ -67,10 +67,10 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Creates a new Unknown Function that has multiple Arguments
+        /// Creates a new Unknown Function that has multiple Arguments.
         /// </summary>
-        /// <param name="funcUri">Function URI</param>
-        /// <param name="exprs">Argument Expressions</param>
+        /// <param name="funcUri">Function URI.</param>
+        /// <param name="exprs">Argument Expressions.</param>
         public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> exprs)
             : this(funcUri)
         {
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gives null as the Value since dotNetRDF does not know how to evaluate Unknown Functions
+        /// Gives null as the Value since dotNetRDF does not know how to evaluate Unknown Functions.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gets the Variables used in the Function
+        /// Gets the Variables used in the Function.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gets the Expression Type
+        /// Gets the Expression Type.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gets the Function URI of the Expression
+        /// Gets the Function URI of the Expression.
         /// </summary>
         public string Functor
         {
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -170,9 +170,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

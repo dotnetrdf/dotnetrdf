@@ -38,32 +38,32 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// Abstract implementation of an algebra optimiser and expression transformer which optimises the algebra to replace any Node terms with Virtual Node terms for more efficient querying of virtualised RDF data
+    /// Abstract implementation of an algebra optimiser and expression transformer which optimises the algebra to replace any Node terms with Virtual Node terms for more efficient querying of virtualised RDF data.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID> 
         : IAlgebraOptimiser, IExpressionTransformer
     {
         /// <summary>
-        /// Virtual RDF Provider
+        /// Virtual RDF Provider.
         /// </summary>
         protected IVirtualRdfProvider<TNodeID, TGraphID> _provider;
         private Type _exprType = typeof(ConstantTerm);
 
         /// <summary>
-        /// Creates a new Virtual Algebra Optimiser
+        /// Creates a new Virtual Algebra Optimiser.
         /// </summary>
-        /// <param name="provider">Virtual RDF Provider</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
         public VirtualAlgebraOptimiser(IVirtualRdfProvider<TNodeID, TGraphID> provider)
         {
             _provider = provider;
         }
 
         /// <summary>
-        /// Optimises the algebra so that all Node terms are virtualised
+        /// Optimises the algebra so that all Node terms are virtualised.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -202,9 +202,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Transforms an expression so Node terms are virtualised
+        /// Transforms an expression so Node terms are virtualised.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(ISparqlExpression expr)
         {
@@ -226,9 +226,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Substitutes a primary expression which is a Node term for a virtual Node term
+        /// Substitutes a primary expression which is a Node term for a virtual Node term.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         protected ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr)
         {
@@ -248,17 +248,17 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Creates a virtual Node based on a given Value
+        /// Creates a virtual Node based on a given Value.
         /// </summary>
-        /// <param name="id">Node ID</param>
-        /// <param name="value">Value</param>
+        /// <param name="id">Node ID.</param>
+        /// <param name="value">Value.</param>
         /// <returns></returns>
         protected abstract INode CreateVirtualNode(TNodeID id, INode value);
 
         /// <summary>
-        /// Returns that the optimiser is applicable to all queries
+        /// Returns that the optimiser is applicable to all queries.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -266,9 +266,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable to all updates
+        /// Returns that the optimiser is applicable to all updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
@@ -277,23 +277,23 @@ namespace VDS.RDF.Query.Optimisation
     }
 
     /// <summary>
-    /// A concrete implementation of a Virtual Algebra Optimiser where the virtual IDs are simply integers
+    /// A concrete implementation of a Virtual Algebra Optimiser where the virtual IDs are simply integers.
     /// </summary>
     public class SimpleVirtualAlgebraOptimiser
         : VirtualAlgebraOptimiser<int, int>
     {
         /// <summary>
-        /// Creates a new Simple Virtual Algebra Optimiser
+        /// Creates a new Simple Virtual Algebra Optimiser.
         /// </summary>
-        /// <param name="provider">Virtual RDF provider</param>
+        /// <param name="provider">Virtual RDF provider.</param>
         public SimpleVirtualAlgebraOptimiser(IVirtualRdfProvider<int, int> provider)
             : base(provider) { }
 
         /// <summary>
-        /// Creates a new Virtual Node using the virtual RDF provider this optimiser was instantiated with
+        /// Creates a new Virtual Node using the virtual RDF provider this optimiser was instantiated with.
         /// </summary>
-        /// <param name="id">Virtual Node ID</param>
-        /// <param name="value">Node Value</param>
+        /// <param name="id">Virtual Node ID.</param>
+        /// <param name="value">Node Value.</param>
         /// <returns></returns>
         protected override INode CreateVirtualNode(int id, INode value)
         {

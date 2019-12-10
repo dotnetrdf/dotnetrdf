@@ -157,7 +157,7 @@ namespace VDS.RDF.Dynamic
         /// </summary>
         /// <param name="subject">The subject to retract.</param>
         /// <returns>Whether any statements were retracted.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="subject"/> is null</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="subject"/> is null.</exception>
         public bool Remove(Uri subject)
         {
             if (subject is null)

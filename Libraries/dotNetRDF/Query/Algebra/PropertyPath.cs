@@ -30,24 +30,24 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents an arbitrary property path in the algebra (only used when strict algebra is generated)
+    /// Represents an arbitrary property path in the algebra (only used when strict algebra is generated).
     /// </summary>
     public class PropertyPath
         : BasePathOperator, ITerminalOperator
     {
         /// <summary>
-        /// Creates a new Property Path operator
+        /// Creates a new Property Path operator.
         /// </summary>
-        /// <param name="start">Path Start</param>
-        /// <param name="path">Path Expression</param>
-        /// <param name="end">Path End</param>
+        /// <param name="start">Path Start.</param>
+        /// <param name="path">Path Expression.</param>
+        /// <param name="end">Path End.</param>
         public PropertyPath(PatternItem start, ISparqlPath path, PatternItem end)
             : base(start, path, end) { }
 
         /// <summary>
-        /// Evaluates the Path in the given context
+        /// Evaluates the Path in the given context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the algebra back into a Graph Pattern
+        /// Converts the algebra back into a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public override GraphPattern ToGraphPattern()
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string representation of the algebra
+        /// Gets the string representation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

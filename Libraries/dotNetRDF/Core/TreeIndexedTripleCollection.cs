@@ -33,7 +33,7 @@ using VDS.Common.Trees;
 namespace VDS.RDF
 {
     /// <summary>
-    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TKey,TValue}"/> implementations under the hood for the index structures
+    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TKey,TValue}"/> implementations under the hood for the index structures.
     /// </summary>
     /// <remarks>
     /// </remarks>
@@ -55,28 +55,28 @@ namespace VDS.RDF
         private int _count = 0;
 
         /// <summary>
-        /// Creates a new Tree Indexed triple collection
+        /// Creates a new Tree Indexed triple collection.
         /// </summary>
         public TreeIndexedTripleCollection()
              : this(MultiDictionaryMode.AVL) { }
 
         /// <summary>
-        /// Creates a new Tree Indexed triple collection
+        /// Creates a new Tree Indexed triple collection.
         /// </summary>
-        /// <param name="compoundIndexMode">Mode to use for compound indexes</param>
+        /// <param name="compoundIndexMode">Mode to use for compound indexes.</param>
         public TreeIndexedTripleCollection(MultiDictionaryMode compoundIndexMode)
             : this(true, true, true, Options.FullTripleIndexing, Options.FullTripleIndexing, Options.FullTripleIndexing, compoundIndexMode) { }
 
         /// <summary>
-        /// Creates a new Tree Indexed triple collection with the given Indexing options
+        /// Creates a new Tree Indexed triple collection with the given Indexing options.
         /// </summary>
-        /// <param name="subjIndex">Whether to create a subject index</param>
-        /// <param name="predIndex">Whether to create a predicate index</param>
-        /// <param name="objIndex">Whether to create an object index</param>
-        /// <param name="subjPredIndex">Whether to create a subject predicate index</param>
-        /// <param name="subjObjIndex">Whether to create a subject object index</param>
-        /// <param name="predObjIndex">Whether to create a predicate object index</param>
-        /// <param name="compoundIndexMode">Mode to use for compound indexes</param>
+        /// <param name="subjIndex">Whether to create a subject index.</param>
+        /// <param name="predIndex">Whether to create a predicate index.</param>
+        /// <param name="objIndex">Whether to create an object index.</param>
+        /// <param name="subjPredIndex">Whether to create a subject predicate index.</param>
+        /// <param name="subjObjIndex">Whether to create a subject object index.</param>
+        /// <param name="predObjIndex">Whether to create a predicate object index.</param>
+        /// <param name="compoundIndexMode">Mode to use for compound indexes.</param>
         public TreeIndexedTripleCollection(bool subjIndex, bool predIndex, bool objIndex, bool subjPredIndex, bool subjObjIndex, bool predObjIndex, MultiDictionaryMode compoundIndexMode)
         {
             if (subjIndex) _s = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
@@ -88,9 +88,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Indexes a Triple
+        /// Indexes a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         private void Index(Triple t)
         {
             IndexSimple(t.Subject, t, _s);
@@ -102,11 +102,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper for indexing triples
+        /// Helper for indexing triples.
         /// </summary>
-        /// <param name="n">Node to index by</param>
-        /// <param name="t">Triple</param>
-        /// <param name="index">Index to insert into</param>
+        /// <param name="n">Node to index by.</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="index">Index to insert into.</param>
         private void IndexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
         {
             if (index == null) return;
@@ -130,10 +130,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper for indexing triples
+        /// Helper for indexing triples.
         /// </summary>
-        /// <param name="t">Triple to index by</param>
-        /// <param name="index">Index to insert into</param>
+        /// <param name="t">Triple to index by.</param>
+        /// <param name="index">Index to insert into.</param>
         private void IndexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
         {
             if (index == null) return;
@@ -157,9 +157,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Unindexes a triple
+        /// Unindexes a triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         private void Unindex(Triple t)
         {
             UnindexSimple(t.Subject, t, _s);
@@ -171,11 +171,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper for unindexing triples
+        /// Helper for unindexing triples.
         /// </summary>
-        /// <param name="n">Node to index by</param>
-        /// <param name="t">Triple</param>
-        /// <param name="index">Index to remove from</param>
+        /// <param name="n">Node to index by.</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="index">Index to remove from.</param>
         private void UnindexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
         {
             if (index == null) return;
@@ -195,10 +195,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper for unindexing triples
+        /// Helper for unindexing triples.
         /// </summary>
-        /// <param name="t">Triple</param>
-        /// <param name="index">Index to remove from</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="index">Index to remove from.</param>
         private void UnindexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
         {
             if (index == null) return;
@@ -218,9 +218,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Triple to the collection
+        /// Adds a Triple to the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
@@ -235,9 +235,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether the collection contains a given Triple
+        /// Checks whether the collection contains a given Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
@@ -245,7 +245,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the count of triples in the collection
+        /// Gets the count of triples in the collection.
         /// </summary>
         public override int Count
         {
@@ -257,9 +257,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a triple from the collection
+        /// Deletes a triple from the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
@@ -275,9 +275,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the specific instance of a Triple in the collection
+        /// Gets the specific instance of a Triple in the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override Triple this[Triple t]
         {
@@ -296,9 +296,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given object
+        /// Gets all the triples with a given object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
@@ -321,9 +321,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given predicate
+        /// Gets all the triples with a given predicate.
         /// </summary>
-        /// <param name="pred">Predicate</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
@@ -346,9 +346,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given subject
+        /// Gets all the triples with a given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
@@ -371,10 +371,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given predicate and object
+        /// Gets all the triples with a given predicate and object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
@@ -397,10 +397,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given subject and object
+        /// Gets all the triples with a given subject and object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
@@ -423,10 +423,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with a given subject and predicate
+        /// Gets all the triples with a given subject and predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
@@ -449,7 +449,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Object Nodes
+        /// Gets the Object Nodes.
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
@@ -467,7 +467,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Predicate Nodes
+        /// Gets the Predicate Nodes.
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
@@ -485,7 +485,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Subject Nodes
+        /// Gets the Subject Nodes.
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
@@ -503,7 +503,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the collection
+        /// Disposes of the collection.
         /// </summary>
         public override void Dispose()
         {
@@ -517,7 +517,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumerator for the collection
+        /// Gets the enumerator for the collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()

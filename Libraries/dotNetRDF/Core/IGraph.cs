@@ -31,7 +31,7 @@ using System.Xml.Serialization;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for RDF Graphs
+    /// Interface for RDF Graphs.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -46,7 +46,7 @@ namespace VDS.RDF
         #region Properties
 
         /// <summary>
-        /// Gets/Sets the Base Uri for the Graph
+        /// Gets/Sets the Base Uri for the Graph.
         /// </summary>
         Uri BaseUri 
         { 
@@ -55,7 +55,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether a Graph is Empty
+        /// Gets whether a Graph is Empty.
         /// </summary>
         bool IsEmpty 
         { 
@@ -63,7 +63,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the Graph
+        /// Gets the Namespace Map for the Graph.
         /// </summary>
         INamespaceMapper NamespaceMap 
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Nodes of the Graph
+        /// Gets the Nodes of the Graph.
         /// </summary>
         IEnumerable<INode> Nodes 
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Triple Collection for the Graph
+        /// Gets the Triple Collection for the Graph.
         /// </summary>
         BaseTripleCollection Triples 
         { 
@@ -91,31 +91,31 @@ namespace VDS.RDF
         #region Assertion & Retraction
 
         /// <summary>
-        /// Asserts a Triple in the Graph
+        /// Asserts a Triple in the Graph.
         /// </summary>
-        /// <param name="t">A Triple</param>
+        /// <param name="t">A Triple.</param>
         bool Assert(Triple t);
 
         /// <summary>
-        /// Asserts an Enumerable of Triples in the Graph
+        /// Asserts an Enumerable of Triples in the Graph.
         /// </summary>
-        /// <param name="ts">An Enumerable of Triples</param>
+        /// <param name="ts">An Enumerable of Triples.</param>
         bool Assert(IEnumerable<Triple> ts);
 
         /// <summary>
-        /// Retracts a Triple from the Graph
+        /// Retracts a Triple from the Graph.
         /// </summary>
-        /// <param name="t">A Triple</param>
+        /// <param name="t">A Triple.</param>
         bool Retract(Triple t);
 
         /// <summary>
-        /// Retracts an Enumerable of Triples from the Graph
+        /// Retracts an Enumerable of Triples from the Graph.
         /// </summary>
-        /// <param name="ts">Enumerable of Triples</param>
+        /// <param name="ts">Enumerable of Triples.</param>
         bool Retract(IEnumerable<Triple> ts);
 
         /// <summary>
-        /// Retracts all Triples from the Graph
+        /// Retracts all Triples from the Graph.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -129,15 +129,15 @@ namespace VDS.RDF
         #region Node Creation
 
         /// <summary>
-        /// Creates a URI Node that corresponds to the Base URI of the Graph
+        /// Creates a URI Node that corresponds to the Base URI of the Graph.
         /// </summary>
         /// <returns></returns>
         IUriNode CreateUriNode();
 
         /// <summary>
-        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName
+        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName.
         /// </summary>
-        /// <param name="qname">QName</param>
+        /// <param name="qname">QName.</param>
         /// <returns></returns>
         IUriNode CreateUriNode(string qname);
 
@@ -146,133 +146,133 @@ namespace VDS.RDF
         #region Selection
 
         /// <summary>
-        /// Selects the Blank Node with the given ID if it exists in the Graph, returns null otherwise
+        /// Selects the Blank Node with the given ID if it exists in the Graph, returns null otherwise.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
+        /// <param name="nodeId">Node ID.</param>
+        /// <returns>The Node if it exists in the Graph or null.</returns>
         IBlankNode GetBlankNode(string nodeId);
 
         /// <summary>
-        /// Selects the Literal Node with the given Value and Language if it exists in the Graph, returns null otherwise
+        /// Selects the Literal Node with the given Value and Language if it exists in the Graph, returns null otherwise.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="langspec">Language Specifier of the Literal</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="langspec">Language Specifier of the Literal.</param>
+        /// <returns>The Node if it exists in the Graph or null.</returns>
         ILiteralNode GetLiteralNode(string literal, string langspec);
 
         /// <summary>
-        /// Selects the Literal Node with the given Value if it exists in the Graph, returns null otherwise
+        /// Selects the Literal Node with the given Value if it exists in the Graph, returns null otherwise.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <returns>The Node if it exists in the Graph or null.</returns>
         ILiteralNode GetLiteralNode(string literal);
 
         /// <summary>
-        /// Selects the Literal Node with the given Value and DataType if it exists in the Graph, returns otherwise
+        /// Selects the Literal Node with the given Value and DataType if it exists in the Graph, returns otherwise.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="datatype">Data Type of the Literal</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="datatype">Data Type of the Literal.</param>
+        /// <returns>The Node if it exists in the Graph or null.</returns>
         ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
-        /// Selects all Triples which have a Uri Node with the given Uri
+        /// Selects all Triples which have a Uri Node with the given Uri.
         /// </summary>
-        /// <param name="uri">Uri</param>
+        /// <param name="uri">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(Uri uri);
 
         /// <summary>
-        /// Selects all Triples which contain the given Node
+        /// Selects all Triples which contain the given Node.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Object is a Uri Node with the given Uri
+        /// Selects all Triples where the Object is a Uri Node with the given Uri.
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Object is a given Node
+        /// Selects all Triples where the Object is a given Node.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Predicate is a given Node
+        /// Selects all Triples where the Predicate is a given Node.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicate(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Predicate is a Uri Node with the given Uri
+        /// Selects all Triples where the Predicate is a Uri Node with the given Uri.
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Subject is a given Node
+        /// Selects all Triples where the Subject is a given Node.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Subject is a Uri Node with the given Uri
+        /// Selects all Triples where the Subject is a Uri Node with the given Uri.
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(Uri u);
 
         /// <summary>
-        /// Selects all Triples with the given Subject and Predicate
+        /// Selects all Triples with the given Subject and Predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
 
         /// <summary>
-        /// Selects all Triples with the given Subject and Object
+        /// Selects all Triples with the given Subject and Object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
 
         /// <summary>
-        /// Selects all Triples with the given Predicate and Object
+        /// Selects all Triples with the given Predicate and Object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
 
         /// <summary>
-        /// Selects the Uri Node with the given QName if it exists in the Graph, returns null otherwise
+        /// Selects the Uri Node with the given QName if it exists in the Graph, returns null otherwise.
         /// </summary>
-        /// <param name="qname">QName</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
+        /// <param name="qname">QName.</param>
+        /// <returns>The Node if it exists in the Graph or null.</returns>
         IUriNode GetUriNode(string qname);
 
         /// <summary>
-        /// Selects the Uri Node with the given Uri if it exists in the Graph, returns null otherwise
+        /// Selects the Uri Node with the given Uri if it exists in the Graph, returns null otherwise.
         /// </summary>
-        /// <param name="uri">Uri</param>
-        /// <returns>The Node if it exists in the Graph or null</returns>
+        /// <param name="uri">Uri.</param>
+        /// <returns>The Node if it exists in the Graph or null.</returns>
         IUriNode GetUriNode(Uri uri);
 
         /// <summary>
-        /// Gets whether a given Triple is in this Graph
+        /// Gets whether a given Triple is in this Graph.
         /// </summary>
-        /// <param name="t">Triple to test</param>
+        /// <param name="t">Triple to test.</param>
         /// <returns></returns>
         bool ContainsTriple(Triple t);
 
@@ -281,9 +281,9 @@ namespace VDS.RDF
         #region Advanced Graph Operations
 
         /// <summary>
-        /// Merges the given Graph into this Graph
+        /// Merges the given Graph into this Graph.
         /// </summary>
-        /// <param name="g">Graph to merge</param>
+        /// <param name="g">Graph to merge.</param>
         /// <remarks>
         /// <para>
         /// The Graph should raise the <see cref="MergeRequested">MergeRequested</see> event at the start of the Merge operation and abort the operation if the operation is cancelled by an event handler.  On completing the Merge the <see cref="Merged">Merged</see> event should be raised.
@@ -292,10 +292,10 @@ namespace VDS.RDF
         void Merge(IGraph g);
 
         /// <summary>
-        /// Merges the given Graph into this Graph
+        /// Merges the given Graph into this Graph.
         /// </summary>
-        /// <param name="g">Graph to merge</param>
-        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes</param>
+        /// <param name="g">Graph to merge.</param>
+        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes.</param>
         /// <remarks>
         /// <para>
         /// The Graph should raise the <see cref="MergeRequested">MergeRequested</see> event at the start of the Merge operation and abort the operation if the operation is cancelled by an event handler.  On completing the Merge the <see cref="Merged">Merged</see> event should be raised.
@@ -304,51 +304,51 @@ namespace VDS.RDF
         void Merge(IGraph g, bool keepOriginalGraphUri);
 
         /// <summary>
-        /// Checks whether a Graph is equal to another Graph and if so returns the mapping of Blank Nodes
+        /// Checks whether a Graph is equal to another Graph and if so returns the mapping of Blank Nodes.
         /// </summary>
-        /// <param name="g">Graph to compare with</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <param name="g">Graph to compare with.</param>
+        /// <param name="mapping">Mapping of Blank Nodes.</param>
         /// <returns></returns>
         bool Equals(IGraph g, out Dictionary<INode, INode> mapping);
 
         /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
+        /// Checks whether this Graph is a sub-graph of the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         bool IsSubGraphOf(IGraph g);
 
         /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
+        /// Checks whether this Graph is a sub-graph of the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="mapping">Mapping of Blank Nodes.</param>
         /// <returns></returns>
         bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping);
 
         /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
+        /// Checks whether this Graph has the given Graph as a sub-graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         bool HasSubGraph(IGraph g);
 
         /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
+        /// Checks whether this Graph has the given Graph as a sub-graph.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="mapping">Mapping of Blank Nodes.</param>
         /// <returns></returns>
         bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping);
 
         /// <summary>
-        /// Calculates the difference between this Graph and the given Graph
+        /// Calculates the difference between this Graph and the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
+        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph.
         /// </para>
         /// </remarks>
         GraphDiffReport Difference(IGraph g);
@@ -358,9 +358,9 @@ namespace VDS.RDF
         #region Helper Functions
 
         /// <summary>
-        /// Resolves a QName into a URI using the Namespace Map and Base URI of this Graph
+        /// Resolves a QName into a URI using the Namespace Map and Base URI of this Graph.
         /// </summary>
-        /// <param name="qname">QName</param>
+        /// <param name="qname">QName.</param>
         /// <returns></returns>
         Uri ResolveQName(String qname);
 
@@ -413,18 +413,18 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired
+    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired.
     /// </summary>
     public interface ITransactionalGraph
         : IGraph
     {
         /// <summary>
-        /// Flushes any changes to the Graph
+        /// Flushes any changes to the Graph.
         /// </summary>
         void Flush();
 
         /// <summary>
-        /// Discards any changes to the Graph
+        /// Discards any changes to the Graph.
         /// </summary>
         void Discard();
     }

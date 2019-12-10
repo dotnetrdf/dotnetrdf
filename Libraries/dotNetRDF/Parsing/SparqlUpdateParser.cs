@@ -41,7 +41,7 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Class for parsing SPARQL Update commands into <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> objects that can be used to modify a Triple Store
+    /// Class for parsing SPARQL Update commands into <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> objects that can be used to modify a Triple Store.
     /// </summary>
     public class SparqlUpdateParser
         : ITraceableTokeniser, IObjectParser<SparqlUpdateCommandSet>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing
         // OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing is used
+        /// Gets/Sets whether Tokeniser Tracing is used.
         /// </summary>
         public bool TraceTokeniser
         {
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped custom expression factories
+        /// Gets/Sets the locally scoped custom expression factories.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the Default Base URI used for Updated Commands parsed by this parser instance
+        /// Gets/Sets the Default Base URI used for Updated Commands parsed by this parser instance.
         /// </summary>
         public Uri DefaultBaseUri
         {
@@ -102,11 +102,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped Query Optimiser applied to graph patterns in update commands at the end of the parsing process
+        /// Gets/Sets the locally scoped Query Optimiser applied to graph patterns in update commands at the end of the parsing process.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used
+        /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used.
         /// </para>
         /// </remarks>
         public IQueryOptimiser QueryOptimiser
@@ -124,9 +124,9 @@ namespace VDS.RDF.Parsing
         #region Events
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Update Commands being parsed is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Update Commands being parsed is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -146,9 +146,9 @@ namespace VDS.RDF.Parsing
         #region Public Parsing Methods
 
         /// <summary>
-        /// Parses a SPARQL Update Command Set from the input stream
+        /// Parses a SPARQL Update Command Set from the input stream.
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input Stream.</param>
         /// <returns></returns>
         public SparqlUpdateCommandSet Parse(StreamReader input)
         {
@@ -163,9 +163,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Update Command Set from the input
+        /// Parses a SPARQL Update Command Set from the input.
         /// </summary>
-        /// <param name="input">Input</param>
+        /// <param name="input">Input.</param>
         /// <returns></returns>
         public SparqlUpdateCommandSet Parse(TextReader input)
         {
@@ -195,9 +195,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Update Command Set from the given file
+        /// Parses a SPARQL Update Command Set from the given file.
         /// </summary>
-        /// <param name="file">File</param>
+        /// <param name="file">File.</param>
         /// <returns></returns>
         public SparqlUpdateCommandSet ParseFromFile(String file)
         {
@@ -206,9 +206,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Update Command Set from the given String
+        /// Parses a SPARQL Update Command Set from the given String.
         /// </summary>
-        /// <param name="updates">SPARQL Update Commands</param>
+        /// <param name="updates">SPARQL Update Commands.</param>
         /// <returns></returns>
         public SparqlUpdateCommandSet ParseFromString(String updates)
         {
@@ -217,9 +217,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Update Command Set from the given String
+        /// Parses a SPARQL Update Command Set from the given String.
         /// </summary>
-        /// <param name="updates">SPARQL Update Commands</param>
+        /// <param name="updates">SPARQL Update Commands.</param>
         /// <returns></returns>
         public SparqlUpdateCommandSet ParseFromString(SparqlParameterizedString updates)
         {

@@ -30,22 +30,22 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by using the libraries in-memory Leviathan SPARQL engine and converting protocol actions to SPARQL Query/Update commands as appropriate
+    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by using the libraries in-memory Leviathan SPARQL engine and converting protocol actions to SPARQL Query/Update commands as appropriate.
     /// </summary>
     public class LeviathanProtocolProcessor 
         : ProtocolToUpdateProcessor
     {
         /// <summary>
-        /// Creates a new Leviathan Protocol Processor
+        /// Creates a new Leviathan Protocol Processor.
         /// </summary>
-        /// <param name="store">Triple Store</param>
+        /// <param name="store">Triple Store.</param>
         public LeviathanProtocolProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
         /// <summary>
-        /// Creates a new Leviathan Protocol Processor
+        /// Creates a new Leviathan Protocol Processor.
         /// </summary>
-        /// <param name="dataset">SPARQL Dataset</param>
+        /// <param name="dataset">SPARQL Dataset.</param>
         public LeviathanProtocolProcessor(ISparqlDataset dataset)
             : base(new LeviathanQueryProcessor(dataset), new LeviathanUpdateProcessor(dataset)) { }
     }

@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for serialzing Triple Stores in the TriX format
+    /// Class for serialzing Triple Stores in the TriX format.
     /// </summary>
     public class TriXWriter
         : IStoreWriter
@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Store in TriX format
+        /// Saves a Store in TriX format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
@@ -67,21 +67,21 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Store in TriX format
+        /// Saves a Store in TriX format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="output">Writer to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="output">Writer to save to.</param>
         public void Save(ITripleStore store, TextWriter output)
         {
             Save(store, output , false);
         }
 
         /// <summary>
-        /// Saves a Store in TriX format
+        /// Saves a Store in TriX format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="output">Writer to save to</param>
-        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="output"/> should be closed after the store is saved</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="output">Writer to save to.</param>
+        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="output"/> should be closed after the store is saved.</param>
         public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
@@ -224,9 +224,9 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
 
         /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
+        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             if (Warning == null)
@@ -240,7 +240,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

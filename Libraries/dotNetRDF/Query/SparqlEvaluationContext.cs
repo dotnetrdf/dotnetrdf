@@ -33,7 +33,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Stores information about the Evaluation of a Query during it's evaluation
+    /// Stores information about the Evaluation of a Query during it's evaluation.
     /// </summary>
     public class SparqlEvaluationContext
     {
@@ -48,10 +48,10 @@ namespace VDS.RDF.Query
         private long _timeout;
 
         /// <summary>
-        /// Creates a new Evaluation Context for the given Query over the given Dataset
+        /// Creates a new Evaluation Context for the given Query over the given Dataset.
         /// </summary>
-        /// <param name="q">Query</param>
-        /// <param name="data">Dataset</param>
+        /// <param name="q">Query.</param>
+        /// <param name="data">Dataset.</param>
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data)
         {
             _query = q;
@@ -63,11 +63,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Evaluation Context for the given Query over the given Dataset using a specific processor
+        /// Creates a new Evaluation Context for the given Query over the given Dataset using a specific processor.
         /// </summary>
-        /// <param name="q">Query</param>
-        /// <param name="data">Dataset</param>
-        /// <param name="processor">Query Processor</param>
+        /// <param name="q">Query.</param>
+        /// <param name="data">Dataset.</param>
+        /// <param name="processor">Query Processor.</param>
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
             : this(q, data)
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Evaluation Context which is a Container for the given Result Binder
+        /// Creates a new Evaluation Context which is a Container for the given Result Binder.
         /// </summary>
         /// <param name="binder"></param>
         public SparqlEvaluationContext(SparqlResultBinder binder)
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Query that is being evaluated
+        /// Gets the Query that is being evaluated.
         /// </summary>
         public SparqlQuery Query
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Dataset the query is over
+        /// Gets the Dataset the query is over.
         /// </summary>
         public ISparqlDataset Data
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the custom query processor that is in use (if any)
+        /// Gets the custom query processor that is in use (if any).
         /// </summary>
         public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> Processor
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Input Multiset
+        /// Gets/Sets the Input Multiset.
         /// </summary>
         public BaseMultiset InputMultiset
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Output Multiset
+        /// Gets/Sets the Output Multiset.
         /// </summary>
         public BaseMultiset OutputMultiset
         {
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Results Binder
+        /// Gets/Sets the Results Binder.
         /// </summary>
         public SparqlResultBinder Binder
         {
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets whether BGPs should trim temporary variables
+        /// Gets/Sets whether BGPs should trim temporary variables.
         /// </summary>
         public bool TrimTemporaryVariables
         {
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query
         // }
 
         /// <summary>
-        /// Starts the Execution Timer
+        /// Starts the Execution Timer.
         /// </summary>
         public void StartExecution()
         {
@@ -231,7 +231,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Ends the Execution Timer
+        /// Ends the Execution Timer.
         /// </summary>
         public void EndExecution()
         {
@@ -239,9 +239,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether Execution should Time out
+        /// Checks whether Execution should Time out.
         /// </summary>
-        /// <exception cref="RdfQueryTimeoutException">Thrown if the Query has exceeded the Execution Timeout</exception>
+        /// <exception cref="RdfQueryTimeoutException">Thrown if the Query has exceeded the Execution Timeout.</exception>
         public void CheckTimeout()
         {
             if (_timeout > 0)
@@ -255,7 +255,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Remaining Timeout i.e. the Timeout taking into account time already elapsed
+        /// Gets the Remaining Timeout i.e. the Timeout taking into account time already elapsed.
         /// </summary>
         /// <remarks>
         /// If there is no timeout then this is always zero, if there is a timeout this is always >= 1 since any operation that wants to respect the timeout must have a non-zero timeout to actually timeout properly.
@@ -284,11 +284,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Query Timeout used for the Query
+        /// Gets the Query Timeout used for the Query.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This is taken either from the <see cref="SparqlQuery.Timeout">Timeout</see> property of the <see cref="SparqlQuery">SparqlQuery</see> to which this evaluation context pertains (if any) or from the global option <see cref="Options.QueryExecutionTimeout">Options.QueryExecutionTimeout</see>.  To set the Timeout to be used set whichever of those is appropriate prior to evaluating the query.  If there is a Query present then it's timeout takes precedence unless it is set to zero (no timeout) in which case the global timeout setting is applied.  You cannot set the Query Timeout to be higher than the global timeout unless the global timeout is set to zero (i.e. no global timeout)
+        /// This is taken either from the <see cref="SparqlQuery.Timeout">Timeout</see> property of the <see cref="SparqlQuery">SparqlQuery</see> to which this evaluation context pertains (if any) or from the global option <see cref="Options.QueryExecutionTimeout">Options.QueryExecutionTimeout</see>.  To set the Timeout to be used set whichever of those is appropriate prior to evaluating the query.  If there is a Query present then it's timeout takes precedence unless it is set to zero (no timeout) in which case the global timeout setting is applied.  You cannot set the Query Timeout to be higher than the global timeout unless the global timeout is set to zero (i.e. no global timeout).
         /// </para>
         /// </remarks>
         public long QueryTimeout
@@ -300,7 +300,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Retrieves the Time in milliseconds the query took to evaluate
+        /// Retrieves the Time in milliseconds the query took to evaluate.
         /// </summary>
         public long QueryTime
         {
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Retrieves the Time in ticks the query took to evaluate
+        /// Retrieves the Time in ticks the query took to evaluate.
         /// </summary>
         public long QueryTimeTicks
         {
@@ -322,12 +322,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets a Object that should be persisted over the entire Evaluation Context
+        /// Gets/Sets a Object that should be persisted over the entire Evaluation Context.
         /// </summary>
-        /// <param name="key">Key</param>
+        /// <param name="key">Key.</param>
         /// <returns></returns>
         /// <remarks>
-        /// May be used by parts of the Evaluation Process that need to ensure a persistent state across the entire Evaluation Query (e.g. the implementation of the BNODE() function)
+        /// May be used by parts of the Evaluation Process that need to ensure a persistent state across the entire Evaluation Query (e.g. the implementation of the BNODE() function).
         /// </remarks>
         public Object this[String key]
         {
@@ -356,9 +356,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Evalutes an Algebra Operator in this Context using the current Query Processor (if any) or the default <see cref="ISparqlAlgebra.Evaluate">Evaluate()</see> method
+        /// Evalutes an Algebra Operator in this Context using the current Query Processor (if any) or the default <see cref="ISparqlAlgebra.Evaluate">Evaluate()</see> method.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(ISparqlAlgebra algebra)
         {

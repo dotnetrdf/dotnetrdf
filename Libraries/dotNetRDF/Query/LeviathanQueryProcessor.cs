@@ -38,14 +38,14 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Default SPARQL Query Processor provided by the library's Leviathan SPARQL Engine
+    /// Default SPARQL Query Processor provided by the library's Leviathan SPARQL Engine.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Leviathan Query Processor simply invokes the <see cref="ISparqlAlgebra">Evaluate</see> method of the SPARQL Algebra it is asked to process
+    /// The Leviathan Query Processor simply invokes the <see cref="ISparqlAlgebra">Evaluate</see> method of the SPARQL Algebra it is asked to process.
     /// </para>
     /// <para>
-    /// In future releases much of the Leviathan Query engine logic will be moved into this class to make it possible for implementors to override specific bits of the algebra processing but this is not possible at this time
+    /// In future releases much of the Leviathan Query engine logic will be moved into this class to make it possible for implementors to override specific bits of the algebra processing but this is not possible at this time.
     /// </para>
     /// </remarks>
     public class LeviathanQueryProcessor 
@@ -55,16 +55,16 @@ namespace VDS.RDF.Query
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
-        /// Creates a new Leviathan Query Processor
+        /// Creates a new Leviathan Query Processor.
         /// </summary>
-        /// <param name="store">Triple Store</param>
+        /// <param name="store">Triple Store.</param>
         public LeviathanQueryProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
         /// <summary>
-        /// Creates a new Leviathan Query Processor
+        /// Creates a new Leviathan Query Processor.
         /// </summary>
-        /// <param name="data">SPARQL Dataset</param>
+        /// <param name="data">SPARQL Dataset.</param>
         public LeviathanQueryProcessor(ISparqlDataset data)
         {
             _dataset = data;
@@ -81,9 +81,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a SPARQL Query
+        /// Processes a SPARQL Query.
         /// </summary>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
         public Object ProcessQuery(SparqlQuery query)
         {
@@ -111,11 +111,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a SPARQL Query sending the results to a RDF/SPARQL Results handler as appropriate
+        /// Processes a SPARQL Query sending the results to a RDF/SPARQL Results handler as appropriate.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query.</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             // Do Handler null checks before evaluating the query
@@ -274,20 +274,20 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Delegate used for asychronous execution
+        /// Delegate used for asychronous execution.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query.</param>
         private delegate void ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
 
         /// <summary>
-        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes.
         /// </summary>
-        /// <param name="query">SPARQL QUery</param>
-        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
-        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL QUery.</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph.</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// In the event of a success the appropriate callback will be invoked, if there is an error both callbacks will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
         /// </remarks>
@@ -325,13 +325,13 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// In the event of a success the callback will be invoked, if there is an error the callback will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
         /// </remarks>
@@ -357,7 +357,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Evaluation Context
+        /// Creates a new Evaluation Context.
         /// </summary>
         /// <returns></returns>
         protected SparqlEvaluationContext GetContext()
@@ -366,9 +366,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Evaluation Context for the given Query
+        /// Creates a new Evaluation Context for the given Query.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         private SparqlEvaluationContext GetContext(SparqlQuery q)
         {
@@ -376,7 +376,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Query Processor for a Context
+        /// Gets the Query Processor for a Context.
         /// </summary>
         /// <returns></returns>
         private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetProcessorForContext()
@@ -394,10 +394,10 @@ namespace VDS.RDF.Query
         #region Algebra Processor Implementation
 
         /// <summary>
-        /// Processes SPARQL Algebra
+        /// Processes SPARQL Algebra.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="algebra">Algebra.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public BaseMultiset ProcessAlgebra(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             if (algebra is Ask)
@@ -516,10 +516,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes an Ask
+        /// Processes an Ask.
         /// </summary>
-        /// <param name="ask">Ask</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="ask">Ask.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -527,10 +527,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a BGP
+        /// Processes a BGP.
         /// </summary>
-        /// <param name="bgp">BGP</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="bgp">BGP.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -538,10 +538,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Bindings modifier
+        /// Processes a Bindings modifier.
         /// </summary>
-        /// <param name="b">Bindings</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="b">Bindings.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -549,10 +549,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Distinct modifier
+        /// Processes a Distinct modifier.
         /// </summary>
-        /// <param name="distinct">Distinct modifier</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="distinct">Distinct modifier.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -560,10 +560,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes an Extend
+        /// Processes an Extend.
         /// </summary>
-        /// <param name="extend">Extend</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="extend">Extend.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -571,10 +571,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes an Exists Join
+        /// Processes an Exists Join.
         /// </summary>
-        /// <param name="existsJoin">Exists Join</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="existsJoin">Exists Join.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -582,10 +582,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Filter
+        /// Processes a Filter.
         /// </summary>
-        /// <param name="filter">Filter</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="filter">Filter.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -593,10 +593,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Graph
+        /// Processes a Graph.
         /// </summary>
-        /// <param name="graph">Graph</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="graph">Graph.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -604,10 +604,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Group By
+        /// Processes a Group By.
         /// </summary>
-        /// <param name="groupBy">Group By</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="groupBy">Group By.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -615,10 +615,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Having
+        /// Processes a Having.
         /// </summary>
-        /// <param name="having">Having</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="having">Having.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -626,10 +626,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Join
+        /// Processes a Join.
         /// </summary>
-        /// <param name="join">Join</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="join">Join.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -637,10 +637,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a LeftJoin
+        /// Processes a LeftJoin.
         /// </summary>
-        /// <param name="leftJoin">Left Join</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="leftJoin">Left Join.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -648,10 +648,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Minus
+        /// Processes a Minus.
         /// </summary>
-        /// <param name="minus">Minus</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="minus">Minus.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -659,10 +659,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Negated Property Set
+        /// Processes a Negated Property Set.
         /// </summary>
-        /// <param name="negPropSet">Negated Property Set</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="negPropSet">Negated Property Set.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
@@ -671,10 +671,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Null Operator
+        /// Processes a Null Operator.
         /// </summary>
-        /// <param name="nullOp">Null Operator</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="nullOp">Null Operator.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
         {
@@ -683,10 +683,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a One or More Path
+        /// Processes a One or More Path.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="path">Path.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
@@ -695,10 +695,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes an Order By
+        /// Processes an Order By.
         /// </summary>
         /// <param name="orderBy"></param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessOrderBy(OrderBy orderBy, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -706,10 +706,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Property Path
+        /// Processes a Property Path.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="path">Path.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
         {
@@ -718,10 +718,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Reduced modifier
+        /// Processes a Reduced modifier.
         /// </summary>
-        /// <param name="reduced">Reduced modifier</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="reduced">Reduced modifier.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -729,10 +729,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Select
+        /// Processes a Select.
         /// </summary>
-        /// <param name="select">Select</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="select">Select.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessSelect(Select select, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -740,10 +740,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Select Distinct Graphs
+        /// Processes a Select Distinct Graphs.
         /// </summary>
-        /// <param name="selDistGraphs">Select Distinct Graphs</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="selDistGraphs">Select Distinct Graphs.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -751,10 +751,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Service
+        /// Processes a Service.
         /// </summary>
-        /// <param name="service">Service</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="service">Service.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -762,10 +762,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Slice modifier
+        /// Processes a Slice modifier.
         /// </summary>
-        /// <param name="slice">Slice modifier</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="slice">Slice modifier.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -773,10 +773,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Subquery
+        /// Processes a Subquery.
         /// </summary>
-        /// <param name="subquery">Subquery</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="subquery">Subquery.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
         {
@@ -785,10 +785,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Union
+        /// Processes a Union.
         /// </summary>
-        /// <param name="union">Union</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="union">Union.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -796,10 +796,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Unknown Operator
+        /// Processes a Unknown Operator.
         /// </summary>
-        /// <param name="algebra">Unknown Operator</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="algebra">Unknown Operator.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
@@ -807,10 +807,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Zero Length Path
+        /// Processes a Zero Length Path.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="path">Path.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)
         {
@@ -819,10 +819,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Zero or More Path
+        /// Processes a Zero or More Path.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="path">Path.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {

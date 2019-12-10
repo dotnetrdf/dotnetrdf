@@ -33,10 +33,10 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents the Ask step of Query Evaluation
+    /// Represents the Ask step of Query Evaluation.
     /// </summary>
     /// <remarks>
-    /// Used only for ASK queries.  Turns the final Multiset into either an <see cref="IdentityMultiset">IdentityMultiset</see> if the ASK succeeds or a <see cref="NullMultiset">NullMultiset</see> if the ASK fails
+    /// Used only for ASK queries.  Turns the final Multiset into either an <see cref="IdentityMultiset">IdentityMultiset</see> if the ASK succeeds or a <see cref="NullMultiset">NullMultiset</see> if the ASK fails.
     /// </remarks>
     public class Ask 
         : IUnaryOperator
@@ -44,18 +44,18 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlAlgebra _pattern;
 
         /// <summary>
-        /// Creates a new ASK
+        /// Creates a new ASK.
         /// </summary>
-        /// <param name="pattern">Inner Pattern</param>
+        /// <param name="pattern">Inner Pattern.</param>
         public Ask(ISparqlAlgebra pattern)
         {
             _pattern = pattern;
         }
 
         /// <summary>
-        /// Evaluates the ASK by turning the Results of evaluating the Inner Pattern to either an Identity/Null Multiset depending on whether there were any Results
+        /// Evaluates the ASK by turning the Results of evaluating the Inner Pattern to either an Identity/Null Multiset depending on whether there were any Results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -110,17 +110,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the String representation of the Ask
+        /// Gets the String representation of the Ask.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -140,19 +140,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an exception since an Ask() cannot be converted to a Graph Pattern
+        /// Throws an exception since an Ask() cannot be converted to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since an Ask() cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since an Ask() cannot be converted to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("An Ask() cannot be converted to a GraphPattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

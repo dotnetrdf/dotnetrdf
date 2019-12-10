@@ -32,24 +32,24 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
     /// <summary>
-    /// Class representing the SPARQL IN set function
+    /// Class representing the SPARQL IN set function.
     /// </summary>
     public class InFunction
         : BaseSetFunction
     {
         /// <summary>
-        /// Creates a new SPARQL IN function
+        /// Creates a new SPARQL IN function.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="set">Set</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="set">Set.</param>
         public InFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -124,9 +124,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -30,17 +30,17 @@ using System.Linq;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper class which can be used to validate IRIs according to <a href="http://www.ietf.org/rfc/rfc3987.txt">RFC 3987</a>
+    /// Static Helper class which can be used to validate IRIs according to. <a href="http://www.ietf.org/rfc/rfc3987.txt">RFC 3987</a>
     /// </summary>
     /// <remarks>
-    /// Some valid IRIs may be rejected by these validating functions as the IRI specification allows character codes which are outside the range of the .Net char type
+    /// Some valid IRIs may be rejected by these validating functions as the IRI specification allows character codes which are outside the range of the .Net char type.
     /// </remarks>
     public static class IriSpecsHelper
     {
         /// <summary>
-        /// Gets whether a string matches the IRI production
+        /// Gets whether a string matches the IRI production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIri(String value)
         {
@@ -140,9 +140,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ihier-part production
+        /// Gets whether a string matches the ihier-part production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIHierPart(String value)
         {
@@ -167,9 +167,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the IRI-reference production
+        /// Gets whether a string matches the IRI-reference production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIriReference(String value)
         {
@@ -177,9 +177,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the absolute-IRI production
+        /// Gets whether a string matches the absolute-IRI production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsAbsoluteIri(String value)
         {
@@ -199,9 +199,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the irelative-ref production
+        /// Gets whether a string matches the irelative-ref production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIrelativeRef(String value)
         {
@@ -233,9 +233,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the irelative-part production
+        /// Gets whether a string matches the irelative-part production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIrelativePart(String value)
         {
@@ -260,9 +260,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the iauthority production
+        /// Gets whether a string matches the iauthority production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIAuthority(String value)
         {
@@ -297,9 +297,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the userinfo production
+        /// Gets whether a string matches the userinfo production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIUserInfo(String value)
         {
@@ -326,9 +326,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ihost production
+        /// Gets whether a string matches the ihost production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIHost(String value)
         {
@@ -336,9 +336,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ireg-name production
+        /// Gets whether a string matches the ireg-name production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIRegName(String value)
         {
@@ -361,9 +361,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipath production
+        /// Gets whether a string matches the ipath production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPath(String value)
         {
@@ -375,9 +375,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipath-abempty production
+        /// Gets whether a string matches the ipath-abempty production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPathAbEmpty(String value)
         {
@@ -387,9 +387,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipath-absolute production
+        /// Gets whether a string matches the ipath-absolute production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPathAbsolute(String value)
         {
@@ -419,9 +419,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipath-noscheme production
+        /// Gets whether a string matches the ipath-noscheme production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPathNoScheme(String value)
         {
@@ -437,9 +437,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipath-rootless production
+        /// Gets whether a string matches the ipath-rootless production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPathRootless(String value)
         {
@@ -455,9 +455,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipath-empty production
+        /// Gets whether a string matches the ipath-empty production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPathEmpty(String value)
         {
@@ -465,9 +465,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the isegment production
+        /// Gets whether a string matches the isegment production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsISegment(String value)
         {
@@ -476,9 +476,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the isegment-nz production
+        /// Gets whether a string matches the isegment-nz production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsISegmentNz(String value)
         {
@@ -503,9 +503,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the isegment-nz-nc production
+        /// Gets whether a string matches the isegment-nz-nc production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsISegmentNzNc(String value)
         {
@@ -530,9 +530,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ipchar production
+        /// Gets whether a string matches the ipchar production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIpChar(String value)
         {
@@ -563,9 +563,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the iquery production
+        /// Gets whether a string matches the iquery production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIQuery(String value)
         {
@@ -592,9 +592,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ifragment production
+        /// Gets whether a string matches the ifragment production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIFragment(String value)
         {
@@ -621,9 +621,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the iunreserved production
+        /// Gets whether a character matches the iunreserved production.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsIUnreserved(char c)
         {
@@ -646,12 +646,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the ucschar production
+        /// Gets whether a character matches the ucschar production.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Not all strings that will match the official ucschar production will be matched by this function as the ucschar production permits character codes beyond the range of the .Net char type
+        /// Not all strings that will match the official ucschar production will be matched by this function as the ucschar production permits character codes beyond the range of the .Net char type.
         /// </remarks>
         public static bool IsUcsChar(char c)
         {
@@ -659,9 +659,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the scheme production
+        /// Gets whether a string matches the scheme production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsScheme(String value)
         {
@@ -683,9 +683,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the port production
+        /// Gets whether a string matches the port production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsPort(String value)
         {
@@ -693,9 +693,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the IP-literal production
+        /// Gets whether a string matches the IP-literal production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPLiteral(String value)
         {
@@ -711,9 +711,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the IPvFuture production
+        /// Gets whether a string matches the IPvFuture production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPvFuture(String value)
         {
@@ -722,9 +722,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the IPv6address production
+        /// Gets whether a string matches the IPv6address production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPv6Address(String value)
         {
@@ -763,9 +763,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the h16 production
+        /// Gets whether a string matches the h16 production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsH16(String value)
         {
@@ -774,9 +774,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the ls32 production
+        /// Gets whether a string matches the ls32 production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsLs32(String value)
         {
@@ -793,9 +793,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the IPv4address production
+        /// Gets whether a string matches the IPv4address production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsIPv4Address(String value)
         {
@@ -812,9 +812,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the dec-octet production
+        /// Gets whether a string matches the dec-octet production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsDecOctet(String value)
         {
@@ -834,9 +834,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a string matches the pct-encoded production
+        /// Gets whether a string matches the pct-encoded production.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         /// <returns></returns>
         public static bool IsPctEncoded(String value)
         {
@@ -858,9 +858,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the unreserved production
+        /// Gets whether a character matches the unreserved production.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsUnreserved(char c)
         {
@@ -884,9 +884,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the reserved production
+        /// Gets whether a character matches the reserved production.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsReserved(char c)
         {
@@ -894,9 +894,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the gen-delims production
+        /// Gets whether a character matches the gen-delims production.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsGenDelims(char c)
         {
@@ -916,9 +916,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the sub-delims production
+        /// Gets whether a character matches the sub-delims production.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsSubDelims(char c)
         {
@@ -942,9 +942,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the HEXDIG terminal
+        /// Gets whether a character matches the HEXDIG terminal.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsHexDigit(char c)
         {

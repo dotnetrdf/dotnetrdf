@@ -30,7 +30,7 @@ using System.IO;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Tokeniser for NTriples RDF Syntax
+    /// Tokeniser for NTriples RDF Syntax.
     /// </summary>
     public class NTriplesTokeniser
         : BaseTokeniser
@@ -38,10 +38,10 @@ namespace VDS.RDF.Parsing.Tokens
         private readonly ParsingTextReader _in;
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
+        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        /// <param name="syntax">NTriples syntax to tokenise</param>
+        /// <param name="input">Stream to read Tokens from.</param>
+        /// <param name="syntax">NTriples syntax to tokenise.</param>
         public NTriplesTokeniser(ParsingTextReader input, NTriplesSyntax syntax)
             : base(input)
         {
@@ -52,62 +52,62 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
+        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
+        /// <param name="input">Stream to read Tokens from.</param>
         public NTriplesTokeniser(ParsingTextReader input)
             : this(input, NTriplesSyntax.Rdf11) { }
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
+        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
+        /// <param name="input">Stream to read Tokens from.</param>
         public NTriplesTokeniser(StreamReader input) 
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Input
+        /// Creates a new NTriples Tokeniser which reads Tokens from the given Input.
         /// </summary>
-        /// <param name="input">Input to read Tokens from</param>
+        /// <param name="input">Input to read Tokens from.</param>
         public NTriplesTokeniser(TextReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
+        /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read Tokens from</param>
-        /// <param name="syntax">NTriples syntax to tokenise</param>
+        /// <param name="input">Stream to read Tokens from.</param>
+        /// <param name="syntax">NTriples syntax to tokenise.</param>
         public NTriplesTokeniser(StreamReader input, NTriplesSyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Creates a new NTriples Tokeniser which reads Tokens from the given Input
+        /// Creates a new NTriples Tokeniser which reads Tokens from the given Input.
         /// </summary>
-        /// <param name="input">Input to read Tokens from</param>
-        /// <param name="syntax">NTriples syntax to tokenise</param>
+        /// <param name="input">Input to read Tokens from.</param>
+        /// <param name="syntax">NTriples syntax to tokenise.</param>
         public NTriplesTokeniser(TextReader input, NTriplesSyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Gets/Sets the NTriples syntax that should be supported
+        /// Gets/Sets the NTriples syntax that should be supported.
         /// </summary>
         public NTriplesSyntax Syntax { get; set; }
 
         /// <summary>
-        /// Gets/Sets whether the output should be altered slightly to support NQuads parsing
+        /// Gets/Sets whether the output should be altered slightly to support NQuads parsing.
         /// </summary>
         /// <remarks>
         /// <para>
         /// This is used internally to alter how DataTypes get tokenised, normally these are just returned as a <see cref="UriToken">UriToken</see> since a Literal can only occur as the Object in NTriples and so if we see a Uri after a Literal it must be it's datatype and not part of another Triple.
         /// </para>
         /// <para>
-        /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead
+        /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead.
         /// </para>
         /// </remarks>
         public bool NQuadsMode { get; set; }
 
         /// <summary>
-        /// Gets the next available Token from the Input Stream
+        /// Gets the next available Token from the Input Stream.
         /// </summary>
         /// <returns></returns>
         public override IToken GetNextToken()

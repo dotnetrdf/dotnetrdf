@@ -31,7 +31,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A Results Handler which extracts URIs from one/more variables in a Result Set
+    /// A Results Handler which extracts URIs from one/more variables in a Result Set.
     /// </summary>
     public class ListUrisHandler 
         : BaseResultsHandler
@@ -40,18 +40,18 @@ namespace VDS.RDF.Parsing.Handlers
         private HashSet<String> _vars = new HashSet<String>();
 
         /// <summary>
-        /// Creates a new List URIs Handler
+        /// Creates a new List URIs Handler.
         /// </summary>
-        /// <param name="var">Variable to build the list from</param>
+        /// <param name="var">Variable to build the list from.</param>
         public ListUrisHandler(String var)
         {
             _vars.Add(var);
         }
 
         /// <summary>
-        /// Creates a new List URIs Handler
+        /// Creates a new List URIs Handler.
         /// </summary>
-        /// <param name="vars">Variables to build the list from</param>
+        /// <param name="vars">Variables to build the list from.</param>
         public ListUrisHandler(IEnumerable<String> vars)
         {
             foreach (String var in vars)
@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the URIs
+        /// Gets the URIs.
         /// </summary>
         public IEnumerable<Uri> Uris
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts handling results
+        /// Starts handling results.
         /// </summary>
         protected override void StartResultsInternal()
         {
@@ -80,18 +80,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles boolean results
+        /// Handles boolean results.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             // Nothing to do
         }
 
         /// <summary>
-        /// Handles variable declarations
+        /// Handles variable declarations.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
@@ -100,9 +100,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles results by extracting any URI values from the relevant variables
+        /// Handles results by extracting any URI values from the relevant variables.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Handlers
     }
 
     /// <summary>
-    /// A Results Handler which extracts Literals from one/more variables in a Result Set
+    /// A Results Handler which extracts Literals from one/more variables in a Result Set.
     /// </summary>
     public class ListStringsHandler
         : BaseResultsHandler
@@ -131,18 +131,18 @@ namespace VDS.RDF.Parsing.Handlers
         private HashSet<String> _vars = new HashSet<String>();
 
         /// <summary>
-        /// Creates a new List Strings handler
+        /// Creates a new List Strings handler.
         /// </summary>
-        /// <param name="var">Variable to build the list from</param>
+        /// <param name="var">Variable to build the list from.</param>
         public ListStringsHandler(String var)
         {
             _vars.Add(var);
         }
 
         /// <summary>
-        /// Creates a new List Strings handler
+        /// Creates a new List Strings handler.
         /// </summary>
-        /// <param name="vars">Variables to build the list from</param>
+        /// <param name="vars">Variables to build the list from.</param>
         public ListStringsHandler(IEnumerable<String> vars)
         {
             foreach (String var in vars)
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Strings
+        /// Gets the Strings.
         /// </summary>
         public IEnumerable<String> Strings
         {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts handling results
+        /// Starts handling results.
         /// </summary>
         protected override void StartResultsInternal()
         {
@@ -171,18 +171,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles boolean results
+        /// Handles boolean results.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             // Nothing to do
         }
 
         /// <summary>
-        /// Handles variable declarations
+        /// Handles variable declarations.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
@@ -191,9 +191,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles results by extracting strings from relevant variables
+        /// Handles results by extracting strings from relevant variables.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {

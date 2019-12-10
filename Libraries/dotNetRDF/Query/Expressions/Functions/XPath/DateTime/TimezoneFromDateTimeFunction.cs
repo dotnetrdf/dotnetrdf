@@ -33,30 +33,30 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
     /// <summary>
-    /// Represents the XPath timezone-from-dateTime() function
+    /// Represents the XPath timezone-from-dateTime() function.
     /// </summary>
     public class TimezoneFromDateTimeFunction
         : ISparqlExpression
     {
         /// <summary>
-        /// Expression that the Function applies to
+        /// Expression that the Function applies to.
         /// </summary>
         protected ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new XPath Timezone from Date Time function
+        /// Creates a new XPath Timezone from Date Time function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public TimezoneFromDateTimeFunction(ISparqlExpression expr)
         {
             _expr = expr;
         }
 
         /// <summary>
-        /// Calculates the value of the function in the given Evaluation Context for the given Binding ID
+        /// Calculates the value of the function in the given Evaluation Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -95,10 +95,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Calculates the effective boolean value of the function in the given Evaluation Context for the given Binding ID
+        /// Calculates the effective boolean value of the function in the given Evaluation Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the Variables used in the function
+        /// Gets the Variables used in the function.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public virtual string Functor
         {
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -170,9 +170,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
         {

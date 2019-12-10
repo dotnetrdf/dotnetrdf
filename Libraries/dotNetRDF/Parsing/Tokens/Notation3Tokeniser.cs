@@ -32,7 +32,7 @@ using System.Text.RegularExpressions;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// A Class for Reading an Input Stream and generating Notation 3 Tokens from it
+    /// A Class for Reading an Input Stream and generating Notation 3 Tokens from it.
     /// </summary>
     public class Notation3Tokeniser 
         : BaseTokeniser
@@ -40,11 +40,11 @@ namespace VDS.RDF.Parsing.Tokens
         // OPT: Extract these constants into a Notation3SpecsHelper class
 
         /// <summary>
-        /// Pattern for Valid QNames that use only the Latin Alphabet
+        /// Pattern for Valid QNames that use only the Latin Alphabet.
         /// </summary>
         public const String ValidQNamesPattern = "^(([_A-Za-z])|([_A-Za-z][\\w\\-]*))?:?[_A-Za-z][\\w\\-]*$";
         /// <summary>
-        /// Patter for Valid Variable Names
+        /// Patter for Valid Variable Names.
         /// </summary>
         public const String ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
 
@@ -55,16 +55,16 @@ namespace VDS.RDF.Parsing.Tokens
         private Regex _isValidVarName = new Regex(ValidVarNamesPattern);
 
         /// <summary>
-        /// Creates a new Instance of the Tokeniser
+        /// Creates a new Instance of the Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
         public Notation3Tokeniser(StreamReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new Instance of the Tokeniser
+        /// Creates a new Instance of the Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
         public Notation3Tokeniser(ParsingTextReader input)
             : base(input)
         {
@@ -73,17 +73,17 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new Instance of the Tokeniser
+        /// Creates a new Instance of the Tokeniser.
         /// </summary>
-        /// <param name="input">The Input to generate Tokens from</param>
+        /// <param name="input">The Input to generate Tokens from.</param>
         public Notation3Tokeniser(TextReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Gets the next parseable Token from the Input or raises an Error
+        /// Gets the next parseable Token from the Input or raises an Error.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed</exception>
+        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed.</exception>
         public override IToken GetNextToken()
         {
             // Have we read anything yet?
@@ -311,7 +311,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a Comment Token
+        /// Internal Helper method which attempts to get a Comment Token.
         /// </summary>
         /// <returns></returns>
         private IToken TryGetCommentToken()
@@ -1201,9 +1201,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Determines whether a given Token represents an RDF Term or part thereof
+        /// Determines whether a given Token represents an RDF Term or part thereof.
         /// </summary>
-        /// <param name="tokentype">Token Type to test</param>
+        /// <param name="tokentype">Token Type to test.</param>
         /// <returns></returns>
         private bool IsRDFTermToken(int tokentype)
         {

@@ -31,25 +31,25 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing.Validation
 {
     /// <summary>
-    /// Syntax Validator for RDF Dataset Formats
+    /// Syntax Validator for RDF Dataset Formats.
     /// </summary>
     public class RdfDatasetSyntaxValidator : ISyntaxValidator
     {
         private IStoreReader _parser;
 
         /// <summary>
-        /// Creates a new RDF Dataset Syntax Validator
+        /// Creates a new RDF Dataset Syntax Validator.
         /// </summary>
-        /// <param name="parser">Dataset Parser</param>
+        /// <param name="parser">Dataset Parser.</param>
         public RdfDatasetSyntaxValidator(IStoreReader parser)
         {
             _parser = parser;
         }
 
         /// <summary>
-        /// Determines whether the data provided is valid syntax
+        /// Determines whether the data provided is valid syntax.
         /// </summary>
-        /// <param name="data">Data</param>
+        /// <param name="data">Data.</param>
         /// <returns></returns>
         public virtual ISyntaxValidationResults Validate(string data)
         {

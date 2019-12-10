@@ -32,81 +32,81 @@ using System.Text;
 namespace VDS.RDF.Query.FullText.Search
 {
     /// <summary>
-    /// Interface for classes that provide full text search capability
+    /// Interface for classes that provide full text search capability.
     /// </summary>
     /// <remarks>
-    /// The <strong>Match()</strong> methods may allow for provider specific query syntaxes depending on the the underlying provider
+    /// The <strong>Match()</strong> methods may allow for provider specific query syntaxes depending on the the underlying provider.
     /// </remarks>
     public interface IFullTextSearchProvider
         : IDisposable
     {
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         IEnumerable<IFullTextSearchResult> Match(String text, double scoreThreshold, int limit);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
         IEnumerable<IFullTextSearchResult> Match(String text, double scoreThreshold);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="text">Search Query</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="limit">Result Limit.</param>
         IEnumerable<IFullTextSearchResult> Match(String text, int limit);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="text">Search Query</param>
+        /// <param name="text">Search Query.</param>
         IEnumerable<IFullTextSearchResult> Match(String text);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
+        /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
         IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text, double scoreThreshold, int limit);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
-        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
         IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text, double scoreThreshold);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
-        /// <param name="limit">Result Limit</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="limit">Result Limit.</param>
         IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text, int limit);
 
         /// <summary>
-        /// Searches for matches for specific text
+        /// Searches for matches for specific text.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
-        /// <param name="text">Search Query</param>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
         IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, String text);
 
         /// <summary>
-        /// Gets whether the search provider is automatically synced with the index i.e. whether queries will always return results based on the latest state of the index
+        /// Gets whether the search provider is automatically synced with the index i.e. whether queries will always return results based on the latest state of the index.
         /// </summary>
         /// <remarks>
-        /// Some implementations may allow this behaviour to be configured while for others this feature may always be on/off
+        /// Some implementations may allow this behaviour to be configured while for others this feature may always be on/off.
         /// </remarks>
         bool IsAutoSynced
         {

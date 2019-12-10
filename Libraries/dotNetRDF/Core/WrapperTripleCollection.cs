@@ -30,26 +30,26 @@ using System.Collections.Generic;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract decorator for Triple Collections to make it easier to add additional functionality to existing collections
+    /// Abstract decorator for Triple Collections to make it easier to add additional functionality to existing collections.
     /// </summary>
     public abstract class WrapperTripleCollection
         : BaseTripleCollection
     {
         /// <summary>
-        /// Underlying Triple Collection
+        /// Underlying Triple Collection.
         /// </summary>
         protected readonly BaseTripleCollection _triples;
 
         /// <summary>
-        /// Creates a new decorator over the default <see cref="TreeIndexedTripleCollection"/>
+        /// Creates a new decorator over the default <see cref="TreeIndexedTripleCollection"/>.
         /// </summary>
         public WrapperTripleCollection()
             : this(new TreeIndexedTripleCollection()) { }
 
         /// <summary>
-        /// Creates a new decorator around the given triple collection
+        /// Creates a new decorator around the given triple collection.
         /// </summary>
-        /// <param name="tripleCollection">Triple Collection</param>
+        /// <param name="tripleCollection">Triple Collection.</param>
         public WrapperTripleCollection(BaseTripleCollection tripleCollection)
         {
             if (tripleCollection == null) throw new ArgumentNullException("tripleCollection");
@@ -69,9 +69,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a triple to the collection
+        /// Adds a triple to the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
@@ -79,9 +79,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the collection contains the given Triple
+        /// Gets whether the collection contains the given Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override bool Contains(Triple t)
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Counts the triples in the collection
+        /// Counts the triples in the collection.
         /// </summary>
         public override int Count
         {
@@ -100,9 +100,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a triple from the collection
+        /// Deletes a triple from the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
@@ -110,9 +110,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the specific instance of a Triple from the collection
+        /// Gets the specific instance of a Triple from the collection.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override Triple this[Triple t]
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the object nodes
+        /// Gets the object nodes.
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the predicate nodes
+        /// Gets the predicate nodes.
         /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the subject nodes
+        /// Gets the subject nodes.
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
@@ -156,7 +156,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the collection
+        /// Disposes of the collection.
         /// </summary>
         public override void Dispose()
         {
@@ -164,7 +164,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumerator for the collection
+        /// Gets the enumerator for the collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
@@ -173,9 +173,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given object
+        /// Gets all the triples with the given object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
@@ -183,9 +183,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given predicate
+        /// Gets all the triples with the given predicate.
         /// </summary>
-        /// <param name="pred">Predicate</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
@@ -193,10 +193,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given predicate and object
+        /// Gets all the triples with the given predicate and object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
@@ -204,9 +204,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given subject
+        /// Gets all the triples with the given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
@@ -214,10 +214,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given subject and object
+        /// Gets all the triples with the given subject and object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
@@ -225,10 +225,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the triples with the given subject and predicate
+        /// Gets all the triples with the given subject and predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {

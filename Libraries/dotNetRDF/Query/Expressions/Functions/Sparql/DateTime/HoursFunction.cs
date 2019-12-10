@@ -27,20 +27,20 @@
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
     /// <summary>
-    /// Represents the SPARQL HOURS() Function
+    /// Represents the SPARQL HOURS() Function.
     /// </summary>
     public class HoursFunction
         : XPath.DateTime.HoursFromDateTimeFunction
     {
         /// <summary>
-        /// Creates a new SPARQL HOURS() Function
+        /// Creates a new SPARQL HOURS() Function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public HoursFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Gets the Functor of this Expression
+        /// Gets the Functor of this Expression.
         /// </summary>
         public override string Functor
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -60,9 +60,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

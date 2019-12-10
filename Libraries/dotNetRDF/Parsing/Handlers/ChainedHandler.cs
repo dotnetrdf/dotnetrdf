@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A Handler which passes the RDF to be handled through a sequence of Handlers where Handling is terminated as soon as any Handler returns false
+    /// A Handler which passes the RDF to be handled through a sequence of Handlers where Handling is terminated as soon as any Handler returns false.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This differs from the <see cref="MultiHandler">MultiHandler</see> in that as soon as any Handler indicates that handling should stop by returning false handling is <strong>immediately</strong> terminated.  All Handlers will always have their StartRdf and EndRdf methods called
+    /// This differs from the <see cref="MultiHandler">MultiHandler</see> in that as soon as any Handler indicates that handling should stop by returning false handling is <strong>immediately</strong> terminated.  All Handlers will always have their StartRdf and EndRdf methods called.
     /// </para>
     /// </remarks>
     public class ChainedHandler : BaseRdfHandler, IWrappingRdfHandler
@@ -43,9 +43,9 @@ namespace VDS.RDF.Parsing.Handlers
         private List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
         /// <summary>
-        /// Creates a new Chained Handler
+        /// Creates a new Chained Handler.
         /// </summary>
-        /// <param name="handlers">Inner Handlers to use</param>
+        /// <param name="handlers">Inner Handlers to use.</param>
         public ChainedHandler(IEnumerable<IRdfHandler> handlers)
         {
             if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the ChainedHandler");
@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Inner Handlers used by this Handler
+        /// Gets the Inner Handlers used by this Handler.
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts the Handling of RDF for each inner handler
+        /// Starts the Handling of RDF for each inner handler.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -83,21 +83,21 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends the Handling of RDF for each inner handler
+        /// Ends the Handling of RDF for each inner handler.
         /// </summary>
-        /// <param name="ok">Whether parsing completed without errors</param>
+        /// <param name="ok">Whether parsing completed without errors.</param>
         protected override void EndRdfInternal(bool ok)
         {
             _handlers.ForEach(h => h.EndRdf(ok));
         }
 
         /// <summary>
-        /// Handles Base URIs by getting each inner handler to attempt to handle it
+        /// Handles Base URIs by getting each inner handler to attempt to handle it.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Handling terminates at the first Handler which indicates handling should stop
+        /// Handling terminates at the first Handler which indicates handling should stop.
         /// </remarks>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -105,13 +105,13 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Namespaces by getting each inner handler to attempt to handle it
+        /// Handles Namespaces by getting each inner handler to attempt to handle it.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Handling terminates at the first Handler which indicates handling should stop
+        /// Handling terminates at the first Handler which indicates handling should stop.
         /// </remarks>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -119,12 +119,12 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by getting each inner handler to attempt to handle it
+        /// Handles Triples by getting each inner handler to attempt to handle it.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Handling terminates at the first Handler which indicates handling should stop
+        /// Handling terminates at the first Handler which indicates handling should stop.
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that this Handler accepts all Triples if all inner handlers do so
+        /// Gets that this Handler accepts all Triples if all inner handlers do so.
         /// </summary>
         public override bool AcceptsAll
         {

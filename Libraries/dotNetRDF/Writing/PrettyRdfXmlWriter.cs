@@ -36,14 +36,14 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating RDF/XML Concrete Syntax
+    /// Class for generating RDF/XML Concrete Syntax.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML Writers.
     /// </para>
     /// <para>
-    /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="RdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5
+    /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="RdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5.
     /// </para>
     /// </remarks>
     public class PrettyRdfXmlWriter 
@@ -57,7 +57,7 @@ namespace VDS.RDF.Writing
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
-        /// Creates a new RDF/XML Writer
+        /// Creates a new RDF/XML Writer.
         /// </summary>
         public PrettyRdfXmlWriter()
         {
@@ -65,9 +65,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Creates a new RDF/XML Writer
+        /// Creates a new RDF/XML Writer.
         /// </summary>
-        /// <param name="compressionLevel">Compression Level</param>
+        /// <param name="compressionLevel">Compression Level.</param>
         public PrettyRdfXmlWriter(int compressionLevel)
             : this()
         {
@@ -75,10 +75,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Creates a new RDF/XML Writer
+        /// Creates a new RDF/XML Writer.
         /// </summary>
-        /// <param name="compressionLevel">Compression Level</param>
-        /// <param name="useDtd">Whether to use DTDs to further compress output</param>
+        /// <param name="compressionLevel">Compression Level.</param>
+        /// <param name="useDtd">Whether to use DTDs to further compress output.</param>
         public PrettyRdfXmlWriter(int compressionLevel, bool useDtd)
             : this(compressionLevel)
         {
@@ -86,11 +86,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Creates a new RDF/XML Writer
+        /// Creates a new RDF/XML Writer.
         /// </summary>
-        /// <param name="compressionLevel">Compression Level</param>
-        /// <param name="useDtd">Whether to use DTDs to further compress output</param>
-        /// <param name="useAttributes">Whether to use attributes to encode triples with simple literal objects where possible</param>
+        /// <param name="compressionLevel">Compression Level.</param>
+        /// <param name="useDtd">Whether to use DTDs to further compress output.</param>
+        /// <param name="useAttributes">Whether to use attributes to encode triples with simple literal objects where possible.</param>
         public PrettyRdfXmlWriter(int compressionLevel, bool useDtd, bool useAttributes)
             : this(compressionLevel, useDtd)
         {
@@ -98,7 +98,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets Pretty Print Mode for the Writer
+        /// Gets/Sets Pretty Print Mode for the Writer.
         /// </summary>
         public bool PrettyPrintMode
         {
@@ -113,11 +113,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level in use
+        /// Gets/Sets the Compression Level in use.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Compression Level defaults to <see cref="WriterCompressionLevel.High">High</see> - if Compression Level is set to below <see cref="WriterCompressionLevel.More">More</see> i.e. &lt; 5 then Collections will not be compressed into more compact syntax
+        /// Compression Level defaults to <see cref="WriterCompressionLevel.High">High</see> - if Compression Level is set to below <see cref="WriterCompressionLevel.More">More</see> i.e. &lt; 5 then Collections will not be compressed into more compact syntax.
         /// </para>
         /// </remarks>
         public int CompressionLevel
@@ -133,7 +133,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether DTDs are used in the output
+        /// Gets/Sets whether DTDs are used in the output.
         /// </summary>
         public bool UseDtd
         {
@@ -148,7 +148,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether triples which have a literal object will be expressed as attributes rather than elements where possible (defaults to true)
+        /// Gets/Sets whether triples which have a literal object will be expressed as attributes rather than elements where possible (defaults to true).
         /// </summary>
         public bool UseAttributes
         {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the Default Namespaces that are always available
+        /// Gets/Sets the Default Namespaces that are always available.
         /// </summary>
         public INamespaceMapper DefaultNamespaces
         {
@@ -178,7 +178,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by the writer
+        /// Gets the type of the Triple Formatter used by the writer.
         /// </summary>
         public Type TripleFormatterType
         {
@@ -189,10 +189,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph in RDF/XML syntax to the given File
+        /// Saves a Graph in RDF/XML syntax to the given File.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">Filename to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">Filename to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -202,20 +202,20 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph to an arbitrary output stream
+        /// Saves a Graph to an arbitrary output stream.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             GenerateOutput(g, output);
         }
 
         /// <summary>
-        /// Internal method which generates the RDF/Json Output for a Graph
+        /// Internal method which generates the RDF/Json Output for a Graph.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             // Always force RDF Namespace to be correctly defined
@@ -830,9 +830,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal Helper method for raising the Warning event
+        /// Internal Helper method for raising the Warning event.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             if (Warning != null)
@@ -847,7 +847,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

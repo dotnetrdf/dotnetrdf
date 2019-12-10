@@ -30,22 +30,22 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
     /// <summary>
-    /// Represents the XPath seconds-from-dateTime() function
+    /// Represents the XPath seconds-from-dateTime() function.
     /// </summary>
     public class SecondsFromDateTimeFunction
         : BaseUnaryDateTimeFunction
     {
         /// <summary>
-        /// Creates a new XPath Seconds from Date Time function
+        /// Creates a new XPath Seconds from Date Time function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public SecondsFromDateTimeFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Calculates the numeric value of the function from the given Date Time
+        /// Calculates the numeric value of the function from the given Date Time.
         /// </summary>
-        /// <param name="dateTime">Date Time</param>
+        /// <param name="dateTime">Date Time.</param>
         /// <returns></returns>
         protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
         {
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -76,9 +76,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

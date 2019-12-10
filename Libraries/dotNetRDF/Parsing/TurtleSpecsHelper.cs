@@ -32,7 +32,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Acceptable Turtle syntaxes
+    /// Acceptable Turtle syntaxes.
     /// </summary>
     public enum TurtleSyntax
     {
@@ -43,11 +43,11 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Turtle as standardised by the <a href="http://www.w3.org/TR/turtle/">W3C RDF Working Group</a>
         /// </summary>
-        W3C
+        W3C,
     }
 
     /// <summary>
-    /// Acceptable TriG syntaxes
+    /// Acceptable TriG syntaxes.
     /// </summary>
     public enum TriGSyntax
     {
@@ -68,22 +68,22 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// TriG as specified by the <a href="https://www.w3.org/TR/trig/">W3C Recommendation</a>
         /// </summary>
-        Recommendation
+        Recommendation,
     }
 
     /// <summary>
-    /// Helper function relating to the Turtle Specifications
+    /// Helper function relating to the Turtle Specifications.
     /// </summary>
-    /// <remarks>Not currently used in the actual <see cref="TurtleTokeniser">TurtleTokeniser</see> or <see cref="TurtleParser">TurtleParser</see> but is used for the new <see cref="TriGTokeniser">TriGTokeniser</see></remarks>
+    /// <remarks>Not currently used in the actual <see cref="TurtleTokeniser">TurtleTokeniser</see> or <see cref="TurtleParser">TurtleParser</see> but is used for the new <see cref="TriGTokeniser">TriGTokeniser</see>.</remarks>
     public class TurtleSpecsHelper
     {
         /// <summary>
-        /// Pattern for Valid Integers in Turtle
+        /// Pattern for Valid Integers in Turtle.
         /// </summary>
         public const String ValidIntegerPattern = "^(\\+|-)?\\d+$";
 
         /// <summary>
-        /// Pattern for Valid Decimals in Turtle
+        /// Pattern for Valid Decimals in Turtle.
         /// </summary>
         public const String ValidDecimalPattern = "^(\\+|-)?(\\d+\\.\\d*|\\.\\d+|\\d+)$";
 
@@ -91,13 +91,13 @@ namespace VDS.RDF.Parsing
         // EXPONENT  ::= [eE] [+-]? [0-9]+
 
         /// <summary>
-        /// Pattern for Valid Doubles in Turtle
+        /// Pattern for Valid Doubles in Turtle.
         /// </summary>
         public const String ValidDoublePattern = "^(\\+|-)?(\\d+\\.\\d*[eE](\\+|-)?\\d+|\\.\\d+[eE](\\+|-)?\\d+|\\d+[eE](\\+|-)?\\d+)$";
 
 
         /// <summary>
-        /// Pattern for determining whether a given String should be serialized as a Long Literal
+        /// Pattern for determining whether a given String should be serialized as a Long Literal.
         /// </summary>
         public const String LongLiteralsPattern = "[\n\r\t\"]";
 
@@ -107,10 +107,10 @@ namespace VDS.RDF.Parsing
         private static Regex _isLongLiteral = new Regex(LongLiteralsPattern);
 
         /// <summary>
-        /// Determines whether a given String is a valid Plain Literal
+        /// Determines whether a given String is a valid Plain Literal.
         /// </summary>
-        /// <param name="value">String to test</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="value">String to test.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
         public static bool IsValidPlainLiteral(String value, TurtleSyntax syntax)
         {
@@ -126,11 +126,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether a given String is a valid Plain Literal for the given Datatype
+        /// Determines whether a given String is a valid Plain Literal for the given Datatype.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="dt">Datatype</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="value">Value.</param>
+        /// <param name="dt">Datatype.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
         public static bool IsValidPlainLiteral(String value, Uri dt, TurtleSyntax syntax)
         {
@@ -158,9 +158,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether a given String is a valid Integer
+        /// Determines whether a given String is a valid Integer.
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="value">String to test.</param>
         /// <returns></returns>
         public static bool IsValidInteger(String value)
         {
@@ -168,9 +168,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether a given String is a valid Decimal
+        /// Determines whether a given String is a valid Decimal.
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="value">String to test.</param>
         /// <returns></returns>
         public static bool IsValidDecimal(String value)
         {
@@ -178,9 +178,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether a given String is a valid Double
+        /// Determines whether a given String is a valid Double.
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="value">String to test.</param>
         /// <returns></returns>
         public static bool IsValidDouble(String value)
         {
@@ -195,9 +195,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a QName is valid in Turtle (assumes Turtle as originally specified by Dave Beckett)
+        /// Gets whether a QName is valid in Turtle (assumes Turtle as originally specified by Dave Beckett).
         /// </summary>
-        /// <param name="value">QName</param>
+        /// <param name="value">QName.</param>
         /// <returns></returns>
         public static bool IsValidQName(String value)
         {
@@ -205,10 +205,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether the given value is a valid prefix in Turtle
+        /// Gets whether the given value is a valid prefix in Turtle.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="value">Value.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
         public static bool IsValidPrefix(String value, TurtleSyntax syntax)
         {
@@ -228,10 +228,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether the given value is the valid prefix portion of a prefixed name in Turtle
+        /// Gets whether the given value is the valid prefix portion of a prefixed name in Turtle.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="value">Value.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
         public static bool IsPNPrefix(String value, TurtleSyntax syntax)
         {
@@ -329,10 +329,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether the given value is the valid local name portion of a prefixed name in Turtle
+        /// Gets whether the given value is the valid local name portion of a prefixed name in Turtle.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="value">Value.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
         public static bool IsValidLocalName(String value, TurtleSyntax syntax)
         {
@@ -419,9 +419,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether the given value matches the PN_LOCAL rule from the Turtle specification
+        /// Gets whether the given value matches the PN_LOCAL rule from the Turtle specification.
         /// </summary>
-        /// <param name="value">Value</param>
+        /// <param name="value">Value.</param>
         /// <returns></returns>
         public static bool IsPNLocal(String value)
         {
@@ -487,11 +487,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given String matches the PLX rule from the Turtle W3C Specification
+        /// Checks whether a given String matches the PLX rule from the Turtle W3C Specification.
         /// </summary>
-        /// <param name="cs">String as character array</param>
-        /// <param name="startIndex">Start Index</param>
-        /// <param name="endIndex">Resulting End Index</param>
+        /// <param name="cs">String as character array.</param>
+        /// <param name="startIndex">Start Index.</param>
+        /// <param name="endIndex">Resulting End Index.</param>
         /// <returns></returns>
         public static bool IsPLX(char[] cs, int startIndex, out int endIndex)
         {
@@ -566,9 +566,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character is a Hex character
+        /// Gets whether a character is a Hex character.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsHex(char c)
         {
@@ -599,10 +599,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determines whether a given String is a valid QName
+        /// Determines whether a given String is a valid QName.
         /// </summary>
-        /// <param name="value">String to test</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="value">String to test.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
         public static bool IsValidQName(String value, TurtleSyntax syntax)
         {
@@ -613,19 +613,19 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Unescapes local name escapes in a QName
+        /// Unescapes local name escapes in a QName.
         /// </summary>
-        /// <param name="value">QName</param>
-        /// <returns>Unescaped QName</returns>
+        /// <param name="value">QName.</param>
+        /// <returns>Unescaped QName.</returns>
         public static String UnescapeQName(String value)
         {
             return SparqlSpecsHelper.UnescapeQName(value);
         }
 
         /// <summary>
-        /// Determines whether a given String should be serialized as a Long Literal
+        /// Determines whether a given String should be serialized as a Long Literal.
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="value">String to test.</param>
         /// <returns></returns>
         public static bool IsLongLiteral(String value)
         {
@@ -633,11 +633,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Infers the Type of a Plain Literal
+        /// Infers the Type of a Plain Literal.
         /// </summary>
-        /// <param name="p">Plain Literal to infer the Type of</param>
-        /// <param name="syntax">Turtle Syntax</param>
-        /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal</returns>
+        /// <param name="p">Plain Literal to infer the Type of.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
+        /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal.</returns>
         public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
         {
             String value = p.Value;
@@ -672,9 +672,9 @@ namespace VDS.RDF.Parsing
         #region W3C Standardised Turtle Character Productions
 
         /// <summary>
-        /// Gets whether a character matches the PN_CHARS_BASE production from the Turtle specifications
+        /// Gets whether a character matches the PN_CHARS_BASE production from the Turtle specifications.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsPNCharsBase(char c)
         {
@@ -707,10 +707,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a surrogate pair matches the PN_CHARS_BASE production from the Turtle specifications
+        /// Gets whether a surrogate pair matches the PN_CHARS_BASE production from the Turtle specifications.
         /// </summary>
-        /// <param name="c">High surrogate</param>
-        /// <param name="d">Low surrogate</param>
+        /// <param name="c">High surrogate.</param>
+        /// <param name="d">Low surrogate.</param>
         /// <returns></returns>
         public static bool IsPNCharsBase(char c, char d)
         {
@@ -726,9 +726,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the PN_CHARS production from the Turtle specification
+        /// Gets whether a character matches the PN_CHARS production from the Turtle specification.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsPNChars(char c)
         {
@@ -764,10 +764,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a surrogate pair matches the PN_CHARS production from the Turtle specification
+        /// Gets whether a surrogate pair matches the PN_CHARS production from the Turtle specification.
         /// </summary>
-        /// <param name="c">High surrogate</param>
-        /// <param name="d">Low surrogate</param>
+        /// <param name="c">High surrogate.</param>
+        /// <param name="d">Low surrogate.</param>
         /// <returns></returns>
         public static bool IsPNChars(char c, char d)
         {
@@ -776,9 +776,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the PN_CHARS_U production from the Turtle specification
+        /// Gets whether a character matches the PN_CHARS_U production from the Turtle specification.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsPNCharsU(char c)
         {
@@ -787,10 +787,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a surrogate pair matches the PN_CHARS_U production from the Turtle specification
+        /// Gets whether a surrogate pair matches the PN_CHARS_U production from the Turtle specification.
         /// </summary>
-        /// <param name="c">High surrogate</param>
-        /// <param name="d">Low surrogate</param>
+        /// <param name="c">High surrogate.</param>
+        /// <param name="d">Low surrogate.</param>
         /// <returns></returns>
         public static bool IsPNCharsU(char c, char d)
         {
@@ -803,9 +803,9 @@ namespace VDS.RDF.Parsing
         #region Member Submission Turtle Character Productions
 
         /// <summary>
-        /// Gets whether a character matches the nameStartChar production from the Turtle specification
+        /// Gets whether a character matches the nameStartChar production from the Turtle specification.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsNameStartChar(char c)
         {
@@ -843,10 +843,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a surrogate pair matches the nameStartChar production from the Turtle specification
+        /// Gets whether a surrogate pair matches the nameStartChar production from the Turtle specification.
         /// </summary>
-        /// <param name="c">High surrogate</param>
-        /// <param name="d">Low surrogate</param>
+        /// <param name="c">High surrogate.</param>
+        /// <param name="d">Low surrogate.</param>
         /// <returns></returns>
         public static bool IsNameStartChar(char c, char d)
         {
@@ -862,9 +862,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a character matches the nameChar production from the Turtle specification
+        /// Gets whether a character matches the nameChar production from the Turtle specification.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsNameChar(char c)
         {
@@ -892,10 +892,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether a surrogate pair matches the nameChar production from the Turtle specification
+        /// Gets whether a surrogate pair matches the nameChar production from the Turtle specification.
         /// </summary>
-        /// <param name="c">High surrogate</param>
-        /// <param name="d">Low surrogate</param>
+        /// <param name="c">High surrogate.</param>
+        /// <param name="d">Low surrogate.</param>
         /// <returns></returns>
         public static bool IsNameChar(char c, char d)
         {

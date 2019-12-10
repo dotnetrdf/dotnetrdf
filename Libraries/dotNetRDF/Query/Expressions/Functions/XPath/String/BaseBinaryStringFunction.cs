@@ -33,35 +33,35 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
-    /// Abstract Base class for XPath Binary String functions
+    /// Abstract Base class for XPath Binary String functions.
     /// </summary>
     public abstract class BaseBinaryStringFunction
         : ISparqlExpression
     {
         /// <summary>
-        /// Expression the function applies over
+        /// Expression the function applies over.
         /// </summary>
         protected ISparqlExpression _expr;
         /// <summary>
-        /// Argument expression
+        /// Argument expression.
         /// </summary>
         protected ISparqlExpression _arg;
         /// <summary>
-        /// Whether the argument can be null
+        /// Whether the argument can be null.
         /// </summary>
         protected bool _allowNullArgument = false;
         /// <summary>
-        /// Type validation function for the argument
+        /// Type validation function for the argument.
         /// </summary>
         protected Func<Uri, bool> _argumentTypeValidator;
 
         /// <summary>
-        /// Creates a new XPath Binary String function
+        /// Creates a new XPath Binary String function.
         /// </summary>
-        /// <param name="stringExpr">Expression</param>
-        /// <param name="argExpr">Argument</param>
-        /// <param name="allowNullArgument">Whether the argument may be null</param>
-        /// <param name="argumentTypeValidator">Type validator for the argument</param>
+        /// <param name="stringExpr">Expression.</param>
+        /// <param name="argExpr">Argument.</param>
+        /// <param name="allowNullArgument">Whether the argument may be null.</param>
+        /// <param name="argumentTypeValidator">Type validator for the argument.</param>
         public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
         {
             _expr = stringExpr;
@@ -72,10 +72,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID
+        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -141,9 +141,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal
+        /// Gets the Value of the function as applied to the given String Literal.
         /// </summary>
-        /// <param name="stringLit">Simple/String typed Literal</param>
+        /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <returns></returns>
         public virtual IValuedNode ValueInternal(ILiteralNode stringLit)
         {
@@ -158,15 +158,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument
+        /// Gets the Value of the function as applied to the given String Literal and Argument.
         /// </summary>
-        /// <param name="stringLit">Simple/String typed Literal</param>
-        /// <param name="arg">Argument</param>
+        /// <param name="stringLit">Simple/String typed Literal.</param>
+        /// <param name="arg">Argument.</param>
         /// <returns></returns>
         public abstract IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg);
 
         /// <summary>
-        /// Gets the Variables used in the function
+        /// Gets the Variables used in the function.
         /// </summary>
         public virtual IEnumerable<string> Variables
         {
@@ -184,13 +184,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public abstract string Functor
         {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -231,9 +231,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }

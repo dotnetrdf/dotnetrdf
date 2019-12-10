@@ -31,27 +31,27 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Writer Context for NTriples Writers
+    /// Writer Context for NTriples Writers.
     /// </summary>
     public class NTriplesWriterContext : BaseWriterContext
     {
         /// <summary>
-        /// Creates a new NTriples Writer Context with default settings
+        /// Creates a new NTriples Writer Context with default settings.
         /// </summary>
-        /// <param name="g">Graph to write</param>
-        /// <param name="output">TextWriter to write to</param>
-        /// <param name="syntax">NTriples Syntax mode</param>
+        /// <param name="g">Graph to write.</param>
+        /// <param name="output">TextWriter to write to.</param>
+        /// <param name="syntax">NTriples Syntax mode.</param>
         public NTriplesWriterContext(IGraph g, TextWriter output, NTriplesSyntax syntax)
             : this(g, output, syntax, false, true) { }
 
         /// <summary>
-        /// Creates a new NTriples Writer Context with custom settings
+        /// Creates a new NTriples Writer Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to write</param>
-        /// <param name="output">TextWriter to write to</param>
-        /// <param name="syntax">NTriples Syntax mode</param>
-        /// <param name="prettyPrint">Pretty Print Mode</param>
-        /// <param name="hiSpeed">High Speed Mode</param>
+        /// <param name="g">Graph to write.</param>
+        /// <param name="output">TextWriter to write to.</param>
+        /// <param name="syntax">NTriples Syntax mode.</param>
+        /// <param name="prettyPrint">Pretty Print Mode.</param>
+        /// <param name="hiSpeed">High Speed Mode.</param>
         public NTriplesWriterContext(IGraph g, TextWriter output, NTriplesSyntax syntax, bool prettyPrint, bool hiSpeed)
             : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed)
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the NTriples syntax mode
+        /// Gets the NTriples syntax mode.
         /// </summary>
         public NTriplesSyntax Syntax { get; private set; }
     }

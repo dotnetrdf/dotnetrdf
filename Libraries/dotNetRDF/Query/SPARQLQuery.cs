@@ -46,7 +46,7 @@ using VDS.RDF.Query.PropertyFunctions;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Types of SPARQL Query
+    /// Types of SPARQL Query.
     /// </summary>
     public enum SparqlQueryType : int
     {
@@ -93,11 +93,11 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Select All Reduced
         /// </summary>
-        SelectAllReduced = 10
+        SelectAllReduced = 10,
     }
 
     /// <summary>
-    /// Types of Special SPARQL Query which may be optimised in special ways by the libraries SPARQL Engines
+    /// Types of Special SPARQL Query which may be optimised in special ways by the libraries SPARQL Engines.
     /// </summary>
     public enum SparqlSpecialQueryType
     {
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Represents a SPARQL Query
+    /// Represents a SPARQL Query.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query
         private IEnumerable<IPropertyFunctionFactory> _propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
 
         /// <summary>
-        /// Creates a new SPARQL Query
+        /// Creates a new SPARQL Query.
         /// </summary>
         internal SparqlQuery()
         {
@@ -173,16 +173,16 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Query
+        /// Creates a new SPARQL Query.
         /// </summary>
-        /// <param name="subquery">Whether the Query is a Sub-query</param>
+        /// <param name="subquery">Whether the Query is a Sub-query.</param>
         internal SparqlQuery(bool subquery): this()
         {
             _subquery = subquery;
         }
 
         /// <summary>
-        /// Creates a copy of the query
+        /// Creates a copy of the query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery Copy()
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query
         #region Properties
 
         /// <summary>
-        /// Gets the Namespace Map for the Query
+        /// Gets the Namespace Map for the Query.
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Base Uri for the Query
+        /// Gets/Sets the Base Uri for the Query.
         /// </summary>
         public Uri BaseUri
         {
@@ -239,29 +239,29 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Default Graph URIs for the Query
+        /// Gets the Default Graph URIs for the Query.
         /// </summary>
         public IEnumerable<Uri> DefaultGraphs => (from u in _defaultGraphs
             select u);
 
         /// <summary>
-        /// Gets the Named Graph URIs for the Query
+        /// Gets the Named Graph URIs for the Query.
         /// </summary>
         public IEnumerable<Uri> NamedGraphs => (from u in _namedGraphs
             select u);
 
         /// <summary>
-        /// Gets the Variables used in the Query
+        /// Gets the Variables used in the Query.
         /// </summary>
         public IEnumerable<SparqlVariable> Variables => _vars;
 
         /// <summary>
-        /// Gets the Variables, QNames and URIs used in the Describe Query
+        /// Gets the Variables, QNames and URIs used in the Describe Query.
         /// </summary>
         public IEnumerable<IToken> DescribeVariables => (from t in _describeVars select t);
 
         /// <summary>
-        /// Gets the type of the Query
+        /// Gets the type of the Query.
         /// </summary>
         public SparqlQueryType QueryType
         {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Special Type of the Query (if any)
+        /// Gets the Special Type of the Query (if any).
         /// </summary>
         public SparqlSpecialQueryType SpecialType
         {
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the top level Graph Pattern of the Query
+        /// Gets the top level Graph Pattern of the Query.
         /// </summary>
         public GraphPattern RootGraphPattern
         {
@@ -334,7 +334,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Construct Template for a Construct Query
+        /// Gets/Sets the Construct Template for a Construct Query.
         /// </summary>
         public GraphPattern ConstructTemplate
         {
@@ -343,7 +343,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Ordering for the Query
+        /// Gets/Sets the Ordering for the Query.
         /// </summary>
         public ISparqlOrderBy OrderBy
         {
@@ -356,7 +356,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Grouping for the Query
+        /// Gets/Sets the Grouping for the Query.
         /// </summary>
         public ISparqlGroupBy GroupBy
         {
@@ -365,7 +365,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Having Clause for the Query
+        /// Gets/Sets the Having Clause for the Query.
         /// </summary>
         public ISparqlFilter Having
         {
@@ -374,7 +374,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the VALUES Clause for the Query which are bindings that should be applied
+        /// Gets/Sets the VALUES Clause for the Query which are bindings that should be applied.
         /// </summary>
         public BindingsPattern Bindings
         {
@@ -383,7 +383,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the <see cref="ISparqlDescribe">ISparqlDescribe</see> which provides the Describe algorithm you wish to use
+        /// Gets/Sets the <see cref="ISparqlDescribe">ISparqlDescribe</see> which provides the Describe algorithm you wish to use.
         /// </summary>
         /// <remarks>
         /// By default this will be the <see cref="ConciseBoundedDescription">ConciseBoundedDescription</see> (CBD) algorithm.
@@ -402,7 +402,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any global optimisers (specified by <see cref="SparqlOptimiser.AlgebraOptimisers">SparqlOptimiser.AlgebraOptimisers</see>) that are applied
+        /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any global optimisers (specified by <see cref="SparqlOptimiser.AlgebraOptimisers">SparqlOptimiser.AlgebraOptimisers</see>) that are applied.
         /// </summary>
         public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
         {
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped Expression Factories that may be used if the query is using the CALL() function to do dynamic function invocation
+        /// Gets/Sets the locally scoped Expression Factories that may be used if the query is using the CALL() function to do dynamic function invocation.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
@@ -440,7 +440,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped Property Function factories that may be used by the <see cref="PropertyFunctionOptimiser"/> when generating the algebra for the query
+        /// Gets/Sets the locally scoped Property Function factories that may be used by the <see cref="PropertyFunctionOptimiser"/> when generating the algebra for the query.
         /// </summary>
         public IEnumerable<IPropertyFunctionFactory> PropertyFunctionFactories
         {
@@ -459,9 +459,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Result Set Limit for the Query
+        /// Gets the Result Set Limit for the Query.
         /// </summary>
-        /// <remarks>Values less than zero are counted as -1 which indicates no limit</remarks>
+        /// <remarks>Values less than zero are counted as -1 which indicates no limit.</remarks>
         public int Limit
         {
             get => _limit;
@@ -479,9 +479,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Result Set Offset for the Query
+        /// Gets/Sets the Result Set Offset for the Query.
         /// </summary>
-        /// <remarks>Values less than zero are treated as 0 which indicates no offset</remarks>
+        /// <remarks>Values less than zero are treated as 0 which indicates no offset.</remarks>
         public int Offset
         {
             get => _offset;
@@ -499,7 +499,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Query Execution Timeout in milliseconds
+        /// Gets/Sets the Query Execution Timeout in milliseconds.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -513,7 +513,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets whether Partial Results should be returned in the event of Query Timeout
+        /// Gets/Sets whether Partial Results should be returned in the event of Query Timeout.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -527,9 +527,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Time taken to execute a Query
+        /// Gets the Time taken to execute a Query.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if you try and inspect the execution time before the Query has been executed</exception>
+        /// <exception cref="InvalidOperationException">Thrown if you try and inspect the execution time before the Query has been executed.</exception>
         public TimeSpan? QueryExecutionTime
         {
             get
@@ -544,7 +544,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Query has an Aggregate as its Result
+        /// Gets whether the Query has an Aggregate as its Result.
         /// </summary>
         public bool IsAggregate
         {
@@ -555,7 +555,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether Optimisation has been applied to the query
+        /// Gets whether Optimisation has been applied to the query.
         /// </summary>
         /// <remarks>
         /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
@@ -563,12 +563,12 @@ namespace VDS.RDF.Query
         public bool IsOptimised => _optimised;
 
         /// <summary>
-        /// Gets whether this Query is a Sub-Query in another Query
+        /// Gets whether this Query is a Sub-Query in another Query.
         /// </summary>
         public bool IsSubQuery => _subquery;
 
         /// <summary>
-        /// Gets whether a Query has a DISTINCT modifier
+        /// Gets whether a Query has a DISTINCT modifier.
         /// </summary>
         public bool HasDistinctModifier
         {
@@ -586,12 +586,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Query has a Solution Modifier (a GROUP BY, HAVING, ORDER BY, LIMIT or OFFSET)
+        /// Gets whether the Query has a Solution Modifier (a GROUP BY, HAVING, ORDER BY, LIMIT or OFFSET).
         /// </summary>
         public bool HasSolutionModifier => _groupBy != null || _having != null || _orderBy != null || _limit >= 0 || _offset > 0;
 
         /// <summary>
-        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member
+        /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member.
         /// </summary>
         public int VirtualCount { get; internal set; } = -1;
 
@@ -600,19 +600,19 @@ namespace VDS.RDF.Query
         #region Methods for setting up the Query (used by SparqlQueryParser)
 
         /// <summary>
-        /// Adds a Variable to the Query
+        /// Adds a Variable to the Query.
         /// </summary>
-        /// <param name="name">Variable Name</param>
+        /// <param name="name">Variable Name.</param>
         internal void AddVariable(String name)
         {
             AddVariable(name, false);
         }
 
         /// <summary>
-        /// Adds a Variable to the Query
+        /// Adds a Variable to the Query.
         /// </summary>
-        /// <param name="name">Variable Name</param>
-        /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph</param>
+        /// <param name="name">Variable Name.</param>
+        /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph.</param>
         internal void AddVariable(String name, bool isResultVar)
         {
             String var = name.Substring(1);
@@ -625,9 +625,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Variable to the Query
+        /// Adds a Variable to the Query.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         internal void AddVariable(SparqlVariable var)
         {
             if (!_vars.Any(v => v.Name.Equals(var)))
@@ -641,18 +641,18 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Describe Variable to the Query
+        /// Adds a Describe Variable to the Query.
         /// </summary>
-        /// <param name="var">Variable/Uri/QName Token</param>
+        /// <param name="var">Variable/Uri/QName Token.</param>
         internal void AddDescribeVariable(IToken var)
         {
             _describeVars.Add(var);
         }
 
         /// <summary>
-        /// Adds a Default Graph URI
+        /// Adds a Default Graph URI.
         /// </summary>
-        /// <param name="u">Graph URI</param>
+        /// <param name="u">Graph URI.</param>
         public void AddDefaultGraph(Uri u)
         {
             if (!_defaultGraphs.Contains(u))
@@ -662,9 +662,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Named Graph URI
+        /// Adds a Named Graph URI.
         /// </summary>
-        /// <param name="u">Graph URI</param>
+        /// <param name="u">Graph URI.</param>
         public void AddNamedGraph(Uri u)
         {
             if (!_namedGraphs.Contains(u))
@@ -674,7 +674,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Removes all Default Graph URIs
+        /// Removes all Default Graph URIs.
         /// </summary>
         public void ClearDefaultGraphs()
         {
@@ -682,7 +682,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Removes all Named Graph URIs
+        /// Removes all Named Graph URIs.
         /// </summary>
         public void ClearNamedGraphs()
         {
@@ -692,11 +692,11 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Evaluates the SPARQL Query against the given Triple Store
+        /// Evaluates the SPARQL Query against the given Triple Store.
         /// </summary>
-        /// <param name="data">Triple Store</param>
+        /// <param name="data">Triple Store.</param>
         /// <returns>
-        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed
+        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed.
         /// </returns>
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public Object Evaluate(IInMemoryQueryableStore data)
@@ -705,11 +705,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Evaluates the SPARQL Query against the given Triple Store processing the results with the appropriate handler from those provided
+        /// Evaluates the SPARQL Query against the given Triple Store processing the results with the appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="data">Triple Store</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="data">Triple Store.</param>
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, IInMemoryQueryableStore data)
         {
@@ -717,11 +717,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Evaluates the SPARQL Query against the given Dataset
+        /// Evaluates the SPARQL Query against the given Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="dataset">Dataset.</param>
         /// <returns>
-        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="IGraph">IGraph</see> depending on the type of query executed
+        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="IGraph">IGraph</see> depending on the type of query executed.
         /// </returns>
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public Object Evaluate(ISparqlDataset dataset)
@@ -731,11 +731,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Evaluates the SPARQL Query against the given Dataset processing the results with an appropriate handler form those provided
+        /// Evaluates the SPARQL Query against the given Dataset processing the results with an appropriate handler form those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="dataset">Dataset.</param>
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, ISparqlDataset dataset)
         {
@@ -744,9 +744,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes the Query using the given Query Processor
+        /// Processes the Query using the given Query Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Query Processor</param>
+        /// <param name="processor">SPARQL Query Processor.</param>
         /// <returns></returns>
         public Object Process(ISparqlQueryProcessor processor)
         {
@@ -754,7 +754,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Applies optimisation to a Query using the default global optimiser
+        /// Applies optimisation to a Query using the default global optimiser.
         /// </summary>
         public void Optimise()
         {
@@ -762,9 +762,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Applies optimisation to a Query using the specific optimiser
+        /// Applies optimisation to a Query using the specific optimiser.
         /// </summary>
-        /// <param name="optimiser">Query Optimiser</param>
+        /// <param name="optimiser">Query Optimiser.</param>
         public void Optimise(IQueryOptimiser optimiser)
         {
             if (optimiser == null) throw new ArgumentNullException("Cannot optimise a Query using a null optimiser");
@@ -777,11 +777,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Helper method which rewrites Blank Node IDs for Describe Queries
+        /// Helper method which rewrites Blank Node IDs for Describe Queries.
         /// </summary>
-        /// <param name="t">Triple</param>
-        /// <param name="mapping">Mapping of IDs to new Blank Nodes</param>
-        /// <param name="g">Graph of the Description</param>
+        /// <param name="t">Triple.</param>
+        /// <param name="mapping">Mapping of IDs to new Blank Nodes.</param>
+        /// <param name="g">Graph of the Description.</param>
         /// <returns></returns>
         private Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, IGraph g)
         {
@@ -846,10 +846,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Generates a String representation of the Query
+        /// Generates a String representation of the Query.
         /// </summary>
         /// <returns></returns>
-        /// <remarks>This method may not return a complete representation of the Query depending on the Query it is called on as not all the classes which can be included in a Sparql query currently implement ToString methods</remarks>
+        /// <remarks>This method may not return a complete representation of the Query depending on the Query it is called on as not all the classes which can be included in a Sparql query currently implement ToString methods.</remarks>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
@@ -1061,7 +1061,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts the Query into it's SPARQL Algebra representation (as represented in the Leviathan API)
+        /// Converts the Query into it's SPARQL Algebra representation (as represented in the Leviathan API).
         /// </summary>
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
@@ -1210,10 +1210,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Applies Algebra Optimisations to the Query
+        /// Applies Algebra Optimisations to the Query.
         /// </summary>
-        /// <param name="algebra">Query Algebra</param>
-        /// <returns>The Query Algebra which may have been transformed to a more optimal form</returns>
+        /// <param name="algebra">Query Algebra.</param>
+        /// <returns>The Query Algebra which may have been transformed to a more optimal form.</returns>
         private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra)
         {
             try
@@ -1251,7 +1251,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Query's ORDER BY clause can be optimised with Lazy evaluation
+        /// Gets whether the Query's ORDER BY clause can be optimised with Lazy evaluation.
         /// </summary>
         internal bool IsOptimisableOrderBy
         {
@@ -1312,14 +1312,14 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether a Query uses the Default Dataset against which it is evaluated
+        /// Gets whether a Query uses the Default Dataset against which it is evaluated.
         /// </summary>
         /// <remarks>
         /// <para>
         /// If the value is true then the Query will use whatever dataset is it evaluated against.  If the value is false then the query changes the dataset at one/more points during its evaluation.
         /// </para>
         /// <para>
-        /// Things that may change the dataset and cause a query not to use the Default Dataset are as follows:
+        /// Things that may change the dataset and cause a query not to use the Default Dataset are as follows:.
         /// <ul>
         ///     <li>FROM clauses (but not FROM NAMED)</li>
         ///     <li>GRAPH clauses</li>

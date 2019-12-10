@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// The Weighted Optimiser is a Query Optimiser that orders Triple Patterns based on weighting computed calculated against
+    /// The Weighted Optimiser is a Query Optimiser that orders Triple Patterns based on weighting computed calculated against.
     /// </summary>
     public class WeightedOptimiser 
         : BaseQueryOptimiser
@@ -39,44 +39,44 @@ namespace VDS.RDF.Query.Optimisation
         private Weightings _weights;
 
         /// <summary>
-        /// Default Weight for Subject Terms
+        /// Default Weight for Subject Terms.
         /// </summary>
         public const double DefaultSubjectWeight = 0.8d;
         /// <summary>
-        /// Default Weight for Predicate Terms
+        /// Default Weight for Predicate Terms.
         /// </summary>
         public const double DefaultPredicateWeight = 0.4d;
         /// <summary>
-        /// Default Weight for Object Terms
+        /// Default Weight for Object Terms.
         /// </summary>
         public const double DefaultObjectWeight = 0.6d;
         /// <summary>
-        /// Default Weight for Variables
+        /// Default Weight for Variables.
         /// </summary>
         public const double DefaultVariableWeight = 1d;
 
         /// <summary>
-        /// Creates a new Weighted Optimiser
+        /// Creates a new Weighted Optimiser.
         /// </summary>
         public WeightedOptimiser()
         { }
 
         /// <summary>
-        /// Creates a new Weighted Optimiser which reads weights from the given RDF Graph
+        /// Creates a new Weighted Optimiser which reads weights from the given RDF Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public WeightedOptimiser(IGraph g)
         {
             _weights = new Weightings(g);
         }
 
         /// <summary>
-        /// Creates a new Weighted Optimiser which reads weights from the given RDF Graph
+        /// Creates a new Weighted Optimiser which reads weights from the given RDF Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="subjWeight">Default Subject Weight</param>
-        /// <param name="predWeight">Default Predicate Weight</param>
-        /// <param name="objWeight">Default Object Weight</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="subjWeight">Default Subject Weight.</param>
+        /// <param name="predWeight">Default Predicate Weight.</param>
+        /// <param name="objWeight">Default Object Weight.</param>
         public WeightedOptimiser(IGraph g, double subjWeight, double predWeight, double objWeight)
             : this(g)
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Gets the comparer used to order the Triple Patterns based on their computed weightings
+        /// Gets the comparer used to order the Triple Patterns based on their computed weightings.
         /// </summary>
         /// <returns></returns>
         protected override IComparer<ITriplePattern> GetRankingComparer()
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Optimisation
     }
 
     /// <summary>
-    /// Represents Weightings for the <see cref="WeightedOptimiser">WeightedOptimiser</see>
+    /// Represents Weightings for the <see cref="WeightedOptimiser">WeightedOptimiser</see>.
     /// </summary>
     class Weightings
     {

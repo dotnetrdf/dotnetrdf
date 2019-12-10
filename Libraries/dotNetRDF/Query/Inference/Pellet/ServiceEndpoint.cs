@@ -31,7 +31,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet
 {
     /// <summary>
-    /// Represents the Service Endpoint for a Service provided by a Pellet Server
+    /// Represents the Service Endpoint for a Service provided by a Pellet Server.
     /// </summary>
     public class ServiceEndpoint
     {
@@ -39,9 +39,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         private String _uri;
 
         /// <summary>
-        /// Creates a new Service Endpoint instance
+        /// Creates a new Service Endpoint instance.
         /// </summary>
-        /// <param name="obj">JSON Object representing the Endpoint</param>
+        /// <param name="obj">JSON Object representing the Endpoint.</param>
         internal ServiceEndpoint(JObject obj)
         {
             _uri = (String)obj.SelectToken("url");
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the URI of the Endpoint
+        /// Gets the URI of the Endpoint.
         /// </summary>
         public String Uri
         {
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the HTTP Methods supported by the Endpoint
+        /// Gets the HTTP Methods supported by the Endpoint.
         /// </summary>
         public IEnumerable<String> HttpMethods
         {

@@ -37,211 +37,211 @@ using VDS.RDF.Writing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
+    /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods.
     /// </summary>
     public static class MimeTypesHelper
     {
         #region Constants
 
         /// <summary>
-        /// Constant for W3C File Formats Namespace
+        /// Constant for W3C File Formats Namespace.
         /// </summary>
         private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
 
         /// <summary>
-        /// MIME Type for accept any content Type
+        /// MIME Type for accept any content Type.
         /// </summary>
         public const String Any = "*/*";
 
         /// <summary>
-        /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP
+        /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP.
         /// </summary>
         public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
 
         /// <summary>
-        /// MIME Type for URL Enoded WWW Form Content used when POSTing over HTTP in UTF-8 encoding
+        /// MIME Type for URL Enoded WWW Form Content used when POSTing over HTTP in UTF-8 encoding.
         /// </summary>
         public const String Utf8WWWFormURLEncoded = WWWFormURLEncoded + ";charset=utf-8";
 
         /// <summary>
-        /// MIME Type for Multipart Form Data
+        /// MIME Type for Multipart Form Data.
         /// </summary>
         public const String FormMultipart = "multipart/form-data";
 
         /// <summary>
-        /// MIME Types for Turtle
+        /// MIME Types for Turtle.
         /// </summary>
         internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
 
         /// <summary>
-        /// MIME Types for RDF/XML
+        /// MIME Types for RDF/XML.
         /// </summary>
         internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
 
         /// <summary>
-        /// MIME Types for Notation 3
+        /// MIME Types for Notation 3.
         /// </summary>
         internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
 
         /// <summary>
-        /// MIME Types for NTriples
+        /// MIME Types for NTriples.
         /// </summary>
         internal static string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
 
         /// <summary>
-        /// MIME Types for NQuads
+        /// MIME Types for NQuads.
         /// </summary>
         internal static string[] NQuads = { "application/n-quads", "text/x-nquads" };
 
         /// <summary>
-        /// MIME Types for TriG
+        /// MIME Types for TriG.
         /// </summary>
         internal static string[] TriG = { "application/x-trig" };
 
         /// <summary>
-        /// MIME Types for TriX
+        /// MIME Types for TriX.
         /// </summary>
         internal static string[] TriX = { "application/trix" };
 
         /// <summary>
-        /// MIME Types for RDF/JSON
+        /// MIME Types for RDF/JSON.
         /// </summary>
         internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
 
         /// <summary>
-        /// MIME types for JSON-LD
+        /// MIME types for JSON-LD.
         /// </summary>
         internal static string[] JsonLd = {"application/ld+json"};
 
         /// <summary>
-        /// MIME Types for SPARQL Result Sets
+        /// MIME Types for SPARQL Result Sets.
         /// </summary>
         internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
 
         /// <summary>
-        /// MIME Types for SPARQL Results XML
+        /// MIME Types for SPARQL Results XML.
         /// </summary>
         public static string[] SparqlResultsXml = { "application/sparql-results+xml" };
 
         /// <summary>
-        /// MIME Types for SPARQL Results JSON
+        /// MIME Types for SPARQL Results JSON.
         /// </summary>
         internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
 
         /// <summary>
-        /// MIME Types for SPARQL Boolean Result
+        /// MIME Types for SPARQL Boolean Result.
         /// </summary>
         internal static string[] SparqlResultsBoolean = { "text/boolean" };
 
         /// <summary>
-        /// MIME Types for CSV
+        /// MIME Types for CSV.
         /// </summary>
         internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
 
         /// <summary>
-        /// MIME Types for TSV
+        /// MIME Types for TSV.
         /// </summary>
         internal static string[] Tsv = { "text/tab-separated-values" };
 
         /// <summary>
-        /// MIME Types for HTML
+        /// MIME Types for HTML.
         /// </summary>
         internal static string[] Html = { "text/html", "application/xhtml+xml" };
 
         /// <summary>
-        /// MIME Type for SPARQL Queries
+        /// MIME Type for SPARQL Queries.
         /// </summary>
         public const String SparqlQuery = "application/sparql-query";
 
         /// <summary>
-        /// MIME Type for SPARQL Updates
+        /// MIME Type for SPARQL Updates.
         /// </summary>
         public const String SparqlUpdate = "application/sparql-update";
 
         /// <summary>
-        /// Default File Extension for Turtle Files
+        /// Default File Extension for Turtle Files.
         /// </summary>
         public const String DefaultTurtleExtension = "ttl";
         /// <summary>
-        /// Default File Extension for RDF/XML
+        /// Default File Extension for RDF/XML.
         /// </summary>
         public const String DefaultRdfXmlExtension = "rdf";
         /// <summary>
-        /// Default File Extension for Notation 3
+        /// Default File Extension for Notation 3.
         /// </summary>
         public const String DefaultNotation3Extension = "n3";
         /// <summary>
-        /// Default File Extension for NTriples
+        /// Default File Extension for NTriples.
         /// </summary>
         public const String DefaultNTriplesExtension = "nt";
         /// <summary>
-        /// Default File Extension for Json formats
+        /// Default File Extension for Json formats.
         /// </summary>
         public const String DefaultJsonExtension = "json";
         /// <summary>
-        /// Default file extension for JSON-LD formats
+        /// Default file extension for JSON-LD formats.
         /// </summary>
         public const string DefaultJsonLdExtension = "jsonld";
         /// <summary>
-        /// Default File Extension for RDF/JSON
+        /// Default File Extension for RDF/JSON.
         /// </summary>
         public const String DefaultRdfJsonExtension = "rj";
         /// <summary>
-        /// Default File Extension for SPARQL XML Results Format
+        /// Default File Extension for SPARQL XML Results Format.
         /// </summary>
         public const String DefaultSparqlXmlExtension = "srx";
         /// <summary>
-        /// Default File Extension for SPARQL JSON Results Format
+        /// Default File Extension for SPARQL JSON Results Format.
         /// </summary>
         public const String DefaultSparqlJsonExtension = "srj";
         /// <summary>
-        /// Default File Extension for TriG
+        /// Default File Extension for TriG.
         /// </summary>
         public const String DefaultTriGExtension = "trig";
         /// <summary>
-        /// Default File Extension for NQuads
+        /// Default File Extension for NQuads.
         /// </summary>
         public const String DefaultNQuadsExtension = "nq";
         /// <summary>
-        /// Default File Extension for TriX
+        /// Default File Extension for TriX.
         /// </summary>
         public const String DefaultTriXExtension = "xml";
         /// <summary>
-        /// Default File Extension for CSV
+        /// Default File Extension for CSV.
         /// </summary>
         public const String DefaultCsvExtension = "csv";
         /// <summary>
-        /// Default File Extension for TSV
+        /// Default File Extension for TSV.
         /// </summary>
         public const String DefaultTsvExtension = "tsv";
         /// <summary>
-        /// Default File Extension for HTML
+        /// Default File Extension for HTML.
         /// </summary>
         public const String DefaultHtmlExtension = "html";
         /// <summary>
-        /// Default File Extension for XHTML
+        /// Default File Extension for XHTML.
         /// </summary>
         public const String DefaultXHtmlExtension = "xhtml";
         /// <summary>
-        /// Default File Extension for SPARQL Queries
+        /// Default File Extension for SPARQL Queries.
         /// </summary>
         public const String DefaultSparqlQueryExtension = "rq";
         /// <summary>
-        /// Default File Extension for SPARQL Updates
+        /// Default File Extension for SPARQL Updates.
         /// </summary>
         public const String DefaultSparqlUpdateExtension = "ru";
         /// <summary>
-        /// Default File Extension for GZip
+        /// Default File Extension for GZip.
         /// </summary>
         public const string DefaultGZipExtension = "gz";
 
         /// <summary>
-        /// Extensions which are considered stackable
+        /// Extensions which are considered stackable.
         /// </summary>
         private static readonly string[] AllowedStackableExtensions = { DefaultGZipExtension };
 
         /// <summary>
-        /// Charset constants
+        /// Charset constants.
         /// </summary>
         public const string CharsetUtf8 = "utf-8",
                             CharsetUtf16 = "utf-16";
@@ -249,19 +249,19 @@ namespace VDS.RDF
         #endregion 
 
         /// <summary>
-        /// List of MIME Type Definition
+        /// List of MIME Type Definition.
         /// </summary>
         private static List<MimeTypeDefinition> _mimeTypes;
         /// <summary>
-        /// Whether MIME Type Definitions have been initialised
+        /// Whether MIME Type Definitions have been initialised.
         /// </summary>
         private static bool _init = false;
         private static readonly Object _initLock = new Graph();
 
         /// <summary>
-        /// Checks whether something is a valid MIME Type
+        /// Checks whether something is a valid MIME Type.
         /// </summary>
-        /// <param name="type">MIME Type</param>
+        /// <param name="type">MIME Type.</param>
         /// <returns></returns>
         internal static bool IsValidMimeType(String type)
         {
@@ -271,9 +271,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether the given string is valid as a type/subtype for a MIME type
+        /// Determines whether the given string is valid as a type/subtype for a MIME type.
         /// </summary>
-        /// <param name="part">String</param>
+        /// <param name="part">String.</param>
         /// <returns></returns>
         internal static bool IsValidMimeTypePart(String part)
         {
@@ -309,7 +309,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Initialises the MIME Type definitions
+        /// Initialises the MIME Type definitions.
         /// </summary>
         private static void Init()
         {
@@ -402,11 +402,11 @@ namespace VDS.RDF
          }
 
         /// <summary>
-        /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults
+        /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// May be useful if you've altered the definitions and caused something to stop working as a result
+        /// May be useful if you've altered the definitions and caused something to stop working as a result.
         /// </para>
         /// </remarks>
         public static void ResetDefinitions()
@@ -420,7 +420,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the available MIME Type Definitions
+        /// Gets the available MIME Type Definitions.
         /// </summary>
         public static IEnumerable<MimeTypeDefinition> Definitions
         {
@@ -433,9 +433,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a new MIME Type Definition
+        /// Adds a new MIME Type Definition.
         /// </summary>
-        /// <param name="definition">MIME Type Definition</param>
+        /// <param name="definition">MIME Type Definition.</param>
         public static void AddDefinition(MimeTypeDefinition definition)
         {
             if (!_init) Init();
@@ -444,11 +444,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a parser as the default RDF Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a parser as the default RDF Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions.
         /// </summary>
-        /// <param name="parser">RDF Parser</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="parser">RDF Parser.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public static void RegisterParser(IRdfReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -481,11 +481,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a parser as the default RDF Dataset Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a parser as the default RDF Dataset Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions.
         /// </summary>
-        /// <param name="parser">RDF Dataset Parser</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="parser">RDF Dataset Parser.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public static void RegisterParser(IStoreReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -518,11 +518,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a parser as the default SPARQL Rsults Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a parser as the default SPARQL Rsults Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions.
         /// </summary>
-        /// <param name="parser">SPARQL Results Parser</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="parser">SPARQL Results Parser.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public static void RegisterParser(ISparqlResultsReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -555,11 +555,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a writer as the default RDF Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a writer as the default RDF Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions.
         /// </summary>
-        /// <param name="writer">RDF Writer</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="writer">RDF Writer.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public static void RegisterWriter(IRdfWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -592,11 +592,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a writer as the default RDF Dataset Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a writer as the default RDF Dataset Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions.
         /// </summary>
-        /// <param name="writer">RDF Dataset Writer</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="writer">RDF Dataset Writer.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public static void RegisterWriter(IStoreWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -629,11 +629,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a writer as the default SPARQL Results Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a writer as the default SPARQL Results Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions.
         /// </summary>
-        /// <param name="writer">SPARQL Results Writer</param>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="writer">SPARQL Results Writer.</param>
+        /// <param name="mimeTypes">MIME Types.</param>
+        /// <param name="fileExtensions">File Extensions.</param>
         public static void RegisterWriter(ISparqlResultsWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -666,9 +666,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all MIME Type definitions which support the given MIME Type
+        /// Gets all MIME Type definitions which support the given MIME Type.
         /// </summary>
-        /// <param name="mimeType">MIME Type</param>
+        /// <param name="mimeType">MIME Type.</param>
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(String mimeType)
         {
@@ -683,9 +683,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all MIME Type definitions which support the given MIME Types
+        /// Gets all MIME Type definitions which support the given MIME Types.
         /// </summary>
-        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="mimeTypes">MIME Types.</param>
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(IEnumerable<String> mimeTypes)
         {
@@ -701,9 +701,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all MIME Types definitions which are associated with a given file extension
+        /// Gets all MIME Types definitions which are associated with a given file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitionsByFileExtension(String fileExt)
         {
@@ -717,7 +717,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used when you want to ask for content in RDF formats (except Sparql Results)
+        /// Builds the String for the HTTP Accept Header that should be used when you want to ask for content in RDF formats (except Sparql Results).
         /// </summary>
         /// <returns></returns>
         public static String HttpAcceptHeader
@@ -744,7 +744,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used for querying Sparql Endpoints where the response will be a SPARQL Result Set format
+        /// Builds the String for the HTTP Accept Header that should be used for querying Sparql Endpoints where the response will be a SPARQL Result Set format.
         /// </summary>
         /// <returns></returns>
         public static String HttpSparqlAcceptHeader
@@ -770,7 +770,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or a SPARQL Result Set
+        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or a SPARQL Result Set.
         /// </summary>
         /// <returns></returns>
         public static String HttpRdfOrSparqlAcceptHeader
@@ -797,7 +797,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data will be an RDF dataset
+        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data will be an RDF dataset.
         /// </summary>
         public static String HttpRdfDatasetAcceptHeader
         {
@@ -822,7 +822,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or an RDF dataset
+        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or an RDF dataset.
         /// </summary>
         public static String HttpRdfOrDatasetAcceptHeader
         {
@@ -848,13 +848,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Custom HTTP Accept Header containing the given selection of MIME Types
+        /// Creates a Custom HTTP Accept Header containing the given selection of MIME Types.
         /// </summary>
-        /// <param name="mimeTypes">Enumeration of MIME Types to use</param>
+        /// <param name="mimeTypes">Enumeration of MIME Types to use.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> No validation is done on MIME Types so it is possible to generated a malformed header using this function
+        /// <strong>Note:</strong> No validation is done on MIME Types so it is possible to generated a malformed header using this function.
         /// </para>
         /// </remarks>
         public static String CustomHttpAcceptHeader(IEnumerable<String> mimeTypes)
@@ -863,14 +863,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Custom HTTP Accept Header containing the given selection of MIME Types where those MIME Types also appear in the list of supported Types
+        /// Creates a Custom HTTP Accept Header containing the given selection of MIME Types where those MIME Types also appear in the list of supported Types.
         /// </summary>
-        /// <param name="mimeTypes">Enumeration of MIME Types to use</param>
-        /// <param name="supportedTypes">Enumeration of supported MIME Types</param>
+        /// <param name="mimeTypes">Enumeration of MIME Types to use.</param>
+        /// <param name="supportedTypes">Enumeration of supported MIME Types.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> No validation is done on MIME Types so it is possible to generated a malformed header using this function
+        /// <strong>Note:</strong> No validation is done on MIME Types so it is possible to generated a malformed header using this function.
         /// </para>
         /// <para>
         /// Use this function when you wish to generate a Custom Accept Header where the URI to which you are making requests supports a set range of URIs (given in the <paramref name="mimeTypes"/> parameter) where that range of types may exceed the range of types actually supported by the library or your response processing code.
@@ -894,9 +894,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Custom HTTP Accept Header containing only the Accept Types supported by a specific parser
+        /// Creates a Custom HTTP Accept Header containing only the Accept Types supported by a specific parser.
         /// </summary>
-        /// <param name="parser">RDF Parser</param>
+        /// <param name="parser">RDF Parser.</param>
         /// <returns></returns>
         public static String CustomHttpAcceptHeader(IRdfReader parser)
         {
@@ -914,9 +914,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Custom HTTP Accept Header containing only the Accept Types supported by a specific parser
+        /// Creates a Custom HTTP Accept Header containing only the Accept Types supported by a specific parser.
         /// </summary>
-        /// <param name="parser">RDF Parser</param>
+        /// <param name="parser">RDF Parser.</param>
         /// <returns></returns>
         public static String CustomHttpAcceptHeader(IStoreReader parser)
         {
@@ -934,11 +934,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Get the preferred MIME type that is registered for a specific writer
+        /// Get the preferred MIME type that is registered for a specific writer.
         /// </summary>
-        /// <param name="writer">RDF Writer</param>
-        /// <returns>The preferred MIME type associated with the parser</returns>
-        /// <exception cref="UnregisteredRdfWriterTypeException">Raised if the specific writer is of a type that is not associated with any registered MIME type</exception>
+        /// <param name="writer">RDF Writer.</param>
+        /// <returns>The preferred MIME type associated with the parser.</returns>
+        /// <exception cref="UnregisteredRdfWriterTypeException">Raised if the specific writer is of a type that is not associated with any registered MIME type.</exception>
         public static string GetMimeType(IRdfWriter writer)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
@@ -957,7 +957,7 @@ namespace VDS.RDF
 
 
         /// <summary>
-        /// Gets the Enumeration of supported MIME Types for RDF Graphs
+        /// Gets the Enumeration of supported MIME Types for RDF Graphs.
         /// </summary>
         public static IEnumerable<String> SupportedRdfMimeTypes
         {
@@ -973,7 +973,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Enumeration of supported MIME Types for RDF Datasets
+        /// Gets the Enumeration of supported MIME Types for RDF Datasets.
         /// </summary>
         public static IEnumerable<String> SupportedRdfDatasetMimeTypes
         {
@@ -989,7 +989,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Enumeration of supported MIME Types for SPARQL Results
+        /// Gets the Enumeration of supported MIME Types for SPARQL Results.
         /// </summary>
         public static IEnumerable<String> SupportedSparqlMimeTypes
         {
@@ -1005,7 +1005,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Enumeration of supported MIME Types for RDF Graphs or SPARQL Results
+        /// Gets the Enumeration of supported MIME Types for RDF Graphs or SPARQL Results.
         /// </summary>
         public static IEnumerable<String> SupportedRdfOrSparqlMimeTypes
         {
@@ -1021,7 +1021,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Generates a Filename Filter that can be used with any .Net application and includes all formats that dotNetRDF is aware of
+        /// Generates a Filename Filter that can be used with any .Net application and includes all formats that dotNetRDF is aware of.
         /// </summary>
         /// <returns></returns>
         public static String GetFilenameFilter()
@@ -1030,14 +1030,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Generates a Filename Filter that can be used with any .Net application and includes a user dictated subset of the formats that dotNetRDF is aware of
+        /// Generates a Filename Filter that can be used with any .Net application and includes a user dictated subset of the formats that dotNetRDF is aware of.
         /// </summary>
-        /// <param name="rdf">Allow RDF Graph formats (e.g. Turtle)</param>
-        /// <param name="rdfDatasets">Allow RDF Dataset formats (e.g. NQuads)</param>
-        /// <param name="sparqlResults">Allow SPARQL Results formats (e.g. SPARQL Results XML)</param>
-        /// <param name="sparqlQuery">Allow SPARQL Query (i.e. .rq files)</param>
-        /// <param name="sparqlUpdate">Allow SPARQL Update (i.e. .ru files)</param>
-        /// <param name="allFiles">Allow All Files (i.e. */*)</param>
+        /// <param name="rdf">Allow RDF Graph formats (e.g. Turtle).</param>
+        /// <param name="rdfDatasets">Allow RDF Dataset formats (e.g. NQuads).</param>
+        /// <param name="sparqlResults">Allow SPARQL Results formats (e.g. SPARQL Results XML).</param>
+        /// <param name="sparqlQuery">Allow SPARQL Query (i.e. .rq files).</param>
+        /// <param name="sparqlUpdate">Allow SPARQL Update (i.e. .ru files).</param>
+        /// <param name="allFiles">Allow All Files (i.e. */*).</param>
         /// <returns></returns>
         public static String GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool sparqlQuery, bool sparqlUpdate, bool allFiles)
         {
@@ -1074,9 +1074,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Applies global options to a writer
+        /// Applies global options to a writer.
         /// </summary>
-        /// <param name="writer">Writer</param>
+        /// <param name="writer">Writer.</param>
         private static void ApplyWriterOptions(Object writer)
         {
             if (writer is ICompressingWriter)
@@ -1090,9 +1090,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Applies global options to a parser
+        /// Applies global options to a parser.
         /// </summary>
-        /// <param name="parser">Parser</param>
+        /// <param name="parser">Parser.</param>
         public static void ApplyParserOptions(Object parser)
         {
             if (parser is ITokenisingParser)
@@ -1102,16 +1102,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
+        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
+        /// <param name="ctypes">MIME Types.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes)
@@ -1121,16 +1121,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
+        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
+        /// <param name="ctypes">MIME Types.</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         /// <returns></returns>
@@ -1160,17 +1160,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
+        /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
+        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client.</returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(String acceptHeader, out String contentType)
@@ -1199,16 +1199,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
-        /// <returns>A Writer for a Content Type the client accepts</returns>
+        /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
+        /// <returns>A Writer for a Content Type the client accepts.</returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(String acceptHeader)
@@ -1218,13 +1218,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="IRdfWriter"/> based on the file extension
+        /// Selects a <see cref="IRdfWriter"/> based on the file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
-        /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <param name="fileExt">File Extension.</param>
+        /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension.</exception>
         /// <remarks>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         /// <returns></returns>
@@ -1235,14 +1235,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="IRdfWriter"/> based on the file extension
+        /// Selects a <see cref="IRdfWriter"/> based on the file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
-        /// <param name="contentType">Content Type of the chosen writer</param>
-        /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <param name="fileExt">File Extension.</param>
+        /// <param name="contentType">Content Type of the chosen writer.</param>
+        /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension.</exception>
         /// <remarks>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         /// <returns></returns>
@@ -1269,9 +1269,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the given MIME Types
+        /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the given MIME Types.
         /// </summary>
-        /// <param name="ctypes">MIME TYpes</param>
+        /// <param name="ctypes">MIME TYpes.</param>
         /// <returns></returns>
         public static IRdfReader GetParser(IEnumerable<String> ctypes)
         {
@@ -1293,9 +1293,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the HTTP Content-Type header from a HTTP Response
+        /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the HTTP Content-Type header from a HTTP Response.
         /// </summary>
-        /// <param name="contentType">Value of the HTTP Content-Type Header</param>
+        /// <param name="contentType">Value of the HTTP Content-Type Header.</param>
         /// <returns></returns>
         public static IRdfReader GetParser(String contentType)
         {
@@ -1303,9 +1303,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="IRdfReader"/> based on the file extension
+        /// Selects a <see cref="IRdfReader"/> based on the file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         public static IRdfReader GetParserByFileExtension(String fileExt)
         {
@@ -1325,10 +1325,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a SPARQL Parser based on the MIME types
+        /// Selects a SPARQL Parser based on the MIME types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
-        /// <param name="allowPlainTextResults">Whether to allow for plain text results</param>
+        /// <param name="ctypes">MIME Types.</param>
+        /// <param name="allowPlainTextResults">Whether to allow for plain text results.</param>
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(IEnumerable<String> ctypes, bool allowPlainTextResults)
         {
@@ -1356,9 +1356,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response
+        /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response.
         /// </summary>
-        /// <param name="contentType">Value of the HTTP Content-Type Header</param>
+        /// <param name="contentType">Value of the HTTP Content-Type Header.</param>
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType)
         {
@@ -1366,10 +1366,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response
+        /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response.
         /// </summary>
-        /// <param name="contentType">Value of the HTTP Content-Type Header</param>
-        /// <param name="allowPlainTextResults">Whether you allow Sparql Boolean results in text/plain format (Boolean results in text/boolean are handled properly but text/plain results can be conflated with CONSTRUCT/DESCRIBE results in NTriples format)</param>
+        /// <param name="contentType">Value of the HTTP Content-Type Header.</param>
+        /// <param name="allowPlainTextResults">Whether you allow Sparql Boolean results in text/plain format (Boolean results in text/boolean are handled properly but text/plain results can be conflated with CONSTRUCT/DESCRIBE results in NTriples format).</param>
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType, bool allowPlainTextResults)
         {
@@ -1377,9 +1377,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="ISparqlResultsReader"/> based on the file extension
+        /// Selects a <see cref="ISparqlResultsReader"/> based on the file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParserByFileExtension(String fileExt)
         {
@@ -1399,16 +1399,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the given MIME Types
+        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the given MIME Types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
-        /// <returns>A Writer for a Content Type the client accepts</returns>
+        /// <param name="ctypes">MIME Types.</param>
+        /// <returns>A Writer for a Content Type the client accepts.</returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes)
@@ -1418,17 +1418,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
+        /// <param name="ctypes">String array of accepted Content Types.</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
+        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client.</returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
@@ -1452,17 +1452,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
+        /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
+        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client.</returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(String acceptHeader, out String contentType)
@@ -1484,16 +1484,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
-        /// <returns>A Writer for a Content Type the client accepts</returns>
+        /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
+        /// <returns>A Writer for a Content Type the client accepts.</returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// Global options pertaining to writers will be applied to the selected writer
+        /// Global options pertaining to writers will be applied to the selected writer.
         /// </para>
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(String acceptHeader)
@@ -1503,9 +1503,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension
+        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt)
         {
@@ -1514,10 +1514,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension
+        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
-        /// <param name="contentType">Content Type of the selected writer</param>
+        /// <param name="fileExt">File Extension.</param>
+        /// <param name="contentType">Content Type of the selected writer.</param>
         /// <returns></returns>
         public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt, out String contentType)
         {
@@ -1538,9 +1538,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a Store parser based on the MIME types
+        /// Selects a Store parser based on the MIME types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
+        /// <param name="ctypes">MIME Types.</param>
         /// <returns></returns>
         public static IStoreReader GetStoreParser(IEnumerable<String> ctypes)
         {
@@ -1559,9 +1559,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IStoreReader">IStoreReader</see> based on the HTTP Content-Type header from a HTTP Response
+        /// Selects an appropriate <see cref="IStoreReader">IStoreReader</see> based on the HTTP Content-Type header from a HTTP Response.
         /// </summary>
-        /// <param name="contentType">Value of the HTTP Content-Type Header</param>
+        /// <param name="contentType">Value of the HTTP Content-Type Header.</param>
         /// <returns></returns>
         public static IStoreReader GetStoreParser(String contentType)
         {
@@ -1569,9 +1569,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a Store parser based on the file extension
+        /// Selects a Store parser based on the file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         public static IStoreReader GetStoreParserByFileExtension(String fileExt)
         {
@@ -1591,16 +1591,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the given MIME Types
+        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the given MIME Types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
+        /// <param name="ctypes">MIME Types.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>.
         /// </para>
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes)
@@ -1610,17 +1610,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the given MIME Types
+        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the given MIME Types.
         /// </summary>
-        /// <param name="ctypes">MIME Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
+        /// <param name="ctypes">MIME Types.</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>.
         /// </para>
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes, out String contentType)
@@ -1643,12 +1643,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
+        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client.</returns>
+        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header.</remarks>
         public static IStoreWriter GetStoreWriter(String acceptHeader, out String contentType)
         {
             String[] ctypes;
@@ -1668,11 +1668,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request.
         /// </summary>
-        /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
-        /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
+        /// <returns>A Writer for a Content Type the client accepts.</returns>
+        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header.</remarks>
         public static IStoreWriter GetStoreWriter(String acceptHeader)
         {
             String temp;
@@ -1680,9 +1680,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="IStoreWriter"/> by file extension
+        /// Selects a <see cref="IStoreWriter"/> by file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         public static IStoreWriter GetStoreWriterByFileExtension(String fileExt)
         {
@@ -1691,10 +1691,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a <see cref="IStoreWriter"/> by file extension
+        /// Selects a <see cref="IStoreWriter"/> by file extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
-        /// <param name="contentType">Content Type of the selected writer</param>
+        /// <param name="fileExt">File Extension.</param>
+        /// <param name="contentType">Content Type of the selected writer.</param>
         /// <returns></returns>
         public static IStoreWriter GetStoreWriterByFileExtension(String fileExt, out String contentType)
         {
@@ -1715,9 +1715,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects the appropriate MIME Type for the given File Extension if the File Extension is a standard extension for an RDF format
+        /// Selects the appropriate MIME Type for the given File Extension if the File Extension is a standard extension for an RDF format.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static String GetMimeType(String fileExt)
@@ -1736,9 +1736,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the MIME Types associated with a given File Extension
+        /// Gets all the MIME Types associated with a given File Extension.
         /// </summary>
-        /// <param name="fileExt">File Extension</param>
+        /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
         [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static IEnumerable<String> GetMimeTypes(String fileExt)
@@ -1761,19 +1761,19 @@ namespace VDS.RDF
 
 
         /// <summary>
-        /// Gets the true file extension for a filename
+        /// Gets the true file extension for a filename.
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This is an alternative to using <see cref="System.IO.Path.GetExtension(String)"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example <strong>.gz</strong>
+        /// This is an alternative to using <see cref="System.IO.Path.GetExtension(String)"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example. <strong>.gz</strong>
         /// </para>
         /// <para>
         /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.
         /// </para>
         /// <para>
-        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong> that is relevan to the library
+        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong> that is relevan to the library.
         /// </para>
         /// </remarks>
         public static String GetTrueFileExtension(String filename)
@@ -1803,9 +1803,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the true extension for a resource
+        /// Gets the true extension for a resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public static String GetTrueResourceExtension(String resource)
         {
@@ -1833,9 +1833,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects the appropriate File Extension for the given MIME Type
+        /// Selects the appropriate File Extension for the given MIME Type.
         /// </summary>
-        /// <param name="mimeType">MIME Type</param>
+        /// <param name="mimeType">MIME Type.</param>
         /// <returns></returns>
         public static String GetFileExtension(String mimeType)
         {
@@ -1853,9 +1853,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects the appropriate File Extension for the given RDF Writer
+        /// Selects the appropriate File Extension for the given RDF Writer.
         /// </summary>
-        /// <param name="writer">RDF Writer</param>
+        /// <param name="writer">RDF Writer.</param>
         /// <returns></returns>
         public static String GetFileExtension(IRdfWriter writer)
         {
@@ -1873,9 +1873,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects the appropriate File Extension for the given Store Writer
+        /// Selects the appropriate File Extension for the given Store Writer.
         /// </summary>
-        /// <param name="writer">Store Writer</param>
+        /// <param name="writer">Store Writer.</param>
         /// <returns></returns>
         public static String GetFileExtension(IStoreWriter writer)
         {

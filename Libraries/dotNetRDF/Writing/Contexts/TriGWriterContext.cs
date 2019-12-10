@@ -29,7 +29,7 @@ using System.IO;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Writer Context for TriG
+    /// Writer Context for TriG.
     /// </summary>
     public class TriGWriterContext : ThreadedStoreWriterContext
     {
@@ -37,14 +37,14 @@ namespace VDS.RDF.Writing.Contexts
         private bool _n3compatability = false;
 
         /// <summary>
-        /// Creates a new TriG Writer context
+        /// Creates a new TriG Writer context.
         /// </summary>
-        /// <param name="store">Triple Store to save</param>
-        /// <param name="output">TextWriter to output to</param>
-        /// <param name="prettyPrint">Whether to use pretty printing</param>
-        /// <param name="hiSpeedAllowed">Whether high speed mode is permitted</param>
-        /// <param name="compressionLevel">Compression Level to use</param>
-        /// <param name="n3compatability">Whether to enable N3 compatability mode</param>
+        /// <param name="store">Triple Store to save.</param>
+        /// <param name="output">TextWriter to output to.</param>
+        /// <param name="prettyPrint">Whether to use pretty printing.</param>
+        /// <param name="hiSpeedAllowed">Whether high speed mode is permitted.</param>
+        /// <param name="compressionLevel">Compression Level to use.</param>
+        /// <param name="n3compatability">Whether to enable N3 compatability mode.</param>
         public TriGWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
             : base(store, output, prettyPrint, hiSpeedAllowed)
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level
+        /// Gets/Sets the Compression Level.
         /// </summary>
         public int CompressionLevel
         {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets N3 Compatability Mode
+        /// Gets/Sets N3 Compatability Mode.
         /// </summary>
         public bool N3CompatabilityMode
         {

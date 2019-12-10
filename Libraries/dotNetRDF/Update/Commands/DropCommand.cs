@@ -31,7 +31,7 @@ using System.Text;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents a SPARQL Update DROP command
+    /// Represents a SPARQL Update DROP command.
     /// </summary>
     public class DropCommand : SparqlUpdateCommand
     {
@@ -40,11 +40,11 @@ namespace VDS.RDF.Update.Commands
         private bool _silent = false;
 
         /// <summary>
-        /// Creates a new DROP command
+        /// Creates a new DROP command.
         /// </summary>
-        /// <param name="graphUri">URI ofthe Graph to DROP</param>
-        /// <param name="mode">DROP Mode to use</param>
-        /// <param name="silent">Whether the DROP should be done silently</param>
+        /// <param name="graphUri">URI ofthe Graph to DROP.</param>
+        /// <param name="mode">DROP Mode to use.</param>
+        /// <param name="silent">Whether the DROP should be done silently.</param>
         public DropCommand(Uri graphUri, ClearMode mode, bool silent)
             : base(SparqlUpdateCommandType.Drop)
         {
@@ -56,43 +56,43 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new DROP command
+        /// Creates a new DROP command.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to DROP</param>
-        /// <param name="mode">DROP Mode to use</param>
+        /// <param name="graphUri">URI of the Graph to DROP.</param>
+        /// <param name="mode">DROP Mode to use.</param>
         public DropCommand(Uri graphUri, ClearMode mode)
             : this(graphUri, mode, false) { }
 
         /// <summary>
-        /// Creates a new DROP command
+        /// Creates a new DROP command.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to DROP</param>
+        /// <param name="graphUri">URI of the Graph to DROP.</param>
         public DropCommand(Uri graphUri)
             : this(graphUri, ClearMode.Graph, false) { }
 
         /// <summary>
-        /// Creates a new DROP command which drops the Default Graph
+        /// Creates a new DROP command which drops the Default Graph.
         /// </summary>
         public DropCommand()
             : this(null, ClearMode.Default) { }
 
         /// <summary>
-        /// Creates a new DROP command which performs a specific clear mode drop operation
+        /// Creates a new DROP command which performs a specific clear mode drop operation.
         /// </summary>
-        /// <param name="mode">Clear Mode</param>
+        /// <param name="mode">Clear Mode.</param>
         public DropCommand(ClearMode mode)
             : this(mode, false) { }
 
         /// <summary>
-        /// Creates a new DROP command which performs a specific clear mode drop operation
+        /// Creates a new DROP command which performs a specific clear mode drop operation.
         /// </summary>
-        /// <param name="mode">Clear Mode</param>
-        /// <param name="silent">Whether errors should be suppressed</param>
+        /// <param name="mode">Clear Mode.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
         public DropCommand(ClearMode mode, bool silent)
             : this(null, mode, silent) { }
 
         /// <summary>
-        /// Gets whether the Command affects a single Graph
+        /// Gets whether the Command affects a single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -103,9 +103,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -133,7 +133,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph to be dropped
+        /// Gets the URI of the Graph to be dropped.
         /// </summary>
         public Uri TargetUri
         {
@@ -144,7 +144,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Drop should be done silently
+        /// Gets whether the Drop should be done silently.
         /// </summary>
         public bool Silent
         {
@@ -155,7 +155,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the type of DROP operation to perform
+        /// Gets the type of DROP operation to perform.
         /// </summary>
         public ClearMode Mode
         {
@@ -166,9 +166,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             try
@@ -231,16 +231,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessDropCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the command
+        /// Gets the String representation of the command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

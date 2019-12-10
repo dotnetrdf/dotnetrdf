@@ -30,37 +30,37 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// SPARQL Update Processor which processes updates by sending them to a remote SPARQL Update endpoint represented by a <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> instance
+    /// SPARQL Update Processor which processes updates by sending them to a remote SPARQL Update endpoint represented by a <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> instance.
     /// </summary>
     public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     {
         private SparqlRemoteUpdateEndpoint _endpoint;
 
         /// <summary>
-        /// Creates a new Remote Update Processor
+        /// Creates a new Remote Update Processor.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public RemoteUpdateProcessor(string endpointUri)
             : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
         /// <summary>
-        /// Creates a new Remote Update Processor
+        /// Creates a new Remote Update Processor.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public RemoteUpdateProcessor(Uri endpointUri)
             : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
         /// <summary>
-        /// Creates a new Remote Update Processor
+        /// Creates a new Remote Update Processor.
         /// </summary>
-        /// <param name="endpoint">SPARQL Remote Update Endpoint</param>
+        /// <param name="endpoint">SPARQL Remote Update Endpoint.</param>
         public RemoteUpdateProcessor(SparqlRemoteUpdateEndpoint endpoint)
         {
             _endpoint = endpoint;
         }
 
         /// <summary>
-        /// Discards any outstanding changes
+        /// Discards any outstanding changes.
         /// </summary>
         public void Discard()
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Flushes any outstanding changes to the underlying store
+        /// Flushes any outstanding changes to the underlying store.
         /// </summary>
         public void Flush()
         {
@@ -76,54 +76,54 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes an ADD command
+        /// Processes an ADD command.
         /// </summary>
-        /// <param name="cmd">Add Command</param>
+        /// <param name="cmd">Add Command.</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a CLEAR command
+        /// Processes a CLEAR command.
         /// </summary>
-        /// <param name="cmd">Clear Command</param>
+        /// <param name="cmd">Clear Command.</param>
         public void ProcessClearCommand(ClearCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a COPY command
+        /// Processes a COPY command.
         /// </summary>
-        /// <param name="cmd">Copy Command</param>
+        /// <param name="cmd">Copy Command.</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a CREATE command
+        /// Processes a CREATE command.
         /// </summary>
-        /// <param name="cmd">Create Command</param>
+        /// <param name="cmd">Create Command.</param>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a command
+        /// Processes a command.
         /// </summary>
-        /// <param name="cmd">Command</param>
+        /// <param name="cmd">Command.</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
             _endpoint.Update(cmd.ToString());
         }
 
         /// <summary>
-        /// Processes a command set
+        /// Processes a command set.
         /// </summary>
-        /// <param name="commands">Command Set</param>
+        /// <param name="commands">Command Set.</param>
         public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
             DateTime start = DateTime.Now;
@@ -140,72 +140,72 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a DELETE command
+        /// Processes a DELETE command.
         /// </summary>
-        /// <param name="cmd">Delete Command</param>
+        /// <param name="cmd">Delete Command.</param>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a DELETE DATA command
+        /// Processes a DELETE DATA command.
         /// </summary>
-        /// <param name="cmd">DELETE Data Command</param>
+        /// <param name="cmd">DELETE Data Command.</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a DROP command
+        /// Processes a DROP command.
         /// </summary>
-        /// <param name="cmd">Drop Command</param>
+        /// <param name="cmd">Drop Command.</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes an INSERT command
+        /// Processes an INSERT command.
         /// </summary>
-        /// <param name="cmd">Insert Command</param>
+        /// <param name="cmd">Insert Command.</param>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes an INSERT DATA command
+        /// Processes an INSERT DATA command.
         /// </summary>
-        /// <param name="cmd">Insert Data Command</param>
+        /// <param name="cmd">Insert Data Command.</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a LOAD command
+        /// Processes a LOAD command.
         /// </summary>
-        /// <param name="cmd">Load Command</param>
+        /// <param name="cmd">Load Command.</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes an INSERT/DELETE command
+        /// Processes an INSERT/DELETE command.
         /// </summary>
-        /// <param name="cmd">Insert/Delete Command</param>
+        /// <param name="cmd">Insert/Delete Command.</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
             ProcessCommand(cmd);
         }
 
         /// <summary>
-        /// Processes a MOVE command
+        /// Processes a MOVE command.
         /// </summary>
-        /// <param name="cmd">Move Command</param>
+        /// <param name="cmd">Move Command.</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
             ProcessCommand(cmd);

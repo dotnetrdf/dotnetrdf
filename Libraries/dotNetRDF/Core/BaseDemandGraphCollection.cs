@@ -30,28 +30,28 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// A decorator for graph collections that allows for graphs to be loaded on demand if they don't exist in the underlying graph collection
+    /// A decorator for graph collections that allows for graphs to be loaded on demand if they don't exist in the underlying graph collection.
     /// </summary>
     public abstract class BaseDemandGraphCollection
         : WrapperGraphCollection
     {
         /// <summary>
-        /// Creates a new decorator
+        /// Creates a new decorator.
         /// </summary>
         public BaseDemandGraphCollection()
             : base() { }
 
         /// <summary>
-        /// Creates a new decorator over the given graph collection
+        /// Creates a new decorator over the given graph collection.
         /// </summary>
-        /// <param name="collection">Graph Collection</param>
+        /// <param name="collection">Graph Collection.</param>
         public BaseDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
         /// <summary>
-        /// Checks whether the collection contains a Graph invoking an on-demand load if not present in the underlying collection
+        /// Checks whether the collection contains a Graph invoking an on-demand load if not present in the underlying collection.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
@@ -81,35 +81,35 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Loads a Graph on demand
+        /// Loads a Graph on demand.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <returns>A Graph if it could be loaded and throws an error otherwise</returns>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <returns>A Graph if it could be loaded and throws an error otherwise.</returns>
         protected abstract IGraph LoadOnDemand(Uri graphUri);
     }
 
     /// <summary>
-    /// A decorator for graph collections where graphs not in the underlying graph collection can be loaded on-demand from the Web as needed
+    /// A decorator for graph collections where graphs not in the underlying graph collection can be loaded on-demand from the Web as needed.
     /// </summary>
     public class WebDemandGraphCollection
         : BaseDemandGraphCollection
     {
         /// <summary>
-        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
+        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand.
         /// </summary>
         public WebDemandGraphCollection() { }
 
         /// <summary>
-        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
+        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand.
         /// </summary>
-        /// <param name="collection">Collection to decorate</param>
+        /// <param name="collection">Collection to decorate.</param>
         public WebDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
         /// <summary>
-        /// Tries to load a Graph on demand from a URI
+        /// Tries to load a Graph on demand from a URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected override IGraph LoadOnDemand(Uri graphUri)
         {
@@ -134,26 +134,26 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// A decorator for graph collection where graphs not in the underlying graph collection can be loaded on-demand from the Files on Disk as needed
+    /// A decorator for graph collection where graphs not in the underlying graph collection can be loaded on-demand from the Files on Disk as needed.
     /// </summary>
     public class DiskDemandGraphCollection
         : BaseDemandGraphCollection
     {
         /// <summary>
-        /// Creates a new Disk Demand Graph Collection which loads Graphs from the Web on demand
+        /// Creates a new Disk Demand Graph Collection which loads Graphs from the Web on demand.
         /// </summary>
         public DiskDemandGraphCollection()
             : base() { }
 
         /// <summary>
-        /// Creates a new Disk Demand Graph Collection
+        /// Creates a new Disk Demand Graph Collection.
         /// </summary>
-        /// <param name="collection">Collection to decorate</param>
+        /// <param name="collection">Collection to decorate.</param>
         public DiskDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
         /// <summary>
-        /// Tries to load a Graph on demand
+        /// Tries to load a Graph on demand.
         /// </summary>
         /// <param name="graphUri"></param>
         /// <returns></returns>

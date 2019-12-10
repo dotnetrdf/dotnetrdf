@@ -33,33 +33,33 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Helper Class containing constants and static functions for use with Full Text Search
+    /// Helper Class containing constants and static functions for use with Full Text Search.
     /// </summary>
     public static class FullTextHelper
     {
         /// <summary>
-        /// Constant for Full Text Namespace
+        /// Constant for Full Text Namespace.
         /// </summary>
         /// <remarks>
-        /// Is actually the ARQ Property Function Namespace and is used for compatibility with ARQ syntax for full text search
+        /// Is actually the ARQ Property Function Namespace and is used for compatibility with ARQ syntax for full text search.
         /// </remarks>
         public const String FullTextMatchNamespace = "http://jena.hpl.hp.com/ARQ/property#";
 
         /// <summary>
-        /// Constant for Full Text Match Predicate
+        /// Constant for Full Text Match Predicate.
         /// </summary>
         public const String FullTextMatchPredicateUri = FullTextMatchNamespace + "textMatch";
 
         /// <summary>
-        /// Constant for the Full Text Configuration Namespace which provides extensions to the basic Configuration API specific to Full Text indexing and search
+        /// Constant for the Full Text Configuration Namespace which provides extensions to the basic Configuration API specific to Full Text indexing and search.
         /// </summary>
         /// <remarks>
-        /// This vocabulary can be found as an embedded resource in this library as <strong>VDS.RDF.Query.FullText.ttl</strong>
+        /// This vocabulary can be found as an embedded resource in this library as. <strong>VDS.RDF.Query.FullText.ttl</strong>
         /// </remarks>
         public const String FullTextConfigurationNamespace = "http://www.dotnetrdf.org/configuration/fulltext#";
 
         /// <summary>
-        /// Constants for additional URIs provided by the Full Text Configuration Namespace
+        /// Constants for additional URIs provided by the Full Text Configuration Namespace.
         /// </summary>
         public const String ClassIndex = FullTextConfigurationNamespace + "Index",
                             ClassIndexer = FullTextConfigurationNamespace + "Indexer",
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query
                             PropertyIndexSync = FullTextConfigurationNamespace + "indexSync";
 
         /// <summary>
-        /// Context Key used to store and retrieve the Search Provider in the Query Evaluation Context
+        /// Context Key used to store and retrieve the Search Provider in the Query Evaluation Context.
         /// </summary>
         public const String ContextKey = "Query.FullText.SearchProvider";
         

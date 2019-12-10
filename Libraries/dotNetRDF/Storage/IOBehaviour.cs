@@ -30,7 +30,7 @@ using VDS.RDF.Storage.Management;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Flags Enumeration which is used to express the IO Behaviours of a specific Store
+    /// Flags Enumeration which is used to express the IO Behaviours of a specific Store.
     /// </summary>
     [Flags]
     public enum IOBehaviour

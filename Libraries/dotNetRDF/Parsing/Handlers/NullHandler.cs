@@ -27,24 +27,24 @@
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler that ignores everything it handles
+    /// A RDF Handler that ignores everything it handles.
     /// </summary>
     /// <remarks>
-    /// Useful if you simply want to parse some RDF to see if it parses and don't care about the actual data being parsed
+    /// Useful if you simply want to parse some RDF to see if it parses and don't care about the actual data being parsed.
     /// </remarks>
     public class NullHandler 
         : BaseRdfHandler
     {
         /// <summary>
-        /// Creates a new Null Handler
+        /// Creates a new Null Handler.
         /// </summary>
         public NullHandler()
             : base(new MockNodeFactory()) { }
 
         /// <summary>
-        /// Handles a Triple by doing nothing
+        /// Handles a Triple by doing nothing.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Indicates that the Handler accepts all Triples
+        /// Indicates that the Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {

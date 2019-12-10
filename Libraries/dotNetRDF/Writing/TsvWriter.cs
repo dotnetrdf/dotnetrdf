@@ -32,7 +32,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating TSV files from RDF Graphs
+    /// Class for generating TSV files from RDF Graphs.
     /// </summary>
     public class TsvWriter 
         : BaseRdfWriter, IFormatterBasedWriter
@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
         private TsvFormatter _formatter = new TsvFormatter();
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by this writer
+        /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
         public Type TripleFormatterType
         {
@@ -51,10 +51,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph to TSV format
+        /// Saves a Graph to TSV format.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="filename">File to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -64,10 +64,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph to TSV format
+        /// Saves a Graph to TSV format.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="output">Writer to save to</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="output">Writer to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             foreach (Triple t in g.Triples)
@@ -103,7 +103,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

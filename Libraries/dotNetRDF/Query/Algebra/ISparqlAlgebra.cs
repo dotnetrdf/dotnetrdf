@@ -33,19 +33,19 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Interface for classes that represent the SPARQL Algebra and are used to evaluate queries
+    /// Interface for classes that represent the SPARQL Algebra and are used to evaluate queries.
     /// </summary>
     public interface ISparqlAlgebra
     {
         /// <summary>
-        /// Evaluates the Algebra in the given Context
+        /// Evaluates the Algebra in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         BaseMultiset Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the enumeration of Variables used in the Algebra
+        /// Gets the enumeration of Variables used in the Algebra.
         /// </summary>
         IEnumerable<String> Variables
         {
@@ -53,38 +53,38 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         IEnumerable<String> FloatingVariables { get; }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         IEnumerable<String> FixedVariables { get; }
         
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a SPARQL Query</exception>
+        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a SPARQL Query.</exception>
         SparqlQuery ToQuery();
 
         /// <summary>
-        /// Converts the Algebra back to a Graph Pattern
+        /// Converts the Algebra back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a Graph Pattern.</exception>
         GraphPattern ToGraphPattern();
     }
 
     /// <summary>
-    /// Interface for SPARQL Algebra constructs which are unary operators i.e. they apply over a single inner Algebra
+    /// Interface for SPARQL Algebra constructs which are unary operators i.e. they apply over a single inner Algebra.
     /// </summary>
     public interface IUnaryOperator 
         : ISparqlAlgebra
     {
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         ISparqlAlgebra InnerAlgebra
         {
@@ -92,18 +92,18 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The operator should retain all it's existing properties and just return a new version of itself with the inner algebra having had the given optimiser applied to it
+        /// The operator should retain all it's existing properties and just return a new version of itself with the inner algebra having had the given optimiser applied to it.
         /// </remarks>
         ISparqlAlgebra Transform(IAlgebraOptimiser optimiser);
     }
 
     /// <summary>
-    /// Marker Interface for SPARQL Algebra constructs which are terminal operators i.e. they contain no inner algebra operators
+    /// Marker Interface for SPARQL Algebra constructs which are terminal operators i.e. they contain no inner algebra operators.
     /// </summary>
     public interface ITerminalOperator 
         : ISparqlAlgebra
@@ -112,13 +112,13 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a BGP
+    /// Represents an Algebra construct which is a BGP.
     /// </summary>
     public interface IBgp 
         : ISparqlAlgebra, ITerminalOperator
     {
         /// <summary>
-        /// Gets the Number of Patterns in the BGP
+        /// Gets the Number of Patterns in the BGP.
         /// </summary>
         int PatternCount
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Triple Patterns in the BGP
+        /// Gets the Triple Patterns in the BGP.
         /// </summary>
         IEnumerable<ITriplePattern> TriplePatterns
         {
@@ -135,13 +135,13 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a Filter
+    /// Represents an Algebra construct which is a Filter.
     /// </summary>
     public interface IFilter 
         : IUnaryOperator
     {
         /// <summary>
-        /// Gets the Filter
+        /// Gets the Filter.
         /// </summary>
         ISparqlFilter SparqlFilter 
         { 
@@ -151,16 +151,16 @@ namespace VDS.RDF.Query.Algebra
 
 
     /// <summary>
-    /// Represents an Algebra construct which is an Abstract Join (i.e. any kind of Join over two algebra operators)
+    /// Represents an Algebra construct which is an Abstract Join (i.e. any kind of Join over two algebra operators).
     /// </summary>
     /// <remarks>
-    /// Specific sub-interfaces are used to mark specific kinds of Join
+    /// Specific sub-interfaces are used to mark specific kinds of Join.
     /// </remarks>
     public interface IAbstractJoin
         : ISparqlAlgebra
     {
         /// <summary>
-        /// Gets the LHS of the Join
+        /// Gets the LHS of the Join.
         /// </summary>
         ISparqlAlgebra Lhs
         {
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the RHS of the Join
+        /// Gets the RHS of the Join.
         /// </summary>
         ISparqlAlgebra Rhs
         {
@@ -176,38 +176,38 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser
+        /// Transforms both sides of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The join should retain all it's existing properties and just return a new version of itself with the two sides of the join having had the given optimiser applied to them
+        /// The join should retain all it's existing properties and just return a new version of itself with the two sides of the join having had the given optimiser applied to them.
         /// </remarks>
         ISparqlAlgebra Transform(IAlgebraOptimiser optimiser);
 
         /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser
+        /// Transforms the LHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The join should retain all it's existing properties and just return a new version of itself with LHS side of the join having had the given optimiser applied to them
+        /// The join should retain all it's existing properties and just return a new version of itself with LHS side of the join having had the given optimiser applied to them.
         /// </remarks>
         ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser);
 
         /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser
+        /// Transforms the RHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The join should retain all it's existing properties and just return a new version of itself with RHS side of the join having had the given optimiser applied to them
+        /// The join should retain all it's existing properties and just return a new version of itself with RHS side of the join having had the given optimiser applied to them.
         /// </remarks>
         ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser);
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a Join
+    /// Represents an Algebra construct which is a Join.
     /// </summary>
     public interface IJoin 
         : IAbstractJoin
@@ -216,13 +216,13 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a Left Join
+    /// Represents an Algebra construct which is a Left Join.
     /// </summary>
     public interface ILeftJoin
         : IAbstractJoin
     {
         /// <summary>
-        /// Gets the Filter used on the Join
+        /// Gets the Filter used on the Join.
         /// </summary>
         ISparqlFilter Filter
         {
@@ -231,7 +231,7 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a Union
+    /// Represents an Algebra construct which is a Union.
     /// </summary>
     public interface IUnion 
         : IAbstractJoin
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a Minus
+    /// Represents an Algebra construct which is a Minus.
     /// </summary>
     public interface IMinus 
         : IAbstractJoin
@@ -249,13 +249,13 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is an Exists Join
+    /// Represents an Algebra construct which is an Exists Join.
     /// </summary>
     public interface IExistsJoin 
         : IAbstractJoin
     {
         /// <summary>
-        /// Gets whether the Join requires compatible solutions to exist on the RHS
+        /// Gets whether the Join requires compatible solutions to exist on the RHS.
         /// </summary>
         bool MustExist
         {

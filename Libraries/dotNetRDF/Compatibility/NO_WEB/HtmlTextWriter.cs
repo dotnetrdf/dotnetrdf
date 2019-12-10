@@ -35,11 +35,11 @@ using VDS.RDF.Writing;
 namespace System.Web.UI
 {
     /// <summary>
-    /// Custom implementation of <see cref="System.Web.UI.HtmlTextWriter">System.Web.UI.HtmlTextWriter</see> to replace it in builds where System.Web is not available
+    /// Custom implementation of <see cref="System.Web.UI.HtmlTextWriter">System.Web.UI.HtmlTextWriter</see> to replace it in builds where System.Web is not available.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Note that this is not a full implementation of HtmlTextWriter as per the original class, it simply emulates all the functionality that dotNetRDF requires for it's HTML outputting
+    /// Note that this is not a full implementation of HtmlTextWriter as per the original class, it simply emulates all the functionality that dotNetRDF requires for it's HTML outputting.
     /// </para>
     /// </remarks>
     public class HtmlTextWriter : TextWriter, IDisposable
@@ -52,16 +52,16 @@ namespace System.Web.UI
         private List<KeyValuePair<String, String>> _styles = new List<KeyValuePair<String, String>>();
 
         /// <summary>
-        /// Creates a new HTML Text Writer
+        /// Creates a new HTML Text Writer.
         /// </summary>
-        /// <param name="writer">Text Writer</param>
+        /// <param name="writer">Text Writer.</param>
         public HtmlTextWriter(TextWriter writer)
         {
             _writer = writer;
         }
 
         /// <summary>
-        /// Gets the encoding of the Inner Writer
+        /// Gets the encoding of the Inner Writer.
         /// </summary>
         public override Encoding Encoding
         {
@@ -72,7 +72,7 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Gets/Sets the current Indent
+        /// Gets/Sets the current Indent.
         /// </summary>
         public Int32 Indent
         {
@@ -87,7 +87,7 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Gets the Inner Writer
+        /// Gets the Inner Writer.
         /// </summary>
         public TextWriter InnerWriter
         {
@@ -154,21 +154,21 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Adds an attribute to the next element to be written
+        /// Adds an attribute to the next element to be written.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="name">Attribute Name.</param>
+        /// <param name="value">Value.</param>
         public void AddAttribute(String name, String value)
         {
             _attributes.Add(new KeyValuePair<String, String>(name, EncodeAttribute(value)));
         }
 
         /// <summary>
-        /// Adds an attribute to the next element to be written
+        /// Adds an attribute to the next element to be written.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
-        /// <param name="value">Value</param>
-        /// <param name="fEncode">Whether to encode the attribute value</param>
+        /// <param name="name">Attribute Name.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="fEncode">Whether to encode the attribute value.</param>
         public void AddAttribute(String name, String value, Boolean fEncode)
         {
             if (fEncode) value = EncodeAttribute(value);
@@ -176,41 +176,41 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Adds an attribute to the next element to be written
+        /// Adds an attribute to the next element to be written.
         /// </summary>
-        /// <param name="key">Attribute</param>
-        /// <param name="value">Value</param>
+        /// <param name="key">Attribute.</param>
+        /// <param name="value">Value.</param>
         public void AddAttribute(HtmlTextWriterAttribute key, String value)
         {
             AddAttribute(GetAttributeName(key), value);
         }
 
         /// <summary>
-        /// Adds an attribute to the next element to be written
+        /// Adds an attribute to the next element to be written.
         /// </summary>
-        /// <param name="key">Attribute</param>
-        /// <param name="value">Value</param>
-        /// <param name="fEncode">Whether to encode the attribute value</param>
+        /// <param name="key">Attribute.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="fEncode">Whether to encode the attribute value.</param>
         public void AddAttribute(HtmlTextWriterAttribute key, String value, Boolean fEncode)
         {
             AddAttribute(GetAttributeName(key), value, fEncode);
         }
 
         /// <summary>
-        /// Adds a CSS style that will be used in the style attribute of the next element to be written
+        /// Adds a CSS style that will be used in the style attribute of the next element to be written.
         /// </summary>
-        /// <param name="name">CSS Attribute Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="name">CSS Attribute Name.</param>
+        /// <param name="value">Value.</param>
         public void AddStyleAttribute(String name, String value)
         {
             _styles.Add(new KeyValuePair<String, String>(name, value));
         }
 
         /// <summary>
-        /// Adds a CSS style that will be used in the style attribute of the next element to be written
+        /// Adds a CSS style that will be used in the style attribute of the next element to be written.
         /// </summary>
-        /// <param name="key">CSS Attribute</param>
-        /// <param name="value">Value</param>
+        /// <param name="key">CSS Attribute.</param>
+        /// <param name="value">Value.</param>
         public void AddStyleAttribute(HtmlTextWriterStyle key, String value)
         {
             _styles.Add(new KeyValuePair<String, String>(GetStyleName(key), value));
@@ -223,7 +223,7 @@ namespace System.Web.UI
         public void Close()
 #else
         /// <summary>
-        /// Close the writer
+        /// Close the writer.
         /// </summary>
         public override void Close()
 #endif
@@ -232,7 +232,7 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Flush the writer
+        /// Flush the writer.
         /// </summary>
         public override void Flush()
         {
@@ -240,9 +240,9 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes the begin tag for an element
+        /// Writes the begin tag for an element.
         /// </summary>
-        /// <param name="tagName">Tag Name</param>
+        /// <param name="tagName">Tag Name.</param>
         public void RenderBeginTag(String tagName)
         {
             _tags.Push(tagName);
@@ -282,16 +282,16 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes the begin tag for an element
+        /// Writes the begin tag for an element.
         /// </summary>
-        /// <param name="tagKey">Tag</param>
+        /// <param name="tagKey">Tag.</param>
         public void RenderBeginTag(HtmlTextWriterTag tagKey)
         {
             RenderBeginTag(GetTagName(tagKey));
         }
 
         /// <summary>
-        /// Writes the end tag for an element
+        /// Writes the end tag for an element.
         /// </summary>
         public void RenderEndTag()
         {
@@ -313,171 +313,171 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a character
+        /// Writes a character.
         /// </summary>
-        /// <param name="value">Character</param>
+        /// <param name="value">Character.</param>
         public override void Write(char value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes a boolean
+        /// Writes a boolean.
         /// </summary>
-        /// <param name="value">Boolean</param>
+        /// <param name="value">Boolean.</param>
         public override void Write(bool value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes some characters
+        /// Writes some characters.
         /// </summary>
-        /// <param name="buffer">Characters</param>
+        /// <param name="buffer">Characters.</param>
         public override void Write(char[] buffer)
         {
             _writer.Write(buffer);
         }
 
         /// <summary>
-        /// Writes some portion of the given characters
+        /// Writes some portion of the given characters.
         /// </summary>
-        /// <param name="buffer">Characters</param>
-        /// <param name="index">Index to start at</param>
-        /// <param name="count">Number of characters to write</param>
+        /// <param name="buffer">Characters.</param>
+        /// <param name="index">Index to start at.</param>
+        /// <param name="count">Number of characters to write.</param>
         public override void Write(char[] buffer, int index, int count)
         {
             _writer.Write(buffer, index, count);
         }
 
         /// <summary>
-        /// Writes a decimal
+        /// Writes a decimal.
         /// </summary>
-        /// <param name="value">Decimal</param>
+        /// <param name="value">Decimal.</param>
         public override void Write(decimal value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes a double
+        /// Writes a double.
         /// </summary>
-        /// <param name="value">Double</param>
+        /// <param name="value">Double.</param>
         public override void Write(double value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes a float
+        /// Writes a float.
         /// </summary>
-        /// <param name="value">Float</param>
+        /// <param name="value">Float.</param>
         public override void Write(float value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes an integer
+        /// Writes an integer.
         /// </summary>
-        /// <param name="value">Integer</param>
+        /// <param name="value">Integer.</param>
         public override void Write(int value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes a long integer
+        /// Writes a long integer.
         /// </summary>
-        /// <param name="value">Long Integer</param>
+        /// <param name="value">Long Integer.</param>
         public override void Write(long value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes an object
+        /// Writes an object.
         /// </summary>
-        /// <param name="value">Object</param>
+        /// <param name="value">Object.</param>
         public override void Write(object value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes a formatted string
+        /// Writes a formatted string.
         /// </summary>
-        /// <param name="format">String with format</param>
-        /// <param name="arg0">Argument to insert into string</param>
+        /// <param name="format">String with format.</param>
+        /// <param name="arg0">Argument to insert into string.</param>
         public override void Write(string format, object arg0)
         {
             _writer.Write(format, arg0);
         }
 
         /// <summary>
-        /// Writes a formatted string
+        /// Writes a formatted string.
         /// </summary>
-        /// <param name="format">String with format</param>
-        /// <param name="arg0">Argument to insert into string</param>
-        /// <param name="arg1">Argument to insert into string</param>
+        /// <param name="format">String with format.</param>
+        /// <param name="arg0">Argument to insert into string.</param>
+        /// <param name="arg1">Argument to insert into string.</param>
         public override void Write(string format, object arg0, object arg1)
         {
             _writer.Write(format, arg0, arg1);
         }
 
         /// <summary>
-        /// Writes a formatted string
+        /// Writes a formatted string.
         /// </summary>
-        /// <param name="format">String with format</param>
-        /// <param name="arg">Arguments to insert into string</param>
+        /// <param name="format">String with format.</param>
+        /// <param name="arg">Arguments to insert into string.</param>
         public override void Write(string format, params object[] arg)
         {
             _writer.Write(format, arg);
         }
 
         /// <summary>
-        /// Writes a string
+        /// Writes a string.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         public override void Write(string value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes an unsigned integer
+        /// Writes an unsigned integer.
         /// </summary>
-        /// <param name="value">Unsigned Integer</param>
+        /// <param name="value">Unsigned Integer.</param>
         public override void Write(uint value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes an unsigned long integer
+        /// Writes an unsigned long integer.
         /// </summary>
-        /// <param name="value">Unsigned Long Integer</param>
+        /// <param name="value">Unsigned Long Integer.</param>
         public override void Write(ulong value)
         {
             _writer.Write(value);
         }
 
         /// <summary>
-        /// Writes an attribute
+        /// Writes an attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="name">Attribute Name.</param>
+        /// <param name="value">Value.</param>
         public void WriteAttribute(String name, String value)
         {
             _writer.Write(name + "=\"" + EncodeAttribute(value) + "\"");
         }
 
         /// <summary>
-        /// Writes an attribute
+        /// Writes an attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
-        /// <param name="value">Value</param>
-        /// <param name="fEncode">Whether to encode the value</param>
+        /// <param name="name">Attribute Name.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="fEncode">Whether to encode the value.</param>
         public void WriteAttribute(String name, String value, Boolean fEncode)
         {
             if (fEncode) value = EncodeAttribute(value);
@@ -485,9 +485,9 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a begin tag but does not terminate it so that methods like <see cref="HtmlTextWriter.WriteAttribute(String,String)"/> may be used
+        /// Writes a begin tag but does not terminate it so that methods like <see cref="HtmlTextWriter.WriteAttribute(String,String)"/> may be used.
         /// </summary>
-        /// <param name="tagName">Tag Name</param>
+        /// <param name="tagName">Tag Name.</param>
         public void WriteBeginTag(String tagName)
         {
             if (_newline)
@@ -499,7 +499,7 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a line break
+        /// Writes a line break.
         /// </summary>
         public void WriteBreak()
         {
@@ -512,9 +512,9 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes encoded text
+        /// Writes encoded text.
         /// </summary>
-        /// <param name="text">Text</param>
+        /// <param name="text">Text.</param>
         public void WriteEncodedText(String text)
         {
             if (_newline)
@@ -526,27 +526,27 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes an encoded URL
+        /// Writes an encoded URL.
         /// </summary>
-        /// <param name="url">URL</param>
+        /// <param name="url">URL.</param>
         public void WriteEncodedUrl(String url)
         {
             _writer.Write(Uri.EscapeUriString(url));
         }
 
         /// <summary>
-        /// Writes an encoded URL parameter
+        /// Writes an encoded URL parameter.
         /// </summary>
-        /// <param name="urlText">URL parameter</param>
+        /// <param name="urlText">URL parameter.</param>
         public void WriteEncodedUrlParameter(String urlText)
         {
             _writer.Write(HttpUtility.UrlEncode(urlText));
         }
 
         /// <summary>
-        /// Writes an end tag
+        /// Writes an end tag.
         /// </summary>
-        /// <param name="tagName">Tag Name</param>
+        /// <param name="tagName">Tag Name.</param>
         public void WriteEndTag(String tagName)
         {
             if (_newline)
@@ -558,9 +558,9 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a begin tag with the terminating &lt;, use <see cref="WriteBeginTag(String)"/> instead if you need to add attributes afterwards
+        /// Writes a begin tag with the terminating &lt;, use <see cref="WriteBeginTag(String)"/> instead if you need to add attributes afterwards.
         /// </summary>
-        /// <param name="tagName">Tag Name</param>
+        /// <param name="tagName">Tag Name.</param>
         public void WriteFullBeginTag(String tagName)
         {
             if (_newline)
@@ -572,7 +572,7 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a new line
+        /// Writes a new line.
         /// </summary>
         public override void WriteLine()
         {
@@ -580,159 +580,159 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a boolean followed by a new line
+        /// Writes a boolean followed by a new line.
         /// </summary>
-        /// <param name="value">Boolean</param>
+        /// <param name="value">Boolean.</param>
         public override void WriteLine(bool value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a character followed by a new line
+        /// Writes a character followed by a new line.
         /// </summary>
-        /// <param name="value">Character</param>
+        /// <param name="value">Character.</param>
         public override void WriteLine(char value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes some characters followed by a new line
+        /// Writes some characters followed by a new line.
         /// </summary>
-        /// <param name="buffer">Characters</param>
+        /// <param name="buffer">Characters.</param>
         public override void WriteLine(char[] buffer)
         {
             _writer.WriteLine(buffer);
         }
 
         /// <summary>
-        /// Writes some portion of the characters followed by a new line
+        /// Writes some portion of the characters followed by a new line.
         /// </summary>
-        /// <param name="buffer">Characters</param>
-        /// <param name="index">Index to start at</param>
-        /// <param name="count">Number of characters to write</param>
+        /// <param name="buffer">Characters.</param>
+        /// <param name="index">Index to start at.</param>
+        /// <param name="count">Number of characters to write.</param>
         public override void WriteLine(char[] buffer, int index, int count)
         {
             _writer.WriteLine(buffer, index, count);
         }
 
         /// <summary>
-        /// Writes a decimal followed by a new line
+        /// Writes a decimal followed by a new line.
         /// </summary>
-        /// <param name="value">Decimal</param>
+        /// <param name="value">Decimal.</param>
         public override void WriteLine(decimal value)
         {
              _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a double followed by a new line
+        /// Writes a double followed by a new line.
         /// </summary>
-        /// <param name="value">Double</param>
+        /// <param name="value">Double.</param>
         public override void WriteLine(double value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a float followed by a new line
+        /// Writes a float followed by a new line.
         /// </summary>
-        /// <param name="value">Float</param>
+        /// <param name="value">Float.</param>
         public override void WriteLine(float value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes an integer followed by a new line
+        /// Writes an integer followed by a new line.
         /// </summary>
-        /// <param name="value">Integer</param>
+        /// <param name="value">Integer.</param>
         public override void WriteLine(int value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a long integer followed by a new line
+        /// Writes a long integer followed by a new line.
         /// </summary>
-        /// <param name="value">Long Integer</param>
+        /// <param name="value">Long Integer.</param>
         public override void WriteLine(long value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes an object followed by a new line
+        /// Writes an object followed by a new line.
         /// </summary>
-        /// <param name="value">Object</param>
+        /// <param name="value">Object.</param>
         public override void WriteLine(object value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a string followed by a new line
+        /// Writes a string followed by a new line.
         /// </summary>
-        /// <param name="value">String</param>
+        /// <param name="value">String.</param>
         public override void WriteLine(string value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a formatted string followed by a new line
+        /// Writes a formatted string followed by a new line.
         /// </summary>
-        /// <param name="format">String</param>
-        /// <param name="arg0">Argument to insert into string</param>
+        /// <param name="format">String.</param>
+        /// <param name="arg0">Argument to insert into string.</param>
         public override void WriteLine(string format, object arg0)
         {
             _writer.WriteLine(format, arg0);
         }
 
         /// <summary>
-        /// Writes a formatted string followed by a new line
+        /// Writes a formatted string followed by a new line.
         /// </summary>
-        /// <param name="format">String</param>
-        /// <param name="arg0">Argument to insert into string</param>
-        /// <param name="arg1">Argument to insert into string</param>
+        /// <param name="format">String.</param>
+        /// <param name="arg0">Argument to insert into string.</param>
+        /// <param name="arg1">Argument to insert into string.</param>
         public override void WriteLine(string format, object arg0, object arg1)
         {
             _writer.WriteLine(format, arg0, arg1);
         }
 
         /// <summary>
-        /// Writes a formatted string followed by a new line
+        /// Writes a formatted string followed by a new line.
         /// </summary>
-        /// <param name="format">String</param>
-        /// <param name="arg">Arguments to insert into string</param>
+        /// <param name="format">String.</param>
+        /// <param name="arg">Arguments to insert into string.</param>
         public override void WriteLine(string format, params object[] arg)
         {
             _writer.WriteLine(format, arg);
         }
 
         /// <summary>
-        /// Writes an unsigned integer followed by a new line
+        /// Writes an unsigned integer followed by a new line.
         /// </summary>
-        /// <param name="value">Unsigned Integer</param>
+        /// <param name="value">Unsigned Integer.</param>
         public override void WriteLine(uint value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes an unsigned long integer followed by a new line
+        /// Writes an unsigned long integer followed by a new line.
         /// </summary>
-        /// <param name="value">Unsigned Long Integer</param>
+        /// <param name="value">Unsigned Long Integer.</param>
         public override void WriteLine(ulong value)
         {
             _writer.WriteLine(value);
         }
 
         /// <summary>
-        /// Writes a string on a line with no tabs
+        /// Writes a string on a line with no tabs.
         /// </summary>
-        /// <param name="s">String</param>
+        /// <param name="s">String.</param>
         public void WriteLineNoTabs(String s)
         {
             _writer.WriteLine();
@@ -740,21 +740,21 @@ namespace System.Web.UI
         }
 
         /// <summary>
-        /// Writes a style attribute
+        /// Writes a style attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
-        /// <param name="value">Value</param>
+        /// <param name="name">Attribute Name.</param>
+        /// <param name="value">Value.</param>
         public void WriteStyleAttribute(String name, String value)
         {
             _writer.Write(name + ": " + EncodeStyle(value) + ";");
         }
 
         /// <summary>
-        /// Writes a style attribute
+        /// Writes a style attribute.
         /// </summary>
-        /// <param name="name">Attribute Name</param>
-        /// <param name="value">Value</param>
-        /// <param name="fEncode">Whether to encode the value</param>
+        /// <param name="name">Attribute Name.</param>
+        /// <param name="value">Value.</param>
+        /// <param name="fEncode">Whether to encode the value.</param>
         public void WriteStyleAttribute(String name, String value, Boolean fEncode)
         {
             if (fEncode) value = EncodeAttribute(value);

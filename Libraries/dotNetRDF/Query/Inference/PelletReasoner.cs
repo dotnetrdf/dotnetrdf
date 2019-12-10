@@ -33,11 +33,11 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 namespace VDS.RDF.Query.Inference
 {
     /// <summary>
-    /// A Pellet Reasoner which provides OWL 2 capable reasoning using an external knowledge base from a Pellet Server instance
+    /// A Pellet Reasoner which provides OWL 2 capable reasoning using an external knowledge base from a Pellet Server instance.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <strong>Note:</strong> Currently this reasoner operates only on a external knowledge base and there is currently no way to introduce new knowledge bases/data through the dotNetRDF API
+    /// <strong>Note:</strong> Currently this reasoner operates only on a external knowledge base and there is currently no way to introduce new knowledge bases/data through the dotNetRDF API.
     /// </para>
     /// </remarks>
     public class PelletReasoner : IQueryableOwlReasoner
@@ -46,10 +46,10 @@ namespace VDS.RDF.Query.Inference
         private KnowledgeBase _kb;
 
         /// <summary>
-        /// Creates a new Pellet Reasoner
+        /// Creates a new Pellet Reasoner.
         /// </summary>
-        /// <param name="server">Pellet Server</param>
-        /// <param name="kbName">Knowledge Base name</param>
+        /// <param name="server">Pellet Server.</param>
+        /// <param name="kbName">Knowledge Base name.</param>
         public PelletReasoner(PelletServer server, String kbName)
         {
             _server = server;
@@ -64,15 +64,15 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Creates a new Pellet Reasoner
+        /// Creates a new Pellet Reasoner.
         /// </summary>
-        /// <param name="serverUri">Pellet Server URI</param>
-        /// <param name="kbName">Knowledge Base name</param>
+        /// <param name="serverUri">Pellet Server URI.</param>
+        /// <param name="kbName">Knowledge Base name.</param>
         public PelletReasoner(Uri serverUri, String kbName)
             : this(new PelletServer(serverUri), kbName) { }
 
         /// <summary>
-        /// Gets the Knowledge Base this Reasoner operates over
+        /// Gets the Knowledge Base this Reasoner operates over.
         /// </summary>
         public KnowledgeBase KnowledgeBase
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Gets the Pellet Server this Reasoner operates on
+        /// Gets the Pellet Server this Reasoner operates on.
         /// </summary>
         public PelletServer Server
         {
@@ -94,9 +94,9 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Executes a SPARQL Query against the underlying Knowledge Base
+        /// Executes a SPARQL Query against the underlying Knowledge Base.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public object ExecuteQuery(string sparqlQuery)
         {
@@ -113,11 +113,11 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Adds a Graph to the Knowledge Base
+        /// Adds a Graph to the Knowledge Base.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <remarks>
-        /// Currently not supported by Pellet Server
+        /// Currently not supported by Pellet Server.
         /// </remarks>
         public void Add(IGraph g)
         {
@@ -125,13 +125,13 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Extract a reasoning enhanced sub-graph from the given Graph rooted at the given Node
+        /// Extract a reasoning enhanced sub-graph from the given Graph rooted at the given Node.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="n">Root Node</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="n">Root Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Currently not supported by Pellet Server
+        /// Currently not supported by Pellet Server.
         /// </remarks>
         public IGraph Extract(IGraph g, INode n)
         {
@@ -139,12 +139,12 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Extracts all possible triples using the given extraction mode
+        /// Extracts all possible triples using the given extraction mode.
         /// </summary>
-        /// <param name="mode">Extraction Mode</param>
+        /// <param name="mode">Extraction Mode.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Currently not supported by Pellet Server
+        /// Currently not supported by Pellet Server.
         /// </remarks>
         public IEnumerable<Triple> Extract(string mode)
         {
@@ -152,12 +152,12 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Extracts all possible triples using the given extraction modes
+        /// Extracts all possible triples using the given extraction modes.
         /// </summary>
-        /// <param name="modes">Extraction Modes</param>
+        /// <param name="modes">Extraction Modes.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Currently not supported by Pellet Server
+        /// Currently not supported by Pellet Server.
         /// </remarks>
         public IEnumerable<Triple> Extract(IEnumerable<string> modes)
         {
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Extracts the triples which comprise the class hierarchy
+        /// Extracts the triples which comprise the class hierarchy.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Triple> Classify()
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Extracts the triples which comprise the class hierarchy and individuals of those classes
+        /// Extracts the triples which comprise the class hierarchy and individuals of those classes.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Triple> Realize()
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Returns whether the underlying knowledge base is consistent
+        /// Returns whether the underlying knowledge base is consistent.
         /// </summary>
         /// <returns></returns>
         public bool IsConsistent()
@@ -219,12 +219,12 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Returns whether the given Graph is consistent with the underlying knowledge base
+        /// Returns whether the given Graph is consistent with the underlying knowledge base.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Currently not supported by Pellet Server
+        /// Currently not supported by Pellet Server.
         /// </remarks>
         public bool IsConsistent(IGraph g)
         {
@@ -232,10 +232,10 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// Returns the enumeration of unsatisfiable classes
+        /// Returns the enumeration of unsatisfiable classes.
         /// </summary>
         /// <remarks>
-        /// Currently not supported by Pellet Server
+        /// Currently not supported by Pellet Server.
         /// </remarks>
         public IEnumerable<OntologyResource> Unsatisfiable
         {

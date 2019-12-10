@@ -33,7 +33,7 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 namespace VDS.RDF.Query.Inference.Pellet
 {
     /// <summary>
-    /// Class representing Services provided by a Pellet Server Knowledge Base
+    /// Class representing Services provided by a Pellet Server Knowledge Base.
     /// </summary>
     public abstract class PelletService
     {
@@ -42,10 +42,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         private List<String> _mimeTypes = new List<string>();
 
         /// <summary>
-        /// Creates a new Pellet Service instance
+        /// Creates a new Pellet Service instance.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object representing the Service</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object representing the Service.</param>
         protected PelletService(String name, JObject obj)
         {
             _name = name;
@@ -58,9 +58,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Factory method for generating concrete Pellet Service instances representing different Pellet Services
+        /// Factory method for generating concrete Pellet Service instances representing different Pellet Services.
         /// </summary>
-        /// <param name="t">JSON Object representing the Service</param>
+        /// <param name="t">JSON Object representing the Service.</param>
         /// <returns></returns>
         internal static PelletService CreateService(JToken t)
         {
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Name of the Service
+        /// Gets the Name of the Service.
         /// </summary>
         public String Name
         {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Endpoint for this Service
+        /// Gets the Endpoint for this Service.
         /// </summary>
         public ServiceEndpoint Endpoint
         {
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Response MIME Types supported by the Service
+        /// Gets the Response MIME Types supported by the Service.
         /// </summary>
         public IEnumerable<String> MimeTypes
         {

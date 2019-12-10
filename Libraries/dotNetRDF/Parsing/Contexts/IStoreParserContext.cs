@@ -29,12 +29,12 @@ using System;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Interface for Store Parser Contexts
+    /// Interface for Store Parser Contexts.
     /// </summary>
     public interface IStoreParserContext
     {
         /// <summary>
-        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF
+        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF.
         /// </summary>
         IRdfHandler Handler
         {
@@ -42,7 +42,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it)
+        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it).
         /// </summary>
         bool TraceParsing 
         { 
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the Handler
+        /// Gets the Namespace Map for the Handler.
         /// </summary>
         INamespaceMapper Namespaces
         {
@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Base URI for the Handler
+        /// Gets the Base URI for the Handler.
         /// </summary>
         Uri BaseUri
         {

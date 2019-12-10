@@ -37,7 +37,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Class containing Helper information and methods pertaining to the Sparql Query Language for RDF
+    /// Class containing Helper information and methods pertaining to the Sparql Query Language for RDF.
     /// </summary>
     public static class SparqlSpecsHelper
     {
@@ -46,16 +46,16 @@ namespace VDS.RDF.Query
         #region Keywords and Constants
 
         /// <summary>
-        /// Namespace Uri for SPARQL Namespace
+        /// Namespace Uri for SPARQL Namespace.
         /// </summary>
         public const String SparqlNamespace = "http://www.w3.org/2005/sparql-results#";
         /// <summary>
-        /// Namespace Uri for the RDF serialization of a SPARQL Result Set
+        /// Namespace Uri for the RDF serialization of a SPARQL Result Set.
         /// </summary>
         public const String SparqlRdfResultsNamespace = "http://www.w3.org/2001/sw/DataAccess/tests/result-set#";
 
         /// <summary>
-        /// Keywords in Sparql
+        /// Keywords in Sparql.
         /// </summary>
         public const String SparqlKeywordBase = "BASE",
                       SparqlKeywordPrefix = "PREFIX",
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
                       ;
 
         /// <summary>
-        /// Set of SPARQL Keywords that are Non-Query Keywords
+        /// Set of SPARQL Keywords that are Non-Query Keywords.
         /// </summary>
         public static String[] NonQueryKeywords = {   
                                                       SparqlKeywordOrder, 
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordDefault,
                                                   };
         /// <summary>
-        /// Set of SPARQL Keywords that are Function Keywords
+        /// Set of SPARQL Keywords that are Function Keywords.
         /// </summary>
         public static String[] FunctionKeywords = {   
                                                       SparqlKeywordAbs,
@@ -282,10 +282,10 @@ namespace VDS.RDF.Query
                                                   };
 
         /// <summary>
-        /// Set of SPARQL Keywords that are Aggregate Keywords
+        /// Set of SPARQL Keywords that are Aggregate Keywords.
         /// </summary>
         /// <remarks>
-        /// Unlike <see cref="SparqlSpecsHelper.AggregateFunctionKeywords">AggregateFunctionKeywords[]</see> this includes keywords related to aggregates (like DISTINCT) and those for Leviathan extension aggregates which are not standard SPARQL 1.1 syntax
+        /// Unlike <see cref="SparqlSpecsHelper.AggregateFunctionKeywords">AggregateFunctionKeywords[]</see> this includes keywords related to aggregates (like DISTINCT) and those for Leviathan extension aggregates which are not standard SPARQL 1.1 syntax.
         /// </remarks>
         public static String[] AggregateKeywords = {   
                                                        SparqlKeywordAll,
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query
                                                    };
 
         /// <summary>
-        /// Set of SPARQL Keywords that are built in SPARQL Aggregate Functions
+        /// Set of SPARQL Keywords that are built in SPARQL Aggregate Functions.
         /// </summary>
         public static String[] AggregateFunctionKeywords = {
                                                                 SparqlKeywordAvg,
@@ -321,7 +321,7 @@ namespace VDS.RDF.Query
                                                            };
 
         /// <summary>
-        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL
+        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL.
         /// </summary>
         public static String[] IntegerDataTypes = {   
                                                       XmlSpecsHelper.XmlSchemaDataTypeByte, 
@@ -339,7 +339,7 @@ namespace VDS.RDF.Query
                                                       XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort,
                                                   };
         /// <summary>
-        /// Set of IRIs for supported Cast Functions
+        /// Set of IRIs for supported Cast Functions.
         /// </summary>
         public static String[] SupportedCastFunctions = {   
                                                             XmlSpecsHelper.XmlSchemaDataTypeBoolean, 
@@ -352,7 +352,7 @@ namespace VDS.RDF.Query
                                                         };
 
         /// <summary>
-        /// Set of Keywords for SPARQL Query 1.0
+        /// Set of Keywords for SPARQL Query 1.0.
         /// </summary>
         public static String[] SparqlQuery10Keywords = {
                                                         SparqlKeywordAsc,
@@ -392,7 +392,7 @@ namespace VDS.RDF.Query
                                                        };
 
         /// <summary>
-        /// Set of additional Keywords for SPARQL Query 1.1
+        /// Set of additional Keywords for SPARQL Query 1.1.
         /// </summary>
         public static String[] SparqlQuery11Keywords = {
                                                         SparqlKeywordAbs,
@@ -460,7 +460,7 @@ namespace VDS.RDF.Query
                                                        };
 
         /// <summary>
-        /// Set of SPARQL Keywords that are Update Keywords
+        /// Set of SPARQL Keywords that are Update Keywords.
         /// </summary>
         public static String[] UpdateKeywords = {   
                                                     SparqlKeywordAdd,
@@ -483,7 +483,7 @@ namespace VDS.RDF.Query
                                                 };
 
         /// <summary>
-        /// Set of Keywords for SPARQL Update 1.1
+        /// Set of Keywords for SPARQL Update 1.1.
         /// </summary>
         public static String[] SparqlUpdate11Keywords = {
                                                           SparqlKeywordAdd,
@@ -511,15 +511,15 @@ namespace VDS.RDF.Query
                                                     
 
         /// <summary>
-        /// Regular Expression Pattern for Valid Integers in Sparql
+        /// Regular Expression Pattern for Valid Integers in Sparql.
         /// </summary>
         public static Regex SparqlInteger = new Regex(TurtleSpecsHelper.ValidIntegerPattern);
         /// <summary>
-        /// Regular Expression Pattern for Valid Decimals in Sparql
+        /// Regular Expression Pattern for Valid Decimals in Sparql.
         /// </summary>
         public static Regex SparqlDecimal = new Regex(TurtleSpecsHelper.ValidDecimalPattern);
         /// <summary>
-        /// Regular Expression Pattern for Valid Doubles in Sparql
+        /// Regular Expression Pattern for Valid Doubles in Sparql.
         /// </summary>
         public static Regex SparqlDouble = new Regex(TurtleSpecsHelper.ValidDoublePattern);
 
@@ -528,9 +528,9 @@ namespace VDS.RDF.Query
         #region Keyword Test Functions
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Query Keyword
+        /// Checks whether a given Keyword is a SPARQL Query Keyword.
         /// </summary>
-        /// <param name="keyword">Keyword to check</param>
+        /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
         public static bool IsQueryKeyword(String keyword)
         {
@@ -546,9 +546,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Non-Query Keyword
+        /// Checks whether a given Keyword is a SPARQL Non-Query Keyword.
         /// </summary>
-        /// <param name="keyword">Keyword to check</param>
+        /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
         public static bool IsNonQueryKeyword(String keyword)
         {
@@ -556,9 +556,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Function Verb
+        /// Checks whether a given Keyword is a SPARQL Function Verb.
         /// </summary>
-        /// <param name="keyword">Keyword to check</param>
+        /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
         public static bool IsFunctionKeyword(String keyword)
         {
@@ -566,9 +566,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL 1.1 Function Verb
+        /// Checks whether a given Keyword is a SPARQL 1.1 Function Verb.
         /// </summary>
-        /// <param name="keyword">Keyword to check</param>
+        /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
         public static bool IsFunctionKeyword11(String keyword)
         {
@@ -576,9 +576,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Aggregate Keyword (includes keywords related to aggregates like DISTINCT, AS and Leviathan extension aggregate keywords)
+        /// Checks whether a given Keyword is a SPARQL Aggregate Keyword (includes keywords related to aggregates like DISTINCT, AS and Leviathan extension aggregate keywords).
         /// </summary>
-        /// <param name="keyword">Keyword to check</param>
+        /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
         public static bool IsAggregateKeyword(String keyword)
         {
@@ -586,9 +586,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Aggregate Function Keyword (only keywords for the SPARQL built-in aggregate functions)
+        /// Checks whether a given Keyword is a SPARQL Aggregate Function Keyword (only keywords for the SPARQL built-in aggregate functions).
         /// </summary>
-        /// <param name="keyword">Keyword to check</param>
+        /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
         public static bool IsAggregateFunctionKeyword(String keyword)
         {
@@ -596,7 +596,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Update Keyword
+        /// Checks whether a given Keyword is a SPARQL Update Keyword.
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
@@ -610,10 +610,10 @@ namespace VDS.RDF.Query
         #region QName and Variable Name Validation
 
         /// <summary>
-        /// Checks whether a given QName is valid in Sparql
+        /// Checks whether a given QName is valid in Sparql.
         /// </summary>
-        /// <param name="value">QName to check</param>
-        /// <param name="syntax">SPARQL Syntax</param>
+        /// <param name="value">QName to check.</param>
+        /// <param name="syntax">SPARQL Syntax.</param>
         /// <returns></returns>
         public static bool IsValidQName(String value, SparqlQuerySyntax syntax)
         {
@@ -641,9 +641,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Variable Name is valid in Sparql
+        /// Checks whether a given Variable Name is valid in Sparql.
         /// </summary>
-        /// <param name="value">Variable Name to check</param>
+        /// <param name="value">Variable Name to check.</param>
         /// <returns></returns>
         public static bool IsValidVarName(String value)
         {
@@ -684,9 +684,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether a given prefix declaration is valid in SPARQL
+        /// Gets whether a given prefix declaration is valid in SPARQL.
         /// </summary>
-        /// <param name="value">Prefix declaration</param>
+        /// <param name="value">Prefix declaration.</param>
         /// <returns></returns>
         public static bool IsValidPrefix(String value)
         {
@@ -702,9 +702,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether a given BNode ID is valid
+        /// Gets whether a given BNode ID is valid.
         /// </summary>
-        /// <param name="value">Value</param>
+        /// <param name="value">Value.</param>
         /// <returns></returns>
         public static bool IsValidBNode(String value)
         {
@@ -740,9 +740,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Character matches the PN_CHARS_BASE rule from the Sparql Specification
+        /// Checks whether a given Character matches the PN_CHARS_BASE rule from the Sparql Specification.
         /// </summary>
-        /// <param name="c">Character to test</param>
+        /// <param name="c">Character to test.</param>
         /// <returns></returns>
         public static bool IsPNCharsBase(char c)
         {
@@ -776,9 +776,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Character matches the PN_CHARS_U rule from the SPARQL Specification
+        /// Checks whether a given Character matches the PN_CHARS_U rule from the SPARQL Specification.
         /// </summary>
-        /// <param name="c">Character to test</param>
+        /// <param name="c">Character to test.</param>
         /// <returns></returns>
         public static bool IsPNCharsU(char c)
         {
@@ -786,9 +786,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Character matches the PN_CHARS rule from the SPARQL Specification
+        /// Checks whether a given Character matches the PN_CHARS rule from the SPARQL Specification.
         /// </summary>
-        /// <param name="c">Character to test</param>
+        /// <param name="c">Character to test.</param>
         /// <returns></returns>
         public static bool IsPNChars(char c)
         {
@@ -816,10 +816,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given String matches the PN_LOCAL rule from the Sparql Specification
+        /// Checks whether a given String matches the PN_LOCAL rule from the Sparql Specification.
         /// </summary>
-        /// <param name="cs">String as character array</param>
-        /// <param name="syntax">SPARQL Syntax</param>
+        /// <param name="cs">String as character array.</param>
+        /// <param name="syntax">SPARQL Syntax.</param>
         /// <returns></returns>
         public static bool IsPNLocal(char[] cs, SparqlQuerySyntax syntax)
         {
@@ -894,9 +894,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given String matches the PN_PREFIX rule from the SPARQL Specification
+        /// Checks whether a given String matches the PN_PREFIX rule from the SPARQL Specification.
         /// </summary>
-        /// <param name="cs">String as character array</param>
+        /// <param name="cs">String as character array.</param>
         /// <returns></returns>
         public static bool IsPNPrefix(char[] cs)
         {
@@ -941,11 +941,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given String matches the PLX rule from the SPARQL Specification
+        /// Checks whether a given String matches the PLX rule from the SPARQL Specification.
         /// </summary>
-        /// <param name="cs">String as character array</param>
-        /// <param name="startIndex">Start Index</param>
-        /// <param name="endIndex">Resulting End Index</param>
+        /// <param name="cs">String as character array.</param>
+        /// <param name="startIndex">Start Index.</param>
+        /// <param name="endIndex">Resulting End Index.</param>
         /// <returns></returns>
         public static bool IsPLX(char[] cs, int startIndex, out int endIndex)
         {
@@ -1020,9 +1020,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether a character is a Hex character
+        /// Gets whether a character is a Hex character.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         public static bool IsHex(char c)
         {
@@ -1053,9 +1053,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Unescapes local name escapes from QNames
+        /// Unescapes local name escapes from QNames.
         /// </summary>
-        /// <param name="value">Value to unescape</param>
+        /// <param name="value">Value to unescape.</param>
         /// <returns></returns>
         public static String UnescapeQName(String value)
         {
@@ -1138,9 +1138,9 @@ namespace VDS.RDF.Query
         #region Plan Literal Validation
 
         /// <summary>
-        /// Checks whether the given value is a valid Numeric Literal in Sparql
+        /// Checks whether the given value is a valid Numeric Literal in Sparql.
         /// </summary>
-        /// <param name="value">Value to test</param>
+        /// <param name="value">Value to test.</param>
         /// <returns></returns>
         public static bool IsValidNumericLiteral(String value)
         {
@@ -1148,9 +1148,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether the given value is a valid Integer Literal in Sparql
+        /// Checks whether the given value is a valid Integer Literal in Sparql.
         /// </summary>
-        /// <param name="value">Value to test</param>
+        /// <param name="value">Value to test.</param>
         /// <returns></returns>
         public static bool IsInteger(String value)
         {
@@ -1158,9 +1158,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether the given value is a valid Decimal Literal in Sparql
+        /// Checks whether the given value is a valid Decimal Literal in Sparql.
         /// </summary>
-        /// <param name="value">Value to test</param>
+        /// <param name="value">Value to test.</param>
         /// <returns></returns>
         public static bool IsDecimal(String value)
         {
@@ -1168,7 +1168,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether the given value is a valid Float Literal in Sparql
+        /// Checks whether the given value is a valid Float Literal in Sparql.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -1178,9 +1178,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether the given value is a valid Double Literal in Sparql
+        /// Checks whether the given value is a valid Double Literal in Sparql.
         /// </summary>
-        /// <param name="value">Value to test</param>
+        /// <param name="value">Value to test.</param>
         /// <returns></returns>
         public static bool IsDouble(String value)
         {
@@ -1192,9 +1192,9 @@ namespace VDS.RDF.Query
         #region Numeric Type determination
 
         /// <summary>
-        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri
+        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
         /// </summary>
-        /// <param name="dtUri">Data Type Uri</param>
+        /// <param name="dtUri">Data Type Uri.</param>
         /// <returns></returns>
         public static SparqlNumericType GetNumericTypeFromDataTypeUri(Uri dtUri)
         {
@@ -1202,9 +1202,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri
+        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
         /// </summary>
-        /// <param name="dtUri">Data Type Uri as a String</param>
+        /// <param name="dtUri">Data Type Uri as a String.</param>
         /// <returns></returns>
         public static SparqlNumericType GetNumericTypeFromDataTypeUri(String dtUri)
         {
@@ -1233,9 +1233,9 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Calculates the Effective Boolean Value of a given Node according to the Sparql specification
+        /// Calculates the Effective Boolean Value of a given Node according to the Sparql specification.
         /// </summary>
-        /// <param name="n">Node to computer EBV for</param>
+        /// <param name="n">Node to computer EBV for.</param>
         /// <returns></returns>
         public static bool EffectiveBooleanValue(INode n)
         {
@@ -1386,9 +1386,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether the Query is a SELECT Query
+        /// Checks whether the Query is a SELECT Query.
         /// </summary>
-        /// <param name="type">Query Type</param>
+        /// <param name="type">Query Type.</param>
         /// <returns></returns>
         public static bool IsSelectQuery(SparqlQueryType type)
         {
@@ -1409,10 +1409,10 @@ namespace VDS.RDF.Query
         #region Equality/Inequality
 
         /// <summary>
-        /// Implements Node Equality with SPARQL Semantics
+        /// Implements Node Equality with SPARQL Semantics.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public static bool Equality(INode x, INode y)
         {
@@ -1522,10 +1522,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Implements Node Inequality with SPARQL Semantics
+        /// Implements Node Inequality with SPARQL Semantics.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public static bool Inequality(INode x, INode y)
         {
@@ -1681,11 +1681,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Implements Numeric Equality with SPARQL Semantics
+        /// Implements Numeric Equality with SPARQL Semantics.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
-        /// <param name="type">SPARQL Numeric Tyoe</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
+        /// <param name="type">SPARQL Numeric Tyoe.</param>
         /// <returns></returns>
         public static bool NumericEquality(INode x, INode y, SparqlNumericType type)
         {
@@ -1711,10 +1711,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Implements Date Time Equality with SPARQL Semantics
+        /// Implements Date Time Equality with SPARQL Semantics.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public static bool DateTimeEquality(INode x, INode y)
         {
@@ -1760,10 +1760,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Implements Date Equality with SPARQL Semantics
+        /// Implements Date Equality with SPARQL Semantics.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public static bool DateEquality(INode x, INode y)
         {
@@ -1813,10 +1813,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Implements Time Span Equality with SPARQL Semantics
+        /// Implements Time Span Equality with SPARQL Semantics.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public static bool TimeSpanEquality(INode x, INode y)
         {
@@ -1838,9 +1838,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to a Decimal
+        /// Converts a Literal Node to a Decimal.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsDecimal() instead")]
         public static Decimal ToDecimal(ILiteralNode n)
@@ -1850,9 +1850,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to a Double
+        /// Converts a Literal Node to a Double.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsDouble() instead")]
         public static Double ToDouble(ILiteralNode n)
@@ -1862,9 +1862,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to a Float
+        /// Converts a Literal Node to a Float.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsFloat() instead")]
         public static Single ToFloat(ILiteralNode n)
@@ -1874,9 +1874,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to an Integer
+        /// Converts a Literal Node to an Integer.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsInteger() instead")]
         public static Int64 ToInteger(ILiteralNode n)
@@ -1886,9 +1886,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to a Date Time
+        /// Converts a Literal Node to a Date Time.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsDateTime() instead")]
         public static DateTime ToDateTime(ILiteralNode n)
@@ -1898,9 +1898,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to a Date Time Offset
+        /// Converts a Literal Node to a Date Time Offset.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead")]
         public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
@@ -1910,9 +1910,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Literal Node to a Time Span
+        /// Converts a Literal Node to a Time Span.
         /// </summary>
-        /// <param name="n">Literal Node</param>
+        /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsTimeSpan() instead")]
         public static TimeSpan ToTimeSpan(ILiteralNode n)
@@ -1926,7 +1926,7 @@ namespace VDS.RDF.Query
         #region Query Formatting
 
         /// <summary>
-        /// Gets a SPARQL Formatter to use in formatting Queries as Strings
+        /// Gets a SPARQL Formatter to use in formatting Queries as Strings.
         /// </summary>
         internal static SparqlFormatter Formatter
         {

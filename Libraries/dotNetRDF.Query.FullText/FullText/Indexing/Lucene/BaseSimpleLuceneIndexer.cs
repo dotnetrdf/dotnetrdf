@@ -44,7 +44,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query.FullText.Indexing.Lucene
 {
     /// <summary>
-    /// Abstract Implementation of a simple Full Text Indexer using Lucene.Net which indexes the full text of literal objects and associated a specific Node with that full text
+    /// Abstract Implementation of a simple Full Text Indexer using Lucene.Net which indexes the full text of literal objects and associated a specific Node with that full text.
     /// </summary>
     public abstract class BaseSimpleLuceneIndexer
         : BaseSimpleFullTextIndexer, IConfigurationSerializable
@@ -58,12 +58,12 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         private IndexReader _reader;
 
         /// <summary>
-        /// Creates a new Simple Lucene Indexer
+        /// Creates a new Simple Lucene Indexer.
         /// </summary>
-        /// <param name="indexDir">Directory</param>
-        /// <param name="analyzer">Analyzer</param>
-        /// <param name="schema">Index Schema</param>
-        /// <param name="mode">Indexing Mode</param>
+        /// <param name="indexDir">Directory.</param>
+        /// <param name="analyzer">Analyzer.</param>
+        /// <param name="schema">Index Schema.</param>
+        /// <param name="mode">Indexing Mode.</param>
         public BaseSimpleLuceneIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, IndexingMode mode)
         {
             if (this._mode == IndexingMode.Custom) throw new ArgumentException("Cannot use IndexingMode.Custom with the BaseSimpleLuceneIndexer");
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Gets the Indexing Mode used
+        /// Gets the Indexing Mode used.
         /// </summary>
         public override IndexingMode IndexingMode
         {
@@ -127,11 +127,11 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Indexes a Node and some full text as a Lucene document
+        /// Indexes a Node and some full text as a Lucene document.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="n">Node</param>
-        /// <param name="text">Full Text</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="n">Node.</param>
+        /// <param name="text">Full Text.</param>
         protected override void Index(String graphUri, INode n, string text)
         {
             Document doc = this.CreateDocument(graphUri, n, text);
@@ -141,11 +141,11 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Unindexes a Node and some full text
+        /// Unindexes a Node and some full text.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="n">Node</param>
-        /// <param name="text">Full Text</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="n">Node.</param>
+        /// <param name="text">Full Text.</param>
         protected override void Unindex(String graphUri, INode n, string text)
         {
             TermQuery query = new TermQuery(new Term(this._schema.HashField, this.GetHash(graphUri, n, text)));
@@ -167,14 +167,14 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Creates a Lucene document to add to the index
+        /// Creates a Lucene document to add to the index.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="n">Node</param>
-        /// <param name="text">Full Text</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="n">Node.</param>
+        /// <param name="text">Full Text.</param>
         /// <returns></returns>
         /// <remarks>
-        /// May be overridden by derived classes that wish to implement custom indexing behaviour
+        /// May be overridden by derived classes that wish to implement custom indexing behaviour.
         /// </remarks>
         protected virtual Document CreateDocument(String graphUri, INode n, String text)
         {
@@ -211,11 +211,11 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Gets the hash that should be included as part of a document so that it can be unindexed if desired
+        /// Gets the hash that should be included as part of a document so that it can be unindexed if desired.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="n">Node</param>
-        /// <param name="text">Full Text</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="n">Node.</param>
+        /// <param name="text">Full Text.</param>
         /// <returns></returns>
         protected String GetHash(String graphUri, INode n, String text)
         {
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Flushes any changes to the index
+        /// Flushes any changes to the index.
         /// </summary>
         public override void Flush()
         {
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Lucene dispose logic that ensures changes to the index are discarded
+        /// Lucene dispose logic that ensures changes to the index are discarded.
         /// </summary>
         protected override void DisposeInternal()
         {
@@ -253,9 +253,9 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         }
 
         /// <summary>
-        /// Serializes the Configuration of the Indexer
+        /// Serializes the Configuration of the Indexer.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));

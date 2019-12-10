@@ -28,20 +28,20 @@ using System;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Exception raised by the JSON-LD processor when a processing error is encountered
+    /// Exception raised by the JSON-LD processor when a processing error is encountered.
     /// </summary>
     public class JsonLdProcessorException : Exception
     {
         /// <summary>
-        /// The JSON-LD error code that describes the processing error encountered
+        /// The JSON-LD error code that describes the processing error encountered.
         /// </summary>
         public JsonLdErrorCode ErrorCode { get; }
 
         /// <summary>
-        /// Create a new exception
+        /// Create a new exception.
         /// </summary>
-        /// <param name="errorCode">The JSON-LD error code that describes the processing error encountered</param>
-        /// <param name="message">A message providing the user with further contextual information about the error</param>
+        /// <param name="errorCode">The JSON-LD error code that describes the processing error encountered.</param>
+        /// <param name="message">A message providing the user with further contextual information about the error.</param>
         public JsonLdProcessorException(JsonLdErrorCode errorCode, string message) : base(message)
         {
             ErrorCode = errorCode;
@@ -49,11 +49,11 @@ namespace VDS.RDF.JsonLd
 
 
         /// <summary>
-        /// Create a new exception
+        /// Create a new exception.
         /// </summary>
-        /// <param name="errorCode">The JSON-LD error code that describes the processing error encountered</param>
-        /// <param name="message">A message proiding the user with further contextual information about the error</param>
-        /// <param name="innerException">The inner exception that led to this exception being raised</param>
+        /// <param name="errorCode">The JSON-LD error code that describes the processing error encountered.</param>
+        /// <param name="message">A message proiding the user with further contextual information about the error.</param>
+        /// <param name="innerException">The inner exception that led to this exception being raised.</param>
         public JsonLdProcessorException(JsonLdErrorCode errorCode, string message, Exception innerException) : base(
             message, innerException)
         {

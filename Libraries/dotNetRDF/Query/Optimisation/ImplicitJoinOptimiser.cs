@@ -38,7 +38,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser which implements the Implicit Join optimisation
+    /// An Algebra Optimiser which implements the Implicit Join optimisation.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -76,9 +76,9 @@ namespace VDS.RDF.Query.Optimisation
         : IAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises the Algebra to use implict joins where applicable
+        /// Optimises the Algebra to use implict joins where applicable.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -158,12 +158,12 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Determines whether an expression is an Implicit Join Expression
+        /// Determines whether an expression is an Implicit Join Expression.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="lhsVar">LHS Variable</param>
-        /// <param name="rhsVar">RHS Variable</param>
-        /// <param name="equals">Whether the expression is an equals (true) or a same term (false)</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="lhsVar">LHS Variable.</param>
+        /// <param name="rhsVar">RHS Variable.</param>
+        /// <param name="equals">Whether the expression is an equals (true) or a same term (false).</param>
         /// <returns></returns>
         private bool IsImplicitJoinExpression(ISparqlExpression expr, out String lhsVar, out String rhsVar, out bool equals)
         {
@@ -280,9 +280,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that this optimiser is applicable to all queries
+        /// Returns that this optimiser is applicable to all queries.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -290,9 +290,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that this optimiser is applicable to all updates
+        /// Returns that this optimiser is applicable to all updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {

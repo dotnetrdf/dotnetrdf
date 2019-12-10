@@ -30,7 +30,7 @@ using VDS.RDF.Query.Construct;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Pattern which matches temporary variables
+    /// Pattern which matches temporary variables.
     /// </summary>
     public class BlankNodePattern 
         : PatternItem
@@ -38,19 +38,19 @@ namespace VDS.RDF.Query.Patterns
         private String _name;
 
         /// <summary>
-        /// Creates a new Pattern representing a Blank Node
+        /// Creates a new Pattern representing a Blank Node.
         /// </summary>
-        /// <param name="name">Blank Node ID</param>
+        /// <param name="name">Blank Node ID.</param>
         public BlankNodePattern(String name)
         {
             _name = "_:" + name;
         }
 
         /// <summary>
-        /// Creates a new Pattern representing a Blank Node
+        /// Creates a new Pattern representing a Blank Node.
         /// </summary>
-        /// <param name="name">Blank Node ID</param>
-        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation</param>
+        /// <param name="name">Blank Node ID.</param>
+        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation.</param>
         public BlankNodePattern(String name, bool rigorousEvaluation)
             : this(name)
         {
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Blank Node ID
+        /// Gets the Blank Node ID.
         /// </summary>
         public String ID
         {
@@ -69,10 +69,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Checks whether the given Node is a valid value for the Temporary Variable
+        /// Checks whether the given Node is a valid value for the Temporary Variable.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="obj">Node to test</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="obj">Node to test.</param>
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
@@ -98,9 +98,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Constructs a Node based on the given Set
+        /// Constructs a Node based on the given Set.
         /// </summary>
-        /// <param name="context">Construct Context</param>
+        /// <param name="context">Construct Context.</param>
         /// <returns></returns>
         protected internal override INode Construct(ConstructContext context)
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of this Pattern
+        /// Gets the String representation of this Pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Temporary Variable Name of this Pattern
+        /// Gets the Temporary Variable Name of this Pattern.
         /// </summary>
         public override string VariableName
         {

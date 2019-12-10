@@ -33,25 +33,25 @@ using VDS.RDF.Parsing.Contexts;
 namespace VDS.RDF.Parsing.Events.RdfXml
 {
     /// <summary>
-    /// A DOM Based event generator for RDF/XML parser that uses System.Xml DOM to parse events
+    /// A DOM Based event generator for RDF/XML parser that uses System.Xml DOM to parse events.
     /// </summary>
     public class DomBasedEventGenerator : IRdfXmlPreProcessingEventGenerator
     {
         private XmlDocument _document;
 
         /// <summary>
-        /// Creates a new DOM Based event generator
+        /// Creates a new DOM Based event generator.
         /// </summary>
-        /// <param name="document">XML Document</param>
+        /// <param name="document">XML Document.</param>
         public DomBasedEventGenerator(XmlDocument document)
         {
             _document = document;
         }
 
         /// <summary>
-        /// Creates a new DOM Based event generator
+        /// Creates a new DOM Based event generator.
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input Stream.</param>
         public DomBasedEventGenerator(StreamReader input)
         {
             _document = new XmlDocument();
@@ -59,9 +59,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Creates a new DOM Based event generator
+        /// Creates a new DOM Based event generator.
         /// </summary>
-        /// <param name="file">Input File</param>
+        /// <param name="file">Input File.</param>
         public DomBasedEventGenerator(String file)
         {
             _document = new XmlDocument();
@@ -69,9 +69,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Gets all events from the XML DOM
+        /// Gets all events from the XML DOM.
         /// </summary>
-        /// <param name="context">Parser Context</param>
+        /// <param name="context">Parser Context.</param>
         public void GetAllEvents(RdfXmlParserContext context)
         {
             RootEvent root;
@@ -95,10 +95,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Given an XML Node that is the Root of the RDF/XML section of the Document Tree creates the RootEvent and generates the rest of the Event Tree by recursive calls to the <see cref="GenerateEvents">GenerateEvents</see> method
+        /// Given an XML Node that is the Root of the RDF/XML section of the Document Tree creates the RootEvent and generates the rest of the Event Tree by recursive calls to the <see cref="GenerateEvents">GenerateEvents</see> method.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="docEl">XML Node that is the Root of the RDF/XML section of the Document Tree</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="docEl">XML Node that is the Root of the RDF/XML section of the Document Tree.</param>
         /// <returns></returns>
         private RootEvent GenerateEventTree(RdfXmlParserContext context, XmlNode docEl)
         {
@@ -199,11 +199,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Given an XML Node creates the relevant RDF/XML Events for it and recurses as necessary
+        /// Given an XML Node creates the relevant RDF/XML Events for it and recurses as necessary.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="node">The Node to create Event(s) from</param>
-        /// <param name="parent">The Parent Node of the given Node</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="node">The Node to create Event(s) from.</param>
+        /// <param name="parent">The Parent Node of the given Node.</param>
         /// <returns></returns>
         private ElementEvent GenerateEvents(RdfXmlParserContext context, XmlNode node, IRdfXmlEvent parent)
         {
@@ -437,11 +437,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Checks whether a given XML Node can be discarded as it does not have any equivalent Event in the RDF/XML Syntax model
+        /// Checks whether a given XML Node can be discarded as it does not have any equivalent Event in the RDF/XML Syntax model.
         /// </summary>
-        /// <param name="node">XML Node to test</param>
-        /// <returns>True if the Node can be ignored</returns>
-        /// <remarks>Comment and Text Nodes are ignored.  Text Nodes will actually become Text Events but we'll access the Text using the InnerText property of the Element Nodes instead</remarks>
+        /// <param name="node">XML Node to test.</param>
+        /// <returns>True if the Node can be ignored.</returns>
+        /// <remarks>Comment and Text Nodes are ignored.  Text Nodes will actually become Text Events but we'll access the Text using the InnerText property of the Element Nodes instead.</remarks>
         private bool IsIgnorableNode(XmlNode node)
         {
             switch (node.NodeType)
@@ -456,11 +456,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Takes the Event Tree and Flattens it into a Queue as per the rules laid out in the RDF/XML Specification
+        /// Takes the Event Tree and Flattens it into a Queue as per the rules laid out in the RDF/XML Specification.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="evt">Event which is the Root of the Tree (not necessarily a RootEvent)</param>
-        /// <param name="nesting">A numeric value used for Parser Tracing to indicate nesting levels of the Event Tree</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="evt">Event which is the Root of the Tree (not necessarily a RootEvent).</param>
+        /// <param name="nesting">A numeric value used for Parser Tracing to indicate nesting levels of the Event Tree.</param>
         private void FlattenEventTree(RdfXmlParserContext context, IRdfXmlEvent evt, int nesting)
         {
             // Add to Queue

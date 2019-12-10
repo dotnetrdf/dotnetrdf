@@ -32,13 +32,13 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Operators.Numeric
 {
     /// <summary>
-    /// Represents the numeric subtraction operator
+    /// Represents the numeric subtraction operator.
     /// </summary>
     public class SubtractionOperator
         : BaseNumericOperator
     {
         /// <summary>
-        /// Gets the operator type
+        /// Gets the operator type.
         /// </summary>
         public override SparqlOperatorType Operator
         {
@@ -49,9 +49,9 @@ namespace VDS.RDF.Query.Operators.Numeric
         }
 
         /// <summary>
-        /// Applies the operator
+        /// Applies the operator.
         /// </summary>
-        /// <param name="ns">Arguments</param>
+        /// <param name="ns">Arguments.</param>
         /// <returns></returns>
         public override IValuedNode Apply(params IValuedNode[] ns)
         {

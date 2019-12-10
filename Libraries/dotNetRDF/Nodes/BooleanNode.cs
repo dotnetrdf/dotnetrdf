@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Valued Node representing boolean values
+    /// Valued Node representing boolean values.
     /// </summary>
     public class BooleanNode
         : LiteralNode, IValuedNode
@@ -40,11 +40,11 @@ namespace VDS.RDF.Nodes
         private bool _value;
 
         /// <summary>
-        /// Creates a new boolean valued node
+        /// Creates a new boolean valued node.
         /// </summary>
-        /// <param name="g">Graph the node belong to</param>
-        /// <param name="value">Boolean Value</param>
-        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="g">Graph the node belong to.</param>
+        /// <param name="value">Boolean Value.</param>
+        /// <param name="lexicalValue">Lexical Value.</param>
         public BooleanNode(IGraph g, bool value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
         {
@@ -52,15 +52,15 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new boolean valued node
+        /// Creates a new boolean valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Boolean Value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Boolean Value.</param>
         public BooleanNode(IGraph g, bool value)
             : this(g, value, value.ToString().ToLower()) { }
 
         /// <summary>
-        /// Gets the string value of the boolean
+        /// Gets the string value of the boolean.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -69,7 +69,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to integers
+        /// Throws an error as booleans cannot be cast to integers.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -78,7 +78,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to decimals
+        /// Throws an error as booleans cannot be cast to decimals.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -87,7 +87,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to floats
+        /// Throws an error as booleans cannot be cast to floats.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -96,7 +96,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to doubles
+        /// Throws an error as booleans cannot be cast to doubles.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -105,7 +105,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the boolean value
+        /// Gets the boolean value.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -114,7 +114,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to date times
+        /// Throws an error as booleans cannot be cast to date times.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -123,7 +123,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to date times
+        /// Throws an error as booleans cannot be cast to date times.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -132,7 +132,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Throws an error as booleans cannot be cast to a time span
+        /// Throws an error as booleans cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -140,7 +140,7 @@ namespace VDS.RDF.Nodes
             throw new RdfQueryException("Cannot case Boolean to other types");
         }
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Nodes
 
 
         /// <summary>
-        /// Gets the numeric type of the node
+        /// Gets the numeric type of the node.
         /// </summary>
         public SparqlNumericType NumericType
         {

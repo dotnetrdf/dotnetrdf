@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which asserts Triples into a Graph
+    /// A RDF Handler which asserts Triples into a Graph.
     /// </summary>
     public class GraphHandler : BaseRdfHandler
     {
@@ -37,9 +37,9 @@ namespace VDS.RDF.Parsing.Handlers
         private IGraph _g;
 
         /// <summary>
-        /// Creates a new Graph Handler
+        /// Creates a new Graph Handler.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public GraphHandler(IGraph g)
             : base(g)
         {
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Base URI of the Graph currently being parsed into
+        /// Gets the Base URI of the Graph currently being parsed into.
         /// </summary>
         public Uri BaseUri
         {
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the Graph that this handler wraps
+        /// Gets the Graph that this handler wraps.
         /// </summary>
         protected IGraph Graph
         {
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Starts Handling RDF ensuring that if the target Graph is non-empty RDF is handling into a temporary Graph until parsing completes successfully
+        /// Starts Handling RDF ensuring that if the target Graph is non-empty RDF is handling into a temporary Graph until parsing completes successfully.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -95,9 +95,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends Handling RDF discarding the handled Triples if parsing failed (indicated by false for the <paramref name="ok">ok</paramref> parameter) and otherwise merging the handled triples from the temporary graph into the target graph if necessary
+        /// Ends Handling RDF discarding the handled Triples if parsing failed (indicated by false for the <paramref name="ok">ok</paramref> parameter) and otherwise merging the handled triples from the temporary graph into the target graph if necessary.
         /// </summary>
-        /// <param name="ok">Indicates whether parsing completed OK</param>
+        /// <param name="ok">Indicates whether parsing completed OK.</param>
         protected override void EndRdfInternal(bool ok)
         {
             if (ok)
@@ -135,10 +135,10 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Namespace Declarations by adding them to the Graphs Namespace Map
+        /// Handles Namespace Declarations by adding them to the Graphs Namespace Map.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
@@ -147,9 +147,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Base URI Declarations by setting the Graphs Base URI
+        /// Handles Base URI Declarations by setting the Graphs Base URI.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by asserting them in the Graph
+        /// Handles Triples by asserting them in the Graph.
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
@@ -169,7 +169,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that this Handler accepts all Triples
+        /// Gets that this Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {

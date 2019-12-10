@@ -35,7 +35,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.Leviathan
 {
     /// <summary>
-    /// Class representing MEDIAN Aggregate Functions
+    /// Class representing MEDIAN Aggregate Functions.
     /// </summary>
     public class MedianAggregate 
         : BaseAggregate
@@ -43,24 +43,24 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         private String _varname;
 
         /// <summary>
-        /// Creates a new MEDIAN Aggregate
+        /// Creates a new MEDIAN Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
+        /// <param name="expr">Variable Expression.</param>
         public MedianAggregate(VariableTerm expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new MEDIAN Aggregate
+        /// Creates a new MEDIAN Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public MedianAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
         /// <summary>
-        /// Creates a new MEDIAN Aggregate
+        /// Creates a new MEDIAN Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifier applies</param>
+        /// <param name="expr">Variable Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifier applies.</param>
         public MedianAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
@@ -68,18 +68,18 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Creates a new MEDIAN Aggregate
+        /// Creates a new MEDIAN Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="distinct">Whether a DISTINCT modifer applies</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="distinct">Whether a DISTINCT modifer applies.</param>
         public MedianAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
         /// <summary>
-        /// Applies the Median Aggregate function to the results
+        /// Applies the Median Aggregate function to the results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

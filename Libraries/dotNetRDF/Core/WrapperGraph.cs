@@ -36,7 +36,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract decorator for Graphs to make it easier to layer functionality on top of existing implementations
+    /// Abstract decorator for Graphs to make it easier to layer functionality on top of existing implementations.
     /// </summary>
 #if !NETCORE
     [Serializable, XmlRoot(ElementName="graph")]
@@ -48,7 +48,7 @@ namespace VDS.RDF
 #endif
     {
         /// <summary>
-        /// Underlying Graph this is a wrapper around
+        /// Underlying Graph this is a wrapper around.
         /// </summary>
         protected readonly IGraph _g;
         private TripleEventHandler TripleAssertedHandler, TripleRetractedHandler;
@@ -56,7 +56,7 @@ namespace VDS.RDF
         private CancellableGraphEventHandler GraphClearRequestedHandler, GraphMergeRequestedHandler;
 
         /// <summary>
-        /// Creates a wrapper around the default Graph implementation, primarily required only for deserialization and requires that the caller call <see cref="WrapperGraph.AttachEventHandlers"/> to properly wire up event handling
+        /// Creates a wrapper around the default Graph implementation, primarily required only for deserialization and requires that the caller call <see cref="WrapperGraph.AttachEventHandlers"/> to properly wire up event handling.
         /// </summary>
         protected WrapperGraph()
         {
@@ -73,9 +73,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new wrapper around the given Graph
+        /// Creates a new wrapper around the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public WrapperGraph(IGraph g)
             : this()
         {
@@ -87,10 +87,10 @@ namespace VDS.RDF
 #if !NETCORE
 
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected WrapperGraph(SerializationInfo info, StreamingContext context)
             : this() 
         {
@@ -106,7 +106,7 @@ namespace VDS.RDF
         #region Wrappers around all the standard IGraph stuff
 
         /// <summary>
-        /// Gets/Sets the Base URI of the Graph
+        /// Gets/Sets the Base URI of the Graph.
         /// </summary>
         public virtual Uri BaseUri
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Graph is empty
+        /// Gets whether the Graph is empty.
         /// </summary>
         public virtual bool IsEmpty
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the Graph
+        /// Gets the Namespace Map for the Graph.
         /// </summary>
         public virtual INamespaceMapper NamespaceMap
         {
@@ -143,7 +143,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Nodes of the Graph
+        /// Gets the Nodes of the Graph.
         /// </summary>
         public virtual IEnumerable<INode> Nodes
         {
@@ -154,7 +154,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Triple Collection for the Graph
+        /// Gets the Triple Collection for the Graph.
         /// </summary>
         public virtual BaseTripleCollection Triples
         {
@@ -165,43 +165,43 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Asserts a Triple in the Graph
+        /// Asserts a Triple in the Graph.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         public virtual bool Assert(Triple t)
         {
             return _g.Assert(t.CopyTriple(_g));
         }
 
         /// <summary>
-        /// Asserts Triples in the Graph
+        /// Asserts Triples in the Graph.
         /// </summary>
-        /// <param name="ts">Triples</param>
+        /// <param name="ts">Triples.</param>
         public virtual bool Assert(IEnumerable<Triple> ts)
         {
             return _g.Assert(ts.Select(t => t.CopyTriple(_g)));
         }
 
         /// <summary>
-        /// Retracts a Triple from the Graph
+        /// Retracts a Triple from the Graph.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         public virtual bool Retract(Triple t)
         {
             return _g.Retract(t);
         }
 
         /// <summary>
-        /// Retracts Triples from the Graph
+        /// Retracts Triples from the Graph.
         /// </summary>
-        /// <param name="ts">Triples</param>
+        /// <param name="ts">Triples.</param>
         public virtual bool Retract(IEnumerable<Triple> ts)
         {
             return _g.Retract(ts);
         }
 
         /// <summary>
-        /// Clears the Graph
+        /// Clears the Graph.
         /// </summary>
         public virtual void Clear()
         {
@@ -209,9 +209,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Blank Node with the given Node ID
+        /// Creates a new Blank Node with the given Node ID.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
+        /// <param name="nodeId">Node ID.</param>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(string nodeId)
         {
@@ -219,7 +219,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Blank Node
+        /// Creates a new Blank Node.
         /// </summary>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
@@ -228,7 +228,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the next available Blank Node ID
+        /// Gets the next available Blank Node ID.
         /// </summary>
         /// <returns></returns>
         public virtual string GetNextBlankNodeID()
@@ -237,9 +237,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Graph Literal Node with the given sub-graph
+        /// Creates a new Graph Literal Node with the given sub-graph.
         /// </summary>
-        /// <param name="subgraph">Sub-graph</param>
+        /// <param name="subgraph">Sub-graph.</param>
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
@@ -247,7 +247,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Graph Literal Node
+        /// Creates a new Graph Literal Node.
         /// </summary>
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
@@ -256,9 +256,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Literal Node
+        /// Creates a new Literal Node.
         /// </summary>
-        /// <param name="literal">Value</param>
+        /// <param name="literal">Value.</param>
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal)
         {
@@ -266,10 +266,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Literal Node with the given Datatype
+        /// Creates a new Literal Node with the given Datatype.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="datatype">Datatype URI</param>
+        /// <param name="literal">Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
@@ -277,10 +277,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Literal Node with the given Language
+        /// Creates a new Literal Node with the given Language.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="langspec">Language</param>
+        /// <param name="literal">Value.</param>
+        /// <param name="langspec">Language.</param>
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
@@ -288,7 +288,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new URI Node that references the Graphs Base URI
+        /// Creates a new URI Node that references the Graphs Base URI.
         /// </summary>
         /// <returns></returns>
         public virtual IUriNode CreateUriNode()
@@ -297,9 +297,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new URI Node from a QName
+        /// Creates a new URI Node from a QName.
         /// </summary>
-        /// <param name="qname">QName</param>
+        /// <param name="qname">QName.</param>
         /// <returns></returns>
         public virtual IUriNode CreateUriNode(string qname)
         {
@@ -307,9 +307,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new URI Node
+        /// Creates a new URI Node.
         /// </summary>
-        /// <param name="uri">URI</param>
+        /// <param name="uri">URI.</param>
         /// <returns></returns>
         public virtual IUriNode CreateUriNode(Uri uri)
         {
@@ -317,9 +317,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Variable Node
+        /// Creates a new Variable Node.
         /// </summary>
-        /// <param name="varname">Variable Name</param>
+        /// <param name="varname">Variable Name.</param>
         /// <returns></returns>
         public virtual IVariableNode CreateVariableNode(String varname)
         {
@@ -327,81 +327,81 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Attempts to get the Blank Node with the given ID
+        /// Attempts to get the Blank Node with the given ID.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns>The Node if it exists or null</returns>
+        /// <param name="nodeId">Node ID.</param>
+        /// <returns>The Node if it exists or null.</returns>
         public virtual IBlankNode GetBlankNode(string nodeId)
         {
             return _g.GetBlankNode(nodeId);
         }
 
         /// <summary>
-        /// Attempts to get the Literal Node with the given Value and Language
+        /// Attempts to get the Literal Node with the given Value and Language.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="langspec">Language</param>
-        /// <returns>The Node if it exists or null</returns>
+        /// <param name="literal">Value.</param>
+        /// <param name="langspec">Language.</param>
+        /// <returns>The Node if it exists or null.</returns>
         public virtual ILiteralNode GetLiteralNode(string literal, string langspec)
         {
             return _g.GetLiteralNode(literal, langspec);
         }
 
         /// <summary>
-        /// Attempts to get the Literal Node with the given Value
+        /// Attempts to get the Literal Node with the given Value.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <returns>The Node if it exists or null</returns>
+        /// <param name="literal">Value.</param>
+        /// <returns>The Node if it exists or null.</returns>
         public virtual ILiteralNode GetLiteralNode(string literal)
         {
             return _g.GetLiteralNode(literal);
         }
 
         /// <summary>
-        /// Attempts to get the Literal Node with the given Value and Datatype
+        /// Attempts to get the Literal Node with the given Value and Datatype.
         /// </summary>
-        /// <param name="literal">Value</param>
-        /// <param name="datatype">Datatype URI</param>
-        /// <returns>The Node if it exists or null otherwise</returns>
+        /// <param name="literal">Value.</param>
+        /// <param name="datatype">Datatype URI.</param>
+        /// <returns>The Node if it exists or null otherwise.</returns>
         public virtual ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
             return _g.GetLiteralNode(literal, datatype);
         }
 
         /// <summary>
-        /// Gets all the Triples involving the given URI
+        /// Gets all the Triples involving the given URI.
         /// </summary>
-        /// <param name="uri">The URI to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
+        /// <param name="uri">The URI to find Triples involving.</param>
+        /// <returns>Zero/More Triples.</returns>
         public virtual IEnumerable<Triple> GetTriples(Uri uri)
         {
             return _g.GetTriples(uri);
         }
 
         /// <summary>
-        /// Gets all the Triples involving the given Node
+        /// Gets all the Triples involving the given Node.
         /// </summary>
-        /// <param name="n">The Node to find Triples involving</param>
-        /// <returns>Zero/More Triples</returns>
+        /// <param name="n">The Node to find Triples involving.</param>
+        /// <returns>Zero/More Triples.</returns>
         public virtual IEnumerable<Triple> GetTriples(INode n)
         {
             return _g.GetTriples(n);
         }
 
         /// <summary>
-        /// Gets all the Triples with the given URI as the Object
+        /// Gets all the Triples with the given URI as the Object.
         /// </summary>
-        /// <param name="u">The URI to find Triples with it as the Object</param>
-        /// <returns>Zero/More Triples</returns>
+        /// <param name="u">The URI to find Triples with it as the Object.</param>
+        /// <returns>Zero/More Triples.</returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
             return _g.GetTriplesWithObject(u);
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Node as the Object
+        /// Gets all the Triples with the given Node as the Object.
         /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Object</param>
+        /// <param name="n">The Node to find Triples with it as the Object.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
@@ -409,9 +409,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Node as the Predicate
+        /// Gets all the Triples with the given Node as the Predicate.
         /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Predicate</param>
+        /// <param name="n">The Node to find Triples with it as the Predicate.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
@@ -419,40 +419,40 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Uri as the Predicate
+        /// Gets all the Triples with the given Uri as the Predicate.
         /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Predicate</param>
-        /// <returns>Zero/More Triples</returns>
+        /// <param name="u">The Uri to find Triples with it as the Predicate.</param>
+        /// <returns>Zero/More Triples.</returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
             return _g.GetTriplesWithPredicate(u);
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Node as the Subject
+        /// Gets all the Triples with the given Node as the Subject.
         /// </summary>
-        /// <param name="n">The Node to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
+        /// <param name="n">The Node to find Triples with it as the Subject.</param>
+        /// <returns>Zero/More Triples.</returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
             return _g.GetTriplesWithSubject(n);
         }
 
         /// <summary>
-        /// Gets all the Triples with the given Uri as the Subject
+        /// Gets all the Triples with the given Uri as the Subject.
         /// </summary>
-        /// <param name="u">The Uri to find Triples with it as the Subject</param>
-        /// <returns>Zero/More Triples</returns>
+        /// <param name="u">The Uri to find Triples with it as the Subject.</param>
+        /// <returns>Zero/More Triples.</returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
             return _g.GetTriplesWithSubject(u);
         }
 
         /// <summary>
-        /// Selects all Triples with the given Subject and Predicate
+        /// Selects all Triples with the given Subject and Predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
@@ -460,10 +460,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects all Triples with the given Subject and Object
+        /// Selects all Triples with the given Subject and Object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
@@ -471,10 +471,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects all Triples with the given Predicate and Object
+        /// Selects all Triples with the given Predicate and Object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
@@ -482,9 +482,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns the UriNode with the given QName if it exists
+        /// Returns the UriNode with the given QName if it exists.
         /// </summary>
-        /// <param name="qname">The QName of the Node to select</param>
+        /// <param name="qname">The QName of the Node to select.</param>
         /// <returns></returns>
         public virtual IUriNode GetUriNode(string qname)
         {
@@ -492,19 +492,19 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns the UriNode with the given Uri if it exists
+        /// Returns the UriNode with the given Uri if it exists.
         /// </summary>
-        /// <param name="uri">The Uri of the Node to select</param>
-        /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
+        /// <param name="uri">The Uri of the Node to select.</param>
+        /// <returns>Either the UriNode Or null if no Node with the given Uri exists.</returns>
         public virtual IUriNode GetUriNode(Uri uri)
         {
             return _g.GetUriNode(uri);
         }
 
         /// <summary>
-        /// Gets whether a given Triple exists in this Graph
+        /// Gets whether a given Triple exists in this Graph.
         /// </summary>
-        /// <param name="t">Triple to test</param>
+        /// <param name="t">Triple to test.</param>
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
@@ -512,9 +512,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Merges another Graph into the current Graph
+        /// Merges another Graph into the current Graph.
         /// </summary>
-        /// <param name="g">Graph to Merge into this Graph</param>
+        /// <param name="g">Graph to Merge into this Graph.</param>
         /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
         public virtual void Merge(IGraph g)
         {
@@ -522,16 +522,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Merges another Graph into the current Graph
+        /// Merges another Graph into the current Graph.
         /// </summary>
-        /// <param name="g">Graph to Merge into this Graph</param>
-        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes so they refer to the Graph they originated in</param>
+        /// <param name="g">Graph to Merge into this Graph.</param>
+        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes so they refer to the Graph they originated in.</param>
         /// <remarks>
         /// <para>
         /// The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.
         /// </para>
         /// <para>
-        /// The Graph will raise the <see cref="MergeRequested">MergeRequested</see> event before the Merge operation which gives any event handlers the oppurtunity to cancel this event.  When the Merge operation is completed the <see cref="Merged">Merged</see> event is raised
+        /// The Graph will raise the <see cref="MergeRequested">MergeRequested</see> event before the Merge operation which gives any event handlers the oppurtunity to cancel this event.  When the Merge operation is completed the <see cref="Merged">Merged</see> event is raised.
         /// </para>
         /// </remarks>
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
@@ -540,16 +540,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether a Graph is equal to another Object
+        /// Determines whether a Graph is equal to another Object.
         /// </summary>
-        /// <param name="obj">Object to test</param>
+        /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// A Graph can only be equal to another Object which is an <see cref="IGraph">IGraph</see>
+        /// A Graph can only be equal to another Object which is an <see cref="IGraph">IGraph</see>.
         /// </para>
         /// <para>
-        /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals
+        /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals.
         /// </para>
         /// </remarks>
         public override bool Equals(object obj)
@@ -566,17 +566,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Graph is equal to the given Graph
+        /// Determines whether this Graph is equal to the given Graph.
         /// </summary>
-        /// <param name="g">Graph to test for equality</param>
-        /// <param name="mapping">Mapping of Blank Nodes iff the Graphs are equal and contain some Blank Nodes</param>
+        /// <param name="g">Graph to test for equality.</param>
+        /// <param name="mapping">Mapping of Blank Nodes iff the Graphs are equal and contain some Blank Nodes.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// The algorithm used to determine Graph equality is based in part on a Iterative Vertex Classification Algorithm described in a Technical Report from HP by Jeremy J Carroll - <a href="http://www.hpl.hp.com/techreports/2001/HPL-2001-293.html">Matching RDF Graphs</a>
+        /// The algorithm used to determine Graph equality is based in part on a Iterative Vertex Classification Algorithm described in a Technical Report from HP by Jeremy J Carroll -. <a href="http://www.hpl.hp.com/techreports/2001/HPL-2001-293.html">Matching RDF Graphs</a>
         /// </para>
         /// <para>
-        /// Graph Equality is determined according to the following algorithm:
+        /// Graph Equality is determined according to the following algorithm:.
         /// </para>
         /// <ol>
         /// <li>If the given Graph is null Graphs are not equal</li>
@@ -617,9 +617,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
+        /// Checks whether this Graph is a sub-graph of the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         public virtual bool IsSubGraphOf(IGraph g)
         {
@@ -627,10 +627,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether this Graph is a sub-graph of the given Graph
+        /// Checks whether this Graph is a sub-graph of the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="mapping">Mapping of Blank Nodes.</param>
         /// <returns></returns>
         public virtual bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping)
         {
@@ -638,9 +638,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
+        /// Checks whether this Graph has the given Graph as a sub-graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         public virtual bool HasSubGraph(IGraph g)
         {
@@ -648,10 +648,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether this Graph has the given Graph as a sub-graph
+        /// Checks whether this Graph has the given Graph as a sub-graph.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="mapping">Mapping of Blank Nodes.</param>
         /// <returns></returns>
         public virtual bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping)
         {
@@ -659,13 +659,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Computes the Difference between this Graph the given Graph
+        /// Computes the Difference between this Graph the given Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
+        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph.
         /// </para>
         /// </remarks>
         public virtual GraphDiffReport Difference(IGraph g)
@@ -674,9 +674,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper function for Resolving QNames to URIs
+        /// Helper function for Resolving QNames to URIs.
         /// </summary>
-        /// <param name="qname">QName to resolve to a Uri</param>
+        /// <param name="qname">QName to resolve to a Uri.</param>
         /// <returns></returns>
         public virtual Uri ResolveQName(string qname)
         {
@@ -723,19 +723,19 @@ namespace VDS.RDF
         public event GraphEventHandler Merged;
 
         /// <summary>
-        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleAdded">Triple Added</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleAsserted">TripleAsserted</see> event
+        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleAdded">Triple Added</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleAsserted">TripleAsserted</see> event.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Triple Event Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Triple Event Arguments.</param>
         protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
         {
             RaiseTripleAsserted(args);
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually
+        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually.
         /// </summary>
-        /// <param name="args">Triple Event Arguments</param>
+        /// <param name="args">Triple Event Arguments.</param>
         protected void RaiseTripleAsserted(TripleEventArgs args)
         {
             TripleEventHandler d = TripleAsserted;
@@ -748,9 +748,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually
+        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         protected void RaiseTripleAsserted(Triple t)
         {
             TripleEventHandler d = TripleAsserted;
@@ -764,17 +764,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleRemoved">Triple Removed</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleRetracted">Triple Retracted</see> event
+        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleRemoved">Triple Removed</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleRetracted">Triple Retracted</see> event.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Triple Event Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Triple Event Arguments.</param>
         protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
         {
             RaiseTripleRetracted(args);
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually
+        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually.
         /// </summary>
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
@@ -789,9 +789,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually
+        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         protected void RaiseTripleRetracted(Triple t)
         {
             TripleEventHandler d = TripleRetracted;
@@ -805,19 +805,19 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
+        /// Event handler to help propogate Graph events from the underlying graph.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Arguments.</param>
         protected virtual void OnChanged(Object sender, GraphEventArgs args)
         {
             RaiseGraphChanged(args.TripleEvent);
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="Changed">Changed</see> event
+        /// Helper method for raising the <see cref="Changed">Changed</see> event.
         /// </summary>
-        /// <param name="args">Triple Event Arguments</param>
+        /// <param name="args">Triple Event Arguments.</param>
         protected void RaiseGraphChanged(TripleEventArgs args)
         {
             GraphEventHandler d = Changed;
@@ -828,7 +828,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="Changed">Changed</see> event
+        /// Helper method for raising the <see cref="Changed">Changed</see> event.
         /// </summary>
         protected void RaiseGraphChanged()
         {
@@ -840,19 +840,19 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
+        /// Event handler to help propogate Graph events from the underlying graph.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Arguments.</param>
         protected virtual void OnClearRequested(Object sender, CancellableGraphEventArgs args)
         {
             RaiseClearRequested(args);
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="ClearRequested">Clear Requested</see> event and returning whether any of the Event Handlers cancelled the operation
+        /// Helper method for raising the <see cref="ClearRequested">Clear Requested</see> event and returning whether any of the Event Handlers cancelled the operation.
         /// </summary>
-        /// <returns>True if the operation can continue, false if it should be aborted</returns>
+        /// <returns>True if the operation can continue, false if it should be aborted.</returns>
         protected void RaiseClearRequested(CancellableGraphEventArgs args)
         {
             CancellableGraphEventHandler d = ClearRequested;
@@ -863,17 +863,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
+        /// Event handler to help propogate Graph events from the underlying graph.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Arguments.</param>
         protected virtual void OnCleared(Object sender, GraphEventArgs args)
         {
             RaiseCleared();
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="Cleared">Cleared</see> event
+        /// Helper method for raising the <see cref="Cleared">Cleared</see> event.
         /// </summary>
         protected void RaiseCleared()
         {
@@ -885,19 +885,19 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
+        /// Event handler to help propogate Graph events from the underlying graph.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Arguments.</param>
         protected virtual void OnMergeRequested(Object sender, CancellableGraphEventArgs args)
         {
             RaiseMergeRequested(args);
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="MergeRequested">Merge Requested</see> event and returning whether any of the Event Handlers cancelled the operation
+        /// Helper method for raising the <see cref="MergeRequested">Merge Requested</see> event and returning whether any of the Event Handlers cancelled the operation.
         /// </summary>
-        /// <returns>True if the operation can continue, false if it should be aborted</returns>
+        /// <returns>True if the operation can continue, false if it should be aborted.</returns>
         protected void RaiseMergeRequested(CancellableGraphEventArgs args)
         {
             CancellableGraphEventHandler d = MergeRequested;
@@ -908,17 +908,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Event handler to help propogate Graph events from the underlying graph
+        /// Event handler to help propogate Graph events from the underlying graph.
         /// </summary>
-        /// <param name="sender">Sender</param>
-        /// <param name="args">Arguments</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="args">Arguments.</param>
         protected virtual void OnMerged(Object sender, GraphEventArgs args)
         {
             RaiseMerged();
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="Merged">Merged</see> event
+        /// Helper method for raising the <see cref="Merged">Merged</see> event.
         /// </summary>
         protected void RaiseMerged()
         {
@@ -930,7 +930,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for attaching the necessary event handlers to the underlying graph
+        /// Helper method for attaching the necessary event handlers to the underlying graph.
         /// </summary>
         protected void AttachEventHandlers()
         {
@@ -945,7 +945,7 @@ namespace VDS.RDF
         #endregion
 
         /// <summary>
-        /// Disposes of the wrapper and in doing so disposes of the underlying graph
+        /// Disposes of the wrapper and in doing so disposes of the underlying graph.
         /// </summary>
         public virtual void Dispose()
         {
@@ -957,10 +957,10 @@ namespace VDS.RDF
         #region ISerializable Members
 
         /// <summary>
-        /// Gets the Serialization Information
+        /// Gets the Serialization Information.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("graphType", _g.GetType().AssemblyQualifiedName);
@@ -972,7 +972,7 @@ namespace VDS.RDF
         #region IXmlSerializable Members
 
         /// <summary>
-        /// Gets the Schema for XML serialization
+        /// Gets the Schema for XML serialization.
         /// </summary>
         /// <returns></returns>
         public virtual XmlSchema GetSchema()
@@ -981,9 +981,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public virtual void ReadXml(XmlReader reader)
         {
             if (reader.MoveToAttribute("graphType"))
@@ -1015,9 +1015,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public virtual void WriteXml(XmlWriter writer)
         {
             XmlSerializer graphSerializer = new XmlSerializer(_g.GetType());

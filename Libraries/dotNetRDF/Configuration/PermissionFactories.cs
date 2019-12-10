@@ -33,7 +33,7 @@ using VDS.RDF.Configuration.Permissions;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Factory class for producing Permissions from Configuration Graphs
+    /// Factory class for producing Permissions from Configuration Graphs.
     /// </summary>
     public class PermissionFactory : IObjectFactory
     {
@@ -41,12 +41,12 @@ namespace VDS.RDF.Configuration
                              PermissionSet = "VDS.RDF.Configuration.Permissions.PermissionSet";
 
         /// <summary>
-        /// Tries to load a Permission based on information from the Configuration Graph
+        /// Tries to load a Permission based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -73,9 +73,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
@@ -91,19 +91,19 @@ namespace VDS.RDF.Configuration
     }
 
     /// <summary>
-    /// Factory class for producing User Groups from Configuration Graphs
+    /// Factory class for producing User Groups from Configuration Graphs.
     /// </summary>
     public class UserGroupFactory : IObjectFactory
     {
         private const String UserGroup = "VDS.RDF.Configuration.Permissions.UserGroup";
 
         /// <summary>
-        /// Tries to load a User Group based on information from the Configuration Graph
+        /// Tries to load a User Group based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool  TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -179,9 +179,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool  CanLoadObject(Type t)
         {

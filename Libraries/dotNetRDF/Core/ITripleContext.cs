@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF
 {
     /// <summary>
-    /// An Interface for classes which provide Context Information for Triples thus allowing you to create Quads with arbitrary extra information attached to Triples via your Context Objects
+    /// An Interface for classes which provide Context Information for Triples thus allowing you to create Quads with arbitrary extra information attached to Triples via your Context Objects.
     /// </summary>
     /// <remarks>
     /// A Triple Context is simply a name-value pair collection of arbitrary data that can be attached to a Triple.  Internal representation of this is left to the implementor.
@@ -38,14 +38,14 @@ namespace VDS.RDF
     public interface ITripleContext
     {
         /// <summary>
-        /// A Method which will indicate whether the Context contains some arbitrary property
+        /// A Method which will indicate whether the Context contains some arbitrary property.
         /// </summary>
         bool HasProperty(String name);
 
         /// <summary>
-        /// A Property which exposes the arbitrary properties of the Context as an Key Based Index
+        /// A Property which exposes the arbitrary properties of the Context as an Key Based Index.
         /// </summary>
-        /// <param name="name">Name of the Property</param>
+        /// <param name="name">Name of the Property.</param>
         /// <returns></returns>
         Object this[String name]
         {
@@ -55,17 +55,17 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class which implements a very basic Triple Context
+    /// Class which implements a very basic Triple Context.
     /// </summary>
     /// <remarks>
-    /// The Name Value collection is represented internally as a Dictionary
+    /// The Name Value collection is represented internally as a Dictionary.
     /// </remarks>
     public class BasicTripleContext : ITripleContext
     {
         private Dictionary<String, Object> _properties;
 
         /// <summary>
-        /// Creates a new Basic Triple Context without a Source
+        /// Creates a new Basic Triple Context without a Source.
         /// </summary>
         public BasicTripleContext()
         {
@@ -73,9 +73,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether a given property is defined in this Context object
+        /// Checks whether a given property is defined in this Context object.
         /// </summary>
-        /// <param name="name">Name of the Property</param>
+        /// <param name="name">Name of the Property.</param>
         /// <returns></returns>
         public bool HasProperty(string name)
         {
@@ -83,9 +83,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the value of a Property
+        /// Gets/Sets the value of a Property.
         /// </summary>
-        /// <param name="name">Name of the Property</param>
+        /// <param name="name">Name of the Property.</param>
         /// <returns></returns>
         public object this[string name]
         {

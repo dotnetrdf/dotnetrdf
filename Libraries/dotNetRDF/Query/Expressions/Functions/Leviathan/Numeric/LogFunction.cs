@@ -31,7 +31,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
-    /// Represents the Leviathan lfn:log() function
+    /// Represents the Leviathan lfn:log() function.
     /// </summary>
     public class LogFunction
         : BaseBinaryExpression
@@ -39,9 +39,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         private bool _log10 = false;
 
         /// <summary>
-        /// Creates a new Leviathan Log Function
+        /// Creates a new Leviathan Log Function.
         /// </summary>
-        /// <param name="arg">Expression</param>
+        /// <param name="arg">Expression.</param>
         public LogFunction(ISparqlExpression arg)
             : base(arg, new ConstantTerm(new DoubleNode(null, 10)))
         {
@@ -49,18 +49,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Creates a new Leviathan Log Function
+        /// Creates a new Leviathan Log Function.
         /// </summary>
-        /// <param name="arg">Expression</param>
-        /// <param name="logBase">Log Base Expression</param>
+        /// <param name="arg">Expression.</param>
+        /// <param name="logBase">Log Base Expression.</param>
         public LogFunction(ISparqlExpression arg, ISparqlExpression logBase)
             : base(arg, logBase) { }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
         
         /// <summary>
-        /// Gets the type of the expression
+        /// Gets the type of the expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -113,9 +113,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

@@ -37,7 +37,7 @@ namespace VDS.RDF.Query
 {
 
     /// <summary>
-    /// A Class for connecting to multiple remote SPARQL Endpoints and federating queries over them with the data merging done locally
+    /// A Class for connecting to multiple remote SPARQL Endpoints and federating queries over them with the data merging done locally.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -52,83 +52,83 @@ namespace VDS.RDF.Query
         private int _maxSimultaneousRequests = 4;
 
         /// <summary>
-        /// Creates a new Federated SPARQL Endpoint using a given Endpoint
+        /// Creates a new Federated SPARQL Endpoint using a given Endpoint.
         /// </summary>
-        /// <param name="endpoint">Endpoint</param>
+        /// <param name="endpoint">Endpoint.</param>
         public FederatedSparqlRemoteEndpoint(SparqlRemoteEndpoint endpoint)
         {
             _endpoints.Add(endpoint);
         }
 
         /// <summary>
-        /// Creates a new Federated SPARQL Endpoint using the given Endpoints
+        /// Creates a new Federated SPARQL Endpoint using the given Endpoints.
         /// </summary>
-        /// <param name="endpoints">Endpoints</param>
+        /// <param name="endpoints">Endpoints.</param>
         public FederatedSparqlRemoteEndpoint(IEnumerable<SparqlRemoteEndpoint> endpoints)
         {
             _endpoints.AddRange(endpoints);
         }
 
         /// <summary>
-        /// Creates a new Federated SPARQL Endpoint by creating a new <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> for the given URI
+        /// Creates a new Federated SPARQL Endpoint by creating a new <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> for the given URI.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public FederatedSparqlRemoteEndpoint(Uri endpointUri)
         {
             _endpoints.Add(new SparqlRemoteEndpoint(endpointUri));
         }
 
         /// <summary>
-        /// Creates a new Federated SPARQL Endpoint by creating a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> for each of the given URI
+        /// Creates a new Federated SPARQL Endpoint by creating a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> for each of the given URI.
         /// </summary>
-        /// <param name="endpointUris">Endpoint URIs</param>
+        /// <param name="endpointUris">Endpoint URIs.</param>
         public FederatedSparqlRemoteEndpoint(IEnumerable<Uri> endpointUris)
         {
             _endpoints.AddRange(endpointUris.Select(u => new SparqlRemoteEndpoint(u)));
         }
 
         /// <summary>
-        /// Adds a additional endpoint to be used by this endpoint
+        /// Adds a additional endpoint to be used by this endpoint.
         /// </summary>
-        /// <param name="endpoint">Endpoint</param>
+        /// <param name="endpoint">Endpoint.</param>
         public void AddEndpoint(SparqlRemoteEndpoint endpoint)
         {
             _endpoints.Add(endpoint);
         }
 
         /// <summary>
-        /// Adds an additional endpoint to be used by this endpoint
+        /// Adds an additional endpoint to be used by this endpoint.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public void AddEndpoint(Uri endpointUri)
         {
             _endpoints.Add(new SparqlRemoteEndpoint(endpointUri));
         }
 
         /// <summary>
-        /// Removes a given endpoint from this endpoint
+        /// Removes a given endpoint from this endpoint.
         /// </summary>
-        /// <param name="endpoint">Endpoint</param>
+        /// <param name="endpoint">Endpoint.</param>
         public void RemoveEndpoint(SparqlRemoteEndpoint endpoint)
         {
             _endpoints.Remove(endpoint);
         }
 
         /// <summary>
-        /// Removes all endpoints with the given URI from this endpoint
+        /// Removes all endpoints with the given URI from this endpoint.
         /// </summary>
-        /// <param name="endpointUri">Endpoint URI</param>
+        /// <param name="endpointUri">Endpoint URI.</param>
         public void RemoveEndpoint(Uri endpointUri)
         {
             _endpoints.RemoveAll(e => e.Uri.Equals(endpointUri));
         }
 
         /// <summary>
-        /// Gets/Sets whether a failed request on one endpoint should cause the entire request to fail
+        /// Gets/Sets whether a failed request on one endpoint should cause the entire request to fail.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// By default if a request on any of the endpoint fails or times out then the entire request will fail
+        /// By default if a request on any of the endpoint fails or times out then the entire request will fail.
         /// </para>
         /// </remarks>
         public bool IgnoreFailedRequests
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the maximum number of endpoints this endpoint will issue queries to at any one time
+        /// Gets/Sets the maximum number of endpoints this endpoint will issue queries to at any one time.
         /// </summary>
         public int MaxSimultaneousRequests
         {
@@ -162,11 +162,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query to a Sparql Endpoint and returns the raw Response
+        /// Makes a Query to a Sparql Endpoint and returns the raw Response.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <param name="sparqlQuery">Sparql Query String.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams</exception>
+        /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams.</exception>
         public override HttpWebResponse QueryRaw(string sparqlQuery)
         {
             // If we only have a single endpoint then we can still return a raw response
@@ -177,12 +177,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query to a Sparql Endpoint and returns the raw Response
+        /// Makes a Query to a Sparql Endpoint and returns the raw Response.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
-        /// <param name="mimeTypes">MIME Types to use for the Accept Header</param>
+        /// <param name="sparqlQuery">Sparql Query String.</param>
+        /// <param name="mimeTypes">MIME Types to use for the Accept Header.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams</exception>
+        /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams.</exception>
         public override HttpWebResponse QueryRaw(string sparqlQuery, string[] mimeTypes)
         {
             // If we only have a single endpoint then we can still return a raw response
@@ -193,10 +193,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <returns>RDF Graph</returns>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
+        /// <returns>RDF Graph.</returns>
         /// <remarks>
         /// <para>
         /// The query is executed by sending it federating it to all the endpoints this endpoint contains using simultaneous asychronous calls.  Once these calls complete the results are naivley merged together (no duplicate data removal) and returned as a single result.
@@ -205,8 +205,8 @@ namespace VDS.RDF.Query
         /// By default if any of the endpoints used return an error then the entire query will fail and an exception will be thrown, this behaviour can be overridden by setting the <see cref="FederatedSparqlRemoteEndpoint.IgnoreFailedRequests">IgnoreFailedRequests</see> property to be true in which case the result will be the merge of the results from all endpoints which successfully provided a result.
         /// </para>
         /// </remarks>
-        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail</exception>
-        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
+        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail.</exception>
+        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout.</exception>
         public override IGraph QueryWithResultGraph(string sparqlQuery)
         {
             // If no endpoints return an Empty Graph
@@ -218,10 +218,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected result is a Graph i.e. a CONSTRUCT or DESCRIBE query
+        /// Makes a Query where the expected result is a Graph i.e. a CONSTRUCT or DESCRIBE query.
         /// </summary>
-        /// <param name="handler">RDF Handler to process the results</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="handler">RDF Handler to process the results.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         public override void QueryWithResultGraph(IRdfHandler handler, string sparqlQuery)
         {
             // If no endpoints do nothing
@@ -344,10 +344,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
+        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
-        /// <returns>A Sparql Result Set</returns>
+        /// <param name="sparqlQuery">Sparql Query String.</param>
+        /// <returns>A Sparql Result Set.</returns>
         /// <remarks>
         /// <para>
         /// The query is executed by sending it federating it to all the endpoints this endpoint contains using simultaneous asychronous calls.  Once these calls complete the results are naivley merged together (no duplicate data removal) and returned as a single result.
@@ -356,8 +356,8 @@ namespace VDS.RDF.Query
         /// By default if any of the endpoints used return an error then the entire query will fail and an exception will be thrown, this behaviour can be overridden by setting the <see cref="FederatedSparqlRemoteEndpoint.IgnoreFailedRequests">IgnoreFailedRequests</see> property to be true in which case the result will be the merge of the results from all endpoints which successfully provided a result.
         /// </para>
         /// </remarks>
-        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail</exception>
-        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
+        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail.</exception>
+        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout.</exception>
         public override SparqlResultSet QueryWithResultSet(string sparqlQuery)
         {
             // If no endpoints return an empty Result Set
@@ -370,12 +370,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
+        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="handler">Results Handler to process the results</param>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail</exception>
-        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
+        /// <param name="handler">Results Handler to process the results.</param>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
+        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail.</exception>
+        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout.</exception>
         public override void QueryWithResultSet(ISparqlResultsHandler handler, string sparqlQuery)
         {
             // If no endpoints do nothing
@@ -506,9 +506,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Serializes the Endpoint's Configuration
+        /// Serializes the Endpoint's Configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpointObj = context.NextSubject;

@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Abstract Base Class for formatters where things are formatted as lines of plain text deliminated by specific characters
+    /// Abstract Base Class for formatters where things are formatted as lines of plain text deliminated by specific characters.
     /// </summary>
     public abstract class DeliminatedLineFormatter 
         : BaseFormatter
@@ -46,17 +46,17 @@ namespace VDS.RDF.Writing.Formatting
         private List<String[]> _delimEscapes;
 
         /// <summary>
-        /// Creates a new Deliminated Line Formatter
+        /// Creates a new Deliminated Line Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
-        /// <param name="deliminator">Item Deliminator Character</param>
-        /// <param name="escape">Escape Character</param>
-        /// <param name="uriStartChar">Character to start URIs (may be null)</param>
-        /// <param name="uriEndChar">Character to end URIs (may be null)</param>
-        /// <param name="literalWrapperChar">Character to wrap Literals in (may be null)</param>
-        /// <param name="longLiteralWrapperChar">Character to wrap Long Literals in (may be null)</param>
-        /// <param name="lineEndChar">Character to add at end of line (may be null)</param>
-        /// <param name="fullLiteralOutput">Whether Literals are output with Language/Datatype information</param>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="deliminator">Item Deliminator Character.</param>
+        /// <param name="escape">Escape Character.</param>
+        /// <param name="uriStartChar">Character to start URIs (may be null).</param>
+        /// <param name="uriEndChar">Character to end URIs (may be null).</param>
+        /// <param name="literalWrapperChar">Character to wrap Literals in (may be null).</param>
+        /// <param name="longLiteralWrapperChar">Character to wrap Long Literals in (may be null).</param>
+        /// <param name="lineEndChar">Character to add at end of line (may be null).</param>
+        /// <param name="fullLiteralOutput">Whether Literals are output with Language/Datatype information.</param>
         public DeliminatedLineFormatter(String formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
             : base(formatName)
         {
@@ -83,9 +83,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Triple
+        /// Formats a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public override string Format(Triple t)
         {
@@ -103,10 +103,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a URI Node
+        /// Formats a URI Node.
         /// </summary>
-        /// <param name="u">URI Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="u">URI Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
@@ -125,10 +125,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Literal Node
+        /// Formats a Literal Node.
         /// </summary>
-        /// <param name="lit">Literal Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="lit">Literal Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
         {
@@ -211,7 +211,7 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats URIs
+        /// Formats URIs.
         /// </summary>
         /// <param name="u"></param>
         /// <returns></returns>

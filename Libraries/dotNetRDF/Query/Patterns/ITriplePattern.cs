@@ -36,19 +36,19 @@ using VDS.RDF.Query.PropertyFunctions;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Interface for Triple Patterns
+    /// Interface for Triple Patterns.
     /// </summary>
     public interface ITriplePattern
         : IComparable<ITriplePattern>
     {
         /// <summary>
-        /// Evaluates the Triple Pattern in the given Evaluation Context
+        /// Evaluates the Triple Pattern in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Query Evaluation Context</param>
+        /// <param name="context">Query Evaluation Context.</param>
         void Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the Pattern Type
+        /// Gets the Pattern Type.
         /// </summary>
         TriplePatternType PatternType
         {
@@ -56,10 +56,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern accepts all
+        /// Gets whether the Pattern accepts all.
         /// </summary>
         /// <remarks>
-        /// Indicates that a Pattern is of the form ?s ?p ?o
+        /// Indicates that a Pattern is of the form ?s ?p ?o.
         /// </remarks>
         bool IsAcceptAll 
         {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the List of Variables used in the Pattern
+        /// Gets the List of Variables used in the Pattern.
         /// </summary>
         List<string> Variables 
         { 
@@ -75,20 +75,20 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         IEnumerable<String> FloatingVariables { get; }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         IEnumerable<String> FixedVariables { get; }
 
         /// <summary>
-        /// Gets whether a Triple Pattern uses the Default Dataset when evaluated
+        /// Gets whether a Triple Pattern uses the Default Dataset when evaluated.
         /// </summary>
         /// <remarks>
-        /// Almost all Triple Patterns use the Default Dataset unless they are sub-query patterns which themselves don't use the Default Dataset or they contain an expression (in the case of BIND/LET/FILTERs) which does not use the Default Dataset
+        /// Almost all Triple Patterns use the Default Dataset unless they are sub-query patterns which themselves don't use the Default Dataset or they contain an expression (in the case of BIND/LET/FILTERs) which does not use the Default Dataset.
         /// </remarks>
         bool UsesDefaultDataset
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether a Triple Pattern does not contain any Blank Variables
+        /// Gets whether a Triple Pattern does not contain any Blank Variables.
         /// </summary>
         bool HasNoBlankVariables
         {
@@ -106,20 +106,20 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Interface for Triple Patterns that can be used in a CONSTRUCT pattern
+    /// Interface for Triple Patterns that can be used in a CONSTRUCT pattern.
     /// </summary>
     public interface IConstructTriplePattern
         : ITriplePattern
     {
         /// <summary>
-        /// Constructs a Triple from a Set based on this Triple Pattern
+        /// Constructs a Triple from a Set based on this Triple Pattern.
         /// </summary>
-        /// <param name="context">Construct Context</param>
+        /// <param name="context">Construct Context.</param>
         /// <returns></returns>
         Triple Construct(ConstructContext context);
 
         /// <summary>
-        /// Gets the Subject of the Pattern
+        /// Gets the Subject of the Pattern.
         /// </summary>
         PatternItem Subject
         {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Predicate of the Pattern
+        /// Gets the Predicate of the Pattern.
         /// </summary>
         PatternItem Predicate
         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Object of the Pattern
+        /// Gets the Object of the Pattern.
         /// </summary>
         PatternItem Object
         {
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Variables of any kind
+        /// Gets whether the Pattern contains no Variables of any kind.
         /// </summary>
         bool HasNoVariables
         {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
+        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored).
         /// </summary>
         bool HasNoExplicitVariables
         {
@@ -160,13 +160,13 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Inteface for Triple Patterns that do simple pattern matching
+    /// Inteface for Triple Patterns that do simple pattern matching.
     /// </summary>
     public interface IMatchTriplePattern
         : ITriplePattern, IComparable<IMatchTriplePattern>
     {
         /// <summary>
-        /// Gets the Index type that should be used in Pattern execution
+        /// Gets the Index type that should be used in Pattern execution.
         /// </summary>
         TripleIndexType IndexType
         {
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Subject of the Pattern
+        /// Gets the Subject of the Pattern.
         /// </summary>
         PatternItem Subject
         {
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Predicate of the Pattern
+        /// Gets the Predicate of the Pattern.
         /// </summary>
         PatternItem Predicate
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Object of the Pattern
+        /// Gets the Object of the Pattern.
         /// </summary>
         PatternItem Object
         {
@@ -198,36 +198,36 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Triples that match this pattern
+        /// Gets the Triples that match this pattern.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets whether a given triple is accepted by this pattern
+        /// Gets whether a given triple is accepted by this pattern.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="t">Triple</param>
+        /// <param name="context">Context.</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         bool Accepts(SparqlEvaluationContext context, Triple t);
 
         /// <summary>
-        /// Creates a set from a Triple
+        /// Creates a set from a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         ISet CreateResult(Triple t);
     }
 
     /// <summary>
-    /// Interface for Triple Patterns that apply filters
+    /// Interface for Triple Patterns that apply filters.
     /// </summary>
     public interface IFilterPattern
         : ITriplePattern, IComparable<IFilterPattern>
     {
         /// <summary>
-        /// Gets the filter to apply
+        /// Gets the filter to apply.
         /// </summary>
         ISparqlFilter Filter
         {
@@ -236,13 +236,13 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Interface for Triple Patterns that represent Assignment operators
+    /// Interface for Triple Patterns that represent Assignment operators.
     /// </summary>
     public interface IAssignmentPattern
         : ITriplePattern, IComparable<IAssignmentPattern>
     {
         /// <summary>
-        /// Gets the Assignment Expression that is used
+        /// Gets the Assignment Expression that is used.
         /// </summary>
         ISparqlExpression AssignExpression
         {
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Name of the Variable which is assigned to
+        /// Name of the Variable which is assigned to.
         /// </summary>
         String VariableName
         {
@@ -259,13 +259,13 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Interface for Triple Patterns that do sub-queries
+    /// Interface for Triple Patterns that do sub-queries.
     /// </summary>
     public interface ISubQueryPattern
         : ITriplePattern, IComparable<ISubQueryPattern>
     {
         /// <summary>
-        /// Gets the sub-query
+        /// Gets the sub-query.
         /// </summary>
         SparqlQuery SubQuery
         {
@@ -274,13 +274,13 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Interface for Triple Patterns that do property paths
+    /// Interface for Triple Patterns that do property paths.
     /// </summary>
     public interface IPropertyPathPattern
         : ITriplePattern, IComparable<IPropertyPathPattern>
     {
         /// <summary>
-        /// Gets the Subject of the Pattern
+        /// Gets the Subject of the Pattern.
         /// </summary>
         PatternItem Subject
         {
@@ -288,7 +288,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the property path
+        /// Gets the property path.
         /// </summary>
         ISparqlPath Path
         {
@@ -296,7 +296,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Object of the Pattern
+        /// Gets the Object of the Pattern.
         /// </summary>
         PatternItem Object
         {
@@ -305,13 +305,13 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Interface for Triple Patterns that do property functions
+    /// Interface for Triple Patterns that do property functions.
     /// </summary>
     public interface IPropertyFunctionPattern
         : ITriplePattern, IComparable<IPropertyFunctionPattern>
     {
         /// <summary>
-        /// Gets the Subject arguments of the function
+        /// Gets the Subject arguments of the function.
         /// </summary>
         IEnumerable<PatternItem> SubjectArgs
         {
@@ -319,7 +319,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Object arguments of the function
+        /// Gets the Object arguments of the function.
         /// </summary>
         IEnumerable<PatternItem> ObjectArgs
         {
@@ -327,7 +327,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the property function
+        /// Gets the property function.
         /// </summary>
         ISparqlPropertyFunction PropertyFunction
         {
@@ -335,7 +335,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the original triple patterns that made up this pattern
+        /// Gets the original triple patterns that made up this pattern.
         /// </summary>
         IEnumerable<ITriplePattern> OriginalPatterns
         {

@@ -31,19 +31,19 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents a Cardinality restriction on a Path
+    /// Represents a Cardinality restriction on a Path.
     /// </summary>
     public abstract class Cardinality : BaseUnaryPath
     {
         /// <summary>
-        /// Creates a new Cardinality Restriction
+        /// Creates a new Cardinality Restriction.
         /// </summary>
-        /// <param name="path">Path</param>
+        /// <param name="path">Path.</param>
         public Cardinality(ISparqlPath path)
             : base(path) { }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public abstract int MinCardinality
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public abstract int MaxCardinality
         {
@@ -60,17 +60,17 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a Fixed Cardinality restriction on a Path
+    /// Represents a Fixed Cardinality restriction on a Path.
     /// </summary>
     public class FixedCardinality : Cardinality
     {
         private int _n;
 
         /// <summary>
-        /// Creates a new Fixed Cardinality restriction
+        /// Creates a new Fixed Cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="n">N</param>
+        /// <param name="path">Path.</param>
+        /// <param name="n">N.</param>
         public FixedCardinality(ISparqlPath path, int n)
             : base(path)
         {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -100,9 +100,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -144,19 +144,19 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a Zero or More cardinality restriction on a Path
+    /// Represents a Zero or More cardinality restriction on a Path.
     /// </summary>
     public class ZeroOrMore : Cardinality
     {
         /// <summary>
-        /// Creates a new Zero or More cardinality restriction
+        /// Creates a new Zero or More cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
+        /// <param name="path">Path.</param>
         public ZeroOrMore(ISparqlPath path)
             : base(path) { }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -187,9 +187,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -198,20 +198,20 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a Zero or One cardinality restriction on a Path
+    /// Represents a Zero or One cardinality restriction on a Path.
     /// </summary>
     public class ZeroOrOne
         : Cardinality
     {
         /// <summary>
-        /// Creates a new Zero or One cardinality restriction
+        /// Creates a new Zero or One cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
+        /// <param name="path">Path.</param>
         public ZeroOrOne(ISparqlPath path)
             : base(path) { }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -242,9 +242,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -258,20 +258,20 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a One or More cardinality restriction on a Path
+    /// Represents a One or More cardinality restriction on a Path.
     /// </summary>
     public class OneOrMore
         : Cardinality
     {
         /// <summary>
-        /// Creates a new One or More cardinality restriction
+        /// Creates a new One or More cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
+        /// <param name="path">Path.</param>
         public OneOrMore(ISparqlPath path)
             : base(path) { }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -282,7 +282,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -293,7 +293,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -302,9 +302,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -313,17 +313,17 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a N or More cardinality restriction on a Path
+    /// Represents a N or More cardinality restriction on a Path.
     /// </summary>
     public class NOrMore : Cardinality
     {
         private int _n;
 
         /// <summary>
-        /// Creates a new N or More cardinality restriction
+        /// Creates a new N or More cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="n">Minimum Cardinality</param>
+        /// <param name="path">Path.</param>
+        /// <param name="n">Minimum Cardinality.</param>
         public NOrMore(ISparqlPath path, int n)
             : base(path) 
         {
@@ -331,7 +331,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -342,7 +342,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -353,7 +353,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -362,9 +362,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -376,17 +376,17 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a Zero to N cardinality restriction on a Path
+    /// Represents a Zero to N cardinality restriction on a Path.
     /// </summary>
     public class ZeroToN : Cardinality
     {
         private int _n;
 
         /// <summary>
-        /// Creates a new Zero to N cardinality restriction
+        /// Creates a new Zero to N cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="n">Maximum Cardinality</param>
+        /// <param name="path">Path.</param>
+        /// <param name="n">Maximum Cardinality.</param>
         public ZeroToN(ISparqlPath path, int n)
             : base(path) 
         {
@@ -394,7 +394,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -405,7 +405,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -416,7 +416,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -425,9 +425,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
@@ -437,18 +437,18 @@ namespace VDS.RDF.Query.Paths
     }
 
     /// <summary>
-    /// Represents a N to M cardinality restriction on a Path
+    /// Represents a N to M cardinality restriction on a Path.
     /// </summary>
     public class NToM : Cardinality
     {
         private int _n, _m;
 
         /// <summary>
-        /// Creates a new N to M cardinality restriction
+        /// Creates a new N to M cardinality restriction.
         /// </summary>
-        /// <param name="path">Path</param>
-        /// <param name="n">Minimum Cardinality</param>
-        /// <param name="m">Maximum Cardinality</param>
+        /// <param name="path">Path.</param>
+        /// <param name="n">Minimum Cardinality.</param>
+        /// <param name="m">Maximum Cardinality.</param>
         public NToM(ISparqlPath path, int n, int m)
             : base(path)
         {
@@ -457,7 +457,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Maximum Cardinality of the Path
+        /// Gets the Maximum Cardinality of the Path.
         /// </summary>
         public override int MaxCardinality
         {
@@ -468,7 +468,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the Minimum Cardinality of the Path
+        /// Gets the Minimum Cardinality of the Path.
         /// </summary>
         public override int MinCardinality
         {
@@ -479,7 +479,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -488,9 +488,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {

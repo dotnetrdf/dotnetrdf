@@ -30,20 +30,20 @@ using VDS.RDF.Query.Expressions.Functions.XPath.String;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Represents the SPARQL LCASE Function
+    /// Represents the SPARQL LCASE Function.
     /// </summary>
     public class LCaseFunction
         : BaseUnaryStringFunction
     {
         /// <summary>
-        /// Creates a new LCASE function
+        /// Creates a new LCASE function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public LCaseFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Calculates
+        /// Calculates.
         /// </summary>
         /// <param name="stringLit"></param>
         /// <returns></returns>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -80,9 +80,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

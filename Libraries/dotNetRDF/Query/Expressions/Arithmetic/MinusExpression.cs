@@ -30,23 +30,23 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Arithmetic
 {
     /// <summary>
-    /// Class representing Unary Minus expressions (sign of numeric expression is reversed)
+    /// Class representing Unary Minus expressions (sign of numeric expression is reversed).
     /// </summary>
     public class MinusExpression
         : BaseUnaryExpression
     {
         /// <summary>
-        /// Creates a new Unary Minus Expression
+        /// Creates a new Unary Minus Expression.
         /// </summary>
-        /// <param name="expr">Expression to apply the Minus operator to</param>
+        /// <param name="expr">Expression to apply the Minus operator to.</param>
         public MinusExpression(ISparqlExpression expr) 
             : base(expr) { }
 
         /// <summary>
-        /// Calculates the Numeric Value of this Expression as evaluated for a given Binding
+        /// Calculates the Numeric Value of this Expression as evaluated for a given Binding.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -141,9 +141,9 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

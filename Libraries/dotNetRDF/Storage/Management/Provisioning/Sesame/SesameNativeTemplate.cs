@@ -30,7 +30,7 @@ using System.ComponentModel;
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
     /// <summary>
-    /// Sesame Native index modes
+    /// Sesame Native index modes.
     /// </summary>
     public enum SesameNativeIndexMode
     {
@@ -41,11 +41,11 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// POSC indexes
         /// </summary>
-        POSC
+        POSC,
     }
 
     /// <summary>
-    /// Template for creating Sesame Native stores
+    /// Template for creating Sesame Native stores.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -77,9 +77,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         : BaseSesameTemplate
     {
         /// <summary>
-        /// Creates a Sesame Native store template
+        /// Creates a Sesame Native store template.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         public SesameNativeTemplate(String id)
             : base(id, "Sesame Native", "A Sesame native store resides on disk")
         {
@@ -87,9 +87,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets the template graph used to specify the configuration of a Sesame repository
+        /// Gets the template graph used to specify the configuration of a Sesame repository.
         /// </summary>
-        /// <returns>Template Graph</returns>
+        /// <returns>Template Graph.</returns>
         public override IGraph GetTemplateGraph()
         {
             IGraph g = GetBaseTemplateGraph();
@@ -122,7 +122,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets the Indexing Mode
+        /// Gets/Sets the Indexing Mode.
         /// </summary>
         [Category("Sesame Configuration"), DisplayName("Triple Indexing Mode"), Description("Sets the indexing mode for the store"), DefaultValue(SesameNativeIndexMode.SPOC)]
         public SesameNativeIndexMode IndexMode
@@ -132,7 +132,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets whether to enable direct type hierarchy inferencing
+        /// Gets/Sets whether to enable direct type hierarchy inferencing.
         /// </summary>
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
         public bool DirectTypeHierarchyInferencing
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets whether to enable RDF Schema Inferencing
+        /// Gets/Sets whether to enable RDF Schema Inferencing.
         /// </summary>
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
         public bool RdfSchemaInferencing

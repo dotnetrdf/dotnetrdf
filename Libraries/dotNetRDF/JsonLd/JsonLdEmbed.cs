@@ -27,7 +27,7 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the allowed values for the object embed option for JSON-LD framing
+    /// Enumeration of the allowed values for the object embed option for JSON-LD framing.
     /// </summary>
     public enum JsonLdEmbed
     {
@@ -46,6 +46,6 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// @never
         /// </summary>
-        Never
+        Never,
     }
 }

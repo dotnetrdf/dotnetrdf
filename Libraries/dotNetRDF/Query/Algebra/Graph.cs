@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a GRAPH clause
+    /// Represents a GRAPH clause.
     /// </summary>
     public class Graph
         : IUnaryOperator
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Algebra
         private readonly IToken _graphSpecifier;
 
         /// <summary>
-        /// Creates a new Graph clause
+        /// Creates a new Graph clause.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="graphSpecifier">Graph Specifier</param>
+        /// <param name="pattern">Pattern.</param>
+        /// <param name="graphSpecifier">Graph Specifier.</param>
         public Graph(ISparqlAlgebra pattern, IToken graphSpecifier)
         {
             _pattern = pattern;
@@ -54,9 +54,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Graph Clause by setting up the dataset, applying the pattern and then generating additional bindings if necessary
+        /// Evaluates the Graph Clause by setting up the dataset, applying the pattern and then generating additional bindings if necessary.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -278,7 +278,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Graph Specifier
+        /// Gets the Graph Specifier.
         /// </summary>
         public IToken GraphSpecifier
         {
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a Graph Pattern
+        /// Converts the Algebra back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -338,9 +338,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -348,11 +348,11 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a Graph instance by applying a graph specifier to an algebra
+        /// Creates a Graph instance by applying a graph specifier to an algebra.
         /// </summary>
-        /// <param name="algebra">The algebra to be constrained</param>
-        /// <param name="graphSpecifier">A token specifying the graph constraint</param>
-        /// <returns>A Graph instance representing the application of the graph constraint to the algebra</returns>
+        /// <param name="algebra">The algebra to be constrained.</param>
+        /// <param name="graphSpecifier">A token specifying the graph constraint.</param>
+        /// <returns>A Graph instance representing the application of the graph constraint to the algebra.</returns>
         public static ISparqlAlgebra ApplyGraph(ISparqlAlgebra algebra, IToken graphSpecifier)
         {
             if (!(algebra is Graph)) return new Graph(algebra, graphSpecifier);

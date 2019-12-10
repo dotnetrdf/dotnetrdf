@@ -32,11 +32,11 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Abstract Base class for Results writers which generate GZipped output
+    /// Abstract Base class for Results writers which generate GZipped output.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// While the normal witers can be used with GZip streams directly this class just abstracts the wrapping of file/stream output into a GZip stream if it is not already passed as such
+    /// While the normal witers can be used with GZip streams directly this class just abstracts the wrapping of file/stream output into a GZip stream if it is not already passed as such.
     /// </para>
     /// </remarks>
     public abstract class BaseGZipResultsWriter
@@ -45,9 +45,9 @@ namespace VDS.RDF.Writing
         private ISparqlResultsWriter _writer;
 
         /// <summary>
-        /// Creates a new GZipped Results writer
+        /// Creates a new GZipped Results writer.
         /// </summary>
-        /// <param name="writer">Underlying writer</param>
+        /// <param name="writer">Underlying writer.</param>
         public BaseGZipResultsWriter(ISparqlResultsWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
@@ -56,10 +56,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Result Set as GZipped output
+        /// Saves a Result Set as GZipped output.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(SparqlResultSet results, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
@@ -67,10 +67,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Result Set as GZipped output
+        /// Saves a Result Set as GZipped output.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="output">Writer to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="output">Writer to save to.</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
             if (results == null) throw new RdfOutputException("Cannot write RDF from a null Graph");
@@ -96,9 +96,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method for raising warning events
+        /// Helper method for raising warning events.
         /// </summary>
-        /// <param name="message">Warning message</param>
+        /// <param name="message">Warning message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -111,7 +111,7 @@ namespace VDS.RDF.Writing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the description of the writer
+        /// Gets the description of the writer.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -121,52 +121,52 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
-    /// Writer for GZipped SPARQL XML
+    /// Writer for GZipped SPARQL XML.
     /// </summary>
     public class GZippedSparqlXmlWriter
         : BaseGZipResultsWriter
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL XML writer
+        /// Creates a new GZipped SPARQL XML writer.
         /// </summary>
         public GZippedSparqlXmlWriter()
             : base(new SparqlXmlWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped SPARQL JSON
+    /// Writer for GZipped SPARQL JSON.
     /// </summary>
     public class GZippedSparqlJsonWriter
         : BaseGZipResultsWriter
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL JSON writer
+        /// Creates a new GZipped SPARQL JSON writer.
         /// </summary>
         public GZippedSparqlJsonWriter()
             : base(new SparqlJsonWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped SPARQL CSV
+    /// Writer for GZipped SPARQL CSV.
     /// </summary>
     public class GZippedSparqlCsvWriter
         : BaseGZipResultsWriter
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL CSV writer
+        /// Creates a new GZipped SPARQL CSV writer.
         /// </summary>
         public GZippedSparqlCsvWriter()
             : base(new SparqlCsvWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped SPARQL TSV
+    /// Writer for GZipped SPARQL TSV.
     /// </summary>
     public class GZippedSparqlTsvWriter
         : BaseGZipResultsWriter
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL TSV writer
+        /// Creates a new GZipped SPARQL TSV writer.
         /// </summary>
         public GZippedSparqlTsvWriter()
             : base(new SparqlTsvWriter()) { }

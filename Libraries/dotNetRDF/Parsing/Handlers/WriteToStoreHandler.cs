@@ -32,13 +32,13 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which writes the Triples being parsed directly to a <see cref="IStorageProvider">IStorageProvider</see> in batches provided the manager supports the <see cref="IStorageProvider.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method
+    /// A RDF Handler which writes the Triples being parsed directly to a <see cref="IStorageProvider">IStorageProvider</see> in batches provided the manager supports the <see cref="IStorageProvider.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method.
     /// </summary>
     public class WriteToStoreHandler
         : BaseRdfHandler
     {
         /// <summary>
-        /// Default Batch Size for writes
+        /// Default Batch Size for writes.
         /// </summary>
         public const int DefaultBatchSize = 1000;
 
@@ -49,11 +49,11 @@ namespace VDS.RDF.Parsing.Handlers
         private int _batchSize;
 
         /// <summary>
-        /// Creates a new Write to Store Handler
+        /// Creates a new Write to Store Handler.
         /// </summary>
-        /// <param name="manager">Manager to write to</param>
-        /// <param name="defaultGraphUri">Graph URI to write Triples from the default graph to</param>
-        /// <param name="batchSize">Batch Size</param>
+        /// <param name="manager">Manager to write to.</param>
+        /// <param name="defaultGraphUri">Graph URI to write Triples from the default graph to.</param>
+        /// <param name="batchSize">Batch Size.</param>
         public WriteToStoreHandler(IStorageProvider manager, Uri defaultGraphUri, int batchSize)
         {
             if (manager == null) throw new ArgumentNullException("manager", "Cannot write to a null Generic IO Manager");
@@ -72,30 +72,30 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Creates a new Write to Store Handler
+        /// Creates a new Write to Store Handler.
         /// </summary>
-        /// <param name="manager">Manager to write to</param>
-        /// <param name="defaultGraphUri">Graph URI to write Triples from the default graph to</param>
+        /// <param name="manager">Manager to write to.</param>
+        /// <param name="defaultGraphUri">Graph URI to write Triples from the default graph to.</param>
         public WriteToStoreHandler(IStorageProvider manager, Uri defaultGraphUri)
             : this(manager, defaultGraphUri, DefaultBatchSize) { }
 
         /// <summary>
-        /// Creates a new Write to Store Handler
+        /// Creates a new Write to Store Handler.
         /// </summary>
-        /// <param name="manager">Manager to write to</param>
-        /// <param name="batchSize">Batch Size</param>
+        /// <param name="manager">Manager to write to.</param>
+        /// <param name="batchSize">Batch Size.</param>
         public WriteToStoreHandler(IStorageProvider manager, int batchSize)
             : this(manager, null, batchSize) { }
 
         /// <summary>
-        /// Creates a new Write to Store Handler
+        /// Creates a new Write to Store Handler.
         /// </summary>
-        /// <param name="manager">Manager to write to</param>
+        /// <param name="manager">Manager to write to.</param>
         public WriteToStoreHandler(IStorageProvider manager)
             : this(manager, null, DefaultBatchSize) { }
 
         /// <summary>
-        /// Starts RDF Handling by ensuring the queue of Triples to write is empty
+        /// Starts RDF Handling by ensuring the queue of Triples to write is empty.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -106,9 +106,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends RDF Handling by ensuring the queue of Triples to write has been processed
+        /// Ends RDF Handling by ensuring the queue of Triples to write has been processed.
         /// </summary>
-        /// <param name="ok">Indicates whether parsing completed without error</param>
+        /// <param name="ok">Indicates whether parsing completed without error.</param>
         protected override void EndRdfInternal(bool ok)
         {
             // First process the last batch of ground triples (if any)
@@ -143,9 +143,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by queuing them for writing and enacting the writing if the Batch Size has been reached/exceeded
+        /// Handles Triples by queuing them for writing and enacting the writing if the Batch Size has been reached/exceeded.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -195,7 +195,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that the Handler accepts all Triples
+        /// Gets that the Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {

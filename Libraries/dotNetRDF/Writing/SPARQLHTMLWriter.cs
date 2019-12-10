@@ -34,7 +34,7 @@ using System.Web.UI;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for saving SPARQL Result Sets to a HTML Table format (this is not a standardised format)
+    /// Class for saving SPARQL Result Sets to a HTML Table format (this is not a standardised format).
     /// </summary>
     public class SparqlHtmlWriter 
         : BaseHtmlWriter, ISparqlResultsWriter, INamespaceWriter
@@ -43,7 +43,7 @@ namespace VDS.RDF.Writing
         private INamespaceMapper _namespaces = new NamespaceMapper();
 
         /// <summary>
-        /// Gets/Sets the Default Namespaces used to pretty print URIs in the output
+        /// Gets/Sets the Default Namespaces used to pretty print URIs in the output.
         /// </summary>
         public INamespaceMapper DefaultNamespaces
         {
@@ -59,10 +59,10 @@ namespace VDS.RDF.Writing
 
 
         /// <summary>
-        /// Saves the Result Set to the given File as a HTML Table
+        /// Saves the Result Set to the given File as a HTML Table.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(SparqlResultSet results, String filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -72,10 +72,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves the Result Set to the given Stream as a HTML Table
+        /// Saves the Result Set to the given Stream as a HTML Table.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="output">Stream to save to.</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
             try
@@ -98,7 +98,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal method which generates the HTML Output for the Sparql Results
+        /// Internal method which generates the HTML Output for the Sparql Results.
         /// </summary>
         /// <param name="results"></param>
         /// <param name="output"></param>
@@ -279,9 +279,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -297,7 +297,7 @@ namespace VDS.RDF.Writing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

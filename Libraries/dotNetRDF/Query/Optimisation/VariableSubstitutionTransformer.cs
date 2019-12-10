@@ -38,7 +38,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An optimiser for walking algebra and expression trees and replacing a Variable with another Variable or a Constant
+    /// An optimiser for walking algebra and expression trees and replacing a Variable with another Variable or a Constant.
     /// </summary>
     public class VariableSubstitutionTransformer
         : PrimaryExpressionSubstituter, IAlgebraOptimiser
@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Optimisation
         private bool _canReplaceCustom = false;
 
         /// <summary>
-        /// Create a transform that replaces one variable with another
+        /// Create a transform that replaces one variable with another.
         /// </summary>
-        /// <param name="findVar">Find Variable</param>
-        /// <param name="replaceVar">Replace Variable</param>
+        /// <param name="findVar">Find Variable.</param>
+        /// <param name="replaceVar">Replace Variable.</param>
         public VariableSubstitutionTransformer(String findVar, String replaceVar)
         {
             _findVar = findVar;
@@ -65,10 +65,10 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Create a transform that replaces a variable with a constant
+        /// Create a transform that replaces a variable with a constant.
         /// </summary>
-        /// <param name="findVar">Find Variable</param>
-        /// <param name="replaceTerm">Replace Constant</param>
+        /// <param name="findVar">Find Variable.</param>
+        /// <param name="replaceTerm">Replace Constant.</param>
         public VariableSubstitutionTransformer(String findVar, INode replaceTerm)
         {
             _findVar = findVar;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Gets/Sets whethe the Transformer is allowed to replace objects
+        /// Gets/Sets whethe the Transformer is allowed to replace objects.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -103,9 +103,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Attempts to do variable substitution within the given algebra
+        /// Attempts to do variable substitution within the given algebra.
         /// </summary>
-        /// <param name="algebra">Algebra</param>
+        /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -209,9 +209,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns false because this optimiser is never globally applicable
+        /// Returns false because this optimiser is never globally applicable.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -219,9 +219,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns false because this optimiser is never globally applicable
+        /// Returns false because this optimiser is never globally applicable.
         /// </summary>
-        /// <param name="cmds">Update Commands</param>
+        /// <param name="cmds">Update Commands.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
@@ -229,9 +229,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Tries to substitute variables within primary expressions
+        /// Tries to substitute variables within primary expressions.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         /// <returns></returns>
         protected override ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr)
         {

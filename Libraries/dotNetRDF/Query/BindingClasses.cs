@@ -32,7 +32,7 @@ using System.Text;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Represents an Group of Bindings which is used when executing Queries with GROUP BY clauses
+    /// Represents an Group of Bindings which is used when executing Queries with GROUP BY clauses.
     /// </summary>
     public class BindingGroup 
         : IEnumerable<int>
@@ -41,7 +41,7 @@ namespace VDS.RDF.Query
         private Dictionary<String, INode> _assignments = new Dictionary<string, INode>();
 
         /// <summary>
-        /// Creates a new Binding Group
+        /// Creates a new Binding Group.
         /// </summary>
         public BindingGroup()
         {
@@ -49,9 +49,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Binding Group which is a sub-group of the given Parent Group
+        /// Creates a new Binding Group which is a sub-group of the given Parent Group.
         /// </summary>
-        /// <param name="parent">Parent Group</param>
+        /// <param name="parent">Parent Group.</param>
         public BindingGroup(BindingGroup parent)
         {
             foreach (KeyValuePair<String, INode> assignment in parent.Assignments)
@@ -61,25 +61,25 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new Binding Group from the specified IDs
+        /// Creates a new Binding Group from the specified IDs.
         /// </summary>
-        /// <param name="ids">IDs</param>
+        /// <param name="ids">IDs.</param>
         public BindingGroup(IEnumerable<int> ids)
         {
             _bindingIDs.AddRange(ids);
         }
 
         /// <summary>
-        /// Adds a Binding ID to the Group
+        /// Adds a Binding ID to the Group.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         public void Add(int id)
         {
             _bindingIDs.Add(id);
         }
 
         /// <summary>
-        /// Gets the Enumerator for the Binding IDs in the Group
+        /// Gets the Enumerator for the Binding IDs in the Group.
         /// </summary>
         /// <returns></returns>
         public IEnumerator<int> GetEnumerator()
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Enumerator for the Binding IDs in the Group
+        /// Gets the Enumerator for the Binding IDs in the Group.
         /// </summary>
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Binding IDs in the Group
+        /// Gets the Binding IDs in the Group.
         /// </summary>
         public IEnumerable<int> BindingIDs
         {
@@ -109,10 +109,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Variable Assignment to the Group
+        /// Adds a Variable Assignment to the Group.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
+        /// <param name="variable">Variable.</param>
+        /// <param name="value">Value.</param>
         public void AddAssignment(String variable, INode value)
         {
             if (_assignments.ContainsKey(variable))
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Variable Assignments for the Group
+        /// Gets the Variable Assignments for the Group.
         /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Assignments
         {
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets a String summarising the group
+        /// Gets a String summarising the group.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

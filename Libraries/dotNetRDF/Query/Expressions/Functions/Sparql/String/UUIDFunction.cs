@@ -30,15 +30,15 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Represents the SPARQL UUID Function
+    /// Represents the SPARQL UUID Function.
     /// </summary>
     public class UUIDFunction
         : BaseUUIDFunction
     {
         /// <summary>
-        /// Evaluates the function by generating the URN UUID form based on the given UUID
+        /// Evaluates the function by generating the URN UUID form based on the given UUID.
         /// </summary>
-        /// <param name="uuid">UUID</param>
+        /// <param name="uuid">UUID.</param>
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(Guid uuid)
         {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the functor for the expression
+        /// Gets the functor for the expression.
         /// </summary>
         public override string Functor => SparqlSpecsHelper.SparqlKeywordUUID;
 
@@ -58,15 +58,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     }
 
     /// <summary>
-    /// Represents the SPARQL STRUUID Function
+    /// Represents the SPARQL STRUUID Function.
     /// </summary>
     public class StrUUIDFunction
         : BaseUUIDFunction
     {
         /// <summary>
-        /// Evaluates the function by returning the string form of the given UUID
+        /// Evaluates the function by returning the string form of the given UUID.
         /// </summary>
-        /// <param name="uuid">UUID</param>
+        /// <param name="uuid">UUID.</param>
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(Guid uuid)
         {
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
 
         /// <summary>
-        /// Gets the functor for the expression
+        /// Gets the functor for the expression.
         /// </summary>
         public override string Functor => SparqlSpecsHelper.SparqlKeywordStrUUID;
 

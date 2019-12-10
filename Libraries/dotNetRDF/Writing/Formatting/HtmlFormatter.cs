@@ -30,14 +30,14 @@ using System.Web;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting as HTML
+    /// Formatter for formatting as HTML.
     /// </summary>
     public class HtmlFormatter : IUriFormatter
     {
         /// <summary>
-        /// Formats URIs using HTML encoding
+        /// Formats URIs using HTML encoding.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public string FormatUri(Uri u)
         {
@@ -45,9 +45,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats URIs using HTML encoding
+        /// Formats URIs using HTML encoding.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public string FormatUri(string u)
         {

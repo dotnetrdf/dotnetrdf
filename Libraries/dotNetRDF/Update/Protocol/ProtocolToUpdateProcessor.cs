@@ -37,10 +37,10 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by translating the requests into SPARQL Query/Update commands as specified by the SPARQL Graph Store HTTP Protocol specification and passing the generated commands to a <see cref="ISparqlUpdateProcessor">ISparqlUpdateProcessor</see> which will handle the actual application of the updates
+    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by translating the requests into SPARQL Query/Update commands as specified by the SPARQL Graph Store HTTP Protocol specification and passing the generated commands to a <see cref="ISparqlUpdateProcessor">ISparqlUpdateProcessor</see> which will handle the actual application of the updates.
     /// </summary>
     /// <remarks>
-    /// The conversion from HTTP operation to SPARQL Query/Update is as defined in the <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a> specification
+    /// The conversion from HTTP operation to SPARQL Query/Update is as defined in the <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a> specification.
     /// </remarks>
     public class ProtocolToUpdateProcessor
         : BaseProtocolProcessor
@@ -50,10 +50,10 @@ namespace VDS.RDF.Update.Protocol
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
         /// <summary>
-        /// Creates a new Protocol to Update Processor
+        /// Creates a new Protocol to Update Processor.
         /// </summary>
-        /// <param name="queryProcessor">Query Processor</param>
-        /// <param name="updateProcessor">Update Processor</param>
+        /// <param name="queryProcessor">Query Processor.</param>
+        /// <param name="updateProcessor">Update Processor.</param>
         public ProtocolToUpdateProcessor(ISparqlQueryProcessor queryProcessor, ISparqlUpdateProcessor updateProcessor)
         {
             _queryProcessor = queryProcessor;
@@ -61,9 +61,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a GET operation
+        /// Processes a GET operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessGet(IHttpContext context)
         {
             // Work out the Graph URI we want to get
@@ -85,9 +85,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a POST operation
+        /// Processes a POST operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessPost(IHttpContext context)
         {
             // Get the payload assuming there is one
@@ -140,9 +140,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
@@ -196,9 +196,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a PUT operation
+        /// Processes a PUT operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessPut(IHttpContext context)
         {
             // Get the payload assuming there is one
@@ -282,9 +282,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a DELETE operation
+        /// Processes a DELETE operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessDelete(IHttpContext context)
         {
             // Get the Graph URI of the Graph to delete
@@ -314,9 +314,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a HEAD operation
+        /// Processes a HEAD operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessHead(IHttpContext context)
         {
             // Work out the Graph URI we want to get
@@ -347,9 +347,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a PATCH operation
+        /// Processes a PATCH operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessPatch(IHttpContext context)
         {
             // Work out the Graph URI we want to patch
@@ -401,9 +401,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Retrieves the Graph with the given URI
+        /// Retrieves the Graph with the given URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
@@ -433,9 +433,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Determines whether a Graph with the given URI exists
+        /// Determines whether a Graph with the given URI exists.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected override bool HasGraph(Uri graphUri)
         {

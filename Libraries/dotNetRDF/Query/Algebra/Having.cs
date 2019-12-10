@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Having Clause
+    /// Represents a Having Clause.
     /// </summary>
     public class Having
         : IUnaryOperator
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlFilter _having;
 
         /// <summary>
-        /// Creates a new Having Clause
+        /// Creates a new Having Clause.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="having">Having Clause</param>
+        /// <param name="pattern">Pattern.</param>
+        /// <param name="having">Having Clause.</param>
         public Having(ISparqlAlgebra pattern, ISparqlFilter having)
         {
             _pattern = pattern;
@@ -54,9 +54,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Having Clause
+        /// Evaluates the Having Clause.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -90,17 +90,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -111,10 +111,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the HAVING clause used
+        /// Gets the HAVING clause used.
         /// </summary>
         /// <remarks>
-        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a HAVING clause then that is applied rather than the clause with which the Having algebra is instantiated
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a HAVING clause then that is applied rather than the clause with which the Having algebra is instantiated.
         /// </remarks>
         public ISparqlFilter HavingClause
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -148,19 +148,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an exception since a Having() cannot be converted back to a Graph Pattern
+        /// Throws an exception since a Having() cannot be converted back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Having() cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since a Having() cannot be converted to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Having() cannot be converted to a Graph Pattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

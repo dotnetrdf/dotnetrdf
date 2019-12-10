@@ -27,7 +27,7 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the processing modes supported by the <see cref="JsonLdProcessor"/>
+    /// Enumeration of the processing modes supported by the <see cref="JsonLdProcessor"/>.
     /// </summary>
     public enum JsonLdProcessingMode
     {
@@ -42,6 +42,6 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Process JSON-LD 1.1 features with frame expansion features enabled.
         /// </summary>
-        JsonLd11FrameExpansion
+        JsonLd11FrameExpansion,
     }
 }

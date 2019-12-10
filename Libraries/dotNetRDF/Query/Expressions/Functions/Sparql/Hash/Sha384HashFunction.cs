@@ -29,15 +29,15 @@ using System.Security.Cryptography;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
     /// <summary>
-    /// Represents the SPARQL SHA384() Function
+    /// Represents the SPARQL SHA384() Function.
     /// </summary>
     public class Sha384HashFunction 
         : BaseHashFunction
     {
         /// <summary>
-        /// Creates a new SHA384() Function
+        /// Creates a new SHA384() Function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public Sha384HashFunction(ISparqlExpression expr)
 #if NETCORE
             : base(expr, SHA384.Create()) { }
@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             : base(expr, new SHA384Managed()) { }
 #endif
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Gets the String representation of the Expression
+        /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -65,9 +65,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

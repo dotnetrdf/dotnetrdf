@@ -39,7 +39,7 @@ using VDS.RDF.Writing.Serialization;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Represents the type of the SPARQL Results Set
+    /// Represents the type of the SPARQL Results Set.
     /// </summary>
     public enum SparqlResultsType
     {
@@ -54,11 +54,11 @@ namespace VDS.RDF.Query
         /// <summary>
         /// The Result Set represents an unknown result i.e. it has yet to be filled with Results
         /// </summary>
-        Unknown
+        Unknown,
     }
 
     /// <summary>
-    /// Class for representing Sparql Result Sets
+    /// Class for representing Sparql Result Sets.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="resultSet")]
@@ -70,15 +70,15 @@ namespace VDS.RDF.Query
 #endif
     {
         /// <summary>
-        /// Lists of Sparql Results
+        /// Lists of Sparql Results.
         /// </summary>
         private List<SparqlResult> _results = new List<SparqlResult>();
         /// <summary>
-        /// Lists of Variables in the Result Set
+        /// Lists of Variables in the Result Set.
         /// </summary>
         private List<String> _variables = new List<string>();
         /// <summary>
-        /// Boolean Result
+        /// Boolean Result.
         /// </summary>
         private bool _result = false;
         private SparqlResultsType _type = SparqlResultsType.Unknown;
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
 #endif
 
         /// <summary>
-        /// Creates an Empty Sparql Result Set
+        /// Creates an Empty Sparql Result Set.
         /// </summary>
         /// <remarks>Useful where you need a possible guarentee of returning an result set even if it proves to be empty and also necessary for the implementation of Result Set Parsers.</remarks>
         public SparqlResultSet()
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a Sparql Result Set for the Results of an ASK Query with the given Result value
+        /// Creates a Sparql Result Set for the Results of an ASK Query with the given Result value.
         /// </summary>
         /// <param name="result"></param>
         public SparqlResultSet(bool result)
@@ -107,9 +107,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a Sparql Result Set for the collection of results
+        /// Creates a Sparql Result Set for the collection of results.
         /// </summary>
-        /// <param name="results">Results</param>
+        /// <param name="results">Results.</param>
         public SparqlResultSet(IEnumerable<SparqlResult> results)
         {
             _type = SparqlResultsType.VariableBindings;
@@ -122,9 +122,9 @@ namespace VDS.RDF.Query
         }
  
         /// <summary>
-        /// Creates a SPARQL Result Set for the Results of a Query with the Leviathan Engine
+        /// Creates a SPARQL Result Set for the Results of a Query with the Leviathan Engine.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         public SparqlResultSet(SparqlEvaluationContext context)
         {
             _type = (context.Query.QueryType == SparqlQueryType.Ask) ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query
         #region Properties
 
         /// <summary>
-        /// Gets the Type of the Results Set
+        /// Gets the Type of the Results Set.
         /// </summary>
         public SparqlResultsType ResultsType
         {
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Result of an ASK Query
+        /// Gets the Result of an ASK Query.
         /// </summary>
         /// <remarks>Result Set is deemed to refer to an ASK query if the Variables list is empty since an ASK Query result has an empty &lt;head&gt;.  It is always true for any other Query type where one/more variables were requested even if the Result Set is empty.</remarks>
         public bool Result
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the number of Results in the Result Set
+        /// Gets the number of Results in the Result Set.
         /// </summary>
         public int Count
         {
@@ -215,7 +215,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether the Result Set is empty and can have Results loaded into it
+        /// Gets whether the Result Set is empty and can have Results loaded into it.
         /// </summary>
         /// <remarks>
         /// </remarks>
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the List of Results
+        /// Gets the List of Results.
         /// </summary>
         public List<SparqlResult> Results
         {
@@ -249,9 +249,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Index directly into the Results
+        /// Index directly into the Results.
         /// </summary>
-        /// <param name="index">Index of the Result you wish to retrieve</param>
+        /// <param name="index">Index of the Result you wish to retrieve.</param>
         /// <returns></returns>
         public SparqlResult this[int index]
         {
@@ -262,10 +262,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Variables used in the Result Set
+        /// Gets the Variables used in the Result Set.
         /// </summary>
         /// <remarks>
-        /// As of 1.0 where possible dotNetRDF tries to preserve the ordering of variables however this may not be possible depending on where the result set originates from or how it is populated
+        /// As of 1.0 where possible dotNetRDF tries to preserve the ordering of variables however this may not be possible depending on where the result set originates from or how it is populated.
         /// </remarks>
         public IEnumerable<String> Variables
         {
@@ -279,10 +279,10 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Trims the Result Set to remove unbound variables from results
+        /// Trims the Result Set to remove unbound variables from results.
         /// </summary>
         /// <remarks>
-        /// <strong>Note: </strong> This does not remove empty results this only removes unbound variables from individual results
+        /// <strong>Note: </strong> This does not remove empty results this only removes unbound variables from individual results.
         /// </remarks>
         public void Trim()
         {
@@ -292,9 +292,9 @@ namespace VDS.RDF.Query
         #region Internal Methods for filling the ResultSet
 
         /// <summary>
-        /// Adds a Variable to the Result Set
+        /// Adds a Variable to the Result Set.
         /// </summary>
-        /// <param name="var">Variable Name</param>
+        /// <param name="var">Variable Name.</param>
         internal void AddVariable(String var)
         {
             if (!_variables.Contains(var))
@@ -305,9 +305,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Result to the Result Set
+        /// Adds a Result to the Result Set.
         /// </summary>
-        /// <param name="result">Result</param>
+        /// <param name="result">Result.</param>
         internal void AddResult(SparqlResult result)
         {
             if (_type == SparqlResultsType.Boolean) throw new RdfException("Cannot add a Variable Binding Result to a Boolean Result Set");
@@ -316,9 +316,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Boolean Result for the Result Set
+        /// Sets the Boolean Result for the Result Set.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         internal void SetResult(bool result)
         {
             if (_type != SparqlResultsType.Unknown) throw new RdfException("Cannot set the Boolean Result value for this Result Set as its Result Type has already been set");
@@ -331,7 +331,7 @@ namespace VDS.RDF.Query
         #region Enumerator
 
         /// <summary>
-        /// Gets an Enumerator for the Results List
+        /// Gets an Enumerator for the Results List.
         /// </summary>
         /// <returns></returns>
         public IEnumerator<SparqlResult> GetEnumerator()
@@ -340,7 +340,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets an Enumerator for the Results List
+        /// Gets an Enumerator for the Results List.
         /// </summary>
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -351,12 +351,12 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Determines whether two Result Sets are equal
+        /// Determines whether two Result Sets are equal.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         /// <remarks>
-        /// Experimental and not yet complete
+        /// Experimental and not yet complete.
         /// </remarks>
         public override bool Equals(object obj)
         {
@@ -433,12 +433,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Result Set into a Triple Collection
+        /// Converts a Result Set into a Triple Collection.
         /// </summary>
-        /// <param name="g">Graph to generate the Nodes in</param>
+        /// <param name="g">Graph to generate the Nodes in.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Assumes the Result Set contains three variables ?s, ?p and ?o to use as the Subject, Predicate and Object respectively.  Only Results for which all three variables have bound values will generate Triples
+        /// Assumes the Result Set contains three variables ?s, ?p and ?o to use as the Subject, Predicate and Object respectively.  Only Results for which all three variables have bound values will generate Triples.
         /// </remarks>
         public BaseTripleCollection ToTripleCollection(IGraph g)
         {
@@ -446,15 +446,15 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Converts a Result Set into a Triple Collection
+        /// Converts a Result Set into a Triple Collection.
         /// </summary>
-        /// <param name="g">Graph to generate the Nodes in</param>
-        /// <param name="subjVar">Variable whose value should be used for Subjects of Triples</param>
-        /// <param name="predVar">Variable whose value should be used for Predicates of Triples</param>
-        /// <param name="objVar">Variable whose value should be used for Object of Triples</param>
+        /// <param name="g">Graph to generate the Nodes in.</param>
+        /// <param name="subjVar">Variable whose value should be used for Subjects of Triples.</param>
+        /// <param name="predVar">Variable whose value should be used for Predicates of Triples.</param>
+        /// <param name="objVar">Variable whose value should be used for Object of Triples.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Only Results for which all three variables have bound values will generate Triples
+        /// Only Results for which all three variables have bound values will generate Triples.
         /// </remarks>
         public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
         {
@@ -477,7 +477,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Disposes of a Result Set
+        /// Disposes of a Result Set.
         /// </summary>
         public void Dispose()
         {
@@ -491,10 +491,10 @@ namespace VDS.RDF.Query
         #region Serialization
 
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("type", _type);
@@ -503,7 +503,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the schema for XML serialization
+        /// Gets the schema for XML serialization.
         /// </summary>
         /// <returns></returns>
         public XmlSchema GetSchema()
@@ -512,9 +512,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization)
+        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization).
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public void WriteXml(XmlWriter writer)
         {
             switch (_type)
@@ -548,9 +548,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization)
+        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization).
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public void ReadXml(XmlReader reader)
         {
             reader.Read();

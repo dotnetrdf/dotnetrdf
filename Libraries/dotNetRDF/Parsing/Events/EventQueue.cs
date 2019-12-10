@@ -31,17 +31,17 @@ using VDS.RDF.Parsing.Events.RdfXml;
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Represents a Queue of events for use by event based parsers
+    /// Represents a Queue of events for use by event based parsers.
     /// </summary>
     public class EventQueue<T> : BaseEventQueue<T> where T : IEvent
     {
         /// <summary>
-        /// Queue of Events
+        /// Queue of Events.
         /// </summary>
         protected Queue<T> _events = new Queue<T>();
 
         /// <summary>
-        /// Creates a new Event Queue
+        /// Creates a new Event Queue.
         /// </summary>
         public EventQueue()
         {
@@ -49,16 +49,16 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Creates a new Event Queue with the given Event Generator
+        /// Creates a new Event Queue with the given Event Generator.
         /// </summary>
-        /// <param name="generator">Event Generator</param>
+        /// <param name="generator">Event Generator.</param>
         public EventQueue(IEventGenerator<T> generator)
         {
             _eventgen = generator;
         }
 
         /// <summary>
-        /// Dequeues and returns the next event in the Queue
+        /// Dequeues and returns the next event in the Queue.
         /// </summary>
         /// <returns></returns>
         public override T Dequeue()
@@ -70,16 +70,16 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Adds an event to the end of the Queue
+        /// Adds an event to the end of the Queue.
         /// </summary>
-        /// <param name="e">Event</param>
+        /// <param name="e">Event.</param>
         public override void Enqueue(T e)
         {
             _events.Enqueue(e);
         }
 
         /// <summary>
-        /// Peeks and returns the next event in the Queue
+        /// Peeks and returns the next event in the Queue.
         /// </summary>
         /// <returns></returns>
         public override T Peek()
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Clears the Queue
+        /// Clears the Queue.
         /// </summary>
         public override void Clear()
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the number of events currently in the Queue
+        /// Gets the number of events currently in the Queue.
         /// </summary>
         public override int Count
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// Represents a Queue of events which are streamed from an instance of a <see cref="IJitEventGenerator{T}">IJitEventGenerator</see> for use by an event based parser
+    /// Represents a Queue of events which are streamed from an instance of a <see cref="IJitEventGenerator{T}">IJitEventGenerator</see> for use by an event based parser.
     /// </summary>
     public class StreamingEventQueue<T> : EventQueue<T> where T : IEvent
     {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Parsing.Events
         private int _buffer = 10;
 
         /// <summary>
-        /// Creates a new Streaming Event Queue
+        /// Creates a new Streaming Event Queue.
         /// </summary>
-        /// <param name="generator">Event Generator</param>
+        /// <param name="generator">Event Generator.</param>
         public StreamingEventQueue(IJitEventGenerator<T> generator)
             : base(generator)
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the Count of events in the queue
+        /// Gets the Count of events in the queue.
         /// </summary>
         public override int Count
         {
@@ -143,9 +143,9 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Adds an event to the Queue
+        /// Adds an event to the Queue.
         /// </summary>
-        /// <param name="e">Event</param>
+        /// <param name="e">Event.</param>
         public override void Enqueue(T e)
         {
             if (!ReferenceEquals(e, null))
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the next event from the Queue and removes it from the Queue
+        /// Gets the next event from the Queue and removes it from the Queue.
         /// </summary>
         /// <returns></returns>
         public override T Dequeue()
@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the next event from the Queue while leaving the Queue unchanged
+        /// Gets the next event from the Queue while leaving the Queue unchanged.
         /// </summary>
         /// <returns></returns>
         public override T Peek()
@@ -189,20 +189,20 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// An wrapper which exposes a subset of an event queue
+    /// An wrapper which exposes a subset of an event queue.
     /// </summary>
-    /// <typeparam name="T">The type of event queued</typeparam>
+    /// <typeparam name="T">The type of event queued.</typeparam>
     public class SublistEventQueue<T> : BaseEventQueue<T> where T : IEvent
     {
         private readonly IEventQueue<T> _events;
         private readonly int _threshold;
 
         /// <summary>
-        /// Create a new wrapper that exposes a subset of specific event queue
+        /// Create a new wrapper that exposes a subset of specific event queue.
         /// </summary>
-        /// <param name="events">The event queue to be wrapper</param>
+        /// <param name="events">The event queue to be wrapper.</param>
         /// <param name="threshold">The number of events to leave in the wrapped queue. When the wrapped event
-        /// queue contains this number of events or fewer, this wrapper will treat it as an empty queue</param>
+        /// queue contains this number of events or fewer, this wrapper will treat it as an empty queue.</param>
         public SublistEventQueue(IEventQueue<T> events, int threshold)
         {
             _events = events;

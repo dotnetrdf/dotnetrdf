@@ -30,14 +30,14 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing.Validation
 {
     /// <summary>
-    /// Syntax Validator for SPARQL Queries
+    /// Syntax Validator for SPARQL Queries.
     /// </summary>
     public class SparqlQueryValidator : ISyntaxValidator
     {
         private SparqlQueryParser _parser;
 
         /// <summary>
-        /// Creates a new SPARQL Query Validator
+        /// Creates a new SPARQL Query Validator.
         /// </summary>
         public SparqlQueryValidator()
         {
@@ -45,27 +45,27 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Creates a new SPARQL Query Validator using the given Syntax
+        /// Creates a new SPARQL Query Validator using the given Syntax.
         /// </summary>
-        /// <param name="syntax">Query Syntax</param>
+        /// <param name="syntax">Query Syntax.</param>
         public SparqlQueryValidator(SparqlQuerySyntax syntax)
         {
             _parser = new SparqlQueryParser(syntax);
         }
 
         /// <summary>
-        /// Creates a new SPARQL Query Validator using the given Query Parser
+        /// Creates a new SPARQL Query Validator using the given Query Parser.
         /// </summary>
-        /// <param name="parser">Query Parser</param>
+        /// <param name="parser">Query Parser.</param>
         public SparqlQueryValidator(SparqlQueryParser parser)
         {
             _parser = parser;
         }
 
         /// <summary>
-        /// Validates whether the given Data is a valid SPARQL Query
+        /// Validates whether the given Data is a valid SPARQL Query.
         /// </summary>
-        /// <param name="data">Data</param>
+        /// <param name="data">Data.</param>
         /// <returns></returns>
         public ISyntaxValidationResults Validate(string data)
         {

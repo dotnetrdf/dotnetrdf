@@ -31,7 +31,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Transform Context class that is used in the Path to Algebra Transformation process
+    /// Transform Context class that is used in the Path to Algebra Transformation process.
     /// </summary>
     public class PathTransformContext
     {
@@ -41,10 +41,10 @@ namespace VDS.RDF.Query.Paths
         private bool _top = true;
 
         /// <summary>
-        /// Creates a new Path Transform Context
+        /// Creates a new Path Transform Context.
         /// </summary>
-        /// <param name="start">Subject that is the start of the Path</param>
-        /// <param name="end">Object that is the end of the Path</param>
+        /// <param name="start">Subject that is the start of the Path.</param>
+        /// <param name="end">Object that is the end of the Path.</param>
         public PathTransformContext(PatternItem start, PatternItem end)
         {
             _start = start;
@@ -54,9 +54,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Creates a new Path Transform Context from an existing context
+        /// Creates a new Path Transform Context from an existing context.
         /// </summary>
-        /// <param name="context">Context</param>
+        /// <param name="context">Context.</param>
         public PathTransformContext(PathTransformContext context)
         {
             _start = context._start;
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Returns the BGP that the Path Transform produces
+        /// Returns the BGP that the Path Transform produces.
         /// </summary>
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the next available temporary variable
+        /// Gets the next available temporary variable.
         /// </summary>
         /// <returns></returns>
         public BlankNodePattern GetNextTemporaryVariable()
@@ -93,16 +93,16 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Adds a Triple Pattern to the Path Transform
+        /// Adds a Triple Pattern to the Path Transform.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
+        /// <param name="p">Triple Pattern.</param>
         public void AddTriplePattern(ITriplePattern p)
         {
             _patterns.Add(p);
         }
 
         /// <summary>
-        /// Gets the Next ID to be used
+        /// Gets the Next ID to be used.
         /// </summary>
         public int NextID
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets/Sets the Subject of the Triple Pattern at this point in the Path Transformation
+        /// Gets/Sets the Subject of the Triple Pattern at this point in the Path Transformation.
         /// </summary>
         public PatternItem Subject
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets/Sets the Object of the Triple Pattern at this point in the Path Transformation
+        /// Gets/Sets the Object of the Triple Pattern at this point in the Path Transformation.
         /// </summary>
         public PatternItem Object
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets/Sets the Object at the end of the Pattern
+        /// Gets/Sets the Object at the end of the Pattern.
         /// </summary>
         public PatternItem End
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Resets the current Object to be the end Object of the Path
+        /// Resets the current Object to be the end Object of the Path.
         /// </summary>
         public void ResetObject()
         {
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets/Sets whether this is the Top Level Pattern
+        /// Gets/Sets whether this is the Top Level Pattern.
         /// </summary>
         public bool Top
         {
@@ -185,11 +185,11 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Creates a Triple Pattern
+        /// Creates a Triple Pattern.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="path">Property Path</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="path">Property Path.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
         {

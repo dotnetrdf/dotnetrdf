@@ -33,41 +33,41 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a BGP which is a set of Triple Patterns
+    /// Represents a BGP which is a set of Triple Patterns.
     /// </summary>
     public class Bgp
         : IBgp
     {
         /// <summary>
-        /// The ordered list of triple patterns that are contained in this BGP
+        /// The ordered list of triple patterns that are contained in this BGP.
         /// </summary>
         protected readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
-        /// Creates a new empty BGP
+        /// Creates a new empty BGP.
         /// </summary>
         public Bgp() {}
 
         /// <summary>
-        /// Creates a BGP containing a single Triple Pattern
+        /// Creates a BGP containing a single Triple Pattern.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
+        /// <param name="p">Triple Pattern.</param>
         public Bgp(ITriplePattern p)
         {
             _triplePatterns.Add(p);
         }
 
         /// <summary>
-        /// Creates a BGP containing a set of Triple Patterns
+        /// Creates a BGP containing a set of Triple Patterns.
         /// </summary>
-        /// <param name="ps">Triple Patterns</param>
+        /// <param name="ps">Triple Patterns.</param>
         public Bgp(IEnumerable<ITriplePattern> ps)
         {
             _triplePatterns.AddRange(ps);
         }
 
         /// <summary>
-        /// Gets the number of Triple Patterns in the BGP
+        /// Gets the number of Triple Patterns in the BGP.
         /// </summary>
         public int PatternCount
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Triple Patterns in the BGP
+        /// Gets the Triple Patterns in the BGP.
         /// </summary>
         public IEnumerable<ITriplePattern> TriplePatterns
         {
@@ -83,9 +83,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the BGP against the Evaluation Context
+        /// Evaluates the BGP against the Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<string> FixedVariables
         {
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<string> FloatingVariables
         {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the BGP is the emtpy BGP
+        /// Gets whether the BGP is the emtpy BGP.
         /// </summary>
         public bool IsEmpty
         {
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Returns the String representation of the BGP
+        /// Returns the String representation of the BGP.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public virtual SparqlQuery ToQuery()
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the BGP to a Graph Pattern
+        /// Converts the BGP to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public virtual GraphPattern ToGraphPattern()

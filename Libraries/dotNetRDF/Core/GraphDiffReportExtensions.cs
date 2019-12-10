@@ -33,19 +33,19 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Provides useful Extension Methods for working with <see cref="GraphDiffReport">graph diff reports</see>
+    /// Provides useful Extension Methods for working with <see cref="GraphDiffReport">graph diff reports</see>.
     /// </summary>
     public static class GraphDiffReportExtensions
     {
         private static NodeFactory Factory { get; } = new NodeFactory();
 
         /// <summary>
-        /// Converts a <see cref="GraphDiffReport">diff</see> to an equivalent <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see>
+        /// Converts a <see cref="GraphDiffReport">diff</see> to an equivalent <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see>.
         /// </summary>
-        /// <param name="diff">The <see cref="GraphDiffReport">diff</see> to convert</param>
-        /// <param name="graphUri">Optional <see cref="Uri">URI</see> of the affected graph</param>
-        /// <param name="prefixes">Optional <see cref="INamespaceMapper">mapper</see> used to resolve prefixes</param>
-        /// <returns>A <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see> that represents the <see cref="GraphDiffReport">diff</see></returns>
+        /// <param name="diff">The <see cref="GraphDiffReport">diff</see> to convert.</param>
+        /// <param name="graphUri">Optional <see cref="Uri">URI</see> of the affected graph.</param>
+        /// <param name="prefixes">Optional <see cref="INamespaceMapper">mapper</see> used to resolve prefixes.</param>
+        /// <returns>A <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see> that represents the <see cref="GraphDiffReport">diff</see>.</returns>
         public static ModifyCommand AsUpdate(this GraphDiffReport diff, Uri graphUri = null, INamespaceMapper prefixes = null)
         {
             var delete = new GraphPatternBuilder();

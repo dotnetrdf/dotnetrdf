@@ -30,7 +30,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents the SPARQL Update LOAD command
+    /// Represents the SPARQL Update LOAD command.
     /// </summary>
     public class LoadCommand : SparqlUpdateCommand
     {
@@ -38,11 +38,11 @@ namespace VDS.RDF.Update.Commands
         private readonly bool _silent = false;
 
         /// <summary>
-        /// Creates a new LOAD command
+        /// Creates a new LOAD command.
         /// </summary>
-        /// <param name="sourceUri">Source URI to load data from</param>
-        /// <param name="graphUri">Target URI for the Graph to store data in</param>
-        /// <param name="silent">Whether errors loading should be suppressed</param>
+        /// <param name="sourceUri">Source URI to load data from.</param>
+        /// <param name="graphUri">Target URI for the Graph to store data in.</param>
+        /// <param name="silent">Whether errors loading should be suppressed.</param>
         public LoadCommand(Uri sourceUri, Uri graphUri, bool silent)
             : base(SparqlUpdateCommandType.Load) 
         {
@@ -53,30 +53,30 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new LOAD command
+        /// Creates a new LOAD command.
         /// </summary>
-        /// <param name="sourceUri">Source URI to load data from</param>
-        /// <param name="silent">Whether errors loading should be suppressed</param>
+        /// <param name="sourceUri">Source URI to load data from.</param>
+        /// <param name="silent">Whether errors loading should be suppressed.</param>
         public LoadCommand(Uri sourceUri, bool silent)
             : this(sourceUri, null, silent) { }
 
         /// <summary>
-        /// Creates a new LOAD command
+        /// Creates a new LOAD command.
         /// </summary>
-        /// <param name="sourceUri">Source URI to load data from</param>
-        /// <param name="targetUri">Target URI for the Graph to store data in</param>
+        /// <param name="sourceUri">Source URI to load data from.</param>
+        /// <param name="targetUri">Target URI for the Graph to store data in.</param>
         public LoadCommand(Uri sourceUri, Uri targetUri)
             : this(sourceUri, targetUri, false) { }
 
         /// <summary>
-        /// Creates a new LOAD command which operates on the Default Graph
+        /// Creates a new LOAD command which operates on the Default Graph.
         /// </summary>
-        /// <param name="sourceUri">Source URI to load data from</param>
+        /// <param name="sourceUri">Source URI to load data from.</param>
         public LoadCommand(Uri sourceUri)
             : this(sourceUri, null) { }
 
         /// <summary>
-        /// Gets whether the Command affects a specific Graph
+        /// Gets whether the Command affects a specific Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -87,9 +87,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI that data is loaded from
+        /// Gets the URI that data is loaded from.
         /// </summary>
         public Uri SourceUri
         {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph to load data into
+        /// Gets the URI of the Graph to load data into.
         /// </summary>
         public Uri TargetUri
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether errors loading the data are suppressed
+        /// Gets whether errors loading the data are suppressed.
         /// </summary>
         public bool Silent
         {
@@ -134,9 +134,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             // Q: Does LOAD into a named Graph require that Graph to be pre-existing?
@@ -175,16 +175,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessLoadCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

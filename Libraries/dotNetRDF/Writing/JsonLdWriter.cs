@@ -37,14 +37,14 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for serializing a Triple Store in JSON-LD syntax
+    /// Class for serializing a Triple Store in JSON-LD syntax.
     /// </summary>
     public class JsonLdWriter : IStoreWriter
     {
         private readonly JsonLdWriterOptions _options;
 
         /// <summary>
-        /// Create a new serializer with default serialization options
+        /// Create a new serializer with default serialization options.
         /// </summary>
         public JsonLdWriter()
         {
@@ -53,7 +53,7 @@ namespace VDS.RDF.Writing
 
 
         /// <summary>
-        /// Create a new serializer with the specified serialization options
+        /// Create a new serializer with the specified serialization options.
         /// </summary>
         /// <param name="options"></param>
         public JsonLdWriter(JsonLdWriterOptions options)
@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Serialize a Triple Store to an expanded JSON-LD document
+        /// Serialize a Triple Store to an expanded JSON-LD document.
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>

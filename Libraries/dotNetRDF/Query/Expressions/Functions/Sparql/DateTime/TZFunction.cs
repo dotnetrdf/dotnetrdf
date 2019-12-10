@@ -31,23 +31,23 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
     /// <summary>
-    /// Represents the SPARQL TZ() Function
+    /// Represents the SPARQL TZ() Function.
     /// </summary>
     public class TZFunction
         : BaseUnaryExpression
     {
         /// <summary>
-        /// Creates a new SPARQL TZ() Function
+        /// Creates a new SPARQL TZ() Function.
         /// </summary>
-        /// <param name="expr">Argument Expression</param>
+        /// <param name="expr">Argument Expression.</param>
         public TZFunction(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context
+        /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Gets the Type of this Expression
+        /// Gets the Type of this Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Gets the Functor of this Expression
+        /// Gets the Functor of this Expression.
         /// </summary>
         public override string Functor
         {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -112,9 +112,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

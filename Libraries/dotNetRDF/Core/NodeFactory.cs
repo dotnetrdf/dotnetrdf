@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// A default implementation of a Node Factory which generates Nodes unrelated to Graphs (wherever possible we suggest using a Graph based implementation instead)
+    /// A default implementation of a Node Factory which generates Nodes unrelated to Graphs (wherever possible we suggest using a Graph based implementation instead).
     /// </summary>
     public class NodeFactory 
         : INodeFactory
@@ -37,7 +37,7 @@ namespace VDS.RDF
         private BlankNodeMapper _bnodeMap = new BlankNodeMapper();
 
         /// <summary>
-        /// Creates a new Node Factory
+        /// Creates a new Node Factory.
         /// </summary>
         public NodeFactory()
         { }
@@ -45,7 +45,7 @@ namespace VDS.RDF
         #region INodeFactory Members
 
         /// <summary>
-        /// Creates a Blank Node with a new automatically generated ID
+        /// Creates a Blank Node with a new automatically generated ID.
         /// </summary>
         /// <returns></returns>
         public IBlankNode CreateBlankNode()
@@ -54,9 +54,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Blank Node with the given Node ID
+        /// Creates a Blank Node with the given Node ID.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
+        /// <param name="nodeId">Node ID.</param>
         /// <returns></returns>
         public IBlankNode CreateBlankNode(string nodeId)
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Graph Literal Node which represents the empty Subgraph
+        /// Creates a Graph Literal Node which represents the empty Subgraph.
         /// </summary>
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode()
@@ -74,9 +74,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Graph Literal Node which represents the given Subgraph
+        /// Creates a Graph Literal Node which represents the given Subgraph.
         /// </summary>
-        /// <param name="subgraph">Subgraph</param>
+        /// <param name="subgraph">Subgraph.</param>
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
@@ -84,10 +84,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Literal Node with the given Value and Data Type
+        /// Creates a Literal Node with the given Value and Data Type.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="datatype">Data Type URI of the Literal</param>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="datatype">Data Type URI of the Literal.</param>
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
@@ -95,9 +95,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Literal Node with the given Value
+        /// Creates a Literal Node with the given Value.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
+        /// <param name="literal">Value of the Literal.</param>
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal)
         {
@@ -105,10 +105,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Literal Node with the given Value and Language
+        /// Creates a Literal Node with the given Value and Language.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="langspec">Language Specifier for the Literal</param>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="langspec">Language Specifier for the Literal.</param>
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a URI Node for the given URI
+        /// Creates a URI Node for the given URI.
         /// </summary>
-        /// <param name="uri">URI</param>
+        /// <param name="uri">URI.</param>
         /// <returns></returns>
         public IUriNode CreateUriNode(Uri uri)
         {
@@ -126,7 +126,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a Variable Node for the given Variable Name
+        /// Creates a Variable Node for the given Variable Name.
         /// </summary>
         /// <param name="varname"></param>
         /// <returns></returns>
@@ -136,7 +136,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new unused Blank Node ID and returns it
+        /// Creates a new unused Blank Node ID and returns it.
         /// </summary>
         /// <returns></returns>
         public string GetNextBlankNodeID()
@@ -148,7 +148,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// A Graph Factory provides access to consistent Graph References so that Nodes and Triples can be instantiated in the correct Graphs
+    /// A Graph Factory provides access to consistent Graph References so that Nodes and Triples can be instantiated in the correct Graphs.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -163,9 +163,9 @@ namespace VDS.RDF
         private TripleStore _store = new TripleStore();
 
         /// <summary>
-        /// Gets a Graph Reference for the given Graph URI
+        /// Gets a Graph Reference for the given Graph URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public IGraph this[Uri graphUri]
         {
@@ -186,12 +186,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a Graph Reference for the given Graph URI
+        /// Gets a Graph Reference for the given Graph URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Synonym for the index access method i.e. factory[graphUri]
+        /// Synonym for the index access method i.e. factory[graphUri].
         /// </remarks>
         public IGraph GetGraph(Uri graphUri)
         {
@@ -199,10 +199,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a Graph Reference for the given Graph URI and indicates whether this was a new Graph reference
+        /// Gets a Graph Reference for the given Graph URI and indicates whether this was a new Graph reference.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="created">Indicates whether the returned reference was newly created</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="created">Indicates whether the returned reference was newly created.</param>
         /// <returns></returns>
         public IGraph TryGetGraph(Uri graphUri, out bool created)
         {
@@ -222,7 +222,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Resets the Factory so any Graphs with contents are emptied
+        /// Resets the Factory so any Graphs with contents are emptied.
         /// </summary>
         public void Reset()
         {
@@ -234,11 +234,11 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// A private implementation of a Node Factory which returns mock constants regardless of the inputs
+    /// A private implementation of a Node Factory which returns mock constants regardless of the inputs.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Intended for usage in scenarios where the user of the factory does not care about the values returned, for example it is used internally in the <see cref="VDS.RDF.Parsing.Handlers.CountHandler">CountHandler</see> to speed up processing
+    /// Intended for usage in scenarios where the user of the factory does not care about the values returned, for example it is used internally in the <see cref="VDS.RDF.Parsing.Handlers.CountHandler">CountHandler</see> to speed up processing.
     /// </para>
     /// </remarks>
     class MockNodeFactory

@@ -36,7 +36,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for SPARQL Update Parser
+    /// Parser Context for SPARQL Update Parser.
     /// </summary>
     public class SparqlUpdateParserContext
         : TokenisingParserContext
@@ -49,41 +49,41 @@ namespace VDS.RDF.Parsing.Contexts
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
-        /// Creates a new SPARQL Update Parser Context
+        /// Creates a new SPARQL Update Parser Context.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser</param>
+        /// <param name="tokeniser">Tokeniser.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser)
             : base(new NullHandler(), tokeniser) { }
 
         /// <summary>
-        /// Creates a new SPARQL Update Parser Context with custom settings
+        /// Creates a new SPARQL Update Parser Context with custom settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(new NullHandler(), tokeniser, queueMode) { }
 
         /// <summary>
-        /// Creates a new SPARQL Update Parser Context with custom settings
+        /// Creates a new SPARQL Update Parser Context with custom settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : base(new NullHandler(), tokeniser, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Creates a new SPARQL Update Parser Context with custom settings
+        /// Creates a new SPARQL Update Parser Context with custom settings.
         /// </summary>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
-        /// Gets the Update Command Set that is being populated
+        /// Gets the Update Command Set that is being populated.
         /// </summary>
         public SparqlUpdateCommandSet CommandSet
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Expression Parser
+        /// Gets the Expression Parser.
         /// </summary>
         internal SparqlExpressionParser ExpressionParser
         {
@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Path Parser
+        /// Gets the Path Parser.
         /// </summary>
         internal SparqlPathParser PathParser
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Query Parser
+        /// Gets the Query Parser.
         /// </summary>
         internal SparqlQueryParser QueryParser
         {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map
+        /// Gets the Namespace Map.
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
@@ -138,7 +138,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped custom expression factories
+        /// Gets/Sets the locally scoped custom expression factories.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
@@ -156,7 +156,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the set of BNodes used in INSERT DATA commands so far
+        /// Gets the set of BNodes used in INSERT DATA commands so far.
         /// </summary>
         public HashSet<String> DataBNodes
         {

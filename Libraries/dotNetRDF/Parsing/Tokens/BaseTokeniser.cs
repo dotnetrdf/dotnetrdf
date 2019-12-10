@@ -32,7 +32,7 @@ using System.Text;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Possible Escape Handling Modes for the Tokeniser
+    /// Possible Escape Handling Modes for the Tokeniser.
     /// </summary>
     public enum TokeniserEscapeMode
     {
@@ -59,11 +59,11 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Escaping for QNames (only Unicode espaces are valid)
         /// </summary>
-        QName
+        QName,
     }
 
     /// <summary>
-    /// Abstract Base Class for Tokeniser which handles the Position tracking
+    /// Abstract Base Class for Tokeniser which handles the Position tracking.
     /// </summary>
     public abstract class BaseTokeniser 
         : ITokeniser
@@ -81,18 +81,18 @@ namespace VDS.RDF.Parsing.Tokens
         private char? _tempChar;
 
         /// <summary>
-        /// Constructor for the BaseTokeniser which takes in a TextReader that the Tokeniser will generate Tokens from
+        /// Constructor for the BaseTokeniser which takes in a TextReader that the Tokeniser will generate Tokens from.
         /// </summary>
-        /// <param name="reader">TextReader to generator Tokens from</param>
+        /// <param name="reader">TextReader to generator Tokens from.</param>
         protected BaseTokeniser(TextReader reader)
         {
             _reader = reader;
         }
 
         /// <summary>
-        /// Gets/Sets the Format that this Tokeniser is used for
+        /// Gets/Sets the Format that this Tokeniser is used for.
         /// </summary>
-        /// <remarks>The value set here will replace any instances of {0} specified in inputs to the <see cref="BaseTokeniser.Error">Error()</see> function allowing messages regarding certain syntaxes not being valid in a given format to be provided</remarks>
+        /// <remarks>The value set here will replace any instances of {0} specified in inputs to the <see cref="BaseTokeniser.Error">Error()</see> function allowing messages regarding certain syntaxes not being valid in a given format to be provided.</remarks>
         protected String Format
         {
             get
@@ -106,14 +106,14 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Next available Token from the Input
+        /// Gets the Next available Token from the Input.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfParseException">Parser Exception if a valid Token cannot be retrieved</exception>
+        /// <exception cref="RdfParseException">Parser Exception if a valid Token cannot be retrieved.</exception>
         public abstract IToken GetNextToken();
 
         /// <summary>
-        /// Informs the Helper that you wish to start reading a new Token
+        /// Informs the Helper that you wish to start reading a new Token.
         /// </summary>
         protected void StartNewToken()
         {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Peeks at the next Character
+        /// Peeks at the next Character.
         /// </summary>
         /// <returns></returns>
         protected char Peek()
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Allows you to Backtrack one character (and no more)
+        /// Allows you to Backtrack one character (and no more).
         /// </summary>
         protected void Backtrack()
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the value of the Output Buffer
+        /// Gets the value of the Output Buffer.
         /// </summary>
         protected String Value
         {
@@ -168,7 +168,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the current length of the Output Buffer
+        /// Gets the current length of the Output Buffer.
         /// </summary>
         protected int Length
         {
@@ -179,7 +179,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Current Line in the Input Stream
+        /// Gets the Current Line in the Input Stream.
         /// </summary>
         protected int CurrentLine
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Current Position in the Input Stream
+        /// Gets the Current Position in the Input Stream.
         /// </summary>
         protected int CurrentPosition
         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Start Line in the Input Stream of the current Token
+        /// Gets the Start Line in the Input Stream of the current Token.
         /// </summary>
         protected int StartLine
         {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the Start Position in the Input Stream of the current Token
+        /// Gets the Start Position in the Input Stream of the current Token.
         /// </summary>
         protected int StartPosition
         {
@@ -223,7 +223,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the End Line in the Input Stream of the current Token
+        /// Gets the End Line in the Input Stream of the current Token.
         /// </summary>
         protected int EndLine
         {
@@ -234,7 +234,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets the End Position in the Input Stream of the current Token
+        /// Gets the End Position in the Input Stream of the current Token.
         /// </summary>
         protected int EndPosition
         {
@@ -245,7 +245,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets/Sets the Last Token Type
+        /// Gets/Sets the Last Token Type.
         /// </summary>
         protected int LastTokenType
         {
@@ -260,7 +260,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Gets whether the Tokeniser has backtracked
+        /// Gets whether the Tokeniser has backtracked.
         /// </summary>
         protected bool HasBacktracked
         {
@@ -271,9 +271,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Consumes a single Character into the Output Buffer and increments the Position Counters
+        /// Consumes a single Character into the Output Buffer and increments the Position Counters.
         /// </summary>
-        /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
+        /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream.</exception>
         protected void ConsumeCharacter()
         {
             if (_tempChar.HasValue)
@@ -298,12 +298,12 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Consumes a single Character into the Output Buffer and increments the Position Counters
+        /// Consumes a single Character into the Output Buffer and increments the Position Counters.
         /// </summary>
-        /// <param name="allowEOF">Whether EOF is allowed</param>
-        /// <returns>True if the EOF is reached</returns>
+        /// <param name="allowEOF">Whether EOF is allowed.</param>
+        /// <returns>True if the EOF is reached.</returns>
         /// <remarks>
-        /// If <paramref name="allowEOF"/> is set to false then the normal behaviour is used and an error will be thrown on end of file
+        /// If <paramref name="allowEOF"/> is set to false then the normal behaviour is used and an error will be thrown on end of file.
         /// </remarks>
         protected bool ConsumeCharacter(bool allowEOF)
         {
@@ -321,19 +321,19 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other)
+        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other).
         /// </summary>
-        /// <param name="asOutput">Whether the New Line should be added to the Output Buffer</param>
+        /// <param name="asOutput">Whether the New Line should be added to the Output Buffer.</param>
         protected void ConsumeNewLine(bool asOutput)
         {
             ConsumeNewLine(asOutput, false);
         }
 
         /// <summary>
-        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other)
+        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other).
         /// </summary>
-        /// <param name="asOutput">Whether the New Line should be added to the Output Buffer</param>
-        /// <param name="allowEOF">Whether EOF is permitted instead of a New Line</param>
+        /// <param name="asOutput">Whether the New Line should be added to the Output Buffer.</param>
+        /// <param name="allowEOF">Whether EOF is permitted instead of a New Line.</param>
         protected void ConsumeNewLine(bool asOutput, bool allowEOF)
         {
             int c = _reader.Peek();
@@ -399,10 +399,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Skips a single Character and increments the Position Counters
+        /// Skips a single Character and increments the Position Counters.
         /// </summary>
-        /// <remarks>Use when you are reading characters into some local buffer and not the global token buffer, used in String escaping</remarks>
-        /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
+        /// <remarks>Use when you are reading characters into some local buffer and not the global token buffer, used in String escaping.</remarks>
+        /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream.</exception>
         protected char SkipCharacter()
         {
             if (_tempChar.HasValue)
@@ -426,7 +426,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Helper function which discards White Space which the Tokeniser doesn't care about and increments position counters correctly
+        /// Helper function which discards White Space which the Tokeniser doesn't care about and increments position counters correctly.
         /// </summary>
         protected void DiscardWhiteSpace()
         {
@@ -456,7 +456,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Handles the standard escapes supported in all the  UTF-8 based RDF serializations
+        /// Handles the standard escapes supported in all the  UTF-8 based RDF serializations.
         /// </summary>
         protected void HandleEscapes(TokeniserEscapeMode mode)
         {
@@ -619,10 +619,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Handles the complex escapes that can occur in a local name
+        /// Handles the complex escapes that can occur in a local name.
         /// </summary>
         /// <remarks>
-        /// Unlike <see cref="BaseTokeniser.HandleEscapes(TokeniserEscapeMode)">HandleEscapes()</see> this only unescapes unicode escapes, other escapes are simply validated and passed through for later unescaping
+        /// Unlike <see cref="BaseTokeniser.HandleEscapes(TokeniserEscapeMode)">HandleEscapes()</see> this only unescapes unicode escapes, other escapes are simply validated and passed through for later unescaping.
         /// </remarks>
         protected void HandleComplexLocalNameEscapes()
         {
@@ -699,9 +699,9 @@ namespace VDS.RDF.Parsing.Tokens
 
 
         /// <summary>
-        /// Determines whether a given Character can be valid as a Hex Digit
+        /// Determines whether a given Character can be valid as a Hex Digit.
         /// </summary>
-        /// <param name="c">Character to test</param>
+        /// <param name="c">Character to test.</param>
         /// <returns></returns>
         protected bool IsHexDigit(char c)
         {
@@ -733,9 +733,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Helper Function for generating Standardised Parser Errors
+        /// Helper Function for generating Standardised Parser Errors.
         /// </summary>
-        /// <param name="detail">The Error Message</param>
+        /// <param name="detail">The Error Message.</param>
         /// <returns></returns>
         protected RdfParseException Error(String detail)
         {
@@ -751,10 +751,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Helper Function for generating Standardised Parser Errors about unexpected characters
+        /// Helper Function for generating Standardised Parser Errors about unexpected characters.
         /// </summary>
-        /// <param name="c">Unexpected Character</param>
-        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation)</param>
+        /// <param name="c">Unexpected Character.</param>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation).</param>
         /// <returns></returns>
         protected RdfParseException UnexpectedCharacter(char c, String expected)
         {
@@ -768,9 +768,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Helper Function for generating Standardised Parser Errors about unexpected end of input
+        /// Helper Function for generating Standardised Parser Errors about unexpected end of input.
         /// </summary>
-        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation)</param>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation).</param>
         /// <returns></returns>
         protected RdfParseException UnexpectedEndOfInput(String expected)
         {
@@ -785,9 +785,9 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Helper Function for generating Standardised Parser Errors about unexpected new lines
+        /// Helper Function for generating Standardised Parser Errors about unexpected new lines.
         /// </summary>
-        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation)</param>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation).</param>
         /// <returns></returns>
         protected RdfParseException UnexpectedNewLine(String expected)
         {
@@ -802,10 +802,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Helper Function for generating Standardised Parser Errors about unexpected tokens
+        /// Helper Function for generating Standardised Parser Errors about unexpected tokens.
         /// </summary>
-        /// <param name="expected">Message detailing what was expected (may be empty if no explicity expectation)</param>
-        /// <param name="t">Token that was parsed</param>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicity expectation).</param>
+        /// <param name="t">Token that was parsed.</param>
         /// <returns></returns>
         protected RdfParseException UnexpectedToken(String expected, IToken t)
         {

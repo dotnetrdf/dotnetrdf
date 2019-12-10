@@ -37,7 +37,7 @@ using VDS.RDF.Web;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IStorageProvider">IStorageProvider</see> is available
+    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IStorageProvider">IStorageProvider</see> is available.
     /// </summary>
     public class GenericProtocolProcessor
         : BaseProtocolProcessor
@@ -45,20 +45,20 @@ namespace VDS.RDF.Update.Protocol
         private IStorageProvider _manager;
 
         /// <summary>
-        /// Creates a new Generic Protocol Processor
+        /// Creates a new Generic Protocol Processor.
         /// </summary>
-        /// <param name="manager">Generic IO Manager</param>
+        /// <param name="manager">Generic IO Manager.</param>
         public GenericProtocolProcessor(IStorageProvider manager)
         {
             _manager = manager;
         }
 
         /// <summary>
-        /// Processes a GET operation
+        /// Processes a GET operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
-        /// Implemented by making a call to <see cref="IStorageProvider.LoadGraph(IGraph, Uri)">LoadGraph()</see> on the underlying <see cref="IStorageProvider">IStorageProvider</see>
+        /// Implemented by making a call to <see cref="IStorageProvider.LoadGraph(IGraph, Uri)">LoadGraph()</see> on the underlying <see cref="IStorageProvider">IStorageProvider</see>.
         /// </remarks>
         public override void ProcessGet(IHttpContext context)
         {
@@ -77,9 +77,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a POST operation
+        /// Processes a POST operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
@@ -118,9 +118,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
@@ -157,15 +157,15 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a PUT operation
+        /// Processes a PUT operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
-        /// Implemented by calling <see cref="IStorageProvider.SaveGraph">SaveGraph()</see> on the underlying manager
+        /// Implemented by calling <see cref="IStorageProvider.SaveGraph">SaveGraph()</see> on the underlying manager.
         /// </para>
         /// </remarks>
         public override void ProcessPut(IHttpContext context)
@@ -186,15 +186,15 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a DELETE operation
+        /// Processes a DELETE operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         /// <remarks>
         /// <para>
         /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
-        /// The delete operation does not explicitly remove the Graph but simply replaces it with an empty Graph
+        /// The delete operation does not explicitly remove the Graph but simply replaces it with an empty Graph.
         /// </para>
         /// </remarks>
         public override void ProcessDelete(IHttpContext context)
@@ -233,9 +233,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a HEAD operation
+        /// Processes a HEAD operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessHead(IHttpContext context)
         {
             // Work out the Graph URI we want to get
@@ -265,9 +265,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes a PATCH operation
+        /// Processes a PATCH operation.
         /// </summary>
-        /// <param name="context">HTTP Context</param>
+        /// <param name="context">HTTP Context.</param>
         public override void ProcessPatch(IHttpContext context)
         {
             // Work out the Graph URI we want to patch
@@ -321,9 +321,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Retrieves the Graph with the given URI
+        /// Retrieves the Graph with the given URI.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
@@ -333,9 +333,9 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Determines whether a Graph with the given URI exists
+        /// Determines whether a Graph with the given URI exists.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected override bool HasGraph(Uri graphUri)
         {

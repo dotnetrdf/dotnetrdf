@@ -31,56 +31,56 @@ using VDS.RDF.Query;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Reader Classes which parser Sparql Result Set syntaxes into Result Set objects
+    /// Interface for Reader Classes which parser Sparql Result Set syntaxes into Result Set objects.
     /// </summary>
     public interface ISparqlResultsReader
     {
         /// <summary>
-        /// Loads a Result Set from the given Stream
+        /// Loads a Result Set from the given Stream.
         /// </summary>
-        /// <param name="input">Stream to read from</param>
-        /// <param name="results">Result Set to load into</param>
+        /// <param name="input">Stream to read from.</param>
+        /// <param name="results">Result Set to load into.</param>
         /// <returns></returns>
-        /// <remarks>Should throw an error if the Result Set is not empty</remarks>
+        /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
         void Load(SparqlResultSet results, StreamReader input);
 
         /// <summary>
-        /// Loads a Result Set from the given File
+        /// Loads a Result Set from the given File.
         /// </summary>
-        /// <param name="filename">File containing a Result Set</param>
-        /// <param name="results">Result Set to load into</param>
+        /// <param name="filename">File containing a Result Set.</param>
+        /// <param name="results">Result Set to load into.</param>
         /// <returns></returns>
-        /// <remarks>Should throw an error if the Result Set is not empty</remarks>
+        /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
         void Load(SparqlResultSet results, String filename);
 
         /// <summary>
-        /// Loads a Result Set from the given Input
+        /// Loads a Result Set from the given Input.
         /// </summary>
-        /// <param name="input">Input to read from</param>
-        /// <param name="results">Result Set to load into</param>
+        /// <param name="input">Input to read from.</param>
+        /// <param name="results">Result Set to load into.</param>
         /// <returns></returns>
-        /// <remarks>Should throw an error if the Result Set is not empty</remarks>
+        /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
         void Load(SparqlResultSet results, TextReader input);
 
         /// <summary>
-        /// Loads a Result Set using a Results Handler from the given Stream
+        /// Loads a Result Set using a Results Handler from the given Stream.
         /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="input">Stream to read from</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="input">Stream to read from.</param>
         void Load(ISparqlResultsHandler handler, StreamReader input);
 
         /// <summary>
-        /// Loads a Result Set using a Results Handler from the given file
+        /// Loads a Result Set using a Results Handler from the given file.
         /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="filename">File to read results from</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="filename">File to read results from.</param>
         void Load(ISparqlResultsHandler handler, String filename);
 
         /// <summary>
-        /// Loads a Result Set using a Results Handler from the given Input
+        /// Loads a Result Set using a Results Handler from the given Input.
         /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="input">Input to read from.</param>
         void Load(ISparqlResultsHandler handler, TextReader input);
 
         /// <summary>

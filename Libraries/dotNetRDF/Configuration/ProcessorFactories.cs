@@ -69,7 +69,7 @@ terms.
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Factory class for producing SPARQL Query Processors from Configuration Graphs
+    /// Factory class for producing SPARQL Query Processors from Configuration Graphs.
     /// </summary>
     public class QueryProcessorFactory : IObjectFactory
     {
@@ -80,12 +80,12 @@ namespace VDS.RDF.Configuration
                              PelletQueryProcessor = "VDS.RDF.Query.PelletQueryProcessor";
 
         /// <summary>
-        /// Tries to load a SPARQL Query Processor based on information from the Configuration Graph
+        /// Tries to load a SPARQL Query Processor based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -187,9 +187,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
@@ -208,7 +208,7 @@ namespace VDS.RDF.Configuration
     }
 
     /// <summary>
-    /// Factory class for producing SPARQL Update Processors from Configuration Graphs
+    /// Factory class for producing SPARQL Update Processors from Configuration Graphs.
     /// </summary>
     public class UpdateProcessorFactory
         : IObjectFactory
@@ -218,12 +218,12 @@ namespace VDS.RDF.Configuration
                              GenericUpdateProcessor = "VDS.RDF.Update.GenericUpdateProcessor";
 
         /// <summary>
-        /// Tries to load a SPARQL Update based on information from the Configuration Graph
+        /// Tries to load a SPARQL Update based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -301,9 +301,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
@@ -320,7 +320,7 @@ namespace VDS.RDF.Configuration
     }
 
     /// <summary>
-    /// Factory class for producing SPARQL Graph Store HTTP Protocol Processors from Configuration Graphs
+    /// Factory class for producing SPARQL Graph Store HTTP Protocol Processors from Configuration Graphs.
     /// </summary>
     public class ProtocolProcessorFactory
         : IObjectFactory
@@ -330,12 +330,12 @@ namespace VDS.RDF.Configuration
                              GenericProtocolProcessor = "VDS.RDF.Update.Protocol.GenericProtocolProcessor";
 
         /// <summary>
-        /// Tries to load a SPARQL Graph Store HTTP Protocol Processor based on information from the Configuration Graph
+        /// Tries to load a SPARQL Graph Store HTTP Protocol Processor based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -426,9 +426,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {

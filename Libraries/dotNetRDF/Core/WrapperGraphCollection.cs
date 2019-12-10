@@ -30,26 +30,26 @@ using System.Collections.Generic;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract decorator for Graph Collections to make it easier to add new functionality to existing implementations
+    /// Abstract decorator for Graph Collections to make it easier to add new functionality to existing implementations.
     /// </summary>
     public abstract class WrapperGraphCollection
         : BaseGraphCollection
     {
         /// <summary>
-        /// Underlying Graph Collection
+        /// Underlying Graph Collection.
         /// </summary>
         protected readonly BaseGraphCollection _graphs;
 
         /// <summary>
-        /// Creates a decorator around a default <see cref="GraphCollection"/> instance
+        /// Creates a decorator around a default <see cref="GraphCollection"/> instance.
         /// </summary>
         public WrapperGraphCollection()
             : this(new GraphCollection()) { }
 
         /// <summary>
-        /// Creates a decorator around the given graph collection
+        /// Creates a decorator around the given graph collection.
         /// </summary>
-        /// <param name="graphCollection">Graph Collection</param>
+        /// <param name="graphCollection">Graph Collection.</param>
         public WrapperGraphCollection(BaseGraphCollection graphCollection)
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection");
@@ -69,10 +69,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Graph to the collection
+        /// Adds a Graph to the collection.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="mergeIfExists">Whether to merge into an existing Graph with the same URI</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="mergeIfExists">Whether to merge into an existing Graph with the same URI.</param>
         /// <returns></returns>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the collection contains the given Graph
+        /// Gets whether the collection contains the given Graph.
         /// </summary>
         /// <param name="graphUri"></param>
         /// <returns></returns>
@@ -90,7 +90,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the number of Graphs in the collection
+        /// Gets the number of Graphs in the collection.
         /// </summary>
         public override int Count
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Disposes of the collection
+        /// Disposes of the collection.
         /// </summary>
         public override void Dispose()
         {
@@ -109,7 +109,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the enumerator for the collection
+        /// Gets the enumerator for the collection.
         /// </summary>
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
@@ -118,7 +118,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the URIs of the Graphs in the collection
+        /// Gets the URIs of the Graphs in the collection.
         /// </summary>
         public override IEnumerable<Uri> GraphUris
         {
@@ -129,9 +129,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Removes a Graph from the collection
+        /// Removes a Graph from the collection.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected internal override bool Remove(Uri graphUri)
         {
@@ -139,9 +139,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a Graph from the collection
+        /// Gets a Graph from the collection.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override IGraph this[Uri graphUri]
         {

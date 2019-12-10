@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Class for representing a property in an Ontology
+    /// Class for representing a property in an Ontology.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class OntologyProperty 
@@ -46,12 +46,12 @@ namespace VDS.RDF.Ontology
         private const String PropertyDirectSuperProperty = "directSuperProperty";
 
         /// <summary>
-        /// Creates a new Ontology Property for the given resource in the given Graph
+        /// Creates a new Ontology Property for the given resource in the given Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
-        /// <param name="graph">Graph</param>
+        /// <param name="resource">Resource.</param>
+        /// <param name="graph">Graph.</param>
         public OntologyProperty(INode resource, IGraph graph)
-            : base(resource, graph) 
+            : base(resource, graph)
         {
             // Q: Assert that this resource is a property?
             // UriNode rdfType = graph.CreateUriNode(new Uri(OntologyHelper.PropertyType));
@@ -72,6 +72,7 @@ namespace VDS.RDF.Ontology
                 _resourceProperties[PropertyDerivedProperty].Add(t.Subject);
                 _resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
             }
+
             int c = 0;
             do
             {
@@ -89,10 +90,10 @@ namespace VDS.RDF.Ontology
             _resourceProperties.Add(PropertyDirectSuperProperty, new HashSet<INode>());
             if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubPropertyOf))
             {
-              foreach (var node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
-              {
-                _resourceProperties[PropertyDirectSuperProperty].Add(node);
-              }
+                foreach (var node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
+                {
+                    _resourceProperties[PropertyDirectSuperProperty].Add(node);
+                }
 
                 do
                 {
@@ -108,25 +109,27 @@ namespace VDS.RDF.Ontology
             }
 
             // Find additional inverses
-            if (!_resourceProperties.ContainsKey(OntologyHelper.PropertyInverseOf)) _resourceProperties.Add(OntologyHelper.PropertyInverseOf, new HashSet<INode>());
-            foreach (Triple t in _graph.GetTriplesWithPredicateObject(graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf)), _resource))
+            if (!_resourceProperties.ContainsKey(OntologyHelper.PropertyInverseOf))
+                _resourceProperties.Add(OntologyHelper.PropertyInverseOf, new HashSet<INode>());
+            foreach (Triple t in _graph.GetTriplesWithPredicateObject(
+                graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf)), _resource))
             {
                 _resourceProperties[OntologyHelper.PropertyInverseOf].Add(t.Subject);
             }
         }
 
         /// <summary>
-        /// Creates a new RDFS Ontology Property for the given resource in the given Graph
+        /// Creates a new RDFS Ontology Property for the given resource in the given Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
-        /// <param name="graph">Graph</param>
+        /// <param name="resource">Resource.</param>
+        /// <param name="graph">Graph.</param>
         public OntologyProperty(Uri resource, IGraph graph)
             : this(graph.CreateUriNode(resource), graph) { }
 
         /// <summary>
-        /// Adds a new domain for the property
+        /// Adds a new domain for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDomain(INode resource)
         {
@@ -134,9 +137,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new domain for the property
+        /// Adds a new domain for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDomain(Uri resource)
         {
@@ -144,9 +147,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new domain for the property
+        /// Adds a new domain for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDomain(OntologyResource resource)
         {
@@ -154,7 +157,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all domains for the property
+        /// Clears all domains for the property.
         /// </summary>
         /// <returns></returns>
         public bool ClearDomains()
@@ -163,9 +166,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a domain for the property
+        /// Removes a domain for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDomain(INode resource)
         {
@@ -173,9 +176,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a domain for the property
+        /// Removes a domain for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDomain(Uri resource)
         {
@@ -183,9 +186,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a domain for the property
+        /// Removes a domain for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDomain(OntologyResource resource)
         {
@@ -193,9 +196,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new range for the property
+        /// Adds a new range for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddRange(INode resource)
         {
@@ -203,9 +206,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new range for the property
+        /// Adds a new range for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddRange(Uri resource)
         {
@@ -213,9 +216,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new range for the property
+        /// Adds a new range for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddRange(OntologyResource resource)
         {
@@ -223,7 +226,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all ranges for the property
+        /// Clears all ranges for the property.
         /// </summary>
         /// <returns></returns>
         public bool ClearRanges()
@@ -232,9 +235,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a range for the property
+        /// Removes a range for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveRange(INode resource)
         {
@@ -242,9 +245,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a range for the property
+        /// Removes a range for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveRange(Uri resource)
         {
@@ -252,9 +255,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a range for the property
+        /// Removes a range for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveRange(OntologyResource resource)
         {
@@ -262,9 +265,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new equivalent property for the property
+        /// Adds a new equivalent property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddEquivalentProperty(INode resource)
         {
@@ -272,9 +275,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new equivalent property for the property
+        /// Adds a new equivalent property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddEquivalentProperty(Uri resource)
         {
@@ -282,9 +285,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new equivalent property for the property
+        /// Adds a new equivalent property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddEquivalentProperty(OntologyResource resource)
         {
@@ -292,12 +295,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new equivalent property for the property
+        /// Adds a new equivalent property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this property as an equivalent property of the given property
+        /// This overload also adds this property as an equivalent property of the given property.
         /// </remarks>
         public bool AddEquivalentProperty(OntologyProperty property)
         {
@@ -307,7 +310,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all equivalent properties for this property
+        /// Clears all equivalent properties for this property.
         /// </summary>
         /// <returns></returns>
         public bool ClearEquivalentProperties()
@@ -319,9 +322,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent property for the property
+        /// Removes an equivalent property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveEquivalentProperty(INode resource)
         {
@@ -329,9 +332,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent property for the property
+        /// Removes an equivalent property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveEquivalentProperty(Uri resource)
         {
@@ -339,9 +342,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent property for the property
+        /// Removes an equivalent property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveEquivalentProperty(OntologyResource resource)
         {
@@ -349,12 +352,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent property for the property
+        /// Removes an equivalent property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this property as an equivalent property of the given property
+        /// This overload also removes this property as an equivalent property of the given property.
         /// </remarks>
         public bool RemoveEquivalentProperty(OntologyProperty property)
         {
@@ -364,9 +367,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an inverse property for the property
+        /// Adds an inverse property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddInverseProperty(INode resource)
         {
@@ -374,9 +377,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an inverse property for the property
+        /// Adds an inverse property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddInverseProperty(Uri resource)
         {
@@ -384,9 +387,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an inverse property for the property
+        /// Adds an inverse property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddInverseProperty(OntologyResource resource)
         {
@@ -394,12 +397,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an inverse property for the property
+        /// Adds an inverse property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this property as an inverse property of the given property
+        /// This overload also adds this property as an inverse property of the given property.
         /// </remarks>
         public bool AddInverseProperty(OntologyProperty property)
         {
@@ -409,7 +412,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all inverse properties for this property
+        /// Removes all inverse properties for this property.
         /// </summary>
         /// <returns></returns>
         public bool ClearInverseProperties()
@@ -421,9 +424,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an inverse property for the property
+        /// Removes an inverse property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveInverseProperty(INode resource)
         {
@@ -431,9 +434,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an inverse property for the property
+        /// Removes an inverse property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveInverseProperty(Uri resource)
         {
@@ -441,9 +444,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an inverse property for the property
+        /// Removes an inverse property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveInverseProperty(OntologyResource resource)
         {
@@ -451,12 +454,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an inverse property for the property
+        /// Removes an inverse property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this property as an inverse property of the given property
+        /// This overload also removes this property as an inverse property of the given property.
         /// </remarks>
         public bool RemoveInverseProperty(OntologyProperty property)
         {
@@ -466,9 +469,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a sub-property for the property
+        /// Adds a sub-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSubProperty(INode resource)
         {
@@ -476,9 +479,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a sub-property for the property
+        /// Adds a sub-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSubProperty(Uri resource)
         {
@@ -486,9 +489,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a sub-property for the property
+        /// Adds a sub-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSubProperty(OntologyResource resource)
         {
@@ -496,12 +499,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a sub-property for the property
+        /// Adds a sub-property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this property as a super-property of the given property
+        /// This overload also adds this property as a super-property of the given property.
         /// </remarks>
         public bool AddSubProperty(OntologyProperty property)
         {
@@ -511,7 +514,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all sub-properties of this property
+        /// Clears all sub-properties of this property.
         /// </summary>
         /// <returns></returns>
         public bool ClearSubProperties()
@@ -521,9 +524,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-property for the property
+        /// Removes a sub-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSubProperty(INode resource)
         {
@@ -531,9 +534,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-property for the property
+        /// Removes a sub-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSubProperty(Uri resource)
         {
@@ -541,9 +544,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-property for the property
+        /// Removes a sub-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSubProperty(OntologyResource resource)
         {
@@ -551,12 +554,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-property for the property
+        /// Removes a sub-property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this property as a super-property of the given property
+        /// This overload also removes this property as a super-property of the given property.
         /// </remarks>
         public bool RemoveSubProperty(OntologyProperty property)
         {
@@ -566,9 +569,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a super-property for the property
+        /// Adds a super-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSuperProperty(INode resource)
         {
@@ -576,9 +579,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a super-property for the property
+        /// Adds a super-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSuperProperty(Uri resource)
         {
@@ -586,9 +589,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a super-property for the property
+        /// Adds a super-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSuperProperty(OntologyResource resource)
         {
@@ -596,12 +599,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a super-property for the property
+        /// Adds a super-property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this property as a sub-property of the given property
+        /// This overload also adds this property as a sub-property of the given property.
         /// </remarks>
         public bool AddSuperProperty(OntologyProperty property)
         {
@@ -611,7 +614,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all super-properties of this property
+        /// Removes all super-properties of this property.
         /// </summary>
         /// <returns></returns>
         public bool ClearSuperProperties()
@@ -621,9 +624,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-property for the property
+        /// Removes a super-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSuperProperty(INode resource)
         {
@@ -631,9 +634,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-property for the property
+        /// Removes a super-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSuperProperty(Uri resource)
         {
@@ -641,9 +644,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-property for the property
+        /// Removes a super-property for the property.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSuperProperty(OntologyResource resource)
         {
@@ -651,12 +654,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-property for the property
+        /// Removes a super-property for the property.
         /// </summary>
-        /// <param name="property">Property</param>
+        /// <param name="property">Property.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this property as a sub-property of the given property
+        /// This overload also removes this property as a sub-property of the given property.
         /// </remarks>
         public bool RemoveSuperProperty(OntologyProperty property)
         {
@@ -666,7 +669,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Classes which are in the properties Domain
+        /// Gets all the Classes which are in the properties Domain.
         /// </summary>
         public IEnumerable<OntologyClass> Domains
         {
@@ -677,7 +680,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Classes which are in this properties Range
+        /// Gets all the Classes which are in this properties Range.
         /// </summary>
         public IEnumerable<OntologyClass> Ranges
         {
@@ -688,7 +691,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the equivalent properties of this property
+        /// Gets all the equivalent properties of this property.
         /// </summary>
         public IEnumerable<OntologyProperty> EquivalentProperties
         {
@@ -699,7 +702,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the sub-properties of this property (both direct and indirect)
+        /// Gets the sub-properties of this property (both direct and indirect).
         /// </summary>
         public IEnumerable<OntologyProperty> SubProperties
         {
@@ -710,7 +713,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the direct sub-classes of this class
+        /// Gets the direct sub-classes of this class.
         /// </summary>
         public IEnumerable<OntologyProperty> DirectSubProperties
         {
@@ -721,7 +724,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the indirect sub-classes of this class
+        /// Gets the indirect sub-classes of this class.
         /// </summary>
         public IEnumerable<OntologyProperty> IndirectSubProperties
         {
@@ -734,7 +737,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the super-properties of this property (both direct and indirect)
+        /// Gets the super-properties of this property (both direct and indirect).
         /// </summary>
         public IEnumerable<OntologyProperty> SuperProperties
         {
@@ -745,7 +748,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the direct super-properties of this property
+        /// Gets the direct super-properties of this property.
         /// </summary>
         public IEnumerable<OntologyProperty> DirectSuperProperties
         {
@@ -756,7 +759,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the indirect super-properties of this property
+        /// Gets the indirect super-properties of this property.
         /// </summary>
         public IEnumerable<OntologyProperty> IndirectSuperProperty
         {
@@ -769,7 +772,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether this is a top property i.e. has no super properties defined
+        /// Gets whether this is a top property i.e. has no super properties defined.
         /// </summary>
         public bool IsTopProperty
         {
@@ -780,7 +783,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether this is a btoom property i.e. has no sub properties defined
+        /// Gets whether this is a btoom property i.e. has no sub properties defined.
         /// </summary>
         public bool IsBottomProperty
         {
@@ -791,7 +794,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Sibling properties of this property, if this property is the root of the ontology nothing is returned even if there are multiple root properties
+        /// Gets the Sibling properties of this property, if this property is the root of the ontology nothing is returned even if there are multiple root properties.
         /// </summary>
         public IEnumerable<OntologyProperty> Siblings
         {
@@ -805,7 +808,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the inverse properties of this property
+        /// Gets all the inverse properties of this property.
         /// </summary>
         public IEnumerable<OntologyProperty> InverseProperties
         {
@@ -816,7 +819,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the resources that use this property
+        /// Gets all the resources that use this property.
         /// </summary>
         public IEnumerable<OntologyResource> UsedBy
         {

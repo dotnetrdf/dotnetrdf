@@ -33,7 +33,7 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Represents a set of Bindings for a SPARQL Query or part thereof i.e. represents the VALUES clause
+    /// Represents a set of Bindings for a SPARQL Query or part thereof i.e. represents the VALUES clause.
     /// </summary>
     public class BindingsPattern
     {
@@ -41,22 +41,22 @@ namespace VDS.RDF.Query.Patterns
         private readonly List<BindingTuple> _tuples = new List<BindingTuple>();
 
         /// <summary>
-        /// Creates a new Empty Bindings Pattern
+        /// Creates a new Empty Bindings Pattern.
         /// </summary>
         public BindingsPattern()
         { }
 
         /// <summary>
-        /// Creates a new Bindings Pattern
+        /// Creates a new Bindings Pattern.
         /// </summary>
-        /// <param name="vars">Variables</param>
+        /// <param name="vars">Variables.</param>
         public BindingsPattern(IEnumerable<String> vars)
         {
             _vars.AddRange(vars);
         }
 
         /// <summary>
-        /// Gets the enumeration of Variables
+        /// Gets the enumeration of Variables.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Get the enumeration of fixed variables i.e. those guaranteed to be bound
+        /// Get the enumeration of fixed variables i.e. those guaranteed to be bound.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables i.e. those not guaranteed to be bound
+        /// Gets the enumeration of floating variables i.e. those not guaranteed to be bound.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of Tuples
+        /// Gets the enumeration of Tuples.
         /// </summary>
         public IEnumerable<BindingTuple> Tuples
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a Tuple to the Bindings pattern
+        /// Adds a Tuple to the Bindings pattern.
         /// </summary>
         /// <param name="t"></param>
         internal void AddTuple(BindingTuple t)
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Converts a Bindings Clause to a Multiset
+        /// Converts a Bindings Clause to a Multiset.
         /// </summary>
         /// <returns></returns>
         public BaseMultiset ToMultiset()
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of the Pattern
+        /// Gets the String representation of the Pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -152,17 +152,17 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Represents a Tuple in a BINDINGS clause
+    /// Represents a Tuple in a BINDINGS clause.
     /// </summary>
     public class BindingTuple
     {
         private readonly Dictionary<String, PatternItem> _values = new Dictionary<String, PatternItem>();
 
         /// <summary>
-        /// Creates a new Binding Tuple
+        /// Creates a new Binding Tuple.
         /// </summary>
-        /// <param name="variables">Variables</param>
-        /// <param name="values">Values</param>
+        /// <param name="variables">Variables.</param>
+        /// <param name="values">Values.</param>
         public BindingTuple(List<String> variables, List<PatternItem> values)
         {
             for (int i = 0; i < variables.Count; i++)
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of Variable-Value pairs
+        /// Gets the enumeration of Variable-Value pairs.
         /// </summary>
         public IEnumerable<KeyValuePair<String, PatternItem>> Values
         {
@@ -183,9 +183,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Value for a Variable
+        /// Gets the Value for a Variable.
         /// </summary>
-        /// <param name="var">Variable</param>
+        /// <param name="var">Variable.</param>
         /// <returns></returns>
         public INode this[String var]
         {
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether this is an empty tuple
+        /// Gets whether this is an empty tuple.
         /// </summary>
         public bool IsEmpty
         {
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Tuple is complete i.e. has no undefined entries
+        /// Gets whether the Tuple is complete i.e. has no undefined entries.
         /// </summary>
         public bool IsComplete
         {
@@ -227,17 +227,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the given variable is bound for this tuple i.e. is not UNDEF
+        /// Gets whether the given variable is bound for this tuple i.e. is not UNDEF.
         /// </summary>
-        /// <param name="var">Variable</param>
-        /// <returns>True if the variable exists in the tuple and is bound, false otherwise</returns>
+        /// <param name="var">Variable.</param>
+        /// <returns>True if the variable exists in the tuple and is bound, false otherwise.</returns>
         public bool IsBound(string var)
         {
             return _values.TryGetValue(var, out var value) && value != null;
         }
 
         /// <summary>
-        /// Gets the String representation of the Tuple
+        /// Gets the String representation of the Tuple.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

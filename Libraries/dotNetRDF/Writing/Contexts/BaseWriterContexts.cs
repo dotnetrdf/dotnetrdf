@@ -31,12 +31,12 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Interface for Writer Contexts
+    /// Interface for Writer Contexts.
     /// </summary>
     public interface IWriterContext
     {
         /// <summary>
-        /// Gets the Graph being written
+        /// Gets the Graph being written.
         /// </summary>
         IGraph Graph
         {
@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the TextWriter being written to
+        /// Gets the TextWriter being written to.
         /// </summary>
         TextWriter Output
         {
@@ -52,7 +52,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used
+        /// Gets/Sets the Pretty Printing Mode used.
         /// </summary>
         bool PrettyPrint
         {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the High Speed Mode used
+        /// Gets/Sets the High Speed Mode used.
         /// </summary>
         bool HighSpeedModePermitted
         {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level used
+        /// Gets/Sets the Compression Level used.
         /// </summary>
         int CompressionLevel
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Node Formatter used
+        /// Gets/Sets the Node Formatter used.
         /// </summary>
         INodeFormatter NodeFormatter
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the URI Formatter used
+        /// Gets/Sets the URI Formatter used.
         /// </summary>
         IUriFormatter UriFormatter
         {
@@ -98,12 +98,12 @@ namespace VDS.RDF.Writing.Contexts
     }
 
     /// <summary>
-    /// Interface for Writer Contexts which store collection compression data
+    /// Interface for Writer Contexts which store collection compression data.
     /// </summary>
     public interface ICollectionCompressingWriterContext : IWriterContext
     {
         /// <summary>
-        /// Gets the mapping from Blank Nodes to Collections
+        /// Gets the mapping from Blank Nodes to Collections.
         /// </summary>
         Dictionary<INode, OutputRdfCollection> Collections
         {
@@ -111,7 +111,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the Triples that should be excluded from standard output as they are part of collections
+        /// Gets the Triples that should be excluded from standard output as they are part of collections.
         /// </summary>
         BaseTripleCollection TriplesDone
         {
@@ -120,52 +120,52 @@ namespace VDS.RDF.Writing.Contexts
     }
 
     /// <summary>
-    /// Base Class for Writer Context Objects
+    /// Base Class for Writer Context Objects.
     /// </summary>
     /// <remarks>
-    /// This is not an abstract class since some writers will require only this information or possibly less
+    /// This is not an abstract class since some writers will require only this information or possibly less.
     /// </remarks>
     public class BaseWriterContext 
         : IWriterContext
     {
         /// <summary>
-        /// Compression Level to be used
+        /// Compression Level to be used.
         /// </summary>
         protected int _compressionLevel = WriterCompressionLevel.Default;
         /// <summary>
-        /// Pretty Printing Mode setting
+        /// Pretty Printing Mode setting.
         /// </summary>
         protected bool _prettyPrint = true;
         /// <summary>
-        /// High Speed Mode setting
+        /// High Speed Mode setting.
         /// </summary>
         protected bool _hiSpeedAllowed = true;
         /// <summary>
-        /// Graph being written
+        /// Graph being written.
         /// </summary>
         private IGraph _g;
         /// <summary>
-        /// TextWriter being written to
+        /// TextWriter being written to.
         /// </summary>
         private TextWriter _output;
         /// <summary>
-        /// QName Output Mapper
+        /// QName Output Mapper.
         /// </summary>
         protected QNameOutputMapper _qnameMapper;
         /// <summary>
-        /// Node Formatter
+        /// Node Formatter.
         /// </summary>
         protected INodeFormatter _formatter;
         /// <summary>
-        /// URI Formatter
+        /// URI Formatter.
         /// </summary>
         protected IUriFormatter _uriFormatter;
 
         /// <summary>
-        /// Creates a new Base Writer Context with default settings
+        /// Creates a new Base Writer Context with default settings.
         /// </summary>
-        /// <param name="g">Graph being written</param>
-        /// <param name="output">TextWriter being written to</param>
+        /// <param name="g">Graph being written.</param>
+        /// <param name="output">TextWriter being written to.</param>
         public BaseWriterContext(IGraph g, TextWriter output)
         {
             _g = g;
@@ -174,11 +174,11 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Base Writer Context with custom settings
+        /// Creates a new Base Writer Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph being written</param>
-        /// <param name="output">TextWriter being written to</param>
-        /// <param name="compressionLevel">Compression Level</param>
+        /// <param name="g">Graph being written.</param>
+        /// <param name="output">TextWriter being written to.</param>
+        /// <param name="compressionLevel">Compression Level.</param>
         public BaseWriterContext(IGraph g, TextWriter output, int compressionLevel)
             : this(g, output)
         {
@@ -186,13 +186,13 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Base Writer Context with custom settings
+        /// Creates a new Base Writer Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph being written</param>
-        /// <param name="output">TextWriter being written to</param>
-        /// <param name="compressionLevel">Compression Level</param>
-        /// <param name="prettyPrint">Pretty Print Mode</param>
-        /// <param name="hiSpeedAllowed">High Speed Mode</param>
+        /// <param name="g">Graph being written.</param>
+        /// <param name="output">TextWriter being written to.</param>
+        /// <param name="compressionLevel">Compression Level.</param>
+        /// <param name="prettyPrint">Pretty Print Mode.</param>
+        /// <param name="hiSpeedAllowed">High Speed Mode.</param>
         public BaseWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeedAllowed)
             : this(g, output)
         {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the Graph being written
+        /// Gets the Graph being written.
         /// </summary>
         public IGraph Graph
         {
@@ -213,7 +213,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the TextWriter being written to
+        /// Gets the TextWriter being written to.
         /// </summary>
         public TextWriter Output
         {
@@ -224,7 +224,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the QName Output Mapper in use
+        /// Gets the QName Output Mapper in use.
         /// </summary>
         public QNameOutputMapper QNameMapper
         {
@@ -235,7 +235,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level used
+        /// Gets/Sets the Compression Level used.
         /// </summary>
         public virtual int CompressionLevel
         {
@@ -250,7 +250,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used
+        /// Gets/Sets the Pretty Printing Mode used.
         /// </summary>
         public bool PrettyPrint
         {
@@ -265,7 +265,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the High Speed Mode used
+        /// Gets/Sets the High Speed Mode used.
         /// </summary>
         public bool HighSpeedModePermitted
         {
@@ -280,7 +280,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Node Formatter in use
+        /// Gets/Sets the Node Formatter in use.
         /// </summary>
         public INodeFormatter NodeFormatter
         {
@@ -295,7 +295,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the URI Formatter in use
+        /// Gets/Sets the URI Formatter in use.
         /// </summary>
         public IUriFormatter UriFormatter
         {

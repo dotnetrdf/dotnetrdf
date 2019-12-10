@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Possible Types of Triple Pattern
+    /// Possible Types of Triple Pattern.
     /// </summary>
     public enum TriplePatternType
     {
@@ -60,20 +60,20 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Property Function
         /// </summary>
-        PropertyFunction
+        PropertyFunction,
     }
 
     /// <summary>
-    /// Comparer for Triple Pattern Types
+    /// Comparer for Triple Pattern Types.
     /// </summary>
     public class TriplePatternTypeComparer
         : IComparer<TriplePatternType>
     {
         /// <summary>
-        /// Compares two triple pattern types
+        /// Compares two triple pattern types.
         /// </summary>
-        /// <param name="x">Pattern Type</param>
-        /// <param name="y">Pattern Type</param>
+        /// <param name="x">Pattern Type.</param>
+        /// <param name="y">Pattern Type.</param>
         /// <returns></returns>
         public int Compare(TriplePatternType x, TriplePatternType y)
         {

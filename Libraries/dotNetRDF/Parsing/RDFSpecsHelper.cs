@@ -30,69 +30,69 @@ using System.Text.RegularExpressions;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Helper class with useful constants relating to the RDF Specification
+    /// Helper class with useful constants relating to the RDF Specification.
     /// </summary>
     public class RdfSpecsHelper
     {
         /// <summary>
-        /// URI for rdf:List
+        /// URI for rdf:List.
         /// </summary>
         public const string RdfList = "http://www.w3.org/1999/02/22-rdf-syntax-ns#List";
         /// <summary>
-        /// URI for rdf:first
+        /// URI for rdf:first.
         /// </summary>
         public const String RdfListFirst = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
         /// <summary>
-        /// URI for rdf:rest
+        /// URI for rdf:rest.
         /// </summary>
         public const String RdfListRest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
         /// <summary>
-        /// URI for rdf:nil
+        /// URI for rdf:nil.
         /// </summary>
         public const String RdfListNil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
         /// <summary>
-        /// URI for rdf:type
+        /// URI for rdf:type.
         /// </summary>
         public const String RdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
         /// <summary>
-        /// URI for rdf:XMLLiteral
+        /// URI for rdf:XMLLiteral.
         /// </summary>
         public const String RdfXmlLiteral = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
         /// <summary>
-        /// URI for rdf:subject
+        /// URI for rdf:subject.
         /// </summary>
         public const String RdfSubject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject";
         /// <summary>
-        /// URI for rdf:predicate
+        /// URI for rdf:predicate.
         /// </summary>
         public const String RdfPredicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate";
         /// <summary>
-        /// URI for rdf:object
+        /// URI for rdf:object.
         /// </summary>
         public const String RdfObject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#object";
         /// <summary>
-        /// URI for rdf:Statement
+        /// URI for rdf:Statement.
         /// </summary>
         public const String RdfStatement = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement";
         /// <summary>
-        /// URI for rdf:langString the implicit type of language specified literals
+        /// URI for rdf:langString the implicit type of language specified literals.
         /// </summary>
         public const String RdfLangString = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString";
 
         /// <summary>
-        /// Pattern for Valid Language Specifiers
+        /// Pattern for Valid Language Specifiers.
         /// </summary>
         public const String ValidLangSpecifiersPattern = "^@?[A-Za-z]+(\\-[A-Za-z0-9]+)*$";
 
         /// <summary>
-        /// Regular Expression for Valid Language Specifiers
+        /// Regular Expression for Valid Language Specifiers.
         /// </summary>
         private static Regex _validLangSpecifier = new Regex(ValidLangSpecifiersPattern);
 
         /// <summary>
-        /// Determines whether a given String is a valid Language Specifier
+        /// Determines whether a given String is a valid Language Specifier.
         /// </summary>
-        /// <param name="value">String to test</param>
+        /// <param name="value">String to test.</param>
         /// <returns></returns>
         public static bool IsValidLangSpecifier(String value)
         {

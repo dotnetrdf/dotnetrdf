@@ -32,22 +32,22 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for saving SPARQL Result Sets in the RDF serialization in the RDF format of your choice (default Turtle)
+    /// Class for saving SPARQL Result Sets in the RDF serialization in the RDF format of your choice (default Turtle).
     /// </summary>
     public class SparqlRdfWriter : ISparqlResultsWriter
     {
         private IRdfWriter _writer;
 
         /// <summary>
-        /// Creates a new SPARQL RDF Writer which will save Result Sets in the RDF serialization using Turtle syntax
+        /// Creates a new SPARQL RDF Writer which will save Result Sets in the RDF serialization using Turtle syntax.
         /// </summary>
         public SparqlRdfWriter()
             : this(new CompressingTurtleWriter(WriterCompressionLevel.High)) { }
 
         /// <summary>
-        /// Creates a new SPARQL RDF Writer which will save Result Sets in the RDF serialization in your chosen RDF Syntax
+        /// Creates a new SPARQL RDF Writer which will save Result Sets in the RDF serialization in your chosen RDF Syntax.
         /// </summary>
-        /// <param name="writer">RDF Writer to use</param>
+        /// <param name="writer">RDF Writer to use.</param>
         public SparqlRdfWriter(IRdfWriter writer)
         {
             _writer = writer;
@@ -55,29 +55,29 @@ namespace VDS.RDF.Writing
 
         
         /// <summary>
-        /// Saves the SPARQL Result Set to the given File
+        /// Saves the SPARQL Result Set to the given File.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(SparqlResultSet results, string filename)
         {
             _writer.Save(GenerateOutput(results), filename);
         }
 
         /// <summary>
-        /// Saves the SPARQL Result Set to the given Stream
+        /// Saves the SPARQL Result Set to the given Stream.
         /// </summary>
-        /// <param name="results">Result Set to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="output">Stream to save to.</param>
         public void Save(SparqlResultSet results, TextWriter output)
         {
             _writer.Save(GenerateOutput(results), output);
         }
 
         /// <summary>
-        /// Method which generates the RDF Graph of a SPARQL Result Set
+        /// Method which generates the RDF Graph of a SPARQL Result Set.
         /// </summary>
-        /// <param name="results">Result Set</param>
+        /// <param name="results">Result Set.</param>
         /// <returns></returns>
         public IGraph GenerateOutput(SparqlResultSet results)
         {
@@ -161,9 +161,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -179,7 +179,7 @@ namespace VDS.RDF.Writing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

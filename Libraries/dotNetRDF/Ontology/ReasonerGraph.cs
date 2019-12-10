@@ -30,17 +30,17 @@ using VDS.RDF.Query.Inference;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Represents a Graph with a reasoner attached
+    /// Represents a Graph with a reasoner attached.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class wraps an existing Graph and applies the given reasoner to it materialising the Triples in this Graph.  The original Graph itself is not modified but can be accessed if necessary using the <see cref="BaseGraph">BaseGraph</see> property
+    /// This class wraps an existing Graph and applies the given reasoner to it materialising the Triples in this Graph.  The original Graph itself is not modified but can be accessed if necessary using the <see cref="BaseGraph">BaseGraph</see> property.
     /// </para>
     /// <para>
-    /// Any changes to this Graph (via <see cref="IGraph.Assert(Triple)">Assert()</see> and <see cref="IGraph.Retract(Triple)">Retract()</see>) affect this Graph - specifically the set of materialised Triples - rather than the original Graph around which this Graph is a wrapper
+    /// Any changes to this Graph (via <see cref="IGraph.Assert(Triple)">Assert()</see> and <see cref="IGraph.Retract(Triple)">Retract()</see>) affect this Graph - specifically the set of materialised Triples - rather than the original Graph around which this Graph is a wrapper.
     /// </para>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class ReasonerGraph 
@@ -50,10 +50,10 @@ namespace VDS.RDF.Ontology
         private IGraph _baseGraph;
 
         /// <summary>
-        /// Creates a new Reasoner Graph which is a wrapper around an existing Graph with a reasoner applied and the resulting Triples materialised
+        /// Creates a new Reasoner Graph which is a wrapper around an existing Graph with a reasoner applied and the resulting Triples materialised.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="reasoner">Reasoner</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="reasoner">Reasoner.</param>
         public ReasonerGraph(IGraph g, IInferenceEngine reasoner)
         {
             _baseGraph = g;
@@ -62,10 +62,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Creates a new Reasoner Graph which is a wrapper around an existing Graph with multiple reasoners applied and the resulting Triples materialised
+        /// Creates a new Reasoner Graph which is a wrapper around an existing Graph with multiple reasoners applied and the resulting Triples materialised.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="reasoners">Reasoner</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="reasoners">Reasoner.</param>
         public ReasonerGraph(IGraph g, IEnumerable<IInferenceEngine> reasoners)
         {
             _baseGraph = g;
@@ -74,7 +74,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Internal method which initialises the Graph by applying the reasoners and setting the Node and Triple collections to be union collections
+        /// Internal method which initialises the Graph by applying the reasoners and setting the Node and Triple collections to be union collections.
         /// </summary>
         private void Initialise()
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Base Graph which the reasoning is based upon
+        /// Gets the Base Graph which the reasoning is based upon.
         /// </summary>
         public IGraph BaseGraph
         {

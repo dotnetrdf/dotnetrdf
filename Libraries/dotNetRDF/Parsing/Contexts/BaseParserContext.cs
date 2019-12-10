@@ -32,17 +32,17 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Base Class for Parser Contexts
+    /// Base Class for Parser Contexts.
     /// </summary>
     public abstract class BaseParserContext
         : IParserContext
     {
         /// <summary>
-        /// RDF Handler used to handle the generated RDF
+        /// RDF Handler used to handle the generated RDF.
         /// </summary>
         protected IRdfHandler _handler;
         /// <summary>
-        /// Is Parsing Traced?
+        /// Is Parsing Traced?.
         /// </summary>
         protected bool _traceParsing = false;
 
@@ -50,32 +50,32 @@ namespace VDS.RDF.Parsing.Contexts
         private Uri _baseUri;
 
         /// <summary>
-        /// Creates a new Base Parser Context
+        /// Creates a new Base Parser Context.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
+        /// <param name="g">Graph to parse into.</param>
         public BaseParserContext(IGraph g)
             : this(g, false) { }
 
         /// <summary>
-        /// Creates a new Base Parser Context
+        /// Creates a new Base Parser Context.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
         public BaseParserContext(IGraph g, bool traceParsing)
             : this(new GraphHandler(g), traceParsing) { }
 
         /// <summary>
-        /// Creates a new Base Parser Context
+        /// Creates a new Base Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
+        /// <param name="handler">RDF Handler.</param>
         public BaseParserContext(IRdfHandler handler)
             : this(handler, false) { }
 
         /// <summary>
-        /// Creates a new Base Parser Context
+        /// Creates a new Base Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
         public BaseParserContext(IRdfHandler handler, bool traceParsing)
         {
             if (handler == null) throw new ArgumentNullException("handler");
@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Handler used to handle the generated RDF
+        /// Gets the Handler used to handle the generated RDF.
         /// </summary>
         public IRdfHandler Handler
         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether to trace parsing
+        /// Gets/Sets whether to trace parsing.
         /// </summary>
         public bool TraceParsing
         {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the parsing context
+        /// Gets the Namespace Map for the parsing context.
         /// </summary>
         public INestedNamespaceMapper Namespaces
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Base URI for the parsing context
+        /// Gets the Base URI for the parsing context.
         /// </summary>
         public Uri BaseUri
         {
@@ -139,29 +139,29 @@ namespace VDS.RDF.Parsing.Contexts
     }
 
     /// <summary>
-    /// Class for Parser Contexts for Tokeniser based Parsing
+    /// Class for Parser Contexts for Tokeniser based Parsing.
     /// </summary>
     public class TokenisingParserContext
         : BaseParserContext, ITokenisingParserContext
     {
         /// <summary>
-        /// Tokeniser
+        /// Tokeniser.
         /// </summary>
         protected ITokenQueue _queue;
         /// <summary>
-        /// Is Tokeniser traced?
+        /// Is Tokeniser traced?.
         /// </summary>
         protected bool _traceTokeniser = false;
         /// <summary>
-        /// Local Tokens
+        /// Local Tokens.
         /// </summary>
         protected Stack<IToken> _localTokens;
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with default settings
+        /// Creates a new Tokenising Parser Context with default settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public TokenisingParserContext(IGraph g, ITokeniser tokeniser)
             : base(g)
         {
@@ -169,11 +169,11 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with custom settings
+        /// Creates a new Tokenising Parser Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public TokenisingParserContext(IGraph g, ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(g)
         {
@@ -193,12 +193,12 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with custom settings
+        /// Creates a new Tokenising Parser Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingParserContext(IGraph g, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(g, tokeniser)
         {
@@ -208,13 +208,13 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with custom settings
+        /// Creates a new Tokenising Parser Context with custom settings.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingParserContext(IGraph g, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(g, traceParsing)
         {
@@ -236,10 +236,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with default settings
+        /// Creates a new Tokenising Parser Context with default settings.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser)
             : base(handler)
         {
@@ -247,11 +247,11 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with custom settings
+        /// Creates a new Tokenising Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
             : base(handler)
         {
@@ -271,12 +271,12 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with custom settings
+        /// Creates a new Tokenising Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
             : this(handler, tokeniser)
         {
@@ -286,13 +286,13 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new Tokenising Parser Context with custom settings
+        /// Creates a new Tokenising Parser Context with custom settings.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="tokeniser">Tokeniser to use</param>
-        /// <param name="queueMode">Tokeniser Queue Mode</param>
-        /// <param name="traceParsing">Whether to trace parsing</param>
-        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(handler, traceParsing)
         {
@@ -314,7 +314,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Token Queue
+        /// Gets the Token Queue.
         /// </summary>
         public ITokenQueue Tokens
         {
@@ -325,7 +325,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Local Tokens stack
+        /// Gets the Local Tokens stack.
         /// </summary>
         public Stack<IToken> LocalTokens
         {
@@ -337,7 +337,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets whether tokeniser tracing is used
+        /// Gets/Sets whether tokeniser tracing is used.
         /// </summary>
         public bool TraceTokeniser
         {

@@ -41,43 +41,43 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Storage.Management
 {
     /// <summary>
-    /// Represents a connection to a Sesame Server
+    /// Represents a connection to a Sesame Server.
     /// </summary>
     public class SesameServer
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
         , IStorageServer
     {
         /// <summary>
-        /// System Repository ID
+        /// System Repository ID.
         /// </summary>
         public const String SystemRepositoryID = "SYSTEM";
 
         /// <summary>
-        /// Base Uri for the Server
+        /// Base Uri for the Server.
         /// </summary>
         protected String _baseUri;
         /// <summary>
-        /// Username for accessing the Server
+        /// Username for accessing the Server.
         /// </summary>
         protected String _username;
         /// <summary>
-        /// Password for accessing the Server
+        /// Password for accessing the Server.
         /// </summary>
         protected String _pwd;
         /// <summary>
-        /// Whether the User has provided credentials for accessing the Server using authentication
+        /// Whether the User has provided credentials for accessing the Server using authentication.
         /// </summary>
         protected bool _hasCredentials;
 
         /// <summary>
-        /// Repositories Prefix
+        /// Repositories Prefix.
         /// </summary>
         protected String _repositoriesPrefix = "repositories/";
 
         private SesameHttpProtocolConnector _sysConnection;
 
         /// <summary>
-        /// Available Sesame template types
+        /// Available Sesame template types.
         /// </summary>
         protected List<Type> TemplateTypes = new List<Type>
         {
@@ -87,18 +87,18 @@ namespace VDS.RDF.Storage.Management
         };
 
         /// <summary>
-        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="baseUri">Base Uri of the Store.</param>
         public SesameServer(String baseUri)
             : this(baseUri, null, null) { }
 
         /// <summary>
-        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Store</param>
-        /// <param name="username">Username to use for requests that require authentication</param>
-        /// <param name="password">Password to use for requests that require authentication</param>
+        /// <param name="baseUri">Base Uri of the Store.</param>
+        /// <param name="username">Username to use for requests that require authentication.</param>
+        /// <param name="password">Password to use for requests that require authentication.</param>
         public SesameServer(String baseUri, String username, String password)
         {
             _baseUri = baseUri;
@@ -109,20 +109,20 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Store</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Store.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public SesameServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy) { }
 
         /// <summary>
-        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Store</param>
-        /// <param name="username">Username to use for requests that require authentication</param>
-        /// <param name="password">Password to use for requests that require authentication</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Store.</param>
+        /// <param name="username">Username to use for requests that require authentication.</param>
+        /// <param name="password">Password to use for requests that require authentication.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public SesameServer(String baseUri, String username, String password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the server
+        /// Gets the IO Behaviour of the server.
         /// </summary>
         public IOBehaviour IOBehaviour
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Storage.Management
 
 
         /// <summary>
-        /// Gets a default template for creating a store
+        /// Gets a default template for creating a store.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         /// <returns></returns>
         public virtual IStoreTemplate GetDefaultTemplate(string id)
         {
@@ -152,9 +152,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets all available templates for creating a store
+        /// Gets all available templates for creating a store.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         /// <returns></returns>
         public virtual IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
@@ -178,13 +178,13 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new Store based on the given template
+        /// Creates a new Store based on the given template.
         /// </summary>
-        /// <param name="template">Template</param>
+        /// <param name="template">Template.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Templates must inherit from <see cref="BaseSesameTemplate"/>
+        /// Templates must inherit from <see cref="BaseSesameTemplate"/>.
         /// </para>
         /// </remarks>
         public virtual bool CreateStore(IStoreTemplate template)
@@ -231,9 +231,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets the Store with the given ID
+        /// Gets the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         /// <remarks>
         /// If the Store ID requested represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
@@ -244,11 +244,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Deletes the Store with the given ID
+        /// Deletes the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <remarks>
-        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation
+        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation.
         /// </remarks>
         public virtual void DeleteStore(String storeID)
         {
@@ -272,7 +272,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets the list of available stores
+        /// Gets the list of available stores.
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<String> ListStores()
@@ -298,11 +298,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a default template for creating a store
+        /// Gets a default template for creating a store.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         public virtual void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
@@ -310,11 +310,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets all available templates for creating a store
+        /// Gets all available templates for creating a store.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
@@ -338,14 +338,14 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new store based on the given template
+        /// Creates a new store based on the given template.
         /// </summary>
-        /// <param name="template">Template</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="template">Template.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
-        /// Template must inherit from <see cref="BaseSesameTemplate"/>
+        /// Template must inherit from <see cref="BaseSesameTemplate"/>.
         /// </para>
         /// </remarks>
         public virtual void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
@@ -400,13 +400,13 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a store asynchronously
+        /// Gets a store asynchronously.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
-        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
+        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself.
         /// </remarks>
         public virtual void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
@@ -423,11 +423,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Deletes a store asynchronously
+        /// Deletes a store asynchronously.
         /// </summary>
-        /// <param name="storeID">ID of the store to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">ID of the store to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void DeleteStore(String storeID, AsyncStorageCallback callback, Object state)
         {
             try
@@ -465,10 +465,10 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Lists the available stores asynchronously
+        /// Lists the available stores asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void ListStores(AsyncStorageCallback callback, Object state)
         {
             HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
@@ -506,12 +506,12 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Helper method for creating HTTP Requests to the Store
+        /// Helper method for creating HTTP Requests to the Store.
         /// </summary>
-        /// <param name="servicePath">Path to the Service requested</param>
-        /// <param name="accept">Acceptable Content Types</param>
-        /// <param name="method">HTTP Method</param>
-        /// <param name="queryParams">Querystring Parameters</param>
+        /// <param name="servicePath">Path to the Service requested.</param>
+        /// <param name="accept">Acceptable Content Types.</param>
+        /// <param name="method">HTTP Method.</param>
+        /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
         protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
@@ -564,7 +564,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Ensures the connection to the Sesame SYSTEM repository is prepared if it isn't already
+        /// Ensures the connection to the Sesame SYSTEM repository is prepared if it isn't already.
         /// </summary>
         protected virtual void EnsureSystemConnection()
         {
@@ -575,7 +575,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Disposes of the server
+        /// Disposes of the server.
         /// </summary>
         public virtual void Dispose()
         {
@@ -583,9 +583,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

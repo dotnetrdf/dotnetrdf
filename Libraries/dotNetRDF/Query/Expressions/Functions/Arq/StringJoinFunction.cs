@@ -35,7 +35,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
-    /// Represents the ARQ afn:strjoin() function which is a string concatenation function with a separator
+    /// Represents the ARQ afn:strjoin() function which is a string concatenation function with a separator.
     /// </summary>
     public class StringJoinFunction 
         : ISparqlExpression
@@ -46,10 +46,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
         /// <summary>
-        /// Creates a new ARQ String Join function
+        /// Creates a new ARQ String Join function.
         /// </summary>
-        /// <param name="sepExpr">Separator Expression</param>
-        /// <param name="expressions">Expressions to concatentate</param>
+        /// <param name="sepExpr">Separator Expression.</param>
+        /// <param name="expressions">Expressions to concatentate.</param>
         public StringJoinFunction(ISparqlExpression sepExpr, IEnumerable<ISparqlExpression> expressions)
         {
             if (sepExpr is ConstantTerm)
@@ -73,10 +73,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID
+        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Variables used in the function
+        /// Gets the Variables used in the function.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public String Functor
         {
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -198,9 +198,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

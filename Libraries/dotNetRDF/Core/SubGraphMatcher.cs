@@ -30,7 +30,7 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Implements a Sub-Graph Isomorphism Algorithm
+    /// Implements a Sub-Graph Isomorphism Algorithm.
     /// </summary>
     class SubGraphMatcher 
     {
@@ -42,10 +42,10 @@ namespace VDS.RDF
         private List<Triple> _parentTriples;
 
         /// <summary>
-        /// Checks to see whether a given Graph is a sub-graph of the other Graph
+        /// Checks to see whether a given Graph is a sub-graph of the other Graph.
         /// </summary>
-        /// <param name="subgraph">Sub-Graph</param>
-        /// <param name="parent">Graph</param>
+        /// <param name="subgraph">Sub-Graph.</param>
+        /// <param name="parent">Graph.</param>
         /// <returns></returns>
         public bool IsSubGraph(IGraph subgraph, IGraph parent)
         {
@@ -198,14 +198,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Uses a series of Rules to attempt to generate a mapping without the need for brute force guessing
+        /// Uses a series of Rules to attempt to generate a mapping without the need for brute force guessing.
         /// </summary>
-        /// <param name="subgraph">1st Graph</param>
-        /// <param name="parent">2nd Graph</param>
-        /// <param name="subNodes">1st Graph Node classification</param>
-        /// <param name="parentNodes">2nd Graph Node classification</param>
-        /// <param name="subDegrees">1st Graph Degree classification</param>
-        /// <param name="parentDegrees">2nd Graph Degree classification</param>
+        /// <param name="subgraph">1st Graph.</param>
+        /// <param name="parent">2nd Graph.</param>
+        /// <param name="subNodes">1st Graph Node classification.</param>
+        /// <param name="parentNodes">2nd Graph Node classification.</param>
+        /// <param name="subDegrees">1st Graph Degree classification.</param>
+        /// <param name="parentDegrees">2nd Graph Degree classification.</param>
         /// <returns></returns>
         private bool TryRulesBasedMapping(IGraph subgraph, IGraph parent, Dictionary<INode, int> subNodes, Dictionary<INode, int> parentNodes, Dictionary<int, int> subDegrees, Dictionary<int, int> parentDegrees)
         {
@@ -533,14 +533,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Generates and Tests all possibilities in a brute force manner
+        /// Generates and Tests all possibilities in a brute force manner.
         /// </summary>
-        /// <param name="subgraph">1st Graph</param>
-        /// <param name="parent">2nd Graph</param>
-        /// <param name="subNodes">1st Graph Node classification</param>
-        /// <param name="parentNodes">2nd Graph Node classification</param>
-        /// <param name="subDependencies">Dependencies in the 1st Graph</param>
-        /// <param name="parentDependencies">Dependencies in the 2nd Graph</param>
+        /// <param name="subgraph">1st Graph.</param>
+        /// <param name="parent">2nd Graph.</param>
+        /// <param name="subNodes">1st Graph Node classification.</param>
+        /// <param name="parentNodes">2nd Graph Node classification.</param>
+        /// <param name="subDependencies">Dependencies in the 1st Graph.</param>
+        /// <param name="parentDependencies">Dependencies in the 2nd Graph.</param>
         /// <returns></returns>
         private bool TryBruteForceMapping(IGraph subgraph, IGraph parent, Dictionary<INode, int> subNodes, Dictionary<INode, int> parentNodes, List<MappingPair> subDependencies, List<MappingPair> parentDependencies)
         {
@@ -584,12 +584,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for brute forcing the possible mappings
+        /// Helper method for brute forcing the possible mappings.
         /// </summary>
-        /// <param name="possibleMappings">Possible Mappings</param>
-        /// <param name="subDependencies">Dependencies in the 1st Graph</param>
-        /// <param name="parentDependencies">Dependencies in the 2nd Graph</param>
-        /// <param name="target">Target Graph (2nd Graph)</param>
+        /// <param name="possibleMappings">Possible Mappings.</param>
+        /// <param name="subDependencies">Dependencies in the 1st Graph.</param>
+        /// <param name="parentDependencies">Dependencies in the 2nd Graph.</param>
+        /// <param name="target">Target Graph (2nd Graph).</param>
         /// <returns></returns>
         private List<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, List<INode>> possibleMappings, List<MappingPair> subDependencies, List<MappingPair> parentDependencies, IGraph target)
         {
@@ -671,7 +671,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Blank Node mapping if one could be found
+        /// Gets the Blank Node mapping if one could be found.
         /// </summary>
         public Dictionary<INode, INode> Mapping
         {

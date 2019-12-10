@@ -31,7 +31,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Abstract Base Class for Formatters
+    /// Abstract Base Class for Formatters.
     /// </summary>
     public abstract class BaseFormatter
         : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter, IResultFormatter
@@ -39,16 +39,16 @@ namespace VDS.RDF.Writing.Formatting
         private String _format;
 
         /// <summary>
-        /// Creates a new Formatter
+        /// Creates a new Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="formatName">Format Name.</param>
         public BaseFormatter(String formatName)
         {
             _format = formatName;
         }
 
         /// <summary>
-        /// Gets the Format Name
+        /// Gets the Format Name.
         /// </summary>
         public String FormatName
         {
@@ -59,10 +59,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Node as a String
+        /// Formats a Node as a String.
         /// </summary>
-        /// <param name="n">Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="n">Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         public virtual String Format(INode n, TripleSegment? segment)
         {
@@ -84,9 +84,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Node as a String
+        /// Formats a Node as a String.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         public virtual String Format(INode n)
         {
@@ -94,9 +94,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Triple as a String
+        /// Formats a Triple as a String.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public virtual String Format(Triple t)
         {
@@ -104,17 +104,17 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a URI Node as a String for the given Format
+        /// Formats a URI Node as a String for the given Format.
         /// </summary>
-        /// <param name="u">URI Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="u">URI Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected abstract String FormatUriNode(IUriNode u, TripleSegment? segment);
 
         /// <summary>
-        /// Formats a URI as a String for full Output
+        /// Formats a URI as a String for full Output.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public virtual String FormatUri(String u)
         {
@@ -124,9 +124,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a URI as a String for full Output
+        /// Formats a URI as a String for full Output.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public virtual String FormatUri(Uri u)
         {
@@ -134,18 +134,18 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Literal Node as a String for the given Format
+        /// Formats a Literal Node as a String for the given Format.
         /// </summary>
-        /// <param name="l">Literal Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="l">Literal Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected abstract String FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
 
         /// <summary>
-        /// Formats a Blank Node as a String for the given Format
+        /// Formats a Blank Node as a String for the given Format.
         /// </summary>
-        /// <param name="b">Blank Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="b">Blank Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected virtual String FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
@@ -154,10 +154,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Variable Node as a String for the given Format
+        /// Formats a Variable Node as a String for the given Format.
         /// </summary>
-        /// <param name="v">Variable Name</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="v">Variable Name.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected virtual String FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
@@ -165,10 +165,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Graph Literal Node as a String for the given Format
+        /// Formats a Graph Literal Node as a String for the given Format.
         /// </summary>
-        /// <param name="glit">Graph Literal</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="glit">Graph Literal.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected virtual String FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
         {
@@ -176,9 +176,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Character for the given Format
+        /// Formats a Character for the given Format.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public virtual String FormatChar(char c)
@@ -187,19 +187,19 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a sequence of characters as a String
+        /// Formats a sequence of characters as a String.
         /// </summary>
-        /// <param name="cs">Characters</param>
-        /// <returns>String</returns>
+        /// <param name="cs">Characters.</param>
+        /// <returns>String.</returns>
         public virtual String FormatChar(char[] cs)
         {
             return new String(cs);
         }
 
         /// <summary>
-        /// Formats a SPARQL Result for the given format
+        /// Formats a SPARQL Result for the given format.
         /// </summary>
-        /// <param name="result">SPARQL Result</param>
+        /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
         public virtual String Format(SparqlResult result)
         {
@@ -207,9 +207,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a SPARQL Boolean Result for the given format
+        /// Formats a SPARQL Boolean Result for the given format.
         /// </summary>
-        /// <param name="result">Boolean Result</param>
+        /// <param name="result">Boolean Result.</param>
         /// <returns></returns>
         public virtual String FormatBooleanResult(bool result)
         {
@@ -217,11 +217,11 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Applies escapes to the given value
+        /// Applies escapes to the given value.
         /// </summary>
-        /// <param name="value">Value</param>
-        /// <param name="escapes">Escapes</param>
-        /// <returns>Escaped string</returns>
+        /// <param name="value">Value.</param>
+        /// <param name="escapes">Escapes.</param>
+        /// <returns>Escaped string.</returns>
         protected String Escape(String value, List<String[]> escapes)
         {
             foreach (String[] escape in escapes)
@@ -233,7 +233,7 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Gets the Name of the Format this Format uses
+        /// Gets the Name of the Format this Format uses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -27,7 +27,7 @@
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Possible RDFa Syntaxes
+    /// Possible RDFa Syntaxes.
     /// </summary>
     public enum RdfASyntax
     {
@@ -46,6 +46,6 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Auto-detect - assumes RDFa 1.0
         /// </summary>
-        AutoDetectLegacy
+        AutoDetectLegacy,
     }
 }

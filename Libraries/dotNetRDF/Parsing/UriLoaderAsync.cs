@@ -34,16 +34,16 @@ namespace VDS.RDF.Parsing
     public static partial class UriLoader
     {
         /// <summary>
-        /// Attempts to load a RDF Graph from a URI asynchronously
+        /// Attempts to load a RDF Graph from a URI asynchronously.
         /// </summary>
-        /// <param name="g">Graph to assert triple in</param>
-        /// <param name="u">URI to load from</param>
-        /// <param name="parser">Parser to use</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to assert triple in.</param>
+        /// <param name="u">URI to load from.</param>
+        /// <param name="parser">Parser to use.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
-        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned.
         /// </para>
         /// <para>
         /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead. If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
@@ -93,15 +93,15 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from a URI asynchronously
+        /// Attempts to load a RDF Graph from a URI asynchronously.
         /// </summary>
-        /// <param name="g">Graph to assert triple in</param>
-        /// <param name="u">URI to load from</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to assert triple in.</param>
+        /// <param name="u">URI to load from.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
-        /// Will attempt to autodetect the format of the RDF based on the Content-Type header of the HTTP response
+        /// Will attempt to autodetect the format of the RDF based on the Content-Type header of the HTTP response.
         /// </para>
         /// <para>
         /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead. If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
@@ -119,19 +119,19 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from a URI asynchronously using an RDF Handler
+        /// Attempts to load a RDF Graph from a URI asynchronously using an RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to load from</param>
-        /// <param name="parser">Parser to use</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to load from.</param>
+        /// <param name="parser">Parser to use.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
-        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned.
         /// </para>
         /// <para>
-        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead.
         /// </para>
         /// <para>
         /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
@@ -260,15 +260,15 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from a URI asynchronously using an RDF Handler
+        /// Attempts to load a RDF Graph from a URI asynchronously using an RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to load from</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to load from.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
-        /// Attempts to autodetect the RDF format based on the Content-Type header of the HTTP response
+        /// Attempts to autodetect the RDF format based on the Content-Type header of the HTTP response.
         /// </para>
         /// <para>
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
@@ -280,13 +280,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store
+        /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="parser">Parser to use to parse the RDF dataset</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
         /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -306,12 +306,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store
+        /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -326,13 +326,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset asynchronously from the given URI using a RDF Handler
+        /// Attempts to load a RDF dataset asynchronously from the given URI using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="parser">Parser to use to parse the RDF dataset</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
         /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -488,12 +488,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset asynchronously from the given URI using a RDF Handler
+        /// Attempts to load a RDF dataset asynchronously from the given URI using a RDF Handler.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="u">URI to attempt to get a RDF dataset from</param>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from.</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.

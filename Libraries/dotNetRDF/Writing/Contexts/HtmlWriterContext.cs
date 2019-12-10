@@ -32,17 +32,17 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Writer Context for XHTML+RDFa Writers
+    /// Writer Context for XHTML+RDFa Writers.
     /// </summary>
     public class HtmlWriterContext : BaseWriterContext
     {
         private HtmlTextWriter _writer;
 
         /// <summary>
-        /// Creates a new HTML Writer Context
+        /// Creates a new HTML Writer Context.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="writer">Text Writer</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="writer">Text Writer.</param>
         public HtmlWriterContext(IGraph g, TextWriter writer)
             : base(g, writer) 
         {
@@ -54,7 +54,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// HTML Writer to use
+        /// HTML Writer to use.
         /// </summary>
         public HtmlTextWriter HtmlWriter
         {

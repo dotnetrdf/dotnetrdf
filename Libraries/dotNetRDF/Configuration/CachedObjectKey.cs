@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Key for Objects that are cached by the Configuration Loader
+    /// Key for Objects that are cached by the Configuration Loader.
     /// </summary>
     class CachedObjectKey : IEquatable<CachedObjectKey>
     {
@@ -37,10 +37,10 @@ namespace VDS.RDF.Configuration
         private IGraph _g;
 
         /// <summary>
-        /// Creates a new Cached Object Key
+        /// Creates a new Cached Object Key.
         /// </summary>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="g">Configuration Graph.</param>
         public CachedObjectKey(INode objNode, IGraph g)
         {
             _n = objNode;
@@ -48,7 +48,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the Hash Code for the Key
+        /// Gets the Hash Code for the Key.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -57,9 +57,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Key is equal to the given Object
+        /// Gets whether this Key is equal to the given Object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -74,9 +74,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Key is equal to the given Key
+        /// Gets whether this Key is equal to the given Key.
         /// </summary>
-        /// <param name="other">Key</param>
+        /// <param name="other">Key.</param>
         /// <returns></returns>
         public bool Equals(CachedObjectKey other)
         {

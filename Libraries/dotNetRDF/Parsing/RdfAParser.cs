@@ -34,26 +34,26 @@ using VDS.RDF.Parsing.Contexts;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Class for reading RDF embedded as RDFa from within HTML web pages
+    /// Class for reading RDF embedded as RDFa from within HTML web pages.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The RDFa parser uses a HTML parser (<a href="http://www.codeplex.com/htmlagilitypack">Html Agility Pack</a>) that is highly tolerant of real-world HTML and so is able to extract RDFa from pages that are not strictly valid HTML/XHTML
+    /// The RDFa parser uses a HTML parser (<a href="http://www.codeplex.com/htmlagilitypack">Html Agility Pack</a>) that is highly tolerant of real-world HTML and so is able to extract RDFa from pages that are not strictly valid HTML/XHTML.
     /// </para>
     /// </remarks>
     public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlAttribute>
     {
         /// <summary>
-        /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified)
+        /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified).
         /// </summary>
         public RdfAParser() : base()
         {
         }
 
         /// <summary>
-        /// Creates a new RDFa Parser which will use the specified RDFa syntax
+        /// Creates a new RDFa Parser which will use the specified RDFa syntax.
         /// </summary>
-        /// <param name="syntax">RDFa Syntax Version</param>
+        /// <param name="syntax">RDFa Syntax Version.</param>
         public RdfAParser(RdfASyntax syntax) : base(syntax)
         {
         }

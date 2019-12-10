@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 #pragma warning disable CS0660 // Type defines operator == or operator != but does not override Object.Equals(object o)
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
     /// <summary>
-    /// Represents an expression, which evaluates to a variable
+    /// Represents an expression, which evaluates to a variable.
     /// </summary>
     public partial class VariableExpression : SparqlExpression
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Gets the <see cref="VariableTerm"/> represented by this variable expression
+        /// Gets the <see cref="VariableTerm"/> represented by this variable expression.
         /// </summary>
         public new VariableTerm Expression => (VariableTerm)base.Expression;
 

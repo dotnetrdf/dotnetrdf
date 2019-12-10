@@ -29,18 +29,18 @@ namespace VDS.RDF.Skos
     using System.Collections.Generic;
 
     /// <summary>
-    /// Represents an aggregation of one or more SKOS concepts
+    /// Represents an aggregation of one or more SKOS concepts.
     /// </summary>
     public class SkosConceptScheme : SkosResource
     {
         /// <summary>
-        /// Creates a new concept schemes for the given resource
+        /// Creates a new concept schemes for the given resource.
         /// </summary>
-        /// <param name="resource">Resource representing the concept scheme</param>
+        /// <param name="resource">Resource representing the concept scheme.</param>
         public SkosConceptScheme(INode resource) : base(resource) { }
 
         /// <summary>
-        /// Gets the top concepts of the concept scheme
+        /// Gets the top concepts of the concept scheme.
         /// </summary>
         public IEnumerable<SkosConcept> HasTopConcept
         {

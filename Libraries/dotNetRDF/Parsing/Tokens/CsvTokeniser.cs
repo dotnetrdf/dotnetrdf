@@ -30,7 +30,7 @@ using System.IO;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Tokeniser for tokenising CSV inputs
+    /// Tokeniser for tokenising CSV inputs.
     /// </summary>
     public class CsvTokeniser
         : BaseTokeniser
@@ -38,9 +38,9 @@ namespace VDS.RDF.Parsing.Tokens
         private ParsingTextReader _in;
 
         /// <summary>
-        /// Creates a new CSV Tokeniser
+        /// Creates a new CSV Tokeniser.
         /// </summary>
-        /// <param name="reader">Text Reader</param>
+        /// <param name="reader">Text Reader.</param>
         public CsvTokeniser(ParsingTextReader reader)
             : base(reader)
         {
@@ -48,14 +48,14 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new CSV Tokeniser
+        /// Creates a new CSV Tokeniser.
         /// </summary>
-        /// <param name="reader">Stream Reader</param>
+        /// <param name="reader">Stream Reader.</param>
         public CsvTokeniser(StreamReader reader)
             : this(ParsingTextReader.Create(reader)) { }
         
         /// <summary>
-        /// Gets the next available token from the input
+        /// Gets the next available token from the input.
         /// </summary>
         /// <returns></returns>
         public override IToken GetNextToken()

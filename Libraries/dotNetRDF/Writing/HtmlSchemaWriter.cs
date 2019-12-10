@@ -40,16 +40,16 @@ using System.Web.UI;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// HTML Schema Writer is a HTML Writer which writes a human readable description of a Schema/Ontology
+    /// HTML Schema Writer is a HTML Writer which writes a human readable description of a Schema/Ontology.
     /// </summary>
     public class HtmlSchemaWriter
         : BaseHtmlWriter, IRdfWriter
     {
         /// <summary>
-        /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
+        /// Saves the Graph to the given File as an XHTML Table with embedded RDFa.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(IGraph g, String filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -59,10 +59,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa
+        /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Stream to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Stream to save to.</param>
         public void Save(IGraph g, TextWriter output)
         {
             Save(g, output, false);
@@ -95,9 +95,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal method which generates the HTML Output for the Graph
+        /// Internal method which generates the HTML Output for the Graph.
         /// </summary>
-        /// <param name="context">Writer Context</param>
+        /// <param name="context">Writer Context.</param>
         private void GenerateOutput(HtmlWriterContext context)
         {
             Object results;
@@ -710,9 +710,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="Warning">Warning</see> event
+        /// Helper method for raising the <see cref="Warning">Warning</see> event.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             RdfWriterWarning d = Warning;
@@ -728,7 +728,7 @@ namespace VDS.RDF.Writing
         public event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

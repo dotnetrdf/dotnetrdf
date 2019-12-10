@@ -32,7 +32,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
     /// <summary>
-    /// Abstract base class for Hash Functions
+    /// Abstract base class for Hash Functions.
     /// </summary>
     public abstract class BaseHashFunction 
         : BaseUnaryExpression
@@ -40,10 +40,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         private HashAlgorithm _crypto;
 
         /// <summary>
-        /// Creates a new Hash function
+        /// Creates a new Hash function.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="hash">Hash Algorithm to use</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="hash">Hash Algorithm to use.</param>
         public BaseHashFunction(ISparqlExpression expr, HashAlgorithm hash)
             : base(expr)
         {
@@ -51,10 +51,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID
+        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -82,9 +82,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Computes Hashes
+        /// Computes Hashes.
         /// </summary>
-        /// <param name="input">Input String</param>
+        /// <param name="input">Input String.</param>
         /// <returns></returns>
         protected virtual string Hash(string input)
         {
@@ -103,13 +103,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public override SparqlExpressionType Type
         {

@@ -34,16 +34,16 @@ namespace VDS.RDF.Query
 {
 
     /// <summary>
-    /// Comparer class for implementing the SPARQL semantics for the relational operators
+    /// Comparer class for implementing the SPARQL semantics for the relational operators.
     /// </summary>
     public class SparqlNodeComparer 
         : IComparer<INode>, IComparer<IValuedNode>
     {
         /// <summary>
-        /// Compares two Nodes
+        /// Compares two Nodes.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public virtual int Compare(INode x, INode y)
         {
@@ -169,10 +169,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two valued Nodes
+        /// Compares two valued Nodes.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public virtual int Compare(IValuedNode x, IValuedNode y)
         {
@@ -296,11 +296,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Nodes for Numeric Ordering
+        /// Compares two Nodes for Numeric Ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
-        /// <param name="type">Numeric Type</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
+        /// <param name="type">Numeric Type.</param>
         /// <returns></returns>
         protected virtual int NumericCompare(INode x, INode y, SparqlNumericType type)
         {
@@ -308,11 +308,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Nodes for Numeric Ordering
+        /// Compares two Nodes for Numeric Ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
-        /// <param name="type">Numeric Type</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
+        /// <param name="type">Numeric Type.</param>
         /// <returns></returns>
         protected virtual int NumericCompare(IValuedNode x, IValuedNode y, SparqlNumericType type)
         {
@@ -335,10 +335,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Date Times for Date Time ordering
+        /// Compares two Date Times for Date Time ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         protected virtual int DateTimeCompare(INode x, INode y)
         {
@@ -346,10 +346,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Date Times for Date Time ordering
+        /// Compares two Date Times for Date Time ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         protected virtual int DateTimeCompare(IValuedNode x, IValuedNode y)
         {
@@ -388,10 +388,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Dates for Date ordering
+        /// Compares two Dates for Date ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         protected virtual int DateCompare(INode x, INode y)
         {
@@ -399,10 +399,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Dates for Date ordering
+        /// Compares two Dates for Date ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         protected virtual int DateCompare(IValuedNode x, IValuedNode y)
         {
@@ -449,16 +449,16 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Comparer class for use in SPARQL ORDER BY - implements the Semantics broadly similar to the relational operator but instead of erroring using Node/Lexical ordering where an error would occur it makes an appropriate decision
+    /// Comparer class for use in SPARQL ORDER BY - implements the Semantics broadly similar to the relational operator but instead of erroring using Node/Lexical ordering where an error would occur it makes an appropriate decision.
     /// </summary>
     public class SparqlOrderingComparer 
         : SparqlNodeComparer
     {
         /// <summary>
-        /// Compares two Nodes
+        /// Compares two Nodes.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public override int Compare(INode x, INode y)
         {
@@ -595,10 +595,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Nodes
+        /// Compares two Nodes.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         public override int Compare(IValuedNode x, IValuedNode y)
         {
@@ -731,10 +731,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Compares two Date Times for Date Time ordering
+        /// Compares two Date Times for Date Time ordering.
         /// </summary>
-        /// <param name="x">Node</param>
-        /// <param name="y">Node</param>
+        /// <param name="x">Node.</param>
+        /// <param name="y">Node.</param>
         /// <returns></returns>
         protected override int DateTimeCompare(IValuedNode x, IValuedNode y)
         {

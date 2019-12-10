@@ -29,21 +29,21 @@ using System;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Interface for URI Formatters
+    /// Interface for URI Formatters.
     /// </summary>
     public interface IUriFormatter
     {
         /// <summary>
-        /// Formats a URI as a String
+        /// Formats a URI as a String.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         String FormatUri(Uri u);
 
         /// <summary>
-        /// Formats a URI as a String
+        /// Formats a URI as a String.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         String FormatUri(String u);
     }

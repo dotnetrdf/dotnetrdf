@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Builder
     }
 
     /// <summary>
-    /// Provides methods to supply the "then" expression for the IF function call
+    /// Provides methods to supply the "then" expression for the IF function call.
     /// </summary>
     public sealed class IfThenPart
     {
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets the second parameter of the IF function call
+        /// Sets the second parameter of the IF function call.
         /// </summary>
         public IfElsePart Then(SparqlExpression thenExpression)
         {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Builder
     }
 
     /// <summary>
-    /// Provides methods to supply the "else" expression for the IF function call
+    /// Provides methods to supply the "else" expression for the IF function call.
     /// </summary>
     public sealed class IfElsePart
     {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets the third parameter of the IF function call
+        /// Sets the third parameter of the IF function call.
         /// </summary>
         public RdfTermExpression Else(SparqlExpression elseExpression)
         {

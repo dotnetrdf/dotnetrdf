@@ -46,7 +46,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Available Query Syntaxes
+    /// Available Query Syntaxes.
     /// </summary>
     public enum SparqlQuerySyntax
     {
@@ -72,11 +72,11 @@ namespace VDS.RDF.Parsing
         /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
         /// </ul>
         /// </remarks>
-        Extended
+        Extended,
     }
 
     /// <summary>
-    /// Class for parsing SPARQL Queries into <see cref="SparqlQuery">SparqlQuery</see> objects that can be used to query a Graph or Triple Store
+    /// Class for parsing SPARQL Queries into <see cref="SparqlQuery">SparqlQuery</see> objects that can be used to query a Graph or Triple Store.
     /// </summary>
     public class SparqlQueryParser
         : ITraceableTokeniser, IObjectParser<SparqlQuery>
@@ -91,30 +91,30 @@ namespace VDS.RDF.Parsing
         #region Constructors and Properties
 
         /// <summary>
-        /// Creates a new instance of the SPARQL Query Parser
+        /// Creates a new instance of the SPARQL Query Parser.
         /// </summary>
         public SparqlQueryParser()
             : this(TokenQueueMode.QueueAllBeforeParsing) { }
 
         /// <summary>
-        /// Creates a new instance of the SPARQL Query Parser which supports the given SPARQL Syntax
+        /// Creates a new instance of the SPARQL Query Parser which supports the given SPARQL Syntax.
         /// </summary>
-        /// <param name="syntax">SPARQL Syntax</param>
+        /// <param name="syntax">SPARQL Syntax.</param>
         public SparqlQueryParser(SparqlQuerySyntax syntax)
             : this(TokenQueueMode.QueueAllBeforeParsing, syntax) { }
 
         /// <summary>
-        /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser Queue Mode
+        /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser Queue Mode.
         /// </summary>
-        /// <param name="queueMode">Token Queue Mode</param>
+        /// <param name="queueMode">Token Queue Mode.</param>
         public SparqlQueryParser(TokenQueueMode queueMode)
             : this(queueMode, Options.QueryDefaultSyntax) { }
 
         /// <summary>
-        /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser which supports the given SPARQL Syntax
+        /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser which supports the given SPARQL Syntax.
         /// </summary>
-        /// <param name="queueMode">Token Queue Mode</param>
-        /// <param name="syntax">SPARQL Syntax</param>
+        /// <param name="queueMode">Token Queue Mode.</param>
+        /// <param name="syntax">SPARQL Syntax.</param>
         public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax)
         {
             _queuemode = queueMode;
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser progress is Traced to the Console
+        /// Gets/Sets whether Tokeniser progress is Traced to the Console.
         /// </summary>
         public bool TraceTokeniser
         {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the Default Base URI for Queries parsed by this Parser instance
+        /// Gets/Sets the Default Base URI for Queries parsed by this Parser instance.
         /// </summary>
         public Uri DefaultBaseUri
         {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the Syntax that should be supported
+        /// Gets/Sets the Syntax that should be supported.
         /// </summary>
         public SparqlQuerySyntax SyntaxMode
         {
@@ -167,7 +167,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped custom expression factories
+        /// Gets/Sets the locally scoped custom expression factories.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
@@ -189,11 +189,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped Query Optimiser applied to queries at the end of the parsing process
+        /// Gets/Sets the locally scoped Query Optimiser applied to queries at the end of the parsing process.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used
+        /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used.
         /// </para>
         /// </remarks>
         public IQueryOptimiser QueryOptimiser
@@ -213,9 +213,9 @@ namespace VDS.RDF.Parsing
         #region Events
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Query being parsed is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Query being parsed is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -235,9 +235,9 @@ namespace VDS.RDF.Parsing
         #region Public Parser Methods
 
         /// <summary>
-        /// Parses a SPARQL Query from a File
+        /// Parses a SPARQL Query from a File.
         /// </summary>
-        /// <param name="queryFile">File containing the Query</param>
+        /// <param name="queryFile">File containing the Query.</param>
         /// <returns></returns>
         public SparqlQuery ParseFromFile(String queryFile)
         {
@@ -247,9 +247,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Query from an arbitrary Input Stream
+        /// Parses a SPARQL Query from an arbitrary Input Stream.
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input Stream.</param>
         /// <returns></returns>
         public SparqlQuery Parse(StreamReader input)
         {
@@ -265,9 +265,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Query from an arbitrary Input
+        /// Parses a SPARQL Query from an arbitrary Input.
         /// </summary>
-        /// <param name="input">Input</param>
+        /// <param name="input">Input.</param>
         /// <returns></returns>
         public SparqlQuery Parse(TextReader input)
         {
@@ -276,9 +276,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Query from a String
+        /// Parses a SPARQL Query from a String.
         /// </summary>
-        /// <param name="queryString">A SPARQL Query</param>
+        /// <param name="queryString">A SPARQL Query.</param>
         /// <returns></returns>
         public SparqlQuery ParseFromString(String queryString)
         {
@@ -287,9 +287,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parses a SPARQL Query from a SPARQL Parameterized String
+        /// Parses a SPARQL Query from a SPARQL Parameterized String.
         /// </summary>
-        /// <param name="queryString">A SPARQL Parameterized String</param>
+        /// <param name="queryString">A SPARQL Parameterized String.</param>
         /// <returns></returns>
         /// <remarks>
         /// The <see cref="SparqlParameterizedString">SparqlParameterizedString</see> class allows you to use parameters in a String in a manner similar to SQL Commands in the ADO.Net model.  See the documentation for <see cref="SparqlParameterizedString">SparqlParameterizedString</see> for details of this.
@@ -1288,10 +1288,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Tries to parse a Graph Pattern from the given Parser Context
+        /// Tries to parse a Graph Pattern from the given Parser Context.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="requireOpeningLeftBracket">Whether the opening Left Curly Bracket is required</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="requireOpeningLeftBracket">Whether the opening Left Curly Bracket is required.</param>
         /// <returns></returns>
         protected internal GraphPattern TryParseGraphPattern(SparqlQueryParserContext context, bool requireOpeningLeftBracket)
         {
@@ -3793,10 +3793,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Constructs an error message that informs the user about unexpected excess tokens in a SPARQL qery
+        /// Constructs an error message that informs the user about unexpected excess tokens in a SPARQL qery.
         /// </summary>
-        /// <param name="context">Current parser context</param>
-        /// <param name="expectedCount">The expected number of tokens</param>
+        /// <param name="context">Current parser context.</param>
+        /// <param name="expectedCount">The expected number of tokens.</param>
         /// <returns></returns>
         public string ExcessTokensString(SparqlQueryParserContext context, int expectedCount)
         {

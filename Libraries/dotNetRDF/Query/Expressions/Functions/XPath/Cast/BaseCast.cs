@@ -30,41 +30,41 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
     /// <summary>
-    /// Abstract Expression class used as the base class for implementation of XPath Casting Function expressions
+    /// Abstract Expression class used as the base class for implementation of XPath Casting Function expressions.
     /// </summary>
     public abstract class BaseCast
         : ISparqlExpression
     {
         /// <summary>
-        /// Expression to be Cast by the Cast Function
+        /// Expression to be Cast by the Cast Function.
         /// </summary>
         protected ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new Base XPath Cast Expression
+        /// Creates a new Base XPath Cast Expression.
         /// </summary>
-        /// <param name="expr">Expression to be Cast</param>
+        /// <param name="expr">Expression to be Cast.</param>
         public BaseCast(ISparqlExpression expr)
         {
             _expr = expr;
         }
 
         /// <summary>
-        /// Gets the value of casting the result of the inner expression
+        /// Gets the value of casting the result of the inner expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>
-        /// Gets the String representation of this Expression
+        /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the enumeration of Variables involved in this expression
+        /// Gets the enumeration of Variables involved in this expression.
         /// </summary>
         public virtual IEnumerable<string> Variables
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public abstract string Functor
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets the Arguments of the Expression
+        /// Gets the Arguments of the Expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }

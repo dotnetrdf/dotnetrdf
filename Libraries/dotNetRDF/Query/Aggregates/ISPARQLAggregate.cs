@@ -32,25 +32,25 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Aggregates
 {
     /// <summary>
-    /// Interface for SPARQL Aggregates which can be used to calculate aggregates over Results
+    /// Interface for SPARQL Aggregates which can be used to calculate aggregates over Results.
     /// </summary>
     public interface ISparqlAggregate
     {
         /// <summary>
-        /// Applies the Aggregate to the Result Binder and returns a single Node as a Result
+        /// Applies the Aggregate to the Result Binder and returns a single Node as a Result.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         IValuedNode Apply(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Applies the Aggregate to the Result Binder and returns a single Node as a Result
+        /// Applies the Aggregate to the Result Binder and returns a single Node as a Result.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Enumerable of Binding IDs which the aggregate is applied over</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Enumerable of Binding IDs which the aggregate is applied over.</param>
         IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
 
         /// <summary>
-        /// Gets the Expression that the Aggregate is applied to
+        /// Gets the Expression that the Aggregate is applied to.
         /// </summary>
         ISparqlExpression Expression
         {
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Gets the Type of the Aggregate
+        /// Gets the Type of the Aggregate.
         /// </summary>
         SparqlExpressionType Type
         {
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Gets the URI/Keyword of the Aggregate
+        /// Gets the URI/Keyword of the Aggregate.
         /// </summary>
         String Functor
         {
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Aggregates
         }
 
         /// <summary>
-        /// Gets the Arguments of the Aggregate
+        /// Gets the Arguments of the Aggregate.
         /// </summary>
         IEnumerable<ISparqlExpression> Arguments
         {

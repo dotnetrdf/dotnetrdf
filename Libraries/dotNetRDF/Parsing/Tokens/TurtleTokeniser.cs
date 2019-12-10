@@ -30,7 +30,7 @@ using System.IO;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// A Class for Reading an Input Stream and generating Turtle Tokens from it
+    /// A Class for Reading an Input Stream and generating Turtle Tokens from it.
     /// </summary>
     public class TurtleTokeniser 
         : BaseTokeniser
@@ -39,39 +39,39 @@ namespace VDS.RDF.Parsing.Tokens
         private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
-        /// Creates a new Turtle Tokeniser
+        /// Creates a new Turtle Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
         public TurtleTokeniser(StreamReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new Turtle Tokeniser
+        /// Creates a new Turtle Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
         public TurtleTokeniser(ParsingTextReader input)
             : this(input, TurtleSyntax.W3C) { }
 
         /// <summary>
-        /// Creates a new Turtle Tokeniser
+        /// Creates a new Turtle Tokeniser.
         /// </summary>
-        /// <param name="input">Input to read from</param>
+        /// <param name="input">Input to read from.</param>
         public TurtleTokeniser(TextReader input)
             : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
-        /// Creates a new Turtle Tokeniser
+        /// Creates a new Turtle Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public TurtleTokeniser(StreamReader input, TurtleSyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Creates a new Turtle Tokeniser
+        /// Creates a new Turtle Tokeniser.
         /// </summary>
-        /// <param name="input">The Input Stream to generate Tokens from</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="input">The Input Stream to generate Tokens from.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax)
             : base(input)
         {
@@ -81,18 +81,18 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Creates a new Turtle Tokeniser
+        /// Creates a new Turtle Tokeniser.
         /// </summary>
-        /// <param name="input">Input to read from</param>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="input">Input to read from.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public TurtleTokeniser(TextReader input, TurtleSyntax syntax)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
-        /// Gets the next parseable Token from the Input or raises an Error
+        /// Gets the next parseable Token from the Input or raises an Error.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed</exception>
+        /// <exception cref="RdfParseException">Occurs when a Token cannot be parsed.</exception>
         public override IToken GetNextToken()
         {
             // Have we read anything yet?
@@ -878,7 +878,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a Directive Token
+        /// Internal Helper method which attempts to get a Directive Token.
         /// </summary>
         /// <returns></returns>
         private IToken TryGetDirectiveToken()
@@ -966,7 +966,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a Prefix Token
+        /// Internal Helper method which attempts to get a Prefix Token.
         /// </summary>
         /// <returns></returns>
         private IToken TryGetPrefixToken()
@@ -1011,10 +1011,10 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a QName Token
+        /// Internal Helper method which attempts to get a QName Token.
         /// </summary>
         /// <returns></returns>
-        /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function</remarks>
+        /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function.</remarks>
         private IToken TryGetQNameToken()
         {
             char next = Peek();
@@ -1228,7 +1228,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a Language Specifier Token
+        /// Internal Helper method which attempts to get a Language Specifier Token.
         /// </summary>
         /// <returns></returns>
         private IToken TryGetLanguageSpecToken()
@@ -1262,7 +1262,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a Date Type Token
+        /// Internal Helper method which attempts to get a Date Type Token.
         /// </summary>
         /// <returns></returns>
         private IToken TryGetDataTypeToken()
@@ -1315,7 +1315,7 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Internal Helper method which attempts to get a Comment Token
+        /// Internal Helper method which attempts to get a Comment Token.
         /// </summary>
         /// <returns></returns>
         private IToken TryGetCommentToken()

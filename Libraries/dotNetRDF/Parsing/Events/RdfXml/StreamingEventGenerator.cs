@@ -33,10 +33,10 @@ using System.Xml;
 namespace VDS.RDF.Parsing.Events.RdfXml
 {
     /// <summary>
-    /// A JIT event generator for RDF/XML parsing that uses Streaming parsing to parse the events
+    /// A JIT event generator for RDF/XML parsing that uses Streaming parsing to parse the events.
     /// </summary>
     /// <remarks>
-    /// Currently unimplemented stub class
+    /// Currently unimplemented stub class.
     /// </remarks>
     public class StreamingEventGenerator
         : IRdfXmlJitEventGenerator
@@ -54,9 +54,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private Stack<String> _baseUris = new Stack<string>();
 
         /// <summary>
-        /// Creates a new Streaming Event Generator
+        /// Creates a new Streaming Event Generator.
         /// </summary>
-        /// <param name="stream">Stream</param>
+        /// <param name="stream">Stream.</param>
         public StreamingEventGenerator(Stream stream)
         {
             _reader = XmlReader.Create(stream, GetSettings());
@@ -64,10 +64,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Creates a new Streaming Event Generator
+        /// Creates a new Streaming Event Generator.
         /// </summary>
-        /// <param name="stream">Stream</param>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="stream">Stream.</param>
+        /// <param name="baseUri">Base URI.</param>
         public StreamingEventGenerator(Stream stream, String baseUri)
             : this(stream)
         {
@@ -75,9 +75,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Creates a new Streaming Event Generator
+        /// Creates a new Streaming Event Generator.
         /// </summary>
-        /// <param name="reader">Text Reader</param>
+        /// <param name="reader">Text Reader.</param>
         public StreamingEventGenerator(TextReader reader)
         {
             _reader = XmlReader.Create(reader, GetSettings());
@@ -85,10 +85,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Creates a new Streaming Event Generator
+        /// Creates a new Streaming Event Generator.
         /// </summary>
-        /// <param name="reader">Text Reader</param>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="reader">Text Reader.</param>
+        /// <param name="baseUri">Base URI.</param>
         public StreamingEventGenerator(TextReader reader, String baseUri)
             : this(reader)
         {
@@ -96,9 +96,9 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Creates a new Streaming Event Generator
+        /// Creates a new Streaming Event Generator.
         /// </summary>
-        /// <param name="file">Filename</param>
+        /// <param name="file">Filename.</param>
         public StreamingEventGenerator(String file)
         {
             _reader = XmlReader.Create(new FileStream(file, FileMode.Open), GetSettings());
@@ -106,10 +106,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Creates a new Streaming Event Generator
+        /// Creates a new Streaming Event Generator.
         /// </summary>
-        /// <param name="file">Filename</param>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="file">Filename.</param>
+        /// <param name="baseUri">Base URI.</param>
         public StreamingEventGenerator(String file, String baseUri)
             : this(file)
         {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Initialises the XML Reader settings
+        /// Initialises the XML Reader settings.
         /// </summary>
         /// <returns></returns>
         private XmlReaderSettings GetSettings()
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Gets the next event from the XML stream
+        /// Gets the next event from the XML stream.
         /// </summary>
         /// <returns></returns>
         public IRdfXmlEvent GetNextEvent()
@@ -412,7 +412,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         }
 
         /// <summary>
-        /// Gets whether the event generator has finished generating events
+        /// Gets whether the event generator has finished generating events.
         /// </summary>
         public bool Finished
         {

@@ -37,39 +37,39 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Filters
 {
     /// <summary>
-    /// Abstract Base class for Unary Filters that operate on a single Expression
+    /// Abstract Base class for Unary Filters that operate on a single Expression.
     /// </summary>
     public abstract class BaseUnaryFilter 
         : ISparqlFilter 
     {
         /// <summary>
-        /// Expression which is the Argument to the Filter
+        /// Expression which is the Argument to the Filter.
         /// </summary>
         protected ISparqlExpression _arg;
 
         /// <summary>
-        /// Creates a new Base Unary Filter
+        /// Creates a new Base Unary Filter.
         /// </summary>
-        /// <param name="arg">Argument to the Filter</param>
+        /// <param name="arg">Argument to the Filter.</param>
         public BaseUnaryFilter(ISparqlExpression arg)
         {
             _arg = arg;
         }
 
         /// <summary>
-        /// Evaluates a filter in the given Evaluation Context
+        /// Evaluates a filter in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public abstract void Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the String representation of the Filter
+        /// Gets the String representation of the Filter.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the enumeration of Variables used in the Filter
+        /// Gets the enumeration of Variables used in the Filter.
         /// </summary>
         public virtual IEnumerable<String> Variables
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Gets the inner expression this Filter uses
+        /// Gets the inner expression this Filter uses.
         /// </summary>
         public virtual ISparqlExpression Expression
         {
@@ -92,22 +92,22 @@ namespace VDS.RDF.Query.Filters
     }
 
     /// <summary>
-    /// Filter that represents the Sparql BOUND() function
+    /// Filter that represents the Sparql BOUND() function.
     /// </summary>
     public class BoundFilter 
         : BaseUnaryFilter
     {
         /// <summary>
-        /// Creates a new Bound Filter
+        /// Creates a new Bound Filter.
         /// </summary>
-        /// <param name="varTerm">Variable Expression</param>
+        /// <param name="varTerm">Variable Expression.</param>
         public BoundFilter(VariableTerm varTerm)
             : base(varTerm) { }
 
         /// <summary>
-        /// Evaluates a filter in the given Evaluation Context
+        /// Evaluates a filter in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset) return;
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Gets the String representation of the Filter
+        /// Gets the String representation of the Filter.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -165,21 +165,21 @@ namespace VDS.RDF.Query.Filters
     }
 
     /// <summary>
-    /// Generic Filter for Filters which take a single sub-expression as an argument
+    /// Generic Filter for Filters which take a single sub-expression as an argument.
     /// </summary>
     public class UnaryExpressionFilter
         : BaseUnaryFilter
     {
         /// <summary>
-        /// Creates a new Unary Expression Filter which filters on the basis of a single sub-expression
+        /// Creates a new Unary Expression Filter which filters on the basis of a single sub-expression.
         /// </summary>
-        /// <param name="expr">Expression to filter with</param>
+        /// <param name="expr">Expression to filter with.</param>
         public UnaryExpressionFilter(ISparqlExpression expr) : base(expr) { }
 
         /// <summary>
-        /// Evaluates a filter in the given Evaluation Context
+        /// Evaluates a filter in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset) return;
@@ -246,7 +246,7 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Gets the String representation of the Filter
+        /// Gets the String representation of the Filter.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -256,17 +256,17 @@ namespace VDS.RDF.Query.Filters
     }
 
     /// <summary>
-    /// Generic Filter for use where multiple Filters are applied on a single Graph Pattern
+    /// Generic Filter for use where multiple Filters are applied on a single Graph Pattern.
     /// </summary>
     public class ChainFilter : ISparqlFilter
     {
         private List<ISparqlFilter> _filters = new List<ISparqlFilter>();
 
         /// <summary>
-        /// Creates a new Chain Filter
+        /// Creates a new Chain Filter.
         /// </summary>
-        /// <param name="first">First Filter</param>
-        /// <param name="second">Second Filter</param>
+        /// <param name="first">First Filter.</param>
+        /// <param name="second">Second Filter.</param>
         public ChainFilter(ISparqlFilter first, ISparqlFilter second)
         {
             _filters.Add(first);
@@ -274,19 +274,19 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Creates a new Chain Filter
+        /// Creates a new Chain Filter.
         /// </summary>
-        /// <param name="filters">Filters</param>
+        /// <param name="filters">Filters.</param>
         public ChainFilter(IEnumerable<ISparqlFilter> filters)
         {
             _filters.AddRange(filters);
         }
 
         /// <summary>
-        /// Creates a new Chain Filter
+        /// Creates a new Chain Filter.
         /// </summary>
-        /// <param name="first">First Filter</param>
-        /// <param name="rest">Additional Filters</param>
+        /// <param name="first">First Filter.</param>
+        /// <param name="rest">Additional Filters.</param>
         public ChainFilter(ISparqlFilter first, IEnumerable<ISparqlFilter> rest)
         {
             _filters.Add(first);
@@ -294,9 +294,9 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Evaluates a filter in the given Evaluation Context
+        /// Evaluates a filter in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public void Evaluate(SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset) return;
@@ -308,16 +308,16 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Adds an additional Filter to the Filter Chain
+        /// Adds an additional Filter to the Filter Chain.
         /// </summary>
-        /// <param name="filter">A Filter to add</param>
+        /// <param name="filter">A Filter to add.</param>
         protected internal void Add(ISparqlFilter filter)
         {
             _filters.Add(filter);
         }
 
         /// <summary>
-        /// Gets the String representation of the Filters
+        /// Gets the String representation of the Filters.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -331,7 +331,7 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Gets the enumeration of Variables used in the chained Filters
+        /// Gets the enumeration of Variables used in the chained Filters.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -344,10 +344,10 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Gets the Inner Expression used by the Chained Filters
+        /// Gets the Inner Expression used by the Chained Filters.
         /// </summary>
         /// <remarks>
-        /// Equivalent to ANDing all the Chained Filters expressions
+        /// Equivalent to ANDing all the Chained Filters expressions.
         /// </remarks>
         public ISparqlExpression Expression
         {

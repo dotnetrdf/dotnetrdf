@@ -32,7 +32,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
-    /// Represents the ARQ e() function
+    /// Represents the ARQ e() function.
     /// </summary>
     public class EFunction 
         : ISparqlExpression
@@ -40,10 +40,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         private IValuedNode _node = new DoubleNode(null, Math.E);
 
         /// <summary>
-        /// Evaluates the function
+        /// Evaluates the function.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public string Functor
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
 
 
         /// <summary>
-        /// Gets the Variables used
+        /// Gets the Variables used.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the type of the expression
+        /// Gets the type of the expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the arguments of the expression
+        /// Gets the arguments of the expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Applies a transformer to the expressions arguments
+        /// Applies a transformer to the expressions arguments.
         /// </summary>
-        /// <param name="transformer">Transformer</param>
+        /// <param name="transformer">Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

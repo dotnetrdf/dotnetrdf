@@ -29,7 +29,7 @@ using VDS.RDF.Query.Aggregates;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a SPARQL aggregate
+    /// Represents a SPARQL aggregate.
     /// </summary>
     public class AggregateExpression : PrimaryExpression<ISparqlAggregate>
     {

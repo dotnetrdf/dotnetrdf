@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Gets the triple patterns
+        /// Gets the triple patterns.
         /// </summary>
         public ITriplePattern[] Patterns
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Gets the pattern item factory
+        /// Gets the pattern item factory.
         /// </summary>
         internal PatternItemFactory PatternItemFactory
         {

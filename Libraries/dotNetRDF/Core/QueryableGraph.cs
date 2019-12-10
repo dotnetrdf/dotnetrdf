@@ -32,7 +32,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class for representing Graphs which can be directly queried using SPARQL
+    /// Class for representing Graphs which can be directly queried using SPARQL.
     /// </summary>
     public class QueryableGraph
         : Graph
@@ -41,15 +41,15 @@ namespace VDS.RDF
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
         /// <summary>
-        /// Creates a new Queryable Graph
+        /// Creates a new Queryable Graph.
         /// </summary>
         public QueryableGraph()
             : base() { }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Graph
+        /// Executes a SPARQL Query on the Graph.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public Object ExecuteQuery(String sparqlQuery)
         {
@@ -58,11 +58,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Graph handling the results with the given handlers
+        /// Executes a SPARQL Query on the Graph handling the results with the given handlers.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">SPARQL Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">SPARQL Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             SparqlQuery q = _parser.ParseFromString(sparqlQuery);
@@ -70,9 +70,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Graph
+        /// Executes a SPARQL Query on the Graph.
         /// </summary>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
         public Object ExecuteQuery(SparqlQuery query)
         {
@@ -85,11 +85,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Executes a SPARQL Query on the Graph handling the results with the given handlers
+        /// Executes a SPARQL Query on the Graph handling the results with the given handlers.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">SPARQL Results Handler</param>
-        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">SPARQL Results Handler.</param>
+        /// <param name="query">SPARQL Query.</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             if (_processor == null)

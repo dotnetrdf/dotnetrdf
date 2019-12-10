@@ -32,12 +32,12 @@ using System.Xml;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for serializing a <see cref="IGraph">graph</see> in GraphML format
+    /// Class for serializing a <see cref="IGraph">graph</see> in GraphML format.
     /// </summary>
     public class GraphMLWriter : IStoreWriter, ICollapseLiteralsWriter
     {
         /// <summary>
-        /// Controls whether to collapse distinct literals
+        /// Controls whether to collapse distinct literals.
         /// </summary>
         public bool CollapseLiterals { get; set; } = true;
 
@@ -48,10 +48,10 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
 
         /// <summary>
-        /// Saves a triple store to a file in GraphML format
+        /// Saves a triple store to a file in GraphML format.
         /// </summary>
-        /// <param name="store">The source triple store</param>
-        /// <param name="filename">The name of the target file</param>
+        /// <param name="store">The source triple store.</param>
+        /// <param name="filename">The name of the target file.</param>
         public void Save(ITripleStore store, string filename)
         {
             using (var writer = new StreamWriter(File.OpenWrite(filename)))
@@ -61,21 +61,21 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a triple store to a text writer in GraphML format
+        /// Saves a triple store to a text writer in GraphML format.
         /// </summary>
-        /// <param name="store">The source triple store</param>
-        /// <param name="output">The target text writer</param>
+        /// <param name="store">The source triple store.</param>
+        /// <param name="output">The target text writer.</param>
         public void Save(ITripleStore store, TextWriter output)
         {
             this.Save(store, output, false);
         }
 
         /// <summary>
-        /// Saves a triple store to a text writer in GraphML format
+        /// Saves a triple store to a text writer in GraphML format.
         /// </summary>
-        /// <param name="store">The source triple store</param>
-        /// <param name="output">The target text writer</param>
-        /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes</param>
+        /// <param name="store">The source triple store.</param>
+        /// <param name="output">The target text writer.</param>
+        /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes.</param>
         public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
         {
             using (var writer = XmlWriter.Create(output, new XmlWriterSettings { CloseOutput = !leaveOpen, OmitXmlDeclaration = true }))
@@ -85,10 +85,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a triple store to an XML writer in GraphML format
+        /// Saves a triple store to an XML writer in GraphML format.
         /// </summary>
-        /// <param name="store">The source triple store</param>
-        /// <param name="output">The target XML writer</param>
+        /// <param name="store">The source triple store.</param>
+        /// <param name="output">The target XML writer.</param>
         public void Save(ITripleStore store, XmlWriter output)
         {
             GraphMLWriter.WriteGraphML(output, store, this.CollapseLiterals);

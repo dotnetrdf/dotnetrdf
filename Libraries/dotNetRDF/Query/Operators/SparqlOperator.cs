@@ -34,7 +34,7 @@ using VDS.RDF.Query.Operators.Numeric;
 namespace VDS.RDF.Query.Operators
 {
     /// <summary>
-    /// Registry of SPARQL Operators
+    /// Registry of SPARQL Operators.
     /// </summary>
     public static class SparqlOperators
     {
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Operators
         private static bool _init = false;
 
         /// <summary>
-        /// Initializes the Operators registry
+        /// Initializes the Operators registry.
         /// </summary>
         private static void Init()
         {
@@ -75,9 +75,9 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Registers a new operator
+        /// Registers a new operator.
         /// </summary>
-        /// <param name="op">Operator</param>
+        /// <param name="op">Operator.</param>
         public static void AddOperator(ISparqlOperator op)
         {
             if (!_init) Init();
@@ -88,9 +88,9 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Removes the registration of an operator by instance reference
+        /// Removes the registration of an operator by instance reference.
         /// </summary>
-        /// <param name="op">Operator Reference</param>
+        /// <param name="op">Operator Reference.</param>
         public static void RemoveOperator(ISparqlOperator op)
         {
             if (!_init) Init();
@@ -101,9 +101,9 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Removes the registration of an operator by instance type of the operator
+        /// Removes the registration of an operator by instance type of the operator.
         /// </summary>
-        /// <param name="op">Operator</param>
+        /// <param name="op">Operator.</param>
         public static void RemoveOperatorByType(ISparqlOperator op)
         {
             if (!_init) Init();
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Resets Operator registry to default state
+        /// Resets Operator registry to default state.
         /// </summary>
         public static void Reset()
         {
@@ -130,12 +130,12 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Returns whether the given operator is registered
+        /// Returns whether the given operator is registered.
         /// </summary>
-        /// <param name="op">Operator</param>
+        /// <param name="op">Operator.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Checking is done both by reference and instance type so you can check if an operator is registered even if you don't have the actual reference to the instance that registered
+        /// Checking is done both by reference and instance type so you can check if an operator is registered even if you don't have the actual reference to the instance that registered.
         /// </remarks>
         public static bool IsRegistered(ISparqlOperator op)
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Gets all registered Operators
+        /// Gets all registered Operators.
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<ISparqlOperator> GetOperators()
@@ -162,9 +162,9 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Gets all registered operators for the given Operator Type
+        /// Gets all registered operators for the given Operator Type.
         /// </summary>
-        /// <param name="type">Operator Type</param>
+        /// <param name="type">Operator Type.</param>
         /// <returns></returns>
         public static IEnumerable<ISparqlOperator> GetOperators(SparqlOperatorType type)
         {
@@ -176,11 +176,11 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Tries to return the operator which applies for the given inputs
+        /// Tries to return the operator which applies for the given inputs.
         /// </summary>
-        /// <param name="type">Operator Type</param>
-        /// <param name="op">Operator</param>
-        /// <param name="ns">Inputs</param>
+        /// <param name="type">Operator Type.</param>
+        /// <param name="op">Operator.</param>
+        /// <param name="ns">Inputs.</param>
         /// <returns></returns>
         public static bool TryGetOperator(SparqlOperatorType type, out ISparqlOperator op, params IValuedNode[] ns)
         {

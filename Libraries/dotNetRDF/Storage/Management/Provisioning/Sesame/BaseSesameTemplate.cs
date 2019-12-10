@@ -30,7 +30,7 @@ using System.ComponentModel;
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
     /// <summary>
-    /// Abstract base class for templates for creating new stores in Sesame
+    /// Abstract base class for templates for creating new stores in Sesame.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -41,7 +41,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         : StoreTemplate
     {
         /// <summary>
-        /// Constants for Sesame repository configuration namespaces
+        /// Constants for Sesame repository configuration namespaces.
         /// </summary>
         public const String RepositoryNamespace = "http://www.openrdf.org/config/repository#",
                             RepositorySailNamespace = "http://www.openrdf.org/config/repository/sail#",
@@ -51,16 +51,16 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
                             SailNativeNamespace = "http://www.openrdf.org/config/sail/native#";
 
         /// <summary>
-        /// Creates a new Sesame template
+        /// Creates a new Sesame template.
         /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="name">Template name</param>
-        /// <param name="description">Template description</param>
+        /// <param name="id">ID.</param>
+        /// <param name="name">Template name.</param>
+        /// <param name="description">Template description.</param>
         public BaseSesameTemplate(String id, String name, String description)
             : base(id, name, description) { }
 
         /// <summary>
-        /// Gets/Sets the descriptive label for a Sesame store
+        /// Gets/Sets the descriptive label for a Sesame store.
         /// </summary>
         [Category("Sesame Configuration"), Description("A descriptive label for the store that Sesame will store and present when browsing the server through the Sesame workbench UI")]
         public String Label
@@ -70,13 +70,13 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets a Graph representing the RDF that must be inserted into Sesame's SYSTEM repository in order to create the desired store
+        /// Gets a Graph representing the RDF that must be inserted into Sesame's SYSTEM repository in order to create the desired store.
         /// </summary>
         /// <returns></returns>
         public abstract IGraph GetTemplateGraph();
 
         /// <summary>
-        /// Gets the basic template graph which is a graph with all the required namespaces registered and the ID and label filled in
+        /// Gets the basic template graph which is a graph with all the required namespaces registered and the ID and label filled in.
         /// </summary>
         /// <returns></returns>
         protected virtual IGraph GetBaseTemplateGraph()
@@ -107,7 +107,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets the Node used to refer to the store configuration context
+        /// Gets the Node used to refer to the store configuration context.
         /// </summary>
         [Browsable(false)]
         public INode ContextNode

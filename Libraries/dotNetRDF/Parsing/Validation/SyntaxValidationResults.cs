@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Validation
 {
     /// <summary>
-    /// Represents Syntax Validation Results
+    /// Represents Syntax Validation Results.
     /// </summary>
     public class SyntaxValidationResults : ISyntaxValidationResults
     {
@@ -41,10 +41,10 @@ namespace VDS.RDF.Parsing.Validation
         private Object _result;
 
         /// <summary>
-        /// Creates new Syntax Validation Results
+        /// Creates new Syntax Validation Results.
         /// </summary>
-        /// <param name="valid">Whether the Syntax was valid</param>
-        /// <param name="message">Validation Message</param>
+        /// <param name="valid">Whether the Syntax was valid.</param>
+        /// <param name="message">Validation Message.</param>
         public SyntaxValidationResults(bool valid, String message)
         {
             _valid = valid;
@@ -52,11 +52,11 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Creates new Syntax Validation Results
+        /// Creates new Syntax Validation Results.
         /// </summary>
-        /// <param name="valid">Whether the Syntax was valid</param>
-        /// <param name="message">Validation Message</param>
-        /// <param name="result">Results Object</param>
+        /// <param name="valid">Whether the Syntax was valid.</param>
+        /// <param name="message">Validation Message.</param>
+        /// <param name="result">Results Object.</param>
         public SyntaxValidationResults(bool valid, String message, Object result)
             : this(valid, message)
         {
@@ -64,12 +64,12 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Creates new Syntax Validation Results
+        /// Creates new Syntax Validation Results.
         /// </summary>
-        /// <param name="valid">Whether the Syntax was valid</param>
-        /// <param name="message">Validation Message</param>
-        /// <param name="result">Results Object</param>
-        /// <param name="warnings">Enumeration of Warnings</param>
+        /// <param name="valid">Whether the Syntax was valid.</param>
+        /// <param name="message">Validation Message.</param>
+        /// <param name="result">Results Object.</param>
+        /// <param name="warnings">Enumeration of Warnings.</param>
         public SyntaxValidationResults(bool valid, String message, Object result, IEnumerable<String> warnings)
             : this(valid, message, result)
         {
@@ -77,13 +77,13 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Creates new Syntax Validation Results
+        /// Creates new Syntax Validation Results.
         /// </summary>
-        /// <param name="valid">Whether the Syntax was valid</param>
-        /// <param name="message">Validation Message</param>
-        /// <param name="result">Results Object</param>
-        /// <param name="warnings">Enumeration of Warnings</param>
-        /// <param name="error">Error that occurred</param>
+        /// <param name="valid">Whether the Syntax was valid.</param>
+        /// <param name="message">Validation Message.</param>
+        /// <param name="result">Results Object.</param>
+        /// <param name="warnings">Enumeration of Warnings.</param>
+        /// <param name="error">Error that occurred.</param>
         public SyntaxValidationResults(bool valid, String message, Object result, IEnumerable<String> warnings, Exception error)
             : this(valid, message, result, warnings)
         {
@@ -91,11 +91,11 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Creates new Syntax Validation Results
+        /// Creates new Syntax Validation Results.
         /// </summary>
-        /// <param name="valid">Whether the Syntax was valid</param>
-        /// <param name="message">Validation Message</param>
-        /// <param name="error">Error that occurred</param>
+        /// <param name="valid">Whether the Syntax was valid.</param>
+        /// <param name="message">Validation Message.</param>
+        /// <param name="error">Error that occurred.</param>
         public SyntaxValidationResults(bool valid, String message, Exception error)
             : this(valid, message)
         {
@@ -103,15 +103,15 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Creates new Syntax Validation Results
+        /// Creates new Syntax Validation Results.
         /// </summary>
-        /// <param name="message">Validation Message</param>
-        /// <param name="error">Error that occurred</param>
+        /// <param name="message">Validation Message.</param>
+        /// <param name="error">Error that occurred.</param>
         public SyntaxValidationResults(String message, Exception error)
             : this(error == null, message, error) { }
 
         /// <summary>
-        /// Whether the Syntax was valid
+        /// Whether the Syntax was valid.
         /// </summary>
         public bool IsValid
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Gets the Validation Message
+        /// Gets the Validation Message.
         /// </summary>
         public string Message
         {
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Gets the Warnings that were produced
+        /// Gets the Warnings that were produced.
         /// </summary>
         public IEnumerable<string> Warnings
         {
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Gets the Error that occurred
+        /// Gets the Error that occurred.
         /// </summary>
         public Exception Error
         {
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Validation
         }
 
         /// <summary>
-        /// Gets the Result Object that was produced
+        /// Gets the Result Object that was produced.
         /// </summary>
         public Object Result
         {

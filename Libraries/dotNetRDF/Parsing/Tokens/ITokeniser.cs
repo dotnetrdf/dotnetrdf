@@ -27,7 +27,7 @@
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
-    /// Token Queue Mode Constants
+    /// Token Queue Mode Constants.
     /// </summary>
     public enum TokenQueueMode : int
     {
@@ -42,23 +42,23 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Asynchronous Buffering used
         /// </summary>
-        AsynchronousBufferDuringParsing = 2
+        AsynchronousBufferDuringParsing = 2,
     }
 
     /// <summary>
-    /// Interface for Tokenisers
+    /// Interface for Tokenisers.
     /// </summary>
     /// <remarks>
-    /// A Tokeniser is a class that takes an input stream and produces textual tokens from it for use in token based parsers
+    /// A Tokeniser is a class that takes an input stream and produces textual tokens from it for use in token based parsers.
     /// </remarks>
     public interface ITokeniser
     {
         /// <summary>
-        /// Causes the Tokeniser to attempt to retrieve the next Token
+        /// Causes the Tokeniser to attempt to retrieve the next Token.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfParseException">Thrown if a valid Token cannot be parsed</exception>
-        /// <exception cref="System.IO.IOException">Thrown if there is a problem reading the Input Stream</exception>
+        /// <exception cref="RdfParseException">Thrown if a valid Token cannot be parsed.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if there is a problem reading the Input Stream.</exception>
         IToken GetNextToken();
     }
 }

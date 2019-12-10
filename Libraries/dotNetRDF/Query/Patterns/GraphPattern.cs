@@ -36,7 +36,7 @@ using VDS.RDF.Query.Optimisation;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing Graph Patterns in Sparql Queries
+    /// Class for representing Graph Patterns in Sparql Queries.
     /// </summary>
     public class GraphPattern
     {
@@ -60,16 +60,16 @@ namespace VDS.RDF.Query.Patterns
         private bool _break = false, _broken = false;
 
         /// <summary>
-        /// Creates a new Graph Pattern
+        /// Creates a new Graph Pattern.
         /// </summary>
         internal GraphPattern()
         {
         }
 
         /// <summary>
-        /// Creates a new Graph Pattern copied from an existing Graph Pattern
+        /// Creates a new Graph Pattern copied from an existing Graph Pattern.
         /// </summary>
-        /// <param name="gp">Graph Pattern</param>
+        /// <param name="gp">Graph Pattern.</param>
         internal GraphPattern(GraphPattern gp)
         {
             _break = gp._break;
@@ -98,9 +98,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a Triple Pattern to the Graph Pattern respecting any BGP breaks
+        /// Adds a Triple Pattern to the Graph Pattern respecting any BGP breaks.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
+        /// <param name="p">Triple Pattern.</param>
         internal void AddTriplePattern(ITriplePattern p)
         {
             if (_break)
@@ -123,9 +123,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds an Assignment to the Graph Pattern respecting any BGP breaks
+        /// Adds an Assignment to the Graph Pattern respecting any BGP breaks.
         /// </summary>
-        /// <param name="p">Assignment Pattern</param>
+        /// <param name="p">Assignment Pattern.</param>
         internal void AddAssignment(IAssignmentPattern p)
         {
             if (_break)
@@ -149,9 +149,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a Filter to the Graph Pattern
+        /// Adds a Filter to the Graph Pattern.
         /// </summary>
-        /// <param name="filter">Filter</param>
+        /// <param name="filter">Filter.</param>
         internal void AddFilter(ISparqlFilter filter)
         {
             _isFiltered = true;
@@ -159,9 +159,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Resets the set of Unplaced Filters to be a new set of 
+        /// Resets the set of Unplaced Filters to be a new set of. 
         /// </summary>
-        /// <param name="filters">Filters</param>
+        /// <param name="filters">Filters.</param>
         internal void ResetFilters(IEnumerable<ISparqlFilter> filters)
         {
             _unplacedFilters.Clear();
@@ -169,9 +169,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a child Graph Pattern to the Graph Pattern respecting any BGP breaks
+        /// Adds a child Graph Pattern to the Graph Pattern respecting any BGP breaks.
         /// </summary>
-        /// <param name="p">Graph Pattern</param>
+        /// <param name="p">Graph Pattern.</param>
         internal void AddGraphPattern(GraphPattern p)
         {
             if (_break)
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds inline data to a Graph Pattern respecting any BGP breaks
+        /// Adds inline data to a Graph Pattern respecting any BGP breaks.
         /// </summary>
         /// <param name="data"></param>
         internal void AddInlineData(BindingsPattern data)
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Tells the Graph Pattern that any subsequent Graph/Triple Patterns added go in a new BGP
+        /// Tells the Graph Pattern that any subsequent Graph/Triple Patterns added go in a new BGP.
         /// </summary>
         internal void BreakBGP()
         {
@@ -246,12 +246,12 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Swaps the position of the two given Triple Patterns
+        /// Swaps the position of the two given Triple Patterns.
         /// </summary>
-        /// <param name="i">First Position</param>
-        /// <param name="j">Second Position</param>
+        /// <param name="i">First Position.</param>
+        /// <param name="j">Second Position.</param>
         /// <remarks>
-        /// Intended for use by Query Optimisers
+        /// Intended for use by Query Optimisers.
         /// </remarks>
         public void SwapTriplePatterns(int i, int j)
         {
@@ -261,12 +261,12 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Inserts a Filter at a given position
+        /// Inserts a Filter at a given position.
         /// </summary>
-        /// <param name="filter">Filter</param>
-        /// <param name="i">Position to insert at</param>
+        /// <param name="filter">Filter.</param>
+        /// <param name="i">Position to insert at.</param>
         /// <remarks>
-        /// Intended for use by Query Optimisers
+        /// Intended for use by Query Optimisers.
         /// </remarks>
         public void InsertFilter(ISparqlFilter filter, int i)
         {
@@ -277,12 +277,12 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Inserts an Assignment at a given position
+        /// Inserts an Assignment at a given position.
         /// </summary>
-        /// <param name="assignment">Assignment</param>
-        /// <param name="i">Position to insert at</param>
+        /// <param name="assignment">Assignment.</param>
+        /// <param name="i">Position to insert at.</param>
         /// <remarks>
-        /// Intended for use by Query Optimisers
+        /// Intended for use by Query Optimisers.
         /// </remarks>
         public void InsertAssignment(IAssignmentPattern assignment, int i)
         {
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Patterns
         #region Properties
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is Optional
+        /// Gets/Sets whether the Graph Pattern is Optional.
         /// </summary>
         public bool IsOptional
         {
@@ -303,7 +303,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is Filtered
+        /// Gets/Sets whether the Graph Pattern is Filtered.
         /// </summary>
         public bool IsFiltered
         {
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is a Union of its Child Graph Patterns
+        /// Gets/Sets whether the Graph Pattern is a Union of its Child Graph Patterns.
         /// </summary>
         public bool IsUnion
         {
@@ -321,7 +321,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern operates on a specific Graph
+        /// Gets/Sets whether the Graph Pattern operates on a specific Graph.
         /// </summary>
         public bool IsGraph
         {
@@ -330,7 +330,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether this is an empty Graph Pattern
+        /// Gets whether this is an empty Graph Pattern.
         /// </summary>
         public bool IsEmpty
         {
@@ -338,7 +338,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is an EXISTS clause
+        /// Gets/Sets whether the Graph Pattern is an EXISTS clause.
         /// </summary>
         public bool IsExists
         {
@@ -352,7 +352,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is a NOT EXISTS clause
+        /// Gets/Sets whether the Graph Pattern is a NOT EXISTS clause.
         /// </summary>
         public bool IsNotExists
         {
@@ -366,7 +366,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is a MINUS clause
+        /// Gets/Sets whether the Graph Pattern is a MINUS clause.
         /// </summary>
         public bool IsMinus
         {
@@ -375,7 +375,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets whether the Graph Pattern is a SERVICE clause
+        /// Gets/Sets whether the Graph Pattern is a SERVICE clause.
         /// </summary>
         public bool IsService
         {
@@ -384,10 +384,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether Optimisation has been applied to this query
+        /// Gets whether Optimisation has been applied to this query.
         /// </summary>
         /// <remarks>
-        /// This only indicates that an Optimiser has been applied to the Pattern.  You can always reoptimise by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method with an optimiser of your choice on the query to which this Pattern belongs
+        /// This only indicates that an Optimiser has been applied to the Pattern.  You can always reoptimise by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method with an optimiser of your choice on the query to which this Pattern belongs.
         /// </remarks>
         public bool IsOptimised
         {
@@ -395,7 +395,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether Evaluation Errors in this Graph Pattern are suppressed (currently only valid with SERVICE)
+        /// Gets whether Evaluation Errors in this Graph Pattern are suppressed (currently only valid with SERVICE).
         /// </summary>
         public bool IsSilent
         {
@@ -404,7 +404,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether this Graph Pattern contains an Inline Data block (VALUES clause)
+        /// Gets whether this Graph Pattern contains an Inline Data block (VALUES clause).
         /// </summary>
         public bool HasInlineData
         {
@@ -412,7 +412,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Determines whether the Graph Pattern has any kind of Modifier (GRAPH, MINUS, OPTIONAL etc) applied
+        /// Determines whether the Graph Pattern has any kind of Modifier (GRAPH, MINUS, OPTIONAL etc) applied.
         /// </summary>
         public bool HasModifier
         {
@@ -420,7 +420,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets the FILTER that applies to this Graph Pattern
+        /// Gets/Sets the FILTER that applies to this Graph Pattern.
         /// </summary>
         public ISparqlFilter Filter
         {
@@ -463,10 +463,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets/Sets the Graph Specifier that applies to this Graph Pattern
+        /// Gets/Sets the Graph Specifier that applies to this Graph Pattern.
         /// </summary>
         /// <remarks>
-        /// This property is also used internally for SERVICE specifiers to save adding an additional property unnecessarily
+        /// This property is also used internally for SERVICE specifiers to save adding an additional property unnecessarily.
         /// </remarks>
         public IToken GraphSpecifier
         {
@@ -475,7 +475,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Checks whether this Pattern has any Child Graph Patterns
+        /// Checks whether this Pattern has any Child Graph Patterns.
         /// </summary>
         public bool HasChildGraphPatterns
         {
@@ -483,7 +483,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Last Child Graph Pattern of this Pattern and removes it from this Pattern
+        /// Gets the Last Child Graph Pattern of this Pattern and removes it from this Pattern.
         /// </summary>
         internal GraphPattern LastChildPattern()
         {
@@ -493,7 +493,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Child Graph Patterns of this Pattern
+        /// Gets the Child Graph Patterns of this Pattern.
         /// </summary>
         public List<GraphPattern> ChildGraphPatterns
         {
@@ -501,7 +501,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Triple Patterns in this Pattern
+        /// Gets the Triple Patterns in this Pattern.
         /// </summary>
         public List<ITriplePattern> TriplePatterns
         {
@@ -509,7 +509,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether this Pattern can be simplified
+        /// Gets whether this Pattern can be simplified.
         /// </summary>
         internal bool IsSimplifiable
         {
@@ -517,7 +517,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether this Graph Pattern is a Sub-query which can be simplified
+        /// Gets whether this Graph Pattern is a Sub-query which can be simplified.
         /// </summary>
         public bool IsSubQuery
         {
@@ -525,10 +525,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Graph Pattern uses the Default Dataset
+        /// Gets whether the Graph Pattern uses the Default Dataset.
         /// </summary>
         /// <remarks>
-        /// Graph Patterns generally use the Default Dataset unless they are a GRAPH pattern or they contain a Triple Pattern, child Graph Pattern or a FILTER/BIND which does not use the default dataset
+        /// Graph Patterns generally use the Default Dataset unless they are a GRAPH pattern or they contain a Triple Pattern, child Graph Pattern or a FILTER/BIND which does not use the default dataset.
         /// </remarks>
         public bool UsesDefaultDataset
         {
@@ -542,7 +542,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of Filters that apply to this Graph Pattern which will have yet to be placed within the Graph Pattern
+        /// Gets the enumeration of Filters that apply to this Graph Pattern which will have yet to be placed within the Graph Pattern.
         /// </summary>
         public IEnumerable<ISparqlFilter> UnplacedFilters
         {
@@ -550,7 +550,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of LET assignments that are in this Graph Pattern which will be placed appropriately later
+        /// Gets the enumeration of LET assignments that are in this Graph Pattern which will be placed appropriately later.
         /// </summary>
         public IEnumerable<IAssignmentPattern> UnplacedAssignments
         {
@@ -558,7 +558,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Variables used in the Pattern
+        /// Gets the Variables used in the Pattern.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -573,7 +573,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the inline data (VALUES block if any)
+        /// Gets the inline data (VALUES block if any).
         /// </summary>
         public BindingsPattern InlineData
         {
@@ -585,7 +585,7 @@ namespace VDS.RDF.Query.Patterns
         #region Pattern Optimisation
 
         /// <summary>
-        /// Optimises the Graph Pattern using the current global optimiser
+        /// Optimises the Graph Pattern using the current global optimiser.
         /// </summary>
         public void Optimise()
         {
@@ -593,15 +593,15 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Optimises the Graph Pattern using the given optimiser
+        /// Optimises the Graph Pattern using the given optimiser.
         /// </summary>
-        /// <param name="optimiser">Query Optimiser</param>
+        /// <param name="optimiser">Query Optimiser.</param>
         /// <remarks>
         /// <para>
         /// <strong>Important:</strong> If a Pattern has already been optimized then calling this again is a no-op.
         /// </para>
         /// <para>
-        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary
+        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary.
         /// </para>
         /// </remarks>
         public void Optimise(IQueryOptimiser optimiser)
@@ -611,19 +611,19 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Optimises the Graph Pattern using the given optimiser and with the given variables
+        /// Optimises the Graph Pattern using the given optimiser and with the given variables.
         /// </summary>
-        /// <param name="optimiser">Query Optimiser</param>
-        /// <param name="vars">Variables</param>
+        /// <param name="optimiser">Query Optimiser.</param>
+        /// <param name="vars">Variables.</param>
         /// <remarks>
         /// <para>
         /// <strong>Important:</strong> If a Pattern has already been optimized then calling this again is a no-op.
         /// </para>
         /// <para>
-        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary
+        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary.
         /// </para>
         /// <para>
-        /// The <paramref name="vars">vars</paramref> parameter contains Variables mentioned in the parent Graph Pattern (if any) that can be used to guide optimisation of child graph patterns
+        /// The <paramref name="vars">vars</paramref> parameter contains Variables mentioned in the parent Graph Pattern (if any) that can be used to guide optimisation of child graph patterns.
         /// </para>
         /// </remarks>
         public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
@@ -637,7 +637,7 @@ namespace VDS.RDF.Query.Patterns
         #region String and Algebra Representations
 
         /// <summary>
-        /// Gets the String representation of the Graph Pattern
+        /// Gets the String representation of the Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -819,7 +819,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Algebra representation of the Graph Pattern
+        /// Gets the Algebra representation of the Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()

@@ -34,7 +34,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
-    /// An abstract dataset wrapper that can be used to wrap another dataset and just modify some functionality i.e. provides a decorator over an existing dataset
+    /// An abstract dataset wrapper that can be used to wrap another dataset and just modify some functionality i.e. provides a decorator over an existing dataset.
     /// </summary>
     public abstract class WrapperDataset
         : ISparqlDataset, IConfigurationSerializable, IThreadSafeDataset
@@ -42,14 +42,14 @@ namespace VDS.RDF.Query.Datasets
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
-        /// Underlying Dataset
+        /// Underlying Dataset.
         /// </summary>
         protected ISparqlDataset _dataset;
 
         /// <summary>
-        /// Creates a new wrapped dataset
+        /// Creates a new wrapped dataset.
         /// </summary>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="dataset">Dataset.</param>
         public WrapperDataset(ISparqlDataset dataset)
         {
             if (dataset == null) throw new ArgumentNullException("dataset");
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Lock used to ensure MRSW concurrency on the dataset when available
+        /// Gets the Lock used to ensure MRSW concurrency on the dataset when available.
         /// </summary>
         public ReaderWriterLockSlim Lock
         {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the underlying dataset
+        /// Gets the underlying dataset.
         /// </summary>
         public ISparqlDataset UnderlyingDataset
         {
@@ -88,43 +88,43 @@ namespace VDS.RDF.Query.Datasets
         #region ISparqlDataset Members
 
         /// <summary>
-        /// Sets the Active Graph for the dataset
+        /// Sets the Active Graph for the dataset.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="graphUris">Graph URIs.</param>
         public virtual void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
             _dataset.SetActiveGraph(graphUris);
         }
 
         /// <summary>
-        /// Sets the Active Graph for the dataset
+        /// Sets the Active Graph for the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public virtual void SetActiveGraph(Uri graphUri)
         {
             _dataset.SetActiveGraph(graphUri);
         }
 
         /// <summary>
-        /// Sets the Default Graph for the dataset
+        /// Sets the Default Graph for the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public virtual void SetDefaultGraph(Uri graphUri)
         {
             _dataset.SetDefaultGraph(graphUri);
         }
 
         /// <summary>
-        /// Sets the Default Graph for the dataset
+        /// Sets the Default Graph for the dataset.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="graphUris">Graph URIs.</param>
         public virtual void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
             _dataset.SetDefaultGraph(graphUris);
         }
 
         /// <summary>
-        /// Resets the Active Graph
+        /// Resets the Active Graph.
         /// </summary>
         public virtual void ResetActiveGraph()
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Resets the Default Graph
+        /// Resets the Default Graph.
         /// </summary>
         public virtual void ResetDefaultGraph()
         {
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Default Graph URIs
+        /// Gets the Default Graph URIs.
         /// </summary>
         public virtual IEnumerable<Uri> DefaultGraphUris
         {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Active Graph URIs
+        /// Gets the Active Graph URIs.
         /// </summary>
         public virtual IEnumerable<Uri> ActiveGraphUris
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the default graph is the union of all graphs
+        /// Gets whether the default graph is the union of all graphs.
         /// </summary>
         public virtual bool UsesUnionDefaultGraph
         {
@@ -173,27 +173,27 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Adds a Graph to the dataset
+        /// Adds a Graph to the dataset.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public virtual bool AddGraph(IGraph g)
         {
             return _dataset.AddGraph(g);
         }
 
         /// <summary>
-        /// Removes a Graph from the dataset
+        /// Removes a Graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public virtual bool RemoveGraph(Uri graphUri)
         {
             return _dataset.RemoveGraph(graphUri);
         }
 
         /// <summary>
-        /// Gets whether the dataset contains a given Graph
+        /// Gets whether the dataset contains a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public virtual bool HasGraph(Uri graphUri)
         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Graphs in the dataset
+        /// Gets the Graphs in the dataset.
         /// </summary>
         public virtual IEnumerable<IGraph> Graphs
         {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the URIs of Graphs in the dataset
+        /// Gets the URIs of Graphs in the dataset.
         /// </summary>
         public virtual IEnumerable<Uri> GraphUris
         {
@@ -223,9 +223,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets a Graph from the dataset
+        /// Gets a Graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public virtual IGraph this[Uri graphUri]
         {
@@ -236,9 +236,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets a modifiable graph from the dataset
+        /// Gets a modifiable graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public virtual IGraph GetModifiableGraph(Uri graphUri)
         {
@@ -246,7 +246,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the dataset has any triples
+        /// Gets whether the dataset has any triples.
         /// </summary>
         public virtual bool HasTriples
         {
@@ -257,9 +257,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the dataset contains a given triple
+        /// Gets whether the dataset contains a given triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
@@ -267,7 +267,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all triples from the dataset
+        /// Gets all triples from the dataset.
         /// </summary>
         public virtual IEnumerable<Triple> Triples
         {
@@ -278,9 +278,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets triples with a given subject
+        /// Gets triples with a given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
@@ -288,9 +288,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets triples with a given predicate
+        /// Gets triples with a given predicate.
         /// </summary>
-        /// <param name="pred">Predicate</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
@@ -298,9 +298,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets triples with a given object
+        /// Gets triples with a given object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
@@ -308,10 +308,10 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets triples with a given subject and predicate
+        /// Gets triples with a given subject and predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
@@ -319,10 +319,10 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets triples with a given subject and object
+        /// Gets triples with a given subject and object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
@@ -330,10 +330,10 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets triples with a given predicate and object
+        /// Gets triples with a given predicate and object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Flushes any changes to the dataset
+        /// Flushes any changes to the dataset.
         /// </summary>
         public virtual void Flush()
         {
@@ -349,7 +349,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Discards any changes to the dataset
+        /// Discards any changes to the dataset.
         /// </summary>
         public virtual void Discard()
         {
@@ -359,9 +359,9 @@ namespace VDS.RDF.Query.Datasets
         #endregion
 
         /// <summary>
-        /// Serializes the Configuration of the Dataset
+        /// Serializes the Configuration of the Dataset.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             if (_dataset is IConfigurationSerializable)

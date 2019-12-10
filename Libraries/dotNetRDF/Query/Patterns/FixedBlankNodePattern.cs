@@ -30,16 +30,16 @@ using VDS.RDF.Query.Construct;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Pattern which matches the Blank Node with the given Internal ID regardless of the Graph the nodes come from
+    /// Pattern which matches the Blank Node with the given Internal ID regardless of the Graph the nodes come from.
     /// </summary>
     public class FixedBlankNodePattern : PatternItem
     {
         private String _id;
 
         /// <summary>
-        /// Creates a new Fixed Blank Node Pattern
+        /// Creates a new Fixed Blank Node Pattern.
         /// </summary>
-        /// <param name="id">ID</param>
+        /// <param name="id">ID.</param>
         public FixedBlankNodePattern(String id)
         {
             if (id.StartsWith("_:"))
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Blank Node ID
+        /// Gets the Blank Node ID.
         /// </summary>
         public String InternalID
         {
@@ -64,10 +64,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Checks whether the pattern accepts the given Node
+        /// Checks whether the pattern accepts the given Node.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="obj">Node to test</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="obj">Node to test.</param>
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
@@ -82,9 +82,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns a Blank Node with a fixed ID scoped to whichever graph is provided
+        /// Returns a Blank Node with a fixed ID scoped to whichever graph is provided.
         /// </summary>
-        /// <param name="context">Construct Context</param>
+        /// <param name="context">Construct Context.</param>
         protected internal override INode Construct(ConstructContext context)
         {
             if (context.Graph != null)
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of the Pattern Item
+        /// Gets the String representation of the Pattern Item.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Evaluation Context for RDFa Parsers
+    /// Evaluation Context for RDFa Parsers.
     /// </summary>
     public class RdfAEvaluationContext
     {
@@ -42,9 +42,9 @@ namespace VDS.RDF.Parsing.Contexts
         private IRdfAVocabulary _localVocabularly;
 
         /// <summary>
-        /// Creates a new RDFa Evaluation Context
+        /// Creates a new RDFa Evaluation Context.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
+        /// <param name="baseUri">Base URI.</param>
         public RdfAEvaluationContext(Uri baseUri)
         {
             _baseUri = baseUri;
@@ -52,10 +52,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new RDFa Evaluation Context
+        /// Creates a new RDFa Evaluation Context.
         /// </summary>
-        /// <param name="baseUri">Base URI</param>
-        /// <param name="nsmap">Namepace Map</param>
+        /// <param name="baseUri">Base URI.</param>
+        /// <param name="nsmap">Namepace Map.</param>
         public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
             : this(baseUri)
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Base URI
+        /// Gets/Sets the Base URI.
         /// </summary>
         public Uri BaseUri
         {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Parent Subject
+        /// Gets/Sets the Parent Subject.
         /// </summary>
         public INode ParentSubject
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Parent Object
+        /// Gets/Sets the Parent Object.
         /// </summary>
         public INode ParentObject
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Namespace Map
+        /// Gets the Namespace Map.
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Language
+        /// Gets/Sets the Language.
         /// </summary>
         public String Language
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the list of incomplete Triples
+        /// Gets the list of incomplete Triples.
         /// </summary>
         public List<IncompleteTriple> IncompleteTriples
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Local Vocabulary
+        /// Gets/Sets the Local Vocabulary.
         /// </summary>
         public IRdfAVocabulary LocalVocabulary
         {

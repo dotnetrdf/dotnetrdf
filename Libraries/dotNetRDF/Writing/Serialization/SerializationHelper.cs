@@ -38,7 +38,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing.Serialization
 {
     /// <summary>
-    /// Helper Class for use in serialization and deserialization
+    /// Helper Class for use in serialization and deserialization.
     /// </summary>
     static class SerializationHelper
     {

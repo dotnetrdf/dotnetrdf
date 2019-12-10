@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which simply counts the Triples and Graphs
+    /// A RDF Handler which simply counts the Triples and Graphs.
     /// </summary>
     public class StoreCountHandler : BaseRdfHandler
     {
@@ -38,13 +38,13 @@ namespace VDS.RDF.Parsing.Handlers
         private HashSet<String> _graphs;
 
         /// <summary>
-        /// Creates a new Store Count Handler
+        /// Creates a new Store Count Handler.
         /// </summary>
         public StoreCountHandler()
             : base(new NodeFactory()) { }
 
         /// <summary>
-        /// Starts RDF Handling by reseting the counters
+        /// Starts RDF Handling by reseting the counters.
         /// </summary>
         protected override void StartRdfInternal()
         {
@@ -53,9 +53,9 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples/Quads by counting the Triples and distinct Graph URIs
+        /// Handles Triples/Quads by counting the Triples and distinct Graph URIs.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the count of Triples
+        /// Gets the count of Triples.
         /// </summary>
         public int TripleCount
         {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets the count of distinct Graph URIs
+        /// Gets the count of distinct Graph URIs.
         /// </summary>
         public int GraphCount
         {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Gets that this Handler accepts all Triples
+        /// Gets that this Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll
         {

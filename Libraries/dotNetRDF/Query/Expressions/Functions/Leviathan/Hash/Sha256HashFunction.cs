@@ -30,15 +30,15 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
 {
     /// <summary>
-    /// Represents the Leviathan lfn:sha256hash() function
+    /// Represents the Leviathan lfn:sha256hash() function.
     /// </summary>
     public class Sha256HashFunction
         : BaseHashFunction
     {
         /// <summary>
-        /// Creates a new Leviathan SHA 256 Hash function
+        /// Creates a new Leviathan SHA 256 Hash function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public Sha256HashFunction(ISparqlExpression expr)
 #if NETCORE
             :base(expr, SHA256.Create()) { }
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
             : base(expr, new SHA256Managed()) { }
 #endif
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -66,9 +66,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

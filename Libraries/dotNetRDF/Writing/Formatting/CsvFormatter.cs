@@ -30,22 +30,22 @@ using System.Linq;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for generating CSV
+    /// Formatter for generating CSV.
     /// </summary>
     public class CsvFormatter 
         : BaseFormatter
     {
         /// <summary>
-        /// Creates a new CSV Formatter
+        /// Creates a new CSV Formatter.
         /// </summary>
         public CsvFormatter()
             : base("CSV") { }
 
         /// <summary>
-        /// Formats URIs for CSV output
+        /// Formats URIs for CSV output.
         /// </summary>
-        /// <param name="u">URI</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="u">URI.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats Literals for CSV output
+        /// Formats Literals for CSV output.
         /// </summary>
-        /// <param name="l">Literal</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="l">Literal.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {

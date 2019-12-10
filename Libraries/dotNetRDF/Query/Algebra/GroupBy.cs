@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Grouping
+    /// Represents a Grouping.
     /// </summary>
     public class GroupBy
         : IUnaryOperator
@@ -44,11 +44,11 @@ namespace VDS.RDF.Query.Algebra
         private readonly List<SparqlVariable> _aggregates = new List<SparqlVariable>();
 
         /// <summary>
-        /// Creates a new Group By
+        /// Creates a new Group By.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="grouping">Grouping to use</param>
-        /// <param name="aggregates">Aggregates to calculate</param>
+        /// <param name="pattern">Pattern.</param>
+        /// <param name="grouping">Grouping to use.</param>
+        /// <param name="aggregates">Aggregates to calculate.</param>
         public GroupBy(ISparqlAlgebra pattern, ISparqlGroupBy grouping, IEnumerable<SparqlVariable> aggregates)
         {
             _pattern = pattern;
@@ -57,9 +57,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates a Group By by generating a <see cref="GroupMultiset">GroupMultiset</see> from the Input Multiset
+        /// Evaluates a Group By by generating a <see cref="GroupMultiset">GroupMultiset</see> from the Input Multiset.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -160,12 +160,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -176,10 +176,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Grouping that is used
+        /// Gets the Grouping that is used.
         /// </summary>
         /// <remarks>
-        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a GROUP BY clause then that is applied rather than the clause with which the GroupBy algebra is instantiated
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a GROUP BY clause then that is applied rather than the clause with which the GroupBy algebra is instantiated.
         /// </remarks>
         public ISparqlGroupBy Grouping
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Aggregates that will be applied
+        /// Gets the Aggregates that will be applied.
         /// </summary>
         public IEnumerable<SparqlVariable> Aggregates
         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the 
+        /// Gets the String representation of the. 
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -221,19 +221,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an exception since GroupBy() cannot be converted to a Graph Pattern
+        /// Throws an exception since GroupBy() cannot be converted to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since GroupBy() cannot be converted to a GraphPattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since GroupBy() cannot be converted to a GraphPattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("GroupBy() cannot be converted to a GraphPattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

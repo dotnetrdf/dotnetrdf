@@ -39,7 +39,7 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// A Class for connecting to a remote SPARQL Endpoint and executing Queries against it
+    /// A Class for connecting to a remote SPARQL Endpoint and executing Queries against it.
     /// </summary>
     public class SparqlRemoteEndpoint 
         : BaseEndpoint
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query
         #region Constructors
 
         /// <summary>
-        /// Empty Constructor for use by derived classes
+        /// Empty Constructor for use by derived classes.
         /// </summary>
         protected SparqlRemoteEndpoint()
         {
@@ -61,17 +61,17 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
         public SparqlRemoteEndpoint(Uri endpointUri)
             : base(endpointUri) { }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph Uri
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph Uri.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, String defaultGraphUri)
             : this(endpointUri)
         {
@@ -79,10 +79,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint Uri using the given Default Graph Uri
+        /// Creates a new SPARQL Endpoint for the given Endpoint Uri using the given Default Graph Uri.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, Uri defaultGraphUri)
             : this(endpointUri)
         {
@@ -93,11 +93,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, String defaultGraphUri, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
@@ -105,11 +105,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, Uri defaultGraphUri, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
@@ -117,11 +117,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUri">Default Graph URI to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, Uri defaultGraphUri, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
@@ -129,10 +129,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris)
             : this(endpointUri)
         {
@@ -140,10 +140,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris)
             : this(endpointUri)
         {
@@ -151,11 +151,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
@@ -163,11 +163,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
@@ -175,11 +175,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris, IEnumerable<String> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
@@ -187,11 +187,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI
+        /// Creates a new SPARQL Endpoint for the given Endpoint URI using the given Default Graph URI.
         /// </summary>
-        /// <param name="endpointUri">Remote Endpoint URI</param>
-        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint</param>
-        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint</param>
+        /// <param name="endpointUri">Remote Endpoint URI.</param>
+        /// <param name="defaultGraphUris">Default Graph URIs to use when Querying the Endpoint.</param>
+        /// <param name="namedGraphUris">Named Graph URIs to use when Querying the Endpoint.</param>
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query
         #region Properties
 
         /// <summary>
-        /// Gets the Default Graph URIs for Queries made to the SPARQL Endpoint
+        /// Gets the Default Graph URIs for Queries made to the SPARQL Endpoint.
         /// </summary>
         public List<String> DefaultGraphs
         {
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the List of Named Graphs used in requests
+        /// Gets the List of Named Graphs used in requests.
         /// </summary>
         public List<String> NamedGraphs
         {
@@ -225,11 +225,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Accept Header sent with ASK/SELECT queries
+        /// Gets/Sets the Accept Header sent with ASK/SELECT queries.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Can be used to workaround buggy endpoints which don't like the broad Accept Header that dotNetRDF sends by default.  If not set or explicitly set to null the library uses the default header generated by <see cref="MimeTypesHelper.HttpSparqlAcceptHeader"/>
+        /// Can be used to workaround buggy endpoints which don't like the broad Accept Header that dotNetRDF sends by default.  If not set or explicitly set to null the library uses the default header generated by <see cref="MimeTypesHelper.HttpSparqlAcceptHeader"/>.
         /// </para>
         /// </remarks>
         public String ResultsAcceptHeader
@@ -245,11 +245,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Accept Header sent with CONSTRUCT/DESCRIBE queries
+        /// Gets/Sets the Accept Header sent with CONSTRUCT/DESCRIBE queries.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Can be used to workaround buggy endpoints which don't like the broad Accept Header that dotNetRDF sends by default.  If not set or explicitly set to null the library uses the default header generated by <see cref="MimeTypesHelper.HttpAcceptHeader"/>
+        /// Can be used to workaround buggy endpoints which don't like the broad Accept Header that dotNetRDF sends by default.  If not set or explicitly set to null the library uses the default header generated by <see cref="MimeTypesHelper.HttpAcceptHeader"/>.
         /// </para>
         /// </remarks>
         public String RdfAcceptHeader
@@ -269,10 +269,10 @@ namespace VDS.RDF.Query
         #region Query Methods
 
         /// <summary>
-        /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
+        /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <returns>A SPARQL Result Set</returns>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
+        /// <returns>A SPARQL Result Set.</returns>
         public virtual SparqlResultSet QueryWithResultSet(String sparqlQuery)
         {
             // Ready a ResultSet then invoke the other overload
@@ -282,10 +282,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
+        /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
         public virtual void QueryWithResultSet(ISparqlResultsHandler handler, String sparqlQuery)
         {
             try
@@ -320,10 +320,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <returns>RDF Graph</returns>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
+        /// <returns>RDF Graph.</returns>
         public virtual IGraph QueryWithResultGraph(String sparqlQuery)
         {
             // Set up an Empty Graph then invoke the other overload
@@ -334,10 +334,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
         public virtual void QueryWithResultGraph(IRdfHandler handler, String sparqlQuery)
         {
             try
@@ -366,9 +366,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query to a SPARQL Endpoint and returns the raw Response
+        /// Makes a Query to a SPARQL Endpoint and returns the raw Response.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
         /// <returns></returns>
         public virtual HttpWebResponse QueryRaw(String sparqlQuery)
         {
@@ -387,10 +387,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query to a SPARQL Endpoint and returns the raw Response
+        /// Makes a Query to a SPARQL Endpoint and returns the raw Response.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <param name="mimeTypes">MIME Types to use for the Accept Header</param>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
+        /// <param name="mimeTypes">MIME Types to use for the Accept Header.</param>
         /// <returns></returns>
         public virtual HttpWebResponse QueryRaw(String sparqlQuery, String[] mimeTypes)
         {
@@ -409,10 +409,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
+        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <returns>A Sparql Result Set</returns>
+        /// <param name="sparqlQuery">SPARQL Query String.</param>
+        /// <returns>A Sparql Result Set.</returns>
         /// <remarks>
         /// <para>
         /// Allows for implementation of asynchronous querying.  Note that the overloads of QueryWithResultSet() and QueryWithResultGraph() that take callbacks are already implemented asynchronously so you may wish to use those instead if you don't need to explicitly invoke and wait on an async operation.
@@ -421,11 +421,11 @@ namespace VDS.RDF.Query
         public delegate SparqlResultSet AsyncQueryWithResultSet(String sparqlQuery);
 
         /// <summary>
-        /// Delegate for making a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// Delegate for making a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
-        /// <returns>RDF Graph</returns>
-        /// <remarks>Allows for implementation of asynchronous querying</remarks>
+        /// <param name="sparqlQuery">Sparql Query String.</param>
+        /// <returns>RDF Graph.</returns>
+        /// <remarks>Allows for implementation of asynchronous querying.</remarks>
         /// <remarks>
         /// <para>
         /// Allows for implementation of asynchronous querying.  Note that the overloads of QueryWithResultSet() and QueryWithResultGraph() that take callbacks are already implemented asynchronously so you may wish to use those instead if you don't need to explicitly invoke and wait on an async operation.
@@ -434,10 +434,10 @@ namespace VDS.RDF.Query
         public delegate IGraph AsyncQueryWithResultGraph(String sparqlQuery);
 
         /// <summary>
-        /// Internal method which builds the Query Uri and executes it via GET/POST as appropriate
+        /// Internal method which builds the Query Uri and executes it via GET/POST as appropriate.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query</param>
-        /// <param name="acceptHeader">Accept Header to use for the request</param>
+        /// <param name="sparqlQuery">Sparql Query.</param>
+        /// <param name="acceptHeader">Accept Header to use for the request.</param>
         /// <returns></returns>
         private HttpWebResponse QueryInternal(String sparqlQuery, String acceptHeader)
         {
@@ -515,12 +515,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Internal Helper Method which executes the HTTP Requests against the Sparql Endpoint
+        /// Internal Helper Method which executes the HTTP Requests against the Sparql Endpoint.
         /// </summary>
-        /// <param name="target">Uri to make Request to</param>
-        /// <param name="postData">Data that is to be POSTed to the Endpoint in <strong>application/x-www-form-urlencoded</strong> format</param>
-        /// <param name="accept">The Accept Header that should be used</param>
-        /// <returns>HTTP Response</returns>
+        /// <param name="target">Uri to make Request to.</param>
+        /// <param name="postData">Data that is to be POSTed to the Endpoint in <strong>application/x-www-form-urlencoded</strong> format.</param>
+        /// <param name="accept">The Accept Header that should be used.</param>
+        /// <returns>HTTP Response.</returns>
         private HttpWebResponse ExecuteQuery(Uri target, String postData, String accept)
         {
             // Expect errors in this function to be handled by the calling function
@@ -561,11 +561,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
+        /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="query">SPARQL Query String</param>
-        /// <param name="callback">Callback to invoke when the query completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL Query String.</param>
+        /// <param name="callback">Callback to invoke when the query completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void QueryWithResultSet(String query, SparqlResultsCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
@@ -654,12 +654,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
+        /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries.
         /// </summary>
-        /// <param name="query">SPARQL Query String</param>
-        /// <param name="handler">Results Handler</param>
-        /// <param name="callback">Callback to invoke when the query completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL Query String.</param>
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="callback">Callback to invoke when the query completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void QueryWithResultSet(ISparqlResultsHandler handler, String query, QueryCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
@@ -742,11 +742,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query asynchronously where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// Makes a Query asynchronously where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries.
         /// </summary>
-        /// <param name="query">SPARQL Query String</param>
-        /// <param name="callback">Callback to invoke when the query completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL Query String.</param>
+        /// <param name="callback">Callback to invoke when the query completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void QueryWithResultGraph(String query, GraphCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
@@ -832,12 +832,12 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query asynchronously where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// Makes a Query asynchronously where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries.
         /// </summary>
-        /// <param name="query">SPARQL Query String</param>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="callback">Callback to invoke when the query completes</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL Query String.</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="callback">Callback to invoke when the query completes.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public void QueryWithResultGraph(IRdfHandler handler, String query, QueryCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
@@ -916,9 +916,9 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Serializes the Endpoint's Configuration
+        /// Serializes the Endpoint's Configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpoint = context.NextSubject;

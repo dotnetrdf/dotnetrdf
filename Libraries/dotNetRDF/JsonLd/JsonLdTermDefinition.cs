@@ -32,58 +32,58 @@ using System.Text;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Represents a term definition in a context
+    /// Represents a term definition in a context.
     /// </summary>
     public class JsonLdTermDefinition
     {
         /// <summary>
-        /// Get or set the IRI mapping for the term
+        /// Get or set the IRI mapping for the term.
         /// </summary>
         public string IriMapping { get; set; }
 
         /// <summary>
-        /// Indicates if this term represents a reverse property
+        /// Indicates if this term represents a reverse property.
         /// </summary>
         public bool Reverse { get; set; }
 
         /// <summary>
-        /// Get or set the type mapping for this term definition
+        /// Get or set the type mapping for this term definition.
         /// </summary>
-        /// <remarks>May be null. MUST be null if LanguageMapping is not null</remarks>
+        /// <remarks>May be null. MUST be null if LanguageMapping is not null.</remarks>
         public string TypeMapping { get; set; }
 
         private string _languageMapping;
         /// <summary>
-        /// Get or set the language mapping for this term definition
+        /// Get or set the language mapping for this term definition.
         /// </summary>
-        /// <remarks>May be null. MUST be null if TypeMapping is not null</remarks>
+        /// <remarks>May be null. MUST be null if TypeMapping is not null.</remarks>
         public string LanguageMapping {
             get => _languageMapping;
             set { _languageMapping = value; HasLanguageMapping = true; }
         }
 
         /// <summary>
-        /// Boolean flag indicating if this term definition specifies a language mapping
+        /// Boolean flag indicating if this term definition specifies a language mapping.
         /// </summary>
         public bool HasLanguageMapping { get; private set; }
 
         /// <summary>
-        /// Get or set the context specified for this term definition
+        /// Get or set the context specified for this term definition.
         /// </summary>
         public JToken LocalContext { get; set; }
 
         /// <summary>
-        /// Get or set the container mapping for this term definition
+        /// Get or set the container mapping for this term definition.
         /// </summary>
         public JsonLdContainer ContainerMapping { get; set; }
 
         /// <summary>
-        /// Get or set the nest property for this term definition
+        /// Get or set the nest property for this term definition.
         /// </summary>
         public string Nest { get; set; }
 
         /// <summary>
-        /// Create a clone of this term defintion
+        /// Create a clone of this term defintion.
         /// </summary>
         /// <returns></returns>
         public JsonLdTermDefinition Clone()

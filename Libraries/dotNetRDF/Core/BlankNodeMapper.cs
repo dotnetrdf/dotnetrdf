@@ -31,7 +31,7 @@ using System.Threading;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Mapper class which creates Blank Node IDs and ensures that auto-assigned and user specified IDs don't collide
+    /// Mapper class which creates Blank Node IDs and ensures that auto-assigned and user specified IDs don't collide.
     /// </summary>
     public class BlankNodeMapper
     {
@@ -42,15 +42,15 @@ namespace VDS.RDF
         private String _prefix = "autos";
 
         /// <summary>
-        /// Creates a new Blank Node Mapper
+        /// Creates a new Blank Node Mapper.
         /// </summary>
         public BlankNodeMapper()
         { }
 
         /// <summary>
-        /// Creates a new Blank Node Mapper that uses a custom Prefix
+        /// Creates a new Blank Node Mapper that uses a custom Prefix.
         /// </summary>
-        /// <param name="prefix">Prefix</param>
+        /// <param name="prefix">Prefix.</param>
         public BlankNodeMapper(String prefix)
         {
             if (prefix == null || prefix.EndsWith(String.Empty)) prefix = "autos";
@@ -58,7 +58,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the next available auto-assigned Blank Node ID
+        /// Gets the next available auto-assigned Blank Node ID.
         /// </summary>
         /// <returns></returns>
         public String GetNextID()
@@ -78,9 +78,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks that an ID can be used as a Blank Node ID remapping it to another ID if necessary
+        /// Checks that an ID can be used as a Blank Node ID remapping it to another ID if necessary.
         /// </summary>
-        /// <param name="id">ID to be checked</param>
+        /// <param name="id">ID to be checked.</param>
         /// <remarks>
         /// If the ID is not known it is added to the ID maps.  If the ID is known but is user-assigned then this can be used fine.  If the ID is known and was auto-assigned then it has to be remapped to a different ID.
         /// </remarks>
@@ -119,10 +119,10 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Mapper class which remaps Blank Node IDs which aren't valid as-is in a given serialization to a new ID
+    /// Mapper class which remaps Blank Node IDs which aren't valid as-is in a given serialization to a new ID.
     /// </summary>
     /// <remarks>
-    /// This also has to take care of the fact that it's possible that these remapped IDs then collide with existing valid IDs in which case these also have to be remapped
+    /// This also has to take care of the fact that it's possible that these remapped IDs then collide with existing valid IDs in which case these also have to be remapped.
     /// </remarks>
     public class BlankNodeOutputMapper
     {
@@ -131,18 +131,18 @@ namespace VDS.RDF
         private int _nextid = 1;
 
         /// <summary>
-        /// Creates a new Blank Node ID mapper
+        /// Creates a new Blank Node ID mapper.
         /// </summary>
-        /// <param name="validator">Function which determines whether IDs are valid or not</param>
+        /// <param name="validator">Function which determines whether IDs are valid or not.</param>
         public BlankNodeOutputMapper(Func<String, bool> validator)
         {
             _validator = validator;
         }
 
         /// <summary>
-        /// Takes a ID, validates it and returns either the ID or an appropriate remapped ID
+        /// Takes a ID, validates it and returns either the ID or an appropriate remapped ID.
         /// </summary>
-        /// <param name="id">ID to map</param>
+        /// <param name="id">ID to map.</param>
         /// <returns></returns>
         public String GetOutputID(String id)
         {
@@ -187,7 +187,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Helper function which generates the new IDs
+        /// Internal Helper function which generates the new IDs.
         /// </summary>
         /// <returns></returns>
         private String GetNextID()
@@ -205,7 +205,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Records Blank Node assigments
+    /// Records Blank Node assigments.
     /// </summary>
     struct BlankNodeIDAssigment
     {
@@ -213,10 +213,10 @@ namespace VDS.RDF
         private bool _auto;
 
         /// <summary>
-        /// Creates a new Blank Node ID Assigment Record
+        /// Creates a new Blank Node ID Assigment Record.
         /// </summary>
-        /// <param name="id">ID to assign</param>
-        /// <param name="auto">Was the ID auto-assigned</param>
+        /// <param name="id">ID to assign.</param>
+        /// <param name="auto">Was the ID auto-assigned.</param>
         public BlankNodeIDAssigment(String id, bool auto)
         {
             _id = id;
@@ -224,7 +224,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Assigned ID
+        /// Assigned ID.
         /// </summary>
         public String ID
         {
@@ -235,7 +235,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Whether the ID is auto-assigned
+        /// Whether the ID is auto-assigned.
         /// </summary>
         public bool AutoAssigned
         {
@@ -246,9 +246,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns whether a given Object is equal to this Blank Node ID assignment
+        /// Returns whether a given Object is equal to this Blank Node ID assignment.
         /// </summary>
-        /// <param name="obj">Object to test</param>
+        /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

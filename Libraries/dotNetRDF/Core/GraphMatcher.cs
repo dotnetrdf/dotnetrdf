@@ -31,14 +31,14 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Implements a Graph Isomorphism Algorithm
+    /// Implements a Graph Isomorphism Algorithm.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The algorithm used to determine Graph equality is based in part on a Iterative Vertex Classification Algorithm described in a Technical Report from HP by Jeremy J Carroll - <a href="http://www.hpl.hp.com/techreports/2001/HPL-2001-293.html">Matching RDF Graphs</a> but has been expanded upon significantly to use a variety of techniques.
     /// </para>
     /// <para>
-    /// Graph Equality is determined according to the following algorithm, we refer to the first graph as the <em>Source Graph</em> and the second graph as the <em>Target Graph</em>:
+    /// Graph Equality is determined according to the following algorithm, we refer to the first graph as the <em>Source Graph</em> and the second graph as the <em>Target Graph</em>:.
     /// </para>
     /// <ol>
     /// <li>If both graphs are null they are considered equal</li>
@@ -98,10 +98,10 @@ namespace VDS.RDF
         private HashSet<Triple> _targetTriples;
 
         /// <summary>
-        /// Compares two Graphs for equality
+        /// Compares two Graphs for equality.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="h">Graph</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="h">Graph.</param>
         /// <returns></returns>
         
         public bool Equals(IGraph g, IGraph h)
@@ -315,14 +315,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Uses a series of Rules to attempt to generate a mapping without the need for brute force guessing
+        /// Uses a series of Rules to attempt to generate a mapping without the need for brute force guessing.
         /// </summary>
-        /// <param name="g">1st Graph</param>
-        /// <param name="h">2nd Graph</param>
-        /// <param name="gNodes">1st Graph Node classification</param>
-        /// <param name="hNodes">2nd Graph Node classification</param>
-        /// <param name="gDegrees">1st Graph Degree classification</param>
-        /// <param name="hDegrees">2nd Graph Degree classification</param>
+        /// <param name="g">1st Graph.</param>
+        /// <param name="h">2nd Graph.</param>
+        /// <param name="gNodes">1st Graph Node classification.</param>
+        /// <param name="hNodes">2nd Graph Node classification.</param>
+        /// <param name="gDegrees">1st Graph Degree classification.</param>
+        /// <param name="hDegrees">2nd Graph Degree classification.</param>
         /// <returns></returns>
         private bool TryRulesBasedMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, Dictionary<int, int> gDegrees, Dictionary<int, int> hDegrees)
         {
@@ -736,14 +736,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Uses a divide and conquer based approach to generate a mapping without the need for brute force guessing
+        /// Uses a divide and conquer based approach to generate a mapping without the need for brute force guessing.
         /// </summary>
-        /// <param name="g">1st Graph</param>
-        /// <param name="h">2nd Graph</param>
-        /// <param name="gNodes">1st Graph Node classification</param>
-        /// <param name="hNodes">2nd Graph Node classification</param>
-        /// <param name="sourceDependencies">Dependencies in the 1st Graph</param>
-        /// <param name="targetDependencies">Dependencies in the 2nd Graph</param>
+        /// <param name="g">1st Graph.</param>
+        /// <param name="h">2nd Graph.</param>
+        /// <param name="gNodes">1st Graph Node classification.</param>
+        /// <param name="hNodes">2nd Graph Node classification.</param>
+        /// <param name="sourceDependencies">Dependencies in the 1st Graph.</param>
+        /// <param name="targetDependencies">Dependencies in the 2nd Graph.</param>
         /// <returns></returns>
         private bool TryDivideAndConquerMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies)
         {
@@ -914,14 +914,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Generates and Tests all possibilities in a brute force manner
+        /// Generates and Tests all possibilities in a brute force manner.
         /// </summary>
-        /// <param name="g">1st Graph</param>
-        /// <param name="h">2nd Graph</param>
-        /// <param name="gNodes">1st Graph Node classification</param>
-        /// <param name="hNodes">2nd Graph Node classification</param>
-        /// <param name="sourceDependencies">Dependencies in the 1st Graph</param>
-        /// <param name="targetDependencies">Dependencies in the 2nd Graph</param>
+        /// <param name="g">1st Graph.</param>
+        /// <param name="h">2nd Graph.</param>
+        /// <param name="gNodes">1st Graph Node classification.</param>
+        /// <param name="hNodes">2nd Graph Node classification.</param>
+        /// <param name="sourceDependencies">Dependencies in the 1st Graph.</param>
+        /// <param name="targetDependencies">Dependencies in the 2nd Graph.</param>
         /// <returns></returns>
         private bool TryBruteForceMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies)
         {
@@ -987,13 +987,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for brute forcing the possible mappings
+        /// Helper method for brute forcing the possible mappings.
         /// </summary>
-        /// <param name="baseMapping">Base Mapping</param>
-        /// <param name="possibleMappings">Possible Mappings</param>
+        /// <param name="baseMapping">Base Mapping.</param>
+        /// <param name="possibleMappings">Possible Mappings.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The base mapping at the time of the initial call should contain known good mappings
+        /// The base mapping at the time of the initial call should contain known good mappings.
         /// </remarks>
         public static IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings)
         {
@@ -1014,14 +1014,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for brute forcing the possible mappings
+        /// Helper method for brute forcing the possible mappings.
         /// </summary>
-        /// <param name="baseMapping">Base Mapping</param>
-        /// <param name="possibleMappings">Possible Mappings</param>
-        /// <param name="x">Node to consider for mapping</param>
+        /// <param name="baseMapping">Base Mapping.</param>
+        /// <param name="possibleMappings">Possible Mappings.</param>
+        /// <param name="x">Node to consider for mapping.</param>
         /// <returns></returns>
         /// <remarks>
-        /// The base mapping contains known good mappings
+        /// The base mapping contains known good mappings.
         /// </remarks>
         private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x, int targetCount)
         {
@@ -1053,7 +1053,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Blank Node Mapping found between the Graphs (if one was found)
+        /// Gets the Blank Node Mapping found between the Graphs (if one was found).
         /// </summary>
         public Dictionary<INode, INode> Mapping
         {
@@ -1065,7 +1065,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Represents a Pair of Nodes that occur in the same Triple
+    /// Represents a Pair of Nodes that occur in the same Triple.
     /// </summary>
     class MappingPair
     {

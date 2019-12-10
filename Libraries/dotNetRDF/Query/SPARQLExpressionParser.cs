@@ -52,7 +52,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Internal Class which parses SPARQL Expressions into Expression Trees
+    /// Internal Class which parses SPARQL Expressions into Expression Trees.
     /// </summary>
     class SparqlExpressionParser
     {
@@ -64,29 +64,29 @@ namespace VDS.RDF.Query
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
-        /// Creates a new SPARQL Expression Parser
+        /// Creates a new SPARQL Expression Parser.
         /// </summary>
         public SparqlExpressionParser() { }
 
         /// <summary>
-        /// Creates a new SPARQL Expression Parser which has a reference back to a Query Parser
+        /// Creates a new SPARQL Expression Parser which has a reference back to a Query Parser.
         /// </summary>
-        /// <param name="parser">Query Parser</param>
+        /// <param name="parser">Query Parser.</param>
         public SparqlExpressionParser(SparqlQueryParser parser)
             : this(parser, false) { }
 
         /// <summary>
-        /// Creates a new SPARQL Expression Parser
+        /// Creates a new SPARQL Expression Parser.
         /// </summary>
-        /// <param name="allowAggregates">Whether Aggregates are allowed in Expressions</param>
+        /// <param name="allowAggregates">Whether Aggregates are allowed in Expressions.</param>
         public SparqlExpressionParser(bool allowAggregates)
             : this(null, allowAggregates) { }
 
         /// <summary>
-        /// Creates a new SPARQL Expression Parser which has a reference back to a Query Parser
+        /// Creates a new SPARQL Expression Parser which has a reference back to a Query Parser.
         /// </summary>
-        /// <param name="parser">Query Parser</param>
-        /// <param name="allowAggregates">Whether Aggregates are allowed in Expressions</param>
+        /// <param name="parser">Query Parser.</param>
+        /// <param name="allowAggregates">Whether Aggregates are allowed in Expressions.</param>
         public SparqlExpressionParser(SparqlQueryParser parser, bool allowAggregates)
         {
             _parser = parser;
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Base Uri used to resolve URIs and QNames
+        /// Sets the Base Uri used to resolve URIs and QNames.
         /// </summary>
         public Uri BaseUri
         {
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Namespace Map used to resolve QNames
+        /// Sets the Namespace Map used to resolve QNames.
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets whether Aggregates are permitted in Expressions
+        /// Gets/Sets whether Aggregates are permitted in Expressions.
         /// </summary>
         public bool AllowAggregates
         {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Syntax that should be supported
+        /// Gets/Sets the Syntax that should be supported.
         /// </summary>
         public SparqlQuerySyntax SyntaxMode
         {
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the Query Parser that the Expression Parser can call back into when needed
+        /// Sets the Query Parser that the Expression Parser can call back into when needed.
         /// </summary>
         public SparqlQueryParser QueryParser
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the locally scoped custom expression factories
+        /// Gets/Sets the locally scoped custom expression factories.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
@@ -175,9 +175,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Parses a SPARQL Expression
+        /// Parses a SPARQL Expression.
         /// </summary>
-        /// <param name="tokens">Tokens that the Expression should be parsed from</param>
+        /// <param name="tokens">Tokens that the Expression should be parsed from.</param>
         /// <returns></returns>
         public ISparqlExpression Parse(Queue<IToken> tokens)
         {
@@ -1501,10 +1501,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Helper method for raising informative standardised Parser Errors
+        /// Helper method for raising informative standardised Parser Errors.
         /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="t">The Token that is the cause of the Error</param>
+        /// <param name="msg">The Error Message.</param>
+        /// <param name="t">The Token that is the cause of the Error.</param>
         /// <returns></returns>
         private RdfParseException Error(String msg, IToken t)
         {

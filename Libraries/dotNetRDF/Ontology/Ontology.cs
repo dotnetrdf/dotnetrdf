@@ -31,20 +31,20 @@ using System.Linq;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Represents the meta-information about an Ontology
+    /// Represents the meta-information about an Ontology.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class Ontology : OntologyResource
     {
         /// <summary>
-        /// Creates a new Ontology for the given resource
+        /// Creates a new Ontology for the given resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
-        /// <param name="graph">Graph</param>
+        /// <param name="resource">Resource.</param>
+        /// <param name="graph">Graph.</param>
         public Ontology(INode resource, IGraph graph)
             : base(resource, graph)
         {
@@ -58,9 +58,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology
+        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddBackwardsCompatibleWith(INode resource)
         {
@@ -68,9 +68,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology
+        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddBackwardsCompatibleWith(Uri resource)
         {
@@ -78,9 +78,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology
+        /// Adds a new <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddBackwardsCompatibleWith(OntologyResource resource)
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>owl:backwardsCompatibleWith</em> triples for this Ontology
+        /// Removes all <em>owl:backwardsCompatibleWith</em> triples for this Ontology.
         /// </summary>
         /// <returns></returns>
         public bool ClearBackwardsCompatibleWith()
@@ -97,9 +97,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology
+        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveBackwardsCompatibleWith(INode resource)
         {
@@ -107,9 +107,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology
+        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveBackwardsCompatibleWith(Uri resource)
         {
@@ -117,9 +117,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology
+        /// Removes a <em>owl:backwardsCompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveBackwardsCompatibleWith(OntologyResource resource)
         {
@@ -127,9 +127,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology
+        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddIncompatibleWith(INode resource)
         {
@@ -137,9 +137,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology
+        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddIncompatibleWith(Uri resource)
         {
@@ -147,9 +147,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology
+        /// Adds a new <em>owl:incompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddIncompatibleWith(OntologyResource resource)
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>owl:incompatibleWith</em> triples for this Ontology
+        /// Removes all <em>owl:incompatibleWith</em> triples for this Ontology.
         /// </summary>
         /// <returns></returns>
         public bool ClearIncompatibleWith()
@@ -166,9 +166,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology
+        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveIncompatibleWith(INode resource)
         {
@@ -176,9 +176,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology
+        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveIncompatibleWith(Uri resource)
         {
@@ -186,9 +186,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology
+        /// Removes a <em>owl:incompatibleWith</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveIncompatibleWith(OntologyResource resource)
         {
@@ -196,9 +196,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:imports</em> triple for this Ontology
+        /// Adds a new <em>owl:imports</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddImports(INode resource)
         {
@@ -206,9 +206,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:imports</em> triple for this Ontology
+        /// Adds a new <em>owl:imports</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddImports(Uri resource)
         {
@@ -216,9 +216,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:imports</em> triple for this Ontology
+        /// Adds a new <em>owl:imports</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddImports(OntologyResource resource)
         {
@@ -226,7 +226,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>owl:imports</em> triples for this Ontology
+        /// Removes all <em>owl:imports</em> triples for this Ontology.
         /// </summary>
         /// <returns></returns>
         public bool ClearImports()
@@ -235,9 +235,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:imports</em> triple for this Ontology
+        /// Removes a <em>owl:imports</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveImports(INode resource)
         {
@@ -245,9 +245,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:imports</em> triple for this Ontology
+        /// Removes a <em>owl:imports</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveImports(Uri resource)
         {
@@ -255,9 +255,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:imports</em> triple for this Ontology
+        /// Removes a <em>owl:imports</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveImports(OntologyResource resource)
         {
@@ -265,9 +265,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology
+        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddPriorVersion(INode resource)
         {
@@ -275,9 +275,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology
+        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddPriorVersion(Uri resource)
         {
@@ -285,9 +285,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology
+        /// Adds a new <em>owl:priorVersion</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddPriorVersion(OntologyResource resource)
         {
@@ -295,7 +295,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>owl:priorVersion</em> triples for this Ontology
+        /// Removes all <em>owl:priorVersion</em> triples for this Ontology.
         /// </summary>
         /// <returns></returns>
         public bool ClearPriorVersions()
@@ -304,9 +304,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:priorVersion</em> triple for this Ontology
+        /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemovePriorVersion(INode resource)
         {
@@ -314,9 +314,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:priorVersion</em> triple for this Ontology
+        /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemovePriorVersion(Uri resource)
         {
@@ -324,9 +324,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:priorVersion</em> triple for this Ontology
+        /// Removes a <em>owl:priorVersion</em> triple for this Ontology.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemovePriorVersion(OntologyResource resource)
         {
@@ -334,7 +334,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Ontologies that this Ontology is backwards compatible with
+        /// Gets all the Ontologies that this Ontology is backwards compatible with.
         /// </summary>
         public IEnumerable<Ontology> BackwardsCompatibleWith
         {
@@ -345,7 +345,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Ontologies that this Ontology is incompatible with
+        /// Gets all the Ontologies that this Ontology is incompatible with.
         /// </summary>
         public IEnumerable<Ontology> IncompatibleWith
         {
@@ -356,7 +356,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Ontologies that this Ontology imports
+        /// Gets all the Ontologies that this Ontology imports.
         /// </summary>
         public IEnumerable<Ontology> Imports
         {
@@ -367,7 +367,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Ontologies that are prior versions of this Ontology
+        /// Gets all the Ontologies that are prior versions of this Ontology.
         /// </summary>
         public IEnumerable<Ontology> PriorVersions
         {

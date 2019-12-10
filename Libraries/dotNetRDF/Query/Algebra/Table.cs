@@ -31,7 +31,7 @@ using System.Linq;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a fixed set of solutions
+    /// Represents a fixed set of solutions.
     /// </summary>
     public class Table
         : ITerminalOperator
@@ -39,9 +39,9 @@ namespace VDS.RDF.Query.Algebra
         private readonly BaseMultiset _table;
 
         /// <summary>
-        /// Creates a new fixed set of solutions
+        /// Creates a new fixed set of solutions.
         /// </summary>
-        /// <param name="table">Table</param>
+        /// <param name="table">Table.</param>
         public Table(BaseMultiset table)
         {
             if (table == null) throw new ArgumentNullException("table");
@@ -49,9 +49,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Returns the fixed set of solutions
+        /// Returns the fixed set of solutions.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the variables used in the algebra
+        /// Gets the variables used in the algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error as this cannot be converted back into a query
+        /// Throws an error as this cannot be converted back into a query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error as this cannot be converted back into a graph pattern
+        /// Throws an error as this cannot be converted back into a graph pattern.
         /// </summary>
         /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string representation of the algebra
+        /// Gets the string representation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

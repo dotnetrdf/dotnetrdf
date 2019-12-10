@@ -40,24 +40,24 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Expression Factory which generates XPath Function expressions
+    /// Expression Factory which generates XPath Function expressions.
     /// </summary>
     public class XPathFunctionFactory 
         : ISparqlCustomExpressionFactory
     {
         /// <summary>
-        /// Namespace Uri for XPath Functions Namespace
+        /// Namespace Uri for XPath Functions Namespace.
         /// </summary>
         public const String XPathFunctionsNamespace = "http://www.w3.org/2005/xpath-functions#";
 
         /// <summary>
-        /// Constant representing the XPath boolean functions
+        /// Constant representing the XPath boolean functions.
         /// </summary>
         public const String Not = "not",
                             Boolean = "boolean";
 
         /// <summary>
-        /// Constants representing the names of XPath String functions
+        /// Constants representing the names of XPath String functions.
         /// </summary>
         public const String Matches = "matches",
                             Contains = "contains",
@@ -80,13 +80,13 @@ namespace VDS.RDF.Query.Expressions
                             EscapeHtmlURI = "escape-html-uri";
 
         /// <summary>
-        /// Constants representing the XPath Boolean constructor functions
+        /// Constants representing the XPath Boolean constructor functions.
         /// </summary>
         public const String True = "true",
                             False = "false";
 
         /// <summary>
-        /// Constants representing the XPath Numeric Functions
+        /// Constants representing the XPath Numeric Functions.
         /// </summary>
         public const String Absolute = "abs",
                             Ceiling = "ceiling",
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Expressions
                             RoundHalfToEven = "round-half-to-even";
 
         /// <summary>
-        /// Constants representing the XPath Date Time functions
+        /// Constants representing the XPath Date Time functions.
         /// </summary>
         public const String YearFromDateTime = "year-from-dateTime",
                             MonthFromDateTime = "month-from-dateTime",
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Expressions
                             AdjustDateTimeToTimezone = "adjust-dateTime-to-timezone";
 
         /// <summary>
-        /// Constants representing the Normalization Form values supported by the XPath normalize-unicode() function
+        /// Constants representing the Normalization Form values supported by the XPath normalize-unicode() function.
         /// </summary>
         public const String XPathUnicodeNormalizationFormC = "NFC",
                             XPathUnicodeNormalizationFormD = "NFD",
@@ -153,26 +153,26 @@ namespace VDS.RDF.Query.Expressions
         private String[] AggregateUris = {StringJoin};
 
         /// <summary>
-        /// Argument Type Validator for validating that a Literal either has no datatype or is a String
+        /// Argument Type Validator for validating that a Literal either has no datatype or is a String.
         /// </summary>
         public static Func<Uri, bool> AcceptStringArguments = (u => u == null || u.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString));
         /// <summary>
-        /// Argument Type Validator for validating that a Literal has an Integer datatype
+        /// Argument Type Validator for validating that a Literal has an Integer datatype.
         /// </summary>
         public static Func<Uri, bool> AcceptIntegerArguments = (u => u != null && SparqlSpecsHelper.IntegerDataTypes.Contains(u.AbsoluteUri));
         /// <summary>
-        /// Argument Type Validator for validating that a Literal has a Numeric datatype
+        /// Argument Type Validator for validating that a Literal has a Numeric datatype.
         /// </summary>
         public static Func<Uri, bool> AcceptNumericArguments = (u => u != null && SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN);
 
         /// <summary>
-        /// Tries to create an XPath Function expression if the function Uri correseponds to a supported XPath Function
+        /// Tries to create an XPath Function expression if the function Uri correseponds to a supported XPath Function.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">Function Arguments</param>
-        /// <param name="scalarArgs">Scalar Arguments</param>
-        /// <param name="expr">Generated Expression</param>
-        /// <returns>Whether an expression was successfully generated</returns>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">Function Arguments.</param>
+        /// <param name="scalarArgs">Scalar Arguments.</param>
+        /// <param name="expr">Generated Expression.</param>
+        /// <returns>Whether an expression was successfully generated.</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             // If any Scalar Arguments are present then can't possibly be an XPath Function
@@ -575,7 +575,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Extension Function URIs supported by this Factory
+        /// Gets the Extension Function URIs supported by this Factory.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionFunctions
         {
@@ -587,7 +587,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Extension Aggregate URIs supported by this Factory
+        /// Gets the Extension Aggregate URIs supported by this Factory.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionAggregates
         {

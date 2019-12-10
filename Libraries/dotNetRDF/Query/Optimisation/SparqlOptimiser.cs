@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// Static Helper class which provides global registry of Algebra Optimisers and the global Query Optimiser
+    /// Static Helper class which provides global registry of Algebra Optimisers and the global Query Optimiser.
     /// </summary>
     public static class SparqlOptimiser
     {
@@ -53,19 +53,19 @@ namespace VDS.RDF.Query.Optimisation
         };
 
         /// <summary>
-        /// Namespace URI for the Optimiser Statistics vocabulary
+        /// Namespace URI for the Optimiser Statistics vocabulary.
         /// </summary>
         public const String OptimiserStatsNamespace = "http://www.dotnetrdf.org/optimiserStats#";
 
         /// <summary>
-        /// Gets/Sets the global Query Optimiser that is used by default
+        /// Gets/Sets the global Query Optimiser that is used by default.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> May be overridden by the Optimiser setting on a SparqlQueryParser
+        /// <strong>Note:</strong> May be overridden by the Optimiser setting on a SparqlQueryParser.
         /// </para>
         /// <para>
-        /// Unlike previous releases a Query may be reoptimised using a different optimiser if desired by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method again and providing a different Optimiser.  This may not always fully reoptimise the query since the first optimisation will have caused any Filters and Assignments to be placed in the Triple Pattern
+        /// Unlike previous releases a Query may be reoptimised using a different optimiser if desired by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method again and providing a different Optimiser.  This may not always fully reoptimise the query since the first optimisation will have caused any Filters and Assignments to be placed in the Triple Pattern.
         /// </para>
         /// <para>
         /// <em>Warning:</em> Setting this to null has no effect, to disable automatic optimisation use the global property <see cref="Options.QueryOptimisation">Options.QueryOptimisation</see>.  Even with this option disabled a Query can still be optimised manually by calling its <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Gets the global Algebra Optimisers that are in use
+        /// Gets the global Algebra Optimisers that are in use.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -103,16 +103,16 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Adds a new Algebra Optimiser
+        /// Adds a new Algebra Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         public static void AddOptimiser(IAlgebraOptimiser optimiser)
         {
             _algebraOpt.Add(optimiser);
         }
 
         /// <summary>
-        /// Removes an Algebra Optimiser
+        /// Removes an Algebra Optimiser.
         /// </summary>
         /// <param name="optimiser"></param>
         public static void RemoveOptimiser(IAlgebraOptimiser optimiser)
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Resets Optimisers to default settings
+        /// Resets Optimisers to default settings.
         /// </summary>
         public static void ResetOptimisers()
         {

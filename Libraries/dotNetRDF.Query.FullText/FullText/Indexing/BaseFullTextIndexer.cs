@@ -30,7 +30,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Query.FullText.Indexing
 {
     /// <summary>
-    /// Abstract Base Class for Full Text Indexers which implements the basic logic leaving derived classes to implement the index specific logic
+    /// Abstract Base Class for Full Text Indexers which implements the basic logic leaving derived classes to implement the index specific logic.
     /// </summary>
     public abstract class BaseFullTextIndexer
         : IFullTextIndexer
@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Gets the Indexing Mode used by this Indexer
+        /// Gets the Indexing Mode used by this Indexer.
         /// </summary>
         public abstract IndexingMode IndexingMode
         {
@@ -52,25 +52,25 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Indexes a Triple associating it with the given Graph
+        /// Indexes a Triple associating it with the given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         protected abstract void Index(String graphUri, Triple t);
 
         /// <summary>
-        /// Indexes a Triple
+        /// Indexes a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         public virtual void Index(Triple t)
         {
             this.Index(t.GraphUri.ToSafeString(), t);
         }
 
         /// <summary>
-        /// Indexes a Graph
+        /// Indexes a Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public virtual void Index(IGraph g)
         {
             foreach (Triple t in g.Triples)
@@ -81,9 +81,9 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Indexes a Dataset
+        /// Indexes a Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="dataset">Dataset.</param>
         public virtual void Index(ISparqlDataset dataset)
         {
             foreach (Uri u in dataset.GraphUris)
@@ -94,25 +94,25 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Unindexes a Triple associating it with the given Graph
+        /// Unindexes a Triple associating it with the given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         protected abstract void Unindex(String graphUri, Triple t);
 
         /// <summary>
-        /// Unindexes a Triple
+        /// Unindexes a Triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         public virtual void Unindex(Triple t)
         {
             this.Unindex(t.GraphUri.ToSafeString(), t);
         }
 
         /// <summary>
-        /// Unindexes a Graph
+        /// Unindexes a Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public virtual void Unindex(IGraph g)
         {
             foreach (Triple t in g.Triples)
@@ -123,9 +123,9 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Unindexes a Dataset
+        /// Unindexes a Dataset.
         /// </summary>
-        /// <param name="dataset">Dataset</param>
+        /// <param name="dataset">Dataset.</param>
         public virtual void Unindex(ISparqlDataset dataset)
         {
             foreach (Uri u in dataset.GraphUris)
@@ -136,12 +136,12 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Ensures any pending changes are flushed to the actual index
+        /// Ensures any pending changes are flushed to the actual index.
         /// </summary>
         public virtual void Flush() { }
 
         /// <summary>
-        /// Disposes of the Indexer
+        /// Disposes of the Indexer.
         /// </summary>
         public void Dispose()
         {
@@ -149,9 +149,9 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Disposes of the Indexer
+        /// Disposes of the Indexer.
         /// </summary>
-        /// <param name="disposing">Whether this was called by the Dispose method</param>
+        /// <param name="disposing">Whether this was called by the Dispose method.</param>
         private void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Virtual method that can be overridden to add implementation specific dispose logic
+        /// Virtual method that can be overridden to add implementation specific dispose logic.
         /// </summary>
         protected virtual void DisposeInternal() { }
     }

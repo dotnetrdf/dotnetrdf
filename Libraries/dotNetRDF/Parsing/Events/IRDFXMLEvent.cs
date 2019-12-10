@@ -29,13 +29,13 @@ using System;
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Interface for RDF/XML events as defined by the RDF/XML Specification
+    /// Interface for RDF/XML events as defined by the RDF/XML Specification.
     /// </summary>
-    /// <remarks>Used to provide polymorphism for the XML/RDF Parser</remarks>
+    /// <remarks>Used to provide polymorphism for the XML/RDF Parser.</remarks>
     public interface IRdfXmlEvent : IEvent
     {
         /// <summary>
-        /// Gets the XML that produced the given event (if any)
+        /// Gets the XML that produced the given event (if any).
         /// </summary>
         String SourceXml
         {

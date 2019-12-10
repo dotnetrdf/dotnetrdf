@@ -32,7 +32,7 @@ using System.Linq;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Implementation of a Graph Difference algorithm for RDF Graphs
+    /// Implementation of a Graph Difference algorithm for RDF Graphs.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -51,7 +51,7 @@ namespace VDS.RDF
     /// _:autos2 rdfs:label "Rob" .
     /// </code>
     /// <para>
-    /// Given these Graphs computing the Graph Difference between A and B would report an Added MSG (Minimal Spanning Graph) when in fact the 2nd Graph is non-lean and could be reduced to the same as the 1st Graph
+    /// Given these Graphs computing the Graph Difference between A and B would report an Added MSG (Minimal Spanning Graph) when in fact the 2nd Graph is non-lean and could be reduced to the same as the 1st Graph.
     /// </para>
     /// </remarks>
     public class GraphDiff
@@ -62,10 +62,10 @@ namespace VDS.RDF
         private List<IGraph> _rhsMSGs = new List<IGraph>();
 
         /// <summary>
-        /// Calculates the Difference between the two Graphs i.e. the changes required to get from the 1st Graph to the 2nd Graph
+        /// Calculates the Difference between the two Graphs i.e. the changes required to get from the 1st Graph to the 2nd Graph.
         /// </summary>
-        /// <param name="a">First Graph</param>
-        /// <param name="b">Second Graph</param>
+        /// <param name="a">First Graph.</param>
+        /// <param name="b">Second Graph.</param>
         /// <returns></returns>
         public GraphDiffReport Difference(IGraph a, IGraph b)
         {
@@ -240,11 +240,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Computes MSGs for a Graph
+        /// Computes MSGs for a Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="unassigned">Triples that need assigning to MSGs</param>
-        /// <param name="msgs">MSGs list to populate</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="unassigned">Triples that need assigning to MSGs.</param>
+        /// <param name="msgs">MSGs list to populate.</param>
         public static void ComputeMSGs(IGraph g, HashSet<Triple> unassigned, List<IGraph> msgs)
         {
             // While we have unassigned Triples build MSGs
@@ -311,11 +311,11 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Represents the Differences between 2 Graphs
+    /// Represents the Differences between 2 Graphs.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Diff represents the Difference between the 2 Graphs at the time the Difference was calculated - if the Graphs subsequently change then the Diff must be recalculated
+    /// The Diff represents the Difference between the 2 Graphs at the time the Difference was calculated - if the Graphs subsequently change then the Diff must be recalculated.
     /// </para>
     /// </remarks>
     public class GraphDiffReport
@@ -328,7 +328,7 @@ namespace VDS.RDF
         private List<IGraph> _removedMSGs = new List<IGraph>();
 
         /// <summary>
-        /// Gets whether the Graphs were equal at the time the Diff was calculated
+        /// Gets whether the Graphs were equal at the time the Diff was calculated.
         /// </summary>
         public bool AreEqual
         {
@@ -343,7 +343,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether the Graphs are different sizes, different sized graphs are by definition non-equal
+        /// Gets whether the Graphs are different sizes, different sized graphs are by definition non-equal.
         /// </summary>
         public bool AreDifferentSizes
         {
@@ -358,11 +358,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Provides the mapping from Blank Nodes in 1 Graph to Blank Nodes in another
+        /// Provides the mapping from Blank Nodes in 1 Graph to Blank Nodes in another.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// In the case of Equal Graphs this will be a complete mapping, if the Graphs are different then it will be an empty/partial mapping depending on whether Blank Nodes can be mapped from one Graph to another or not
+        /// In the case of Equal Graphs this will be a complete mapping, if the Graphs are different then it will be an empty/partial mapping depending on whether Blank Nodes can be mapped from one Graph to another or not.
         /// </para>
         /// </remarks>
         public Dictionary<INode, INode> Mapping
@@ -378,7 +378,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Ground Triples (i.e. no Blank Nodes) that must be added to the 1st Graph to get the 2nd Graph
+        /// Gets the Ground Triples (i.e. no Blank Nodes) that must be added to the 1st Graph to get the 2nd Graph.
         /// </summary>
         public IEnumerable<Triple> AddedTriples
         {
@@ -389,7 +389,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Ground Triples (i.e. no Blank Nodes) that must be removed from the 1st Graph to get the 2nd Graph
+        /// Gets the Ground Triples (i.e. no Blank Nodes) that must be removed from the 1st Graph to get the 2nd Graph.
         /// </summary>
         public IEnumerable<Triple> RemovedTriples
         {
@@ -400,7 +400,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the MSGs (Minimal Spanning Graphs i.e. sets of Triples sharing common Blank Nodes) that must be added to the 1st Graph to get the 2nd Graph
+        /// Gets the MSGs (Minimal Spanning Graphs i.e. sets of Triples sharing common Blank Nodes) that must be added to the 1st Graph to get the 2nd Graph.
         /// </summary>
         public IEnumerable<IGraph> AddedMSGs
         {
@@ -411,7 +411,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the MSGs (Minimal Spanning Graphs i.e. sets of Triples sharing common Blank Nodes) that must be added to the 1st Graph to get the 2nd Graph
+        /// Gets the MSGs (Minimal Spanning Graphs i.e. sets of Triples sharing common Blank Nodes) that must be added to the 1st Graph to get the 2nd Graph.
         /// </summary>
         public IEnumerable<IGraph> RemovedMSGs
         {
@@ -443,18 +443,18 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// A Comparer for Graphs which compares based on number of Triples
+    /// A Comparer for Graphs which compares based on number of Triples.
     /// </summary>
     /// <remarks>
-    /// Used internally in computing Graph Differences but made a public Graph as it may occasionally come in useful
+    /// Used internally in computing Graph Differences but made a public Graph as it may occasionally come in useful.
     /// </remarks>
     public class GraphSizeComparer : IComparer<IGraph>
     {
         /// <summary>
-        /// Compares Graphs based on their number of Triples
+        /// Compares Graphs based on their number of Triples.
         /// </summary>
-        /// <param name="x">Graph</param>
-        /// <param name="y">Graph</param>
+        /// <param name="x">Graph.</param>
+        /// <param name="y">Graph.</param>
         /// <returns></returns>
         public int Compare(IGraph x, IGraph y)
         {

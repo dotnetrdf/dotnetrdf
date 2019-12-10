@@ -29,22 +29,22 @@ using System;
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
-    /// Abstract Dataset wrapper implementation for datasets that can load graphs on demand
+    /// Abstract Dataset wrapper implementation for datasets that can load graphs on demand.
     /// </summary>
     public abstract class BaseDemandDataset
         : WrapperDataset
     {
         /// <summary>
-        /// Creates a new Demand Dataset
+        /// Creates a new Demand Dataset.
         /// </summary>
-        /// <param name="dataset">Underlying Dataset</param>
+        /// <param name="dataset">Underlying Dataset.</param>
         public BaseDemandDataset(ISparqlDataset dataset)
             : base(dataset) { }
 
         /// <summary>
-        /// Sees if the underlying dataset has a graph and if not tries to load it on demand
+        /// Sees if the underlying dataset has a graph and if not tries to load it on demand.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
@@ -70,10 +70,10 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Method to be implemented by derived classes which implements the loading of graphs on demand
+        /// Method to be implemented by derived classes which implements the loading of graphs on demand.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="g">Graph</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         protected abstract bool TryLoadGraph(Uri graphUri, out IGraph g);
     }

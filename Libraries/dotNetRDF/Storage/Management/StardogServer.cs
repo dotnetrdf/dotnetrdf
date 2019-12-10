@@ -41,39 +41,39 @@ using System.Web;
 namespace VDS.RDF.Storage.Management
 {
     /// <summary>
-    /// Abstract implementation of a management connection to a Stardog server using the HTTP protocol
+    /// Abstract implementation of a management connection to a Stardog server using the HTTP protocol.
     /// </summary>
     public abstract class BaseStardogServer
         : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
           , IStorageServer
     {
         /// <summary>
-        /// The base URI of the Stardog server
+        /// The base URI of the Stardog server.
         /// </summary>
         protected readonly string BaseUri;
 
         /// <summary>
-        /// The URI of the admin API
+        /// The URI of the admin API.
         /// </summary>
         protected readonly string AdminUri;
 
         /// <summary>
-        /// The username to use for the connection
+        /// The username to use for the connection.
         /// </summary>
         protected readonly string Username;
 
         /// <summary>
-        /// The password to use for the connection
+        /// The password to use for the connection.
         /// </summary>
         protected readonly string Password;
         
         /// <summary>
-        /// True if a user name and password are specified, false otherwise
+        /// True if a user name and password are specified, false otherwise.
         /// </summary>
         protected readonly bool HasCredentials = false;
 
         /// <summary>
-        /// Available Stardog template types
+        /// Available Stardog template types.
         /// </summary>
         private readonly List<Type> _templateTypes = new List<Type>()
             {
@@ -82,20 +82,20 @@ namespace VDS.RDF.Storage.Management
             };
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
         public BaseStardogServer(String baseUri)
             : this(baseUri, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public BaseStardogServer(String baseUri, String username, String password)
             : base()
         {
@@ -109,22 +109,22 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public BaseStardogServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public BaseStardogServer(String baseUri, String username, String password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the server
+        /// Gets the IO Behaviour of the server.
         /// </summary>
         public virtual IOBehaviour IOBehaviour
         {
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage.Management
         #region IStorageServer Members
 
         /// <summary>
-        /// Lists the database available on the server
+        /// Lists the database available on the server.
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<string> ListStores()
@@ -183,9 +183,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a default template for creating a new Store
+        /// Gets a default template for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         /// <returns></returns>
         public virtual IStoreTemplate GetDefaultTemplate(string id)
         {
@@ -193,9 +193,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets all available templates for creating a new Store
+        /// Gets all available templates for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         /// <returns></returns>
         public virtual IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
@@ -216,13 +216,13 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new Store based off the given template
+        /// Creates a new Store based off the given template.
         /// </summary>
-        /// <param name="template">Template</param>
+        /// <param name="template">Template.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Templates must inherit from <see cref="BaseStardogTemplate"/>
+        /// Templates must inherit from <see cref="BaseStardogTemplate"/>.
         /// </para>
         /// <para>
         /// Uses some code based off on answers <a href="http://stackoverflow.com/questions/566462/upload-files-with-httpwebrequest-multipart-form-data">here</a> to help do the multipart form data request.
@@ -287,9 +287,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Deletes a Store with the given ID
+        /// Deletes a Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         public virtual void DeleteStore(string storeID)
         {
             // DELETE /admin/databases/{db}
@@ -314,9 +314,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a provider for the Store with the given ID
+        /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         public abstract IStorageProvider GetStore(string storeID);
 
@@ -325,10 +325,10 @@ namespace VDS.RDF.Storage.Management
         #region IAsyncStorageServer Members
 
         /// <summary>
-        /// Lists all databases available on the server
+        /// Lists all databases available on the server.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
             // GET /admin/databases - application/json
@@ -385,11 +385,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a default template for creating a new Store
+        /// Gets a default template for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         public virtual void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
@@ -397,11 +397,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets all available templates for creating a new Store
+        /// Gets all available templates for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
@@ -422,14 +422,14 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new store based on the given template
+        /// Creates a new store based on the given template.
         /// </summary>
-        /// <param name="template">Template</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="template">Template.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// <para>
-        /// Template must inherit from <see cref="BaseStardogTemplate"/>
+        /// Template must inherit from <see cref="BaseStardogTemplate"/>.
         /// </para>
         /// </remarks>
         public virtual void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
@@ -523,11 +523,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Deletes a database from the server
+        /// Deletes a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             // DELETE /admin/databases/{db}
@@ -570,22 +570,22 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a database from the server
+        /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public abstract void GetStore(string storeID, AsyncStorageCallback callback, object state);
 
         #endregion
 
         /// <summary>
-        /// Create a request to the Stardog server's Admin API
+        /// Create a request to the Stardog server's Admin API.
         /// </summary>
-        /// <param name="servicePath">The admin API service path</param>
-        /// <param name="accept">Accept header content</param>
-        /// <param name="method">HTTP method to use</param>
-        /// <param name="requestParams">Additional request parameters</param>
+        /// <param name="servicePath">The admin API service path.</param>
+        /// <param name="accept">Accept header content.</param>
+        /// <param name="method">HTTP method to use.</param>
+        /// <param name="requestParams">Additional request parameters.</param>
         /// <returns></returns>
         protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<String, String> requestParams)
         {
@@ -643,7 +643,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Disposes of the server
+        /// Disposes of the server.
         /// </summary>
         public virtual void Dispose()
         {
@@ -651,9 +651,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
@@ -680,12 +680,12 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Static Class containing constants relevant to provisioning new Stardog stores
+        /// Static Class containing constants relevant to provisioning new Stardog stores.
         /// </summary>
         public static class DatabaseOptions
         {
             /// <summary>
-            /// Constants for valid Stardog Options
+            /// Constants for valid Stardog Options.
             /// </summary>
             public const String Online = "database.online",
                                 IcvActiveGraphs = "icv.active.graphs",
@@ -707,36 +707,36 @@ namespace VDS.RDF.Storage.Management
                                 TransactionsDurable = "transactions.durable";
 
             /// <summary>
-            /// Constants for valid Stardog Database types
+            /// Constants for valid Stardog Database types.
             /// </summary>
             public const String DatabaseTypeDisk = "disk",
                                 DatabaseTypeMemory = "memory";
 
             /// <summary>
-            /// Constanst for valid Search Re-Index Modes
+            /// Constanst for valid Search Re-Index Modes.
             /// </summary>
             public const String SearchReIndexModeSync = "sync",
                                 SearchReIndexModeAsync = "async";
 
             /// <summary>
-            /// Constants for special named graph URIs
+            /// Constants for special named graph URIs.
             /// </summary>
             public const String SpecialNamedGraphDefault = "default",
                                 SpecialNamedGraphUnionAll = "*";
 
             /// <summary>
-            /// Constants for various Stardog reasoning settings
+            /// Constants for various Stardog reasoning settings.
             /// </summary>
             public const StardogReasoningMode DefaultIcvReasoningMode = StardogReasoningMode.None;
 
             /// <summary>
-            /// Constant for various Stardog integer settings
+            /// Constant for various Stardog integer settings.
             /// </summary>
             public const int DefaultMinDifferentialIndexLimit = 1000000,
                              DefaultMaxDifferentialIndexLimit = 10000;
 
             /// <summary>
-            /// Constants for various Stardog boolean flags
+            /// Constants for various Stardog boolean flags.
             /// </summary>
             public const bool DefaultCanonicaliseLiterals = true,
                               DefaultNamedGraphIndexing = true,
@@ -750,14 +750,14 @@ namespace VDS.RDF.Storage.Management
                               DefaultDurableTransactions = false;
 
             /// <summary>
-            /// Pattern for valid Stardog database names
+            /// Pattern for valid Stardog database names.
             /// </summary>
             public const String ValidDatabaseNamePattern = "^[A-Za-z]{1}[A-Za-z0-9_-]*$";
 
             /// <summary>
-            /// Validates whether a Database Name is valid
+            /// Validates whether a Database Name is valid.
             /// </summary>
-            /// <param name="name">Database Name</param>
+            /// <param name="name">Database Name.</param>
             /// <returns></returns>
             public static bool IsValidDatabaseName(String name)
             {
@@ -765,9 +765,9 @@ namespace VDS.RDF.Storage.Management
             }
 
             /// <summary>
-            /// Validates whether a Database Type is valid
+            /// Validates whether a Database Type is valid.
             /// </summary>
-            /// <param name="type">Database Type</param>
+            /// <param name="type">Database Type.</param>
             /// <returns></returns>
             public static bool IsValidDatabaseType(String type)
             {
@@ -782,9 +782,9 @@ namespace VDS.RDF.Storage.Management
             }
 
             /// <summary>
-            /// Validates whether a Search Re-Index Mode is valid
+            /// Validates whether a Search Re-Index Mode is valid.
             /// </summary>
-            /// <param name="mode">Mode</param>
+            /// <param name="mode">Mode.</param>
             /// <returns></returns>
             public static bool IsValidSearchReIndexMode(String mode)
             {
@@ -799,9 +799,9 @@ namespace VDS.RDF.Storage.Management
             }
 
             /// <summary>
-            /// Validates whether a Named Graph URI is valid
+            /// Validates whether a Named Graph URI is valid.
             /// </summary>
-            /// <param name="uri">URI</param>
+            /// <param name="uri">URI.</param>
             /// <returns></returns>
             public static bool IsValidNamedGraph(String uri)
             {
@@ -861,48 +861,48 @@ namespace VDS.RDF.Storage.Management
     }
 
     /// <summary>
-    /// Management connection for Stardog 1.* servers
+    /// Management connection for Stardog 1.* servers.
     /// </summary>
     public class StardogV1Server
         : BaseStardogServer
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
         public StardogV1Server(String baseUri)
             : this(baseUri, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogV1Server(String baseUri, String username, String password)
             : base(baseUri, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV1Server(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV1Server(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
@@ -910,9 +910,9 @@ namespace VDS.RDF.Storage.Management
         
 
         /// <summary>
-        /// Gets a provider for the Store with the given ID
+        /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
@@ -920,11 +920,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a database from the server
+        /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV1Connector(BaseUri, storeID, Username, Password, Proxy)), state);
@@ -932,48 +932,48 @@ namespace VDS.RDF.Storage.Management
     }
 
     /// <summary>
-    /// Management connection for Stardog 2.* servers
+    /// Management connection for Stardog 2.* servers.
     /// </summary>
     public class StardogV2Server
         : StardogV1Server
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
         public StardogV2Server(String baseUri)
             : this(baseUri, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogV2Server(String baseUri, String username, String password)
             : base(baseUri, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV2Server(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV2Server(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
@@ -982,9 +982,9 @@ namespace VDS.RDF.Storage.Management
 
 
         /// <summary>
-        /// Gets a provider for the Store with the given ID
+        /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
@@ -992,11 +992,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a database from the server
+        /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV2Connector(BaseUri, storeID, Username, Password, Proxy)), state);
@@ -1004,48 +1004,48 @@ namespace VDS.RDF.Storage.Management
     }
 
     /// <summary>
-    /// Management connection for Stardog 3.* servers
+    /// Management connection for Stardog 3.* servers.
     /// </summary>
     public class StardogV3Server
         : StardogV2Server
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
         public StardogV3Server(String baseUri)
             : this(baseUri, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogV3Server(String baseUri, String username, String password)
             : base(baseUri, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV3Server(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV3Server(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
@@ -1053,9 +1053,9 @@ namespace VDS.RDF.Storage.Management
         
 
         /// <summary>
-        /// Gets a provider for the Store with the given ID
+        /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         public override IStorageProvider GetStore(string storeID)
         {
@@ -1063,11 +1063,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a database from the server
+        /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(BaseUri, storeID, Username, Password, Proxy)), state);
@@ -1075,48 +1075,48 @@ namespace VDS.RDF.Storage.Management
     }
 
     /// <summary>
-    /// Management connection for Stardog servers running the latest version, current this is 3.*
+    /// Management connection for Stardog servers running the latest version, current this is 3.*.
     /// </summary>
     public class StardogServer
         : StardogV3Server
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
         public StardogServer(String baseUri)
             : this(baseUri, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogServer(String baseUri, String username, String password)
             : base(baseUri, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Server
+        /// Creates a new connection to a Stardog Server.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogServer(String baseUri, String username, String password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {

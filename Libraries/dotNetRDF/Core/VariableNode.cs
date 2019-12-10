@@ -35,7 +35,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for Variable Nodes
+    /// Abstract Base Class for Variable Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="variable")]
@@ -46,10 +46,10 @@ namespace VDS.RDF
         private String _var;
 
         /// <summary>
-        /// Creates a new Variable Node
+        /// Creates a new Variable Node.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="varname">Variable Name</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="varname">Variable Name.</param>
         protected internal BaseVariableNode(IGraph g, String varname)
             : base(g, NodeType.Variable)
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected BaseVariableNode()
             : base(null, NodeType.Variable) { }
@@ -73,10 +73,10 @@ namespace VDS.RDF
 #if !NETCORE
 
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected BaseVariableNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Variable)
         {
@@ -87,7 +87,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gets the Variable Name
+        /// Gets the Variable Name.
         /// </summary>
         public String VariableName
         {
@@ -98,9 +98,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this Node is equal to some other Node
+        /// Gets whether this Node is equal to some other Node.
         /// </summary>
-        /// <param name="other">Node to test</param>
+        /// <param name="other">Node to test.</param>
         /// <returns></returns>
         public override bool Equals(INode other)
         {
@@ -120,9 +120,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Blank Node (should always be false)
+        /// Determines whether this Node is equal to a Blank Node (should always be false).
         /// </summary>
-        /// <param name="other">Blank Node</param>
+        /// <param name="other">Blank Node.</param>
         /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
@@ -131,9 +131,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Graph Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
@@ -153,9 +153,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// Determines whether this Node is equal to a URI Node (should always be false).
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
@@ -164,9 +164,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node
+        /// Determines whether this Node is equal to a Variable Node.
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
@@ -178,9 +178,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node
+        /// Determines whether this Node is equal to a Variable Node.
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public bool Equals(BaseVariableNode other)
         {
@@ -188,9 +188,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether this Node is equal to some Object
+        /// Gets whether this Node is equal to some Object.
         /// </summary>
-        /// <param name="obj">Object to test</param>
+        /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {
@@ -210,7 +210,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the String representation of this Node
+        /// Gets the String representation of this Node.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -219,9 +219,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares this Node to another Node
+        /// Compares this Node to another Node.
         /// </summary>
-        /// <param name="other">Node to compare with</param>
+        /// <param name="other">Node to compare with.</param>
         /// <returns></returns>
         public override int CompareTo(INode other)
         {
@@ -244,9 +244,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
@@ -265,9 +265,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
@@ -286,9 +286,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
@@ -307,9 +307,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
@@ -328,9 +328,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
@@ -348,9 +348,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public int CompareTo(BaseVariableNode other)
         {
@@ -360,19 +360,19 @@ namespace VDS.RDF
 #if !NETCORE
 
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("name", _var);
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             _var = reader.ReadElementContentAsString();
@@ -380,9 +380,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteValue(_var);
@@ -393,7 +393,7 @@ namespace VDS.RDF
         #region IValuedNode Members
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -402,7 +402,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -411,7 +411,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -420,7 +420,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -429,7 +429,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -438,7 +438,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -447,7 +447,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -456,7 +456,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be converted to types
+        /// Throws an error as variables cannot be converted to types.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -465,7 +465,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as variables cannot be cast to a time span
+        /// Throws an error as variables cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -474,7 +474,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -485,7 +485,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the numeric type of the expression
+        /// Gets the numeric type of the expression.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -499,7 +499,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3)
+    /// Class representing Variable Nodes (only used for N3).
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="variable")]
@@ -508,33 +508,33 @@ namespace VDS.RDF
         : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
     {
         /// <summary>
-        /// Creates a new Variable Node
+        /// Creates a new Variable Node.
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="varname">Variable Name</param>
+        /// <param name="g">Graph.</param>
+        /// <param name="varname">Variable Name.</param>
         protected internal VariableNode(IGraph g, String varname)
             : base(g, varname) { }
 
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected VariableNode()
             : base() { }
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected VariableNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
 
         /// <summary>
-        /// Compares this Node to another Variable Node
+        /// Compares this Node to another Variable Node.
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public int CompareTo(VariableNode other)
         {
@@ -542,9 +542,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node
+        /// Determines whether this Node is equal to a Variable Node.
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public bool Equals(VariableNode other)
         {

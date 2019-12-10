@@ -47,18 +47,18 @@ namespace VDS.RDF.Configuration
         #region Constants
 
         /// <summary>
-        /// Configuration Namespace URI
+        /// Configuration Namespace URI.
         /// </summary>
         public const String ConfigurationNamespace = "http://www.dotnetrdf.org/configuration#";
 
         /// <summary>
-        /// Constants for URI Schemes with special meaning within the Configuration API
+        /// Constants for URI Schemes with special meaning within the Configuration API.
         /// </summary>
         public const String UriSchemeAppSettings = "appsetting",
                             UriSchemeConfigureOptions = "dotnetrdf-configure";
 
         /// <summary>
-        /// URI Constants for configuration properties
+        /// URI Constants for configuration properties.
         /// </summary>
         public const String PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
@@ -160,7 +160,7 @@ namespace VDS.RDF.Configuration
                             ;
 
         /// <summary>
-        /// URI Constants for configuration classes
+        /// URI Constants for configuration classes.
         /// </summary>
         public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
                             // Classes for Triple Stores and Graphs and their associated low level storage
@@ -203,7 +203,7 @@ namespace VDS.RDF.Configuration
                             ClassSparqlResultsWriter = ConfigurationNamespace + "SparqlResultsWriter";
 
         /// <summary>
-        /// QName Constants for Default Types for some configuration classes
+        /// QName Constants for Default Types for some configuration classes.
         /// </summary>
         public const String DefaultTypeTripleStore = "VDS.RDF.TripleStore",
                             DefaultTypeGraphCollection  = "VDS.RDF.GraphCollection",
@@ -219,12 +219,12 @@ namespace VDS.RDF.Configuration
         #region Member Variables
 
         /// <summary>
-        /// Cache for loaded objects
+        /// Cache for loaded objects.
         /// </summary>
         private static Dictionary<CachedObjectKey, Object> _cache = new Dictionary<CachedObjectKey, object>();
 
         /// <summary>
-        /// Set of built-in object factories that are automatically registered and used
+        /// Set of built-in object factories that are automatically registered and used.
         /// </summary>
         private static List<IObjectFactory> _factories = new List<IObjectFactory>
         {
@@ -260,14 +260,14 @@ namespace VDS.RDF.Configuration
             new WriterFactory(),
         };
         /// <summary>
-        /// Path resolver
+        /// Path resolver.
         /// </summary>
         private static IPathResolver _resolver;
 
         /// <summary>
-        /// Gets or sets the provider of external settings
+        /// Gets or sets the provider of external settings.
         /// </summary>
-        /// <remarks>On .NET Framework defaults to a reader of &lt;appSettings&gt; configuration section</remarks>
+        /// <remarks>On .NET Framework defaults to a reader of &lt;appSettings&gt; configuration section.</remarks>
         public static ISettingsProvider SettingsProvider { get; set; }
 
         #endregion
@@ -282,9 +282,9 @@ namespace VDS.RDF.Configuration
         #region Graph Loading and Auto-Configuration
 
         /// <summary>
-        /// Loads a Configuration Graph and applies auto-configuration
+        /// Loads a Configuration Graph and applies auto-configuration.
         /// </summary>
-        /// <param name="u">URI to load from</param>
+        /// <param name="u">URI to load from.</param>
         /// <returns></returns>
         public static IGraph LoadConfiguration(Uri u)
         {
@@ -292,10 +292,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads a Configuration Graph and applies auto-configuration if desired
+        /// Loads a Configuration Graph and applies auto-configuration if desired.
         /// </summary>
-        /// <param name="u">URI to load from</param>
-        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <param name="u">URI to load from.</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
         public static IGraph LoadConfiguration(Uri u, bool autoConfigure)
         {
@@ -305,9 +305,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads a Configuration Graph and applies auto-configuration
+        /// Loads a Configuration Graph and applies auto-configuration.
         /// </summary>
-        /// <param name="file">File to load from</param>
+        /// <param name="file">File to load from.</param>
         /// <returns></returns>
         public static IGraph LoadConfiguration(String file)
         {
@@ -315,10 +315,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads a Configuration Graph and applies auto-configuration if desired
+        /// Loads a Configuration Graph and applies auto-configuration if desired.
         /// </summary>
-        /// <param name="file">File to load from</param>
-        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <param name="file">File to load from.</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
         public static IGraph LoadConfiguration(String file, bool autoConfigure)
         {
@@ -328,9 +328,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads a Configuration Graph and applies auto-configuration
+        /// Loads a Configuration Graph and applies auto-configuration.
         /// </summary>
-        /// <param name="resource">Embedded Resource to load</param>
+        /// <param name="resource">Embedded Resource to load.</param>
         /// <returns></returns>
         public static IGraph LoadEmbeddedConfiguration(String resource)
         {
@@ -338,10 +338,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads a Configuration Graph and applies auto-configuration if desired
+        /// Loads a Configuration Graph and applies auto-configuration if desired.
         /// </summary>
-        /// <param name="resource">Embedded Resource to load</param>
-        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <param name="resource">Embedded Resource to load.</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
         public static IGraph LoadEmbeddedConfiguration(String resource, bool autoConfigure)
         {
@@ -351,11 +351,11 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected
+        /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="source">Source the graph originated from</param>
-        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="source">Source the graph originated from.</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
         private static IGraph LoadCommon(IGraph g, INode source, bool autoConfigure)
         {
@@ -363,11 +363,11 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected
+        /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="sources">Sources the graph originated from</param>
-        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="sources">Sources the graph originated from.</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
         private static IGraph LoadCommon(IGraph g, IEnumerable<INode> sources, bool autoConfigure)
         {
@@ -430,9 +430,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Given a Configuration Graph applies all available auto-configuration based on the contents of the graph
+        /// Given a Configuration Graph applies all available auto-configuration based on the contents of the graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
+        /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigure(IGraph g)
         {
             AutoConfigureObjectFactories(g);
@@ -442,9 +442,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
+        /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
+        /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureObjectFactories(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -465,9 +465,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Given a Configuration Graph will detect and configure static options that are specified using the dnr:configure property with special &lt;dotnetrdf-configure:Class/Property&gt; subject URIs
+        /// Given a Configuration Graph will detect and configure static options that are specified using the dnr:configure property with special &lt;dotnetrdf-configure:Class/Property&gt; subject URIs.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
+        /// <param name="g">Configuration Graph.</param>
         /// <remarks>
         /// <para>
         /// An example of using this mechanism to configure a static option is as follows:
@@ -567,7 +567,7 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
+        /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureReadersAndWriters(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -704,9 +704,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Given a Configuration Graph will detect and configure SPARQL Operators
+        /// Given a Configuration Graph will detect and configure SPARQL Operators.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
+        /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureSparqlOperators(IGraph g)
         {
             INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)),
@@ -740,17 +740,17 @@ namespace VDS.RDF.Configuration
         #region Object Loading
 
         /// <summary>
-        /// Checks for circular references and throws an error if there is one
+        /// Checks for circular references and throws an error if there is one.
         /// </summary>
-        /// <param name="a">Object you are attempting to load</param>
-        /// <param name="b">Object being referenced</param>
-        /// <param name="property">QName for the property that makes the reference</param>
+        /// <param name="a">Object you are attempting to load.</param>
+        /// <param name="b">Object being referenced.</param>
+        /// <param name="property">QName for the property that makes the reference.</param>
         /// <remarks>
         /// <para>
-        /// If the Object you are trying to load and the Object you need to load are equal then this is a circular reference and an error is thrown
+        /// If the Object you are trying to load and the Object you need to load are equal then this is a circular reference and an error is thrown.
         /// </para>
         /// <para>
-        /// The <see cref="ConfigurationLoader">ConfigurationLoader</see> is not currently capable of detecting more subtle circular references
+        /// The <see cref="ConfigurationLoader">ConfigurationLoader</see> is not currently capable of detecting more subtle circular references.
         /// </para>
         /// </remarks>
         public static bool CheckCircularReference(INode a, INode b, String property)
@@ -763,10 +763,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Creates a URI Node that refers to some Configuration property/type
+        /// Creates a URI Node that refers to some Configuration property/type.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="qname">QName of the property/type</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="qname">QName of the property/type.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -783,11 +783,11 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Clears the Object Loader cache (this is not recommended)
+        /// Clears the Object Loader cache (this is not recommended).
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This method should only be invoked in cases where you have attempted to load an object and some error occurred which was external to dotNetRDF e.g. network connectivity problem and 
+        /// This method should only be invoked in cases where you have attempted to load an object and some error occurred which was external to dotNetRDF e.g. network connectivity problem and. 
         /// </para>
         /// </remarks>
         public static void ClearCache()
@@ -796,13 +796,13 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets all the values given for a property of a given Object in the Configuration Graph
+        /// Gets all the values given for a property of a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
         /// <returns>
-        /// Enumeration of values given for the property for the Object
+        /// Enumeration of values given for the property for the Object.
         /// </returns>
         public static IEnumerable<INode> GetConfigurationData(IGraph g, INode objNode, INode property)
         {
@@ -810,15 +810,15 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets all the literal values given for a property of a given Object in the Configuration Graph
+        /// Gets all the literal values given for a property of a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Only returns the value part of Literal Nodes which are given as values for the property i.e. ignores all non-Literals and discards any language/data type from Literals
+        /// Only returns the value part of Literal Nodes which are given as values for the property i.e. ignores all non-Literals and discards any language/data type from Literals.
         /// </para>
         /// </remarks>
         public static String[] GetConfigurationArray(IGraph g, INode objNode, INode property)
@@ -827,13 +827,13 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the first value given for a property of a given Object in the Configuration Graph
+        /// Gets the first value given for a property of a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
         /// <returns>
-        /// First value given for the property of the Object
+        /// First value given for the property of the Object.
         /// </returns>
         public static INode GetConfigurationNode(IGraph g, INode objNode, INode property)
         {
@@ -842,13 +842,13 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the first value given for the first found property of a given Object in the Configuration Graph
+        /// Gets the first value given for the first found property of a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="properties">Properties</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="properties">Properties.</param>
         /// <returns>
-        /// First value given for the first property of the Object which is matched
+        /// First value given for the first property of the Object which is matched.
         /// </returns>
         public static INode GetConfigurationNode(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
@@ -856,17 +856,17 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the String value or null of the first instance of a property for a given Object in the Configuration Graph where the value for the property is a Literal Node
+        /// Gets the String value or null of the first instance of a property for a given Object in the Configuration Graph where the value for the property is a Literal Node.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
         /// <returns>
         /// <para>
-        /// String value of the first instance of the property or a null if no values or not a literal value
+        /// String value of the first instance of the property or a null if no values or not a literal value.
         /// </para>
         /// <para>
-        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,INode)">GetConfigurationValue</see> function instead
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,INode)">GetConfigurationValue</see> function instead.
         /// </para>
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, INode property)
@@ -887,17 +887,17 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the String value or null of the first instance of the first property for a given Object in the Configuration Graph where the value for the property is a Literal Node
+        /// Gets the String value or null of the first instance of the first property for a given Object in the Configuration Graph where the value for the property is a Literal Node.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="properties">Property Nodes</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="properties">Property Nodes.</param>
         /// <returns>
         /// <para>
-        /// String value of the first instance of the first property or a null if no values or not a literal value
+        /// String value of the first instance of the first property or a null if no values or not a literal value.
         /// </para>
         /// <para>
-        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,IEnumerable{INode})">GetConfigurationValue</see> function instead
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,IEnumerable{INode})">GetConfigurationValue</see> function instead.
         /// </para>
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
@@ -906,11 +906,11 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the String value or null of the first instance of a property for a given Object in the Configuration Graph
+        /// Gets the String value or null of the first instance of a property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
         /// <returns></returns>
         public static String GetConfigurationValue(IGraph g, INode objNode, INode property)
         {
@@ -939,11 +939,11 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the String value or null of the first instance of the first property for a given Object in the Configuration Graph
+        /// Gets the String value or null of the first instance of the first property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="properties">Property Nodes</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="properties">Property Nodes.</param>
         /// <returns></returns>
         public static String GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
@@ -951,14 +951,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the Boolean value or a given default of the first instance of a property for a given Object in the Configuration Graph
+        /// Gets the Boolean value or a given default of the first instance of a property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
-        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
         /// <returns>
-        /// If there is a valid boolean value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// If there is a valid boolean value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
         /// </returns>
         public static bool GetConfigurationBoolean(IGraph g, INode objNode, INode property, bool defValue)
         {
@@ -984,14 +984,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the Boolean value or a given default of the first instance of the first property for a given Object in the Configuration Graph
+        /// Gets the Boolean value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="properties">Property Nodes</param>
-        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="properties">Property Nodes.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
         /// <returns>
-        /// If there is a valid boolean value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// If there is a valid boolean value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
         /// </returns>
         public static bool GetConfigurationBoolean(IGraph g, INode objNode, IEnumerable<INode> properties, bool defValue)
         {
@@ -1019,14 +1019,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph
+        /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
-        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
         /// <returns>
-        /// If there is a valid integer value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// If there is a valid integer value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
         /// </returns>
         public static long GetConfigurationInt64(IGraph g, INode objNode, INode property, long defValue)
         {
@@ -1052,14 +1052,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph
+        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="properties">Property Nodes</param>
-        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="properties">Property Nodes.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
         /// <returns>
-        /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
         /// </returns>
         public static long GetConfigurationInt64(IGraph g, INode objNode, IEnumerable<INode> properties, long defValue)
         {
@@ -1087,14 +1087,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph
+        /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
-        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="property">Property Node.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
         /// <returns>
-        /// If there is a valid integer value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// If there is a valid integer value for the property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
         /// </returns>
         public static int GetConfigurationInt32(IGraph g, INode objNode, INode property, int defValue)
         {
@@ -1120,14 +1120,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph
+        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="properties">Property Nodes</param>
-        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="properties">Property Nodes.</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value.</param>
         /// <returns>
-        /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned.
         /// </returns>
         public static int GetConfigurationInt32(IGraph g, INode objNode, IEnumerable<INode> properties, int defValue)
         {
@@ -1155,15 +1155,15 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets the Username and Password specified for a given Object
+        /// Gets the Username and Password specified for a given Object.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="allowCredentials">Whether settings may be specified using the dnr:credentials property</param>
-        /// <param name="user">Username</param>
-        /// <param name="pwd">Password</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="allowCredentials">Whether settings may be specified using the dnr:credentials property.</param>
+        /// <param name="user">Username.</param>
+        /// <param name="pwd">Password.</param>
         /// <remarks>
-        /// Username and/or Password will be null if there is no value specified for the relevant properties
+        /// Username and/or Password will be null if there is no value specified for the relevant properties.
         /// </remarks>
         public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out String user, out String pwd)
         {
@@ -1187,13 +1187,13 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether the given Object has already been loaded and cached
+        /// Gets whether the given Object has already been loaded and cached.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// If this returns true then loading that object again should be essentially instantaneous as it will come from the cache
+        /// If this returns true then loading that object again should be essentially instantaneous as it will come from the cache.
         /// </remarks>
         public static bool IsCached(IGraph g, INode objNode)
         {
@@ -1202,18 +1202,18 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given Node as an object of the given type based on information from the Configuration Graph
+        /// Loads the Object identified by the given Node as an object of the given type based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Callers of this method should be careful to check that the Object returned is of a usable type to them.  The Target Type parameter does not guarantee that the return value is of that type it is only used to determine which registered instances of <see cref="IObjectFactory">IObjectFactory</see> are potentially capable of creating the desired Object
+        /// Callers of this method should be careful to check that the Object returned is of a usable type to them.  The Target Type parameter does not guarantee that the return value is of that type it is only used to determine which registered instances of <see cref="IObjectFactory">IObjectFactory</see> are potentially capable of creating the desired Object.
         /// </para>
         /// <para>
-        /// Callers should also take care that any Objects returned from this method are disposed of when the caller no longer has a use for them as otherwise the reference kept in the cache here will cause the Object to remain in-memory consuming resources
+        /// Callers should also take care that any Objects returned from this method are disposed of when the caller no longer has a use for them as otherwise the reference kept in the cache here will cause the Object to remain in-memory consuming resources.
         /// </para>
         /// </remarks>
         public static Object LoadObject(IGraph g, INode objNode, Type targetType)
@@ -1277,10 +1277,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given Node based on information from the Configuration Graph
+        /// Loads the Object identified by the given Node based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -1303,14 +1303,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Attempts to find the Default Type to load an Object as when no explicit dnr:type property has been declared but an rdf:type property has been declared giving a valid Configuration Class
+        /// Attempts to find the Default Type to load an Object as when no explicit dnr:type property has been declared but an rdf:type property has been declared giving a valid Configuration Class.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> Only some configuration classes have corresponding default types, in general it is recommended that Configuration Graphs should always use the dnr:type property to explicitly state the intended type of an Object
+        /// <strong>Note:</strong> Only some configuration classes have corresponding default types, in general it is recommended that Configuration Graphs should always use the dnr:type property to explicitly state the intended type of an Object.
         /// </para>
         /// </remarks>
         public static String GetDefaultType(IGraph g, INode objNode)
@@ -1331,9 +1331,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Attempts to return the Default Type to load an Object as when there is no dnr:type property but there is a rdf:type property
+        /// Attempts to return the Default Type to load an Object as when there is no dnr:type property but there is a rdf:type property.
         /// </summary>
-        /// <param name="typeUri">Type URI declared by the rdf:type property</param>
+        /// <param name="typeUri">Type URI declared by the rdf:type property.</param>
         /// <returns></returns>
         public static String GetDefaultType(String typeUri)
         {
@@ -1367,7 +1367,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Attempts to resolve special &lt;appsettings&gt; URIs into actual values
+        /// Attempts to resolve special &lt;appsettings&gt; URIs into actual values.
         /// </summary>
         /// <param name="g"></param>
         /// <param name="n"></param>
@@ -1377,7 +1377,7 @@ namespace VDS.RDF.Configuration
         /// These special URIs have the form &lt;appsetting:Key&gt; where <strong>Key</strong> is the key for an appSetting in your applications configuration file.  When used these URIs are resolved at load time into the actual values from your configuration file.  This allows you to avoid spreading configuration data over multiple files since you can specify things like connection settings in the Application Config file and then simply reference them in the dotNetRDF configuration file.
         /// </para>
         /// <para>
-        /// <strong>Warning: </strong> This feature is not supported in the Silverlight build 
+        /// <strong>Warning: </strong> This feature is not supported in the Silverlight build. 
         /// </para>
         /// </remarks>
         public static INode ResolveAppSetting(IGraph g, INode n)
@@ -1407,7 +1407,7 @@ namespace VDS.RDF.Configuration
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
-        /// loads an existing configuration graph and applies auto-configuration
+        /// loads an existing configuration graph and applies auto-configuration.
         /// </summary>
         public ConfigurationLoader(IGraph configGraph)
             : this(configGraph, true)
@@ -1416,7 +1416,7 @@ namespace VDS.RDF.Configuration
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
-        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// loads an existing configuration graph and optionally applies auto-configuration.
         /// </summary>
         public ConfigurationLoader(IGraph configGraph, bool autoConfigure)
         {
@@ -1429,7 +1429,7 @@ namespace VDS.RDF.Configuration
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
-        /// loads an existing configuration graph and applies auto-configuration
+        /// loads an existing configuration graph and applies auto-configuration.
         /// </summary>
         public ConfigurationLoader(string file)
             : this(file, true)
@@ -1438,7 +1438,7 @@ namespace VDS.RDF.Configuration
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
-        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// loads an existing configuration graph and optionally applies auto-configuration.
         /// </summary>
         public ConfigurationLoader(string file, bool autoConfigure)
         {
@@ -1447,7 +1447,7 @@ namespace VDS.RDF.Configuration
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
-        /// loads an existing configuration graph from file and applies auto-configuration
+        /// loads an existing configuration graph from file and applies auto-configuration.
         /// </summary>
         public ConfigurationLoader(Uri graphUri)
             : this(graphUri, true)
@@ -1456,7 +1456,7 @@ namespace VDS.RDF.Configuration
 
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
-        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// loads an existing configuration graph and optionally applies auto-configuration.
         /// </summary>
         public ConfigurationLoader(Uri graphUri, bool autoConfigure)
         {
@@ -1464,10 +1464,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
+        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         public T LoadObject<T>(string blankNodeIdentifier)
         {
@@ -1475,10 +1475,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph
+        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         public T LoadObject<T>(Uri objectIdentifier)
         {
@@ -1486,10 +1486,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>
+        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         public object LoadObject(string blankNodeIdentifier)
         {
@@ -1503,10 +1503,10 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given URI as an <see cref="Object"/>
+        /// Loads the Object identified by the given URI as an <see cref="Object"/>.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         public object LoadObject(Uri objectIdentifier)
         {
@@ -1522,9 +1522,9 @@ namespace VDS.RDF.Configuration
         #endregion
 
         /// <summary>
-        /// Registers an Object Factory with the Configuration Loader
+        /// Registers an Object Factory with the Configuration Loader.
         /// </summary>
-        /// <param name="factory">Object Factory</param>
+        /// <param name="factory">Object Factory.</param>
         public static void AddObjectFactory(IObjectFactory factory)
         {
             Type loaderType = factory.GetType();
@@ -1535,7 +1535,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets/Sets the in-use Path Resolver
+        /// Gets/Sets the in-use Path Resolver.
         /// </summary>
         public static IPathResolver PathResolver
         {
@@ -1550,9 +1550,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Resolves a Path using the in-use path-resolver
+        /// Resolves a Path using the in-use path-resolver.
         /// </summary>
-        /// <param name="path">Path to resolve</param>
+        /// <param name="path">Path to resolve.</param>
         /// <returns></returns>
         public static String ResolvePath(String path)
         {

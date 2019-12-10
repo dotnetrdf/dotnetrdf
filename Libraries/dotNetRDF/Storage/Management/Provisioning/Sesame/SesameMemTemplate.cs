@@ -30,7 +30,7 @@ using System.ComponentModel;
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
     /// <summary>
-    /// Template for creating Sesame memory stores
+    /// Template for creating Sesame memory stores.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -63,9 +63,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         : BaseSesameTemplate
     {
         /// <summary>
-        /// Creates a new memory store template
+        /// Creates a new memory store template.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         public SesameMemTemplate(String id)
             : base(id, "Sesame Memory", "A Sesame memory store is stored fully in-memory and may be persisted to/from disk") 
         {
@@ -74,7 +74,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets the template graph used to create the store
+        /// Gets the template graph used to create the store.
         /// </summary>
         /// <returns></returns>
         public override IGraph GetTemplateGraph()
@@ -108,7 +108,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets whether to persist the store
+        /// Gets/Sets whether to persist the store.
         /// </summary>
         [Category("Sesame Configuration"), Description("Whether the store is persisted"), DefaultValue(true)]
         public bool Persist
@@ -118,7 +118,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets the sync delay
+        /// Gets/Sets the sync delay.
         /// </summary>
         [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
         public int SyncDelay
@@ -128,7 +128,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets whether to enable direct type hierarchy inferencing
+        /// Gets/Sets whether to enable direct type hierarchy inferencing.
         /// </summary>
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
         public bool DirectTypeHierarchyInferencing
@@ -138,7 +138,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets whether to enable RDF Schema Inferencing
+        /// Gets/Sets whether to enable RDF Schema Inferencing.
         /// </summary>
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
         public bool RdfSchemaInferencing

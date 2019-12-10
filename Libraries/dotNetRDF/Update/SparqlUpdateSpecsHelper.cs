@@ -27,7 +27,7 @@
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// Static Helper class for providing constants, helper functions etc regarding the SPARQL Update specification
+    /// Static Helper class for providing constants, helper functions etc regarding the SPARQL Update specification.
     /// </summary>
     public static class SparqlUpdateSpecsHelper
     {

@@ -31,11 +31,11 @@ using System.IO.Compression;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Abstract base class for RDF writers that generate GZipped output
+    /// Abstract base class for RDF writers that generate GZipped output.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// While the normal witers can be used with GZip streams directly this class just abstracts the wrapping of file/stream output into a GZip stream if it is not already passed as such
+    /// While the normal witers can be used with GZip streams directly this class just abstracts the wrapping of file/stream output into a GZip stream if it is not already passed as such.
     /// </para>
     /// </remarks>
     public abstract class BaseGZipWriter
@@ -44,10 +44,10 @@ namespace VDS.RDF.Writing
         private IRdfWriter _writer;
 
         /// <summary>
-        /// Creates a new GZipped writer
+        /// Creates a new GZipped writer.
         /// </summary>
-        /// <param name="writer">Underlying writer</param>
-        /// <exception cref="ArgumentNullException">raised if <paramref name="writer"/> is null</exception>
+        /// <param name="writer">Underlying writer.</param>
+        /// <exception cref="ArgumentNullException">raised if <paramref name="writer"/> is null.</exception>
         protected BaseGZipWriter(IRdfWriter writer)
         {
             _writer = writer ?? throw new ArgumentNullException(nameof(writer));
@@ -55,10 +55,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph as GZipped output
+        /// Saves a Graph as GZipped output.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">File to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
@@ -67,10 +67,10 @@ namespace VDS.RDF.Writing
 
 
         /// <summary>
-        /// Saves a Graph as GZipped output
+        /// Saves a Graph as GZipped output.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Writer to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Writer to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             if (g == null) throw new RdfOutputException("Cannot write RDF from a null Graph");
@@ -95,9 +95,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method for raising warning events
+        /// Helper method for raising warning events.
         /// </summary>
-        /// <param name="message">Warning message</param>
+        /// <param name="message">Warning message.</param>
         private void RaiseWarning(string message)
         {
             Warning?.Invoke(message);
@@ -109,7 +109,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the description of the writer
+        /// Gets the description of the writer.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -119,90 +119,90 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
-    /// Writer for GZipped NTriples
+    /// Writer for GZipped NTriples.
     /// </summary>
     public class GZippedNTriplesWriter
         : BaseGZipWriter
     {
         /// <summary>
-        /// Creates a new GZipped NTriples writer
+        /// Creates a new GZipped NTriples writer.
         /// </summary>
         public GZippedNTriplesWriter()
             : base(new NTriplesWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped Turtle
+    /// Writer for GZipped Turtle.
     /// </summary>
     public class GZippedTurtleWriter
         : BaseGZipWriter
     {
         /// <summary>
-        /// Creates a new GZipped Turtle writer
+        /// Creates a new GZipped Turtle writer.
         /// </summary>
         public GZippedTurtleWriter()
             : base(new CompressingTurtleWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped Notation 3
+    /// Writer for GZipped Notation 3.
     /// </summary>
     public class GZippedNotation3Writer
         : BaseGZipWriter
     {
         /// <summary>
-        /// Creates a new GZipped Notation 3 writer
+        /// Creates a new GZipped Notation 3 writer.
         /// </summary>
         public GZippedNotation3Writer()
             : base(new Notation3Writer()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped RDF/XML
+    /// Writer for GZipped RDF/XML.
     /// </summary>
     public class GZippedRdfXmlWriter
         : BaseGZipWriter
     {
         /// <summary>
-        /// Creates a new GZipped RDF/XML writer
+        /// Creates a new GZipped RDF/XML writer.
         /// </summary>
         public GZippedRdfXmlWriter()
             : base(new RdfXmlWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped RDF/JSON
+    /// Writer for GZipped RDF/JSON.
     /// </summary>
     public class GZippedRdfJsonWriter
         : BaseGZipWriter
     {
         /// <summary>
-        /// Creates a new GZipped RDF/JSON writer
+        /// Creates a new GZipped RDF/JSON writer.
         /// </summary>
         public GZippedRdfJsonWriter()
             : base(new RdfJsonWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped RDFa
+    /// Writer for GZipped RDFa.
     /// </summary>
     public class GZippedRdfAWriter
         : BaseGZipWriter
     {
         /// <summary>
-        /// Creates a new GZipped RDFa writer
+        /// Creates a new GZipped RDFa writer.
         /// </summary>
         public GZippedRdfAWriter()
             : base(new HtmlWriter()) { }
     }
 
     /// <summary>
-    /// Writer for GZipped JSON-LD
+    /// Writer for GZipped JSON-LD.
     /// </summary>
     public class GZippedJsonLdWriter : BaseGZipDatasetWriter
     {
         /// <summary>
-        /// Create a new GZippedJsonLdWriter
+        /// Create a new GZippedJsonLdWriter.
         /// </summary>
         public GZippedJsonLdWriter() : base(new JsonLdWriter())
         {
@@ -210,10 +210,10 @@ namespace VDS.RDF.Writing
 
         /// <summary>
         /// Create a new GZippedJsonLdWriter with a specific set of 
-        /// <see cref="JsonLdWriterOptions"/>
+        /// <see cref="JsonLdWriterOptions"/>.
         /// </summary>
         /// <param name="writerOptions">The writer options to pass through
-        /// to the underlying <see cref="JsonLdWriter"/></param>
+        /// to the underlying <see cref="JsonLdWriter"/>.</param>
         public GZippedJsonLdWriter(JsonLdWriterOptions writerOptions) : base(new JsonLdWriter(writerOptions))
         {
         }

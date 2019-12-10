@@ -32,7 +32,7 @@ using VDS.RDF.Nodes;
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
-    /// Represents the ARQ afn:now() function
+    /// Represents the ARQ afn:now() function.
     /// </summary>
     public class NowFunction 
         : ISparqlExpression
@@ -41,12 +41,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         private IValuedNode _node;
 
         /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID
+        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns>
-        /// Returns a constant Literal Node which is a Date Time typed Literal
+        /// Returns a constant Literal Node which is a Date Time typed Literal.
         /// </returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Type of the Expression
+        /// Gets the Type of the Expression.
         /// </summary>
         public SparqlExpressionType Type
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public virtual string Functor
         {
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets whether an expression can safely be evaluated in parallel
+        /// Gets whether an expression can safely be evaluated in parallel.
         /// </summary>
         public virtual bool CanParallelise
         {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the variables in the expression
+        /// Gets the variables in the expression.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Gets the arguments of the expression
+        /// Gets the arguments of the expression.
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
@@ -132,9 +132,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
-        /// Returns the expression as there are no arguments to be transformed
+        /// Returns the expression as there are no arguments to be transformed.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {

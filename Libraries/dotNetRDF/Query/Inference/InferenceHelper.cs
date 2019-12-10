@@ -33,17 +33,17 @@ namespace VDS.RDF.Query.Inference
     }*/
 
     /// <summary>
-    /// Helper class containing constants and methods for use in implementing OWL support
+    /// Helper class containing constants and methods for use in implementing OWL support.
     /// </summary>
     public static class OwlHelper
     {
         /// <summary>
-        /// Class containing Extraction Mode constants
+        /// Class containing Extraction Mode constants.
         /// </summary>
         public static class OwlExtractMode
         {
             /// <summary>
-            /// OWL Extraction Mode constants
+            /// OWL Extraction Mode constants.
             /// </summary>
             public const String DefaultStatements = "DefaultStatements",
                                 AllClass = "AllClass",
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Inference
         }
 
         /// <summary>
-        /// OWL Class and Property Constants
+        /// OWL Class and Property Constants.
         /// </summary>
         public const String OwlNothing = "http://www.w3.org/2002/07/owl#Nothing";
     }

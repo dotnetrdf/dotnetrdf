@@ -33,23 +33,23 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Zero Length Path in the SPARQL Algebra
+    /// Represents a Zero Length Path in the SPARQL Algebra.
     /// </summary>
     public class ZeroLengthPath : BasePathOperator
     {
         /// <summary>
-        /// Creates a new Zero Length Path
+        /// Creates a new Zero Length Path.
         /// </summary>
-        /// <param name="start">Path Start</param>
-        /// <param name="end">Path End</param>
-        /// <param name="path">Property Path</param>
+        /// <param name="start">Path Start.</param>
+        /// <param name="end">Path End.</param>
+        /// <param name="path">Property Path.</param>
         public ZeroLengthPath(PatternItem start, PatternItem end, ISparqlPath path)
             : base(start, path, end) { }
 
         /// <summary>
-        /// Evaluates a Zero Length Path
+        /// Evaluates a Zero Length Path.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -219,7 +219,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Algebra back into a Graph Pattern
+        /// Transforms the Algebra back into a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public override GraphPattern ToGraphPattern()

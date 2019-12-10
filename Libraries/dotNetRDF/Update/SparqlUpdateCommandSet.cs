@@ -34,7 +34,7 @@ using VDS.RDF.Query.Optimisation;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// Represents a sequence of SPARQL Update Commands to be executed on a Dataset
+    /// Represents a sequence of SPARQL Update Commands to be executed on a Dataset.
     /// </summary>
     public class SparqlUpdateCommandSet
     {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Update
         private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
 
         /// <summary>
-        /// Creates a new empty Command Set
+        /// Creates a new empty Command Set.
         /// </summary>
         public SparqlUpdateCommandSet()
         {
@@ -54,36 +54,36 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Creates a new Command Set containing the given Command
+        /// Creates a new Command Set containing the given Command.
         /// </summary>
-        /// <param name="command">Command</param>
+        /// <param name="command">Command.</param>
         public SparqlUpdateCommandSet(SparqlUpdateCommand command)
         {
             _commands.Add(command);
         }
 
         /// <summary>
-        /// Creates a new Command Set with the given Commands
+        /// Creates a new Command Set with the given Commands.
         /// </summary>
-        /// <param name="commands">Commands</param>
+        /// <param name="commands">Commands.</param>
         public SparqlUpdateCommandSet(IEnumerable<SparqlUpdateCommand> commands)
         {
             _commands.AddRange(commands);
         }
 
         /// <summary>
-        /// Adds a new Command to the end of the sequence of Commands
+        /// Adds a new Command to the end of the sequence of Commands.
         /// </summary>
-        /// <param name="command">Command to add</param>
+        /// <param name="command">Command to add.</param>
         internal void AddCommand(SparqlUpdateCommand command)
         {
             _commands.Add(command);
         }
 
         /// <summary>
-        /// Gets the Command at the given index
+        /// Gets the Command at the given index.
         /// </summary>
-        /// <param name="index">Index</param>
+        /// <param name="index">Index.</param>
         /// <returns></returns>
         public SparqlUpdateCommand this[int index]
         {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the number of Commands in the set
+        /// Gets the number of Commands in the set.
         /// </summary>
         public int CommandCount
         {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the enumeration of Commands in the set
+        /// Gets the enumeration of Commands in the set.
         /// </summary>
         public IEnumerable<SparqlUpdateCommand> Commands
         {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets/Sets the Base URI for the Command Set
+        /// Gets/Sets the Base URI for the Command Set.
         /// </summary>
         public Uri BaseUri
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the Namespace Map for the Command Set
+        /// Gets the Namespace Map for the Command Set.
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
@@ -156,9 +156,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets/Sets the Timeout in milliseconds for the execution of the Updates
+        /// Gets/Sets the Timeout in milliseconds for the execution of the Updates.
         /// </summary>
-        /// <remarks>Default is no timeout</remarks>
+        /// <remarks>Default is no timeout.</remarks>
         public long Timeout
         {
             get
@@ -172,9 +172,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets/Sets the Time the updates took to execute
+        /// Gets/Sets the Time the updates took to execute.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if you try to inspect the execution time before/during the execution of updates</exception>
+        /// <exception cref="InvalidOperationException">Thrown if you try to inspect the execution time before/during the execution of updates.</exception>
         public TimeSpan? UpdateExecutionTime
         {
             get
@@ -195,7 +195,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets/Sets the Algebra Optimisers to be applied to portions of updates that require queries to be made
+        /// Gets/Sets the Algebra Optimisers to be applied to portions of updates that require queries to be made.
         /// </summary>
         public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
         {
@@ -217,9 +217,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Optimises the Commands in the Command Set
+        /// Optimises the Commands in the Command Set.
         /// </summary>
-        /// <param name="optimiser">Optimiser to use</param>
+        /// <param name="optimiser">Optimiser to use.</param>
         public void Optimise(IQueryOptimiser optimiser)
         {
             foreach (SparqlUpdateCommand c in _commands)
@@ -229,9 +229,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Optimises the Commands in the Command Set
+        /// Optimises the Commands in the Command Set.
         /// </summary>
-        /// <remarks>Uses the globally registered query optimiser from <see cref="SparqlOptimiser.QueryOptimiser">SparqlOptimiser.QueryOptimiser</see></remarks>
+        /// <remarks>Uses the globally registered query optimiser from <see cref="SparqlOptimiser.QueryOptimiser">SparqlOptimiser.QueryOptimiser</see>.</remarks>
         public void Optimise()
         {
             foreach (SparqlUpdateCommand c in _commands)
@@ -241,9 +241,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes the Command Set using the given Update Processor
+        /// Processes the Command Set using the given Update Processor.
         /// </summary>
-        /// <param name="processor">Update Processor</param>
+        /// <param name="processor">Update Processor.</param>
         public void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessCommandSet(this);
@@ -286,7 +286,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets the String representation of the Command Set
+        /// Gets the String representation of the Command Set.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

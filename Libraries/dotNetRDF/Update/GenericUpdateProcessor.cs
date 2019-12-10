@@ -39,14 +39,14 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// SPARQL Update Processor which processes commands against a generic underlying store represented by an <see cref="IStorageProvider">IStorageProvider</see> implementation
+    /// SPARQL Update Processor which processes commands against a generic underlying store represented by an <see cref="IStorageProvider">IStorageProvider</see> implementation.
     /// </summary>
     /// <remarks>
     /// <para>
     /// If the provided manager also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface then the managers native SPARQL Update implementation will be used for the non-type specific calls i.e. <see cref="GenericUpdateProcessor.ProcessCommand">ProcessCommand()</see> and <see cref="GenericUpdateProcessor.ProcessCommandSet">ProcessCommandSet()</see>.  At all other times the SPARQL Update commands will be processed by approximating their behaviour through calls to <see cref="IStorageProvider.SaveGraph">SaveGraph()</see>, <see cref="IStorageProvider.LoadGraph(IGraph, Uri)">LoadGraph()</see> and <see cref="IStorageProvider.UpdateGraph(Uri, System.Collections.Generic.IEnumerable{VDS.RDF.Triple}, IEnumerable{Triple})">UpdateGraph()</see> in addition to local in-memory manipulation of the data.  Some commands such as INSERT and DELETE can only be processed when the manager is also a <see cref="IQueryableStorage">IQueryableStorage</see> since they rely on making a query and performing actions based on the results of that query.
     /// </para>
     /// <para>
-    /// The performance of this processor is somewhat dependent on the underlying <see cref="IStorageProvider">IStorageProvider</see>.  If the underlying manager supports triple level updates as indicated by the <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property then operations can be performed quite efficiently, if this is not the case then any operation which modifies a Graph will need to load the existing Graph from the store, make the modifications locally in-memory and then save the resulting Graph back to the Store
+    /// The performance of this processor is somewhat dependent on the underlying <see cref="IStorageProvider">IStorageProvider</see>.  If the underlying manager supports triple level updates as indicated by the <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property then operations can be performed quite efficiently, if this is not the case then any operation which modifies a Graph will need to load the existing Graph from the store, make the modifications locally in-memory and then save the resulting Graph back to the Store.
     /// </para>
     /// </remarks>
     public class GenericUpdateProcessor 
@@ -55,9 +55,9 @@ namespace VDS.RDF.Update
         private IStorageProvider _manager;
 
         /// <summary>
-        /// Creates a new Generic Update Processor
+        /// Creates a new Generic Update Processor.
         /// </summary>
-        /// <param name="manager">Generic IO Manager</param>
+        /// <param name="manager">Generic IO Manager.</param>
         public GenericUpdateProcessor(IStorageProvider manager)
         {
             if (manager.IsReadOnly) throw new ArgumentException("Cannot create a GenericUpdateProcessor for a store which is read-only", "manager");
@@ -65,7 +65,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Discards any outstanding changes
+        /// Discards any outstanding changes.
         /// </summary>
         public virtual void Discard()
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Flushes any outstanding changes to the underlying store
+        /// Flushes any outstanding changes to the underlying store.
         /// </summary>
         public virtual void Flush()
         {
@@ -81,9 +81,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes an ADD command
+        /// Processes an ADD command.
         /// </summary>
-        /// <param name="cmd">Add Command</param>
+        /// <param name="cmd">Add Command.</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -127,11 +127,11 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a CLEAR command
+        /// Processes a CLEAR command.
         /// </summary>
-        /// <param name="cmd">Clear Command</param>
+        /// <param name="cmd">Clear Command.</param>
         /// <remarks>
-        /// Implemented by replacing the Graph with an empty Graph
+        /// Implemented by replacing the Graph with an empty Graph.
         /// </remarks>
         public void ProcessClearCommand(ClearCommand cmd)
         {
@@ -217,9 +217,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a COPY command
+        /// Processes a COPY command.
         /// </summary>
-        /// <param name="cmd">Copy Command</param>
+        /// <param name="cmd">Copy Command.</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -276,15 +276,15 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a CREATE command
+        /// Processes a CREATE command.
         /// </summary>
-        /// <param name="cmd">Create Command</param>
+        /// <param name="cmd">Create Command.</param>
         /// <remarks>
         /// <para>
-        /// Implemented by adding an empty Graph to the Store
+        /// Implemented by adding an empty Graph to the Store.
         /// </para>
         /// <para>
-        /// <strong>Warning:</strong> As the <see cref="IStorageProvider">IStorageProvider</see> interface does not allow checking whether a Graph exists processing CREATE commands can result in overwriting existing Graphs
+        /// <strong>Warning:</strong> As the <see cref="IStorageProvider">IStorageProvider</see> interface does not allow checking whether a Graph exists processing CREATE commands can result in overwriting existing Graphs.
         /// </para>
         /// </remarks>
         public void ProcessCreateCommand(CreateCommand cmd)
@@ -312,9 +312,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a command
+        /// Processes a command.
         /// </summary>
-        /// <param name="cmd">Command</param>
+        /// <param name="cmd">Command.</param>
         /// <remarks>
         /// <para>
         /// If the provided manager also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface then the managers native SPARQL Update implementation will be used.
@@ -373,9 +373,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a command set
+        /// Processes a command set.
         /// </summary>
-        /// <param name="commands">Command Set</param>
+        /// <param name="commands">Command Set.</param>
         /// <remarks>
         /// <para>
         /// If the provided manager also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface then the managers native SPARQL Update implementation will be used.
@@ -407,12 +407,12 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a DELETE command
+        /// Processes a DELETE command.
         /// </summary>
-        /// <param name="cmd">Delete Command</param>
+        /// <param name="cmd">Delete Command.</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableStorage">IQueryableStorage</see> interface in order for DELETE commands to be processed
+        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableStorage">IQueryableStorage</see> interface in order for DELETE commands to be processed.
         /// </para>
         /// </remarks>
         public void ProcessDeleteCommand(DeleteCommand cmd)
@@ -597,9 +597,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a DELETE DATA command
+        /// Processes a DELETE DATA command.
         /// </summary>
-        /// <param name="cmd">DELETE Data Command</param>
+        /// <param name="cmd">DELETE Data Command.</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -714,9 +714,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a DROP command
+        /// Processes a DROP command.
         /// </summary>
-        /// <param name="cmd">Drop Command</param>
+        /// <param name="cmd">Drop Command.</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -802,12 +802,12 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes an INSERT command
+        /// Processes an INSERT command.
         /// </summary>
-        /// <param name="cmd">Insert Command</param>
+        /// <param name="cmd">Insert Command.</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableStorage">IQueryableStorage</see> interface in order for INSERT commands to be processed
+        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableStorage">IQueryableStorage</see> interface in order for INSERT commands to be processed.
         /// </para>
         /// </remarks>
         public void ProcessInsertCommand(InsertCommand cmd)
@@ -992,9 +992,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes an INSERT DATA command
+        /// Processes an INSERT DATA command.
         /// </summary>
-        /// <param name="cmd">Insert Data Command</param>
+        /// <param name="cmd">Insert Data Command.</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -1090,9 +1090,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a LOAD command
+        /// Processes a LOAD command.
         /// </summary>
-        /// <param name="cmd">Load Command</param>
+        /// <param name="cmd">Load Command.</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -1141,9 +1141,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes an INSERT/DELETE command
+        /// Processes an INSERT/DELETE command.
         /// </summary>
-        /// <param name="cmd">Insert/Delete Command</param>
+        /// <param name="cmd">Insert/Delete Command.</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -1447,9 +1447,9 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Processes a MOVE command
+        /// Processes a MOVE command.
         /// </summary>
-        /// <param name="cmd">Move Command</param>
+        /// <param name="cmd">Move Command.</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
             if (_manager is IUpdateableStorage)
@@ -1524,10 +1524,10 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Determines whether a Graph Pattern is valid for use in an INSERT/DELETE DATA command
+        /// Determines whether a Graph Pattern is valid for use in an INSERT/DELETE DATA command.
         /// </summary>
-        /// <param name="p">Graph Pattern</param>
-        /// <param name="top">Is this the top level pattern?</param>
+        /// <param name="p">Graph Pattern.</param>
+        /// <param name="top">Is this the top level pattern?.</param>
         /// <returns></returns>
         private bool IsValidDataPattern(GraphPattern p, bool top)
         {

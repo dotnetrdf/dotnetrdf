@@ -34,7 +34,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents the Cluster Service provided by a Pellet Knowledge Base
+    /// Represents the Cluster Service provided by a Pellet Knowledge Base.
     /// </summary>
     public class ClusterService : PelletService
     {
@@ -54,9 +54,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// Gets a list of lists expressing clusters within the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
+        /// <param name="number">Number of Clusters.</param>
         /// <returns></returns>
         public List<List<INode>> Cluster(int number)
         {
@@ -78,10 +78,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// Gets a list of lists expressing clusters within the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
-        /// <param name="type">QName of a Type to cluster around</param>
+        /// <param name="number">Number of Clusters.</param>
+        /// <param name="type">QName of a Type to cluster around.</param>
         /// <returns></returns>
         public List<List<INode>> Cluster(int number, String type)
         {
@@ -103,9 +103,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// Gets the raw Cluster Graph for the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
+        /// <param name="number">Number of Clusters.</param>
         /// <returns></returns>
         public IGraph ClusterRaw(int number)
         {
@@ -132,10 +132,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// Gets the raw Cluster Graph for the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
-        /// <param name="type">QName of a Type to Cluster around</param>
+        /// <param name="number">Number of Clusters.</param>
+        /// <param name="type">QName of a Type to Cluster around.</param>
         /// <returns></returns>
         public IGraph ClusterRaw(int number, String type)
         {
@@ -170,11 +170,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// Gets a list of lists expressing clusters within the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
-        /// <param name="callback">Callback to be invoked when the operation completes</param>
-        /// <param name="state">State to be passed to the callback</param>
+        /// <param name="number">Number of Clusters.</param>
+        /// <param name="callback">Callback to be invoked when the operation completes.</param>
+        /// <param name="state">State to be passed to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -207,12 +207,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// Gets a list of lists expressing clusters within the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
-        /// <param name="type">QName of a Type to cluster around</param>
-        /// <param name="callback">Callback to be invoked when the operation completes</param>
-        /// <param name="state">State to be passed to the callback</param>
+        /// <param name="number">Number of Clusters.</param>
+        /// <param name="type">QName of a Type to cluster around.</param>
+        /// <param name="callback">Callback to be invoked when the operation completes.</param>
+        /// <param name="state">State to be passed to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -245,11 +245,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// Gets the raw Cluster Graph for the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
-        /// <param name="callback">Callback to be invoked when the operation completes</param>
-        /// <param name="state">State to be passed to the callback</param>
+        /// <param name="number">Number of Clusters.</param>
+        /// <param name="callback">Callback to be invoked when the operation completes.</param>
+        /// <param name="state">State to be passed to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
@@ -305,12 +305,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 
         /// <summary>
-        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// Gets the raw Cluster Graph for the Knowledge Base.
         /// </summary>
-        /// <param name="number">Number of Clusters</param>
-        /// <param name="type">QName of a Type to Cluster around</param>
-        /// <param name="callback">Callback to be invoked when the operation completes</param>
-        /// <param name="state">State to be passed to the callback</param>
+        /// <param name="number">Number of Clusters.</param>
+        /// <param name="type">QName of a Type to Cluster around.</param>
+        /// <param name="callback">Callback to be invoked when the operation completes.</param>
+        /// <param name="state">State to be passed to the callback.</param>
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>

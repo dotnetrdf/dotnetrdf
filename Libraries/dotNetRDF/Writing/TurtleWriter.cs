@@ -36,12 +36,12 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating RDF in Turtle Syntax
+    /// Class for generating RDF in Turtle Syntax.
     /// </summary>
     /// <remarks>
-    /// Similar in speed to the <see cref="CompressingTurtleWriter">CompressingTurtleWriter</see> but doesn't use the full Blank Node and Collection syntax compressions
+    /// Similar in speed to the <see cref="CompressingTurtleWriter">CompressingTurtleWriter</see> but doesn't use the full Blank Node and Collection syntax compressions.
     /// </remarks>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
     [Obsolete("Deprecated in favour of the CompressingTurtleWriter which uses a much fuller range of syntax compressions", false)]
     public class TurtleWriter
         : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
@@ -51,21 +51,21 @@ namespace VDS.RDF.Writing
         private TurtleSyntax _syntax = TurtleSyntax.Original;
 
         /// <summary>
-        /// Creates a new Turtle Writer
+        /// Creates a new Turtle Writer.
         /// </summary>
         public TurtleWriter() { }
 
         /// <summary>
-        /// Creates a new Turtle Writer
+        /// Creates a new Turtle Writer.
         /// </summary>
-        /// <param name="syntax">Turtle Syntax</param>
+        /// <param name="syntax">Turtle Syntax.</param>
         public TurtleWriter(TurtleSyntax syntax)
         {
             _syntax = syntax;
         }
 
         /// <summary>
-        /// Gets/Sets whether Pretty Printing is used
+        /// Gets/Sets whether Pretty Printing is used.
         /// </summary>
         public bool PrettyPrintMode
         {
@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether the Writer is allowed to use High Speed write mode
+        /// Gets/Sets whether the Writer is allowed to use High Speed write mode.
         /// </summary>
         /// <remarks>High Speed Write Mode is engaged when the Writer determines that the contents of the Graph are not well suited to Turtle syntax compressions.  Usually the writer compresses triples into groups by Subject using Predicate-Object lists to output the Triples relating to each Subject.  If the number of distinct Subjects is greater than 75% of the Triples in the Graph then High Speed write mode will be used, in High Speed mode all Triples are written fully and no grouping of any sort is done.</remarks>
         public bool HighSpeedModePermitted
@@ -84,15 +84,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the type of the Triple Formatter used by this writer
+        /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
         public Type TripleFormatterType => (_syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
 
         /// <summary>
-        /// Saves a Graph to a File
+        /// Saves a Graph to a File.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="filename">Filename to save to</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="filename">Filename to save to.</param>
         public override void Save(IGraph g, string filename)
         {
             using (var stream = File.Open(filename, FileMode.Create))
@@ -102,10 +102,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Graph using an arbitrary <see cref="TextWriter">TextWriter</see>
+        /// Saves a Graph using an arbitrary <see cref="TextWriter">TextWriter</see>.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="output">Writer to save using</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="output">Writer to save using.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             TurtleWriterContext context = new TurtleWriterContext(g, output, _prettyprint, _allowhispeed, _syntax);
@@ -113,9 +113,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates the Output for a Graph
+        /// Generates the Output for a Graph.
         /// </summary>
-        /// <param name="context">Context for writing the Graph</param>
+        /// <param name="context">Context for writing the Graph.</param>
         private void GenerateOutput(TurtleWriterContext context)
         {
             // Write Base Uri
@@ -240,11 +240,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates the Output for a Node in Turtle Syntax
+        /// Generates the Output for a Node in Turtle Syntax.
         /// </summary>
-        /// <param name="context">Context for writing the Graph</param>
-        /// <param name="n">Node to generate Output for</param>
-        /// <param name="segment">Segment of the Triple being written</param>
+        /// <param name="context">Context for writing the Graph.</param>
+        /// <param name="n">Node to generate Output for.</param>
+        /// <param name="segment">Segment of the Triple being written.</param>
         /// <returns></returns>
         private string GenerateNodeOutput(TurtleWriterContext context, INode n, TripleSegment segment)
         {
@@ -283,9 +283,9 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="Warning">Warning</see> event
+        /// Helper method for raising the <see cref="Warning">Warning</see> event.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
             RdfWriterWarning d = Warning;
@@ -301,7 +301,7 @@ namespace VDS.RDF.Writing
         public override event RdfWriterWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

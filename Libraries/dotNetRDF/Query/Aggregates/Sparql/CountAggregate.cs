@@ -34,7 +34,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.Sparql
 {
     /// <summary>
-    /// Class representing COUNT Aggregate Function
+    /// Class representing COUNT Aggregate Function.
     /// </summary>
     public class CountAggregate
         : BaseAggregate
@@ -42,9 +42,9 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         private String _varname;
 
         /// <summary>
-        /// Creates a new COUNT Aggregate
+        /// Creates a new COUNT Aggregate.
         /// </summary>
-        /// <param name="expr">Variable Expression</param>
+        /// <param name="expr">Variable Expression.</param>
         public CountAggregate(VariableTerm expr)
             : base(expr)
         {
@@ -52,17 +52,17 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Creates a new Count Aggregate
+        /// Creates a new Count Aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public CountAggregate(ISparqlExpression expr)
             : base(expr) { }
 
         /// <summary>
-        /// Counts the results
+        /// Counts the results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the String representation of the Aggregate
+        /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the Functor of the Aggregate
+        /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
         {

@@ -30,7 +30,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Class responsible for setting the predicate part of triple patterns
+    /// Class responsible for setting the predicate part of triple patterns.
     /// </summary>
     public sealed class TriplePatternPredicatePart
     {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>.
         /// </summary>
         public TriplePatternObjectPart Predicate(SparqlVariable variable)
         {
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Predicate"/>.
         /// </summary>
         public TriplePatternObjectPart Predicate(string variableName)
         {
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Predicate"/>
+        /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Predicate"/>.
         /// </summary>
         public TriplePatternObjectPart Predicate(PatternItem predicate)
         {
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/>
+        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/>.
         /// </summary>
         public TriplePatternObjectPart PredicateUri(Uri predicateUri)
         {
@@ -81,9 +81,9 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a QName
+        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a QName.
         /// </summary>
-        /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/></remarks>
+        /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/>.</remarks>
         public TriplePatternObjectPart PredicateUri(string predicateQName)
         {
             var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName, _prefixes);
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a <see cref="IUriNode"/>
+        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a <see cref="IUriNode"/>.
         /// </summary>
         public TriplePatternObjectPart PredicateUri(IUriNode predicateNode)
         {

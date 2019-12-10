@@ -40,7 +40,7 @@ using VDS.RDF.Writing.Serialization;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Class for representing a Row of a Sparql Result Set
+    /// Class for representing a Row of a Sparql Result Set.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="result")]
@@ -55,15 +55,15 @@ namespace VDS.RDF.Query
         private Dictionary<String, INode> _resultValues = new Dictionary<string, INode>();
 
         /// <summary>
-        /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library
+        /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library.
         /// </summary>
         public SparqlResult()
         { }
 
         /// <summary>
-        /// Creates a new SPARQL Result from the given Set
+        /// Creates a new SPARQL Result from the given Set.
         /// </summary>
-        /// <param name="s">Set</param>
+        /// <param name="s">Set.</param>
         public SparqlResult(ISet s)
         {
             foreach (var var in s.Variables)
@@ -74,10 +74,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Creates a new SPARQL Result from the given Set which contains only the given variables in the given order
+        /// Creates a new SPARQL Result from the given Set which contains only the given variables in the given order.
         /// </summary>
-        /// <param name="s">Set</param>
-        /// <param name="variables">Variables</param>
+        /// <param name="s">Set.</param>
+        /// <param name="variables">Variables.</param>
         public SparqlResult(ISet s, IEnumerable<String> variables)
         {
             _variables.AddRange(variables);
@@ -89,10 +89,10 @@ namespace VDS.RDF.Query
 
 #if !NETCORE
         /// <summary>
-        /// Deserialization only constructor
+        /// Deserialization only constructor.
         /// </summary>
-        /// <param name="info">Serialization Info</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Info.</param>
+        /// <param name="context">Streaming Context.</param>
         private SparqlResult(SerializationInfo info, StreamingContext context)
         {
             _resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
@@ -101,11 +101,11 @@ namespace VDS.RDF.Query
 #endif
 
         /// <summary>
-        /// Gets the Value that is bound to the given Variable
+        /// Gets the Value that is bound to the given Variable.
         /// </summary>
-        /// <param name="variable">Variable whose Value you wish to retrieve</param>
+        /// <param name="variable">Variable whose Value you wish to retrieve.</param>
         /// <returns></returns>
-        /// <exception cref="RdfException">Thrown if there is nothing bound to the given Variable Name for this Result</exception>
+        /// <exception cref="RdfException">Thrown if there is nothing bound to the given Variable Name for this Result.</exception>
         public INode Value(string variable)
         {
             if (_resultValues.ContainsKey(variable))
@@ -119,11 +119,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Value that is bound to the given Variable
+        /// Gets the Value that is bound to the given Variable.
         /// </summary>
-        /// <param name="variable">Variable whose Value you wish to retrieve</param>
+        /// <param name="variable">Variable whose Value you wish to retrieve.</param>
         /// <returns></returns>
-        /// <exception cref="RdfException">Thrown if there is nothing bound to the given Variable Name for this Result</exception>
+        /// <exception cref="RdfException">Thrown if there is nothing bound to the given Variable Name for this Result.</exception>
         public INode this[string variable]
         {
             get
@@ -133,14 +133,14 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Value that is bound at the given Index
+        /// Gets the Value that is bound at the given Index.
         /// </summary>
-        /// <param name="index">Index whose Value you wish to retrieve</param>
+        /// <param name="index">Index whose Value you wish to retrieve.</param>
         /// <returns></returns>
         /// <remarks>
         /// As of 1.0.0 the order of variables in a result may/may not vary depending on the original query.  If a specific variable list was declared dotNetRDF tries to preserve that order but this may not always happen depending on how results are received.
         /// </remarks>
-        /// <exception cref="IndexOutOfRangeException">Thrown if there is nothing bound at the given Index</exception>
+        /// <exception cref="IndexOutOfRangeException">Thrown if there is nothing bound at the given Index.</exception>
         public INode this[int index]
         {
             get
@@ -157,11 +157,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Tries to get a value (which may be null) for the variable
+        /// Tries to get a value (which may be null) for the variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
-        /// <returns>True if the variable was present (even it was unbound) and false otherwise</returns>
+        /// <param name="variable">Variable.</param>
+        /// <param name="value">Value.</param>
+        /// <returns>True if the variable was present (even it was unbound) and false otherwise.</returns>
         public bool TryGetValue(String variable, out INode value)
         {
             if (HasValue(variable))
@@ -177,11 +177,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Tries to get a non-null value for the variable
+        /// Tries to get a non-null value for the variable.
         /// </summary>
-        /// <param name="variable">Variable</param>
-        /// <param name="value">Value</param>
-        /// <returns>True if the variable was present and bound, false otherwise</returns>
+        /// <param name="variable">Variable.</param>
+        /// <param name="value">Value.</param>
+        /// <returns>True if the variable was present and bound, false otherwise.</returns>
         public bool TryGetBoundValue(String variable, out INode value)
         {
             if (HasValue(variable))
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the number of Variables for which this Result contains Bindings
+        /// Gets the number of Variables for which this Result contains Bindings.
         /// </summary>
         public int Count
         {
@@ -208,10 +208,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Internal Only Method for setting the Value of a Result
+        /// Internal Only Method for setting the Value of a Result.
         /// </summary>
-        /// <param name="variable">Variable Name</param>
-        /// <param name="value">Value bound to the Variable</param>
+        /// <param name="variable">Variable Name.</param>
+        /// <param name="value">Value bound to the Variable.</param>
         internal void SetValue(string variable, INode value)
         {
             if (_resultValues.ContainsKey(variable))
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Sets the variable ordering for the result
+        /// Sets the variable ordering for the result.
         /// </summary>
         /// <param name="variables"></param>
         internal void SetVariableOrdering(IEnumerable<String> variables)
@@ -242,10 +242,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Variable has a value (which may be null) for this result
+        /// Checks whether a given Variable has a value (which may be null) for this result.
         /// </summary>
-        /// <param name="variable">Variable Name</param>
-        /// <returns>True if the variable is present, false otherwise</returns>
+        /// <param name="variable">Variable Name.</param>
+        /// <returns>True if the variable is present, false otherwise.</returns>
         /// <remarks>Returns true even if the value is null, use <see cref="SparqlResult.HasBoundValue"/> instead to see whether a non-null value is present for a variable.</remarks>
         public bool HasValue(string variable)
         {
@@ -253,17 +253,17 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Variable has a non-null value for this result
+        /// Checks whether a given Variable has a non-null value for this result.
         /// </summary>
-        /// <param name="variable">Variable Name</param>
-        /// <returns>True if the variable is present and has a non-null value, false otherwise</returns>
+        /// <param name="variable">Variable Name.</param>
+        /// <returns>True if the variable is present and has a non-null value, false otherwise.</returns>
         public bool HasBoundValue(String variable)
         {
             return _resultValues.ContainsKey(variable) && _resultValues[variable] != null;
         }
 
         /// <summary>
-        /// Gets the set of Variables that are bound in this Result
+        /// Gets the set of Variables that are bound in this Result.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -274,10 +274,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets whether a Result is a Ground Result
+        /// Gets whether a Result is a Ground Result.
         /// </summary>
         /// <remarks>
-        /// A <strong>Ground Result</strong> is a result which is considered to be a fixed fact.  In practise this means it contains no Blank Nodes
+        /// A <strong>Ground Result</strong> is a result which is considered to be a fixed fact.  In practise this means it contains no Blank Nodes.
         /// </remarks>
         public bool IsGroundResult
         {
@@ -288,7 +288,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Removes all Variables Bindings where the Variable is Unbound
+        /// Removes all Variables Bindings where the Variable is Unbound.
         /// </summary>
         public void Trim()
         {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Displays the Result as a comma separated string of pairs of the form ?var = value
+        /// Displays the Result as a comma separated string of pairs of the form ?var = value.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -336,9 +336,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Displays the Result as a comma separated string of paris of the form ?var = value where values are formatted using the given Node Formatter
+        /// Displays the Result as a comma separated string of paris of the form ?var = value where values are formatted using the given Node Formatter.
         /// </summary>
-        /// <param name="formatter">Node Formatter</param>
+        /// <param name="formatter">Node Formatter.</param>
         /// <returns></returns>
         public String ToString(INodeFormatter formatter)
         {
@@ -370,11 +370,11 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Override of the Equals method for Results
+        /// Override of the Equals method for Results.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        /// <remarks>Used implicitly in applying Distinct and Reduced modifiers to the Result Set</remarks>
+        /// <remarks>Used implicitly in applying Distinct and Reduced modifiers to the Result Set.</remarks>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -421,10 +421,10 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Override of the GetHashCode method for Results
+        /// Override of the GetHashCode method for Results.
         /// </summary>
         /// <returns></returns>
-        /// <remarks>Used implicitly in applying Distinct and Reduced modifiers to the Result Set</remarks>
+        /// <remarks>Used implicitly in applying Distinct and Reduced modifiers to the Result Set.</remarks>
         public override int GetHashCode()
         {
             var output = new StringBuilder();
@@ -451,11 +451,11 @@ namespace VDS.RDF.Query
         #region IEnumerable<KeyValuePair<string,INode>> Members
 
         /// <summary>
-        /// Enumerates the Bindings of Variable Names to Values in this Result
+        /// Enumerates the Bindings of Variable Names to Values in this Result.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Does not respect the ordering of the variables (if any)
+        /// Does not respect the ordering of the variables (if any).
         /// </remarks>
         public IEnumerator<KeyValuePair<string, INode>> GetEnumerator()
         {
@@ -463,7 +463,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Enumerates the Bindings of Variable Names to Values in this Result
+        /// Enumerates the Bindings of Variable Names to Values in this Result.
         /// </summary>
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -477,17 +477,17 @@ namespace VDS.RDF.Query
         #region Serialization
 
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("bindings", _resultValues);
         }
 
         /// <summary>
-        /// Gets the schema for XML serialization
+        /// Gets the schema for XML serialization.
         /// </summary>
         /// <returns></returns>
         public XmlSchema GetSchema()
@@ -496,9 +496,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization)
+        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization).
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public void WriteXml(XmlWriter writer)
         {
             // writer.WriteStartElement("bindings");
@@ -513,9 +513,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization)
+        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization).
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public void ReadXml(XmlReader reader)
         {
             // <result> may be empty

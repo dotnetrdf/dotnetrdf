@@ -29,75 +29,75 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for classes which can create Nodes
+    /// Interface for classes which can create Nodes.
     /// </summary>
     public interface INodeFactory
     {
         /// <summary>
-        /// Creates a Blank Node with a new automatically generated ID
+        /// Creates a Blank Node with a new automatically generated ID.
         /// </summary>
         /// <returns></returns>
         IBlankNode CreateBlankNode();
 
         /// <summary>
-        /// Creates a Blank Node with the given Node ID
+        /// Creates a Blank Node with the given Node ID.
         /// </summary>
-        /// <param name="nodeId">Node ID</param>
+        /// <param name="nodeId">Node ID.</param>
         /// <returns></returns>
         IBlankNode CreateBlankNode(string nodeId);
 
         /// <summary>
-        /// Creates a Graph Literal Node which represents the empty Subgraph
+        /// Creates a Graph Literal Node which represents the empty Subgraph.
         /// </summary>
         /// <returns></returns>
         IGraphLiteralNode CreateGraphLiteralNode();
 
         /// <summary>
-        /// Creates a Graph Literal Node which represents the given Subgraph
+        /// Creates a Graph Literal Node which represents the given Subgraph.
         /// </summary>
-        /// <param name="subgraph">Subgraph</param>
+        /// <param name="subgraph">Subgraph.</param>
         /// <returns></returns>
         IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph);
 
         /// <summary>
-        /// Creates a Literal Node with the given Value and Data Type
+        /// Creates a Literal Node with the given Value and Data Type.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="datatype">Data Type URI of the Literal</param>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="datatype">Data Type URI of the Literal.</param>
         /// <returns></returns>
         ILiteralNode CreateLiteralNode(string literal, Uri datatype);
 
         /// <summary>
-        /// Creates a Literal Node with the given Value
+        /// Creates a Literal Node with the given Value.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
+        /// <param name="literal">Value of the Literal.</param>
         /// <returns></returns>
         ILiteralNode CreateLiteralNode(string literal);
 
         /// <summary>
-        /// Creates a Literal Node with the given Value and Language
+        /// Creates a Literal Node with the given Value and Language.
         /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="langspec">Language Specifier for the Literal</param>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="langspec">Language Specifier for the Literal.</param>
         /// <returns></returns>
         ILiteralNode CreateLiteralNode(string literal, string langspec);
 
         /// <summary>
-        /// Creates a URI Node for the given URI
+        /// Creates a URI Node for the given URI.
         /// </summary>
-        /// <param name="uri">URI</param>
+        /// <param name="uri">URI.</param>
         /// <returns></returns>
         IUriNode CreateUriNode(Uri uri);
 
         /// <summary>
-        /// Creates a Variable Node for the given Variable Name
+        /// Creates a Variable Node for the given Variable Name.
         /// </summary>
         /// <param name="varname"></param>
         /// <returns></returns>
         IVariableNode CreateVariableNode(string varname);
 
         /// <summary>
-        /// Creates a new unused Blank Node ID and returns it
+        /// Creates a new unused Blank Node ID and returns it.
         /// </summary>
         /// <returns></returns>
         String GetNextBlankNodeID();

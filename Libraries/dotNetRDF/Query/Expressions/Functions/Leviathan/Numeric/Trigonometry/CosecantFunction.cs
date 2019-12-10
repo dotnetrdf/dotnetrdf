@@ -29,7 +29,7 @@ using System;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
     /// <summary>
-    /// Represents the Leviathan lfn:cosec() or lfn:cosec-1 function
+    /// Represents the Leviathan lfn:cosec() or lfn:cosec-1 function.
     /// </summary>
     public class CosecantFunction
         : BaseTrigonometricFunction
@@ -39,17 +39,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         private static Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
 
         /// <summary>
-        /// Creates a new Leviathan Cosecant Function
+        /// Creates a new Leviathan Cosecant Function.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public CosecantFunction(ISparqlExpression expr)
             : base(expr, _cosecant) { }
 
         /// <summary>
-        /// Creates a new Leviathan Cosecant Function
+        /// Creates a new Leviathan Cosecant Function.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="inverse">Whether this should be the inverse function</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="inverse">Whether this should be the inverse function.</param>
         public CosecantFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -99,9 +99,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

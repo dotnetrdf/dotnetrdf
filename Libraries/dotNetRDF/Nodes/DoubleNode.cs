@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// A Valued Node representing double values
+    /// A Valued Node representing double values.
     /// </summary>
     public class DoubleNode
         : NumericNode
@@ -40,11 +40,11 @@ namespace VDS.RDF.Nodes
         private double _value;
 
         /// <summary>
-        /// Creates a new double valued node
+        /// Creates a new double valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Double value</param>
-        /// <param name="lexicalValue">Lexical value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Double value.</param>
+        /// <param name="lexicalValue">Lexical value.</param>
         public DoubleNode(IGraph g, double value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
         {
@@ -52,15 +52,15 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Creates a new double valued node
+        /// Creates a new double valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
-        /// <param name="value">Double value</param>
+        /// <param name="g">Graph the node belongs to.</param>
+        /// <param name="value">Double value.</param>
         public DoubleNode(IGraph g, double value)
             : this(g, value, value.ToString()) { }
 
         /// <summary>
-        /// Gets the integer value of the double
+        /// Gets the integer value of the double.
         /// </summary>
         /// <returns></returns>
         public override long AsInteger()
@@ -76,7 +76,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the decimal value of the double
+        /// Gets the decimal value of the double.
         /// </summary>
         /// <returns></returns>
         public override decimal AsDecimal()
@@ -92,7 +92,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the float value of the double
+        /// Gets the float value of the double.
         /// </summary>
         /// <returns></returns>
         public override float AsFloat()
@@ -108,7 +108,7 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
-        /// Gets the double value
+        /// Gets the double value.
         /// </summary>
         /// <returns></returns>
         public override double AsDouble()

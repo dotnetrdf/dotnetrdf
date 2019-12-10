@@ -32,7 +32,7 @@ using VDS.Common.References;
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
-    /// Abstract Base class of dataset designed around out of memory datasets where you rarely wish to load data into memory but simply wish to know which graph to look in for data
+    /// Abstract Base class of dataset designed around out of memory datasets where you rarely wish to load data into memory but simply wish to know which graph to look in for data.
     /// </summary>
     public abstract class BaseQuadDataset
         : ISparqlDataset
@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Datasets
         private Uri _defaultGraphUri;
 
         /// <summary>
-        /// Creates a new Quad Dataset
+        /// Creates a new Quad Dataset.
         /// </summary>
         public BaseQuadDataset()
         {
@@ -52,9 +52,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Creates a new Quad Dataset
+        /// Creates a new Quad Dataset.
         /// </summary>
-        /// <param name="unionDefaultGraph">Whether to make the default graph the union of all graphs</param>
+        /// <param name="unionDefaultGraph">Whether to make the default graph the union of all graphs.</param>
         public BaseQuadDataset(bool unionDefaultGraph)
             : this()
         {
@@ -62,9 +62,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Creates a new Quad Dataset
+        /// Creates a new Quad Dataset.
         /// </summary>
-        /// <param name="defaultGraphUri">URI of the Default Graph</param>
+        /// <param name="defaultGraphUri">URI of the Default Graph.</param>
         public BaseQuadDataset(Uri defaultGraphUri)
             : this(false)
         {
@@ -89,18 +89,18 @@ namespace VDS.RDF.Query.Datasets
         #region Active and Default Graph management
 
         /// <summary>
-        /// Sets the Active Graph
+        /// Sets the Active Graph.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="graphUris">Graph URIs.</param>
         public void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
             _activeGraphs.Value.Push(graphUris.ToList());
         }
 
         /// <summary>
-        /// Sets the Active Graph
+        /// Sets the Active Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public void SetActiveGraph(Uri graphUri)
         {
             if (graphUri == null)
@@ -114,25 +114,25 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Sets the Default Graph
+        /// Sets the Default Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public void SetDefaultGraph(Uri graphUri)
         {
             _defaultGraphs.Value.Push(new Uri[] { graphUri });
         }
 
         /// <summary>
-        /// Sets the Default Graph
+        /// Sets the Default Graph.
         /// </summary>
-        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="graphUris">Graph URIs.</param>
         public void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
             _defaultGraphs.Value.Push(graphUris.ToList());
         }
 
         /// <summary>
-        /// Resets the Active Graph
+        /// Resets the Active Graph.
         /// </summary>
         public void ResetActiveGraph()
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Resets the Default Graph
+        /// Resets the Default Graph.
         /// </summary>
         public void ResetDefaultGraph()
         {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Default Graph URIs
+        /// Gets the Default Graph URIs.
         /// </summary>
         public IEnumerable<Uri> DefaultGraphUris
         {
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Active Graph URIs
+        /// Gets the Active Graph URIs.
         /// </summary>
         public IEnumerable<Uri> ActiveGraphUris
         {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether this dataset uses a union default graph
+        /// Gets whether this dataset uses a union default graph.
         /// </summary>
         public bool UsesUnionDefaultGraph
         {
@@ -213,9 +213,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the given URI represents the default graph of the dataset
+        /// Gets whether the given URI represents the default graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected bool IsDefaultGraph(Uri graphUri)
         {
@@ -225,9 +225,9 @@ namespace VDS.RDF.Query.Datasets
         #endregion
 
         /// <summary>
-        /// Adds a Graph to the dataset
+        /// Adds a Graph to the dataset.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public virtual bool AddGraph(IGraph g)
         {
             bool added = false;
@@ -239,29 +239,29 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Adds a Quad to the Dataset
+        /// Adds a Quad to the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         protected internal abstract bool AddQuad(Uri graphUri, Triple t);
 
         /// <summary>
-        /// Removes a Graph from the Dataset
+        /// Removes a Graph from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public abstract bool RemoveGraph(Uri graphUri);
 
         /// <summary>
-        /// Removes a Quad from the Dataset
+        /// Removes a Quad from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         protected internal abstract bool RemoveQuad(Uri graphUri, Triple t);
 
         /// <summary>
-        /// Gets whether a Graph with the given URI is the Dataset
+        /// Gets whether a Graph with the given URI is the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public bool HasGraph(Uri graphUri)
         {
@@ -283,14 +283,14 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Determines whether a given Graph exists in the Dataset
+        /// Determines whether a given Graph exists in the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected abstract bool HasGraphInternal(Uri graphUri);
 
         /// <summary>
-        /// Gets the Graphs in the dataset
+        /// Gets the Graphs in the dataset.
         /// </summary>
         public virtual IEnumerable<IGraph> Graphs
         {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the URIs of the graphs in the dataset
+        /// Gets the URIs of the graphs in the dataset.
         /// </summary>
         public abstract IEnumerable<Uri> GraphUris
         {
@@ -310,13 +310,13 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets the Graph with the given URI from the Dataset
+        /// Gets the Graph with the given URI from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage
+        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
         /// </para>
         /// </remarks>
         public virtual IGraph this[Uri graphUri]
@@ -351,16 +351,16 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets a Graph from the dataset
+        /// Gets a Graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected abstract IGraph GetGraphInternal(Uri graphUri);
 
         /// <summary>
-        /// Gets a modifiable graph from the dataset
+        /// Gets a modifiable graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public virtual IGraph GetModifiableGraph(Uri graphUri)
         {
@@ -368,7 +368,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the dataset has any triples
+        /// Gets whether the dataset has any triples.
         /// </summary>
         public virtual bool HasTriples
         {
@@ -379,9 +379,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the dataset contains a triple
+        /// Gets whether the dataset contains a triple.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         public bool ContainsTriple(Triple t)
         {
@@ -389,15 +389,15 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether a Triple exists in a specific Graph of the dataset
+        /// Gets whether a Triple exists in a specific Graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected abstract internal bool ContainsQuad(Uri graphUri, Triple t);
 
         /// <summary>
-        /// Gets all triples from the dataset
+        /// Gets all triples from the dataset.
         /// </summary>
         public IEnumerable<Triple> Triples
         {
@@ -410,16 +410,16 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples for a specific graph of the dataset
+        /// Gets all the Triples for a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuads(Uri graphUri);
 
         /// <summary>
-        /// Gets all the Triples with a given subject
+        /// Gets all the Triples with a given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
@@ -429,17 +429,17 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples with a given subject from a specific graph of the dataset
+        /// Gets all the Triples with a given subject from a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="subj">Subject</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuadsWithSubject(Uri graphUri, INode subj);
 
         /// <summary>
-        /// Gets all the Triples with a given predicate
+        /// Gets all the Triples with a given predicate.
         /// </summary>
-        /// <param name="pred">Predicate</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
@@ -449,17 +449,17 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples with a given predicate from a specific graph of the dataset
+        /// Gets all the Triples with a given predicate from a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuadsWithPredicate(Uri graphUri, INode pred);
 
         /// <summary>
-        /// Gets all the Triples with a given object
+        /// Gets all the Triples with a given object.
         /// </summary>
-        /// <param name="obj">Object</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
@@ -469,18 +469,18 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples with a given object from a specific graph of the dataset
+        /// Gets all the Triples with a given object from a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="obj">Object</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuadsWithObject(Uri graphUri, INode obj);
 
         /// <summary>
-        /// Gets all the Triples with a given subject and predicate
+        /// Gets all the Triples with a given subject and predicate.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
@@ -490,19 +490,19 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples with a given subject and predicate from a specific graph of the dataset
+        /// Gets all the Triples with a given subject and predicate from a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuadsWithSubjectPredicate(Uri graphUri, INode subj, INode pred);
 
         /// <summary>
-        /// Gets all the Triples with a given subject and object
+        /// Gets all the Triples with a given subject and object.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
@@ -512,19 +512,19 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples with a given subject and object from a specific graph of the dataset
+        /// Gets all the Triples with a given subject and object from a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuadsWithSubjectObject(Uri graphUri, INode subj, INode obj);
 
         /// <summary>
-        /// Gets all the Triples with a given predicate and object
+        /// Gets all the Triples with a given predicate and object.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
@@ -534,16 +534,16 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples with a given predicate and object from a specific graph of the dataset
+        /// Gets all the Triples with a given predicate and object from a specific graph of the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         protected abstract internal IEnumerable<Triple> GetQuadsWithPredicateObject(Uri graphUri, INode pred, INode obj);
 
         /// <summary>
-        /// Flushes any changes to the dataset
+        /// Flushes any changes to the dataset.
         /// </summary>
         public virtual void Flush()
         {
@@ -551,7 +551,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Discards any changes to the dataset
+        /// Discards any changes to the dataset.
         /// </summary>
         public virtual void Discard()
         {
@@ -560,53 +560,53 @@ namespace VDS.RDF.Query.Datasets
     }
 
     /// <summary>
-    /// Abstract Base class for immutable quad datasets
+    /// Abstract Base class for immutable quad datasets.
     /// </summary>
     public abstract class BaseImmutableQuadDataset
         : BaseQuadDataset
     {
         /// <summary>
-        /// Throws an error as this dataset is immutable
+        /// Throws an error as this dataset is immutable.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         public sealed override bool AddGraph(IGraph g)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
 
         /// <summary>
-        /// Throws an error as this dataset is immutable
+        /// Throws an error as this dataset is immutable.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         protected internal override bool AddQuad(Uri graphUri, Triple t)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
 
         /// <summary>
-        /// Throws an error as this dataset is immutable
+        /// Throws an error as this dataset is immutable.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public sealed override bool RemoveGraph(Uri graphUri)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
 
         /// <summary>
-        /// Throws an error as this dataset is immutable
+        /// Throws an error as this dataset is immutable.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <param name="t">Triple</param>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="t">Triple.</param>
         protected internal override bool RemoveQuad(Uri graphUri, Triple t)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
 
         /// <summary>
-        /// Throws an error as this dataset is immutable
+        /// Throws an error as this dataset is immutable.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public sealed override IGraph GetModifiableGraph(Uri graphUri)
         {
@@ -615,7 +615,7 @@ namespace VDS.RDF.Query.Datasets
     }
 
     /// <summary>
-    /// Abstract Base class for quad datasets that support transactions
+    /// Abstract Base class for quad datasets that support transactions.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -632,29 +632,29 @@ namespace VDS.RDF.Query.Datasets
         private TripleStore _modifiableGraphs = new TripleStore();
 
         /// <summary>
-        /// Creates a Transactional Quad Dataset
+        /// Creates a Transactional Quad Dataset.
         /// </summary>
         public BaseTransactionalQuadDataset()
             : base() { }
 
         /// <summary>
-        /// Creates a Transactional Quad Dataset
+        /// Creates a Transactional Quad Dataset.
         /// </summary>
-        /// <param name="unionDefaultGraph">Sets whether the default graph should be the union of all graphs</param>
+        /// <param name="unionDefaultGraph">Sets whether the default graph should be the union of all graphs.</param>
         public BaseTransactionalQuadDataset(bool unionDefaultGraph)
             : base(unionDefaultGraph) { }
 
         /// <summary>
-        /// Creates a Transactional Quad Dataset
+        /// Creates a Transactional Quad Dataset.
         /// </summary>
-        /// <param name="defaultGraphUri">Default Graph URI</param>
+        /// <param name="defaultGraphUri">Default Graph URI.</param>
         public BaseTransactionalQuadDataset(Uri defaultGraphUri)
             : base(defaultGraphUri) { }
 
         /// <summary>
-        /// Adds a Graph to the Dataset
+        /// Adds a Graph to the Dataset.
         /// </summary>
-        /// <param name="g">Graph to add</param>
+        /// <param name="g">Graph to add.</param>
         public sealed override bool AddGraph(IGraph g)
         {
             if (HasGraph(g.BaseUri))
@@ -670,15 +670,15 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Adds a Graph to the Dataset
+        /// Adds a Graph to the Dataset.
         /// </summary>
-        /// <param name="g">Graph to add</param>
+        /// <param name="g">Graph to add.</param>
         protected abstract bool AddGraphInternal(IGraph g);
 
         /// <summary>
-        /// Removes a Graph from the Dataset
+        /// Removes a Graph from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         public sealed override bool RemoveGraph(Uri graphUri)
         {
             if (graphUri == null)
@@ -718,15 +718,15 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Removes a Graph from the dataset
+        /// Removes a Graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         protected abstract bool RemoveGraphInternal(Uri graphUri);
 
         /// <summary>
-        /// Gets a Graph from the dataset
+        /// Gets a Graph from the dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override IGraph this[Uri graphUri]
         {
@@ -768,9 +768,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets a Graph from the Dataset that can be modified
+        /// Gets a Graph from the Dataset that can be modified.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public sealed override IGraph GetModifiableGraph(Uri graphUri)
         {
@@ -789,17 +789,17 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets a Graph from the Dataset that can be modified transactionally
+        /// Gets a Graph from the Dataset that can be modified transactionally.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         protected abstract ITransactionalGraph GetModifiableGraphInternal(Uri graphUri);
 
         /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage
+        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage.
         /// </summary>
         /// <remarks>
-        /// Commits the Active Transaction
+        /// Commits the Active Transaction.
         /// </remarks>
         public sealed override void Flush()
         {
@@ -836,10 +836,10 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are discarded
+        /// Ensures that any changes to the Dataset (if any) are discarded.
         /// </summary>
         /// <remarks>
-        /// Rollsback the Active Transaction
+        /// Rollsback the Active Transaction.
         /// </remarks>
         public sealed override void Discard()
         {
@@ -890,7 +890,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Allows the derived dataset to take any post-Flush() actions required
+        /// Allows the derived dataset to take any post-Flush() actions required.
         /// </summary>
         protected virtual void FlushInternal()
         {
@@ -898,7 +898,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Allows the derived dataset to take any post-Discard() actions required
+        /// Allows the derived dataset to take any post-Discard() actions required.
         /// </summary>
         protected virtual void DiscardInternal()
         {

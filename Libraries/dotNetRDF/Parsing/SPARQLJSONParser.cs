@@ -36,15 +36,15 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Parser for SPARQL Results JSON Format
+    /// Parser for SPARQL Results JSON Format.
     /// </summary>
     public class SparqlJsonParser : ISparqlResultsReader
     {
         /// <summary>
-        /// Loads a Result Set from an Input Stream
+        /// Loads a Result Set from an Input Stream.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="input">Input Stream to read from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="input">Input Stream to read from.</param>
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
@@ -52,10 +52,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from a File
+        /// Loads a Result Set from a File.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(SparqlResultSet results, string filename)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
@@ -64,10 +64,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from an Input
+        /// Loads a Result Set from an Input.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
@@ -75,10 +75,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from an Input using a Results Handler
+        /// Loads a Result Set from an Input using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
         public void Load(ISparqlResultsHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
@@ -103,20 +103,20 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from an Input Stream using a Results Handler
+        /// Loads a Result Set from an Input Stream using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input Stream to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input Stream to read from.</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
             Load(handler, (TextReader) input);
         }
 
         /// <summary>
-        /// Loads a Result Set from a file using a Results Handler
+        /// Loads a Result Set from a file using a Results Handler.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="filename">File to read from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="filename">File to read from.</param>
         public void Load(ISparqlResultsHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
@@ -124,17 +124,17 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the Stream as Json
+        /// Parser method which parses the Stream as Json.
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="handler">Results Handler</param>
+        /// <param name="input">Input Stream.</param>
+        /// <param name="handler">Results Handler.</param>
         private void Parse(TextReader input, ISparqlResultsHandler handler)
         {
             ParseResultSetObject(new SparqlJsonParserContext(new CommentIgnoringJsonTextReader(input), handler));
         }
 
         /// <summary>
-        /// Parser method which parses the top level Json Object which represents the overall Result Set
+        /// Parser method which parses the top level Json Object which represents the overall Result Set.
         /// </summary>
         private void ParseResultSetObject(SparqlJsonParserContext context)
         {
@@ -185,7 +185,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the 'head' property of the top level Json Object which represents the Header of the Result Set
+        /// Parser method which parses the 'head' property of the top level Json Object which represents the Header of the Result Set.
         /// </summary>
         private bool ParseHeader(SparqlJsonParserContext context)
         {
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the 'head' property of the top level Json Object which represents the Header of the Result Set
+        /// Parser method which parses the 'head' property of the top level Json Object which represents the Header of the Result Set.
         /// </summary>
         private bool ParseHeader(SparqlJsonParserContext context, bool bodySeen)
         {
@@ -225,7 +225,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the Header Object of the Result Set
+        /// Parser method which parses the Header Object of the Result Set.
         /// </summary>
         private void ParseHeaderObject(SparqlJsonParserContext context, bool bodySeen)
         {
@@ -252,7 +252,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the Properties of the Header Object
+        /// Parser method which parses the Properties of the Header Object.
         /// </summary>
         private void ParseHeaderProperties(SparqlJsonParserContext context, bool bodySeen)
         {
@@ -303,7 +303,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the 'vars' property of the Header Object
+        /// Parser method which parses the 'vars' property of the Header Object.
         /// </summary>
         private void ParseVariables(SparqlJsonParserContext context, bool bodySeen)
         {
@@ -361,7 +361,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the 'link' property of the Header Object
+        /// Parser method which parses the 'link' property of the Header Object.
         /// </summary>
         private void ParseLink(SparqlJsonParserContext context)
         {
@@ -383,7 +383,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the Body of the Result Set which may be either a 'results' or 'boolean' property of the top level Json Object
+        /// Parser method which parses the Body of the Result Set which may be either a 'results' or 'boolean' property of the top level Json Object.
         /// </summary>
         private void ParseBody(SparqlJsonParserContext context)
         {
@@ -419,7 +419,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the Results Object of the Result Set
+        /// Parser method which parses the Results Object of the Result Set.
         /// </summary>
         private void ParseResults(SparqlJsonParserContext context, bool headSeen)
         {
@@ -498,7 +498,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the 'bindings' property of the Results Object
+        /// Parser method which parses the 'bindings' property of the Results Object.
         /// </summary>
         private void ParseBindings(SparqlJsonParserContext context, bool headSeen)
         {
@@ -529,7 +529,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses a Binding Object which occurs in the array of Bindings
+        /// Parser method which parses a Binding Object which occurs in the array of Bindings.
         /// </summary>
         private void ParseBinding(SparqlJsonParserContext context, bool headSeen)
         {
@@ -576,11 +576,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses a Bound Variable Object which occurs within a Binding Object
+        /// Parser method which parses a Bound Variable Object which occurs within a Binding Object.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="var">Variable Name</param>
-        /// <param name="r">Result Object that is being constructed from the Binding Object</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="var">Variable Name.</param>
+        /// <param name="r">Result Object that is being constructed from the Binding Object.</param>
         /// <param name="headSeen"></param>
         private void ParseBoundVariable(SparqlJsonParserContext context, string var, SparqlResult r, bool headSeen)
         {
@@ -726,7 +726,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Parser method which parses the 'boolean' property of the Result Set
+        /// Parser method which parses the 'boolean' property of the Result Set.
         /// </summary>
         private static void ParseBoolean(SparqlJsonParserContext context)
         {
@@ -750,9 +750,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a JSON Token is valid as the value for a RDF term
+        /// Checks whether a JSON Token is valid as the value for a RDF term.
         /// </summary>
-        /// <param name="context">Context</param>
+        /// <param name="context">Context.</param>
         /// <returns></returns>
         private static bool IsValidValue(SparqlJsonParserContext context)
         {
@@ -767,10 +767,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Skips to the end of the current object
+        /// Skips to the end of the current object.
         /// </summary>
-        /// <param name="context">Context</param>
-        /// <param name="issueWarning">True if a warning should be issued</param>
+        /// <param name="context">Context.</param>
+        /// <param name="issueWarning">True if a warning should be issued.</param>
         private void SkipToEndOfObject(SparqlJsonParserContext context, bool issueWarning)
         {
             if (issueWarning)
@@ -898,10 +898,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising Error messages with attached Line Information
+        /// Helper method for raising Error messages with attached Line Information.
         /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="message">Error Message</param>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="message">Error Message.</param>
         /// <returns></returns>
         private static RdfParseException Error(SparqlJsonParserContext context, String message)
         {
@@ -920,9 +920,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -938,7 +938,7 @@ namespace VDS.RDF.Parsing
         public event SparqlWarning Warning;
 
         /// <summary>
-        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// Gets the String representation of the Parser which is a description of the syntax it parses.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

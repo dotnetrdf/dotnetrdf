@@ -36,14 +36,14 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a BGP which is a set of Triple Patterns
+    /// Represents a BGP which is a set of Triple Patterns.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// An Ask BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for ASK queries where we are only concerned with whether a BGP matches and not in the specific solutions
+    /// An Ask BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for ASK queries where we are only concerned with whether a BGP matches and not in the specific solutions.
     /// </para>
     /// <para>
-    /// An Ask BGP can only contain concrete Triple Patterns and/or FILTERs and not any of the other specialised Triple Pattern classes
+    /// An Ask BGP can only contain concrete Triple Patterns and/or FILTERs and not any of the other specialised Triple Pattern classes.
     /// </para>
     /// </remarks>
     public class AskBgp : IBgp
@@ -51,9 +51,9 @@ namespace VDS.RDF.Query.Algebra
         private readonly List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
-        /// Creates a Streamed BGP containing a single Triple Pattern
+        /// Creates a Streamed BGP containing a single Triple Pattern.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
+        /// <param name="p">Triple Pattern.</param>
         public AskBgp(ITriplePattern p)
         {
             if (!IsAskEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
@@ -61,9 +61,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a Streamed BGP containing a set of Triple Patterns
+        /// Creates a Streamed BGP containing a set of Triple Patterns.
         /// </summary>
-        /// <param name="ps">Triple Patterns</param>
+        /// <param name="ps">Triple Patterns.</param>
         public AskBgp(IEnumerable<ITriplePattern> ps)
         {
             if (!ps.All(p => IsAskEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
@@ -71,9 +71,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Determines whether a Triple Pattern can be evaluated using a Lazy ASK approach
+        /// Determines whether a Triple Pattern can be evaluated using a Lazy ASK approach.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
+        /// <param name="p">Triple Pattern.</param>
         /// <returns></returns>
         private bool IsAskEvaluablePattern(ITriplePattern p)
         {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the number of Triple Patterns in the BGP
+        /// Gets the number of Triple Patterns in the BGP.
         /// </summary>
         public int PatternCount
         {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Triple Patterns in the BGP
+        /// Gets the Triple Patterns in the BGP.
         /// </summary>
         public IEnumerable<ITriplePattern> TriplePatterns
         {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<string> FixedVariables
         {
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<string> FloatingVariables
         {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the BGP is the emtpy BGP
+        /// Gets whether the BGP is the emtpy BGP.
         /// </summary>
         public bool IsEmpty
         {
@@ -156,9 +156,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the BGP against the Evaluation Context
+        /// Evaluates the BGP against the Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -365,7 +365,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -374,7 +374,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -386,7 +386,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the BGP back to a Graph Pattern
+        /// Converts the BGP back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -401,11 +401,11 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents a Union
+    /// Represents a Union.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// An Ask Union differs from a standard Union in that if it finds a solution on the LHS it has no need to evaluate the RHS
+    /// An Ask Union differs from a standard Union in that if it finds a solution on the LHS it has no need to evaluate the RHS.
     /// </para>
     /// </remarks>
     public class AskUnion : IUnion
@@ -413,10 +413,10 @@ namespace VDS.RDF.Query.Algebra
         private ISparqlAlgebra _lhs, _rhs;
 
         /// <summary>
-        /// Creates a new Ask Union
+        /// Creates a new Ask Union.
         /// </summary>
-        /// <param name="lhs">LHS Pattern</param>
-        /// <param name="rhs">RHS Pattern</param>
+        /// <param name="lhs">LHS Pattern.</param>
+        /// <param name="rhs">RHS Pattern.</param>
         public AskUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
             _lhs = lhs;
@@ -424,9 +424,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Ask Union
+        /// Evaluates the Ask Union.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -457,7 +457,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -468,7 +468,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -481,7 +481,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -493,7 +493,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the LHS of the Join
+        /// Gets the LHS of the Join.
         /// </summary>
         public ISparqlAlgebra Lhs
         {
@@ -504,7 +504,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the RHS of the Join
+        /// Gets the RHS of the Join.
         /// </summary>
         public ISparqlAlgebra Rhs
         {
@@ -515,7 +515,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -524,7 +524,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -536,7 +536,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Union back to Graph Patterns
+        /// Converts the Union back to Graph Patterns.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -549,9 +549,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser
+        /// Transforms both sides of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -559,9 +559,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser
+        /// Transforms the LHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
@@ -569,9 +569,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser
+        /// Transforms the RHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {

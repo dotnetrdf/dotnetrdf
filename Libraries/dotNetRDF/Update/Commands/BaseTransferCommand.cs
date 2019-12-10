@@ -30,30 +30,30 @@ using System.Text;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Abstract Base Class for SPARQL Update Commands which move data between Graphs
+    /// Abstract Base Class for SPARQL Update Commands which move data between Graphs.
     /// </summary>
     public abstract class BaseTransferCommand : SparqlUpdateCommand
     {
         /// <summary>
-        /// Source Graph URI
+        /// Source Graph URI.
         /// </summary>
         protected Uri _sourceUri;
         /// <summary>
-        /// Destination Graph URI
+        /// Destination Graph URI.
         /// </summary>
         protected Uri _destUri;
         /// <summary>
-        /// Whether errors should be suppressed
+        /// Whether errors should be suppressed.
         /// </summary>
         protected bool _silent = false;
 
         /// <summary>
-        /// Creates a new Transfer Command
+        /// Creates a new Transfer Command.
         /// </summary>
-        /// <param name="type">Command Type</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        /// <param name="destUri">Destination Graph URI</param>
-        /// <param name="silent">Whether errors should be suppressed</param>
+        /// <param name="type">Command Type.</param>
+        /// <param name="sourceUri">Source Graph URI.</param>
+        /// <param name="destUri">Destination Graph URI.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri, bool silent)
             : this(type, sourceUri, destUri)
         {
@@ -61,11 +61,11 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new Transfer Command
+        /// Creates a new Transfer Command.
         /// </summary>
-        /// <param name="type">Command Type</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        /// <param name="destUri">Destination Graph URI</param>
+        /// <param name="type">Command Type.</param>
+        /// <param name="sourceUri">Source Graph URI.</param>
+        /// <param name="destUri">Destination Graph URI.</param>
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
             : base(type)
         {
@@ -74,7 +74,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// URI of the Source Graph
+        /// URI of the Source Graph.
         /// </summary>
         public Uri SourceUri
         {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// URI of the Destination Graph
+        /// URI of the Destination Graph.
         /// </summary>
         public Uri DestinationUri
         {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Whether errors during evaluation should be suppressed
+        /// Whether errors during evaluation should be suppressed.
         /// </summary>
         public bool Silent
         {
@@ -107,7 +107,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a Single Graph
+        /// Gets whether the Command affects a Single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -118,9 +118,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -29,17 +29,17 @@ using Newtonsoft.Json;
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// Parser Context for RDF/JSON Parsers
+    /// Parser Context for RDF/JSON Parsers.
     /// </summary>
     public class JsonParserContext : BaseParserContext
     {
         private JsonTextReader _input;
 
         /// <summary>
-        /// Creates a new JSON Parser Context
+        /// Creates a new JSON Parser Context.
         /// </summary>
-        /// <param name="g">Graph to parse into</param>
-        /// <param name="input">JSON Text Reader to read from</param>
+        /// <param name="g">Graph to parse into.</param>
+        /// <param name="input">JSON Text Reader to read from.</param>
         public JsonParserContext(IGraph g, JsonTextReader input)
             : base(g)
         {
@@ -47,10 +47,10 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Creates a new JSON Parser Context
+        /// Creates a new JSON Parser Context.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">JSON Text Reader to read from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">JSON Text Reader to read from.</param>
         public JsonParserContext(IRdfHandler handler, JsonTextReader input)
             : base(handler)
         {
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the JSON Text Reader which input is read from
+        /// Gets the JSON Text Reader which input is read from.
         /// </summary>
         public JsonTextReader Input
         {
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Current Position of the JSON Text Reader
+        /// Gets the Current Position of the JSON Text Reader.
         /// </summary>
         public PositionInfo CurrentPosition
         {
@@ -87,9 +87,9 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Position range from the given Start Position to the current Position
+        /// Gets the Position range from the given Start Position to the current Position.
         /// </summary>
-        /// <param name="startPosition">Start Position</param>
+        /// <param name="startPosition">Start Position.</param>
         /// <returns></returns>
         public PositionInfo GetPositionRange(PositionInfo startPosition)
         {

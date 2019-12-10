@@ -32,7 +32,7 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
-    /// Represents the Leviathan lfn:rnd() function
+    /// Represents the Leviathan lfn:rnd() function.
     /// </summary>
     public class RandomFunction
         : BaseBinaryExpression
@@ -41,15 +41,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         private int _args = 0;
 
         /// <summary>
-        /// Creates a new Leviathan Random Function
+        /// Creates a new Leviathan Random Function.
         /// </summary>
         public RandomFunction()
             : base(new ConstantTerm(new DoubleNode(null, 0)), new ConstantTerm(new DoubleNode(null, 1))) { }
 
         /// <summary>
-        /// Creates a new Leviathan Random Function
+        /// Creates a new Leviathan Random Function.
         /// </summary>
-        /// <param name="max">Maximum</param>
+        /// <param name="max">Maximum.</param>
         public RandomFunction(ISparqlExpression max)
             : base(new ConstantTerm(new DoubleNode(null, 0)), max)
         {
@@ -57,10 +57,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Creates a new Leviathan Random Function
+        /// Creates a new Leviathan Random Function.
         /// </summary>
-        /// <param name="min">Minumum</param>
-        /// <param name="max">Maximum</param>
+        /// <param name="min">Minumum.</param>
+        /// <param name="max">Maximum.</param>
         public RandomFunction(ISparqlExpression min, ISparqlExpression max)
             : base(min, max)
         {
@@ -68,10 +68,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Evaluates the expression
+        /// Evaluates the expression.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Gets the type of the expression
+        /// Gets the type of the expression.
         /// </summary>
         public override SparqlExpressionType Type
         {
@@ -142,9 +142,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Transforms the Expression using the given Transformer
+        /// Transforms the Expression using the given Transformer.
         /// </summary>
-        /// <param name="transformer">Expression Transformer</param>
+        /// <param name="transformer">Expression Transformer.</param>
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {

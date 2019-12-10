@@ -30,7 +30,7 @@ using System.ComponentModel;
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
     /// <summary>
-    /// Templates for creating remote Sesame stores
+    /// Templates for creating remote Sesame stores.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -57,14 +57,14 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         : BaseSesameTemplate
     {
         /// <summary>
-        /// Creates a new Template
+        /// Creates a new Template.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         public SesameHttpTemplate(String id)
             : base(id, "Remote Sesame Store", "A remote Sesame store is any Sesame store not residing on this Sesame server accessible via the Sesame HTTP protocol") { }
 
         /// <summary>
-        /// Gets/Sets the remote Sesame server to connect to
+        /// Gets/Sets the remote Sesame server to connect to.
         /// </summary>
         [Category("Sesame Configuration"), Description("The Base URL of the remote Sesame server the remote store resides upon")]
         public String RemoteServer
@@ -74,7 +74,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets/Sets the ID of the remote repository to connect to
+        /// Gets/Sets the ID of the remote repository to connect to.
         /// </summary>
         [Category("Sesame Configuration"), Description("The ID of the remote repository")]
         public String RemoteRepositoryID
@@ -84,7 +84,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         }
 
         /// <summary>
-        /// Gets the template graph
+        /// Gets the template graph.
         /// </summary>
         /// <returns></returns>
         public override IGraph GetTemplateGraph()

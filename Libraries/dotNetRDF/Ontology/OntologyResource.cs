@@ -32,37 +32,37 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Base class for representing a resource in an Ontology
+    /// Base class for representing a resource in an Ontology.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class OntologyResource
     {
         /// <summary>
-        /// Storage of Literal Properties
+        /// Storage of Literal Properties.
         /// </summary>
         protected Dictionary<String, List<ILiteralNode>> _literalProperties = new Dictionary<string, List<ILiteralNode>>();
         /// <summary>
-        /// Storage of Resource Properties
+        /// Storage of Resource Properties.
         /// </summary>
         protected Dictionary<String, HashSet<INode>> _resourceProperties = new Dictionary<string, HashSet<INode>>();
         /// <summary>
-        /// The Node which this Resource is a wrapper around
+        /// The Node which this Resource is a wrapper around.
         /// </summary>
         protected INode _resource;
         /// <summary>
-        /// The Graph from which this Resource originates
+        /// The Graph from which this Resource originates.
         /// </summary>
         protected IGraph _graph;
 
         /// <summary>
-        /// Creates a new Ontology Resource for the given Resource in the given Graph
+        /// Creates a new Ontology Resource for the given Resource in the given Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
-        /// <param name="graph">Graph</param>
+        /// <param name="resource">Resource.</param>
+        /// <param name="graph">Graph.</param>
         protected internal OntologyResource(INode resource, IGraph graph)
         {
             if (resource == null) throw new RdfOntologyException("Cannot create an Ontology Resource for a null Resource");
@@ -83,15 +83,15 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Creates a new Ontology Resource for the given Resource in the given Graph
+        /// Creates a new Ontology Resource for the given Resource in the given Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
-        /// <param name="graph">Graph</param>
+        /// <param name="resource">Resource.</param>
+        /// <param name="graph">Graph.</param>
         protected internal OntologyResource(Uri resource, IGraph graph)
             : this(graph.CreateUriNode(resource), graph) { }
 
         /// <summary>
-        /// Gets the Resource that this Ontology Resource refers to
+        /// Gets the Resource that this Ontology Resource refers to.
         /// </summary>
         public INode Resource
         {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Graph that this Ontology Resource is from
+        /// Gets the Graph that this Ontology Resource is from.
         /// </summary>
         public IGraph Graph
         {
@@ -113,10 +113,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Retrieves all the Triples which have the Resource as the subject and the given property URI as the predicate from the Graph and stores the values locally
+        /// Retrieves all the Triples which have the Resource as the subject and the given property URI as the predicate from the Graph and stores the values locally.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="requireLiteral">Whether only Literal values are acceptable</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="requireLiteral">Whether only Literal values are acceptable.</param>
         protected void IntialiseProperty(String propertyUri, bool requireLiteral)
         {
             IUriNode prop = _graph.CreateUriNode(UriFactory.Create(propertyUri));
@@ -139,11 +139,11 @@ namespace VDS.RDF.Ontology
         #region Property Setting Helper Methods
 
         /// <summary>
-        /// Adds a new literal value for a property
+        /// Adds a new literal value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Literal Value</param>
-        /// <param name="persist">Whether the new value should be added to the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Literal Value.</param>
+        /// <param name="persist">Whether the new value should be added to the Graph.</param>
         public bool AddLiteralProperty(String propertyUri, ILiteralNode value, bool persist) 
         {
             if (_literalProperties.ContainsKey(propertyUri))
@@ -168,11 +168,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new literal value for a property
+        /// Adds a new literal value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Literal Value</param>
-        /// <param name="persist">Whether the new value should be added to the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Literal Value.</param>
+        /// <param name="persist">Whether the new value should be added to the Graph.</param>
         public bool AddLiteralProperty(Uri propertyUri, ILiteralNode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
@@ -180,11 +180,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new value for a property
+        /// Adds a new value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Literal Value</param>
-        /// <param name="persist">Whether the new value should be added to the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Literal Value.</param>
+        /// <param name="persist">Whether the new value should be added to the Graph.</param>
         public bool AddResourceProperty(String propertyUri, INode value, bool persist)
         {
             if (_resourceProperties.ContainsKey(propertyUri))
@@ -209,11 +209,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new value for a property
+        /// Adds a new value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Literal Value</param>
-        /// <param name="persist">Whether the new value should be added to the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Literal Value.</param>
+        /// <param name="persist">Whether the new value should be added to the Graph.</param>
         public bool AddResourceProperty(Uri propertyUri, INode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
@@ -221,10 +221,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all values for a Literal Property
+        /// Clears all values for a Literal Property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="persist">Whether the removed values are removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearLiteralProperty(String propertyUri, bool persist)
         {
             if (_literalProperties.ContainsKey(propertyUri))
@@ -240,10 +240,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all values for a Literal Property
+        /// Clears all values for a Literal Property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="persist">Whether the removed values are removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearLiteralProperty(Uri propertyUri, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
@@ -251,10 +251,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all values for a Resource Property
+        /// Clears all values for a Resource Property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="persist">Whether the removed values are removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearResourceProperty(String propertyUri, bool persist)
         {
             if (_resourceProperties.ContainsKey(propertyUri))
@@ -270,10 +270,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all values for a Resource Property
+        /// Clears all values for a Resource Property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="persist">Whether the removed values are removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearResourceProperty(Uri propertyUri, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
@@ -281,11 +281,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a literal value for a property
+        /// Removes a literal value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Value to remove</param>
-        /// <param name="persist">Whether the removed value is removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Value to remove.</param>
+        /// <param name="persist">Whether the removed value is removed from the Graph.</param>
         public bool RemoveLiteralProperty(String propertyUri, ILiteralNode value, bool persist)
         {
             if (_literalProperties.ContainsKey(propertyUri))
@@ -308,11 +308,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a literal value for a property
+        /// Removes a literal value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Value to remove</param>
-        /// <param name="persist">Whether the removed value is removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Value to remove.</param>
+        /// <param name="persist">Whether the removed value is removed from the Graph.</param>
         public bool RemoveLiteralProperty(Uri propertyUri, ILiteralNode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
@@ -320,11 +320,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a value for a property
+        /// Removes a value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Value to remove</param>
-        /// <param name="persist">Whether the removed value is removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Value to remove.</param>
+        /// <param name="persist">Whether the removed value is removed from the Graph.</param>
         public bool RemoveResourceProperty(String propertyUri, INode value, bool persist)
         {
             if (_resourceProperties.ContainsKey(propertyUri))
@@ -347,11 +347,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a value for a property
+        /// Removes a value for a property.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
-        /// <param name="value">Value to remove</param>
-        /// <param name="persist">Whether the removed value is removed from the Graph</param>
+        /// <param name="propertyUri">Property URI.</param>
+        /// <param name="value">Value to remove.</param>
+        /// <param name="persist">Whether the removed value is removed from the Graph.</param>
         public bool RemoveResourceProperty(Uri propertyUri, INode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentException("propertyUri");
@@ -363,9 +363,9 @@ namespace VDS.RDF.Ontology
         #region Specific Property Setting Methods
 
         /// <summary>
-        /// Adds a comment for this resource
+        /// Adds a comment for this resource.
         /// </summary>
-        /// <param name="comment">Comment</param>
+        /// <param name="comment">Comment.</param>
         /// <returns></returns>
         public bool AddComment(String comment)
         {
@@ -373,10 +373,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a comment in a specific language for this resource
+        /// Adds a comment in a specific language for this resource.
         /// </summary>
-        /// <param name="comment">Comment</param>
-        /// <param name="lang">Language</param>
+        /// <param name="comment">Comment.</param>
+        /// <param name="lang">Language.</param>
         /// <returns></returns>
         public bool AddComment(String comment, String lang)
         {
@@ -384,7 +384,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all comments for this resource
+        /// Removes all comments for this resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearComments()
@@ -393,9 +393,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a comment for this resource
+        /// Removes a comment for this resource.
         /// </summary>
-        /// <param name="comment">Comment</param>
+        /// <param name="comment">Comment.</param>
         /// <returns></returns>
         public bool RemoveComment(ILiteralNode comment)
         {
@@ -403,9 +403,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a comment for this resource
+        /// Removes a comment for this resource.
         /// </summary>
-        /// <param name="comment">Comment</param>
+        /// <param name="comment">Comment.</param>
         /// <returns></returns>
         public bool RemoveComment(String comment)
         {
@@ -413,10 +413,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a comment in a specific language for this resource
+        /// Removes a comment in a specific language for this resource.
         /// </summary>
-        /// <param name="comment">Comment</param>
-        /// <param name="lang">Language</param>
+        /// <param name="comment">Comment.</param>
+        /// <param name="lang">Language.</param>
         /// <returns></returns>
         public bool RemoveComment(String comment, String lang)
         {
@@ -424,9 +424,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:differentFrom</em> triple for the resource
+        /// Adds a new <em>owl:differentFrom</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDifferentFrom(INode resource)
         {
@@ -434,9 +434,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:differentFrom</em> triple for the resource
+        /// Adds a new <em>owl:differentFrom</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDifferentFrom(Uri resource)
         {
@@ -444,12 +444,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:differentFrom</em> triple for the resource
+        /// Adds a new <em>owl:differentFrom</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this resource as different from the given resource
+        /// This overload also adds this resource as different from the given resource.
         /// </remarks>
         public bool AddDifferentFrom(OntologyResource resource)
         {
@@ -459,7 +459,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all <em>owl:differentFrom</em> triples for the resource
+        /// Clears all <em>owl:differentFrom</em> triples for the resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearDifferentFrom()
@@ -471,9 +471,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:differentFrom</em> triple for the resource
+        /// Removes a <em>owl:differentFrom</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDifferentFrom(INode resource)
         {
@@ -481,9 +481,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:differentFrom</em> triple for the resource
+        /// Removes a <em>owl:differentFrom</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDifferentFrom(Uri resource)
         {
@@ -491,12 +491,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:differentFrom</em> triple for the resource
+        /// Removes a <em>owl:differentFrom</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this resource as different from the given resource
+        /// This overload also removes this resource as different from the given resource.
         /// </remarks>
         public bool RemoveDifferentFrom(OntologyResource resource)
         {
@@ -506,9 +506,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdfs:isDefinedBy</em> triple for the resource
+        /// Adds a new <em>rdfs:isDefinedBy</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddIsDefinedBy(INode resource)
         {
@@ -516,9 +516,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdfs:isDefinedBy</em> triple for the resource
+        /// Adds a new <em>rdfs:isDefinedBy</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddIsDefinedBy(Uri resource)
         {
@@ -526,9 +526,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdfs:isDefinedBy</em> triple for the resource
+        /// Adds a new <em>rdfs:isDefinedBy</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddIsDefinedBy(OntologyResource resource)
         {
@@ -536,7 +536,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>rdfs:isDefinedBy</em> triples for the resource
+        /// Removes all <em>rdfs:isDefinedBy</em> triples for the resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearIsDefinedBy()
@@ -545,9 +545,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdfs:isDefinedBy</em> triple for the resource
+        /// Removes a <em>rdfs:isDefinedBy</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveIsDefinedBy(INode resource)
         {
@@ -555,9 +555,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdfs:isDefinedBy</em> triple for the resource
+        /// Removes a <em>rdfs:isDefinedBy</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveIsDefinedBy(Uri resource)
         {
@@ -565,9 +565,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdfs:isDefinedBy</em> triple for the resource
+        /// Removes a <em>rdfs:isDefinedBy</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveIsDefinedBy(OntologyResource resource)
         {
@@ -575,9 +575,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a label for the resource
+        /// Adds a label for the resource.
         /// </summary>
-        /// <param name="label">Label</param>
+        /// <param name="label">Label.</param>
         /// <returns></returns>
         public bool AddLabel(String label)
         {
@@ -585,10 +585,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a label in a specific language for a resource
+        /// Adds a label in a specific language for a resource.
         /// </summary>
-        /// <param name="label">Label</param>
-        /// <param name="lang">Language</param>
+        /// <param name="label">Label.</param>
+        /// <param name="lang">Language.</param>
         /// <returns></returns>
         public bool AddLabel(String label, String lang)
         {
@@ -596,7 +596,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears all labels for a resource
+        /// Clears all labels for a resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearLabels()
@@ -605,9 +605,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a specific label for a resource
+        /// Removes a specific label for a resource.
         /// </summary>
-        /// <param name="label">Label</param>
+        /// <param name="label">Label.</param>
         /// <returns></returns>
         public bool RemoveLabel(ILiteralNode label)
         {
@@ -615,9 +615,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a label for a resource
+        /// Removes a label for a resource.
         /// </summary>
-        /// <param name="label">Label</param>
+        /// <param name="label">Label.</param>
         /// <returns></returns>
         public bool RemoveLabel(String label)
         {
@@ -625,10 +625,10 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a label in a specific language for a resource
+        /// Removes a label in a specific language for a resource.
         /// </summary>
-        /// <param name="label">Label</param>
-        /// <param name="lang">Language</param>
+        /// <param name="label">Label.</param>
+        /// <param name="lang">Language.</param>
         /// <returns></returns>
         public bool RemoveLabel(String label, String lang)
         {
@@ -636,9 +636,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:sameAs</em> triple for the resource
+        /// Adds a new <em>owl:sameAs</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSameAs(INode resource)
         {
@@ -646,9 +646,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:sameAs</em> triple for the resource
+        /// Adds a new <em>owl:sameAs</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSameAs(Uri resource)
         {
@@ -656,12 +656,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>owl:sameAs</em> triple for the resource
+        /// Adds a new <em>owl:sameAs</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this resource as an <em>owl:sameAs</em> triple for the given resource
+        /// This overload also adds this resource as an <em>owl:sameAs</em> triple for the given resource.
         /// </remarks>
         public bool AddSameAs(OntologyResource resource)
         {
@@ -671,7 +671,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>owl:sameAs</em> triples for the resource
+        /// Removes all <em>owl:sameAs</em> triples for the resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearSameAs()
@@ -683,9 +683,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:sameAs</em> triple for the resource
+        /// Removes a <em>owl:sameAs</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSameAs(INode resource)
         {
@@ -693,9 +693,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:sameAs</em> triple for the resource
+        /// Removes a <em>owl:sameAs</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSameAs(Uri resource)
         {
@@ -703,12 +703,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>owl:sameAs</em> triple for the resource
+        /// Removes a <em>owl:sameAs</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes the <em>owl:sameAs</em> triple for the given resource
+        /// This overload also removes the <em>owl:sameAs</em> triple for the given resource.
         /// </remarks>
         public bool RemoveSameAs(OntologyResource resource)
         {
@@ -718,9 +718,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdfs:seeAlso</em> triple for the resource
+        /// Adds a new <em>rdfs:seeAlso</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSeeAlso(INode resource)
         {
@@ -728,9 +728,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdfs:seeAlso</em> triple for the resource
+        /// Adds a new <em>rdfs:seeAlso</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSeeAlso(Uri resource)
         {
@@ -738,9 +738,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdfs:seeAlso</em> triple for the resource
+        /// Adds a new <em>rdfs:seeAlso</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSeeAlso(OntologyResource resource)
         {
@@ -748,7 +748,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>rdfs:seeAlso</em> triples for the resource
+        /// Removes all <em>rdfs:seeAlso</em> triples for the resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearSeeAlso()
@@ -757,9 +757,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdfs:seeAlso</em> triple for the resource
+        /// Removes a <em>rdfs:seeAlso</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSeeAlso(INode resource)
         {
@@ -767,9 +767,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdfs:seeAlso</em> triple for the resource
+        /// Removes a <em>rdfs:seeAlso</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSeeAlso(Uri resource)
         {
@@ -777,9 +777,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdfs:seeAlso</em> triple for the resource
+        /// Removes a <em>rdfs:seeAlso</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSeeAlso(OntologyResource resource)
         {
@@ -787,9 +787,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdf:type</em> triple for the resource
+        /// Adds a new <em>rdf:type</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddType(INode resource)
         {
@@ -797,9 +797,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdf:type</em> triple for the resource
+        /// Adds a new <em>rdf:type</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddType(Uri resource)
         {
@@ -807,9 +807,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new <em>rdf:type</em> triple for the resource
+        /// Adds a new <em>rdf:type</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddType(OntologyResource resource)
         {
@@ -817,7 +817,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all <em>rdf:type</em> triples for the resource
+        /// Removes all <em>rdf:type</em> triples for the resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearTypes()
@@ -826,9 +826,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdf:type</em> triple for the resource
+        /// Removes a <em>rdf:type</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveType(INode resource)
         {
@@ -836,9 +836,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdf:type</em> triple for the resource
+        /// Removes a <em>rdf:type</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveType(Uri resource)
         {
@@ -846,9 +846,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a <em>rdf:type</em> triple for the resource
+        /// Removes a <em>rdf:type</em> triple for the resource.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveType(OntologyResource resource)
         {
@@ -856,9 +856,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds version information for the resource
+        /// Adds version information for the resource.
         /// </summary>
-        /// <param name="info">Version Information</param>
+        /// <param name="info">Version Information.</param>
         /// <returns></returns>
         public bool AddVersionInfo(String info)
         {
@@ -866,7 +866,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Clears version information for the resource
+        /// Clears version information for the resource.
         /// </summary>
         /// <returns></returns>
         public bool ClearVersionInfo()
@@ -875,9 +875,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Remove version information for the resource
+        /// Remove version information for the resource.
         /// </summary>
-        /// <param name="info">Version Information</param>
+        /// <param name="info">Version Information.</param>
         /// <returns></returns>
         public bool RemoveVersionInfo(ILiteralNode info)
         {
@@ -885,9 +885,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Remove version information for the resource
+        /// Remove version information for the resource.
         /// </summary>
-        /// <param name="info">Version Information</param>
+        /// <param name="info">Version Information.</param>
         /// <returns></returns>
         public bool RemoveVersionInfo(String info)
         {
@@ -899,9 +899,9 @@ namespace VDS.RDF.Ontology
         #region Property Retrieval
 
         /// <summary>
-        /// Gets the values for a property which is restricted to literals
+        /// Gets the values for a property which is restricted to literals.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
+        /// <param name="propertyUri">Property URI.</param>
         /// <returns></returns>
         public IEnumerable<ILiteralNode> GetLiteralProperty(String propertyUri)
         {
@@ -916,9 +916,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the values for a property which is restricted to literals
+        /// Gets the values for a property which is restricted to literals.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
+        /// <param name="propertyUri">Property URI.</param>
         /// <returns></returns>
         public IEnumerable<ILiteralNode> GetLiteralProperty(Uri propertyUri)
         {
@@ -927,9 +927,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the values for a property which can be any node type
+        /// Gets the values for a property which can be any node type.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
+        /// <param name="propertyUri">Property URI.</param>
         /// <returns></returns>
         public IEnumerable<INode> GetResourceProperty(String propertyUri)
         {
@@ -944,9 +944,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the values for a property which can be any node type
+        /// Gets the values for a property which can be any node type.
         /// </summary>
-        /// <param name="propertyUri">Property URI</param>
+        /// <param name="propertyUri">Property URI.</param>
         /// <returns></returns>
         public IEnumerable<INode> GetResourceProperty(Uri propertyUri)
         {
@@ -955,7 +955,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Version Information for the Resource
+        /// Gets the Version Information for the Resource.
         /// </summary>
         public IEnumerable<ILiteralNode> VersionInfo
         {
@@ -966,7 +966,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Comment(s) for the Resource
+        /// Gets the Comment(s) for the Resource.
         /// </summary>
         public IEnumerable<ILiteralNode> Comment
         {
@@ -977,7 +977,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Label(s) for the Resource
+        /// Gets the Label(s) for the Resource.
         /// </summary>
         public IEnumerable<ILiteralNode> Label
         {
@@ -988,7 +988,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the See Also(s) for the Resource
+        /// Gets the See Also(s) for the Resource.
         /// </summary>
         public IEnumerable<INode> SeeAlso
         {
@@ -999,7 +999,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Same As('s) for the Resource
+        /// Gets the Same As('s) for the Resource.
         /// </summary>
         public IEnumerable<INode> SameAs
         {
@@ -1010,7 +1010,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Is Defined By(s) for the Resource
+        /// Gets the Is Defined By(s) for the Resource.
         /// </summary>
         public IEnumerable<INode> IsDefinedBy
         {
@@ -1021,7 +1021,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Different From(s) for the Resource
+        /// Gets the Different From(s) for the Resource.
         /// </summary>
         public IEnumerable<INode> DifferentFrom
         {
@@ -1032,7 +1032,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the rdf:type's for the Resource
+        /// Gets the rdf:type's for the Resource.
         /// </summary>
         public IEnumerable<INode> Types
         {
@@ -1047,7 +1047,7 @@ namespace VDS.RDF.Ontology
         #region Properties returning Triples
 
         /// <summary>
-        /// Gets all the Triples from the Graph where the Resource occurs as the Subject
+        /// Gets all the Triples from the Graph where the Resource occurs as the Subject.
         /// </summary>
         public IEnumerable<Triple> TriplesWithSubject
         {
@@ -1058,7 +1058,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Triples from the Graph where the Resource occurs as the Object
+        /// Gets all the Triples from the Graph where the Resource occurs as the Object.
         /// </summary>
         public IEnumerable<Triple> TriplesWithObject
         {
@@ -1069,7 +1069,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Triples from the Graph where the Resource occurs as the Predicate
+        /// Gets all the Triples from the Graph where the Resource occurs as the Predicate.
         /// </summary>
         public IEnumerable<Triple> TriplesWithPredicate
         {
@@ -1080,7 +1080,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Triples where the Resource occurs in any position
+        /// Gets all the Triples where the Resource occurs in any position.
         /// </summary>
         public IEnumerable<Triple> Triples
         {
@@ -1093,11 +1093,11 @@ namespace VDS.RDF.Ontology
         #endregion
 
         /// <summary>
-        /// Gets the String representation of the Resource
+        /// Gets the String representation of the Resource.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// This is either the first label (if any are declared) or the string representation of the <see cref="INode">INode</see> that this resource wraps
+        /// This is either the first label (if any are declared) or the string representation of the <see cref="INode">INode</see> that this resource wraps.
         /// </remarks>
         public override string ToString()
         {
@@ -1112,11 +1112,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Casts a Resource into an Ontology Class
+        /// Casts a Resource into an Ontology Class.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Anything may be cast to a <see cref="OntologyClass"/> regardless of whether it actually represents a class in the ontology
+        /// Anything may be cast to a <see cref="OntologyClass"/> regardless of whether it actually represents a class in the ontology.
         /// </remarks>
         public OntologyClass AsClass()
         {
@@ -1124,11 +1124,11 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Casts a Resource into an Ontology Property
+        /// Casts a Resource into an Ontology Property.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// Anything may be cast to a <see cref="OntologyProperty"/> regardless of whether it actually represents a property in the ontology
+        /// Anything may be cast to a <see cref="OntologyProperty"/> regardless of whether it actually represents a property in the ontology.
         /// </remarks>
         public OntologyProperty AsProperty()
         {
@@ -1136,12 +1136,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Casts a Resource into a Graph
+        /// Casts a Resource into a Graph.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Equivalent to doing a SPARQL DESCRIBE query on this resource
+        /// Equivalent to doing a SPARQL DESCRIBE query on this resource.
         /// </remarks>
         public static explicit operator Graph(OntologyResource resource)
         {

@@ -30,7 +30,7 @@ using System.Text;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
-    /// Represents the SPARQL Update CREATE command
+    /// Represents the SPARQL Update CREATE command.
     /// </summary>
     public class CreateCommand : SparqlUpdateCommand
     {
@@ -38,10 +38,10 @@ namespace VDS.RDF.Update.Commands
         private bool _silent = false;
 
         /// <summary>
-        /// Creates a new CREATE command
+        /// Creates a new CREATE command.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to create</param>
-        /// <param name="silent">Whether the create should be done silenty</param>
+        /// <param name="graphUri">URI of the Graph to create.</param>
+        /// <param name="silent">Whether the create should be done silenty.</param>
         public CreateCommand(Uri graphUri, bool silent)
             : base(SparqlUpdateCommandType.Create) 
         {
@@ -51,14 +51,14 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Creates a new CREATE command
+        /// Creates a new CREATE command.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to create</param>
+        /// <param name="graphUri">URI of the Graph to create.</param>
         public CreateCommand(Uri graphUri)
             : this(graphUri, false) { }
 
         /// <summary>
-        /// Gets whether the Command affects a Single Graph
+        /// Gets whether the Command affects a Single Graph.
         /// </summary>
         public override bool AffectsSingleGraph
         {
@@ -69,9 +69,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Command affects a given Graph
+        /// Gets whether the Command affects a given Graph.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets the URI of the Graph to be created
+        /// Gets the URI of the Graph to be created.
         /// </summary>
         public Uri TargetUri
         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Gets whether the Create should be done silently
+        /// Gets whether the Create should be done silently.
         /// </summary>
         public bool Silent
         {
@@ -108,9 +108,9 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context
+        /// Evaluates the Command in the given Context.
         /// </summary>
-        /// <param name="context">Update Evaluation Context</param>
+        /// <param name="context">Update Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             if (context.Data.HasGraph(_graphUri))
@@ -126,16 +126,16 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
-        /// Processes the Command using the given Update Processor
+        /// Processes the Command using the given Update Processor.
         /// </summary>
-        /// <param name="processor">SPARQL Update Processor</param>
+        /// <param name="processor">SPARQL Update Processor.</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessCreateCommand(this);
         }
 
         /// <summary>
-        /// Gets the String representation of the Command
+        /// Gets the String representation of the Command.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

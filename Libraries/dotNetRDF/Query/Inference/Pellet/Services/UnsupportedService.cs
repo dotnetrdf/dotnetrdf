@@ -30,15 +30,15 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
-    /// Represents some Service provided by a Pellet Server which the library does not explicitly support
+    /// Represents some Service provided by a Pellet Server which the library does not explicitly support.
     /// </summary>
     public class UnsupportedService : PelletService
     {
         /// <summary>
-        /// Creates a new Unsupported Service
+        /// Creates a new Unsupported Service.
         /// </summary>
-        /// <param name="name">Service Name</param>
-        /// <param name="obj">JSON Object</param>
+        /// <param name="name">Service Name.</param>
+        /// <param name="obj">JSON Object.</param>
         internal UnsupportedService(String name, JObject obj)
             : base(name, obj)
         {

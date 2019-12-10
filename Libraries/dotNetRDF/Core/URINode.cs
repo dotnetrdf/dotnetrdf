@@ -36,7 +36,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Abstract Base Class for URI Nodes
+    /// Abstract Base Class for URI Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="uri")]
@@ -47,10 +47,10 @@ namespace VDS.RDF
         private Uri _uri;
 
         /// <summary>
-        /// Internal Only Constructor for URI Nodes
+        /// Internal Only Constructor for URI Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="uri">URI</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="uri">URI.</param>
         protected internal BaseUriNode(IGraph g, Uri uri)
             : base(g, NodeType.Uri)
         {
@@ -61,10 +61,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only Constructor for URI Nodes
+        /// Internal Only Constructor for URI Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="qname">QName for the Node</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="qname">QName for the Node.</param>
         /// <remarks>
         /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
         /// </remarks>
@@ -92,14 +92,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only Constructor for URI Nodes
+        /// Internal Only Constructor for URI Nodes.
         /// </summary>
-        /// <param name="uri">URI</param>
+        /// <param name="uri">URI.</param>
         protected internal BaseUriNode(Uri uri)
             : this(null, uri) { }
 
         /// <summary>
-        /// Deserialization Only Constructor
+        /// Deserialization Only Constructor.
         /// </summary>
         protected BaseUriNode()
             : base(null, NodeType.Uri) { }
@@ -107,10 +107,10 @@ namespace VDS.RDF
 #if !NETCORE
 
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected BaseUriNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Uri)
         {
@@ -123,7 +123,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gets the Uri for this Node
+        /// Gets the Uri for this Node.
         /// </summary>
         public virtual Uri Uri
         {
@@ -134,12 +134,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Equality for Uri Nodes
+        /// Implementation of Equality for Uri Nodes.
         /// </summary>
-        /// <param name="obj">Object to compare with</param>
+        /// <param name="obj">Object to compare with.</param>
         /// <returns></returns>
         /// <remarks>
-        /// URI Nodes are considered equal if the string form of their URIs match using Ordinal string comparison
+        /// URI Nodes are considered equal if the string form of their URIs match using Ordinal string comparison.
         /// </remarks>
         public override bool Equals(object obj)
         {
@@ -159,12 +159,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Equality for Uri Nodes
+        /// Implementation of Equality for Uri Nodes.
         /// </summary>
-        /// <param name="other">Object to compare with</param>
+        /// <param name="other">Object to compare with.</param>
         /// <returns></returns>
         /// <remarks>
-        /// URI Nodes are considered equal if the string form of their URIs match using Ordinal string comparison
+        /// URI Nodes are considered equal if the string form of their URIs match using Ordinal string comparison.
         /// </remarks>
         public override bool Equals(INode other)
         {
@@ -186,9 +186,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Blank Node (should always be false)
+        /// Determines whether this Node is equal to a Blank Node (should always be false).
         /// </summary>
-        /// <param name="other">Blank Node</param>
+        /// <param name="other">Blank Node.</param>
         /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
@@ -197,9 +197,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Graph Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Graph Literal Node</param>
+        /// <param name="other">Graph Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
@@ -208,9 +208,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// Determines whether this Node is equal to a Literal Node (should always be false).
         /// </summary>
-        /// <param name="other">Literal Node</param>
+        /// <param name="other">Literal Node.</param>
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
@@ -219,9 +219,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node
+        /// Determines whether this Node is equal to a URI Node.
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
@@ -233,9 +233,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node (should always be false)
+        /// Determines whether this Node is equal to a Variable Node (should always be false).
         /// </summary>
-        /// <param name="other">Variable Node</param>
+        /// <param name="other">Variable Node.</param>
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
@@ -244,9 +244,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node
+        /// Determines whether this Node is equal to a URI Node.
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public bool Equals(BaseUriNode other)
         {
@@ -254,7 +254,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a String representation of a Uri as a plain text Uri
+        /// Gets a String representation of a Uri as a plain text Uri.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -263,14 +263,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Implementation of Compare To for Uri Nodes
+        /// Implementation of Compare To for Uri Nodes.
         /// </summary>
-        /// <param name="other">Node to Compare To</param>
+        /// <param name="other">Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
         /// Uri Nodes are greater than Blank Nodes and Nulls, they are less than Literal Nodes and Graph Literal Nodes.
         /// <br /><br />
-        /// Uri Nodes are ordered based upon lexical ordering of the string value of their URIs
+        /// Uri Nodes are ordered based upon lexical ordering of the string value of their URIs.
         /// </remarks>
         public override int CompareTo(INode other)
         {
@@ -303,9 +303,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
@@ -316,9 +316,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
@@ -338,9 +338,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
@@ -360,9 +360,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
@@ -373,9 +373,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
@@ -385,9 +385,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
         /// </summary>
-        /// <param name="other">Node to test against</param>
+        /// <param name="other">Node to test against.</param>
         /// <returns></returns>
         public int CompareTo(BaseUriNode other)
         {
@@ -399,10 +399,10 @@ namespace VDS.RDF
         #region ISerializable Members
 
         /// <summary>
-        /// Gets the data for serialization
+        /// Gets the data for serialization.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("uri", _uri.AbsoluteUri);
@@ -413,9 +413,9 @@ namespace VDS.RDF
         #region IXmlSerializable Members
 
         /// <summary>
-        /// Reads the data for XML deserialization
+        /// Reads the data for XML deserialization.
         /// </summary>
-        /// <param name="reader">XML Reader</param>
+        /// <param name="reader">XML Reader.</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             _uri = UriFactory.Create(reader.ReadElementContentAsString());
@@ -424,9 +424,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Writes the data for XML serialization
+        /// Writes the data for XML serialization.
         /// </summary>
-        /// <param name="writer">XML Writer</param>
+        /// <param name="writer">XML Writer.</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteString(_uri.AbsoluteUri);
@@ -439,7 +439,7 @@ namespace VDS.RDF
         #region IValuedNode Members
 
         /// <summary>
-        /// Gets the value of the node as a string
+        /// Gets the value of the node as a string.
         /// </summary>
         /// <returns></returns>
         public string AsString()
@@ -448,7 +448,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to numerics
+        /// Throws an error as URIs cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public long AsInteger()
@@ -457,7 +457,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to numerics
+        /// Throws an error as URIs cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public decimal AsDecimal()
@@ -466,7 +466,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to numerics
+        /// Throws an error as URIs cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public float AsFloat()
@@ -475,7 +475,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to numerics
+        /// Throws an error as URIs cannot be cast to numerics.
         /// </summary>
         /// <returns></returns>
         public double AsDouble()
@@ -484,7 +484,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to a boolean
+        /// Throws an error as URIs cannot be cast to a boolean.
         /// </summary>
         /// <returns></returns>
         public bool AsBoolean()
@@ -493,7 +493,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to a date time
+        /// Throws an error as URIs cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTime AsDateTime()
@@ -502,7 +502,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to a date time
+        /// Throws an error as URIs cannot be cast to a date time.
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTimeOffset()
@@ -511,7 +511,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Throws an error as URIs cannot be cast to a time span
+        /// Throws an error as URIs cannot be cast to a time span.
         /// </summary>
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
@@ -520,7 +520,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the URI of the datatype this valued node represents as a String
+        /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
         public String EffectiveType
         {
@@ -531,7 +531,7 @@ namespace VDS.RDF
         }
         
         /// <summary>
-        /// Gets the numeric type of the expression
+        /// Gets the numeric type of the expression.
         /// </summary>
         public SparqlNumericType NumericType
         {
@@ -545,7 +545,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class for representing URI Nodes
+    /// Class for representing URI Nodes.
     /// </summary>
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="uri")]
@@ -554,18 +554,18 @@ namespace VDS.RDF
         : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
     {
         /// <summary>
-        /// Internal Only Constructor for URI Nodes
+        /// Internal Only Constructor for URI Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="uri">URI for the Node</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="uri">URI for the Node.</param>
         protected internal UriNode(IGraph g, Uri uri)
             : base(g, uri) { }
 
         /// <summary>
-        /// Internal Only Constructor for URI Nodes
+        /// Internal Only Constructor for URI Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="qname">QName for the Node</param>
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="qname">QName for the Node.</param>
         /// <remarks>
         /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
         /// </remarks>
@@ -573,7 +573,7 @@ namespace VDS.RDF
             : base(g, qname) { }
 
         /// <summary>
-        /// Deserilization Only Constructor
+        /// Deserilization Only Constructor.
         /// </summary>
         protected UriNode()
             : base() { }
@@ -581,22 +581,22 @@ namespace VDS.RDF
 #if !NETCORE
 
         /// <summary>
-        /// Deserialization Constructor
+        /// Deserialization Constructor.
         /// </summary>
-        /// <param name="info">Serialization Information</param>
-        /// <param name="context">Streaming Context</param>
+        /// <param name="info">Serialization Information.</param>
+        /// <param name="context">Streaming Context.</param>
         protected UriNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 
 #endif
 
         /// <summary>
-        /// Implementation of Compare To for URI Nodes
+        /// Implementation of Compare To for URI Nodes.
         /// </summary>
-        /// <param name="other">URI Node to Compare To</param>
+        /// <param name="other">URI Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Simply invokes the more general implementation of this method
+        /// Simply invokes the more general implementation of this method.
         /// </remarks>
         public int CompareTo(UriNode other)
         {
@@ -604,9 +604,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a URI Node
+        /// Determines whether this Node is equal to a URI Node.
         /// </summary>
-        /// <param name="other">URI Node</param>
+        /// <param name="other">URI Node.</param>
         /// <returns></returns>
         public bool Equals(UriNode other)
         {

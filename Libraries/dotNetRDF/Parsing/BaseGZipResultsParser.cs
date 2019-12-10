@@ -33,11 +33,11 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Abstract Base class for Results parser that read GZipped input
+    /// Abstract Base class for Results parser that read GZipped input.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such
+    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such.
     /// </para>
     /// </remarks>
     public abstract class BaseGZipResultsParser
@@ -46,9 +46,9 @@ namespace VDS.RDF.Parsing
         private ISparqlResultsReader _parser;
 
         /// <summary>
-        /// Creates a new GZipped results parser
+        /// Creates a new GZipped results parser.
         /// </summary>
-        /// <param name="parser">Underlying parser</param>
+        /// <param name="parser">Underlying parser.</param>
         public BaseGZipResultsParser(ISparqlResultsReader parser)
         {
             if (parser == null) throw new ArgumentNullException("parser");
@@ -57,10 +57,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input
+        /// Loads a Result Set from GZipped input.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
@@ -68,10 +68,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input
+        /// Loads a Result Set from GZipped input.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
@@ -79,10 +79,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input
+        /// Loads a Result Set from GZipped input.
         /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="results">Result Set to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(SparqlResultSet results, string filename)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
@@ -90,10 +90,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input
+        /// Loads a Result Set from GZipped input.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse SPARQL Results using a null Handler");
@@ -112,10 +112,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input
+        /// Loads a Result Set from GZipped input.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(ISparqlResultsHandler handler, TextReader input)
         {
             if (input is StreamReader)
@@ -129,10 +129,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input
+        /// Loads a Result Set from GZipped input.
         /// </summary>
-        /// <param name="handler">Results Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">Results Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the description of the parser
+        /// Gets the description of the parser.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -149,9 +149,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Helper method for raising warning events
+        /// Helper method for raising warning events.
         /// </summary>
-        /// <param name="message">Warning message</param>
+        /// <param name="message">Warning message.</param>
         private void RaiseWarning(String message)
         {
             SparqlWarning d = Warning;
@@ -165,52 +165,52 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// Parser for GZipped SPARQL XML
+    /// Parser for GZipped SPARQL XML.
     /// </summary>
     public class GZippedSparqlXmlParser
         : BaseGZipResultsParser
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL XML parser
+        /// Creates a new GZipped SPARQL XML parser.
         /// </summary>
         public GZippedSparqlXmlParser()
             : base(new SparqlXmlParser()) { }
     }
 
     /// <summary>
-    /// Parser for GZipped SPARQL JSON
+    /// Parser for GZipped SPARQL JSON.
     /// </summary>
     public class GZippedSparqlJsonParser
         : BaseGZipResultsParser
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL JSON parser
+        /// Creates a new GZipped SPARQL JSON parser.
         /// </summary>
         public GZippedSparqlJsonParser()
             : base(new SparqlJsonParser()) { }
     }
 
     /// <summary>
-    /// Parser for GZipped SPARQL CSV
+    /// Parser for GZipped SPARQL CSV.
     /// </summary>
     public class GZippedSparqlCsvParser
         : BaseGZipResultsParser
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL CSV parser
+        /// Creates a new GZipped SPARQL CSV parser.
         /// </summary>
         public GZippedSparqlCsvParser()
             : base(new SparqlCsvParser()) { }
     }
 
     /// <summary>
-    /// Parser for GZipped SPARQL TSV
+    /// Parser for GZipped SPARQL TSV.
     /// </summary>
     public class GZippedSparqlTsvParser
         : BaseGZipResultsParser
     {
         /// <summary>
-        /// Creates a new GZipped SPARQL TSV parser
+        /// Creates a new GZipped SPARQL TSV parser.
         /// </summary>
         public GZippedSparqlTsvParser()
             : base(new SparqlTsvParser()) { }

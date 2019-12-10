@@ -31,7 +31,7 @@ using System.Linq;
 namespace VDS.RDF.Configuration.Permissions
 {
     /// <summary>
-    /// Possible permission models
+    /// Possible permission models.
     /// </summary>
     public enum PermissionModel
     {
@@ -50,42 +50,42 @@ namespace VDS.RDF.Configuration.Permissions
         /// <summary>
         /// All actions are denied
         /// </summary>
-        DenyAny
+        DenyAny,
     }
 
     /// <summary>
-    /// Interface for Permission
+    /// Interface for Permission.
     /// </summary>
     public interface IPermission
     {
         /// <summary>
-        /// Gets whether the Permission is for a specific action
+        /// Gets whether the Permission is for a specific action.
         /// </summary>
-        /// <param name="action">Action</param>
+        /// <param name="action">Action.</param>
         /// <returns></returns>
         bool IsPermissionFor(String action);
     }
 
     /// <summary>
-    /// Represents a action that can be allowed/denied
+    /// Represents a action that can be allowed/denied.
     /// </summary>
     public class Permission : IPermission
     {
         private String _action;
 
         /// <summary>
-        /// Creates a new Permission for the given Action
+        /// Creates a new Permission for the given Action.
         /// </summary>
-        /// <param name="action">Action</param>
+        /// <param name="action">Action.</param>
         public Permission(String action)
         {
             _action = action;
         }
 
         /// <summary>
-        /// Gets whether the Permission is for the given action
+        /// Gets whether the Permission is for the given action.
         /// </summary>
-        /// <param name="action">Action</param>
+        /// <param name="action">Action.</param>
         /// <returns></returns>
         public bool IsPermissionFor(String action)
         {
@@ -94,34 +94,34 @@ namespace VDS.RDF.Configuration.Permissions
     }
 
     /// <summary>
-    /// Represents a set of Permissions that can be allowed/denied
+    /// Represents a set of Permissions that can be allowed/denied.
     /// </summary>
     public class PermissionSet : IPermission
     {
         private List<String> _actions = new List<string>();
 
         /// <summary>
-        /// Creates a new Permissions Set
+        /// Creates a new Permissions Set.
         /// </summary>
-        /// <param name="action">Action</param>
+        /// <param name="action">Action.</param>
         public PermissionSet(String action)
         {
             _actions.Add(action);
         }
 
         /// <summary>
-        /// Creates a new Permissions Set
+        /// Creates a new Permissions Set.
         /// </summary>
-        /// <param name="actions">Actions</param>
+        /// <param name="actions">Actions.</param>
         public PermissionSet(IEnumerable<String> actions)
         {
             _actions.AddRange(actions);
         }
 
         /// <summary>
-        /// Gets whether the Permission is for the given action
+        /// Gets whether the Permission is for the given action.
         /// </summary>
-        /// <param name="action">Action</param>
+        /// <param name="action">Action.</param>
         /// <returns></returns>
         public bool IsPermissionFor(String action)
         {

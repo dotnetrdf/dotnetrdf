@@ -32,20 +32,20 @@ using System.Text;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// A SPARQL Expression Factory reserved as a future extension point but not currently compiled or used
+    /// A SPARQL Expression Factory reserved as a future extension point but not currently compiled or used.
     /// </summary>
     public class FullTextFunctionFactory
         : ISparqlCustomExpressionFactory
     {
 
         /// <summary>
-        /// Tries to create an expression
+        /// Tries to create an expression.
         /// </summary>
-        /// <param name="u">Function URI</param>
-        /// <param name="args">Arguments</param>
-        /// <param name="scalarArguments">Scalar Arguments</param>
-        /// <param name="expr">Resulting SPARQL Expression</param>
-        /// <returns>True if a SPARQL Expression could be created, False otherwise</returns>
+        /// <param name="u">Function URI.</param>
+        /// <param name="args">Arguments.</param>
+        /// <param name="scalarArguments">Scalar Arguments.</param>
+        /// <param name="expr">Resulting SPARQL Expression.</param>
+        /// <returns>True if a SPARQL Expression could be created, False otherwise.</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
         {
             //TODO: Add support for FullTextMatchFunction and FullTextSearchFunction
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the URIs of available extension functions
+        /// Gets the URIs of available extension functions.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionFunctions
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the URIs of available extension aggregates
+        /// Gets the URIs of available extension aggregates.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionAggregates
         {

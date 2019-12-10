@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents an Order By clause
+    /// Represents an Order By clause.
     /// </summary>
     public class OrderBy
         : IUnaryOperator
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlOrderBy _ordering;
 
         /// <summary>
-        /// Creates a new Order By clause
+        /// Creates a new Order By clause.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="ordering">Ordering</param>
+        /// <param name="pattern">Pattern.</param>
+        /// <param name="ordering">Ordering.</param>
         public OrderBy(ISparqlAlgebra pattern, ISparqlOrderBy ordering)
         {
             _pattern = pattern;
@@ -54,9 +54,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Order By clause
+        /// Evaluates the Order By clause.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -90,17 +90,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -111,10 +111,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Ordering that is used
+        /// Gets the Ordering that is used.
         /// </summary>
         /// <remarks>
-        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has an ORDER BY clause then that is applied rather than the ordering with which the OrderBy algebra is instantiated
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has an ORDER BY clause then that is applied rather than the ordering with which the OrderBy algebra is instantiated.
         /// </remarks>
         public ISparqlOrderBy Ordering
         {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -148,19 +148,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error since an OrderBy() cannot be converted back to a Graph Pattern
+        /// Throws an error since an OrderBy() cannot be converted back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since an OrderBy() cannot be converted back to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since an OrderBy() cannot be converted back to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("An OrderBy() cannot be converted to a Graph Pattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

@@ -36,14 +36,14 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a BGP which is a set of Triple Patterns
+    /// Represents a BGP which is a set of Triple Patterns.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A Lazy BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for queries where we are only want to retrieve a limited number of solutions
+    /// A Lazy BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for queries where we are only want to retrieve a limited number of solutions.
     /// </para>
     /// <para>
-    /// A Lazy BGP can only contain concrete Triple Patterns and/or FILTERs and not any of other the specialised Triple Pattern classes
+    /// A Lazy BGP can only contain concrete Triple Patterns and/or FILTERs and not any of other the specialised Triple Pattern classes.
     /// </para>
     /// </remarks>
     public class LazyBgp
@@ -52,9 +52,9 @@ namespace VDS.RDF.Query.Algebra
         private int _requiredResults = -1;
 
         /// <summary>
-        /// Creates a Streamed BGP containing a single Triple Pattern
+        /// Creates a Streamed BGP containing a single Triple Pattern.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
+        /// <param name="p">Triple Pattern.</param>
         public LazyBgp(ITriplePattern p)
         {
             if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a Subquery, BIND or FILTER Pattern", "p");
@@ -62,9 +62,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a Streamed BGP containing a set of Triple Patterns
+        /// Creates a Streamed BGP containing a set of Triple Patterns.
         /// </summary>
-        /// <param name="ps">Triple Patterns</param>
+        /// <param name="ps">Triple Patterns.</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps)
         {
             if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or Subquery, BIND, FILTER Patterns", "ps");
@@ -72,10 +72,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a Streamed BGP containing a single Triple Pattern
+        /// Creates a Streamed BGP containing a single Triple Pattern.
         /// </summary>
-        /// <param name="p">Triple Pattern</param>
-        /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
+        /// <param name="p">Triple Pattern.</param>
+        /// <param name="requiredResults">The number of Results the BGP should attempt to return.</param>
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
             if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern, BIND or FILTER Pattern", "p");
@@ -84,10 +84,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a Streamed BGP containing a set of Triple Patterns
+        /// Creates a Streamed BGP containing a set of Triple Patterns.
         /// </summary>
-        /// <param name="ps">Triple Patterns</param>
-        /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
+        /// <param name="ps">Triple Patterns.</param>
+        /// <param name="requiredResults">The number of Results the BGP should attempt to return.</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
             if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns, BIND or FILTER Patterns", "ps");
@@ -101,9 +101,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the BGP against the Evaluation Context
+        /// Evaluates the BGP against the Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -548,7 +548,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -558,11 +558,11 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents a Union
+    /// Represents a Union.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A Lazy Union differs from a standard Union in that if it finds sufficient solutions on the LHS it has no need to evaluate the RHS
+    /// A Lazy Union differs from a standard Union in that if it finds sufficient solutions on the LHS it has no need to evaluate the RHS.
     /// </para>
     /// </remarks>
     public class LazyUnion : IUnion
@@ -571,10 +571,10 @@ namespace VDS.RDF.Query.Algebra
         private int _requiredResults = -1;
 
         /// <summary>
-        /// Creates a new Lazy Union
+        /// Creates a new Lazy Union.
         /// </summary>
-        /// <param name="lhs">LHS Pattern</param>
-        /// <param name="rhs">RHS Pattern</param>
+        /// <param name="lhs">LHS Pattern.</param>
+        /// <param name="rhs">RHS Pattern.</param>
         public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
             _lhs = lhs;
@@ -582,11 +582,11 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Lazy Union
+        /// Creates a new Lazy Union.
         /// </summary>
-        /// <param name="lhs">LHS Pattern</param>
-        /// <param name="rhs">RHS Pattern</param>
-        /// <param name="requiredResults">The number of results that the Union should attempt to return</param>
+        /// <param name="lhs">LHS Pattern.</param>
+        /// <param name="rhs">RHS Pattern.</param>
+        /// <param name="requiredResults">The number of results that the Union should attempt to return.</param>
         public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs, int requiredResults)
         {
             _lhs = lhs;
@@ -594,9 +594,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Lazy Union
+        /// Evaluates the Lazy Union.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -627,7 +627,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -635,7 +635,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -648,7 +648,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables
         {
@@ -660,7 +660,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the LHS of the Join
+        /// Gets the LHS of the Join.
         /// </summary>
         public ISparqlAlgebra Lhs
         {
@@ -668,7 +668,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the RHS of the Join
+        /// Gets the RHS of the Join.
         /// </summary>
         public ISparqlAlgebra Rhs
         {
@@ -676,7 +676,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -685,7 +685,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -697,7 +697,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Union back to Graph Patterns
+        /// Converts the Union back to Graph Patterns.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -710,9 +710,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms both sides of the Join using the given Optimiser
+        /// Transforms both sides of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -720,9 +720,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the LHS of the Join using the given Optimiser
+        /// Transforms the LHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
@@ -730,9 +730,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the RHS of the Join using the given Optimiser
+        /// Transforms the RHS of the Join using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimser</param>
+        /// <param name="optimiser">Optimser.</param>
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {

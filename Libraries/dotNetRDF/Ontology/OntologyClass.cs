@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Class for representing a class in an Ontology
+    /// Class for representing a class in an Ontology.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class OntologyClass
@@ -46,10 +46,10 @@ namespace VDS.RDF.Ontology
         private const String PropertyDirectSuperClass = "directSuperClass";
 
         /// <summary>
-        /// Creates a new representation of a Class in the given Ontology Mode
+        /// Creates a new representation of a Class in the given Ontology Mode.
         /// </summary>
-        /// <param name="resource">Resource</param>
-        /// <param name="graph">Graph</param>
+        /// <param name="resource">Resource.</param>
+        /// <param name="graph">Graph.</param>
         public OntologyClass(INode resource, IGraph graph)
             : base(resource, graph)
         {
@@ -70,7 +70,8 @@ namespace VDS.RDF.Ontology
                 _resourceProperties[PropertyDerivedClass].Add(t.Subject);
                 _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
             }
-            int c = 0; 
+
+            int c = 0;
             do
             {
                 c = _resourceProperties[PropertyDerivedClass].Count;
@@ -87,10 +88,10 @@ namespace VDS.RDF.Ontology
             _resourceProperties.Add(PropertyDirectSuperClass, new HashSet<INode>());
             if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
             {
-              foreach (var node in _resourceProperties[OntologyHelper.PropertySubClassOf])
-              {
-                _resourceProperties[PropertyDirectSuperClass].Add(node);
-              }
+                foreach (var node in _resourceProperties[OntologyHelper.PropertySubClassOf])
+                {
+                    _resourceProperties[PropertyDirectSuperClass].Add(node);
+                }
 
                 do
                 {
@@ -107,9 +108,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new sub-class for this class
+        /// Adds a new sub-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSubClass(INode resource)
         {
@@ -117,9 +118,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new sub-class for this class
+        /// Adds a new sub-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSubClass(Uri resource)
         {
@@ -127,9 +128,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new sub-class for this class
+        /// Adds a new sub-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSubClass(OntologyResource resource)
         {
@@ -137,12 +138,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new sub-class for this class
+        /// Adds a new sub-class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this class as a super-class of the given class
+        /// This overload also adds this class as a super-class of the given class.
         /// </remarks>
         public bool AddSubClass(OntologyClass @class)
         {
@@ -152,7 +153,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all sub-classes for this class
+        /// Removes all sub-classes for this class.
         /// </summary>
         /// <returns></returns>
         public bool ClearSubClasses()
@@ -162,9 +163,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-class for this class
+        /// Removes a sub-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSubClass(INode resource)
         {
@@ -172,9 +173,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-class for this class
+        /// Removes a sub-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSubClass(Uri resource)
         {
@@ -182,9 +183,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-class for this class
+        /// Removes a sub-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSubClass(OntologyResource resource)
         {
@@ -192,12 +193,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a sub-class for this class
+        /// Removes a sub-class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this class from being a super-class of the given class
+        /// This overload also removes this class from being a super-class of the given class.
         /// </remarks>
         public bool RemoveSubClass(OntologyClass @class)
         {
@@ -207,9 +208,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new super-class for this class
+        /// Adds a new super-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSuperClass(INode resource)
         {
@@ -217,9 +218,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new super-class for this class
+        /// Adds a new super-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSuperClass(Uri resource)
         {
@@ -227,9 +228,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new super-class for this class
+        /// Adds a new super-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddSuperClass(OntologyResource resource)
         {
@@ -237,12 +238,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new super-class for this class
+        /// Adds a new super-class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this class as a sub-class of the given class
+        /// This overload also adds this class as a sub-class of the given class.
         /// </remarks>
         public bool AddSuperClass(OntologyClass @class)
         {
@@ -252,7 +253,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all super-classes
+        /// Removes all super-classes.
         /// </summary>
         /// <returns></returns>
         public bool ClearSuperClasses()
@@ -262,9 +263,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-class for this class
+        /// Removes a super-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSuperClass(INode resource)
         {
@@ -272,9 +273,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-class for this class
+        /// Removes a super-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSuperClass(Uri resource)
         {
@@ -282,9 +283,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-class for this class
+        /// Removes a super-class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveSuperClass(OntologyResource resource)
         {
@@ -292,12 +293,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a super-class for this class
+        /// Removes a super-class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this class as a sub-class of the given class
+        /// This overload also removes this class as a sub-class of the given class.
         /// </remarks>
         public bool RemoveSuperClass(OntologyClass @class)
         {
@@ -307,9 +308,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an equivalent class for this class
+        /// Adds an equivalent class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddEquivalentClass(INode resource)
         {
@@ -317,9 +318,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an equivalent class for this class
+        /// Adds an equivalent class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddEquivalentClass(Uri resource)
         {
@@ -327,9 +328,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an equivalent class for this class
+        /// Adds an equivalent class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddEquivalentClass(OntologyResource resource)
         {
@@ -337,12 +338,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds an equivalent class for this class
+        /// Adds an equivalent class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this class as an equivalent class of the given class
+        /// This overload also adds this class as an equivalent class of the given class.
         /// </remarks>
         public bool AddEquivalentClass(OntologyClass @class)
         {
@@ -352,7 +353,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all equivalent classes for this class
+        /// Removes all equivalent classes for this class.
         /// </summary>
         /// <returns></returns>
         public bool ClearEquivalentClasses()
@@ -364,9 +365,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent class for this class
+        /// Removes an equivalent class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveEquivalentClass(INode resource)
         {
@@ -374,9 +375,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent class for this class
+        /// Removes an equivalent class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveEquivalentClass(Uri resource)
         {
@@ -384,9 +385,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent class for this class
+        /// Removes an equivalent class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveEquivalentClass(OntologyResource resource)
         {
@@ -394,9 +395,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes an equivalent class for this class
+        /// Removes an equivalent class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         public bool RemoveEquivalentClass(OntologyClass @class)
         {
@@ -406,9 +407,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new disjoint class for this class
+        /// Adds a new disjoint class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDisjointClass(INode resource)
         {
@@ -416,9 +417,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new disjoint class for this class
+        /// Adds a new disjoint class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDisjointClass(Uri resource)
         {
@@ -426,9 +427,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new disjoint class for this class
+        /// Adds a new disjoint class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool AddDisjointClass(OntologyResource resource)
         {
@@ -436,12 +437,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Adds a new disjoint class for this class
+        /// Adds a new disjoint class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also adds this class as a disjoint class of the given class
+        /// This overload also adds this class as a disjoint class of the given class.
         /// </remarks>
         public bool AddDisjointClass(OntologyClass @class)
         {
@@ -451,7 +452,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes all disjoint classes for this class
+        /// Removes all disjoint classes for this class.
         /// </summary>
         /// <returns></returns>
         public bool ClearDisjointClasses()
@@ -463,9 +464,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a disjoint class for this class
+        /// Removes a disjoint class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDisjointClass(INode resource)
         {
@@ -473,9 +474,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a disjoint class for this class
+        /// Removes a disjoint class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDisjointClass(Uri resource)
         {
@@ -483,9 +484,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a disjoint class for this class
+        /// Removes a disjoint class for this class.
         /// </summary>
-        /// <param name="resource">Resource</param>
+        /// <param name="resource">Resource.</param>
         /// <returns></returns>
         public bool RemoveDisjointClass(OntologyResource resource)
         {
@@ -493,12 +494,12 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Removes a disjoint class for this class
+        /// Removes a disjoint class for this class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         /// <remarks>
-        /// This overload also removes this class as a disjoint class of the given class
+        /// This overload also removes this class as a disjoint class of the given class.
         /// </remarks>
         public bool RemoveDisjointClass(OntologyClass @class)
         {
@@ -508,7 +509,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the sub-classes of this class (both direct and indirect)
+        /// Gets the sub-classes of this class (both direct and indirect).
         /// </summary>
         public IEnumerable<OntologyClass> SubClasses
         {
@@ -519,7 +520,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the direct sub-classes of this class
+        /// Gets the direct sub-classes of this class.
         /// </summary>
         public IEnumerable<OntologyClass> DirectSubClasses
         {
@@ -530,7 +531,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the indirect sub-classes of this class
+        /// Gets the indirect sub-classes of this class.
         /// </summary>
         public IEnumerable<OntologyClass> IndirectSubClasses
         {
@@ -543,7 +544,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the super-classes of this class (both direct and indirect)
+        /// Gets the super-classes of this class (both direct and indirect).
         /// </summary>
         public IEnumerable<OntologyClass> SuperClasses
         {
@@ -554,7 +555,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the direct super-classes of this class
+        /// Gets the direct super-classes of this class.
         /// </summary>
         public IEnumerable<OntologyClass> DirectSuperClasses
         {
@@ -565,7 +566,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the indirect super-classes of this class
+        /// Gets the indirect super-classes of this class.
         /// </summary>
         public IEnumerable<OntologyClass> IndirectSuperClasses
         {
@@ -578,7 +579,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the Sibling classes of this class, if this class is the root of the ontology nothing is returned even if there are multiple root classes
+        /// Gets the Sibling classes of this class, if this class is the root of the ontology nothing is returned even if there are multiple root classes.
         /// </summary>
         public IEnumerable<OntologyClass> Siblings
         {
@@ -592,7 +593,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the equivalent classes of this class
+        /// Gets the equivalent classes of this class.
         /// </summary>
         public IEnumerable<OntologyClass> EquivalentClasses
         {
@@ -603,7 +604,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the disjoint classes of this class
+        /// Gets the disjoint classes of this class.
         /// </summary>
         public IEnumerable<OntologyClass> DisjointClasses
         {
@@ -614,7 +615,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the instances (individuals) of this class
+        /// Gets the instances (individuals) of this class.
         /// </summary>
         public IEnumerable<OntologyResource> Instances
         {
@@ -626,7 +627,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the properties which have this class as a domain
+        /// Gets the properties which have this class as a domain.
         /// </summary>
         public IEnumerable<OntologyProperty> IsDomainOf
         {
@@ -639,7 +640,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets the properties which have this class as a range
+        /// Gets the properties which have this class as a range.
         /// </summary>
         public IEnumerable<OntologyProperty> IsRangeOf
         {
@@ -652,7 +653,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether something is a Top Class i.e. has no super classes
+        /// Gets whether something is a Top Class i.e. has no super classes.
         /// </summary>
         public bool IsTopClass
         {
@@ -663,7 +664,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether something is a Bottom Class i.e. has no sub classes
+        /// Gets whether something is a Bottom Class i.e. has no sub classes.
         /// </summary>
         public bool IsBottomClass
         {
@@ -674,9 +675,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an Individual of this class
+        /// Gets/Creates an Individual of this class.
         /// </summary>
-        /// <param name="resource">Resource identifying the individual</param>
+        /// <param name="resource">Resource identifying the individual.</param>
         /// <returns></returns>
         public Individual CreateIndividual(Uri resource)
         {
@@ -684,9 +685,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether this Class is equal to another Class
+        /// Gets whether this Class is equal to another Class.
         /// </summary>
-        /// <param name="obj">Object to test</param>
+        /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         public override bool Equals(object obj)
         {

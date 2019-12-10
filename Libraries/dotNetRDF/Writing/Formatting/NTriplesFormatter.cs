@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting as NTriples
+    /// Formatter for formatting as NTriples.
     /// </summary>
     public class NTriplesFormatter
         : BaseFormatter
@@ -41,7 +41,7 @@ namespace VDS.RDF.Writing.Formatting
         private readonly BlankNodeOutputMapper _bnodeMapper;
 
         /// <summary>
-        /// Set of characters which must be escaped in Literals
+        /// Set of characters which must be escaped in Literals.
         /// </summary>
         private readonly List<string[]> _litEscapes = new List<string[]>
         { 
@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing.Formatting
         };
 
         /// <summary>
-        /// Creates a new NTriples formatter
+        /// Creates a new NTriples formatter.
         /// </summary>
-        /// <param name="syntax">NTriples syntax to output</param>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="syntax">NTriples syntax to output.</param>
+        /// <param name="formatName">Format Name.</param>
         public NTriplesFormatter(NTriplesSyntax syntax, string formatName)
             : base(formatName)
         {
@@ -73,21 +73,21 @@ namespace VDS.RDF.Writing.Formatting
         }
 
                 /// <summary>
-        /// Creates a new NTriples Formatter
+        /// Creates a new NTriples Formatter.
         /// </summary>
         public NTriplesFormatter(NTriplesSyntax syntax)
             : this(syntax, GetName(syntax)) { }
 
         /// <summary>
-        /// Creates a new NTriples Formatter
+        /// Creates a new NTriples Formatter.
         /// </summary>
         public NTriplesFormatter()
             : this(NTriplesSyntax.Original, GetName()) { }
 
         /// <summary>
-        /// Creates a new NTriples Formatter
+        /// Creates a new NTriples Formatter.
         /// </summary>
-        /// <param name="formatName">Format Name</param>
+        /// <param name="formatName">Format Name.</param>
         protected NTriplesFormatter(string formatName)
             : this(NTriplesSyntax.Original, formatName) { }
 
@@ -103,15 +103,15 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Gets the NTriples syntax being used
+        /// Gets the NTriples syntax being used.
         /// </summary>
         public NTriplesSyntax Syntax { get; private set; }
 
         /// <summary>
-        /// Formats a URI Node
+        /// Formats a URI Node.
         /// </summary>
-        /// <param name="u">URI Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="u">URI Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
@@ -124,10 +124,10 @@ namespace VDS.RDF.Writing.Formatting
 
         
         /// <summary>
-        /// Formats a Literal Node
+        /// Formats a Literal Node.
         /// </summary>
-        /// <param name="l">Literal Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="l">Literal Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
@@ -155,9 +155,9 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Character
+        /// Formats a Character.
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Character.</param>
         /// <returns></returns>
         [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
         public override string FormatChar(char c)
@@ -173,10 +173,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a sequence of characters as a String
+        /// Formats a sequence of characters as a String.
         /// </summary>
-        /// <param name="cs">Characters</param>
-        /// <returns>String</returns>
+        /// <param name="cs">Characters.</param>
+        /// <returns>String.</returns>
         public override string FormatChar(char[] cs)
         {
             if (Syntax != NTriplesSyntax.Original) return base.FormatChar(cs);
@@ -208,10 +208,10 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Blank Node
+        /// Formats a Blank Node.
         /// </summary>
-        /// <param name="b">Blank Node</param>
-        /// <param name="segment">Triple Segment</param>
+        /// <param name="b">Blank Node.</param>
+        /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
@@ -242,13 +242,13 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
-    /// Formatter for formatting as NTriples according to the RDF 1.1 specification
+    /// Formatter for formatting as NTriples according to the RDF 1.1 specification.
     /// </summary>
     public class NTriples11Formatter
         : NTriplesFormatter
     {
         /// <summary>
-        /// Creaates a new formatter
+        /// Creaates a new formatter.
         /// </summary>
         public NTriples11Formatter()
             : base(NTriplesSyntax.Rdf11) { }

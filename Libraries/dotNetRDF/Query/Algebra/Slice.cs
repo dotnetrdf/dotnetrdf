@@ -33,7 +33,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents the Slice Operation in the SPARQL Algebra
+    /// Represents the Slice Operation in the SPARQL Algebra.
     /// </summary>
     public class Slice
         : IUnaryOperator
@@ -43,20 +43,20 @@ namespace VDS.RDF.Query.Algebra
         private readonly bool _detectSettings = true;
 
         /// <summary>
-        /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query
+        /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
+        /// <param name="pattern">Pattern.</param>
         public Slice(ISparqlAlgebra pattern)
         {
             _pattern = pattern;
         }
 
         /// <summary>
-        /// Creates a new Slice modifier which uses a specific LIMIT and OFFSET
+        /// Creates a new Slice modifier which uses a specific LIMIT and OFFSET.
         /// </summary>
-        /// <param name="pattern">Pattern</param>
-        /// <param name="limit">Limit</param>
-        /// <param name="offset">Offset</param>
+        /// <param name="pattern">Pattern.</param>
+        /// <param name="limit">Limit.</param>
+        /// <param name="offset">Offset.</param>
         public Slice(ISparqlAlgebra pattern, int limit, int offset)
             : this(pattern)
         {
@@ -66,9 +66,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Slice by applying the appropriate LIMIT and OFFSET to the Results
+        /// Evaluates the Slice by applying the appropriate LIMIT and OFFSET to the Results.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Variables used in the Algebra
+        /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -158,17 +158,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
-        /// Gets the Limit in use (-1 indicates no Limit)
+        /// Gets the Limit in use (-1 indicates no Limit).
         /// </summary>
         public int Limit
         {
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Offset in use (0 indicates no Offset)
+        /// Gets the Offset in use (0 indicates no Offset).
         /// </summary>
         public int Offset
         {
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Algebra will detect the Limit and Offset to use from the provided query
+        /// Gets whether the Algebra will detect the Limit and Offset to use from the provided query.
         /// </summary>
         public bool DetectFromQuery
         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the String representation of the Algebra
+        /// Gets the String representation of the Algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Converts the Algebra back to a SPARQL Query
+        /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -233,19 +233,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an exception since a Slice() cannot be converted back to a Graph Pattern
+        /// Throws an exception since a Slice() cannot be converted back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Slice() cannot be converted to a Graph Pattern</exception>
+        /// <exception cref="NotSupportedException">Thrown since a Slice() cannot be converted to a Graph Pattern.</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Slice() cannot be converted to a Graph Pattern");
         }
 
         /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
+        /// Transforms the Inner Algebra using the given Optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

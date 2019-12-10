@@ -33,7 +33,7 @@ namespace VDS.RDF.Query.Algebra
 {
 
     /// <summary>
-    /// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables
+    /// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables.
     /// </summary>
     public class SetDistinctnessComparer
         : IEqualityComparer<ISet>
@@ -41,25 +41,25 @@ namespace VDS.RDF.Query.Algebra
         private List<String> _vars = new List<String>();
 
         /// <summary>
-        /// Creates a new comparer that compares across all variables
+        /// Creates a new comparer that compares across all variables.
         /// </summary>
         public SetDistinctnessComparer() { }
 
         /// <summary>
-        /// Creates a new comparer that compare only on the specific variables
+        /// Creates a new comparer that compare only on the specific variables.
         /// </summary>
-        /// <param name="variables">Variables</param>
+        /// <param name="variables">Variables.</param>
         public SetDistinctnessComparer(IEnumerable<String> variables)
         {
             _vars.AddRange(variables);
         }
 
         /// <summary>
-        /// Determines whether the given sets are equal
+        /// Determines whether the given sets are equal.
         /// </summary>
-        /// <param name="x">First Set</param>
-        /// <param name="y">Second Set</param>
-        /// <returns>True if sets are equal, false otherwise</returns>
+        /// <param name="x">First Set.</param>
+        /// <param name="y">Second Set.</param>
+        /// <returns>True if sets are equal, false otherwise.</returns>
         public bool Equals(ISet x, ISet y)
         {
             // Both null considered equal
@@ -81,10 +81,10 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the hash code for a set
+        /// Gets the hash code for a set.
         /// </summary>
-        /// <param name="obj">Set</param>
-        /// <returns>Hash Code</returns>
+        /// <param name="obj">Set.</param>
+        /// <returns>Hash Code.</returns>
         public int GetHashCode(ISet obj)
         {
             if (obj == null) return 0;

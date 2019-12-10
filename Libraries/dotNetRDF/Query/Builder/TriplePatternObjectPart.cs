@@ -30,7 +30,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Class responsible for setting the object part of triple patterns
+    /// Class responsible for setting the object part of triple patterns.
     /// </summary>
     public sealed class TriplePatternObjectPart
     {
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder Object(SparqlVariable variable)
         {
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a SPARQL variable as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder Object(string variableName)
         {
@@ -66,10 +66,10 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Depending on the generic parameter type, sets a literal, a QName or a blank node as <see cref="IMatchTriplePattern.Object"/>
+        /// Depending on the generic parameter type, sets a literal, a QName or a blank node as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
-        /// <param name="object">Either a variable name, a literal, a QName or a blank node identifier</param>
-        /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/> to accept a QName</remarks>
+        /// <param name="object">Either a variable name, a literal, a QName or a blank node identifier.</param>
+        /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/> to accept a QName.</remarks>
         public ITriplePatternBuilder Object<TNode>(string @object) where TNode : INode
         {
             var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object, _prefixes);
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Depending on the <paramref name="objectNode"/>'s type, sets a literal, a QName or a blank node as <see cref="IMatchTriplePattern.Object"/>
+        /// Depending on the <paramref name="objectNode"/>'s type, sets a literal, a QName or a blank node as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder Object(INode objectNode)
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder Object(Uri objectUri)
         {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a plain literal as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a plain literal as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder ObjectLiteral(object literal)
         {
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a literal with language tag as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a literal with language tag as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder ObjectLiteral(object literal, string langSpec)
         {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a typed literal as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a typed literal as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder ObjectLiteral(object literal, Uri datatype)
         {
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Object"/>
+        /// Sets a <see cref="PatternItem"/> as <see cref="IMatchTriplePattern.Object"/>.
         /// </summary>
         public ITriplePatternBuilder Object(PatternItem objectPattern)
         {

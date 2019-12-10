@@ -33,18 +33,18 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Static Helper class containing standard implementations of Equality between various Node types
+    /// Static Helper class containing standard implementations of Equality between various Node types.
     /// </summary>
     public static class EqualityHelper
     {
         /// <summary>
-        /// Determines whether two URIs are equal
+        /// Determines whether two URIs are equal.
         /// </summary>
-        /// <param name="a">First URI</param>
-        /// <param name="b">Second URI</param>
+        /// <param name="a">First URI.</param>
+        /// <param name="b">Second URI.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unlike the Equals method provided by the <see cref="Uri">Uri</see> class by default this takes into account Fragment IDs which are essential for checking URI equality in RDF
+        /// Unlike the Equals method provided by the <see cref="Uri">Uri</see> class by default this takes into account Fragment IDs which are essential for checking URI equality in RDF.
         /// </remarks>
         public static bool AreUrisEqual(Uri a, Uri b)
         {
@@ -71,10 +71,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two URIs are equal
+        /// Determines whether two URIs are equal.
         /// </summary>
-        /// <param name="a">First URI Node</param>
-        /// <param name="b">Second URI Node</param>
+        /// <param name="a">First URI Node.</param>
+        /// <param name="b">Second URI Node.</param>
         /// <returns></returns>
         public static bool AreUrisEqual(IUriNode a, IUriNode b)
         {
@@ -93,10 +93,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two Literals are equal
+        /// Determines whether two Literals are equal.
         /// </summary>
-        /// <param name="a">First Literal</param>
-        /// <param name="b">Second Literal</param>
+        /// <param name="a">First Literal.</param>
+        /// <param name="b">Second Literal.</param>
         /// <returns></returns>
         public static bool AreLiteralsEqual(ILiteralNode a, ILiteralNode b)
         {
@@ -161,10 +161,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two Blank Nodes are equal
+        /// Determines whether two Blank Nodes are equal.
         /// </summary>
-        /// <param name="a">First Blank Node</param>
-        /// <param name="b">Second Blank Node</param>
+        /// <param name="a">First Blank Node.</param>
+        /// <param name="b">Second Blank Node.</param>
         /// <returns></returns>
         public static bool AreBlankNodesEqual(IBlankNode a, IBlankNode b)
         {
@@ -183,10 +183,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two Graph Literals are equal
+        /// Determines whether two Graph Literals are equal.
         /// </summary>
-        /// <param name="a">First Blank Node</param>
-        /// <param name="b">Second Blank Node</param>
+        /// <param name="a">First Blank Node.</param>
+        /// <param name="b">Second Blank Node.</param>
         /// <returns></returns>
         public static bool AreGraphLiteralsEqual(IGraphLiteralNode a, IGraphLiteralNode b)
         {
@@ -205,10 +205,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two Variable Nodes are equal
+        /// Determines whether two Variable Nodes are equal.
         /// </summary>
-        /// <param name="a">First Variable Node</param>
-        /// <param name="b">Second Variable Node</param>
+        /// <param name="a">First Variable Node.</param>
+        /// <param name="b">Second Variable Node.</param>
         /// <returns></returns>
         public static bool AreVariablesEqual(IVariableNode a, IVariableNode b)
         {
@@ -228,15 +228,15 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Static Helper class containing standard implementations of Comparison between various Node types
+    /// Static Helper class containing standard implementations of Comparison between various Node types.
     /// </summary>
     public static class ComparisonHelper
     {
         /// <summary>
-        /// Compares two URIs
+        /// Compares two URIs.
         /// </summary>
-        /// <param name="a">First URI</param>
-        /// <param name="b">Second URI</param>
+        /// <param name="a">First URI.</param>
+        /// <param name="b">Second URI.</param>
         /// <returns></returns>
         public static int CompareUris(Uri a, Uri b)
         {
@@ -280,10 +280,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two URI Nodes
+        /// Compares two URI Nodes.
         /// </summary>
-        /// <param name="a">First URI Node</param>
-        /// <param name="b">Second URI Node</param>
+        /// <param name="a">First URI Node.</param>
+        /// <param name="b">Second URI Node.</param>
         /// <returns></returns>
         public static int CompareUris(IUriNode a, IUriNode b)
         {
@@ -302,10 +302,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Literal Nodes using global default comparison options where applicable
+        /// Compares two Literal Nodes using global default comparison options where applicable.
         /// </summary>
-        /// <param name="a">First Literal Node</param>
-        /// <param name="b">Second Literal Node</param>
+        /// <param name="a">First Literal Node.</param>
+        /// <param name="b">Second Literal Node.</param>
         /// <returns></returns>
         public static int CompareLiterals(ILiteralNode a, ILiteralNode b)
         {
@@ -313,12 +313,12 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Literal Nodes
+        /// Compares two Literal Nodes.
         /// </summary>
-        /// <param name="a">First Literal Node</param>
-        /// <param name="b">Second Literal Node</param>
-        /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable</param>
-        /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable</param>
+        /// <param name="a">First Literal Node.</param>
+        /// <param name="b">Second Literal Node.</param>
+        /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable.</param>
+        /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable.</param>
         /// <returns></returns>
         public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture, CompareOptions comparisonOptions)
         {
@@ -830,10 +830,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Blank Nodes
+        /// Compares two Blank Nodes.
         /// </summary>
-        /// <param name="a">First Blank Node</param>
-        /// <param name="b">Second Blank Node</param>
+        /// <param name="a">First Blank Node.</param>
+        /// <param name="b">Second Blank Node.</param>
         /// <returns></returns>
         public static int CompareBlankNodes(IBlankNode a, IBlankNode b)
         {
@@ -852,10 +852,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Graph Literals
+        /// Compares two Graph Literals.
         /// </summary>
-        /// <param name="a">First Graph Literal</param>
-        /// <param name="b">Second Graph Literal</param>
+        /// <param name="a">First Graph Literal.</param>
+        /// <param name="b">Second Graph Literal.</param>
         /// <returns></returns>
         public static int CompareGraphLiterals(IGraphLiteralNode a, IGraphLiteralNode b)
         {
@@ -874,10 +874,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Variable Nodes
+        /// Compares two Variable Nodes.
         /// </summary>
-        /// <param name="a">First Variable Node</param>
-        /// <param name="b">Second Variable Node</param>
+        /// <param name="a">First Variable Node.</param>
+        /// <param name="b">Second Variable Node.</param>
         /// <returns></returns>
         public static int CompareVariables(IVariableNode a, IVariableNode b)
         {
@@ -897,16 +897,16 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Equality comparer that compares URIs
+    /// Equality comparer that compares URIs.
     /// </summary>
     public class UriComparer
         : IComparer<Uri>, IEqualityComparer<Uri>
     {
         /// <summary>
-        /// Compares two URIs
+        /// Compares two URIs.
         /// </summary>
-        /// <param name="x">URI</param>
-        /// <param name="y">URI</param>
+        /// <param name="x">URI.</param>
+        /// <param name="y">URI.</param>
         /// <returns></returns>
         public int Compare(Uri x, Uri y)
         {
@@ -914,10 +914,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether two URIs are equal
+        /// Determines whether two URIs are equal.
         /// </summary>
-        /// <param name="x">URI</param>
-        /// <param name="y">URI</param>
+        /// <param name="x">URI.</param>
+        /// <param name="y">URI.</param>
         /// <returns></returns>
         public bool Equals(Uri x, Uri y)
         {
@@ -925,9 +925,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Hash Code for a URI
+        /// Gets the Hash Code for a URI.
         /// </summary>
-        /// <param name="obj">URI</param>
+        /// <param name="obj">URI.</param>
         /// <returns></returns>
         public int GetHashCode(Uri obj)
         {

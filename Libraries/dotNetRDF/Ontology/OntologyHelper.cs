@@ -29,17 +29,17 @@ using System;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Static Helper class for the Ontology API
+    /// Static Helper class for the Ontology API.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public static class OntologyHelper
     {
         /// <summary>
-        /// Constant URIs for properties exposed by <see cref="OntologyResource">OntologyResource</see> and its derived classes
+        /// Constant URIs for properties exposed by <see cref="OntologyResource">OntologyResource</see> and its derived classes.
         /// </summary>
         public const String PropertyVersionInfo = NamespaceMapper.OWL + "versionInfo",
                             PropertySameAs = NamespaceMapper.OWL + "sameAs",
@@ -65,7 +65,7 @@ namespace VDS.RDF.Ontology
                             PropertyType = NamespaceMapper.RDF + "type";
 
         /// <summary>
-        /// Constants for URIs for classes in Ontologies
+        /// Constants for URIs for classes in Ontologies.
         /// </summary>
         public const String RdfsClass = NamespaceMapper.RDFS + "Class",
                             OwlClass = NamespaceMapper.OWL + "Class",

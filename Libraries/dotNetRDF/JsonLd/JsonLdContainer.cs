@@ -27,7 +27,7 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported container mappings
+    /// Enumeration of the supported container mappings.
     /// </summary>
     public enum JsonLdContainer
     {
@@ -58,6 +58,6 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// @language container mapping
         /// </summary>
-        Language
+        Language,
     }
 }

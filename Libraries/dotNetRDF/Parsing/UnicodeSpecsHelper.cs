@@ -30,32 +30,32 @@ using System.Globalization;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Helper Class which defines some Test Functions for testing the Unicode Category of Characters
+    /// Helper Class which defines some Test Functions for testing the Unicode Category of Characters.
     /// </summary>
     public class UnicodeSpecsHelper
     {
         /// <summary>
-        /// Start of high surrogate range
+        /// Start of high surrogate range.
         /// </summary>
         public const int HighSurrogateStart = 0xD800;
         /// <summary>
-        /// End of high surrogate range
+        /// End of high surrogate range.
         /// </summary>
         public const int HighSurrogateEnd = 0xDBFF;
 
         /// <summary>
-        /// Start of low surrogate range
+        /// Start of low surrogate range.
         /// </summary>
         public const int LowSurrogateStart = 0xDC00;
         /// <summary>
-        /// End of low surrogate range
+        /// End of low surrogate range.
         /// </summary>
         public const int LowSurrogateEnd = 0xDFFF;
 
         /// <summary>
-        /// Checks whether a given Character is considered a Letter
+        /// Checks whether a given Character is considered a Letter.
         /// </summary>
-        /// <param name="c">Character to Test</param>
+        /// <param name="c">Character to Test.</param>
         /// <returns></returns>
         public static bool IsLetter(char c)
         {
@@ -81,9 +81,9 @@ namespace VDS.RDF.Parsing
 #endif
         }
         /// <summary>
-        /// Checks whether a given Character is considered a Letter or Digit
+        /// Checks whether a given Character is considered a Letter or Digit.
         /// </summary>
-        /// <param name="c">Character to Test</param>
+        /// <param name="c">Character to Test.</param>
         /// <returns></returns>
         public static bool IsLetterOrDigit(char c)
         {
@@ -91,9 +91,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given Character is considered a Letter Modifier
+        /// Checks whether a given Character is considered a Letter Modifier.
         /// </summary>
-        /// <param name="c">Character to Test</param>
+        /// <param name="c">Character to Test.</param>
         /// <returns></returns>
         public static bool IsLetterModifier(char c)
         {
@@ -108,9 +108,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Checks whether a given Character is considered a Digit
+        /// Checks whether a given Character is considered a Digit.
         /// </summary>
-        /// <param name="c">Character to Test</param>
+        /// <param name="c">Character to Test.</param>
         /// <returns></returns>
         public static bool IsDigit(char c)
         {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
         /// <returns>
         /// true if the numeric value of the <paramref name="c"/> parameter ranges from U+D800 through U+DBFF; otherwise, false.
         /// </returns>
-        /// <param name="c">The Unicode character to evaluate. </param><filterpriority>1</filterpriority>
+        /// <param name="c">The Unicode character to evaluate. </param><filterpriority>1.</filterpriority>
         public static bool IsHighSurrogate(char c)
         {
             return char.IsHighSurrogate(c);
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing
         /// <returns>
         /// true if the numeric value of the <paramref name="c"/> parameter ranges from U+DC00 through U+DFFF; otherwise, false.
         /// </returns>
-        /// <param name="c">The character to evaluate. </param><filterpriority>1</filterpriority>
+        /// <param name="c">The character to evaluate. </param><filterpriority>1.</filterpriority>
         public static bool IsLowSurrogate(char c)
         {
             return char.IsLowSurrogate(c);
@@ -161,16 +161,16 @@ namespace VDS.RDF.Parsing
         /// <param name="highSurrogate">A high surrogate code point (that is, a code point ranging from U+D800 through U+DBFF). </param>
         /// <param name="lowSurrogate">A low surrogate code point (that is, a code point ranging from U+DC00 through U+DFFF). </param>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="highSurrogate"/> is not in the range U+D800 through U+DBFF, or <paramref name="lowSurrogate"/> is not in the range U+DC00 through U+DFFF. </exception>
-        /// <filterpriority>1</filterpriority>
+        /// <filterpriority>1.</filterpriority>
         public static int ConvertToUtf32(char highSurrogate, char lowSurrogate)
         {
             return char.ConvertToUtf32(highSurrogate, lowSurrogate);
         }
 
         /// <summary>
-        /// Converts a Hex Escape into the relevant Unicode Character
+        /// Converts a Hex Escape into the relevant Unicode Character.
         /// </summary>
-        /// <param name="hex">Hex code</param>
+        /// <param name="hex">Hex code.</param>
         /// <returns></returns>
         public static char ConvertToChar(String hex)
         {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Converts a Hex Escape into the relevant UTF-16 codepoints
+        /// Converts a Hex Escape into the relevant UTF-16 codepoints.
         /// </summary>
         /// <param name="hex"></param>
         /// <returns></returns>

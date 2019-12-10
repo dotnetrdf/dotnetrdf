@@ -30,47 +30,47 @@ using System.Collections.Generic;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Namespace Maps which provide mappings between Namespace Prefixes and Namespace URIs
+    /// Interface for Namespace Maps which provide mappings between Namespace Prefixes and Namespace URIs.
     /// </summary>
     public interface INamespaceMapper : IDisposable
     {
         /// <summary>
-        /// Adds a Namespace to the Namespace Map
+        /// Adds a Namespace to the Namespace Map.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix</param>
-        /// <param name="uri">Namespace Uri</param>
+        /// <param name="prefix">Namespace Prefix.</param>
+        /// <param name="uri">Namespace Uri.</param>
         void AddNamespace(string prefix, Uri uri);
 
         /// <summary>
-        /// Clears the Namespace Map
+        /// Clears the Namespace Map.
         /// </summary>
         void Clear();
 
         /// <summary>
-        /// Returns the Namespace URI associated with the given Prefix
+        /// Returns the Namespace URI associated with the given Prefix.
         /// </summary>
-        /// <param name="prefix">The Prefix to lookup the Namespace URI for</param>
-        /// <returns>URI for the Namespace</returns>
+        /// <param name="prefix">The Prefix to lookup the Namespace URI for.</param>
+        /// <returns>URI for the Namespace.</returns>
         Uri GetNamespaceUri(string prefix);
 
         /// <summary>
-        /// Returns the Prefix associated with the given Namespace URI
+        /// Returns the Prefix associated with the given Namespace URI.
         /// </summary>
-        /// <param name="uri">The Namespace URI to lookup the Prefix for</param>
-        /// <returns>String prefix for the Namespace</returns>
+        /// <param name="uri">The Namespace URI to lookup the Prefix for.</param>
+        /// <returns>String prefix for the Namespace.</returns>
         String GetPrefix(Uri uri);
 
         /// <summary>
-        /// Method which checks whether a given Namespace Prefix is defined
+        /// Method which checks whether a given Namespace Prefix is defined.
         /// </summary>
-        /// <param name="prefix">Prefix to test</param>
+        /// <param name="prefix">Prefix to test.</param>
         /// <returns></returns>
         bool HasNamespace(string prefix);
 
         /// <summary>
-        /// Imports the contents of another Namespace Map into this Namespace Map
+        /// Imports the contents of another Namespace Map into this Namespace Map.
         /// </summary>
-        /// <param name="nsmap">Namespace Map to import</param>
+        /// <param name="nsmap">Namespace Map to import.</param>
         /// <remarks>
         /// Prefixes in the imported Map which are already defined in this Map are ignored, this may change in future releases.
         /// </remarks>
@@ -92,7 +92,7 @@ namespace VDS.RDF
         event NamespaceChanged NamespaceRemoved;
 
         /// <summary>
-        /// Gets a Enumeratorion of all the Prefixes
+        /// Gets a Enumeratorion of all the Prefixes.
         /// </summary>
         IEnumerable<string> Prefixes 
         { 
@@ -100,10 +100,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// A Function which attempts to reduce a Uri to a QName
+        /// A Function which attempts to reduce a Uri to a QName.
         /// </summary>
-        /// <param name="uri">The Uri to attempt to reduce</param>
-        /// <param name="qname">The value to output the QName to if possible</param>
+        /// <param name="uri">The Uri to attempt to reduce.</param>
+        /// <param name="qname">The value to output the QName to if possible.</param>
         /// <returns></returns>
         /// <remarks>
         /// This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.
@@ -111,9 +111,9 @@ namespace VDS.RDF
         bool ReduceToQName(string uri, out string qname);
 
         /// <summary>
-        /// Removes a Namespace from the Namespace Map
+        /// Removes a Namespace from the Namespace Map.
         /// </summary>
-        /// <param name="prefix">Namespace Prefix of the Namespace to remove</param>
+        /// <param name="prefix">Namespace Prefix of the Namespace to remove.</param>
         void RemoveNamespace(string prefix);
     }
 }

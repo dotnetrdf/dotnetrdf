@@ -27,7 +27,7 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the error codes specified in the JSON-LD framing specification
+    /// Enumeration of the error codes specified in the JSON-LD framing specification.
     /// </summary>
     public enum JsonLdFramingErrorCode
     {
@@ -39,6 +39,6 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// invalid @embed value
         /// </summary>
-        InvalidEmbedValue
+        InvalidEmbedValue,
     }
 }

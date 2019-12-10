@@ -32,8 +32,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// Base class for update operations on virtualized graphs. Implementors have to provide a method to 
     /// convert standard Nodes to their virtual form according to the IVirtualRdfProvider which is in use.
     /// </summary>
-    /// <typeparam name="TNodeID">Node ID Type</typeparam>
-    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type.</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
     public abstract class StoreVirtualGraphPersistenceWrapper<TNodeID, TGraphID> 
         : StoreGraphPersistenceWrapper
     {
@@ -41,26 +41,26 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Converts a standard INode to a virtualized node with a pre-materialized value.
         /// </summary>
-        /// <param name="provider">Virtual RDF Provider, the object, e.g. a storage manger, that provides virtualization of nodes</param>
+        /// <param name="provider">Virtual RDF Provider, the object, e.g. a storage manger, that provides virtualization of nodes.</param>
         /// <param name="preMaterializedValue">Node that has to be converted to it's virtualized form with itself as materialized value. Usually a parsed Literal or Uri.</param>
         protected abstract INode CreateVirtual(IVirtualRdfProvider<TNodeID, TGraphID> provider, INode preMaterializedValue);
 
         /// <summary>
-        /// Virtual RDF Provider
+        /// Virtual RDF Provider.
         /// </summary>
         protected readonly IVirtualRdfProvider<TNodeID, TGraphID> _provider;
 
         /// <summary>
-        /// Creates a new Store Graph Persistence Wrapper for Virtualized Nodes
+        /// Creates a new Store Graph Persistence Wrapper for Virtualized Nodes.
         /// </summary>
-        /// <param name="manager">Generic IO Manager</param>
-        /// <param name="provider">Virtual RDF Provider</param>
-        /// <param name="g">Graph with virtualized Nodes to wrap</param>
-        /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as)</param>
-        /// <param name="writeOnly">Whether to operate in write-only mode</param>
+        /// <param name="manager">Generic IO Manager.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="g">Graph with virtualized Nodes to wrap.</param>
+        /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as).</param>
+        /// <param name="writeOnly">Whether to operate in write-only mode.</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph.
         /// </para>
         /// </remarks>
         public StoreVirtualGraphPersistenceWrapper(IStorageProvider manager, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraph g, Uri graphUri, bool writeOnly)
@@ -70,18 +70,18 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Asserts a Triple after virtualization in the Graph
+        /// Asserts a Triple after virtualization in the Graph.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         public override bool Assert(Triple t)
         {
             return base.Assert(VirtualizeTriple(t));
         }
 
         /// <summary>
-        /// Retracts a Triple after virtualization from the Graph
+        /// Retracts a Triple after virtualization from the Graph.
         /// </summary>
-        /// <param name="t">Triple</param>
+        /// <param name="t">Triple.</param>
         public override bool Retract(Triple t)
         {
             return base.Retract(VirtualizeTriple(t));
@@ -89,19 +89,19 @@ namespace VDS.RDF.Storage.Virtualisation
 
 
         /// <summary>
-        /// Gets whether the virtualized form of a given Triple exists in this Graph
+        /// Gets whether the virtualized form of a given Triple exists in this Graph.
         /// </summary>
-        /// <param name="t">Triple to test</param>
-        /// <returns>Triple is known to the Graph</returns>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>Triple is known to the Graph.</returns>
         public override bool ContainsTriple(Triple t)
         {
             return base.ContainsTriple(VirtualizeTriple(t));
         }
 
         /// <summary>
-        /// Converts subject, predicate and object of a given Triple to their respective virtualized forms
+        /// Converts subject, predicate and object of a given Triple to their respective virtualized forms.
         /// </summary>
-        /// <param name="t">Triple to virtualize</param>
+        /// <param name="t">Triple to virtualize.</param>
         /// <returns>The virtualized Triple. Itself, if it was already virtual.</returns>
         protected Triple VirtualizeTriple(Triple t)
         {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Virtualizes a Node
+        /// Virtualizes a Node.
         /// </summary>
-        /// <param name="n">Node to be virtualized</param>
+        /// <param name="n">Node to be virtualized.</param>
         /// <returns>The Node in its virtual form. Itself, if it was already virtual.</returns>
         protected INode VirtualizeNode(INode n)
         {

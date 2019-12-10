@@ -59,7 +59,7 @@ namespace VDS.RDF
     /// </para>
     /// <h3>Ontology API</h3>
     /// <para>
-    /// There is also an <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF than the standard Graph and Triple centric APIs
+    /// There is also an <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF than the standard Graph and Triple centric APIs.
     /// </para>
     /// <h3>Configuration API</h3>
     /// <para>
@@ -80,7 +80,7 @@ namespace VDS.RDF
     /// </para>
     /// <h5>Silverlight/Windows Phone 7 Build</h5>
     /// <para>
-    /// The Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) are experimental builds that receive limited internal testing so please be aware that these are not as stable as the standard .Net builds.  These build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:
+    /// The Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) are experimental builds that receive limited internal testing so please be aware that these are not as stable as the standard .Net builds.  These build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:.
     /// </para>
     /// <ul>
     ///     <li>Most of the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
@@ -119,10 +119,10 @@ namespace VDS.RDF.Configuration.Permissions
 {
     /// <summary>
     /// <para>
-    /// Namespace for classes related to configuring Permissions
+    /// Namespace for classes related to configuring Permissions.
     /// </para>
     /// <para>
-    /// <strong>Warning:</strong> The API here is experimental and may changed/be removed in future releases
+    /// <strong>Warning:</strong> The API here is experimental and may changed/be removed in future releases.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -196,7 +196,7 @@ namespace VDS.RDF.Parsing.Contexts
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Namespace for Event classes which are used to support Event Based parsing of RDF syntaxes
+    /// Namespace for Event classes which are used to support Event Based parsing of RDF syntaxes.
     /// </summary>
     class NamespaceDoc
     {
@@ -208,7 +208,7 @@ namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
     /// <para>
-    /// Namespace for RDF and SPARQL Results Handlers
+    /// Namespace for RDF and SPARQL Results Handlers.
     /// </para>
     /// <para>
     /// Handlers are a powerful low level part of the parsers API, they allow you to parse RDF, RDF Datasets and SPARQL Results in such a way that you can take arbitrary actions with the data and choose to end parsing as soon as desired.
@@ -224,7 +224,7 @@ namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
     /// <para>
-    /// Namespace for Token classes which are used to support Token Based parsing of RDF syntaxes
+    /// Namespace for Token classes which are used to support Token Based parsing of RDF syntaxes.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -237,7 +237,7 @@ namespace VDS.RDF.Parsing.Validation
 {
     /// <summary>
     /// <para>
-    /// Namespace for Validator classes that can be used to validate various forms of syntax
+    /// Namespace for Validator classes that can be used to validate various forms of syntax.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -266,7 +266,7 @@ namespace VDS.RDF.Query.Aggregates
 {
     /// <summary>
     /// <para>
-    /// Namespace for Aggregate classes which implement Aggregate functions for SPARQL
+    /// Namespace for Aggregate classes which implement Aggregate functions for SPARQL.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -278,7 +278,7 @@ namespace VDS.RDF.Query.Aggregates
 namespace VDS.RDF.Query.Aggregates.Leviathan
 {
     /// <summary>
-    /// Namespace for aggregates provided by the Leviathan function library
+    /// Namespace for aggregates provided by the Leviathan function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -289,7 +289,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
 namespace VDS.RDF.Query.Aggregates.Sparql
 {
     /// <summary>
-    /// Namespace for the built-in SPARQL aggregates
+    /// Namespace for the built-in SPARQL aggregates.
     /// </summary>
     class NamespaceDoc
     {
@@ -300,7 +300,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
 namespace VDS.RDF.Query.Aggregates.XPath
 {
     /// <summary>
-    /// Namespace for aggregates provided by the XPath function library
+    /// Namespace for aggregates provided by the XPath function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
     /// <para>
-    /// Contains the classes which model the mapping of SPARQL queries into the SPARQL Algebra.  This namespace is a key component of the new <strong>Leviathan</strong> SPARQL engine introduced in the 0.2.x builds of dotNetRDF
+    /// Contains the classes which model the mapping of SPARQL queries into the SPARQL Algebra.  This namespace is a key component of the new <strong>Leviathan</strong> SPARQL engine introduced in the 0.2.x builds of dotNetRDF.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query.Construct
 {
     /// <summary>
     /// <para>
-    /// Namespace for classes used in executing CONSTRUCT queries
+    /// Namespace for classes used in executing CONSTRUCT queries.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -339,7 +339,7 @@ namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
     /// <para>
-    /// Namespace for classes used to define a Dataset over which SPARQL Queries and Updates evaluated using the Leviathan engine operate
+    /// Namespace for classes used to define a Dataset over which SPARQL Queries and Updates evaluated using the Leviathan engine operate.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -352,7 +352,7 @@ namespace VDS.RDF.Query.Describe
 {
     /// <summary>
     /// <para>
-    /// Namespace for classes which implement algorithms for executing DESCRIBE queries
+    /// Namespace for classes which implement algorithms for executing DESCRIBE queries.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -377,7 +377,7 @@ namespace VDS.RDF.Query.Expressions
 namespace VDS.RDF.Query.Expressions.Arithmetic
 {
     /// <summary>
-    /// Namespace containing expression classes pertaining to arithmetic operations
+    /// Namespace containing expression classes pertaining to arithmetic operations.
     /// </summary>
     class NamespaceDoc
     {
@@ -388,7 +388,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
 namespace VDS.RDF.Query.Expressions.Comparison
 {
     /// <summary>
-    /// Namespace containing expression classes pertaining to comparison operations
+    /// Namespace containing expression classes pertaining to comparison operations.
     /// </summary>
     class NamespaceDoc
     {
@@ -399,7 +399,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
 namespace VDS.RDF.Query.Expressions.Conditional
 {
     /// <summary>
-    /// Namespace containing expression classes pertaining to conditional operations
+    /// Namespace containing expression classes pertaining to conditional operations.
     /// </summary>
     class NamespaceDoc
     {
@@ -411,7 +411,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 {
     /// <summary>
     /// <para>
-    /// Namespace containing expression classes which model functions in SPARQL expressions
+    /// Namespace containing expression classes which model functions in SPARQL expressions.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -423,7 +423,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the ARQ function library
+    /// Namespace containing expression classes which provide the ARQ function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -434,7 +434,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the Leviathan function library
+    /// Namespace containing expression classes which provide the Leviathan function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -445,7 +445,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the hash functions from the Leviathan function library
+    /// Namespace containing expression classes which provide the hash functions from the Leviathan function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -456,7 +456,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the numeric functions from the Leviathan function library
+    /// Namespace containing expression classes which provide the numeric functions from the Leviathan function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -467,7 +467,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the trigonometric functions from the Leviathan function library
+    /// Namespace containing expression classes which provide the trigonometric functions from the Leviathan function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -478,7 +478,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 namespace VDS.RDF.Query.Expressions.Functions.Sparql
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions
+    /// Namespace containing expression classes which provide the SPARQL built-in functions.
     /// </summary>
     class NamespaceDoc
     {
@@ -489,7 +489,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions which have boolean results
+    /// Namespace containing expression classes which provide the SPARQL built-in functions which have boolean results.
     /// </summary>
     class NamespaceDoc
     {
@@ -500,7 +500,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions which construct new terms
+    /// Namespace containing expression classes which provide the SPARQL built-in functions which construct new terms.
     /// </summary>
     class NamespaceDoc
     {
@@ -511,7 +511,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to date times
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to date times.
     /// </summary>
     class NamespaceDoc
     {
@@ -522,7 +522,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to hash algorithms
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to hash algorithms.
     /// </summary>
     class NamespaceDoc
     {
@@ -533,7 +533,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in numeric functions
+    /// Namespace containing expression classes which provide the SPARQL built-in numeric functions.
     /// </summary>
     class NamespaceDoc
     {
@@ -544,7 +544,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to sets (IN and NOT IN)
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to sets (IN and NOT IN).
     /// </summary>
     class NamespaceDoc
     {
@@ -555,7 +555,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
-    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to string manipulation
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to string manipulation.
     /// </summary>
     class NamespaceDoc
     {
@@ -566,7 +566,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 namespace VDS.RDF.Query.Expressions.Functions.XPath
 {
     /// <summary>
-    /// Namespace containing expression classes which provide functions from the XPath function library
+    /// Namespace containing expression classes which provide functions from the XPath function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -577,7 +577,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
     /// <summary>
-    /// Namespace containing expression classes which provide cast functions from the XPath function library
+    /// Namespace containing expression classes which provide cast functions from the XPath function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -588,7 +588,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
     /// <summary>
-    /// Namespace containing expression classes which provide date time functions from the XPath function library
+    /// Namespace containing expression classes which provide date time functions from the XPath function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -599,7 +599,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
     /// <summary>
-    /// Namespace containing expression classes which provide numeric functions from the XPath function library
+    /// Namespace containing expression classes which provide numeric functions from the XPath function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -610,7 +610,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
-    /// Namespace containing expression classes which provide string functions from the XPath function library
+    /// Namespace containing expression classes which provide string functions from the XPath function library.
     /// </summary>
     class NamespaceDoc
     {
@@ -621,7 +621,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 namespace VDS.RDF.Query.Expressions.Primary
 {
     /// <summary>
-    /// Namespace containing expression classes representing primary constructs in SPARQL expression trees i.e. constants, modifiers and variables
+    /// Namespace containing expression classes representing primary constructs in SPARQL expression trees i.e. constants, modifiers and variables.
     /// </summary>
     class NamespaceDoc
     {
@@ -633,7 +633,7 @@ namespace VDS.RDF.Query.Filters
 {
     /// <summary>
     /// <para>
-    /// Namespace containing classes pertaining to the filtering of the results of SPARQL queries
+    /// Namespace containing classes pertaining to the filtering of the results of SPARQL queries.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -646,7 +646,7 @@ namespace VDS.RDF.Query.Grouping
 {
     /// <summary>
     /// <para>
-    /// Namespace containing classes used to apply GROUP BY clauses to SPARQL queries
+    /// Namespace containing classes used to apply GROUP BY clauses to SPARQL queries.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -665,7 +665,7 @@ namespace VDS.RDF.Query.Inference
     /// Classes which implement reasoning must implement the <see cref="IInferenceEngine">IInferenceEngine</see> interface, these can then be attached to classes which implement the <see cref="IInferencingTripleStore">IInferencingTripleStore</see> interface or they can be used to apply inference to any <see cref="IGraph">IGraph</see> implementation with the inferred Triples optionally output to a separate Graph.
     /// </para>
     /// <para>
-    /// OWL reasoning currently has extremely limited support, we provide a Pellet client in the <see cref="Pellet">Pellet</see> namespace which can be used to connect to a Pellet Server but that currently only provides reasoning on external knowledge bases on the Pellet Server
+    /// OWL reasoning currently has extremely limited support, we provide a Pellet client in the <see cref="Pellet">Pellet</see> namespace which can be used to connect to a Pellet Server but that currently only provides reasoning on external knowledge bases on the Pellet Server.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -678,7 +678,7 @@ namespace VDS.RDF.Query.Inference.Pellet
 {
     /// <summary>
     /// <para>
-    /// Namespace which provides a client for interacting with a Pellet Server
+    /// Namespace which provides a client for interacting with a Pellet Server.
     /// </para>
     /// <para>
     /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.  You may also want to consider using the <see cref="VDS.RDF.Storage.StardogConnector"/> which is the triple store from the same people who developed Pellet and which integrates some Pellet capabilities.
@@ -694,7 +694,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
     /// <para>
-    /// Namespace which provides classes which represent the Services offered by a Pellet Server knowledge base
+    /// Namespace which provides classes which represent the Services offered by a Pellet Server knowledge base.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -720,7 +720,7 @@ namespace VDS.RDF.Query.Operators.DateTime
 {
     /// <summary>
     /// <para>
-    /// Namespace which provides implementations of <see cref="ISparqlOperator"/> which allow for embedding date time arithmetic into SPARQL queries
+    /// Namespace which provides implementations of <see cref="ISparqlOperator"/> which allow for embedding date time arithmetic into SPARQL queries.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -733,7 +733,7 @@ namespace VDS.RDF.Query.Operators.Numeric
 {
     /// <summary>
     /// <para>
-    /// Namespace which provides implementations of <see cref="ISparqlOperator"/> which provide the default numeric implementations of operators as required by the SPARQL specification
+    /// Namespace which provides implementations of <see cref="ISparqlOperator"/> which provide the default numeric implementations of operators as required by the SPARQL specification.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -759,7 +759,7 @@ namespace VDS.RDF.Query.Ordering
 {
     /// <summary>
     /// <para>
-    /// Namespace containing classes used to order the results of SPARQL queries
+    /// Namespace containing classes used to order the results of SPARQL queries.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -784,7 +784,7 @@ namespace VDS.RDF.Query.Paths
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Namespace for Pattern Classes that are used in the Graph and Triple matching process for executing SPARQL queries on <see cref="IInMemoryQueryableStore">IInMemoryQueryableStore</see> objects
+    /// Namespace for Pattern Classes that are used in the Graph and Triple matching process for executing SPARQL queries on <see cref="IInMemoryQueryableStore">IInMemoryQueryableStore</see> objects.
     /// </summary>
     class NamespaceDoc
     {
@@ -795,7 +795,7 @@ namespace VDS.RDF.Query.Patterns
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Namespace which provide classes relating to the property function extension point of SPARQL
+    /// Namespace which provide classes relating to the property function extension point of SPARQL.
     /// </summary>
     class NamespaceDoc
     {
@@ -806,7 +806,7 @@ namespace VDS.RDF.Query.PropertyFunctions
 namespace VDS.RDF.Skos
 {
     /// <summary>
-    /// Namespace containing classes implementing the Simple Knowledge Organization System (SKOS)
+    /// Namespace containing classes implementing the Simple Knowledge Organization System (SKOS).
     /// </summary>
     class NamespaceDoc
     {
@@ -818,14 +818,14 @@ namespace VDS.RDF.Storage
 {
     /// <summary>
     /// <para>
-    /// Namespace for storage classes which provide support for using arbitrary backing Stores
+    /// Namespace for storage classes which provide support for using arbitrary backing Stores.
     /// </para>
     /// <para>
     /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
     /// </para>
     /// <h3>Data Provider Libraries</h3>
     /// <para>
-    /// From the 0.5.0 release onwards any triple store integration that requires additional dependencies are provided with their own library to reduce dependencies in the Core library and allow that functionality to be optional.  The following stores are currently provided in separate libraries:
+    /// From the 0.5.0 release onwards any triple store integration that requires additional dependencies are provided with their own library to reduce dependencies in the Core library and allow that functionality to be optional.  The following stores are currently provided in separate libraries:.
     /// </para>
     /// <ul>
     ///     <li>Virtuoso - Virtuoso support can be found in the <strong>dotNetRDF.Data.Virtuoso.dll</strong> library and requires one additional dependency.</li>
@@ -841,7 +841,7 @@ namespace VDS.RDF.Storage.Management
 {
     /// <summary>
     /// <para>
-    /// Namespace for storage classes which provide support for managing servers that provide multiple backing Stores
+    /// Namespace for storage classes which provide support for managing servers that provide multiple backing Stores.
     /// </para>
     /// <para>
     /// Servers are managed via the <see cref="IStorageServer"/> interface, a server can provide lists of available stores, retrieve a reference to a store, create new stores and delete existing stores.  The exact capabilites may depend on the implementation and may be inspected via the <see cref="IStorageServer.IOBehaviour"/> property.
@@ -857,7 +857,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
 {
     /// <summary>
     /// <para>
-    /// Namespace for storage classes which provide support for creating new stores in conjunction with a <see cref="IStorageServer"/>
+    /// Namespace for storage classes which provide support for creating new stores in conjunction with a <see cref="IStorageServer"/>.
     /// </para>
     /// <para>
     /// In order for an <see cref="IStorageServer"/> to create a new store it requires an instance of the <see cref="IStoreTemplate"/> interface from this namespace.  The basic interface provides only a Store ID, specific implementations may provide many more customizable properties to allow new stores to be created that take advantage of the capabilties of the server the store is being created on.  A <see cref="IStorageServer"/> provides methods to generate the basic templates that it accepts and should be used in preference to creating any of the implementations directly.
@@ -873,7 +873,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
     /// <summary>
     /// <para>
-    /// Namespace containing implementations of <see cref="IStoreTemplate"/> which provide templates for creating new stores on Sesame servers
+    /// Namespace containing implementations of <see cref="IStoreTemplate"/> which provide templates for creating new stores on Sesame servers.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -886,7 +886,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {
     /// <summary>
     /// <para>
-    /// Namespace containing implementations of <see cref="IStoreTemplate"/> which provide templates for creating new stores on Stardog servers
+    /// Namespace containing implementations of <see cref="IStoreTemplate"/> which provide templates for creating new stores on Stardog servers.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -899,7 +899,7 @@ namespace VDS.RDF.Update
 {
     /// <summary>
     /// <para>
-    /// Namespace for performing updates on Triple Stores using SPARQL Update
+    /// Namespace for performing updates on Triple Stores using SPARQL Update.
     /// </para>
     /// <para>
     /// This is a new part of the API introduced in the 0.3.0 release and adds support for using SPARQL to update Triple Stores.  SPARQL Update is part of the new SPARQL 1.1 standard and provides syntax for inserting, modifying and deleting data as well as managing graphs in a store.
@@ -928,7 +928,7 @@ namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
     /// <para>
-    /// Namespaces containing classes which implement the SPARQL Graph Store HTTP Protocol for RDF Graph Management
+    /// Namespaces containing classes which implement the SPARQL Graph Store HTTP Protocol for RDF Graph Management.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -974,7 +974,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
 {
     /// <summary>
     /// <para>
-    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Graph Store HTTP Protocol
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Graph Store HTTP Protocol.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -987,7 +987,7 @@ namespace VDS.RDF.Web.Configuration.Query
 {
     /// <summary>
     /// <para>
-    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Query handlers
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Query handlers.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -1000,7 +1000,7 @@ namespace VDS.RDF.Web.Configuration.Resource
 {
     /// <summary>
     /// <para>
-    /// Namespace for Configuration classes which are used to load and store the configuration settings for handlers which serve resources such as Graphs
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for handlers which serve resources such as Graphs.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -1013,7 +1013,7 @@ namespace VDS.RDF.Web.Configuration.Server
 {
     /// <summary>
     /// <para>
-    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Servers
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Servers.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -1026,7 +1026,7 @@ namespace VDS.RDF.Web.Configuration.Update
 {
     /// <summary>
     /// <para>
-    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Update handlers
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Update handlers.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -1081,7 +1081,7 @@ namespace VDS.RDF.Writing.Serialization
 {
     /// <summary>
     /// <para>
-    /// Namespace for classes related to .Net serialization integration in the library
+    /// Namespace for classes related to .Net serialization integration in the library.
     /// </para>
     /// </summary>
     class NamespaceDoc

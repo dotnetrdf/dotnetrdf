@@ -32,17 +32,17 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
-    /// Computes the merge of the Minimal Spanning Graphs for all the Values resulting from the Query
+    /// Computes the merge of the Minimal Spanning Graphs for all the Values resulting from the Query.
     /// </summary>
     public class MinimalSpanningGraph 
         : BaseDescribeAlgorithm
     {
         /// <summary>
-        /// Generates the Description for each of the Nodes to be described
+        /// Generates the Description for each of the Nodes to be described.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="nodes">Nodes to be described</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="nodes">Nodes to be described.</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results

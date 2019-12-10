@@ -38,7 +38,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for writing a Triple Store in named Graph TriG syntax to a file/stream
+    /// Class for writing a Triple Store in named Graph TriG syntax to a file/stream.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Writing
         private bool _useMultiThreading = Options.AllowMultiThreadedWriting;
 
         /// <summary>
-        /// Gets/Sets whether High Speed Write Mode is permitted
+        /// Gets/Sets whether High Speed Write Mode is permitted.
         /// </summary>
         public bool HighSpeedModePermitted
         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether Pretty Printing is used
+        /// Gets/Sets whether Pretty Printing is used.
         /// </summary>
         public bool PrettyPrintMode 
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets the Compression Level for the writer
+        /// Gets/Sets the Compression Level for the writer.
         /// </summary>
         public int CompressionLevel
         {
@@ -103,10 +103,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether N3 Compatability Mode is used, in this mode an = is written after Graph Names so an N3 parser can read the TriG file correctly
+        /// Gets/Sets whether N3 Compatability Mode is used, in this mode an = is written after Graph Names so an N3 parser can read the TriG file correctly.
         /// </summary>
         /// <remarks>
-        /// Defaults to <strong>false</strong> from the 0.4.1 release onwards
+        /// Defaults to <strong>false</strong> from the 0.4.1 release onwards.
         /// </remarks>
         public bool N3CompatabilityMode
         {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets/Sets whether multi-threaded writing will be used to generate output faster
+        /// Gets/Sets whether multi-threaded writing will be used to generate output faster.
         /// </summary>
         public bool UseMultiThreadedWriting
         {
@@ -136,10 +136,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format
+        /// Saves a Store in TriG (Turtle with Named Graphs) format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="filename">File to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="filename">File to save to.</param>
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
@@ -150,21 +150,21 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format
+        /// Saves a Store in TriG (Turtle with Named Graphs) format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="writer">Writer to save to</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="writer">Writer to save to.</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
             Save(store, writer, false);
         }
 
         /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format
+        /// Saves a Store in TriG (Turtle with Named Graphs) format.
         /// </summary>
-        /// <param name="store">Store to save</param>
-        /// <param name="writer">Writer to save to</param>
-        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is saved</param>
+        /// <param name="store">Store to save.</param>
+        /// <param name="writer">Writer to save to.</param>
+        /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is saved.</param>
         public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
@@ -288,10 +288,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates the Output for a Graph as a String in TriG syntax
+        /// Generates the Output for a Graph as a String in TriG syntax.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
-        /// <param name="context">Context for writing the Graph</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
+        /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
         private String GenerateGraphOutput(TriGWriterContext globalContext, TurtleWriterContext context)
         {
@@ -331,10 +331,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates the Output for a Triple as a String in Turtle syntax
+        /// Generates the Output for a Triple as a String in Turtle syntax.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
-        /// <param name="context">Context for writing the Graph</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
+        /// <param name="context">Context for writing the Graph.</param>
         private void GenerateTripleOutput(TriGWriterContext globalContext, TurtleWriterContext context)
         {
             // Decide which write mode to use
@@ -429,12 +429,12 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Generates Output for Nodes in Turtle syntax
+        /// Generates Output for Nodes in Turtle syntax.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
-        /// <param name="context">Context for writing the Graph</param>
-        /// <param name="n">Node to generate output for</param>
-        /// <param name="segment">Segment of the Triple being written</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
+        /// <param name="context">Context for writing the Graph.</param>
+        /// <param name="n">Node to generate output for.</param>
+        /// <param name="segment">Segment of the Triple being written.</param>
         /// <returns></returns>
         private String GenerateNodeOutput(TriGWriterContext globalContext, TurtleWriterContext context, INode n, TripleSegment segment)
         {
@@ -463,15 +463,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Delegate for the SaveGraphs method
+        /// Delegate for the SaveGraphs method.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
         private delegate void SaveGraphsDelegate(TriGWriterContext globalContext);
 
         /// <summary>
-        /// Thread Worker method which writes Graphs to the output
+        /// Thread Worker method which writes Graphs to the output.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store</param>
+        /// <param name="globalContext">Context for writing the Store.</param>
         private void SaveGraphs(TriGWriterContext globalContext)
         {
             try
@@ -528,9 +528,9 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
 
         /// <summary>
-        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
+        /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message) 
         {
             StoreWriterWarning d = Warning;
@@ -541,7 +541,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

@@ -36,7 +36,7 @@ using VDS.RDF.Storage.Management.Provisioning;
 namespace VDS.RDF.Storage.Management
 {
     /// <summary>
-    /// Represents an AllegroGraph server, may be used to access and manage stores within a catalog on the server
+    /// Represents an AllegroGraph server, may be used to access and manage stores within a catalog on the server.
     /// </summary>
     public class AllegroGraphServer
         : SesameServer
@@ -45,27 +45,27 @@ namespace VDS.RDF.Storage.Management
         private String _catalog;
          
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store
+        /// Creates a new Connection to an AllegroGraph store.
         /// </summary>
-        /// <param name="baseUri">Base URI for the Store</param>
-        /// <param name="catalogID">Catalog ID</param>
+        /// <param name="baseUri">Base URI for the Store.</param>
+        /// <param name="catalogID">Catalog ID.</param>
         public AllegroGraphServer(String baseUri, String catalogID)
             : this(baseUri, catalogID, (String)null, (String)null) { }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
         public AllegroGraphServer(String baseUri)
             : this(baseUri, (String)null) { }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store
+        /// Creates a new Connection to an AllegroGraph store.
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="catalogID">Catalog ID</param>
-        /// <param name="username">Username for connecting to the Store</param>
-        /// <param name="password">Password for connecting to the Store</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
+        /// <param name="catalogID">Catalog ID.</param>
+        /// <param name="username">Username for connecting to the Store.</param>
+        /// <param name="password">Password for connecting to the Store.</param>
         public AllegroGraphServer(String baseUri, String catalogID, String username, String password)
             : base(baseUri, username, password)
         {
@@ -84,39 +84,39 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="username">Username for connecting to the Store</param>
-        /// <param name="password">Password for connecting to the Store</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
+        /// <param name="username">Username for connecting to the Store.</param>
+        /// <param name="password">Password for connecting to the Store.</param>
         public AllegroGraphServer(String baseUri, String username, String password)
             : this(baseUri, null, username, password) { }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store
+        /// Creates a new Connection to an AllegroGraph store.
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="catalogID">Catalog ID</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
+        /// <param name="catalogID">Catalog ID.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public AllegroGraphServer(String baseUri, String catalogID, IWebProxy proxy)
             : this(baseUri, catalogID, null, null, proxy) { }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public AllegroGraphServer(String baseUri, IWebProxy proxy)
             : this(baseUri, null, proxy) { }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store
+        /// Creates a new Connection to an AllegroGraph store.
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="catalogID">Catalog ID</param>
-        /// <param name="username">Username for connecting to the Store</param>
-        /// <param name="password">Password for connecting to the Store</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
+        /// <param name="catalogID">Catalog ID.</param>
+        /// <param name="username">Username for connecting to the Store.</param>
+        /// <param name="password">Password for connecting to the Store.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public AllegroGraphServer(String baseUri, String catalogID, String username, String password, IWebProxy proxy)
             : this(baseUri, catalogID, username, password)
         {
@@ -124,19 +124,19 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
         /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="username">Username for connecting to the Store</param>
-        /// <param name="password">Password for connecting to the Store</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri for the Store.</param>
+        /// <param name="username">Username for connecting to the Store.</param>
+        /// <param name="password">Password for connecting to the Store.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public AllegroGraphServer(String baseUri,  String username, String password, IWebProxy proxy)
             : this(baseUri, null, username, password, proxy) { }
         
         /// <summary>
-        /// Gets a default template for creating a new Store
+        /// Gets a default template for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         /// <returns></returns>
         public override IStoreTemplate GetDefaultTemplate(String id)
         {
@@ -144,9 +144,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets all available templates for creating a new Store
+        /// Gets all available templates for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
+        /// <param name="id">Store ID.</param>
         /// <returns></returns>
         public override IEnumerable<IStoreTemplate> GetAvailableTemplates(String id)
         {
@@ -154,9 +154,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new Store (if it doesn't already exist)
+        /// Creates a new Store (if it doesn't already exist).
         /// </summary>
-        /// <param name="template">Template for creating the new Store</param>
+        /// <param name="template">Template for creating the new Store.</param>
         public override bool CreateStore(IStoreTemplate template)
         {
             HttpWebRequest request = null;
@@ -201,9 +201,9 @@ namespace VDS.RDF.Storage.Management
             }
         }
         /// <summary>
-        /// Requests that AllegroGraph deletes a Store
+        /// Requests that AllegroGraph deletes a Store.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         public override void DeleteStore(String storeID)
         {
             try
@@ -224,7 +224,7 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Get the lists of stores available on the Server
+        /// Get the lists of stores available on the Server.
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<String> ListStores()
@@ -261,12 +261,12 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a Store within the current catalog
+        /// Gets a Store within the current catalog.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="storeID">Store ID.</param>
         /// <returns></returns>
         /// <remarks>
-        /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue
+        /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue.
         /// </remarks>
         public override IStorageProvider GetStore(String storeID)
         {
@@ -275,10 +275,10 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets the List of Stores available  on the server within the current catalog asynchronously
+        /// Gets the List of Stores available  on the server within the current catalog asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to callback.</param>
         public override void ListStores(AsyncStorageCallback callback, object state)
         {
             try
@@ -328,11 +328,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a default template for creating a new Store
+        /// Gets a default template for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to callback</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to callback.</param>
         /// <returns></returns>
         public override void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
@@ -340,11 +340,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets all available templates for creating a new Store
+        /// Gets all available templates for creating a new Store.
         /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to callback</param>
+        /// <param name="id">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to callback.</param>
         /// <returns></returns>
         public override void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state)
         {
@@ -352,11 +352,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Creates a new Store on the server within the current catalog asynchronously
+        /// Creates a new Store on the server within the current catalog asynchronously.
         /// </summary>
-        /// <param name="template">Template to create the store from</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to callback</param>
+        /// <param name="template">Template to create the store from.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to callback.</param>
         public override void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
         {
             try
@@ -436,11 +436,11 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Deletes a Store from the server within the current catalog asynchronously
+        /// Deletes a Store from the server within the current catalog asynchronously.
         /// </summary>
-        /// <param name="storeId">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to callback</param>
+        /// <param name="storeId">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to callback.</param>
         public override void DeleteStore(string storeId, AsyncStorageCallback callback, object state)
         {
             try
@@ -481,14 +481,14 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Gets a Store within the current catalog asynchronously
+        /// Gets a Store within the current catalog asynchronously.
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to call back</param>
+        /// <param name="storeID">Store ID.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to call back.</param>
         /// <returns></returns>
         /// <remarks>
-        /// AllegroGraph groups stores by catalog, you may only use this method to obtain stores within your current catalogue
+        /// AllegroGraph groups stores by catalog, you may only use this method to obtain stores within your current catalogue.
         /// </remarks>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
@@ -496,12 +496,12 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Helper method for creating HTTP Requests to the Store
+        /// Helper method for creating HTTP Requests to the Store.
         /// </summary>
-        /// <param name="servicePath">Path to the Service requested</param>
-        /// <param name="accept">Acceptable Content Types</param>
-        /// <param name="method">HTTP Method</param>
-        /// <param name="queryParams">Querystring Parameters</param>
+        /// <param name="servicePath">Path to the Service requested.</param>
+        /// <param name="accept">Acceptable Content Types.</param>
+        /// <param name="method">HTTP Method.</param>
+        /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
         protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
@@ -523,9 +523,9 @@ namespace VDS.RDF.Storage.Management
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

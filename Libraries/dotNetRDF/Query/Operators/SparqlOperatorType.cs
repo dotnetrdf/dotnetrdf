@@ -27,7 +27,7 @@
 namespace VDS.RDF.Query.Operators
 {
     /// <summary>
-    /// Possible SPARQL operand types
+    /// Possible SPARQL operand types.
     /// </summary>
     public enum SparqlOperatorType
     {
@@ -46,6 +46,6 @@ namespace VDS.RDF.Query.Operators
         /// <summary>
         /// Division
         /// </summary>
-        Divide
+        Divide,
     }
 }

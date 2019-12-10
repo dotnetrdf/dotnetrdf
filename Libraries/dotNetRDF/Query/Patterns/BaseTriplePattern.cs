@@ -30,24 +30,24 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Base class for representing all types of Triple Patterns in SPARQL queries
+    /// Base class for representing all types of Triple Patterns in SPARQL queries.
     /// </summary>
     public abstract class BaseTriplePattern 
         : ITriplePattern
     {
         /// <summary>
-        /// Stores the list of variables that are used in the Pattern
+        /// Stores the list of variables that are used in the Pattern.
         /// </summary>
         protected List<String> _vars = new List<string>();
 
         /// <summary>
-        /// Evaluates the Triple Pattern in the given Evaluation Context
+        /// Evaluates the Triple Pattern in the given Evaluation Context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         public abstract void Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Returns whether the Triple Pattern is an accept all
+        /// Returns whether the Triple Pattern is an accept all.
         /// </summary>
         public abstract bool IsAcceptAll
         {
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Triple Pattern Type
+        /// Gets the Triple Pattern Type.
         /// </summary>
         public abstract TriplePatternType PatternType
         {
@@ -63,10 +63,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the List of Variables used in the Pattern
+        /// Gets the List of Variables used in the Pattern.
         /// </summary>
         /// <remarks>
-        /// These are sorted in alphabetical order
+        /// These are sorted in alphabetical order.
         /// </remarks>
         public List<string> Variables
         {
@@ -77,26 +77,26 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public abstract IEnumerable<String> FloatingVariables { get; }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public abstract IEnumerable<String> FixedVariables { get; }
 
         /// <summary>
-        /// Compares a Triple Pattern to another Triple Pattern
+        /// Compares a Triple Pattern to another Triple Pattern.
         /// </summary>
-        /// <param name="other">Other Triple Pattern</param>
+        /// <param name="other">Other Triple Pattern.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
         /// The aim of this function is to sort Triple Patterns into what is hopefully an optimal order such that during execution the query space is restricted as early as possible.
         /// </para>
         /// <para>
-        /// The basic rules of this are as follows:
+        /// The basic rules of this are as follows:.
         /// <ol>
         ///     <li>Patterns with fewer variables should be executed first</li>
         ///     <li>Patterns using the same variables should be executed in sequence</li>
@@ -143,10 +143,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether a Triple Pattern is Thread Safe when evaluated
+        /// Gets whether a Triple Pattern is Thread Safe when evaluated.
         /// </summary>
         /// <remarks>
-        /// Almost all Triple Patterns are Thread Safe unless they are subquery patterns which themselves are not thread safe
+        /// Almost all Triple Patterns are Thread Safe unless they are subquery patterns which themselves are not thread safe.
         /// </remarks>
         public virtual bool UsesDefaultDataset
         {
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern has no blank variables
+        /// Gets whether the Pattern has no blank variables.
         /// </summary>
         public abstract bool HasNoBlankVariables
         {
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the String representation of the Pattern
+        /// Gets the String representation of the Pattern.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();

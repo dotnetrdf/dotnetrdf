@@ -37,34 +37,34 @@ namespace VDS.RDF.Configuration
     public interface IConfigurationLoader
     {
         /// <summary>
-        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph
+        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         T LoadObject<T>(Uri objectIdentifier);
 
         /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
+        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         T LoadObject<T>(string blankNodeIdentifier);
 
         /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>
+        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         object LoadObject(string blankNodeIdentifier);
 
         /// <summary>
-        /// Loads the Object identified by the given URI as an <see cref="Object"/>
+        /// Loads the Object identified by the given URI as an <see cref="Object"/>.
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// See remarks under <see cref="ConfigurationLoader.LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
         /// </remarks>
         object LoadObject(Uri objectIdentifier);
     }

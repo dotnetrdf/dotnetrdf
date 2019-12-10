@@ -34,23 +34,23 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Paths
 {
     /// <summary>
-    /// Represents a Predicate which is part of a Path
+    /// Represents a Predicate which is part of a Path.
     /// </summary>
     public class Property : ISparqlPath
     {
         private INode _predicate;
 
         /// <summary>
-        /// Creates a new Property
+        /// Creates a new Property.
         /// </summary>
-        /// <param name="predicate">Predicate</param>
+        /// <param name="predicate">Predicate.</param>
         public Property(INode predicate)
         {
             _predicate = predicate;
         }
 
         /// <summary>
-        /// Gets the Predicate this part of the Path represents
+        /// Gets the Predicate this part of the Path represents.
         /// </summary>
         public INode Predicate
         {
@@ -61,9 +61,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Evaluates the Path using the given Path Evaluation Context
+        /// Evaluates the Path using the given Path Evaluation Context.
         /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
+        /// <param name="context">Path Evaluation Context.</param>
         public void Evaluate(PathEvaluationContext context)
         {
             IEnumerable<Triple> ts;
@@ -299,7 +299,7 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Gets the String representation of the Path
+        /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -362,9 +362,9 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// Converts a Path into its Algebra Form
+        /// Converts a Path into its Algebra Form.
         /// </summary>
-        /// <param name="context">Path Transformation Context</param>
+        /// <param name="context">Path Transformation Context.</param>
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {

@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Create a new writer instance that wraps the specified <see cref="IStoreWriter"/> instance.
         /// </summary>
-        /// <param name="storeWriter">The <see cref="IStoreWriter"/> instance that will do the writing</param>
+        /// <param name="storeWriter">The <see cref="IStoreWriter"/> instance that will do the writing.</param>
         public SingleGraphWriter(IStoreWriter storeWriter)
         {
             _storeWriter = storeWriter;

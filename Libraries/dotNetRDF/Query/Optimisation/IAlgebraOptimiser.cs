@@ -30,31 +30,31 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser is a class that can transform a SPARQL algebra from one form to another typically for optimisation purposes
+    /// An Algebra Optimiser is a class that can transform a SPARQL algebra from one form to another typically for optimisation purposes.
     /// </summary>
     public interface IAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises the given Algebra
+        /// Optimises the given Algebra.
         /// </summary>
-        /// <param name="algebra">Algebra to optimise</param>
+        /// <param name="algebra">Algebra to optimise.</param>
         /// <returns></returns>
         /// <remarks>
-        /// <strong>Important:</strong> An Algebra Optimiser must guarantee to return an equivalent algebra to the given algebra.  In the event of any error the optimiser <em>should</em> still return a valid algebra (or at least the original algebra)
+        /// <strong>Important:</strong> An Algebra Optimiser must guarantee to return an equivalent algebra to the given algebra.  In the event of any error the optimiser <em>should</em> still return a valid algebra (or at least the original algebra).
         /// </remarks>
         ISparqlAlgebra Optimise(ISparqlAlgebra algebra);
 
         /// <summary>
-        /// Determines whether an Optimiser is applicable based on the Query whose Algebra is being optimised
+        /// Determines whether an Optimiser is applicable based on the Query whose Algebra is being optimised.
         /// </summary>
-        /// <param name="q">SPARQL Query</param>
+        /// <param name="q">SPARQL Query.</param>
         /// <returns></returns>
         bool IsApplicable(SparqlQuery q);
 
         /// <summary>
-        /// Determines whether an Optimiser is applicable based on the Update Command Set being optimised
+        /// Determines whether an Optimiser is applicable based on the Update Command Set being optimised.
         /// </summary>
-        /// <param name="cmds">Update Command Set</param>
+        /// <param name="cmds">Update Command Set.</param>
         /// <returns></returns>
         bool IsApplicable(SparqlUpdateCommandSet cmds);
     }

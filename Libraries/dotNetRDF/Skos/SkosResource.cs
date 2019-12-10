@@ -30,12 +30,12 @@ namespace VDS.RDF.Skos
     using System.Linq;
 
     /// <summary>
-    /// Represents a SKOS resource
+    /// Represents a SKOS resource.
     /// </summary>
     public abstract class SkosResource
     {
         /// <summary>
-        /// Gets the original resource underlying the SKOS resource
+        /// Gets the original resource underlying the SKOS resource.
         /// </summary>
         public INode Resource { get; private set; }
 

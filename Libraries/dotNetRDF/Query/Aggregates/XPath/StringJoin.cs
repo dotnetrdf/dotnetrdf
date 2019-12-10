@@ -36,21 +36,21 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Aggregates.XPath
 {
     /// <summary>
-    /// Represents the XPath fn:string-join() aggregate
+    /// Represents the XPath fn:string-join() aggregate.
     /// </summary>
     public class StringJoinAggregate
         : BaseAggregate
     {
         /// <summary>
-        /// Separator Expression
+        /// Separator Expression.
         /// </summary>
         protected ISparqlExpression _sep;
         private bool _customSep = true;
 
         /// <summary>
-        /// Creates a new XPath String Join aggregate which uses no separator
+        /// Creates a new XPath String Join aggregate which uses no separator.
         /// </summary>
-        /// <param name="expr">Expression</param>
+        /// <param name="expr">Expression.</param>
         public StringJoinAggregate(ISparqlExpression expr)
             : this(expr, new ConstantTerm(new LiteralNode(null, String.Empty)))
         {
@@ -58,10 +58,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
         }
 
         /// <summary>
-        /// Creates a new XPath String Join aggregate
+        /// Creates a new XPath String Join aggregate.
         /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="sep">Separator Expression</param>
+        /// <param name="expr">Expression.</param>
+        /// <param name="sep">Separator Expression.</param>
         public StringJoinAggregate(ISparqlExpression expr, ISparqlExpression sep)
             : base(expr)
         {
@@ -69,10 +69,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
         }
 
         /// <summary>
-        /// Applies the Aggregate in the given Context over the given Binding IDs
+        /// Applies the Aggregate in the given Context over the given Binding IDs.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingIDs">Binding IDs</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingIDs">Binding IDs.</param>
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
@@ -116,10 +116,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
         }
 
         /// <summary>
-        /// Gets the value of a member of the Group for concatenating as part of the result for the Group
+        /// Gets the value of a member of the Group for concatenating as part of the result for the Group.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         protected virtual String ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
@@ -151,10 +151,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
         }
 
         /// <summary>
-        /// Gets the separator to use in the concatenation
+        /// Gets the separator to use in the concatenation.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
         private String GetSeparator(SparqlEvaluationContext context, int bindingID)
         {
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         }
 
         /// <summary>
-        /// Gets the String representation of the function
+        /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         }
 
         /// <summary>
-        /// Gets the Functor of the Expression
+        /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
         {

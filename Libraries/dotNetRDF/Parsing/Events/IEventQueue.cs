@@ -27,30 +27,30 @@
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Interface for implementing Event Queues which provide Bufferable wrappers to Event Generators
+    /// Interface for implementing Event Queues which provide Bufferable wrappers to Event Generators.
     /// </summary>
     public interface IEventQueue<T> where T : IEvent
     {
         /// <summary>
-        /// Removes the first Event from the Queue
+        /// Removes the first Event from the Queue.
         /// </summary>
         /// <returns></returns>
         T Dequeue();
 
         /// <summary>
-        /// Adds an Event to the end of the Queue
+        /// Adds an Event to the end of the Queue.
         /// </summary>
-        /// <param name="e">Event to add</param>
+        /// <param name="e">Event to add.</param>
         void Enqueue(T e);
 
         /// <summary>
-        /// Gets the first Event from the Queue without removing it
+        /// Gets the first Event from the Queue without removing it.
         /// </summary>
         /// <returns></returns>
         T Peek();
 
         /// <summary>
-        /// Gets the Event Generator that this Queue uses
+        /// Gets the Event Generator that this Queue uses.
         /// </summary>
         IEventGenerator<T> EventGenerator
         {
@@ -58,12 +58,12 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Clears the Event Queue
+        /// Clears the Event Queue.
         /// </summary>
         void Clear();
 
         /// <summary>
-        /// Gets the number of Events in the Queue
+        /// Gets the number of Events in the Queue.
         /// </summary>
         int Count
         {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets/Sets whether Generator Tracing should be used
+        /// Gets/Sets whether Generator Tracing should be used.
         /// </summary>
         bool Tracing
         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the Event Type of the last Event dequeued
+        /// Gets the Event Type of the last Event dequeued.
         /// </summary>
         int LastEventType
         {
@@ -89,43 +89,43 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// Abstract base implementation of an Event Queue
+    /// Abstract base implementation of an Event Queue.
     /// </summary>
     public abstract class BaseEventQueue<T> : IEventQueue<T> where T : IEvent
     {
         /// <summary>
-        /// Generator used to fill the Event Queue
+        /// Generator used to fill the Event Queue.
         /// </summary>
         protected IEventGenerator<T> _eventgen;
         /// <summary>
-        /// Variable indicating whether Generator Tracing is enabled
+        /// Variable indicating whether Generator Tracing is enabled.
         /// </summary>
         protected bool _tracing;
         /// <summary>
-        /// Type of Last Event dequeued
+        /// Type of Last Event dequeued.
         /// </summary>
         protected int _lasteventtype;
 
         /// <summary>
-        /// Dequeues an Event from the Queue
+        /// Dequeues an Event from the Queue.
         /// </summary>
         /// <returns></returns>
         public abstract T Dequeue();
 
         /// <summary>
-        /// Adds an Event to the Queue
+        /// Adds an Event to the Queue.
         /// </summary>
-        /// <param name="e">Event</param>
+        /// <param name="e">Event.</param>
         public abstract void Enqueue(T e);
 
         /// <summary>
-        /// Gets the next Event from the Queue without removing it from the queue
+        /// Gets the next Event from the Queue without removing it from the queue.
         /// </summary>
         /// <returns></returns>
         public abstract T Peek();
 
         /// <summary>
-        /// Gets the Event Generator used by the Queue
+        /// Gets the Event Generator used by the Queue.
         /// </summary>
         public IEventGenerator<T> EventGenerator
         {
@@ -136,12 +136,12 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Clears the Event Queue
+        /// Clears the Event Queue.
         /// </summary>
         public abstract void Clear();
 
         /// <summary>
-        /// Gets the number of Events in the Queue
+        /// Gets the number of Events in the Queue.
         /// </summary>
         public abstract int Count
         {
@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets/Sets Tracing for the Event Queue
+        /// Gets/Sets Tracing for the Event Queue.
         /// </summary>
         public bool Tracing
         {
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the Event Type of the last Event dequeued
+        /// Gets the Event Type of the last Event dequeued.
         /// </summary>
         public int LastEventType
         {

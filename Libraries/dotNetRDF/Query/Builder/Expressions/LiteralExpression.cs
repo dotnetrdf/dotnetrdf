@@ -31,14 +31,14 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Builder.Expressions
 {
     /// <summary>
-    /// Represents a literal expression
+    /// Represents a literal expression.
     /// </summary>
 #pragma warning disable 660,661
     public class LiteralExpression : RdfTermExpression
 #pragma warning restore 660,661
     {
         /// <summary>
-        /// Wraps the <paramref name="expression"/> as a literal expression
+        /// Wraps the <paramref name="expression"/> as a literal expression.
         /// </summary>
         public LiteralExpression(ISparqlExpression expression) : base(expression)
         {
@@ -67,9 +67,9 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         /// <summary>
-        /// Returns the constant value of this expression formatted as a simple literal expression
+        /// Returns the constant value of this expression formatted as a simple literal expression.
         /// </summary>
-        /// <returns>A new LiteralExpression whose value is the constant value of this epression</returns>
+        /// <returns>A new LiteralExpression whose value is the constant value of this epression.</returns>
         public LiteralExpression ToSimpleLiteral()
         {
             ConstantTerm constant = (ConstantTerm) Expression;

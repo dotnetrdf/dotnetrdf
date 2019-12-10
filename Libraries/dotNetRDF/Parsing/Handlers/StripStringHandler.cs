@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// An RDF Handler which wraps another handler, stripping explicit xsd:string datatypes on object literals
+    /// An RDF Handler which wraps another handler, stripping explicit xsd:string datatypes on object literals.
     /// </summary>
     public class StripStringHandler : BaseRdfHandler, IWrappingRdfHandler
     {
@@ -38,16 +38,16 @@ namespace VDS.RDF.Parsing.Handlers
         private static readonly Uri DataTypeString = new Uri(XmlSpecsHelper.XmlSchemaDataTypeString);
 
         /// <summary>
-        /// Creates a new StripStringHandler
+        /// Creates a new StripStringHandler.
         /// </summary>
-        /// <param name="handler">Inner handler to use</param>
+        /// <param name="handler">Inner handler to use.</param>
         public StripStringHandler(IRdfHandler handler) : base(handler)
         {
             _handler = handler ?? throw new ArgumentNullException("handler");
         }
 
         /// <summary>
-        /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler
+        /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler.
         /// </summary>
         protected override bool HandleTripleInternal(Triple t)
         {
@@ -60,32 +60,32 @@ namespace VDS.RDF.Parsing.Handlers
         #region Delegate to inner handler
 
         /// <summary>
-        /// Gets the handler wrapped by this handler
+        /// Gets the handler wrapped by this handler.
         /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers => _handler.AsEnumerable();
 
         /// <summary>
-        /// Starts inner handler
+        /// Starts inner handler.
         /// </summary>
         protected override void StartRdfInternal() => _handler.StartRdf();
 
         /// <summary>
-        /// Ends inner handler
+        /// Ends inner handler.
         /// </summary>
         protected override void EndRdfInternal(bool ok) => _handler.EndRdf(ok);
 
         /// <summary>
-        /// Delegates base Uri handling to inner handler
+        /// Delegates base Uri handling to inner handler.
         /// </summary>
         protected override bool HandleBaseUriInternal(Uri baseUri) => _handler.HandleBaseUri(baseUri);
 
         /// <summary>
-        /// Delegates namespace handling to inner handler
+        /// Delegates namespace handling to inner handler.
         /// </summary>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri) => _handler.HandleNamespace(prefix, namespaceUri);
 
         /// <summary>
-        /// Gets whether inner handler accepts all triples
+        /// Gets whether inner handler accepts all triples.
         /// </summary>
         public override bool AcceptsAll => _handler.AcceptsAll;
 

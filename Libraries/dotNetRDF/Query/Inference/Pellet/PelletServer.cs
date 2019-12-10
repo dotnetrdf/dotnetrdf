@@ -34,7 +34,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.Query.Inference.Pellet
 {
     /// <summary>
-    /// Represents a Connection to a Pellet Server
+    /// Represents a Connection to a Pellet Server.
     /// </summary>
     public class PelletServer
     {
@@ -42,14 +42,14 @@ namespace VDS.RDF.Query.Inference.Pellet
         private List<KnowledgeBase> _kbs = new List<KnowledgeBase>();
 
         /// <summary>
-        /// Preferred MIME Type for the format to retrieve the Server Description in
+        /// Preferred MIME Type for the format to retrieve the Server Description in.
         /// </summary>
         private const String ServerDescriptionFormat = "text/json";
 
         /// <summary>
-        /// Creates a new connection to a Pellet Server
+        /// Creates a new connection to a Pellet Server.
         /// </summary>
-        /// <param name="serverUri">Server URI</param>
+        /// <param name="serverUri">Server URI.</param>
         public PelletServer(Uri serverUri)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
@@ -60,9 +60,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Creates a new connection to a Pellet Server
+        /// Creates a new connection to a Pellet Server.
         /// </summary>
-        /// <param name="serverUri">Server URI</param>
+        /// <param name="serverUri">Server URI.</param>
         public PelletServer(String serverUri)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
@@ -74,33 +74,33 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready
+        /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready.
         /// </summary>
-        /// <param name="serverUri">Server URI</param>
-        /// <param name="callback">Callback to invoke when the connection is ready</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="serverUri">Server URI.</param>
+        /// <param name="callback">Callback to invoke when the connection is ready.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public static void Connect(Uri serverUri, PelletServerReadyCallback callback, Object state)
         {
             new PelletServer(serverUri, callback, state);
         }
 
         /// <summary>
-        /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready
+        /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready.
         /// </summary>
-        /// <param name="serverUri">Server URI</param>
-        /// <param name="callback">Callback to invoke when the connection is ready</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="serverUri">Server URI.</param>
+        /// <param name="callback">Callback to invoke when the connection is ready.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public static void Connect(String serverUri, PelletServerReadyCallback callback, Object state)
         {
             new PelletServer(serverUri, callback, state);
         }
 
         /// <summary>
-        /// Creates a new connection to a Pellet Server
+        /// Creates a new connection to a Pellet Server.
         /// </summary>
-        /// <param name="serverUri">Server URI</param>
-        /// <param name="callback">Callback to invoke when the connection is ready</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="serverUri">Server URI.</param>
+        /// <param name="callback">Callback to invoke when the connection is ready.</param>
+        /// <param name="state">State to pass to the callback.</param>
         private PelletServer(Uri serverUri, PelletServerReadyCallback callback, Object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
@@ -111,11 +111,11 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Creates a new connection to a Pellet Server
+        /// Creates a new connection to a Pellet Server.
         /// </summary>
-        /// <param name="serverUri">Server URI</param>
-        /// <param name="callback">Callback to invoke when the connection is ready</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="serverUri">Server URI.</param>
+        /// <param name="callback">Callback to invoke when the connection is ready.</param>
+        /// <param name="state">State to pass to the callback.</param>
         private PelletServer(String serverUri, PelletServerReadyCallback callback, Object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Discovers the Knowledge Bases on a Server
+        /// Discovers the Knowledge Bases on a Server.
         /// </summary>
         private void Discover()
         {
@@ -173,9 +173,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Discovers the Knowledge Bases on a Server asynchronously
+        /// Discovers the Knowledge Bases on a Server asynchronously.
         /// </summary>
-        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="callback">Callback to invoke when the operation completes.</param>
         /// <param name="state"></param>
         private void Discover(PelletServerReadyCallback callback, Object state)
         {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Knowledge Bases available from this Pellet Server
+        /// Gets the Knowledge Bases available from this Pellet Server.
         /// </summary>
         public IEnumerable<KnowledgeBase> KnowledgeBases
         {
@@ -223,9 +223,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets whether the Server has a Knowledge Base with the given Name
+        /// Gets whether the Server has a Knowledge Base with the given Name.
         /// </summary>
-        /// <param name="name">Knowledge Base Name</param>
+        /// <param name="name">Knowledge Base Name.</param>
         /// <returns></returns>
         public bool HasKnowledgeBase(String name)
         {
@@ -233,9 +233,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets whether the Server has a Knowledge Base which supports the given Service Type
+        /// Gets whether the Server has a Knowledge Base which supports the given Service Type.
         /// </summary>
-        /// <param name="t">Service Type</param>
+        /// <param name="t">Service Type.</param>
         /// <returns></returns>
         public bool HasKnowledgeBase(Type t)
         {
@@ -243,9 +243,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets the Knowledge Base with the given Name
+        /// Gets the Knowledge Base with the given Name.
         /// </summary>
-        /// <param name="name">Knowledge Base Name</param>
+        /// <param name="name">Knowledge Base Name.</param>
         /// <returns>
         /// </returns>
         public KnowledgeBase GetKnowledgeBase(String name)
@@ -256,9 +256,9 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
         /// <summary>
-        /// Gets all the Knowledge Bases which support a given Server
+        /// Gets all the Knowledge Bases which support a given Server.
         /// </summary>
-        /// <param name="t">Service Type</param>
+        /// <param name="t">Service Type.</param>
         /// <returns></returns>
         public IEnumerable<KnowledgeBase> GetKnowledgeBases(Type t)
         {

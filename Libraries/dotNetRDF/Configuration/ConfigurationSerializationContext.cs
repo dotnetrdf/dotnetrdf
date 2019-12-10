@@ -27,19 +27,19 @@
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Context Class for writing serializing Configuration information
+    /// Context Class for writing serializing Configuration information.
     /// </summary>
     public class ConfigurationSerializationContext
     {
         /// <summary>
-        /// Configuration Graph being written to
+        /// Configuration Graph being written to.
         /// </summary>
         protected IGraph _g;
 
         private INode _nextSubj = null;
 
         /// <summary>
-        /// Creates a new Serialization Context
+        /// Creates a new Serialization Context.
         /// </summary>
         public ConfigurationSerializationContext()
         {
@@ -48,16 +48,16 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Creates a new Serialization Context
+        /// Creates a new Serialization Context.
         /// </summary>
-        /// <param name="g">Base Configuration Graph</param>
+        /// <param name="g">Base Configuration Graph.</param>
         public ConfigurationSerializationContext(IGraph g)
         {
             _g = g;
         }
 
         /// <summary>
-        /// Gets the Graph to which Configuration information should be written
+        /// Gets the Graph to which Configuration information should be written.
         /// </summary>
         public IGraph Graph
         {
@@ -68,14 +68,14 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets/Sets the next subject to be used
+        /// Gets/Sets the next subject to be used.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// Always returns a Blank Node if none is currently explicitly specified
+        /// Always returns a Blank Node if none is currently explicitly specified.
         /// </para>
         /// <para>
-        /// Used to link objects together when you want some subsidiary object to serialize it's configuration and link that to the configuration you are currently serializing
+        /// Used to link objects together when you want some subsidiary object to serialize it's configuration and link that to the configuration you are currently serializing.
         /// </para>
         /// </remarks>
         public INode NextSubject

@@ -31,11 +31,11 @@ using System.Linq;
 namespace VDS.RDF.Ontology
 {
     /// <summary>
-    /// Represents an Individual i.e. an instance of some class in an ontology
+    /// Represents an Individual i.e. an instance of some class in an ontology.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace.
     /// </para>
     /// </remarks>
     public class Individual : OntologyResource
@@ -43,12 +43,12 @@ namespace VDS.RDF.Ontology
         private List<OntologyClass> _classes = new List<OntologyClass>();
 
         /// <summary>
-        /// Gets an Individual from the Graph
+        /// Gets an Individual from the Graph.
         /// </summary>
-        /// <param name="resource">Resource that represents the Individual</param>
-        /// <param name="graph">Graph the Individual is in</param>
+        /// <param name="resource">Resource that represents the Individual.</param>
+        /// <param name="graph">Graph the Individual is in.</param>
         /// <remarks>
-        /// Requires that an individual (a resource which is the subject of at least one triple where the predicate is <strong>rdf:type</strong>) is already present in the Graph
+        /// Requires that an individual (a resource which is the subject of at least one triple where the predicate is <strong>rdf:type</strong>) is already present in the Graph.
         /// </remarks>
         public Individual(INode resource, IGraph graph)
             : base(resource, graph) 
@@ -58,13 +58,13 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets/Creates an Individual from the Graph
+        /// Gets/Creates an Individual from the Graph.
         /// </summary>
-        /// <param name="resource">Resource that represents the Individual</param>
-        /// <param name="resourceClass">Class to create/add the Individual to</param>
-        /// <param name="graph">Graph the Individual is in</param>
+        /// <param name="resource">Resource that represents the Individual.</param>
+        /// <param name="resourceClass">Class to create/add the Individual to.</param>
+        /// <param name="graph">Graph the Individual is in.</param>
         /// <remarks>
-        /// Allows for creating new Individuals in the Graph or adding existing resources to another Class.  If the resource for the Individual or the given Class are new then they will be added to the Graph
+        /// Allows for creating new Individuals in the Graph or adding existing resources to another Class.  If the resource for the Individual or the given Class are new then they will be added to the Graph.
         /// </remarks>
         public Individual(INode resource, INode resourceClass, IGraph graph)
             : base(resource, graph)
@@ -75,7 +75,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Helper method which finds all the Types given for this Resource
+        /// Helper method which finds all the Types given for this Resource.
         /// </summary>
         private void IntialiseClasses() 
         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets all the Classes that this resource belongs to
+        /// Gets all the Classes that this resource belongs to.
         /// </summary>
         public IEnumerable<OntologyClass> Classes
         {
@@ -99,9 +99,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether the Individual belongs to a specific class
+        /// Gets whether the Individual belongs to a specific class.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         public bool HasClass(OntologyClass @class)
         {
@@ -109,9 +109,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether the Individual belongs to a class identified by the given resource
+        /// Gets whether the Individual belongs to a class identified by the given resource.
         /// </summary>
-        /// <param name="class">Class</param>
+        /// <param name="class">Class.</param>
         /// <returns></returns>
         public bool HasClass(INode @class)
         {
@@ -119,9 +119,9 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
-        /// Gets whether the Individual belongs to a class identified by the given URI
+        /// Gets whether the Individual belongs to a class identified by the given URI.
         /// </summary>
-        /// <param name="class">Class URI</param>
+        /// <param name="class">Class URI.</param>
         /// <returns></returns>
         public bool HasClass(Uri @class)
         {

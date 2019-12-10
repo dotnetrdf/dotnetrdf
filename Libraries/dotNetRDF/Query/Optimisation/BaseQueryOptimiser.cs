@@ -34,21 +34,21 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// A basic abstract implementation of a Query Optimiser
+    /// A basic abstract implementation of a Query Optimiser.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Derived implementations may use override the virtual properties to control what forms of optimisation are used.  Derived implementations must override the <see cref="BaseQueryOptimiser.GetRankingComparer">GetRankingComparer()</see> method, optimisers which do not wish to change the order of Triple Patterns should return the <see cref="NoReorderComparer">NoReorderCompaper</see> in their implementation as a basic sort of Triple Patterns is done even if <see cref="BaseQueryOptimiser.ShouldReorder">ShouldReorder</see> is overridden to return false
+    /// Derived implementations may use override the virtual properties to control what forms of optimisation are used.  Derived implementations must override the <see cref="BaseQueryOptimiser.GetRankingComparer">GetRankingComparer()</see> method, optimisers which do not wish to change the order of Triple Patterns should return the <see cref="NoReorderComparer">NoReorderCompaper</see> in their implementation as a basic sort of Triple Patterns is done even if <see cref="BaseQueryOptimiser.ShouldReorder">ShouldReorder</see> is overridden to return false.
     /// </para>
     /// </remarks>
     public abstract class BaseQueryOptimiser
         : IQueryOptimiser
     {
         /// <summary>
-        /// Causes the Graph Pattern to be optimised if it isn't already
+        /// Causes the Graph Pattern to be optimised if it isn't already.
         /// </summary>
-        /// <param name="gp">Graph Pattern</param>
-        /// <param name="variables">Variables that have occurred prior to this Pattern</param>
+        /// <param name="gp">Graph Pattern.</param>
+        /// <param name="variables">Variables that have occurred prior to this Pattern.</param>
         public void Optimise(GraphPattern gp, IEnumerable<String> variables)
         {
             // Our Variables is initially only those in our Triple Patterns since
@@ -215,16 +215,16 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Gets a comparer on Triple Patterns that is used to rank Triple Patterns
+        /// Gets a comparer on Triple Patterns that is used to rank Triple Patterns.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// By overriding this in derived classes you can change how the Optimiser weights different patterns and thus the resultant ordering of Triple Patterns
+        /// By overriding this in derived classes you can change how the Optimiser weights different patterns and thus the resultant ordering of Triple Patterns.
         /// </remarks>
         protected abstract IComparer<ITriplePattern> GetRankingComparer();
 
         /// <summary>
-        /// Controls whether the Optimiser will attempt to reorder Triple Patterns
+        /// Controls whether the Optimiser will attempt to reorder Triple Patterns.
         /// </summary>
         /// <remarks>
         /// It is recommended that derived classes do not change this setting as this may hurt performance.  If you want to control the optimisation process in detail we suggest you implement <see cref="IQueryOptimiser">IQueryOptimiser</see> directly in your own class and not derive from this implementation.
@@ -238,14 +238,14 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Controls whether the Optimiser will split Filters
+        /// Controls whether the Optimiser will split Filters.
         /// </summary>
         /// <remarks>
         /// <para>
         /// If a Filter contains an and expression it may be split into its constituent parts and applied separately.  This option only applies if filter placement also applies.
         /// </para>
         /// <para>
-        /// Defaults to false since it is unclear if this actually benefits performance
+        /// Defaults to false since it is unclear if this actually benefits performance.
         /// </para>
         /// </remarks>
         protected virtual bool ShouldSplitFilters
@@ -257,7 +257,7 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Controls whether the Optimiser will place Filters
+        /// Controls whether the Optimiser will place Filters.
         /// </summary>
         /// <remarks>
         /// It is recommended that derived classes do not change this setting as this may hurt performance.  If you want to control the optimisation process in detail we suggest you implement <see cref="IQueryOptimiser">IQueryOptimiser</see> directly in your own class and not derive from this implementation.
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Controls whether the Optimiser will place Assignments
+        /// Controls whether the Optimiser will place Assignments.
         /// </summary>
         /// <remarks>
         /// It is recommended that derived classes do not change this setting as this may hurt performance.  If you want to control the optimisation process in detail we suggest you implement <see cref="IQueryOptimiser">IQueryOptimiser</see> directly in your own class and not derive from this implementation.
@@ -285,12 +285,12 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Tries to reorder patterns when the initial ordering is considered poor
+        /// Tries to reorder patterns when the initial ordering is considered poor.
         /// </summary>
-        /// <param name="gp">Graph Pattern</param>
-        /// <param name="desiredVariables">Variables that are desired</param>
-        /// <param name="start">Point at which to start looking for better matches</param>
-        /// <param name="end">Point at which to move the better match to</param>
+        /// <param name="gp">Graph Pattern.</param>
+        /// <param name="desiredVariables">Variables that are desired.</param>
+        /// <param name="start">Point at which to start looking for better matches.</param>
+        /// <param name="end">Point at which to move the better match to.</param>
         private void TryReorderPatterns(GraphPattern gp, List<String> desiredVariables, int start, int end)
         {
             if (end > start) return;
@@ -314,10 +314,10 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Tries to place filters at the earliest point possible i.e. the first point after which all required variables have occurred
+        /// Tries to place filters at the earliest point possible i.e. the first point after which all required variables have occurred.
         /// </summary>
-        /// <param name="gp">Graph Pattern</param>
-        /// <param name="filter">Filter to place</param>
+        /// <param name="gp">Graph Pattern.</param>
+        /// <param name="filter">Filter to place.</param>
         /// <returns></returns>
         private bool TryPlaceFilter(GraphPattern gp, ISparqlFilter filter)
         {
@@ -354,10 +354,10 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Tries to place assignments at the earliest point possible i.e. the first point after which all required variables have occurred
+        /// Tries to place assignments at the earliest point possible i.e. the first point after which all required variables have occurred.
         /// </summary>
-        /// <param name="gp">Graph Pattern</param>
-        /// <param name="assignment">Assignment (LET/BIND)</param>
+        /// <param name="gp">Graph Pattern.</param>
+        /// <param name="assignment">Assignment (LET/BIND).</param>
         /// <returns></returns>
         private bool TryPlaceAssignment(GraphPattern gp, IAssignmentPattern assignment)
         {

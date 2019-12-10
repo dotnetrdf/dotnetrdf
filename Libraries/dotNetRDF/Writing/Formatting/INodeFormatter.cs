@@ -29,22 +29,22 @@ using System;
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Interface for classes which can format Nodes into Strings
+    /// Interface for classes which can format Nodes into Strings.
     /// </summary>
     public interface INodeFormatter
     {
         /// <summary>
-        /// Formats a Node as a String
+        /// Formats a Node as a String.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         String Format(INode n);
 
         /// <summary>
-        /// Formats a Node as a String for a specific segment of a Triple
+        /// Formats a Node as a String for a specific segment of a Triple.
         /// </summary>
-        /// <param name="n">Node</param>
-        /// <param name="segment">Segment</param>
+        /// <param name="n">Node.</param>
+        /// <param name="segment">Segment.</param>
         /// <returns></returns>
         String Format(INode n, TripleSegment? segment);
     }

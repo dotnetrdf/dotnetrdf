@@ -30,7 +30,7 @@ using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for casting expressions to XPath types
+    /// Provides methods for casting expressions to XPath types.
     /// </summary>
     public sealed class SparqlCastBuilder
     {
@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:integer
+        /// Creates a cast to xsd:integer.
         /// </summary>
         public NumericExpression<int> AsInteger()
         {
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:double
+        /// Creates a cast to xsd:double.
         /// </summary>
         public NumericExpression<double> AsDouble()
         {
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:decimal
+        /// Creates a cast to xsd:decimal.
         /// </summary>
         public NumericExpression<decimal> AsDecimal()
         {
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:dateTime
+        /// Creates a cast to xsd:dateTime.
         /// </summary>
         public LiteralExpression AsDateTime()
         {
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:float
+        /// Creates a cast to xsd:float.
         /// </summary>
         public NumericExpression<float> AsFloat()
         {
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:boolean
+        /// Creates a cast to xsd:boolean.
         /// </summary>
         public BooleanExpression AsBoolean()
         {
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// Creates a cast to xsd:string
+        /// Creates a cast to xsd:string.
         /// </summary>
         public LiteralExpression AsString()
         {

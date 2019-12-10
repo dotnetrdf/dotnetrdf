@@ -36,7 +36,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class
+    /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class.
     /// </summary>
     class UriLoaderCache
         : IUriLoaderCache
@@ -52,15 +52,15 @@ namespace VDS.RDF.Parsing
         private Type _formatterType = typeof(TurtleFormatter);
 
         /// <summary>
-        /// Creates a new Cache which uses the system temporary directory as the cache location
+        /// Creates a new Cache which uses the system temporary directory as the cache location.
         /// </summary>
         public UriLoaderCache()
             : this(Path.GetTempPath()) { }
 
         /// <summary>
-        /// Creates a new Cache which uses the given directory as the cache location
+        /// Creates a new Cache which uses the given directory as the cache location.
         /// </summary>
-        /// <param name="dir">Directory</param>
+        /// <param name="dir">Directory.</param>
         public UriLoaderCache(String dir)
         {
             if (Directory.Exists(dir))
@@ -75,10 +75,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets how long results should be cached
+        /// Gets/Sets how long results should be cached.
         /// </summary>
         /// <remarks>
-        /// This only applies to downloaded URIs where an ETag is not available, where ETags are available proper ETag based caching is used
+        /// This only applies to downloaded URIs where an ETag is not available, where ETags are available proper ETag based caching is used.
         /// </remarks>
         public TimeSpan CacheDuration
         {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the Cache Directory that is used
+        /// Gets/Sets the Cache Directory that is used.
         /// </summary>
         public String CacheDirectory
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Initialises the Cache as required
+        /// Initialises the Cache as required.
         /// </summary>
         private void Initialise()
         {
@@ -189,7 +189,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Clears the Cache
+        /// Clears the Cache.
         /// </summary>
         public void Clear()
         {
@@ -211,9 +211,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets whether there is an ETag for the given URI
+        /// Gets whether there is an ETag for the given URI.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         public bool HasETag(Uri u)
         {
@@ -229,11 +229,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the ETag for the given URI
+        /// Gets the ETag for the given URI.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if there is no ETag for the given URI</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no ETag for the given URI.</exception>
         public String GetETag(Uri u)
         {
             if (_canCacheETag)
@@ -256,9 +256,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Remove the ETag record for the given URI
+        /// Remove the ETag record for the given URI.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         public void RemoveETag(Uri u)
         {
             try
@@ -287,9 +287,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Removes a locally cached copy of a URIs results from the Cache
+        /// Removes a locally cached copy of a URIs results from the Cache.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         public void RemoveLocalCopy(Uri u)
         {
             if (u == null) return;
@@ -310,10 +310,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Is there a locally cached copy of the Graph from the given URI which is not expired
+        /// Is there a locally cached copy of the Graph from the given URI which is not expired.
         /// </summary>
-        /// <param name="u">URI</param>
-        /// <param name="requireFreshness">Whether the local copy is required to meet the Cache Freshness (set by the Cache Duration)</param>
+        /// <param name="u">URI.</param>
+        /// <param name="requireFreshness">Whether the local copy is required to meet the Cache Freshness (set by the Cache Duration).</param>
         /// <returns></returns>
         public bool HasLocalCopy(Uri u, bool requireFreshness)
         {
@@ -365,9 +365,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the path to the locally cached copy of the Graph from the given URI
+        /// Gets the path to the locally cached copy of the Graph from the given URI.
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="u">URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// This method does not do any cache expiry calculations on the file.  This is due to the fact that we'll store local copies of Graphs for which we have ETags and when using ETags we rely on the servers knowledge of whether the resource described by the URI has changed rather than some arbitrary caching duration that we/the user has set to use.

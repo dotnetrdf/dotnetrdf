@@ -38,7 +38,7 @@ using VDS.RDF.Query.PropertyFunctions;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser that ensures that Full Text Query support is available to query evaluation
+    /// An Algebra Optimiser that ensures that Full Text Query support is available to query evaluation.
     /// </summary>
     public class FullTextOptimiser
         : IAlgebraOptimiser, IConfigurationSerializable
@@ -47,9 +47,9 @@ namespace VDS.RDF.Query.Optimisation
         private IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
 
         /// <summary>
-        /// Creates a Full Text Optimiser
+        /// Creates a Full Text Optimiser.
         /// </summary>
-        /// <param name="provider">Full Text Search Provider</param>
+        /// <param name="provider">Full Text Search Provider.</param>
         public FullTextOptimiser(IFullTextSearchProvider provider)
         {
             if (provider == null) throw new ArgumentNullException("Full Text Search Provider cannot be null");
@@ -57,9 +57,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Optimises the Algebra to apply the <see cref="FullTextQuery"/> operator which ensures Full Text Query support is available to the query evaluation
+        /// Optimises the Algebra to apply the <see cref="FullTextQuery"/> operator which ensures Full Text Query support is available to the query evaluation.
         /// </summary>
-        /// <param name="algebra">Algebra to optimise</param>
+        /// <param name="algebra">Algebra to optimise.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -67,9 +67,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable to all queries
+        /// Returns that the optimiser is applicable to all queries.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -78,9 +78,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable to all updates
+        /// Returns that the optimiser is applicable to all updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
@@ -88,9 +88,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Serializes the Optimisers Configuration
+        /// Serializes the Optimisers Configuration.
         /// </summary>
-        /// <param name="context">Serialization Context</param>
+        /// <param name="context">Serialization Context.</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));

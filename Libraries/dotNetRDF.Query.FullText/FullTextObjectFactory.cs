@@ -46,13 +46,13 @@ using LucVersion = Lucene.Net.Util.Version;
 namespace VDS.RDF.Configuration
 {   
     /// <summary>
-    /// An Object Factory that can load types from the Full Text Query library (<strong>dotNetRDF.Query.FullText.dll</strong>)
+    /// An Object Factory that can load types from the Full Text Query library (<strong>dotNetRDF.Query.FullText.dll</strong>).
     /// </summary>
     public class FullTextObjectFactory
         : IObjectFactory
     {
         /// <summary>
-        /// Constants for loadable Types
+        /// Constants for loadable Types.
         /// </summary>
         private const String LuceneSubjectsIndexer = "VDS.RDF.Query.FullText.Indexing.Lucene.LuceneSubjectsIndexer",
                              LuceneObjectsIndexer = "VDS.RDF.Query.FullText.Indexing.Lucene.LuceneObjectsIndexer",
@@ -69,12 +69,12 @@ namespace VDS.RDF.Configuration
 
 
         /// <summary>
-        /// Tries to load an object based on information from the Configuration Graph
+        /// Tries to load an object based on information from the Configuration Graph.
         /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
+        /// <param name="g">Configuration Graph.</param>
+        /// <param name="objNode">Object Node.</param>
+        /// <param name="targetType">Target Type.</param>
+        /// <param name="obj">Output Object.</param>
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -319,9 +319,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
+        /// Gets whether this Factory can load objects of the given Type.
         /// </summary>
-        /// <param name="t">Type</param>
+        /// <param name="t">Type.</param>
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
@@ -344,9 +344,9 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Converts from an integer to a Lucene.Net Version
+        /// Converts from an integer to a Lucene.Net Version.
         /// </summary>
-        /// <param name="ver">Version</param>
+        /// <param name="ver">Version.</param>
         /// <returns></returns>
         private LucVersion GetLuceneVersion(int ver)
         {

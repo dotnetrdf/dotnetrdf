@@ -37,24 +37,24 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Expression Factory which generates Leviathan Function expressions
+    /// Expression Factory which generates Leviathan Function expressions.
     /// </summary>
     public class LeviathanFunctionFactory
         : ISparqlCustomExpressionFactory
     {
         /// <summary>
-        /// Leviathan Function Namespace
+        /// Leviathan Function Namespace.
         /// </summary>
         public const String LeviathanFunctionsNamespace = "http://www.dotnetrdf.org/leviathan#";
 
         /// <summary>
-        /// Constants for Leviathan String Functions
+        /// Constants for Leviathan String Functions.
         /// </summary>
         public const String MD5Hash = "md5hash",
                             Sha256Hash = "sha256hash";
 
         /// <summary>
-        /// Constants for Leviathan Numeric Functions
+        /// Constants for Leviathan Numeric Functions.
         /// </summary>
         public const String Random = "rnd",
                             TrigSin = "sin",
@@ -86,26 +86,26 @@ namespace VDS.RDF.Query.Expressions
                             Reciprocal = "reciprocal";
 
         /// <summary>
-        /// Constants for Leviathan Boolean Aggregates
+        /// Constants for Leviathan Boolean Aggregates.
         /// </summary>
         public const String All = "all",
                             Any = "any",
                             None = "none";
 
         /// <summary>
-        /// Constants for Leviathan Numeric Aggregates
+        /// Constants for Leviathan Numeric Aggregates.
         /// </summary>
         public const String NumericMin = "nmin",
                             NumericMax = "nmax";
 
         /// <summary>
-        /// Constants for other Leviathan Aggregate
+        /// Constants for other Leviathan Aggregate.
         /// </summary>
         public const String Mode = "mode",
                             Median = "median";
 
         /// <summary>
-        /// Array of Extension Function URIs
+        /// Array of Extension Function URIs.
         /// </summary>
         private String[] FunctionUris = {
                                             MD5Hash,
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Expressions
                                         };
 
         /// <summary>
-        /// Array of Extension Aggregate URIs
+        /// Array of Extension Aggregate URIs.
         /// </summary>
         private String[] AggregateUris = {
                                              All,
@@ -154,13 +154,13 @@ namespace VDS.RDF.Query.Expressions
 
 
         /// <summary>
-        /// Tries to create an Leviathan Function expression if the function Uri correseponds to a supported Leviathan Function
+        /// Tries to create an Leviathan Function expression if the function Uri correseponds to a supported Leviathan Function.
         /// </summary>
-        /// <param name="u">Function Uri</param>
-        /// <param name="args">Function Arguments</param>
-        /// <param name="scalarArgs">Scalar Arguments</param>
-        /// <param name="expr">Generated Expression</param>
-        /// <returns>Whether an expression was successfully generated</returns>
+        /// <param name="u">Function Uri.</param>
+        /// <param name="args">Function Arguments.</param>
+        /// <param name="scalarArgs">Scalar Arguments.</param>
+        /// <param name="expr">Generated Expression.</param>
+        /// <returns>Whether an expression was successfully generated.</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             // If any Scalar Arguments are present then can't possibly be a Leviathan Function
@@ -559,7 +559,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Extension Function URIs supported by this Factory
+        /// Gets the Extension Function URIs supported by this Factory.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionFunctions
         {
@@ -571,7 +571,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
-        /// Gets the Extension Aggregate URIs supported by this Factory
+        /// Gets the Extension Aggregate URIs supported by this Factory.
         /// </summary>
         public IEnumerable<Uri> AvailableExtensionAggregates
         {

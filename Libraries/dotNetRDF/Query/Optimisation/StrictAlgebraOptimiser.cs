@@ -33,15 +33,15 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// The Strict Algebra Optimiser is an optimiser that takes our BGPs which typically contain placed FILTERs and BINDs and transforms them into their strict algebra form using Filter() and Extend()
+    /// The Strict Algebra Optimiser is an optimiser that takes our BGPs which typically contain placed FILTERs and BINDs and transforms them into their strict algebra form using Filter() and Extend().
     /// </summary>
     public class StrictAlgebraOptimiser 
         : IAlgebraOptimiser
     {
         /// <summary>
-        /// Optimises BGPs in the Algebra to use Filter() and Extend() rather than the embedded FILTER and BIND
+        /// Optimises BGPs in the Algebra to use Filter() and Extend() rather than the embedded FILTER and BIND.
         /// </summary>
-        /// <param name="algebra">Algebra to optimise</param>
+        /// <param name="algebra">Algebra to optimise.</param>
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
@@ -145,9 +145,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable to all queries
+        /// Returns that the optimiser is applicable to all queries.
         /// </summary>
-        /// <param name="q">Query</param>
+        /// <param name="q">Query.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
@@ -155,9 +155,9 @@ namespace VDS.RDF.Query.Optimisation
         }
 
         /// <summary>
-        /// Returns that the optimiser is applicable to all updates
+        /// Returns that the optimiser is applicable to all updates.
         /// </summary>
-        /// <param name="cmds">Updates</param>
+        /// <param name="cmds">Updates.</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {

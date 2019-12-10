@@ -44,7 +44,7 @@ using System.Web;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Reasoning modes supported by Stardog
+    /// Reasoning modes supported by Stardog.
     /// </summary>
     public enum StardogReasoningMode
     {
@@ -86,11 +86,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// As of Stardog 3.x the reasoning mode is no longer a connection property and is instead managed at the database level
         /// </summary>
-        DatabaseControlled
+        DatabaseControlled,
     }
 
     /// <summary>
-    /// Abstract implementation of a connector for Stardog that connects using the HTTP protocol
+    /// Abstract implementation of a connector for Stardog that connects using the HTTP protocol.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -105,7 +105,7 @@ namespace VDS.RDF.Storage
         , IQueryableStorage, ITransactionalStorage, IReasoningQueryableStorage
     {
         /// <summary>
-        /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
+        /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security.
         /// </summary>
         public const string AnonymousUser = "anonymous";
 
@@ -117,51 +117,51 @@ namespace VDS.RDF.Storage
         private readonly TriGWriter _writer = new TriGWriter();
 
         /// <summary>
-        /// The underlying server connection
+        /// The underlying server connection.
         /// </summary>
         protected BaseStardogServer Server;
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
         protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
         protected BaseStardogConnector(string baseUri, string kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         protected BaseStardogConnector(string baseUri, string kbID, string username, string password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
         protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
             string password)
         {
@@ -184,26 +184,26 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
+        /// <param name="proxy">Proxy Server.</param>
         protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
+        /// <param name="proxy">Proxy Server.</param>
         protected BaseStardogConnector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
             string password, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, username, password)
@@ -212,41 +212,41 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="proxy">Proxy Server.</param>
         protected BaseStardogConnector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         protected BaseStardogConnector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
 
         /// <summary>
-        /// Gets the Base URI of the Stardog server
+        /// Gets the Base URI of the Stardog server.
         /// </summary>
         public string BaseUri => _baseUri;
 
         /// <summary>
-        /// Gets the knowledge base ID being used by this connector
+        /// Gets the knowledge base ID being used by this connector.
         /// </summary>
         public string KbId => _kb;
 
         /// <summary>
-        /// Gets/Sets the reasoning mode to use for queries
+        /// Gets/Sets the reasoning mode to use for queries.
         /// </summary>
         [Description("What reasoning mode (if any) is currently in use for SPARQL Queries")]
         public virtual StardogReasoningMode Reasoning
@@ -256,44 +256,44 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of Stardog
+        /// Gets the IO Behaviour of Stardog.
         /// </summary>
         public override IOBehaviour IOBehaviour => IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
 
         /// <summary>
-        /// Returns that listing Graphs is supported
+        /// Returns that listing Graphs is supported.
         /// </summary>
         public override bool ListGraphsSupported => true;
 
         /// <summary>
-        /// Returns that the Connection is ready
+        /// Returns that the Connection is ready.
         /// </summary>
         public override bool IsReady => true;
 
         /// <summary>
-        /// Returns that the Connection is not read-only
+        /// Returns that the Connection is not read-only.
         /// </summary>
         public override bool IsReadOnly => false;
 
         /// <summary>
-        /// Returns that Updates are supported on Stardog Stores
+        /// Returns that Updates are supported on Stardog Stores.
         /// </summary>
         public override bool UpdateSupported => true;
 
         /// <summary>
-        /// Returns that deleting graphs from the Stardog store is not yet supported (due to a .Net specific issue)
+        /// Returns that deleting graphs from the Stardog store is not yet supported (due to a .Net specific issue).
         /// </summary>
         public override bool DeleteSupported => true;
 
         /// <summary>
-        /// Gets the parent server
+        /// Gets the parent server.
         /// </summary>
         public override IStorageServer ParentServer => Server;
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query</param>
+        /// <param name="sparqlQuery">Sparql Query.</param>
         /// <returns></returns>
         public virtual object Query(string sparqlQuery)
         {
@@ -312,9 +312,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use, the reasoning can be set by query
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use, the reasoning can be set by query.
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query</param>
+        /// <param name="sparqlQuery">Sparql Query.</param>
         /// <param name="reasoning"></param>
         /// <returns></returns>
         public virtual object Query(string sparqlQuery, bool reasoning)
@@ -338,11 +338,11 @@ namespace VDS.RDF.Storage
 
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
@@ -417,11 +417,11 @@ namespace VDS.RDF.Storage
 
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided, the reasoning can be set by query
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided, the reasoning can be set by query.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="reasoning"></param>
         /// <returns></returns>
         public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, bool reasoning)
@@ -503,12 +503,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store
+        /// Loads a Graph from the Store.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         /// <remarks>
-        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
+        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded.
         /// </remarks>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
@@ -516,12 +516,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store
+        /// Loads a Graph from the Store.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         /// <remarks>
-        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
+        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded.
         /// </remarks>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
@@ -529,12 +529,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store
+        /// Loads a Graph from the Store.
         /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="g">Graph to load into.</param>
+        /// <param name="graphUri">Uri of the Graph to load.</param>
         /// <remarks>
-        /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded
+        /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded.
         /// </remarks>
         public virtual void LoadGraph(IGraph g, string graphUri)
         {
@@ -546,12 +546,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store
+        /// Loads a Graph from the Store.
         /// </summary>
-        /// <param name="handler">RDF Handler</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
         /// <remarks>
-        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
+        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded.
         /// </remarks>
         public virtual void LoadGraph(IRdfHandler handler, string graphUri)
         {
@@ -594,12 +594,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph into the Store (see remarks for notes on merge/overwrite behaviour)
+        /// Saves a Graph into the Store (see remarks for notes on merge/overwrite behaviour).
         /// </summary>
-        /// <param name="g">Graph to save</param>
+        /// <param name="g">Graph to save.</param>
         /// <remarks>
         /// <para>
-        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="BaseStardogConnector.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead
+        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="BaseStardogConnector.UpdateGraph(Uri,System.Collections.Generic.IEnumerable{VDS.RDF.Triple},IEnumerable{Triple})">UpdateGraph()</see> method instead.
         /// </para>
         /// </remarks>
         public virtual void SaveGraph(IGraph g)
@@ -679,13 +679,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Stardog Store
+        /// Updates a Graph in the Stardog Store.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Uri of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         /// <remarks>
-        /// Removals happen before additions
+        /// Removals happen before additions.
         /// </remarks>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
@@ -783,11 +783,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Stardog store
+        /// Updates a Graph in the Stardog store.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
+        /// <param name="graphUri">Uri of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri == null || graphUri.Equals(string.Empty))
@@ -801,18 +801,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the Stardog store
+        /// Deletes a Graph from the Stardog store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
         public virtual void DeleteGraph(Uri graphUri)
         {
             DeleteGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Deletes a Graph from the Stardog store
+        /// Deletes a Graph from the Stardog store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
         public virtual void DeleteGraph(string graphUri)
         {
             string tID = null;
@@ -878,7 +878,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the list of Graphs in the Stardog store
+        /// Gets the list of Graphs in the Stardog store.
         /// </summary>
         /// <returns></returns>
         public virtual IEnumerable<Uri> ListGraphs()
@@ -914,27 +914,27 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the parent server
+        /// Gets the parent server.
         /// </summary>
         public override IAsyncStorageServer AsyncParentServer => Server;
 
         /// <summary>
-        /// Saves a Graph to the Store asynchronously
+        /// Saves a Graph to the Store asynchronously.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             SaveGraphAsync(g, callback, state);
         }
 
         /// <summary>
-        /// Saves a Graph to the Store asynchronously
+        /// Saves a Graph to the Store asynchronously.
         /// </summary>
-        /// <param name="g">Graph to save</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         protected virtual void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, object state)
         {
             // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
@@ -982,13 +982,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Save a graph to the database asynchronously within the context of an open transaction
+        /// Save a graph to the database asynchronously within the context of an open transaction.
         /// </summary>
-        /// <param name="tID">The ID of the transaction to use for the update</param>
-        /// <param name="autoCommit">True to commit the transaction on completion</param>
-        /// <param name="g">The graph to write</param>
-        /// <param name="callback">Callback invoked on completion</param>
-        /// <param name="state">State parameter to pass to the callback</param>
+        /// <param name="tID">The ID of the transaction to use for the update.</param>
+        /// <param name="autoCommit">True to commit the transaction on completion.</param>
+        /// <param name="g">The graph to write.</param>
+        /// <param name="callback">Callback invoked on completion.</param>
+        /// <param name="state">State parameter to pass to the callback.</param>
         protected virtual void SaveGraphAsync(string tID, bool autoCommit, IGraph g, AsyncStorageCallback callback,
             object state)
         {
@@ -1116,12 +1116,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads a Graph from the Store asynchronously
+        /// Loads a Graph from the Store asynchronously.
         /// </summary>
-        /// <param name="handler">Handler to load with</param>
-        /// <param name="graphUri">URI of the Graph to load</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="handler">Handler to load with.</param>
+        /// <param name="graphUri">URI of the Graph to load.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             try
@@ -1190,13 +1190,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously
+        /// Updates a Graph in the Store asychronously.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to update</param>
-        /// <param name="additions">Triples to be added</param>
-        /// <param name="removals">Triples to be removed</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
             AsyncStorageCallback callback, object state)
         {
@@ -1215,13 +1215,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Apply an update to a graph
+        /// Apply an update to a graph.
         /// </summary>
-        /// <param name="graphUri">The URI of the graph to be updated</param>
-        /// <param name="additions">The triples to insert</param>
-        /// <param name="removals">The triples to delete</param>
-        /// <param name="callback">Callback invoked on completion</param>
-        /// <param name="state">Additional state passed to the callback</param>
+        /// <param name="graphUri">The URI of the graph to be updated.</param>
+        /// <param name="additions">The triples to insert.</param>
+        /// <param name="removals">The triples to delete.</param>
+        /// <param name="callback">Callback invoked on completion.</param>
+        /// <param name="state">Additional state passed to the callback.</param>
         /// <remarks>If a transaction is currently in progress, the update is applied
         /// as part of that transaction. Otherwise a new transaction is started and committed by this method.</remarks>
         protected virtual void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions,
@@ -1251,15 +1251,15 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Apply an update to a graph as part of a transaction
+        /// Apply an update to a graph as part of a transaction.
         /// </summary>
-        /// <param name="tID">The ID of the open transaction to use</param>
-        /// <param name="autoCommit">True to commit the transaction at the end of the update, false otherwise</param>
-        /// <param name="graphUri">The URI of the graph to be updated</param>
-        /// <param name="additions">The triples to inser</param>
-        /// <param name="removals">The triples to remove</param>
-        /// <param name="callback">A callback to be invoked on completion</param>
-        /// <param name="state">Additional state to pass to the callback</param>
+        /// <param name="tID">The ID of the open transaction to use.</param>
+        /// <param name="autoCommit">True to commit the transaction at the end of the update, false otherwise.</param>
+        /// <param name="graphUri">The URI of the graph to be updated.</param>
+        /// <param name="additions">The triples to inser.</param>
+        /// <param name="removals">The triples to remove.</param>
+        /// <param name="callback">A callback to be invoked on completion.</param>
+        /// <param name="state">Additional state to pass to the callback.</param>
         protected virtual void UpdateGraphAsync(string tID, bool autoCommit, string graphUri,
             IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
@@ -1625,11 +1625,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the Store
+        /// Deletes a Graph from the Store.
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="graphUri">URI of the Graph to delete.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             // Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
@@ -1656,13 +1656,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Delete a graph as part of an open transaction
+        /// Delete a graph as part of an open transaction.
         /// </summary>
-        /// <param name="tID">The ID of the transaction to use</param>
-        /// <param name="autoCommit">True to commit the transaction at the end of the delete operation, false to leave the transaction open</param>
-        /// <param name="graphUri">The URI of the graph to delete</param>
-        /// <param name="callback">Callback to invoked on completion of the operation</param>
-        /// <param name="state">Additional state to pass into the callback</param>
+        /// <param name="tID">The ID of the transaction to use.</param>
+        /// <param name="autoCommit">True to commit the transaction at the end of the delete operation, false to leave the transaction open.</param>
+        /// <param name="graphUri">The URI of the graph to delete.</param>
+        /// <param name="callback">Callback to invoked on completion of the operation.</param>
+        /// <param name="state">Additional state to pass into the callback.</param>
         protected virtual void DeleteGraphAsync(string tID, bool autoCommit, string graphUri,
             AsyncStorageCallback callback, object state)
         {
@@ -1766,11 +1766,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Queries the store asynchronously
+        /// Queries the store asynchronously.
         /// </summary>
-        /// <param name="query">SPARQL Query</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL Query.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void Query(string query, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
@@ -1792,13 +1792,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Queries the store asynchronously
+        /// Queries the store asynchronously.
         /// </summary>
-        /// <param name="query">SPARQL Query</param>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="query">SPARQL Query.</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query,
             AsyncStorageCallback callback, object state)
         {
@@ -1911,12 +1911,12 @@ namespace VDS.RDF.Storage
         #region HTTP Helper Methods
 
         /// <summary>
-        /// Helper method for creating HTTP Requests to the Store
+        /// Helper method for creating HTTP Requests to the Store.
         /// </summary>
-        /// <param name="servicePath">Path to the Service requested</param>
-        /// <param name="accept">Acceptable Content Types</param>
-        /// <param name="method">HTTP Method</param>
-        /// <param name="requestParams">Querystring Parameters</param>
+        /// <param name="servicePath">Path to the Service requested.</param>
+        /// <param name="accept">Acceptable Content Types.</param>
+        /// <param name="method">HTTP Method.</param>
+        /// <param name="requestParams">Querystring Parameters.</param>
         /// <returns></returns>
         protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method,
             Dictionary<string, string> requestParams)
@@ -1973,7 +1973,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Adds Stardog specific request headers; reasoning needed for &lt; 2.2
+        /// Adds Stardog specific request headers; reasoning needed for &lt; 2.2.
         /// </summary>
         /// <param name="request"></param>
         protected virtual void AddStardogHeaders(HttpWebRequest request)
@@ -1989,7 +1989,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Get the query parameter string that specifies the current reasoning mode
+        /// Get the query parameter string that specifies the current reasoning mode.
         /// </summary>
         /// <returns></returns>
         protected virtual string GetReasoningParameter()
@@ -2019,10 +2019,10 @@ namespace VDS.RDF.Storage
         #region Stardog Transaction Support
 
         /// <summary>
-        /// Start a transaction
+        /// Start a transaction.
         /// </summary>
         /// <param name="enableReasoning">Opens the transaction with reasoning enabled (requires StarDog v5.3.0 or later).</param>
-        /// <returns>A transaction ID for the new transaction</returns>
+        /// <returns>A transaction ID for the new transaction.</returns>
         protected virtual string BeginTransaction(bool enableReasoning = false)
         {
             string tID = null;
@@ -2062,9 +2062,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Commit an open transaction
+        /// Commit an open transaction.
         /// </summary>
-        /// <param name="tID">The ID of the transaction to commit</param>
+        /// <param name="tID">The ID of the transaction to commit.</param>
         protected virtual void CommitTransaction(string tID)
         {
             HttpWebRequest request = CreateRequest(_kb + "/transaction/commit/" + tID, "text/plain"
@@ -2087,9 +2087,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Rollback an open transaction
+        /// Rollback an open transaction.
         /// </summary>
-        /// <param name="tID">The ID of the transaction to rollback</param>
+        /// <param name="tID">The ID of the transaction to rollback.</param>
         protected virtual void RollbackTransaction(string tID)
         {
             var request = CreateRequest(_kb + "/transaction/rollback/" + tID, MimeTypesHelper.Any,
@@ -2108,21 +2108,21 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Begins a new Transaction
+        /// Begins a new Transaction.
         /// </summary>
         /// <remarks>
-        /// A single transaction
+        /// A single transaction.
         /// </remarks>
         public virtual void Begin()
         {
             Begin(false);
         }
         /// <summary>
-        /// Begins a new Transaction
+        /// Begins a new Transaction.
         /// </summary>
         /// <param name="enableReasoning">Opens the transaction with reasoning enabled.</param>
         /// <remarks>
-        /// A single transaction
+        /// A single transaction.
         /// </remarks>
         public virtual void Begin(bool enableReasoning)
         {
@@ -2143,11 +2143,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Commits the active Transaction
+        /// Commits the active Transaction.
         /// </summary>
-        /// <exception cref="RdfStorageException">Thrown if there is not an active Transaction on the current Thread</exception>
+        /// <exception cref="RdfStorageException">Thrown if there is not an active Transaction on the current Thread.</exception>
         /// <remarks>
-        /// Transactions are scoped to Managed Threads
+        /// Transactions are scoped to Managed Threads.
         /// </remarks>
         public virtual void Commit()
         {
@@ -2168,11 +2168,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Rolls back the active Transaction
+        /// Rolls back the active Transaction.
         /// </summary>
-        /// <exception cref="RdfStorageException">Thrown if there is not an active Transaction on the current Thread</exception>
+        /// <exception cref="RdfStorageException">Thrown if there is not an active Transaction on the current Thread.</exception>
         /// <remarks>
-        /// Transactions are scoped to Managed Threads
+        /// Transactions are scoped to Managed Threads.
         /// </remarks>
         public virtual void Rollback()
         {
@@ -2193,10 +2193,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Begins a transaction asynchronously
+        /// Begins a transaction asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void Begin(AsyncStorageCallback callback, object state)
         {
             try
@@ -2286,10 +2286,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Commits a transaction asynchronously
+        /// Commits a transaction asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void Commit(AsyncStorageCallback callback, object state)
         {
             try
@@ -2364,10 +2364,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Rolls back a transaction asynchronously
+        /// Rolls back a transaction asynchronously.
         /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to the callback.</param>
         public virtual void Rollback(AsyncStorageCallback callback, object state)
         {
             try
@@ -2443,7 +2443,7 @@ namespace VDS.RDF.Storage
         #endregion
 
         /// <summary>
-        /// Disposes of the Connector
+        /// Disposes of the Connector.
         /// </summary>
         public override void Dispose()
         {
@@ -2451,7 +2451,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets a String which gives details of the Connection
+        /// Gets a String which gives details of the Connection.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -2482,9 +2482,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Serializes the connection's configuration
+        /// Serializes the connection's configuration.
         /// </summary>
-        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
@@ -2523,52 +2523,52 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// A Stardog Connector for connecting to Stardog version 1.* servers
+    /// A Stardog Connector for connecting to Stardog version 1.* servers.
     /// </summary>
     public class StardogV1Connector
         : BaseStardogConnector
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
         public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
         public StardogV1Connector(string baseUri, string kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogV1Connector(string baseUri, string kbID, string username, string password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
         public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
             string password)
             : base(baseUri, kbID, reasoning, username, password)
@@ -2576,26 +2576,26 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV1Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
             string password, IWebProxy proxy)
             : base(baseUri, kbID, reasoning, username, password, proxy)
@@ -2603,24 +2603,24 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV1Connector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV1Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
@@ -2628,52 +2628,52 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// A Stardog Connector for connecting to Stardog version 2.* servers
+    /// A Stardog Connector for connecting to Stardog version 2.* servers.
     /// </summary>
     public class StardogV2Connector
         : StardogV1Connector, IUpdateableStorage, IAsyncUpdateableStorage
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
         public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning)
             : this(baseUri, kbID, reasoning, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
         public StardogV2Connector(string baseUri, string kbID)
             : this(baseUri, kbID, StardogReasoningMode.None)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogV2Connector(string baseUri, string kbID, string username, string password)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
         public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
             string password)
             : base(baseUri, kbID, reasoning, username, password)
@@ -2682,26 +2682,26 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="reasoning">Reasoning Mode</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning, IWebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="reasoning">Reasoning Mode</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="reasoning">Reasoning Mode.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV2Connector(string baseUri, string kbID, StardogReasoningMode reasoning, string username,
             string password, IWebProxy proxy)
             : base(baseUri, kbID, reasoning, username, password, proxy)
@@ -2710,31 +2710,31 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV2Connector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV2Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy)
         {
         }
 
         /// <summary>
-        /// Adds Stardog specific request headers
+        /// Adds Stardog specific request headers.
         /// </summary>
         /// <param name="request"></param>
         protected override void AddStardogHeaders(HttpWebRequest request)
@@ -2749,7 +2749,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Get the query string parameter that specifies the current reasoning mode
+        /// Get the query string parameter that specifies the current reasoning mode.
         /// </summary>
         /// <returns></returns>
         protected override string GetReasoningParameter()
@@ -2775,9 +2775,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Update against the Stardog store
+        /// Executes a SPARQL Update against the Stardog store.
         /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="sparqlUpdate">SPARQL Update.</param>
         /// <remarks>
         /// Stardog executes SPARQL update requests in their own self contained transactions which do not interact with normal Stardog transactions that may be managed via this API.  In some cases this can lead to unexpected behaviour, for example if you call <see cref="BaseStardogConnector.Begin()"/>, make an update and then call <see cref="BaseStardogConnector.Rollback()"/> the updates will not be rolled back.
         /// </remarks>
@@ -2816,11 +2816,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a SPARQL Update against the Stardog store
+        /// Executes a SPARQL Update against the Stardog store.
         /// </summary>
-        /// <param name="sparqlUpdates">SPARQL Update</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to callback</param>
+        /// <param name="sparqlUpdates">SPARQL Update.</param>
+        /// <param name="callback">Callback.</param>
+        /// <param name="state">State to pass to callback.</param>
         /// <remarks>
         /// Stardog executes SPARQL update requests in their own self contained transactions which do not interact with normal Stardog transactions that may be managed via this API.  In some cases this can lead to unexpected behaviour, for example if you call <see cref="BaseStardogConnector.Begin(AsyncStorageCallback, Object)"/>, make an update and then call <see cref="BaseStardogConnector.Rollback(AsyncStorageCallback, Object)"/> the updates will not be rolled back.
         /// </remarks>
@@ -2910,7 +2910,7 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// A Stardog Connector for connecting to Stardog version 3.* servers
+    /// A Stardog Connector for connecting to Stardog version 3.* servers.
     /// </summary>
     public class StardogV3Connector
         : StardogV2Connector,
@@ -2918,22 +2918,22 @@ namespace VDS.RDF.Storage
             IAsyncUpdateableStorage
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
         public StardogV3Connector(string baseUri, string kbID)
             : this(baseUri, kbID, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogV3Connector(string baseUri, string kbID, string username, string password)
             : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password)
         {
@@ -2941,24 +2941,24 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV3Connector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogV3Connector(string baseUri, string kbID, string username, string password, IWebProxy proxy)
             : base(baseUri, kbID, StardogReasoningMode.DatabaseControlled, username, password, proxy)
         {
@@ -2974,7 +2974,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Adds Stardog specific request headers
+        /// Adds Stardog specific request headers.
         /// </summary>
         /// <param name="request"></param>
         protected override void AddStardogHeaders(HttpWebRequest request)
@@ -2984,52 +2984,52 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// A Stardog connector for connecting to Stardog servers running the latest version, currently this is version 3.*
+    /// A Stardog connector for connecting to Stardog servers running the latest version, currently this is version 3.*.
     /// </summary>
     public class StardogConnector
         : StardogV3Connector
     {
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
         public StardogConnector(string baseUri, string kbID)
             : this(baseUri, kbID, null, null)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
         public StardogConnector(string baseUri, string kbID, string username, string password)
             : base(baseUri, kbID, username, password)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogConnector(string baseUri, string kbID, IWebProxy proxy)
             : this(baseUri, kbID, null, null, proxy)
         {
         }
 
         /// <summary>
-        /// Creates a new connection to a Stardog Store
+        /// Creates a new connection to a Stardog Store.
         /// </summary>
-        /// <param name="baseUri">Base Uri of the Server</param>
-        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
+        /// <param name="baseUri">Base Uri of the Server.</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="proxy">Proxy Server.</param>
         public StardogConnector(string baseUri, string kbID, string username,
             string password, IWebProxy proxy)
             : base(baseUri, kbID, username, password, proxy)

@@ -33,11 +33,11 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Abstract Base Class for parsers that handle GZipped input
+    /// Abstract Base Class for parsers that handle GZipped input.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such
+    /// While the normal parsers can be used with GZip streams directly this class just abstracts the wrapping of file/stream input into a GZip stream if it is not already passed as such.
     /// </para>
     /// </remarks>
     public abstract class BaseGZipDatasetParser
@@ -46,9 +46,9 @@ namespace VDS.RDF.Parsing
         private IStoreReader _parser;
 
         /// <summary>
-        /// Creates a new GZipped input parser
+        /// Creates a new GZipped input parser.
         /// </summary>
-        /// <param name="parser">The underlying parser to use</param>
+        /// <param name="parser">The underlying parser to use.</param>
         public BaseGZipDatasetParser(IStoreReader parser)
         {
             if (parser == null) throw new ArgumentNullException("parser");
@@ -57,10 +57,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF dataset from GZipped input
+        /// Loads a RDF dataset from GZipped input.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -68,10 +68,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF dataset from GZipped input
+        /// Loads a RDF dataset from GZipped input.
         /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(ITripleStore store, TextReader input)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -80,10 +80,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF dataset from GZipped input
+        /// Loads a RDF dataset from GZipped input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="filename">File to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
@@ -91,10 +91,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a RDF dataset from GZipped input
+        /// Loads a RDF dataset from GZipped input.
         /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="input">Input to load from</param>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
@@ -125,9 +125,9 @@ namespace VDS.RDF.Parsing
         public event StoreReaderWarning Warning;
 
         /// <summary>
-        /// Helper method for raising warning events
+        /// Helper method for raising warning events.
         /// </summary>
-        /// <param name="message">Warning Message</param>
+        /// <param name="message">Warning Message.</param>
         private void RaiseWarning(String message)
         {
             StoreReaderWarning d = Warning;
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets the description of the parser
+        /// Gets the description of the parser.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -145,58 +145,58 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// Parser for loading GZipped NQuads
+    /// Parser for loading GZipped NQuads.
     /// </summary>
     public class GZippedNQuadsParser
         : BaseGZipDatasetParser
     {
         /// <summary>
-        /// Creates a new GZipped NQuads Parser
+        /// Creates a new GZipped NQuads Parser.
         /// </summary>
         public GZippedNQuadsParser()
             : base(new NQuadsParser()) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped TriG
+    /// Parser for loading GZipped TriG.
     /// </summary>
     public class GZippedTriGParser
         : BaseGZipDatasetParser
     {
         /// <summary>
-        /// Creates a new GZipped TriG Parser
+        /// Creates a new GZipped TriG Parser.
         /// </summary>
         public GZippedTriGParser()
             : base(new TriGParser()) { }
     }
 
     /// <summary>
-    /// Parser for loading GZipped TriX
+    /// Parser for loading GZipped TriX.
     /// </summary>
     public class GZippedTriXParser
         : BaseGZipDatasetParser
     {
         /// <summary>
-        /// Creates a new GZipped TriX Parser
+        /// Creates a new GZipped TriX Parser.
         /// </summary>
         public GZippedTriXParser()
             : base(new TriXParser()) { }
     }
 
     /// <summary>
-    /// Parser for oading GZipped JSON-LD
+    /// Parser for oading GZipped JSON-LD.
     /// </summary>
     public class GZippedJsonLdParser : BaseGZipDatasetParser
     {
         /// <summary>
-        /// Creates a new GZipped JSON-LD parser
+        /// Creates a new GZipped JSON-LD parser.
         /// </summary>
         public GZippedJsonLdParser():base(new JsonLdParser()) { }
 
         /// <summary>
         /// Creates a new GZipped JSON-LD parser with a specific set of <see cref="JsonLdProcessorOptions"/>.
         /// </summary>
-        /// <param name="parserOptions">The options to pass to the underlying <see cref="JsonLdParser"/></param>
+        /// <param name="parserOptions">The options to pass to the underlying <see cref="JsonLdParser"/>.</param>
         public GZippedJsonLdParser(JsonLdProcessorOptions parserOptions):base(new JsonLdParser(parserOptions)) { }
     }
 }

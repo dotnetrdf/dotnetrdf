@@ -33,7 +33,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Triple Stores
+    /// Interface for Triple Stores.
     /// </summary>
     /// <remarks>A Triple Store may be a representation of some storage backed actual store or just a temporary collection of Graphs created for working with.  Note that an implementation is not required to provide a definitive view of a Triple Store and may only provide a limited/partial snapshot of the underlying store.  Check the documentation for the various implementations to see what type of view of a Triple Store they actually provide.</remarks>
     public interface ITripleStore 
@@ -42,7 +42,7 @@ namespace VDS.RDF
         #region Properties
 
         /// <summary>
-        /// Gets whether a TripleStore is Empty
+        /// Gets whether a TripleStore is Empty.
         /// </summary>
         bool IsEmpty
         {
@@ -50,7 +50,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph Collection of Graphs in this Triple Store
+        /// Gets the Graph Collection of Graphs in this Triple Store.
         /// </summary>
         BaseGraphCollection Graphs
         {
@@ -58,7 +58,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples in the Triple Store which are currently loaded in memory (see remarks)
+        /// Gets all the Triples in the Triple Store which are currently loaded in memory (see remarks).
         /// </summary>
         /// <remarks>Since a Triple Store object may represent only a snapshot of the underlying Store evaluating this enumerator may only return some of the Triples in the Store and may depending on specific Triple Store return nothing.</remarks>
         IEnumerable<Triple> Triples
@@ -71,35 +71,35 @@ namespace VDS.RDF
         #region Loading & Unloading Graphs
 
         /// <summary>
-        /// Adds a Graph into the Triple Store
+        /// Adds a Graph into the Triple Store.
         /// </summary>
-        /// <param name="g">Graph to add</param>
+        /// <param name="g">Graph to add.</param>
         bool Add(IGraph g);
 
         /// <summary>
-        /// Adds a Graph into the Triple Store
+        /// Adds a Graph into the Triple Store.
         /// </summary>
-        /// <param name="g">Graph to add</param>
-        /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store</param>
+        /// <param name="g">Graph to add.</param>
+        /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store.</param>
         bool Add(IGraph g, bool mergeIfExists);
 
         /// <summary>
-        /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store
+        /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to be added</param>
+        /// <param name="graphUri">Uri of the Graph to be added.</param>
         bool AddFromUri(Uri graphUri);
 
         /// <summary>
-        /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store
+        /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store.
         /// </summary>
-        /// <param name="graphUri">Uri of the Graph to be added</param>
-        /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store</param>
+        /// <param name="graphUri">Uri of the Graph to be added.</param>
+        /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store.</param>
         bool AddFromUri(Uri graphUri, bool mergeIfExists);
 
         /// <summary>
-        /// Removes a Graph from the Triple Store
+        /// Removes a Graph from the Triple Store.
         /// </summary>
-        /// <param name="graphUri">Graph Uri of the Graph to remove</param>
+        /// <param name="graphUri">Graph Uri of the Graph to remove.</param>
         bool Remove(Uri graphUri);
 
         #endregion
@@ -107,16 +107,16 @@ namespace VDS.RDF
         #region Graph Retrieval
 
         /// <summary>
-        /// Checks whether the Graph with the given Uri is in this Triple Store
+        /// Checks whether the Graph with the given Uri is in this Triple Store.
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
+        /// <param name="graphUri">Graph Uri.</param>
         /// <returns></returns>
         bool HasGraph(Uri graphUri);
 
         /// <summary>
-        /// Gets a Graph from the Triple Store;
+        /// Gets a Graph from the Triple Store;.
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         IGraph this[Uri graphUri]
         {
@@ -157,105 +157,105 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Triple Stores which can be queried in memory using method calls or the SPARQL implementation contained in this library
+    /// Interface for Triple Stores which can be queried in memory using method calls or the SPARQL implementation contained in this library.
     /// </summary>
     /// <remarks>
     /// <para>
     /// An in memory Triple Store will typically load most of the Graphs and consequently Triples contained within it into Memory as the in memory SPARQL implementation only operates over the part of the Triple Store loaded in memory.  This being said there is no reason why an in memory store can't provide a Snapshot view of an underlying store to allow only the relevant parts of Store to be loaded and queried.
     /// </para>
     /// <para>
-    /// All the Selection Methods which do not specify a subset of Graphs on such a Triple Store <strong>should</strong> operate over the entire store
+    /// All the Selection Methods which do not specify a subset of Graphs on such a Triple Store <strong>should</strong> operate over the entire store.
     /// </para>
     /// </remarks>
     public interface IInMemoryQueryableStore
         : ITripleStore
     {
         /// <summary>
-        /// Returns whether a given Triple is contained anywhere in the Query Triples
+        /// Returns whether a given Triple is contained anywhere in the Query Triples.
         /// </summary>
-        /// <param name="t">Triple to check for existence of</param>
+        /// <param name="t">Triple to check for existence of.</param>
         /// <returns></returns>
         bool Contains(Triple t);
 
         #region Selection over Entire Triple Store
 
         /// <summary>
-        /// Selects all Triples which have a Uri Node with the given Uri from all the Query Triples
+        /// Selects all Triples which have a Uri Node with the given Uri from all the Query Triples.
         /// </summary>
-        /// <param name="uri">Uri</param>
+        /// <param name="uri">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(Uri uri);
 
         /// <summary>
-        /// Selects all Triples which contain the given Node from all the Query Triples
+        /// Selects all Triples which contain the given Node from all the Query Triples.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Object is a Uri Node with the given Uri from all the Query Triples
+        /// Selects all Triples where the Object is a Uri Node with the given Uri from all the Query Triples.
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Object is a given Node from all the Query Triples
+        /// Selects all Triples where the Object is a given Node from all the Query Triples.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Predicate is a given Node from all the Query Triples
+        /// Selects all Triples where the Predicate is a given Node from all the Query Triples.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicate(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Predicate is a Uri Node with the given Uri from all the Query Triples
+        /// Selects all Triples where the Predicate is a Uri Node with the given Uri from all the Query Triples.
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Subject is a given Node from all the Query Triples
+        /// Selects all Triples where the Subject is a given Node from all the Query Triples.
         /// </summary>
-        /// <param name="n">Node</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(INode n);
 
         /// <summary>
-        /// Selects all Triples where the Subject is a Uri Node with the given Uri from all the Query Triples
+        /// Selects all Triples where the Subject is a Uri Node with the given Uri from all the Query Triples.
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(Uri u);
 
         /// <summary>
-        /// Selects all the Triples with the given Subject-Predicate pair from all the Query Triples
+        /// Selects all the Triples with the given Subject-Predicate pair from all the Query Triples.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
 
         /// <summary>
-        /// Selects all the Triples with the given Predicate-Object pair from all the Query Triples
+        /// Selects all the Triples with the given Predicate-Object pair from all the Query Triples.
         /// </summary>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
 
         /// <summary>
-        /// Selects all the Triples with the given Subject-Object pair from all the Query Triples
+        /// Selects all the Triples with the given Subject-Object pair from all the Query Triples.
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="obj">Object</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
 
@@ -264,66 +264,66 @@ namespace VDS.RDF
         #region Selection over a Subset of the Store
 
         /// <summary>
-        /// Selects all Triples which have a Uri Node with the given Uri from a Subset of Graphs in the Triple Store
+        /// Selects all Triples which have a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="uri">Uri</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="uri">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(List<Uri> graphUris, Uri uri);
 
         /// <summary>
-        /// Selects all Triples which contain the given Node from a Subset of Graphs in the Triple Store
+        /// Selects all Triples which contain the given Node from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="n">Node</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(List<Uri> graphUris, INode n);
 
         /// <summary>
-        /// Selects all Triples where the Object is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store
+        /// Selects all Triples where the Object is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="u">Uri</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Object is a given Node from a Subset of Graphs in the Triple Store
+        /// Selects all Triples where the Object is a given Node from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="n">Node</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, INode n);
 
         /// <summary>
-        /// Selects all Triples where the Predicate is a given Node from a Subset of Graphs in the Triple Store
+        /// Selects all Triples where the Predicate is a given Node from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="n">Node</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, INode n);
 
         /// <summary>
-        /// Selects all Triples where the Predicate is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store
+        /// Selects all Triples where the Predicate is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="u">Uri</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Subject is a given Node from a Subset of Graphs in the Triple Store
+        /// Selects all Triples where the Subject is a given Node from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="n">Node</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, INode n);
 
         /// <summary>
-        /// Selects all Triples where the Subject is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store
+        /// Selects all Triples where the Subject is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
         /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="u">Uri</param>
+        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
+        /// <param name="u">Uri.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, Uri u);
 
@@ -332,9 +332,9 @@ namespace VDS.RDF
         #region In Memory SPARQL
 
         /// <summary>
-        /// Executes a SPARQL Query on the Triple Store
+        /// Executes a SPARQL Query on the Triple Store.
         /// </summary>
-        /// <param name="query">SPARQL Query as an unparsed string</param>
+        /// <param name="query">SPARQL Query as an unparsed string.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -348,9 +348,9 @@ namespace VDS.RDF
         Object ExecuteQuery(String query);
 
         /// <summary>
-        /// Executes a SPARQL Query on the Triple Store
+        /// Executes a SPARQL Query on the Triple Store.
         /// </summary>
-        /// <param name="query">SPARQL Query as a <see cref="SparqlQuery">SparqlQuery</see> instance</param>
+        /// <param name="query">SPARQL Query as a <see cref="SparqlQuery">SparqlQuery</see> instance.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -364,11 +364,11 @@ namespace VDS.RDF
         Object ExecuteQuery(SparqlQuery query);
 
         /// <summary>
-        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query as an unparsed string</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query as an unparsed string.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -382,11 +382,11 @@ namespace VDS.RDF
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
 
         /// <summary>
-        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">Parsed SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">Parsed SPARQL Query.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
@@ -403,7 +403,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Triple Stores which can be queried natively i.e. the Stores provide their own SPARQL implementations
+    /// Interface for Triple Stores which can be queried natively i.e. the Stores provide their own SPARQL implementations.
     /// </summary>
     /// <remarks>
     /// A Natively Queryable store will typically not load its Graphs and Triples into memory as this is generally unecessary.
@@ -412,9 +412,9 @@ namespace VDS.RDF
         : ITripleStore
     {
         /// <summary>
-        /// Executes a SPARQL Query on the Triple Store
+        /// Executes a SPARQL Query on the Triple Store.
         /// </summary>
-        /// <param name="query">Sparql Query as unparsed String</param>
+        /// <param name="query">Sparql Query as unparsed String.</param>
         /// <returns></returns>
         /// <remarks>
         /// This assumes that the Store has access to some native SPARQL query processor on/at the Store which will be used to return the results.  Implementations should parse the returned result into a <see cref="SparqlResultSet">SparqlResultSet</see> or <see cref="Graph">Graph</see>.
@@ -422,96 +422,96 @@ namespace VDS.RDF
         Object ExecuteQuery(String query);
 
         /// <summary>
-        /// Executes a SPARQL Query on the Triple Store processing the results using an appropriate handler from those provided
+        /// Executes a SPARQL Query on the Triple Store processing the results using an appropriate handler from those provided.
         /// </summary>
-        /// <param name="rdfHandler">RDF Handler</param>
-        /// <param name="resultsHandler">Results Handler</param>
-        /// <param name="query">SPARQL Query as unparsed String</param>
+        /// <param name="rdfHandler">RDF Handler.</param>
+        /// <param name="resultsHandler">Results Handler.</param>
+        /// <param name="query">SPARQL Query as unparsed String.</param>
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
     }
 
     /// <summary>
-    /// Interface for Triple Stores which support SPARQL Update as per the SPARQL 1.1 specifications
+    /// Interface for Triple Stores which support SPARQL Update as per the SPARQL 1.1 specifications.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A Store which supports this may implement various access control mechanisms which limit what operations are actually permitted
+    /// A Store which supports this may implement various access control mechanisms which limit what operations are actually permitted.
     /// </para>
     /// <para>
-    /// It is the responsibility of the Store class to ensure that commands are permissible before invoking them
+    /// It is the responsibility of the Store class to ensure that commands are permissible before invoking them.
     /// </para>
     /// </remarks>
     public interface IUpdateableTripleStore
         : ITripleStore
     {
         /// <summary>
-        /// Executes an Update against the Triple Store
+        /// Executes an Update against the Triple Store.
         /// </summary>
-        /// <param name="update">SPARQL Update Command(s)</param>
+        /// <param name="update">SPARQL Update Command(s).</param>
         /// <remarks>
-        /// As per the SPARQL 1.1 Update specification the command string may be a sequence of commands
+        /// As per the SPARQL 1.1 Update specification the command string may be a sequence of commands.
         /// </remarks>
         void ExecuteUpdate(String update);
 
         /// <summary>
-        /// Executes a single Update Command against the Triple Store
+        /// Executes a single Update Command against the Triple Store.
         /// </summary>
-        /// <param name="update">SPARQL Update Command</param>
+        /// <param name="update">SPARQL Update Command.</param>
         void ExecuteUpdate(SparqlUpdateCommand update);
 
         /// <summary>
-        /// Executes a set of Update Commands against the Triple Store
+        /// Executes a set of Update Commands against the Triple Store.
         /// </summary>
-        /// <param name="updates">SPARQL Update Command Set</param>
+        /// <param name="updates">SPARQL Update Command Set.</param>
         void ExecuteUpdate(SparqlUpdateCommandSet updates);
     }
 
     /// <summary>
-    /// Interface for Triple Stores which can have a <see cref="IInferenceEngine">IInferenceEngine</see> attached to them
+    /// Interface for Triple Stores which can have a <see cref="IInferenceEngine">IInferenceEngine</see> attached to them.
     /// </summary>
     public interface IInferencingTripleStore
         : ITripleStore
     {
         /// <summary>
-        /// Adds an Inference Engine to the Triple Store
+        /// Adds an Inference Engine to the Triple Store.
         /// </summary>
-        /// <param name="reasoner">Reasoner to add</param>
+        /// <param name="reasoner">Reasoner to add.</param>
         void AddInferenceEngine(IInferenceEngine reasoner);
 
         /// <summary>
-        /// Removes an Inference Engine from the Triple Store
+        /// Removes an Inference Engine from the Triple Store.
         /// </summary>
-        /// <param name="reasoner">Reasoner to remove</param>
+        /// <param name="reasoner">Reasoner to remove.</param>
         void RemoveInferenceEngine(IInferenceEngine reasoner);
 
         /// <summary>
-        /// Clears all Inference Engines from the Triple Store
+        /// Clears all Inference Engines from the Triple Store.
         /// </summary>
         void ClearInferenceEngines();
 
         /// <summary>
-        /// Applies Inference to the given Graph
+        /// Applies Inference to the given Graph.
         /// </summary>
-        /// <param name="g">Graph to apply inference to</param>
+        /// <param name="g">Graph to apply inference to.</param>
         /// <remarks>
-        /// Allows you to apply Inference to a Graph even if you're not putting that Graph into the Store
+        /// Allows you to apply Inference to a Graph even if you're not putting that Graph into the Store.
         /// </remarks>
         void ApplyInference(IGraph g);
     }
 
     /// <summary>
-    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by product such stores will typically have some notion of transactionality
+    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by product such stores will typically have some notion of transactionality.
     /// </summary>
     public interface ITransactionalStore
         : ITripleStore
     {
         /// <summary>
-        /// Flushes any outstanding changes to the underlying store
+        /// Flushes any outstanding changes to the underlying store.
         /// </summary>
         void Flush();
 
         /// <summary>
-        /// Discards any outstanding changes to the underlying store
+        /// Discards any outstanding changes to the underlying store.
         /// </summary>
         void Discard();
     }

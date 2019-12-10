@@ -29,7 +29,7 @@ using VDS.RDF.Query.Construct;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Pattern which matches specific Nodes
+    /// Pattern which matches specific Nodes.
     /// </summary>
     public class NodeMatchPattern
         : PatternItem
@@ -37,19 +37,19 @@ namespace VDS.RDF.Query.Patterns
         private INode _node;
 
         /// <summary>
-        /// Creates a new Node Match Pattern
+        /// Creates a new Node Match Pattern.
         /// </summary>
-        /// <param name="n">Exact Node to match</param>
+        /// <param name="n">Exact Node to match.</param>
         public NodeMatchPattern(INode n)
         {
             _node = n;
         }
 
         /// <summary>
-        /// Creates a new Node Match Pattern
+        /// Creates a new Node Match Pattern.
         /// </summary>
-        /// <param name="n">Exact Node to match</param>
-        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation regardless of the global setting</param>
+        /// <param name="n">Exact Node to match.</param>
+        /// <param name="rigorousEvaluation">Whether to force rigorous evaluation regardless of the global setting.</param>
         public NodeMatchPattern(INode n, bool rigorousEvaluation)
             : this(n)
         {
@@ -57,10 +57,10 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Checks whether the given Node matches the Node this pattern was instantiated with
+        /// Checks whether the given Node matches the Node this pattern was instantiated with.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="obj">Node to test</param>
+        /// <param name="context">Evaluation Context.</param>
+        /// <param name="obj">Node to test.</param>
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
@@ -75,16 +75,16 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Constructs a Node based on the given Set
+        /// Constructs a Node based on the given Set.
         /// </summary>
-        /// <param name="context">Construct Context</param>
+        /// <param name="context">Construct Context.</param>
         protected internal override INode Construct(ConstructContext context)
         {
             return context.GetNode(_node);
         }
 
         /// <summary>
-        /// Gets a String representation of the Node
+        /// Gets a String representation of the Node.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Node that this Pattern matches
+        /// Gets the Node that this Pattern matches.
         /// </summary>
         public INode Node
         {

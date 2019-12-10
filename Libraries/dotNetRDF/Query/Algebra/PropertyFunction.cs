@@ -34,7 +34,7 @@ using VDS.RDF.Query.PropertyFunctions;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Algebra that represents the application of a Property Function
+    /// Algebra that represents the application of a Property Function.
     /// </summary>
     public class PropertyFunction
         : IUnaryOperator
@@ -43,10 +43,10 @@ namespace VDS.RDF.Query.Algebra
         private readonly ISparqlAlgebra _algebra;
 
         /// <summary>
-        /// Creates a new Property function algebra
+        /// Creates a new Property function algebra.
         /// </summary>
-        /// <param name="algebra">Inner algebra</param>
-        /// <param name="function">Property Function</param>
+        /// <param name="algebra">Inner algebra.</param>
+        /// <param name="function">Property Function.</param>
         public PropertyFunction(ISparqlAlgebra algebra, ISparqlPropertyFunction function)
         {
             _function = function;
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
+        /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
@@ -65,9 +65,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms this algebra with the given optimiser
+        /// Transforms this algebra with the given optimiser.
         /// </summary>
-        /// <param name="optimiser">Optimiser</param>
+        /// <param name="optimiser">Optimiser.</param>
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
@@ -75,9 +75,9 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the algebra in the given context
+        /// Evaluates the algebra in the given context.
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the variables used in the algebra
+        /// Gets the variables used in the algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value
+        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FloatingVariables
         {
@@ -110,12 +110,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value
+        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
         public IEnumerable<String> FixedVariables { get { return _algebra.FixedVariables; } }
 
         /// <summary>
-        /// Throws an error because property functions cannot be converted back to queries
+        /// Throws an error because property functions cannot be converted back to queries.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Throws an error because property functions cannot be converted back to graph patterns
+        /// Throws an error because property functions cannot be converted back to graph patterns.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string representation of the algebra
+        /// Gets the string representation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
