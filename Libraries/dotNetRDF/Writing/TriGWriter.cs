@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
@@ -216,35 +217,33 @@ namespace VDS.RDF.Writing
                 }
 
                 // Start making the async calls
-                List<IAsyncResult> results = new List<IAsyncResult>();
-                SaveGraphsDelegate d = new SaveGraphsDelegate(SaveGraphs);
+                var workers = new Task[_threads];
                 for (int i = 0; i < _threads; i++)
                 {
-                    results.Add(d.BeginInvoke(context, null, null));
+                    workers[i] = Task.Factory.StartNew(() => SaveGraphs(context));
                 }
 
-                // Wait for all the async calls to complete
-                WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
-                RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
-                foreach (IAsyncResult result in results)
+                try
                 {
-                    try
+                    Task.WaitAll(workers);
+                }
+                catch (AggregateException ex)
+                {
+                    var outputException =
+                        new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
+                    foreach (var innerException in ex.InnerExceptions)
                     {
-                        d.EndInvoke(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        outputEx.AddException(ex);
+                        outputException.AddException(innerException);
                     }
                 }
-                // Make sure to close the output
-                if (!leaveOpen)
+                finally
                 {
-                    context.Output.Close();
+                    // Make sure to close the output
+                    if (!leaveOpen)
+                    {
+                        context.Output.Close();
+                    }
                 }
-
-                // If there were any errors we'll throw an RdfThreadedOutputException now
-                if (outputEx.InnerExceptions.Any()) throw outputEx;
             }
             else
             {
@@ -509,13 +508,11 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !NETCORE  // PCL has no Thread.Abort() method or ThreadAbortException
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
                 Thread.ResetAbort();
             }
-#endif
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Writer in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);
