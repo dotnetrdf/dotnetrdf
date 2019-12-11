@@ -8,12 +8,20 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
+using Xunit.Abstractions;
 using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF.JsonLd
 {
     public class JsonLdParserTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public JsonLdParserTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         /// <summary>
         /// Test to replicate the StackOverflowException condition reported in GitHub issue #122
         /// when loading a remote context document.
@@ -158,10 +166,36 @@ namespace VDS.RDF.JsonLd
             }
             foreach (var t in tStore.Triples)
             {
-                Console.WriteLine(t.Subject);
+                _output.WriteLine(t.Subject.ToString());
             }
             Assert.Contains(tStore.Triples, t=>t.Subject.As<IUriNode>().Uri.ToString().Equals("http://example.com/foo"));
             
+        }
+
+        [Fact]
+        public void ItTreatsUrnsAsAbsoluteIris()
+        {
+            var jsonLd = @"
+{
+    '@id': 'urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6',
+    'http://example.org/p': {
+        '@value': 'o',
+        '@type': 'urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6'
+    }
+}";
+            var jsonLdParser = new JsonLdParser();
+            ITripleStore tStore = new TripleStore();
+            using (var reader = new StringReader(jsonLd))
+            {
+                jsonLdParser.Load(tStore, reader);
+            }
+            foreach (var t in tStore.Triples)
+            {
+                _output.WriteLine(t.ToString());
+            }
+            Assert.Contains(tStore.Triples, t => t.Subject is IUriNode node &&  node.Uri.ToString().Equals("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
+            Assert.Contains(tStore.Triples,
+                t => t.Object is ILiteralNode node && node.DataType.ToString().Equals("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
         }
     }
 }
