@@ -3760,6 +3760,7 @@ namespace VDS.RDF.JsonLd
             // TODO: Implement frame validation (not currently defined in spec) - throw an invalid frame error if validation fails
             return;
         }
+
         /// <summary>
         /// Determine if a JSON token is a JSON-LD value object.
         /// </summary>
@@ -3788,33 +3789,34 @@ namespace VDS.RDF.JsonLd
 
         private bool IsAbsoluteIri(JToken token)
         {
-            var value = token as JValue;
-            if (value == null) return false;
-            if (value.Type != JTokenType.String) return false;
-            return IsAbsoluteIri(value.Value<string>());
+            if (!(token is JValue value)) return false;
+            return value.Type == JTokenType.String && IsAbsoluteIri(value.Value<string>());
         }
 
-        private bool IsAbsoluteIri(string value) {
-            var ix = value.IndexOf(':');
-            return ix > 0 && (ix == value.Length -1 || value.IndexOf("://", StringComparison.Ordinal) == ix);
-        }
-
-        private bool IsRelativeIri(JToken token)
+        /// <summary>
+        /// Determine if the specified string is an absolute IRI.
+        /// </summary>
+        /// <param name="value">The string value to be validated.</param>
+        /// <returns>True if <paramref name="value"/> can be parsed as an absolute IRI, false otherwise.</returns>
+        private static bool IsAbsoluteIri(string value)
         {
-            var value = token as JValue;
-            if (value == null) return false;
-            if (value.Type != JTokenType.String) return false;
-            return IsRelativeIri(value.Value<string>());
+            return Uri.TryCreate(value, UriKind.Absolute, out _);
+        }
+
+        private static bool IsRelativeIri(JToken token)
+        {
+            if (!(token is JValue value)) return false;
+            return value.Type == JTokenType.String && IsRelativeIri(value.Value<string>());
         }
 
         /// <summary>
         /// Determine if the specified string is a relative IRI.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">The string value to be validated.</param>
+        /// <returns>True if <paramref name="value"/> can be parsed as an absolute IRI, false otherwise.</returns>
         public static bool IsRelativeIri(string value)
         {
-            return Uri.TryCreate(value, UriKind.Relative, out Uri result);
+            return Uri.TryCreate(value, UriKind.Relative, out _);
         }
 
         /// <summary>
