@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
@@ -319,7 +320,8 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             // Create a copy of the evaluation context for the RHS
-            SparqlEvaluationContext context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor);
+            SparqlEvaluationContext context2 =
+                new SparqlEvaluationContext(context.Query, context.Data, context.Processor);
             if (!(context.InputMultiset is IdentityMultiset))
             {
                 context2.InputMultiset = new Multiset();
@@ -333,68 +335,93 @@ namespace VDS.RDF.Query.Algebra
             List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
             // Start both executing asynchronously
-            IAsyncResult lhs = _d.BeginInvoke(_lhs, context, activeGraphs, defaultGraphs, null, null);
-            IAsyncResult rhs = _d.BeginInvoke(_rhs, context2, activeGraphs, defaultGraphs, new AsyncCallback(RhsCallback), null);
-
-            // Wait on the LHS
-            if (context.RemainingTimeout > 0)
-            {
-                lhs.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, (int)context.RemainingTimeout));
-            }
-            else
-            {
-                lhs.AsyncWaitHandle.WaitOne();
-            }
-            context.CheckTimeout();
-
-            // Get the LHS result
-            BaseMultiset lhsResult;
+            var cts = new CancellationTokenSource();
+            var cancellationToken = cts.Token;
+            var lhsEvaluation =
+                Task.Factory.StartNew(() => ParallelEvaluate(_lhs, context, activeGraphs, defaultGraphs),
+                    cancellationToken);
+            var rhsEvaluation =
+                Task.Factory.StartNew(() => ParallelEvaluate(_rhs, context2, activeGraphs, defaultGraphs),
+                    cancellationToken);
+            var evaluationTasks = new Task[] {lhsEvaluation, rhsEvaluation};
             try
             {
-                lhsResult = _d.EndInvoke(lhs);
-            }
-            catch
-            {
-                throw;
-            }
-
-            // If LHS came back as null/empty no need to wait for RHS to complete
-            if (lhsResult is NullMultiset)
-            {
-                context.OutputMultiset = lhsResult;
-            }
-            else if (lhsResult.IsEmpty)
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            else
-            {
-                // Wait for RHS to complete
-                if (!rhs.IsCompleted)
+                if (context.RemainingTimeout > 0)
                 {
+                    Task.WaitAny(evaluationTasks, (int) context.RemainingTimeout, cancellationToken);
+                }
+                else
+                {
+                    Task.WaitAny(evaluationTasks, cancellationToken);
+                }
+
+                var firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
+                if (firstResult == null)
+                {
+                    context.OutputMultiset = new NullMultiset();
+                    cts.Cancel();
+                }
+                else if (firstResult is NullMultiset)
+                {
+                    context.OutputMultiset = new NullMultiset();
+                    cts.Cancel();
+                }
+                else
+                {
+                    context.CheckTimeout();
                     if (context.RemainingTimeout > 0)
                     {
-                        rhs.AsyncWaitHandle.WaitOne(new TimeSpan(0, 0, 0, 0, (int)context.RemainingTimeout));
+                        Task.WaitAll(evaluationTasks, (int) context.RemainingTimeout, cancellationToken);
                     }
                     else
                     {
-                        rhs.AsyncWaitHandle.WaitOne();
+                        Task.WaitAll(evaluationTasks, cancellationToken);
                     }
-                    context.CheckTimeout();
+
+                    var lhsResult = lhsEvaluation.Result;
+                    var rhsResult = rhsEvaluation.Result;
+                    if (lhsResult is NullMultiset)
+                    {
+                        context.OutputMultiset = lhsResult;
+                    }
+                    else if (rhsResult is NullMultiset)
+                    {
+                        context.OutputMultiset = rhsResult;
+                    }
+                    else if (lhsResult == null || rhsResult == null)
+                    {
+                        context.OutputMultiset = new NullMultiset();
+                    }
+                    else
+                    {
+                        context.OutputMultiset = lhsResult.Product(rhsResult);
+                    }
                 }
 
-                if (_rhsResult == null)
-                {
-                    if (_rhsError != null) throw _rhsError;
-                    Thread.Sleep(10);
-                }
-                if (_rhsResult == null) throw new RdfQueryException("Unknown error in parallel join evaluation, RHS is reported completed without errors but no result is available");
-
-                // Compute the product of the two sides
-                context.OutputMultiset = lhsResult.Product(_rhsResult);
+                return context.OutputMultiset;
             }
-            return context.OutputMultiset;
+            catch (OperationCanceledException)
+            {
+                throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " +
+                                                   context.QueryTimeout + "ms, query aborted after " +
+                                                   context.QueryTime + "ms");
+            }
+            catch (AggregateException ex)
+            {
+                var firstCause = ex.InnerExceptions.FirstOrDefault();
+                if (firstCause is RdfException) throw firstCause;
+                throw new RdfQueryException("Error in parallel join evaluation.", ex);
+            }
+            catch (RdfException)
+            {
+                throw;
+            }
+            catch(Exception ex)
+            {
+                throw new RdfQueryException("Error in parallel join evaluation.", ex);
+            }
         }
+    
 
         private delegate BaseMultiset ParallelEvaluateDelegate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IEnumerable<Uri> activeGraphs, IEnumerable<Uri> defGraphs);
 
