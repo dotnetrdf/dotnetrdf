@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json.Bson;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
@@ -46,7 +47,7 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlFormatter _formatter = new SparqlFormatter();
         private LeviathanQueryProcessor _processor;
-        private const int TripleLimit = 150;
+        private const int TripleLimit = 100;
         private NodeFactory _factory = new NodeFactory();
         private readonly ITestOutputHelper _output;
 
@@ -65,14 +66,17 @@ namespace VDS.RDF.Query
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit).ToList());
                 _dataset.AddGraph(g);
+                _dataset.SetDefaultGraph(g.BaseUri);
 
                 _processor = new LeviathanQueryProcessor(_dataset);
             }
         }
 
-        private void TestQuery(string query)
+        private void TestQuery(string query, bool checkGraphEquality)
         {
             EnsureTestData();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             var q = _parser.ParseFromString(query);
 
@@ -114,7 +118,10 @@ namespace VDS.RDF.Query
                 {
                     _output.WriteLine("Parallel Evaluation returned " + rsetPar.Count + " Result(s)");
                     Assert.Equal(rsetNorm.Count, rsetPar.Count);
-                    Assert.Equal(rsetNorm, rsetPar);
+                    if (checkGraphEquality)
+                    {
+                        Assert.StrictEqual(rsetNorm, rsetPar);
+                    }
                 }
                 else
                 {
@@ -189,26 +196,26 @@ namespace VDS.RDF.Query
         [Trait("Coverage", "Skip")]
         public void SparqlParallelEvaluationOptional1()
         {
-            String data = @"<http://a> <http://p> <http://x> .
+            var data = @"<http://a> <http://p> <http://x> .
 <http://b> <http://p> <http://y> .
 <http://c> <http://p> <http://z> .
 <http://x> <http://value> ""X"" .
 <http://z> <http://value> ""Z"" .";
 
-            String query = "SELECT * WHERE { ?s <http://p> ?o . OPTIONAL { ?o <http://value> ?value } }";
-            SparqlQuery q = _parser.ParseFromString(query);
+            var query = "SELECT * WHERE { ?s <http://p> ?o . OPTIONAL { ?o <http://value> ?value } }";
+            var q = _parser.ParseFromString(query);
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
-            InMemoryDataset dataset = new InMemoryDataset(store);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            var dataset = new InMemoryDataset(store);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
             int i;
-            for (i = 1; i <= 100000; i++)
+            for (i = 1; i <= 10000; i++)
             {
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 if (results.Count != 3) TestTools.ShowResults(results);
                 Assert.Equal(3, results.Count);
@@ -223,7 +230,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParallelEvaluationJoin1()
         {
-            TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }");
+            TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }", true);
         }
 
         [Fact]
@@ -231,12 +238,18 @@ namespace VDS.RDF.Query
         {
             try
             {
-                TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }");
+                TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }", false);
             }
             catch (OutOfMemoryException outEx)
             {
                 TestTools.ReportError("Out of Memory", outEx);
             }
+        }
+
+        [Fact]
+        public void SparqlParallelUnionEvaluation()
+        {
+            TestQuery("SELECT * WHERE { { ?s ?p ?o } UNION { ?a ?b ?c } }", true);
         }
     }
 }
