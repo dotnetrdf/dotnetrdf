@@ -228,11 +228,11 @@ namespace VDS.RDF.Query
             // If no endpoints do nothing
             if (_endpoints.Count == 0) return;
 
-            // Fire off all the Asychronous Requests
-            List<AsyncQueryWithResultGraph> asyncCalls = new List<AsyncQueryWithResultGraph>();
-            List<IAsyncResult> asyncResults = new List<IAsyncResult>();
-            int count = 0;
-            foreach (SparqlRemoteEndpoint endpoint in _endpoints)
+            // Fire off all the asynchronous requests
+            var asyncCalls = new List<Task<IGraph>>();
+            var count = 0;
+            var cts = new CancellationTokenSource();
+            foreach (var endpoint in _endpoints)
             {
                 // Limit the number of simultaneous requests we make to the user defined level (default 4)
                 // We do this limiting check before trying to issue a request so that when the last request
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query
                 while (count >= _maxSimultaneousRequests)
                 {
                     // First check that the count of active requests is accurate
-                    int active = asyncResults.Count(r => !r.IsCompleted);
+                    int active = asyncCalls.Count(r => !r.IsCompleted);
                     if (active < count)
                     {
                         // Some of the requests have already completed so we don't need to wait
@@ -256,91 +256,97 @@ namespace VDS.RDF.Query
                     // While the number of requests is at/above the maximum we'll wait for any of the requests to finish
                     // Then we can decrement the count and if this drops back below our maximum then we'll go back into the
                     // main loop and fire off our next request
-                    WaitHandle.WaitAny(asyncResults.Select(r => r.AsyncWaitHandle).ToArray());
+                    try
+                    {
+                        Task.WaitAny(asyncCalls.ToArray());
+                    }
+                    catch (AggregateException ex)
+                    {
+                        var faultedTaskIx = asyncCalls.FindIndex(x => x.IsFaulted);
+                        var faultedEndpoint = _endpoints[faultedTaskIx];
+                        if (!_ignoreFailedRequests)
+                        {
+                            throw new RdfQueryException("Federated Querying failed due to the query against the endpoint '" + faultedEndpoint + "' failing", ex);
+                        }
+                    }
+
                     count--;
                 }
 
                 // Make an asynchronous query to the next endpoint
-                AsyncQueryWithResultGraph d = new AsyncQueryWithResultGraph(endpoint.QueryWithResultGraph);
-                asyncCalls.Add(d);
-                IAsyncResult asyncResult = d.BeginInvoke(sparqlQuery, null, null);
-                asyncResults.Add(asyncResult);
+                asyncCalls.Add(Task.Factory.StartNew(()=>endpoint.QueryWithResultGraph(sparqlQuery), cts.Token));
                 count++;
             }
 
             // Wait for all our requests to finish
-            int waitTimeout = (Timeout > 0) ? Timeout : System.Threading.Timeout.Infinite;
-            WaitHandle.WaitAll(asyncResults.Select(r => r.AsyncWaitHandle).ToArray(), waitTimeout);
+            var waitTimeout = (Timeout > 0) ? Timeout : System.Threading.Timeout.Infinite;
 
             // Check for and handle timeouts
-            if (!_ignoreFailedRequests && !asyncResults.All(r => r.IsCompleted))
+            try
             {
-                for (int i = 0; i < asyncCalls.Count; i++)
+                if (!Task.WaitAll(asyncCalls.ToArray(), waitTimeout, cts.Token))
                 {
-                    try
+                    // Handle timeouts - cancel overrunning tasks and optionally throw an exception
+                    cts.Cancel(false);
+                    if (!_ignoreFailedRequests)
                     {
-                        asyncCalls[i].EndInvoke(asyncResults[i]);
-                    }
-                    catch
-                    {
-                        // Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
+                        throw new RdfQueryTimeoutException(
+                            "Federated Querying failed due to one/more endpoints failing to return results within the Timeout specified which is currently " +
+                            (Timeout / 1000) + " seconds");
                     }
                 }
-                throw new RdfQueryTimeoutException("Federated Querying failed due to one/more endpoints failing to return results within the Timeout specified which is currently " + (Timeout / 1000) + " seconds");
+            }
+            catch (AggregateException ex)
+            {
+                if (!_ignoreFailedRequests)
+                {
+                    // Try to determine which endpoint faulted
+                    var faultedTaskIndex = asyncCalls.FindIndex(t => t.IsFaulted);
+                    var faultedEndpointUri = _endpoints[faultedTaskIndex].Uri.AbsoluteUri;
+                    throw new RdfQueryException(
+                        "Federated querying failed due to the query against the endpoint '" + faultedEndpointUri +
+                        "' failing.", ex.InnerException);
+                }
             }
 
             // Now merge all the results together
-            HashSet<String> varsSeen = new HashSet<string>();
-            bool cont = true;
-            for (int i = 0; i < asyncCalls.Count; i++)
+            var cont = true;
+            for (var i = 0; i < asyncCalls.Count; i++)
             {
-                // Retrieve the result for this call
-                AsyncQueryWithResultGraph call = asyncCalls[i];
-                IGraph g;
+                if (!asyncCalls[i].IsCompleted)
+                {
+                    // This is a timed out task that has not transitioned to cancelled state yet
+                    // We will only get here if _ignoreFailedRequests is true
+                    continue;
+                }
+
                 try
                 {
-                    g = call.EndInvoke(asyncResults[i]);
+                    var g = asyncCalls[i].Result;
+
+                    // Merge the result into the final results
+                    // If the handler has previously told us to stop we skip this step
+                    if (cont)
+                    {
+                        handler.StartRdf();
+                        foreach (var t in g.Triples)
+                        {
+                            cont = handler.HandleTriple(t);
+                            // Stop if the Handler tells us to
+                            if (!cont) break;
+                        }
+                        handler.EndRdf(true);
+                    }
                 }
-                catch (Exception ex)
+                catch (AggregateException ex)
                 {
                     if (!_ignoreFailedRequests)
                     {
-                        // Clean up in the event of an error
-                        for (int j = i + 1; j < asyncCalls.Count; j++)
-                        {
-                            try
-                            {
-                                asyncCalls[j].EndInvoke(asyncResults[j]);
-                            }
-                            catch
-                            {
-                                // Exceptions don't matter as we're just ensuring all the EndInvoke() calls are made
-                            }
-                        }
-
-                        // If a single request fails then the entire query fails
                         throw new RdfQueryException("Federated Querying failed due to the query against the endpoint '" + _endpoints[i] + "' failing", ex);
                     }
-                    else
-                    {
-                        // If we're ignoring failed requests we continue here
-                        continue;
-                    }
                 }
+                
 
-                // Merge the result into the final results
-                // If the handler has previously told us to stop we skip this step
-                if (cont)
-                {
-                    handler.StartRdf();
-                    foreach (Triple t in g.Triples)
-                    {
-                        cont = handler.HandleTriple(t);
-                        // Stop if the Handler tells us to
-                        if (!cont) break;
-                    }
-                    handler.EndRdf(true);
-                }
             }
         }
 

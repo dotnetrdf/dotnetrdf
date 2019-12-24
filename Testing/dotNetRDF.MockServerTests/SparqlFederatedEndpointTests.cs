@@ -30,12 +30,21 @@ namespace dotNetRDF.MockServerTests
                     new SparqlRemoteEndpoint(new Uri(_fixture.Server1.Urls[0] + "/query")),
                     new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/query")),
                 });
-            _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/query"))
-                .Should().HaveCount(0);
-            _fixture.Server2.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/query"))
-                .Should().HaveCount(0);
             var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
             results.Should().NotBeNull().And.HaveCount(2);
+        }
+
+        [Fact]
+        public void ItCombinesGraphsFromFederatedEndpoints()
+        {
+            var endpoint = new FederatedSparqlRemoteEndpoint(new []
+            {
+                new SparqlRemoteEndpoint(new Uri(_fixture.Server1.Urls[0] + "/query2")), 
+                new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/query2")), 
+            });
+            var resultGraph = endpoint.QueryWithResultGraph("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+            resultGraph.Should().NotBeNull();
+            resultGraph.Triples.Should().HaveCount(2);
         }
 
         [Fact]

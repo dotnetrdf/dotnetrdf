@@ -46,6 +46,9 @@ namespace dotNetRDF.MockServerTests
     </results>
 </sparql>";
 
+        private const string Server1ConstructResults = "<http://example.org/s> <http://example.org/p> \"o\" .";
+        private const string Server2ConstructResults = "<http://contoso.com/s> <http://contoso.com/p> \"o\" .";
+
         public FederatedEndpointFixture()
         {
             Server1 = FluentMockServer.Start();
@@ -59,11 +62,17 @@ namespace dotNetRDF.MockServerTests
                     .WithBody(Server1ResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
                     .WithStatusCode(HttpStatusCode.OK));
+            Server1.Given(Request.Create().WithPath("/query2").UsingGet().WithParam("query"))
+                .RespondWith(Response.Create().WithBody(Server1ConstructResults, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/n-triples").WithStatusCode(HttpStatusCode.OK));
 
             Server2
                 .Given(Request.Create().WithPath("/query").UsingGet().WithParam("query"))
                 .RespondWith(Response.Create().WithBody(Server2ResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0]).WithStatusCode(HttpStatusCode.OK));
+            Server2.Given(Request.Create().WithPath("/query2").UsingGet().WithParam("query"))
+                .RespondWith(Response.Create().WithBody(Server2ConstructResults, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/n-triples").WithStatusCode(HttpStatusCode.OK));
             Server2.Given(Request.Create().WithPath("/fail"))
                 .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.Forbidden));
             Server2.Given(Request.Create().WithPath("/timeout"))
