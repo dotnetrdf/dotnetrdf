@@ -25,25 +25,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
     public class QueryThreadSafety
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly ITestOutputHelper _output;
+
+        public QueryThreadSafety(ITestOutputHelper output)
+        {
+            _output = output;
+        }
 
         private void CheckThreadSafety(String query, bool expectThreadSafe)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
+            var q = _parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            Console.WriteLine(_formatter.Format(q));
 
             Assert.Equal(expectThreadSafe, q.UsesDefaultDataset);
         }
@@ -51,180 +59,169 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlQueryThreadSafetyBasic()
         {
-            String query = "SELECT * WHERE { }";
-            this.CheckThreadSafety(query, true);
+            var query = "SELECT * WHERE { }";
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { ?s ?p ?o }";
-            this.CheckThreadSafety(query, true);
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
             query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } GRAPH ?g { ?s ?p ?o } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
         }
 
         [Fact]
         public void SparqlQueryThreadSafetyFromClauses()
         {
-            String query = "SELECT * FROM <test:test> WHERE { }";
-            this.CheckThreadSafety(query, false);
+            var query = "SELECT * FROM <test:test> WHERE { }";
+            CheckThreadSafety(query, false);
             query = "SELECT * FROM NAMED <test:test> WHERE { }";
-            this.CheckThreadSafety(query, true);
+            CheckThreadSafety(query, true);
             query = "SELECT * FROM <test:test> WHERE { GRAPH ?g { } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
             query = "SELECT * FROM NAMED <test:test> WHERE { GRAPH ?g { } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
         }
 
         [Fact]
         public void SparqlQueryThreadSafetySubqueries()
         {
-            String query = "SELECT * WHERE { { SELECT * WHERE { } } }";
-            this.CheckThreadSafety(query, true);
+            var query = "SELECT * WHERE { { SELECT * WHERE { } } }";
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
-            this.CheckThreadSafety(query, true);
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { { SELECT * WHERE { GRAPH ?g { ?s ?p ?o } } } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
             query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } GRAPH ?g { ?s ?p ?o } } } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
         }
 
         [Fact]
         public void SparqlQueryThreadSafetySubqueries2()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o { SELECT * WHERE { } } }";
-            this.CheckThreadSafety(query, true);
+            var query = "SELECT * WHERE { ?s ?p ?o { SELECT * WHERE { } } }";
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { ?s ?p ?o { SELECT * WHERE { { SELECT * WHERE { } } } } }";
-            this.CheckThreadSafety(query, true);
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { ?s ?p ?o { SELECT * WHERE { { SELECT * WHERE { GRAPH ?g { } } } } } }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
         }
 
         [Fact]
         public void SparqlQueryThreadSafetyExpressions()
         {
-            String query = "SELECT * WHERE { FILTER (EXISTS { GRAPH ?g { ?s ?p ?o } }) }";
-            this.CheckThreadSafety(query, false);
+            var query = "SELECT * WHERE { FILTER (EXISTS { GRAPH ?g { ?s ?p ?o } }) }";
+            CheckThreadSafety(query, false);
             query = "SELECT * WHERE { BIND(EXISTS { GRAPH ?g { ?s ?p ?o } } AS ?test) }";
-            this.CheckThreadSafety(query, false);
+            CheckThreadSafety(query, false);
             query = "SELECT * WHERE { FILTER (EXISTS { ?s ?p ?o }) }";
-            this.CheckThreadSafety(query, true);
+            CheckThreadSafety(query, true);
             query = "SELECT * WHERE { BIND(EXISTS { ?s ?p ?o } AS ?test) }";
-            this.CheckThreadSafety(query, true);
+            CheckThreadSafety(query, true);
 
         }
 
-#if !NETCOREAPP2_0 // Parallel query evaluation is currently unsupported in .NET Core
         [Fact]
         public void SparqlQueryThreadSafeEvaluation()
         {
-            TestTools.TestInMTAThread(this.SparqlQueryThreadSafeEvaluationActual);
+            TestTools.TestInMTAThread(SparqlQueryThreadSafeEvaluationActual);
         }
 
         [Fact]
         public void SparqlQueryAndUpdateThreadSafeEvaluation()
         {
-            for (int i = 1; i <= 10; i++)
+            for (var i = 1; i <= 10; i++)
             {
-                Console.WriteLine("Run #" + i);
-                TestTools.TestInMTAThread(this.SparqlQueryAndUpdateThreadSafeEvaluationActual);
-                Console.WriteLine();
+                _output.WriteLine("Run #" + i);
+                TestTools.TestInMTAThread(SparqlQueryAndUpdateThreadSafeEvaluationActual);
+                _output.WriteLine(string.Empty);
             }
         }
-#endif
 
         private void SparqlQueryThreadSafeEvaluationActual()
         {
-            String query1 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
-            String query2 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
+            var query1 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
+            var query2 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
 
-            SparqlQuery q1 = this._parser.ParseFromString(query1);
-            SparqlQuery q2 = this._parser.ParseFromString(query2);
+            var q1 = _parser.ParseFromString(query1);
+            var q2 = _parser.ParseFromString(query2);
             Assert.False(q1.UsesDefaultDataset, "Query 1 should not be thread safe");
             Assert.False(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
 
-            InMemoryDataset dataset = new InMemoryDataset();
-            Graph g = new Graph();
+            var dataset = new InMemoryDataset();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
 
             dataset.AddGraph(g);
             dataset.AddGraph(h);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            QueryWithGraphDelegate d = new QueryWithGraphDelegate(this.QueryWithGraph);
-            IAsyncResult r1 = d.BeginInvoke(q1, processor, null, null);
-            IAsyncResult r2 = d.BeginInvoke(q2, processor, null, null);
-
-            WaitHandle.WaitAll(new WaitHandle[] { r1.AsyncWaitHandle, r2.AsyncWaitHandle });
-
-            IGraph gQuery = d.EndInvoke(r1);
+            var t1 = Task.Factory.StartNew(() => QueryWithGraph(q1, processor));
+            var t2 = Task.Factory.StartNew(() => QueryWithGraph(q2, processor));
+            Task.WaitAll(t1, t2);
+            var gQuery = t1.Result;
+            var hQuery = t2.Result;
             Assert.Equal(g, gQuery);
-
-            IGraph hQuery = d.EndInvoke(r2);
             Assert.Equal(h, hQuery);
-
             Assert.NotEqual(g, h);
         }
 
         private void SparqlQueryAndUpdateThreadSafeEvaluationActual()
         {
-            String query1 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
-            String query2 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
-            String query3 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/3> { ?s ?p ?o } }";
-            String update1 = "INSERT DATA { GRAPH <http://example.org/3> { <ex:subj> <ex:pred> <ex:obj> } }";
+            var query1 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
+            var query2 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
+            var query3 = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/3> { ?s ?p ?o } }";
+            var update1 = "INSERT DATA { GRAPH <http://example.org/3> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-            SparqlQuery q1 = this._parser.ParseFromString(query1);
-            SparqlQuery q2 = this._parser.ParseFromString(query2);
-            SparqlQuery q3 = this._parser.ParseFromString(query3);
+            var q1 = _parser.ParseFromString(query1);
+            var q2 = _parser.ParseFromString(query2);
+            var q3 = _parser.ParseFromString(query3);
             Assert.False(q1.UsesDefaultDataset, "Query 1 should not be thread safe");
             Assert.False(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
             Assert.False(q3.UsesDefaultDataset, "Query 3 should not be thread safe");
 
-            SparqlUpdateParser parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString(update1);
+            var parser = new SparqlUpdateParser();
+            var cmds = parser.ParseFromString(update1);
 
-            InMemoryDataset dataset = new InMemoryDataset();
-            Graph g = new Graph();
+            var dataset = new InMemoryDataset();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
-            Graph i = new Graph();
-            i.BaseUri = new Uri("http://example.org/3");
+            var i = new Graph {BaseUri = new Uri("http://example.org/3")};
 
             dataset.AddGraph(g);
             dataset.AddGraph(h);
             dataset.AddGraph(i);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            LeviathanUpdateProcessor upProcessor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var upProcessor = new LeviathanUpdateProcessor(dataset);
 
-            QueryWithGraphDelegate d = new QueryWithGraphDelegate(this.QueryWithGraph);
-            RunUpdateDelegate d2 = new RunUpdateDelegate(this.RunUpdate);
-            IAsyncResult r1 = d.BeginInvoke(q1, processor, null, null);
-            IAsyncResult r2 = d.BeginInvoke(q2, processor, null, null);
-            IAsyncResult r3 = d.BeginInvoke(q3, processor, null, null);
-            IAsyncResult r4 = d2.BeginInvoke(cmds, upProcessor, null, null);
+            var d = new QueryWithGraphDelegate(QueryWithGraph);
+            var d2 = new RunUpdateDelegate(RunUpdate);
+            var t1 = Task.Factory.StartNew(() => QueryWithGraph(q1, processor));
+            var t2 = Task.Factory.StartNew(() => QueryWithGraph(q2, processor));
+            var t3 = Task.Factory.StartNew(() => QueryWithGraph(q3, processor));
+            var t4 = Task.Factory.StartNew(() => RunUpdate(cmds, upProcessor));
+            Task.WaitAll(t1, t2, t3, t4);
+            var gQuery = t1.Result;
+            var hQuery = t2.Result;
+            var iQuery = t3.Result;
 
-            WaitHandle.WaitAll(new WaitHandle[] { r1.AsyncWaitHandle, r2.AsyncWaitHandle, r3.AsyncWaitHandle, r4.AsyncWaitHandle });
-
-            IGraph gQuery = d.EndInvoke(r1);
             Assert.Equal(g, gQuery);
-
-            IGraph hQuery = d.EndInvoke(r2);
             Assert.Equal(h, hQuery);
-
-            IGraph iQuery = d.EndInvoke(r3);
             if (iQuery.IsEmpty)
             {
-                Console.WriteLine("Query 3 executed before the INSERT DATA command - running again to get the resulting graph");
-                iQuery = this.QueryWithGraph(q3, processor);
+                _output.WriteLine("Query 3 executed before the INSERT DATA command - running again to get the resulting graph");
+                iQuery = QueryWithGraph(q3, processor);
             }
             else
             {
-                Console.WriteLine("Query 3 executed after the INSERT DATA command");
+                _output.WriteLine("Query 3 executed after the INSERT DATA command");
             }
             //Test iQuery against an empty Graph
             Assert.False(iQuery.IsEmpty, "Graph should not be empty as INSERT DATA should have inserted a Triple");
@@ -237,7 +234,7 @@ namespace VDS.RDF.Query
 
         private IGraph QueryWithGraph(SparqlQuery q, ISparqlQueryProcessor processor)
         {
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
                 return (IGraph)results;
@@ -260,7 +257,7 @@ namespace VDS.RDF.Query
 
         private SparqlResultSet QueryWithResults(SparqlQuery q, ISparqlQueryProcessor processor)
         {
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 return (SparqlResultSet)results;

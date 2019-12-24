@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Algebra;
@@ -51,8 +52,8 @@ namespace VDS.RDF.Query
     public class LeviathanQueryProcessor 
         : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
-        private ISparqlDataset _dataset;
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly ISparqlDataset _dataset;
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Creates a new Leviathan Query Processor.
@@ -273,14 +274,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        /// <summary>
-        /// Delegate used for asychronous execution.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="query">SPARQL Query.</param>
-        private delegate void ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
-
+        
         /// <summary>
         /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes.
         /// </summary>
@@ -291,37 +285,32 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// In the event of a success the appropriate callback will be invoked, if there is an error both callbacks will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
         /// </remarks>
-        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, object state)
         {
-            Graph g = new Graph();
-            SparqlResultSet rset = new SparqlResultSet();
-            ProcessQueryAsync d = new ProcessQueryAsync(ProcessQuery);
-            d.BeginInvoke(new GraphHandler(g), new ResultSetHandler(rset), query, r =>
-            {
-                try
+            var resultGraph = new Graph();
+            var resultSet = new SparqlResultSet();
+            Task.Factory.StartNew(() => ProcessQuery(new GraphHandler(resultGraph), new ResultSetHandler(resultSet), query))
+                .ContinueWith(antecedent =>
                 {
-                    d.EndInvoke(r);
-                    if (rset.ResultsType != SparqlResultsType.Unknown)
+                    if (antecedent.Exception != null)
                     {
-                        resultsCallback(rset, state);
+                        var innerException = antecedent.Exception.InnerExceptions[0];
+                        var queryException = innerException as RdfQueryException ??
+                                             new RdfQueryException(
+                                                 "Unexpected error while making an asynchronous query, see inner exception for details",
+                                                 innerException);
+                        rdfCallback?.Invoke(null, new AsyncError(queryException, state));
+                        resultsCallback?.Invoke(null, new AsyncError(queryException, state));
+                    }
+                    else if (resultSet.ResultsType != SparqlResultsType.Unknown)
+                    {
+                        resultsCallback?.Invoke(resultSet, state);
                     }
                     else
                     {
-                        rdfCallback(g, state);
+                        rdfCallback?.Invoke(resultGraph, state);
                     }
-                }
-                catch (RdfQueryException queryEx)
-                {
-                    if (rdfCallback != null) rdfCallback(null, new AsyncError(queryEx, state));
-                    if (resultsCallback != null) resultsCallback(null, new AsyncError(queryEx, state));
-                }
-                catch (Exception ex)
-                {
-                    RdfQueryException queryEx = new RdfQueryException("Unexpected error while making an asynchronous query, see inner exception for details", ex);
-                    if (rdfCallback != null) rdfCallback(null, new AsyncError(queryEx, state));
-                    if (resultsCallback != null) resultsCallback(null, new AsyncError(queryEx, state));
-                }
-            }, state);
+                });
         }
 
         /// <summary>
@@ -335,25 +324,25 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// In the event of a success the callback will be invoked, if there is an error the callback will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
         /// </remarks>
-        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, object state)
         {
-            ProcessQueryAsync d = new ProcessQueryAsync(ProcessQuery);
-            d.BeginInvoke(rdfHandler, resultsHandler, query, r =>
-            {
-                try
+            Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query))
+                .ContinueWith(antecedent =>
                 {
-                    d.EndInvoke(r);
-                    callback(rdfHandler, resultsHandler, state);
-                }
-                catch (RdfQueryException queryEx)
-                {
-                    callback(rdfHandler, resultsHandler, new AsyncError(queryEx, state));
-                }
-                catch (Exception ex)
-                {
-                    callback(rdfHandler, resultsHandler, new AsyncError(new RdfQueryException("Unexpected error making an asynchronous query", ex), state));
-                }
-            }, state);
+                    if (antecedent.Exception != null)
+                    {
+                        var innerException = antecedent.Exception.InnerExceptions[0];
+                        var queryException = innerException as RdfQueryException ??
+                                             new RdfQueryException(
+                                                 "Unexpected error while making an asynchronous query, see inner exception for details",
+                                                 innerException);
+                        callback?.Invoke(rdfHandler, resultsHandler, new AsyncError(queryException, state));
+                    }
+                    else
+                    {
+                        callback?.Invoke(rdfHandler, resultsHandler, state);
+                    }
+                });
         }
 
         /// <summary>
