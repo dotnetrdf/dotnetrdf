@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json.Bson;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
@@ -36,6 +37,7 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -45,70 +47,81 @@ namespace VDS.RDF.Query
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlFormatter _formatter = new SparqlFormatter();
         private LeviathanQueryProcessor _processor;
-        private const int TripleLimit = 150;
+        private const int TripleLimit = 100;
         private NodeFactory _factory = new NodeFactory();
+        private readonly ITestOutputHelper _output;
+
+        public ParallelEvaluation(ITestOutputHelper output)
+        {
+            _output = output;
+        }
 
         private void EnsureTestData()
         {
-            if (this._dataset == null)
+            if (_dataset == null)
             {
-                this._dataset = new InMemoryDataset();
+                _dataset = new InMemoryDataset();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit).ToList());
-                this._dataset.AddGraph(g);
+                _dataset.AddGraph(g);
+                _dataset.SetDefaultGraph(g.BaseUri);
 
-                this._processor = new LeviathanQueryProcessor(this._dataset);
+                _processor = new LeviathanQueryProcessor(_dataset);
             }
         }
 
-        private void TestQuery(String query)
+        private void TestQuery(string query, bool checkGraphEquality)
         {
-            this.EnsureTestData();
+            EnsureTestData();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
-            SparqlQuery q = this._parser.ParseFromString(query);
+            var q = _parser.ParseFromString(query);
 
-            Console.WriteLine("Query:");
-            Console.WriteLine(this._formatter.Format(q));
-            Console.WriteLine();
+            _output.WriteLine("Query:");
+            _output.WriteLine(_formatter.Format(q));
+            _output.WriteLine(string.Empty);
 
-            Console.WriteLine("Normal Algebra:");
-            Console.WriteLine(q.ToAlgebra().ToString());
-            Console.WriteLine();
+            _output.WriteLine("Normal Algebra:");
+            _output.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(string.Empty);
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
 
             //Evaluate normally
             timer.Start();
-            Object normResults = this._processor.ProcessQuery(q);
+            var normResults = _processor.ProcessQuery(q);
             timer.Stop();
-            Console.WriteLine("Normal Evaluation took " + timer.Elapsed);
+            _output.WriteLine("Normal Evaluation took " + timer.Elapsed);
             timer.Reset();
 
             if (normResults is SparqlResultSet)
             {
                 SparqlResultSet rsetNorm = (SparqlResultSet)normResults;
-                Console.WriteLine("Normal Evaluation returned " + rsetNorm.Count + " Result(s)");
-                Console.WriteLine();
+                _output.WriteLine("Normal Evaluation returned " + rsetNorm.Count + " Result(s)");
+                _output.WriteLine(string.Empty);
 
                 //Evaluate parallelised
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new ParallelEvaluationOptimiser() };
-                Console.WriteLine("Parallel Algebra:");
-                Console.WriteLine(q.ToAlgebra().ToString());
-                Console.WriteLine();
+                _output.WriteLine("Parallel Algebra:");
+                _output.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(string.Empty);
 
                 timer.Start();
-                Object parResults = this._processor.ProcessQuery(q);
+                var parResults = _processor.ProcessQuery(q);
                 timer.Stop();
-                Console.WriteLine("Parallel Evaluation took " + timer.Elapsed);
+                _output.WriteLine("Parallel Evaluation took " + timer.Elapsed);
 
-                if (parResults is SparqlResultSet)
+                if (parResults is SparqlResultSet rsetPar)
                 {
-                    SparqlResultSet rsetPar = (SparqlResultSet)parResults;
-                    Console.WriteLine("Parallel Evaluation returned " + rsetPar.Count + " Result(s)");
+                    _output.WriteLine("Parallel Evaluation returned " + rsetPar.Count + " Result(s)");
                     Assert.Equal(rsetNorm.Count, rsetPar.Count);
-                    Assert.Equal(rsetNorm, rsetPar);
+                    if (checkGraphEquality)
+                    {
+                        Assert.StrictEqual(rsetNorm, rsetPar);
+                    }
                 }
                 else
                 {
@@ -124,8 +137,8 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParallelEvaluationDivision1()
         {
-            INode zero = (0).ToLiteral(this._factory);
-            INode one = (0).ToLiteral(this._factory);
+            INode zero = (0).ToLiteral(_factory);
+            INode one = (0).ToLiteral(_factory);
 
             List<INode[]> data = new List<INode[]>()
             {
@@ -153,7 +166,7 @@ namespace VDS.RDF.Query
                 context.InputMultiset = multiset;
                 context.OutputMultiset = new Multiset();
 
-                context.InputMultiset.SetIDs.AsParallel().ForAll(id => this.EvalExtend(context, context.InputMultiset, expr, "actual", id));
+                context.InputMultiset.SetIDs.AsParallel().ForAll(id => EvalExtend(context, context.InputMultiset, expr, "actual", id));
 
                 foreach (ISet s in context.OutputMultiset.Sets)
                 {
@@ -183,42 +196,41 @@ namespace VDS.RDF.Query
         [Trait("Coverage", "Skip")]
         public void SparqlParallelEvaluationOptional1()
         {
-            String data = @"<http://a> <http://p> <http://x> .
+            var data = @"<http://a> <http://p> <http://x> .
 <http://b> <http://p> <http://y> .
 <http://c> <http://p> <http://z> .
 <http://x> <http://value> ""X"" .
 <http://z> <http://value> ""Z"" .";
 
-            String query = "SELECT * WHERE { ?s <http://p> ?o . OPTIONAL { ?o <http://value> ?value } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            var query = "SELECT * WHERE { ?s <http://p> ?o . OPTIONAL { ?o <http://value> ?value } }";
+            var q = _parser.ParseFromString(query);
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             StringParser.ParseDataset(store, data, new NQuadsParser());
-            InMemoryDataset dataset = new InMemoryDataset(store);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            var dataset = new InMemoryDataset(store);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
             int i;
-            for (i = 1; i <= 100000; i++)
+            for (i = 1; i <= 10000; i++)
             {
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 if (results.Count != 3) TestTools.ShowResults(results);
                 Assert.Equal(3, results.Count);
             }
             timer.Stop();
 
-            Console.WriteLine("Completed " + i + " Iterations OK");
-            Console.WriteLine("Took " + timer.Elapsed);
+            _output.WriteLine("Completed " + i + " Iterations OK");
+            _output.WriteLine("Took " + timer.Elapsed);
 
         }
 
-#if !NETCOREAPP2_0 // Not currently supported for .NET Standard. See issue #137
         [Fact]
         public void SparqlParallelEvaluationJoin1()
         {
-            this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }");
+            TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } }", true);
         }
 
         [Fact]
@@ -226,13 +238,18 @@ namespace VDS.RDF.Query
         {
             try
             {
-                this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }");
+                TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }", false);
             }
             catch (OutOfMemoryException outEx)
             {
                 TestTools.ReportError("Out of Memory", outEx);
             }
         }
-#endif
+
+        [Fact]
+        public void SparqlParallelUnionEvaluation()
+        {
+            TestQuery("SELECT * WHERE { { ?s ?p ?o } UNION { ?a ?b ?c } }", true);
+        }
     }
 }

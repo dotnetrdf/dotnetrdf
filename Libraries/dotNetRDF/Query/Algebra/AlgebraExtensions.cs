@@ -26,9 +26,7 @@
 
 using System;
 using System.Linq;
-#if NET40 || NETSTANDARD1_4 || NETSTANDARD2_0
 using System.Threading.Tasks;
-#endif
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -38,11 +36,11 @@ namespace VDS.RDF.Query.Algebra
     public static class AlgebraExtensions
     {
         /// <summary>
-        /// Calculates the product of two mutlisets asynchronously with a timeout to restrict long running computations.
+        /// Calculates the product of two multi-sets asynchronously with a timeout to restrict long running computations.
         /// </summary>
         /// <param name="multiset">Multiset.</param>
         /// <param name="other">Other Multiset.</param>
-        /// <param name="timeout">Timeout, if &lt;=0 no timeout is used and product will be computed sychronously.</param>
+        /// <param name="timeout">Timeout, if &lt;=0 no timeout is used and product will be computed synchronously.</param>
         /// <returns></returns>
         public static BaseMultiset ProductWithTimeout(this BaseMultiset multiset, BaseMultiset other, long timeout)
         {
@@ -80,7 +78,6 @@ namespace VDS.RDF.Query.Algebra
 
             var stop = new StopToken();
             var t = (int)Math.Min(timeout, int.MaxValue);
-#if NET40 || NETSTANDARD1_4 || NETSTANDARD2_0
             var productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
             if (!productTask.Wait(t))
             {
@@ -89,28 +86,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             return productSet;
-#else
-            GenerateProductDelegate d = new GenerateProductDelegate(GenerateProduct);
-            IAsyncResult r = d.BeginInvoke(multiset, other, productSet, stop, null, null);
-            // Wait
-            r.AsyncWaitHandle.WaitOne(t);
-            if (!r.IsCompleted)
-            {
-                stop.ShouldStop = true;
-                r.AsyncWaitHandle.WaitOne();
-            }
-            return productSet;
-#endif
         }
-
-        /// <summary>
-        /// Delegate for generating product of two multisets asynchronously.
-        /// </summary>
-        /// <param name="multiset">Multiset.</param>
-        /// <param name="other">Other Multiset.</param>
-        /// <param name="target">Mutliset to generate the product in.</param>
-        /// <param name="stop">Stop Token.</param>
-        private delegate void GenerateProductDelegate(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop);
 
         /// <summary>
         /// Method for generating product of two multisets asynchronously.
@@ -156,15 +132,15 @@ namespace VDS.RDF.Query.Algebra
         private static void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet, StopToken stop)
         {
             if (stop.ShouldStop) return;
-            int id = productSet.GetNextBaseID();
-            foreach (ISet y in other.Sets)
+            var id = productSet.GetNextBaseID();
+            foreach (var y in other.Sets)
             {
                 id++;
-                ISet z = x.Join(y);
+                var z = x.Join(y);
                 z.ID = id;
                 productSet.Add(z);
+                if (stop.ShouldStop) return;
             }
-            if (stop.ShouldStop) return;
         }
 #endif
     }
@@ -172,9 +148,9 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Token passed to asynchronous code to allow stop signalling.
     /// </summary>
-    class StopToken
+    internal class StopToken
     {
-        private bool _stop = false;
+        private bool _stop;
 
         /// <summary>
         /// Gets/Sets whether the code should stop.
@@ -184,10 +160,7 @@ namespace VDS.RDF.Query.Algebra
         /// </remarks>
         public bool ShouldStop
         {
-            get 
-            {
-                return _stop;
-            }
+            get => _stop;
             set 
             {
                 if (!_stop) _stop = value;
