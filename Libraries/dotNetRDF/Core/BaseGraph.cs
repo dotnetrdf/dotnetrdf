@@ -39,14 +39,8 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface.
     /// </summary>
-#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
-#endif
-    public abstract class BaseGraph 
-        : IGraph
-#if !NETCORE
-        ,ISerializable
-#endif
+    public abstract class BaseGraph : IGraph, ISerializable
     {
         #region Variables
 
@@ -124,24 +118,17 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the set of Triples described in this Graph.
         /// </summary>
-        public virtual BaseTripleCollection Triples
-        {
-            get
-            {
-                return _triples;
-            }
-        }
+        public virtual BaseTripleCollection Triples => _triples;
 
-        /// <summary>
-        /// Gets the set of Nodes which make up this Graph.
-        /// </summary>
-        public virtual IEnumerable<INode> Nodes
+        /// <inheritdoc />
+        public virtual IEnumerable<INode> Nodes => _triples.SubjectNodes.Union(_triples.ObjectNodes).Distinct();
+
+        /// <inheritdoc />
+        public virtual IEnumerable<INode> AllNodes
         {
             get
             {
-                return (from t in _triples
-                        select t.Subject).Concat(from t in _triples
-                                                 select t.Object).Distinct();
+                return _triples.SelectMany(t => t.Nodes).Distinct();
             }
         }
 
@@ -149,13 +136,7 @@ namespace VDS.RDF
         /// Gets the Namespace Mapper for this Graph which contains all in use Namespace Prefixes and their URIs.
         /// </summary>
         /// <returns></returns>
-        public virtual INamespaceMapper NamespaceMap
-        {
-            get
-            {
-                return _nsmapper;
-            }
-        }
+        public virtual INamespaceMapper NamespaceMap => _nsmapper;
 
         /// <summary>
         /// Gets the current Base Uri for the Graph.
@@ -165,26 +146,14 @@ namespace VDS.RDF
         /// </remarks>
         public virtual Uri BaseUri
         {
-            get
-            {
-                return _baseuri;
-            }
-            set
-            {
-                _baseuri = value;
-            }
+            get => _baseuri;
+            set => _baseuri = value;
         }
 
         /// <summary>
         /// Gets whether a Graph is Empty ie. Contains No Triples or Nodes.
         /// </summary>
-        public virtual bool IsEmpty
-        {
-            get
-            {
-                return (_triples.Count == 0);
-            }
-        }
+        public virtual bool IsEmpty => (_triples.Count == 0);
 
         #endregion
 
@@ -993,8 +962,6 @@ namespace VDS.RDF
             DetachEventHandlers(_triples);
         }
 
-#if !NETCORE
-
         #region ISerializable Members
 
         /// <summary>
@@ -1122,7 +1089,5 @@ namespace VDS.RDF
         }
 
         #endregion
-
-#endif
     }
 }

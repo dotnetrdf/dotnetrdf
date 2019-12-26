@@ -52,9 +52,7 @@ namespace VDS.RDF
     /// Note that the wrapper does not automatically dispose of the wrapped graph when the wrapper is Dispose, this is by design since disposing of the wrapped Graph can have unintended consequences.
     /// </para>
     /// </remarks>
-#if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
-#endif
     public class GraphPersistenceWrapper 
         : IGraph, ITransactionalGraph
     {
@@ -89,8 +87,7 @@ namespace VDS.RDF
         /// <param name="g">Graph.</param>
         public GraphPersistenceWrapper(IGraph g)
         {
-            if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
-            _g = g;
+            _g = g ?? throw new ArgumentNullException(nameof(g), "Wrapped Graph cannot be null");
 
             // Create Event Handlers and attach to the Triple Collection
             _tripleAddedHandler = new TripleEventHandler(OnTripleAsserted);
@@ -112,7 +109,6 @@ namespace VDS.RDF
             _alwaysQueueActions = alwaysQueueActions;
         }
 
-#if !NETCORE
         private List<Triple> _temp;
 
         /// <summary>
@@ -136,8 +132,6 @@ namespace VDS.RDF
             }
         }
 
-#endif
-
         /// <summary>
         /// Destructor for the wrapper to ensure that <see cref="GraphPersistenceWrapper.Dispose()">Dispose()</see> is called and thus that persistence happens
         /// </summary>
@@ -153,59 +147,30 @@ namespace VDS.RDF
         /// </summary>
         public Uri BaseUri
         {
-            get
-            {
-                return _g.BaseUri;
-            }
-            set
-            {
-                _g.BaseUri = value;
-            }
+            get => _g.BaseUri;
+            set => _g.BaseUri = value;
         }
 
         /// <summary>
         /// Gets whether the Graph is empty.
         /// </summary>
-        public bool IsEmpty
-        {
-            get 
-            { 
-                return _g.IsEmpty; 
-            }
-        }
+        public bool IsEmpty => _g.IsEmpty;
 
         /// <summary>
         /// Gets the Namespace Map for the Graph.
         /// </summary>
-        public INamespaceMapper NamespaceMap
-        {
-            get
-            { 
-                return _g.NamespaceMap; 
-            }
-        }
+        public INamespaceMapper NamespaceMap => _g.NamespaceMap;
 
-        /// <summary>
-        /// Gets the Nodes of the Graph.
-        /// </summary>
-        public IEnumerable<INode> Nodes
-        {
-            get 
-            { 
-                return _g.Nodes; 
-            }
-        }
+        /// <inheritdoc/>
+        public IEnumerable<INode> Nodes => _g.Nodes;
+
+        /// <inheritdoc/>
+        public IEnumerable<INode> AllNodes => _g.AllNodes;
 
         /// <summary>
         /// Gets the Triple Collection for the Graph.
         /// </summary>
-        public BaseTripleCollection Triples
-        {
-            get 
-            {
-                return _g.Triples; 
-            }
-        }
+        public BaseTripleCollection Triples => _g.Triples;
 
         /// <summary>
         /// Asserts a Triple in the Graph.
@@ -1152,13 +1117,7 @@ namespace VDS.RDF
         /// If <strong>true</strong> then the <see cref="GraphPersistenceWrapper.PersistInsertedTriples">PersistInsertedTriples()</see> and <see cref="GraphPersistenceWrapper.PersistDeletedTriples">PersistDeletedTriples()</see> methods are used to persist changes when the <see cref="GraphPersistenceWrapper.Flush">Flush()</see> method is called.  If <strong>false</strong> then the <see cref="GraphPersistenceWrapper.PersistGraph">PersistGraph()</see> method will be invoked instead.
         /// </para>
         /// </remarks>
-        protected virtual bool SupportsTriplePersistence
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool SupportsTriplePersistence => true;
 
         /// <summary>
         /// Persists inserted Triples to the underlying Storage.
@@ -1383,13 +1342,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets whether the in-use <see cref="IStorageProvider">IStorageProvider</see> supports triple level updates.
         /// </summary>
-        protected override bool SupportsTriplePersistence
-        {
-            get
-            {
-                return _manager.UpdateSupported;
-            }
-        }
+        protected override bool SupportsTriplePersistence => _manager.UpdateSupported;
 
         /// <summary>
         /// Persists the deleted Triples to the in-use <see cref="IStorageProvider">IStorageProvider</see>.
@@ -1473,13 +1426,7 @@ namespace VDS.RDF
         /// <summary>
         /// Returns that Triple persistence is not supported.
         /// </summary>
-        protected override bool SupportsTriplePersistence
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool SupportsTriplePersistence => false;
 
         /// <summary>
         /// Persists the entire Graph to a File.

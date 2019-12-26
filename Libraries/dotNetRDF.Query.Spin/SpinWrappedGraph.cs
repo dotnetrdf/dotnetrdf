@@ -154,28 +154,19 @@ namespace VDS.RDF.Query.Spin
         // TODO provide the triple selection methods
 
         /// <inheritdoc />
-        public bool IsEmpty
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public bool IsEmpty => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public INamespaceMapper NamespaceMap
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public INamespaceMapper NamespaceMap => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public IEnumerable<INode> Nodes
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IEnumerable<INode> Nodes => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public BaseTripleCollection Triples
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public IEnumerable<INode> AllNodes => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public BaseTripleCollection Triples => throw new NotImplementedException();
 
 
         /// <inheritdoc />

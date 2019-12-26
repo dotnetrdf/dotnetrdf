@@ -71,12 +71,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Nodes of the Graph.
+        /// Gets the unique Subject and Object nodes of the Graph.
         /// </summary>
+        /// <remarks>This property returns only nodes that appear in the Subject or Object position in triples. To retrieve a list of all INode instances in a graph including those in Predicate position in a triple, use the <see cref="AllNodes"/> property.</remarks>
         IEnumerable<INode> Nodes 
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the unique Subject, Predicate and Object nodes of the Graph.
+        /// </summary>
+        IEnumerable<INode> AllNodes { get; }
 
         /// <summary>
         /// Gets the Triple Collection for the Graph.

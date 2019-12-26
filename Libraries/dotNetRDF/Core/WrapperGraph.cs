@@ -110,59 +110,31 @@ namespace VDS.RDF
         /// </summary>
         public virtual Uri BaseUri
         {
-            get
-            {
-                return _g.BaseUri;
-            }
-            set
-            {
-                _g.BaseUri = value;
-            }
+            get => _g.BaseUri;
+            set => _g.BaseUri = value;
         }
 
         /// <summary>
         /// Gets whether the Graph is empty.
         /// </summary>
-        public virtual bool IsEmpty
-        {
-            get 
-            { 
-                return _g.IsEmpty; 
-            }
-        }
+        public virtual bool IsEmpty => _g.IsEmpty;
 
         /// <summary>
         /// Gets the Namespace Map for the Graph.
         /// </summary>
-        public virtual INamespaceMapper NamespaceMap
-        {
-            get
-            { 
-                return _g.NamespaceMap; 
-            }
-        }
+        public virtual INamespaceMapper NamespaceMap => _g.NamespaceMap;
 
-        /// <summary>
-        /// Gets the Nodes of the Graph.
-        /// </summary>
-        public virtual IEnumerable<INode> Nodes
-        {
-            get 
-            { 
-                return _g.Nodes; 
-            }
-        }
+        /// <inheritdoc />
+        public virtual IEnumerable<INode> Nodes => _g.Nodes;
+
+
+        /// <inheritdoc />
+        public virtual IEnumerable<INode> AllNodes => _g.AllNodes;
 
         /// <summary>
         /// Gets the Triple Collection for the Graph.
         /// </summary>
-        public virtual BaseTripleCollection Triples
-        {
-            get 
-            {
-                return _g.Triples; 
-            }
-        }
+        public virtual BaseTripleCollection Triples => _g.Triples;
 
         /// <summary>
         /// Asserts a Triple in the Graph.
