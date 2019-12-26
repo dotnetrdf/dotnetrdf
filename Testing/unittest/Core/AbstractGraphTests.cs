@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
 
@@ -65,7 +66,7 @@ namespace VDS.RDF
         public void GraphAssert01()
         {
             IGraph g = this.GetInstance();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
 
             Triple t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
@@ -77,7 +78,7 @@ namespace VDS.RDF
         public void GraphRetract01()
         {
             IGraph g = this.GetInstance();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
 
             Triple t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
@@ -102,6 +103,24 @@ namespace VDS.RDF
 
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
             Assert.False(g.GetTriplesWithPredicate(rdfType).Any());
+        }
+
+        [Fact]
+        public void NodesPropertyShouldNotReturnPredicateNodes()
+        {
+            var g = GetInstance();
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
+            g.Assert(new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateUriNode(":o")));
+            g.Nodes.Should().HaveCount(2).And.NotContain(g.CreateUriNode(":p"));
+        }
+
+        [Fact]
+        public void AllNodesPropertyShouldIncludePredicateNodes()
+        {
+            var g = GetInstance();
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
+            g.Assert(new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateUriNode(":o")));
+            g.AllNodes.Should().HaveCount(3).And.Contain(g.CreateUriNode(":p"));
         }
 
         [Fact]

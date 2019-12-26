@@ -61,15 +61,10 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Nodes of the Graph.
         /// </summary>
-        public override IEnumerable<INode> Nodes
-        {
-            get
-            {
-                return _default.Nodes.Concat(from g in _graphs
-                                                  from n in g.Nodes
-                                                  select n);
-            }
-        }
+        public override IEnumerable<INode> Nodes =>
+            _default.Nodes.Concat(from g in _graphs
+                from n in g.Nodes
+                select n);
 
         /// <summary>
         /// Asserts some Triples in the Graph.
