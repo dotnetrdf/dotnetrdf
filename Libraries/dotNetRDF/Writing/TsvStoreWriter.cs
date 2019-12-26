@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
@@ -42,18 +43,12 @@ namespace VDS.RDF.Writing
         : IStoreWriter, IFormatterBasedWriter
     {
         private int _threads = 4;
-        private TsvFormatter _formatter = new TsvFormatter();
+        private readonly TsvFormatter _formatter = new TsvFormatter();
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
-        public Type TripleFormatterType
-        {
-            get
-            {
-                return _formatter.GetType();
-            }
-        }
+        public Type TripleFormatterType => _formatter.GetType();
 
         /// <summary>
         /// Saves a Triple Store to TSV format.
@@ -62,7 +57,10 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to.</param>
         public void Save(ITripleStore store, string filename)
         {
-            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
+            if (filename == null)
+            {
+                throw new RdfOutputException("Cannot output to a null file");
+            }
             Save(store, new StreamWriter(File.OpenWrite(filename)), false);
         }
 
@@ -106,27 +104,26 @@ namespace VDS.RDF.Writing
             }
 
             // Start making the async calls
-            var results = new List<IAsyncResult>();
-            var d = new SaveGraphsDelegate(SaveGraphs);
+            var tasks = new List<Task>();
             for (var i = 0; i < _threads; i++)
             {
-                results.Add(d.BeginInvoke(context, null, null));
+                tasks.Add(Task.Factory.StartNew(()=>SaveGraphs(context)));
             }
 
             // Wait for all the async calls to complete
-            WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
             var outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
-            foreach (var result in results)
+            try
             {
-                try
+                Task.WaitAll(tasks.ToArray());
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var innerEx in ex.InnerExceptions)
                 {
-                    d.EndInvoke(result);
-                }
-                catch (Exception ex)
-                {
-                    outputEx.AddException(ex);
+                    outputEx.AddException(innerEx);
                 }
             }
+
             if (!leaveOpen)
             {
                 context.Output.Close();
@@ -137,12 +134,6 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Delegate for the SaveGraphs method.
-        /// </summary>
-        /// <param name="globalContext">Context for writing the Store.</param>
-        private delegate void SaveGraphsDelegate(ThreadedStoreWriterContext globalContext);
-
-        /// <summary>
         /// Thread Worker method which writes Graphs to the output.
         /// </summary>
         /// <param name="globalContext">Context for writing the Store.</param>
@@ -150,24 +141,19 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = null;
-                while (globalContext.TryGetNextUri(out u))
+                while (globalContext.TryGetNextUri(out var u))
                 {
                     // Get the Graph from the Store
-                    IGraph g = globalContext.Store.Graphs[u];
+                    var g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
-                    BaseWriterContext context = new BaseWriterContext(g, new System.IO.StringWriter());
-                    String graphContent = GenerateGraphOutput(globalContext, context);
+                    var context = new BaseWriterContext(g, new System.IO.StringWriter());
+                    var graphContent = GenerateGraphOutput(globalContext, context);
                     try
                     {
                         Monitor.Enter(globalContext.Output);
                         globalContext.Output.WriteLine(graphContent);
                         globalContext.Output.Flush();
-                    }
-                    catch
-                    {
-                        throw;
                     }
                     finally
                     {
@@ -175,13 +161,11 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
-#if !NETCORE
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
                 Thread.ResetAbort();
             }
-#endif
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Writer in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);
@@ -194,12 +178,12 @@ namespace VDS.RDF.Writing
         /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
-        private String GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
+        private string GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
         {
             if (context.Graph.BaseUri != null)
             {
                 // Named Graphs have a fourth context field added
-                foreach (Triple t in context.Graph.Triples)
+                foreach (var t in context.Graph.Triples)
                 {
                     GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                     context.Output.Write('\t');
@@ -216,7 +200,7 @@ namespace VDS.RDF.Writing
             else
             {
                 // Default Graph has an empty field added
-                foreach (Triple t in context.Graph.Triples)
+                foreach (var t in context.Graph.Triples)
                 {
                     GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                     context.Output.Write('\t');
