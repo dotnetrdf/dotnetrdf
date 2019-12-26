@@ -50,29 +50,25 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Graphs that are mentioned in the Query.
         /// </summary>
-        protected HashSet<String> _graphs;
+        protected HashSet<string> _graphs;
         /// <summary>
         /// Triple Store the query operates over.
         /// </summary>
         protected ITripleStore _store;
 
-        private UpdateViewDelegate _async;
-        private bool _requiresInvalidate = false;
-        private RdfQueryException _lastError;
-        private Object _lock = new Object();
+        private bool _requiresInvalidate ;
+        private object _lock = new object();
 
         /// <summary>
         /// Creates a new SPARQL View.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        protected BaseSparqlView(String sparqlQuery, ITripleStore store)
+        protected BaseSparqlView(string sparqlQuery, ITripleStore store)
         {
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             _q = parser.ParseFromString(sparqlQuery);
             _store = store;
-
-            _async = new UpdateViewDelegate(UpdateViewInternal);
             Initialise();
         }
 
@@ -93,13 +89,11 @@ namespace VDS.RDF.Query
         {
             _q = sparqlQuery;
             _store = store;
-
-            _async = new UpdateViewDelegate(UpdateViewInternal);
             Initialise();
         }
 
         /// <summary>
-        /// Initialises the SPARQL View.
+        /// Initializes the SPARQL View.
         /// </summary>
         private void Initialise()
         {
@@ -137,34 +131,24 @@ namespace VDS.RDF.Query
         /// </summary>
         private void InvalidateView()
         {
-            _async.BeginInvoke(new AsyncCallback(InvalidateViewCompleted), null);
-        }
-
-        /// <summary>
-        /// Callback for when asychronous invalidation completes.
-        /// </summary>
-        /// <param name="result">Async call results.</param>
-        private void InvalidateViewCompleted(IAsyncResult result)
-        {
-            try
+            Task.Factory.StartNew(UpdateViewInternal).ContinueWith(antecedent =>
             {
-                _async.EndInvoke(result);
-
-                // If we've been further invalidated then need to re-query
-                if (_requiresInvalidate)
+                if (antecedent.IsFaulted)
                 {
-                    InvalidateView();
-                    _requiresInvalidate = false;
+                    LastError = new RdfQueryException(
+                        "Unable to complete update of SPARQL View, see inner exception for details",
+                        antecedent.Exception);
                 }
-            }
-            catch (Exception ex)
-            {
-                // Ignore errors
-                LastError = new RdfQueryException("Unable to complete update of SPARQL View, see inner exception for details", ex);
-            }
+                else
+                {
+                    if (_requiresInvalidate)
+                    {
+                        InvalidateView();
+                        _requiresInvalidate = false;
+                    }
+                }
+            });
         }
-
-        private delegate void UpdateViewDelegate();
 
         /// <summary>
         /// Forces the view to be updated.
@@ -186,19 +170,9 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the error that occurred during the last update (if any).
         /// </summary>
-        public RdfQueryException LastError
-        {
-            get
-            {
-                return _lastError;
-            }
-            protected set
-            {
-                _lastError = value;
-            }
-        }
+        public RdfQueryException LastError { get; protected set; }
 
-        private void OnGraphChanged(Object sender, TripleStoreEventArgs args)
+        private void OnGraphChanged(object sender, TripleStoreEventArgs args)
         {
             if (args.GraphEvent != null)
             {
@@ -225,7 +199,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        private void OnGraphMerged(Object sender, TripleStoreEventArgs args)
+        private void OnGraphMerged(object sender, TripleStoreEventArgs args)
         {
             if (args.GraphEvent != null)
             {
@@ -252,7 +226,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        private void OnGraphAdded(Object sender, TripleStoreEventArgs args)
+        private void OnGraphAdded(object sender, TripleStoreEventArgs args)
         {
             if (args.GraphEvent != null)
             {
@@ -279,7 +253,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        private void OnGraphRemoved(Object sender, TripleStoreEventArgs args)
+        private void OnGraphRemoved(object sender, TripleStoreEventArgs args)
         {
             if (args.GraphEvent != null)
             {
@@ -319,7 +293,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(String sparqlQuery, IInMemoryQueryableStore store)
+        public SparqlView(string sparqlQuery, IInMemoryQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
@@ -389,7 +363,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public NativeSparqlView(String sparqlQuery, INativelyQueryableStore store)
+        public NativeSparqlView(string sparqlQuery, INativelyQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
@@ -415,7 +389,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                Object results = ((INativelyQueryableStore)_store).ExecuteQuery(_q.ToString());
+                object results = ((INativelyQueryableStore)_store).ExecuteQuery(_q.ToString());
                 if (results is IGraph)
                 {
                     DetachEventHandlers(_triples);
