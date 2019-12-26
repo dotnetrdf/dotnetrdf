@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
@@ -99,27 +100,26 @@ namespace VDS.RDF.Writing
             }
 
             // Start making the async calls
-            var results = new List<IAsyncResult>();
-            var d = new SaveGraphsDeletegate(SaveGraphs);
+            var tasks = new List<Task>();
             for (var i = 0; i < _threads; i++)
             {
-                results.Add(d.BeginInvoke(context, null, null));
+                tasks.Add(Task.Factory.StartNew(()=>SaveGraphs(context)));
             }
 
             // Wait for all the async calls to complete
-            WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
             var outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("CSV"));
-            foreach (var result in results)
+            try
             {
-                try
+                Task.WaitAll(tasks.ToArray());
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var innerEx in ex.InnerExceptions)
                 {
-                    d.EndInvoke(result);
-                }
-                catch (Exception ex)
-                {
-                    outputEx.AddException(ex);
+                    outputEx.AddException(innerEx);
                 }
             }
+
             if (!leaveOpen)
             {
                 context.Output.Close();
@@ -128,12 +128,6 @@ namespace VDS.RDF.Writing
             // If there were any errors we'll throw an RdfThreadedOutputException now
             if (outputEx.InnerExceptions.Any()) throw outputEx;
         }
-
-        /// <summary>
-        /// Delegate for the SaveGraphs method.
-        /// </summary>
-        /// <param name="globalContext">Context for writing the Store.</param>
-        private delegate void SaveGraphsDeletegate(ThreadedStoreWriterContext globalContext);
 
         /// <summary>
         /// Thread Worker method which writes Graphs to the output.
@@ -158,22 +152,16 @@ namespace VDS.RDF.Writing
                         globalContext.Output.WriteLine(graphContent);
                         globalContext.Output.Flush();
                     }
-                    catch
-                    {
-                        throw;
-                    }
                     finally
                     {
                         Monitor.Exit(globalContext.Output);
                     }
                 }
             }
-#if !NETCORE
             catch (ThreadAbortException)
             {
                 // We've been terminated, don't do anything
             }
-#endif
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Writer in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);

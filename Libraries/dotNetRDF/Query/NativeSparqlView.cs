@@ -23,22 +23,20 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Represents a SPARQL View over an in-memory store.
+    /// Represents a SPARQL View over an arbitrary native Triple Store.
     /// </summary>
-    public class SparqlView
+    public class NativeSparqlView
         : BaseSparqlView
     {
-
         /// <summary>
         /// Creates a new SPARQL View.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(string sparqlQuery, IInMemoryQueryableStore store)
+        public NativeSparqlView(string sparqlQuery, INativelyQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
@@ -46,7 +44,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store)
+        public NativeSparqlView(SparqlParameterizedString sparqlQuery, INativelyQueryableStore store)
             : this(sparqlQuery.ToString(), store) { }
 
         /// <summary>
@@ -54,35 +52,28 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store)
+        public NativeSparqlView(SparqlQuery sparqlQuery, INativelyQueryableStore store)
             : base(sparqlQuery, store) { }
 
         /// <summary>
-        /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store.
+        /// Updates the view by making the query over the Native Store (i.e. the query is handled by the stores SPARQL implementation).
         /// </summary>
         protected override void UpdateViewInternal()
         {
             try
             {
-                var processor = new LeviathanQueryProcessor((IInMemoryQueryableStore)_store);
-                var results = processor.ProcessQuery(_q);
+                var results = ((INativelyQueryableStore)_store).ExecuteQuery(_q.ToString());
                 if (results is IGraph g)
                 {
-                    // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
-                    // This does mean that while the update is occurring the user may be viewing a stale graph
                     DetachEventHandlers(_triples);
-                    TreeIndexedTripleCollection triples = new TreeIndexedTripleCollection();
-                    foreach (Triple t in g.Triples)
+                    foreach (var t in g.Triples)
                     {
-                        triples.Add(t.CopyTriple(this));
+                        _triples.Add(t.CopyTriple(this));
                     }
-                    _triples = triples;
                     AttachEventHandlers(_triples);
                 }
                 else
                 {
-                    // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
-                    // This does mean that while the update is occurring the user may be viewing a stale graph
                     DetachEventHandlers(_triples);
                     _triples = ((SparqlResultSet)results).ToTripleCollection(this);
                     AttachEventHandlers(_triples);

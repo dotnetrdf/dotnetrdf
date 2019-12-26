@@ -53,8 +53,6 @@ namespace VDS.RDF.Query
                 Console.WriteLine();
         }
 
-#if !NETCOREAPP2_0 // View invalidation currently not supported in .NET Standard 
-
         [Fact]
         public void SparqlViewConstruct1()
         {
@@ -272,7 +270,6 @@ namespace VDS.RDF.Query
                 this.SparqlViewGraphScope1();
             }
         }
-#endif
 
     }
 }
