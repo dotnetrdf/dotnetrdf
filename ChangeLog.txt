@@ -4,7 +4,15 @@
 2.4
 ---
 
-FIX: Reinstated support for multi-threaded writers for TRiG and NQuads under .NET Core (#136)
+The main focus of this update is to reinstate features that were disabled for the .NET Standard build when we were targetting .NET Standard 1.0 APIs. This eliminates dotNetRDF API differences between the .NET Framework and .NET Standard builds of the library.
+
+NEW: Added a new property IGraph.AllNodes which returns an enumeration over all of the INode instances contained in the graph including those nodes used only in the predicate position of graph triples (#146)
+FIX: Reinstated a large number of features from the .NET Framework version of dotNetRDF to the .NETStandard build. This includes:
+  * The option to use PLINQ evaluation for joins
+  * Parallel and asynchronous query evaluation in Leviathan
+  * SPARQLView invalidation
+  * Multi-threaded writing in store writers
+FIX: Fix to the JSON-LD processor to better handle the use of URNs in places where an absolute IRI is allowed. Thanks to @jrdouceur for the report. (#282) 
 
 2.3
 ---
