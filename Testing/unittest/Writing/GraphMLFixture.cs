@@ -68,11 +68,17 @@ namespace VDS.RDF.Writing
 
             if (baseUri == null)
             {
-                return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id) == null);
+                return graphElements.Single(element =>
+                    element.Elements().All(child => child.Name.LocalName != GraphMLSpecsHelper.Data));
+                //return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id) == null);
             }
             else
             {
-                return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id)?.Value == baseUri.AbsoluteUri);
+                return graphElements.Single(element => element.Elements().Any(child =>
+                    child.Name.LocalName == GraphMLSpecsHelper.Data &&
+                    child.Attribute("key").Value.Equals(GraphMLSpecsHelper.GraphLabel) && 
+                    child.Value.Equals(baseUri.AbsoluteUri)));
+                //return graphElements.Single(element => element.Attribute(GraphMLSpecsHelper.Id)?.Value == baseUri.AbsoluteUri);
             }
         }
 

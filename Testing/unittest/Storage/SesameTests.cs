@@ -45,17 +45,13 @@ namespace VDS.RDF.Storage
         public SesameTests()
         {
             Options.HttpDebugging = true;
-#if NET40
             Options.UriLoaderCaching = false;
-#endif
         }
 
         public void Dispose()
         {
             Options.HttpDebugging = false;
-#if NET40
             Options.UriLoaderCaching = true;
-#endif
         }
 
         [SkippableFact]

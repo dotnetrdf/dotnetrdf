@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-#if NET40
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -407,5 +405,3 @@ namespace VDS.RDF.Query.Algebra
         }
     }
 }
-
-#endif

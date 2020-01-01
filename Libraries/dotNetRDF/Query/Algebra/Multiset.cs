@@ -158,7 +158,6 @@ namespace VDS.RDF.Query.Algebra
         public override void Add(ISet s)
         {
             int id;
-#if NET40
             if (Options.UsePLinqEvaluation)
             {
                 lock (this._sets)
@@ -188,17 +187,6 @@ namespace VDS.RDF.Query.Algebra
                     if (!this._variables.Contains(var)) this._variables.Add(var);
                 }
             }
-#else
-            _counter++;
-            id = _counter;
-            _sets.Add(id, s);
-            s.ID = id;
-
-            foreach (string var in s.Variables)
-            {
-                if (!_variables.Contains(var)) _variables.Add(var);
-            }
-#endif
             _cacheInvalid = true;
         }
 
@@ -233,10 +221,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="id">Set ID.</param>
         public override void Remove(int id)
         {
-#if NET40
             lock (this._sets)
             {
-#endif
                 if (_sets.ContainsKey(id))
                 {
                     _sets.Remove(id);
@@ -246,9 +232,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     _cacheInvalid = true;
                 }
-#if NET40
             }
-#endif
         }
 
         /// <summary>

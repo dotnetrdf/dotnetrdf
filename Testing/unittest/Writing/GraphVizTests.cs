@@ -43,7 +43,6 @@ namespace VDS.RDF.Writing
             writer.Save(g, "WritingGraphViz1.dot");
         }
 
-#if NET40
         [SkippableFact]
         public void WritingGraphViz2()
         {
@@ -67,6 +66,5 @@ namespace VDS.RDF.Writing
             GraphVizGenerator generator = new GraphVizGenerator("png");
             generator.Generate(g, "WritingGraphViz3.png", false);
         }
-#endif
     }
 }

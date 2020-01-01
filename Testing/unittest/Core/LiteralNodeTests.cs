@@ -47,11 +47,7 @@ namespace VDS.RDF
                 INodeFactory nodeFactory = new NodeFactory();
 
                 // when
-#if NET40
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("pl");
-#else
-                CultureInfo.CurrentCulture = new CultureInfo("pl");
-#endif
 
                 // then
                 Assert.Equal("5.5", 5.5.ToLiteral(nodeFactory).Value);
@@ -63,11 +59,7 @@ namespace VDS.RDF
                 // Make a writable clone
                 culture = (CultureInfo)culture.Clone();
                 culture.NumberFormat.NegativeSign = "!";
-#if NET40
                 Thread.CurrentThread.CurrentCulture = culture;
-#else
-                CultureInfo.CurrentCulture = culture;
-#endif
 
                 // then
                 Assert.Equal("-1", (-1).ToLiteral(nodeFactory).Value);
@@ -76,11 +68,7 @@ namespace VDS.RDF
             }
             finally
             {
-#if NET40
                 Thread.CurrentThread.CurrentCulture = sysCulture;
-#else
-                CultureInfo.CurrentCulture = sysCulture;
-#endif
             }
         }
 
@@ -95,11 +83,7 @@ namespace VDS.RDF
                 CultureInfo culture = CultureInfo.CurrentCulture;
                 culture = (CultureInfo)culture.Clone();
                 culture.NumberFormat.NegativeSign = "!";
-#if NET40
                 Thread.CurrentThread.CurrentCulture = culture;
-#else
-                CultureInfo.CurrentCulture = culture;
-#endif
 
                 TurtleFormatter formatter = new TurtleFormatter();
                 String fmtStr = formatter.Format((-1).ToLiteral(factory));
@@ -109,11 +93,7 @@ namespace VDS.RDF
             }
             finally
             {
-#if NET40
                 Thread.CurrentThread.CurrentCulture = sysCulture;
-#else
-                CultureInfo.CurrentCulture = sysCulture;
-#endif
             }
         }
 

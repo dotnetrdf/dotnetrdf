@@ -112,6 +112,11 @@ namespace VDS.RDF.Writing
         public const string EdgeLabel = "edgelabel";
 
         /// <summary>
+        /// The value representing a graph label attribute id.
+        /// </summary>
+        public const string GraphLabel = "graphlabel";
+
+        /// <summary>
         /// The name of the GraphML attribute representing the id of a node or edge.
         /// </summary>
         public const string Id = "id";

@@ -27,9 +27,7 @@ using System;
 using System.Globalization;
 using VDS.RDF.Parsing;
 using Xunit;
-#if NET40
 using System.Threading;
-#endif
 
 namespace VDS.RDF.Query.Aggregates
 {
@@ -39,22 +37,13 @@ namespace VDS.RDF.Query.Aggregates
 
         public AggregateTests()
         {
-#if NET40
             _previousCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("pl-PL");
-#else
-            _previousCulture = CultureInfo.CurrentCulture;
-            CultureInfo.CurrentCulture = new CultureInfo("pl-PL");
-#endif
         }
 
         public void Dispose()
         {
-#if NET40
             Thread.CurrentThread.CurrentCulture = _previousCulture;
-#else
-            CultureInfo.CurrentCulture = _previousCulture;
-#endif
         }
 
         private static IGraph ExecuteGraphQuery(IInMemoryQueryableStore store, string query)
