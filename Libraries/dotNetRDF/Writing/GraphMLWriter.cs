@@ -100,6 +100,7 @@ namespace VDS.RDF.Writing
 
             GraphMLWriter.WriteKey(writer, GraphMLSpecsHelper.EdgeLabel, GraphMLSpecsHelper.Edge);
             GraphMLWriter.WriteKey(writer, GraphMLSpecsHelper.NodeLabel, GraphMLSpecsHelper.Node);
+            WriteKey(writer, GraphMLSpecsHelper.GraphLabel, GraphMLSpecsHelper.Graph);
 
             foreach (var graph in store.Graphs)
             {
@@ -113,14 +114,16 @@ namespace VDS.RDF.Writing
         {
             writer.WriteStartElement(GraphMLSpecsHelper.Graph);
 
-            // Named graphs
-            if (graph.BaseUri != null)
-            {
-                writer.WriteAttributeString(GraphMLSpecsHelper.Id, graph.BaseUri.AbsoluteUri);
-            }
 
             // RDF is always a directed graph
             writer.WriteAttributeString(GraphMLSpecsHelper.Edgedefault, GraphMLSpecsHelper.Directed);
+
+            // Named graphs
+            if (graph.BaseUri != null)
+            {
+                //writer.WriteAttributeString(GraphMLSpecsHelper.Id, graph.BaseUri.AbsoluteUri);
+                WriteData(writer, GraphMLSpecsHelper.GraphLabel, graph.BaseUri.AbsoluteUri);
+            }
 
             GraphMLWriter.WriteTriples(writer, graph, collapseLiterals);
 

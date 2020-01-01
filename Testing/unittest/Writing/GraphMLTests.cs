@@ -23,9 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using Xunit;
 
 namespace VDS.RDF.Writing
@@ -126,18 +128,20 @@ _:s2 <urn:p> ""o"" .
             Assert.Equal(expected, actual);
         }
 
-#if NET40
         [Fact]
         public void Output_conforms_to_XSD()
         {
-            var reader = this.fixture.Output.CreateReader();
-
-            reader.Settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
-            reader.Settings.ValidationType = ValidationType.Schema;
-            reader.Settings.ValidationEventHandler += (sender, e) => throw e.Exception;
-
-            while (reader.Read()) { }
+            var settings = new XmlReaderSettings
+            {
+                ValidationType = ValidationType.Schema, Schemas = {XmlResolver = new XmlUrlResolver()}
+            };
+            settings.Schemas.Add(GraphMLSpecsHelper.NS, GraphMLSpecsHelper.XsdUri);
+            using(var reader = XmlReader.Create(new StringReader(fixture.Output.ToString()), settings))
+            {
+                while (reader.Read())
+                {
+                }
+            }
         }
-#endif
     }
 }
