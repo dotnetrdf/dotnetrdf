@@ -55,7 +55,6 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Otherwise Invoke using an Async call
-#if NET40
             BaseMultiset productSet;
             if (Options.UsePLinqEvaluation)
             {
@@ -72,9 +71,6 @@ namespace VDS.RDF.Query.Algebra
             {
                 productSet = new Multiset();
             }
-#else
-            var productSet = new Multiset();
-#endif
 
             var stop = new StopToken();
             var t = (int)Math.Min(timeout, int.MaxValue);
@@ -97,7 +93,6 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="stop">Stop Token.</param>
         private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
         {
-#if NET40
             if (Options.UsePLinqEvaluation)
             {
                 // Determine partition sizes so we can do a parallel product
@@ -113,7 +108,6 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-#endif
                 foreach (ISet x in multiset.Sets)
                 {
                     foreach (ISet y in other.Sets)
@@ -123,12 +117,9 @@ namespace VDS.RDF.Query.Algebra
                     }
                     if (stop.ShouldStop) break;
                 }
-#if NET40
             }
-#endif
         }
 
-#if NET40
         private static void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet, StopToken stop)
         {
             if (stop.ShouldStop) return;
@@ -142,7 +133,6 @@ namespace VDS.RDF.Query.Algebra
                 if (stop.ShouldStop) return;
             }
         }
-#endif
     }
 
     /// <summary>

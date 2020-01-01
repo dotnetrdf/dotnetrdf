@@ -151,7 +151,6 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Calculate the product applying the filter as we go
-#if NET40
                     if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
                     {
                         PartitionedMultiset partitionedSet;
@@ -174,7 +173,6 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-#endif
                         BaseMultiset productSet = new Multiset();
                         SparqlResultBinder binder = context.Binder;
                         context.Binder = new LeviathanLeftJoinBinder(productSet);
@@ -203,15 +201,11 @@ namespace VDS.RDF.Query.Algebra
                         }
                         context.Binder = binder;
                         context.OutputMultiset = productSet;
-#if NET40
                     }
-#endif
                 }
             }
             return context.OutputMultiset;
         }
-
-#if NET40
 
         private void EvalFilteredProduct(SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
         {
@@ -239,8 +233,6 @@ namespace VDS.RDF.Query.Algebra
             // Remember to check for timeouts occassionally
             context.CheckTimeout();
         }
-
-#endif
 
         /// <summary>
         /// Gets the Variables used in the Algebra.

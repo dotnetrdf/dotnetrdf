@@ -72,7 +72,6 @@ namespace VDS.RDF.Writing
             Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
             Console.WriteLine();
 
-#if NET40
             //Now check that the Graphs are all equivalent
             Graph h = new Graph();
             h.LoadFromFile("owl-one-of.rdf");
@@ -84,7 +83,6 @@ namespace VDS.RDF.Writing
             j.LoadFromFile("owl-one-of-pretty.rdf");
             Assert.Equal(g, j);
             Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
-#endif
         }
 
         [Fact(Skip ="Extremely resource heavy")]

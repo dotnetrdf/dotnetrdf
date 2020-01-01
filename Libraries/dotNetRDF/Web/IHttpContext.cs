@@ -27,9 +27,7 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
-#if NET40
 using System.Security.Principal;
-#endif
 using System.Text;
 
 namespace VDS.RDF.Web
@@ -58,7 +56,6 @@ namespace VDS.RDF.Web
             get;
         }
 
-#if NET40
         /// <summary>
         /// Gets the User.
         /// </summary>
@@ -66,7 +63,6 @@ namespace VDS.RDF.Web
         {
             get;
         }
-#endif
     }
 
     /// <summary>

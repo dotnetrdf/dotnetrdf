@@ -71,10 +71,6 @@ namespace VDS.RDF
         private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
         private static int _uriLoaderTimeout = 15000;
 
-#if NET40
-        private static bool _usePLinq = true;
-#endif
-
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
         /// </summary>
@@ -157,27 +153,13 @@ namespace VDS.RDF
         /// </remarks>
         public static bool StrictOperators { get; set; } = false;
 
-#if NET40
-
         /// <summary>
         /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel.
         /// </summary>
         /// <remarks>
         /// For the 0.6.1 release onwards this was an experimental feature and disabled by default, from 0.7.0 onwards this is enabled by default.
         /// </remarks>
-        public static bool UsePLinqEvaluation
-        {
-            get
-            {
-                return _usePLinq;
-            }
-            set
-            {
-                _usePLinq = value;
-            }
-        }
-
-#endif
+        public static bool UsePLinqEvaluation { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds).

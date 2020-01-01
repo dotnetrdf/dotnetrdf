@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="viewport" content="width=device-width" /><title>http://graphml.graphdrawing.org/xmlns/1.1/graphml.xsd</title><link rel="stylesheet" type="text/css" href="resource://content-accessible/viewsource.css" /></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span></span><span class="pi">&lt;?xml version="1.0"?&gt;</span><span>
+<span id="line2"></span>
+<span id="line3"></span></span><span>&lt;<span class="start-tag">xs:schema</span>   
+<span id="line4"></span>             <span class="attribute-name">targetNamespace</span>="<a class="attribute-value">http://graphml.graphdrawing.org/xmlns</a>"
+<span id="line5"></span>
+<span id="line6"></span>             <span class="attribute-name">xmlns</span>="<a class="attribute-value">http://graphml.graphdrawing.org/xmlns</a>"
+<span id="line7"></span>             <span class="attribute-name">xmlns:xs</span>="<a class="attribute-value">http://www.w3.org/2001/XMLSchema</a>"
+<span id="line8"></span>
+<span id="line9"></span>             <span class="attribute-name">elementFormDefault</span>="<a class="attribute-value">qualified</a>"
+<span id="line10"></span>             <span class="attribute-name">attributeFormDefault</span>="<a class="attribute-value">unqualified</a>"
+<span id="line11"></span>&gt;</span><span>
+<span id="line12"></span>
+<span id="line13"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line14"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line15"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line16"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line17"></span>     This document defines the GraphML language including GraphML attributes and GraphML parseinfo.
+<span id="line18"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line19"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line20"></span>
+<span id="line21"></span>
+<span id="line22"></span></span><span>&lt;<span class="start-tag">xs:redefine</span> <span class="attribute-name">schemaLocation</span>="<a class="attribute-value">http://graphml.graphdrawing.org/xmlns/1.1/graphml-structure.xsd</a>"&gt;</span><span>
+<span id="line23"></span>
+<span id="line24"></span>  </span><span class="comment">&lt;!--redefinition as in graphml-attributes.xsd --&gt;</span><span>
+<span id="line25"></span>
+<span id="line26"></span>  </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">name</span>="<a class="attribute-value">key.extra.attrib</a>"&gt;</span><span>
+<span id="line27"></span>    </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">ref</span>="<a class="attribute-value">key.extra.attrib</a>"<span>/</span>&gt;</span><span>
+<span id="line28"></span>    </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">ref</span>="<a class="attribute-value">key.attributes.attrib</a>"<span>/</span>&gt;</span><span>
+<span id="line29"></span>  </span><span>&lt;/<span class="end-tag">xs:attributeGroup</span>&gt;</span><span>
+<span id="line30"></span>
+<span id="line31"></span>  </span><span class="comment">&lt;!--redefinition as in graphml-parseinfo.xsd --&gt;</span><span>
+<span id="line32"></span>
+<span id="line33"></span>  </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.extra.attrib</a>"&gt;</span><span>
+<span id="line34"></span>    </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">ref</span>="<a class="attribute-value">graph.extra.attrib</a>"<span>/</span>&gt;</span><span>
+<span id="line35"></span>    </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">ref</span>="<a class="attribute-value">graph.parseinfo.attrib</a>"<span>/</span>&gt;</span><span>
+<span id="line36"></span>  </span><span>&lt;/<span class="end-tag">xs:attributeGroup</span>&gt;</span><span>
+<span id="line37"></span>
+<span id="line38"></span>  </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">name</span>="<a class="attribute-value">node.extra.attrib</a>"&gt;</span><span>
+<span id="line39"></span>    </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">ref</span>="<a class="attribute-value">node.extra.attrib</a>"<span>/</span>&gt;</span><span>
+<span id="line40"></span>    </span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">ref</span>="<a class="attribute-value">node.parseinfo.attrib</a>"<span>/</span>&gt;</span><span>
+<span id="line41"></span>  </span><span>&lt;/<span class="end-tag">xs:attributeGroup</span>&gt;</span><span>
+<span id="line42"></span>
+<span id="line43"></span></span><span>&lt;/<span class="end-tag">xs:redefine</span>&gt;</span><span>
+<span id="line44"></span>
+<span id="line45"></span>
+<span id="line46"></span>  </span><span class="comment">&lt;!--types as in graphml-attributes.xsd --&gt;</span><span>
+<span id="line47"></span>
+<span id="line48"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">key.name.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line49"></span>
+<span id="line50"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line51"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line52"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/(Dokumentation der Attributes Erweiterung; entsprechende Stelle.html)</a>"
+<span id="line53"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line54"></span>      Simple type for the attr.name attribute of <span class="entity"><span>&amp;</span>lt;</span>key&gt;.
+<span id="line55"></span>      key.name.type is final, that is, it may not be extended
+<span id="line56"></span>                          or restricted.
+<span id="line57"></span>      key.name.type is a restriction of xs:NMTOKEN
+<span id="line58"></span>      Allowed values: (no restriction)
+<span id="line59"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line60"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line61"></span>
+<span id="line62"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:NMTOKEN</a>"<span>/</span>&gt;</span><span>
+<span id="line63"></span>
+<span id="line64"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line65"></span>
+<span id="line66"></span>
+<span id="line67"></span>
+<span id="line68"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">key.type.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line69"></span>
+<span id="line70"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line71"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line72"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/(Dokumentation der Attributes Erweiterung; entsprechende Stelle.html)</a>"
+<span id="line73"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line74"></span>      Simple type for the attr.type attribute of <span class="entity"><span>&amp;</span>lt;</span>key&gt;.
+<span id="line75"></span>      key.type.type is final, that is, it may not be extended
+<span id="line76"></span>                          or restricted.
+<span id="line77"></span>      key.type.type is a restriction of xs:NMTOKEN
+<span id="line78"></span>      Allowed values: boolean, int, long, float, double, string.
+<span id="line79"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line80"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line81"></span>
+<span id="line82"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:NMTOKEN</a>"&gt;</span><span>  
+<span id="line83"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">boolean</a>"<span>/</span>&gt;</span><span>
+<span id="line84"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">int</a>"<span>/</span>&gt;</span><span>
+<span id="line85"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">long</a>"<span>/</span>&gt;</span><span>
+<span id="line86"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">float</a>"<span>/</span>&gt;</span><span>
+<span id="line87"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">double</a>"<span>/</span>&gt;</span><span>
+<span id="line88"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">string</a>"<span>/</span>&gt;</span><span>
+<span id="line89"></span>  </span><span>&lt;/<span class="end-tag">xs:restriction</span>&gt;</span><span>
+<span id="line90"></span>
+<span id="line91"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line92"></span>
+<span id="line93"></span>
+<span id="line94"></span></span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">name</span>="<a class="attribute-value">key.attributes.attrib</a>"&gt;</span><span>
+<span id="line95"></span>
+<span id="line96"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line97"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line98"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line99"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line100"></span>     Definition of the attribute group key.attributes.attrib.
+<span id="line101"></span>     This group consists of the two optional attributes
+<span id="line102"></span>         - attr.name (gives the name for the data function)
+<span id="line103"></span>         - attr.type ((declares the range of values for the data function)
+<span id="line104"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line105"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line106"></span>
+<span id="line107"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">attr.name</a>" <span class="attribute-name">type</span>="<a class="attribute-value">key.name.type</a>" <span class="attribute-name">use</span>="<a class="attribute-value">optional</a>"<span>/</span>&gt;</span><span>
+<span id="line108"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">attr.type</a>" <span class="attribute-name">type</span>="<a class="attribute-value">key.type.type</a>" <span class="attribute-name">use</span>="<a class="attribute-value">optional</a>"<span>/</span>&gt;</span><span>
+<span id="line109"></span></span><span>&lt;/<span class="end-tag">xs:attributeGroup</span>&gt;</span><span>
+<span id="line110"></span>
+<span id="line111"></span>  </span><span class="comment">&lt;!--types as in graphml-parseinfo.xsd --&gt;</span><span>
+<span id="line112"></span>
+<span id="line113"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line114"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line115"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line116"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line117"></span>       Simple type definitions for the new graph attributes.
+<span id="line118"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line119"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line120"></span>
+<span id="line121"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.order.type</a>"  <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line122"></span>
+<span id="line123"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line124"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line125"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line126"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line127"></span>      Simple type for the parse.order attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line128"></span>      graph.order.type is final, that is, it may not be extended
+<span id="line129"></span>                          or restricted.
+<span id="line130"></span>      graph.order.type is a restriction of xs:NMTOKEN
+<span id="line131"></span>      Allowed values: free, nodesfirst, adjacencylist.
+<span id="line132"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line133"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line134"></span>
+<span id="line135"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:NMTOKEN</a>"&gt;</span><span>
+<span id="line136"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">free</a>"<span>/</span>&gt;</span><span>
+<span id="line137"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">nodesfirst</a>"<span>/</span>&gt;</span><span>
+<span id="line138"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">adjacencylist</a>"<span>/</span>&gt;</span><span>
+<span id="line139"></span>  </span><span>&lt;/<span class="end-tag">xs:restriction</span>&gt;</span><span>
+<span id="line140"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line141"></span>
+<span id="line142"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.nodes.type</a>"  <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line143"></span>
+<span id="line144"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line145"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line146"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line147"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line148"></span>      Simple type for the parse.nodes attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line149"></span>      graph.nodes.type is final, that is, it may not be extended
+<span id="line150"></span>                          or restricted.
+<span id="line151"></span>      graph.nodes.type is a restriction of xs:nonNegativeInteger
+<span id="line152"></span>      Allowed values: (no restriction).
+<span id="line153"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line154"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line155"></span>
+<span id="line156"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:nonNegativeInteger</a>"<span>/</span>&gt;</span><span>  
+<span id="line157"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line158"></span>
+<span id="line159"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.edges.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line160"></span>
+<span id="line161"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line162"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line163"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line164"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line165"></span>      Simple type for the parse.edges attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line166"></span>      graph.edges.type is final, that is, it may not be extended
+<span id="line167"></span>                          or restricted.
+<span id="line168"></span>      graph.edges.type is a restriction of xs:nonNegativeInteger
+<span id="line169"></span>      Allowed values: (no restriction).
+<span id="line170"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line171"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line172"></span>
+<span id="line173"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:nonNegativeInteger</a>"<span>/</span>&gt;</span><span>  
+<span id="line174"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line175"></span>
+<span id="line176"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.maxindegree.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line177"></span>
+<span id="line178"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line179"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line180"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line181"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line182"></span>      Simple type for the parse.maxindegree attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line183"></span>      graph.maxindegree.type is final, that is, it may not be extended
+<span id="line184"></span>                          or restricted.
+<span id="line185"></span>      graph.maxindegree.type is a restriction of xs:nonNegativeInteger
+<span id="line186"></span>      Allowed values: (no restriction).
+<span id="line187"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line188"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line189"></span>
+<span id="line190"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:nonNegativeInteger</a>"<span>/</span>&gt;</span><span>  
+<span id="line191"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line192"></span>
+<span id="line193"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.maxoutdegree.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line194"></span>
+<span id="line195"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line196"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line197"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line198"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line199"></span>      Simple type for the parse.maxoutdegree attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line200"></span>      graph.maxoutdegree.type is final, that is, it may not be extended
+<span id="line201"></span>                          or restricted.
+<span id="line202"></span>      graph.maxoutdegree.type is a restriction of xs:nonNegativeInteger
+<span id="line203"></span>      Allowed values: (no restriction).
+<span id="line204"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line205"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line206"></span>
+<span id="line207"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:nonNegativeInteger</a>"<span>/</span>&gt;</span><span>  
+<span id="line208"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line209"></span>
+<span id="line210"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.nodeids.type</a>"  <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line211"></span>
+<span id="line212"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line213"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line214"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line215"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line216"></span>      Simple type for the parse.nodeids attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line217"></span>      graph.nodeids.type is final, that is, it may not be extended
+<span id="line218"></span>                          or restricted.
+<span id="line219"></span>      graph.nodeids.type is a restriction of xs:string
+<span id="line220"></span>      Allowed values: (no restriction).
+<span id="line221"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line222"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line223"></span>
+<span id="line224"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:NMTOKEN</a>"&gt;</span><span>
+<span id="line225"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">canonical</a>"<span>/</span>&gt;</span><span>
+<span id="line226"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">free</a>"<span>/</span>&gt;</span><span>
+<span id="line227"></span>  </span><span>&lt;/<span class="end-tag">xs:restriction</span>&gt;</span><span>  
+<span id="line228"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line229"></span>
+<span id="line230"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.edgeids.type</a>"  <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line231"></span>
+<span id="line232"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line233"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line234"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line235"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line236"></span>      Simple type for the parse.edgeids attribute of <span class="entity"><span>&amp;</span>lt;</span>graph&gt;.
+<span id="line237"></span>      graph.edgeids.type is final, that is, it may not be extended
+<span id="line238"></span>                          or restricted.
+<span id="line239"></span>      graph.edgeids.type is a restriction of xs:string
+<span id="line240"></span>      Allowed values: (no restriction).
+<span id="line241"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line242"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line243"></span>
+<span id="line244"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:NMTOKEN</a>"&gt;</span><span>
+<span id="line245"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">canonical</a>"<span>/</span>&gt;</span><span>
+<span id="line246"></span>    </span><span>&lt;<span class="start-tag">xs:enumeration</span> <span class="attribute-name">value</span>="<a class="attribute-value">free</a>"<span>/</span>&gt;</span><span>
+<span id="line247"></span>  </span><span>&lt;/<span class="end-tag">xs:restriction</span>&gt;</span><span>  
+<span id="line248"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line249"></span>
+<span id="line250"></span></span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">name</span>="<a class="attribute-value">graph.parseinfo.attrib</a>"&gt;</span><span>
+<span id="line251"></span>
+<span id="line252"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line253"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line254"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line255"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line256"></span>     Definition of the attribute group graph.parseinfo.attrib.
+<span id="line257"></span>     This group consists of the seven attributes
+<span id="line258"></span>     - parse.nodeids (fixed to 'canonical' meaning that the id attribute
+<span id="line259"></span>                      of <span class="entity"><span>&amp;</span>lt;</span>node&gt; follows the pattern 'n[number]),
+<span id="line260"></span>     - parse.edgeids (fixed to 'canonical' meaning that the id attribute
+<span id="line261"></span>                      of <span class="entity"><span>&amp;</span>lt;</span>edge&gt; follows the pattern 'e[number]),
+<span id="line262"></span>     - parse.order (required; one of the values 'nodesfirst', 
+<span id="line263"></span>                    'adjacencylist' or 'free'),
+<span id="line264"></span>     - parse.nodes (required; number of nodes in this graph), 
+<span id="line265"></span>     - parse.edges (required; number of edges in this graph), 
+<span id="line266"></span>     - parse.maxindegree (optional; maximal indegree of a node in this graph),
+<span id="line267"></span>     - parse.maxoutdegree (optional; maximal outdegree of a node in this graph)
+<span id="line268"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line269"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line270"></span>
+<span id="line271"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.nodeids</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.nodeids.type</a>"<span>/</span>&gt;</span><span>
+<span id="line272"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.edgeids</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.edgeids.type</a>"<span>/</span>&gt;</span><span>
+<span id="line273"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.order</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.order.type</a>"<span>/</span>&gt;</span><span>
+<span id="line274"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.nodes</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.nodes.type</a>"<span>/</span>&gt;</span><span>
+<span id="line275"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.edges</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.edges.type</a>"<span>/</span>&gt;</span><span>
+<span id="line276"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.maxindegree</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.maxindegree.type</a>" <span class="attribute-name">use</span>="<a class="attribute-value">optional</a>"<span>/</span>&gt;</span><span>
+<span id="line277"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.maxoutdegree</a>" <span class="attribute-name">type</span>="<a class="attribute-value">graph.maxoutdegree.type</a>" <span class="attribute-name">use</span>="<a class="attribute-value">optional</a>"<span>/</span>&gt;</span><span>
+<span id="line278"></span></span><span>&lt;/<span class="end-tag">xs:attributeGroup</span>&gt;</span><span>
+<span id="line279"></span>
+<span id="line280"></span>
+<span id="line281"></span>
+<span id="line282"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line283"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line284"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line285"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line286"></span>       Simple type definitions for the new node attributes.
+<span id="line287"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line288"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line289"></span>
+<span id="line290"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">node.indegree.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line291"></span>
+<span id="line292"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line293"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line294"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line295"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line296"></span>      Simple type for the parse.indegree attribute of <span class="entity"><span>&amp;</span>lt;</span>node&gt;.
+<span id="line297"></span>      node.indegree.type is final, that is, it may not be extended
+<span id="line298"></span>                          or restricted.
+<span id="line299"></span>      node.indegree.type is a restriction of xs:nonNegativeInteger
+<span id="line300"></span>      Allowed values: (no restriction).
+<span id="line301"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line302"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line303"></span>
+<span id="line304"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:nonNegativeInteger</a>"<span>/</span>&gt;</span><span>  
+<span id="line305"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line306"></span>
+<span id="line307"></span></span><span>&lt;<span class="start-tag">xs:simpleType</span> <span class="attribute-name">name</span>="<a class="attribute-value">node.outdegree.type</a>" <span class="attribute-name">final</span>="<a class="attribute-value">#all</a>"&gt;</span><span>
+<span id="line308"></span>
+<span id="line309"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line310"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line311"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line312"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line313"></span>      Simple type for the parse.outdegree attribute of <span class="entity"><span>&amp;</span>lt;</span>node&gt;.
+<span id="line314"></span>      node.outdegree.type is final, that is, it may not be extended
+<span id="line315"></span>                          or restricted.
+<span id="line316"></span>      node.outdegree.type is a restriction of xs:nonNegativeInteger
+<span id="line317"></span>      Allowed values: (no restriction).
+<span id="line318"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line319"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line320"></span>
+<span id="line321"></span>  </span><span>&lt;<span class="start-tag">xs:restriction</span> <span class="attribute-name">base</span>="<a class="attribute-value">xs:nonNegativeInteger</a>"<span>/</span>&gt;</span><span>  
+<span id="line322"></span></span><span>&lt;/<span class="end-tag">xs:simpleType</span>&gt;</span><span>
+<span id="line323"></span>
+<span id="line324"></span></span><span>&lt;<span class="start-tag">xs:attributeGroup</span> <span class="attribute-name">name</span>="<a class="attribute-value">node.parseinfo.attrib</a>"&gt;</span><span>
+<span id="line325"></span>
+<span id="line326"></span>  </span><span>&lt;<span class="start-tag">xs:annotation</span>&gt;</span><span>
+<span id="line327"></span>    </span><span>&lt;<span class="start-tag">xs:documentation</span> 
+<span id="line328"></span>        <span class="attribute-name">source</span>="<a class="attribute-value">http://graphml.graphdrawing.org/</a>"
+<span id="line329"></span>        <span class="attribute-name">xml:lang</span>="<a class="attribute-value">en</a>"&gt;</span><span>
+<span id="line330"></span>     Definition of the attribute group node.parseinfo.attrib.
+<span id="line331"></span>     This group consists of two attributes
+<span id="line332"></span>     - parse.indegree (optional; indegree of this node),
+<span id="line333"></span>     - parse.outdegree (optional; outdegree of this node).
+<span id="line334"></span>    </span><span>&lt;/<span class="end-tag">xs:documentation</span>&gt;</span><span>
+<span id="line335"></span>  </span><span>&lt;/<span class="end-tag">xs:annotation</span>&gt;</span><span>
+<span id="line336"></span>
+<span id="line337"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.indegree</a>" <span class="attribute-name">type</span>="<a class="attribute-value">node.indegree.type</a>" <span class="attribute-name">use</span>="<a class="attribute-value">optional</a>"<span>/</span>&gt;</span><span>
+<span id="line338"></span>  </span><span>&lt;<span class="start-tag">xs:attribute</span> <span class="attribute-name">name</span>="<a class="attribute-value">parse.outdegree</a>" <span class="attribute-name">type</span>="<a class="attribute-value">node.outdegree.type</a>" <span class="attribute-name">use</span>="<a class="attribute-value">optional</a>"<span>/</span>&gt;</span><span>
+<span id="line339"></span></span><span>&lt;/<span class="end-tag">xs:attributeGroup</span>&gt;</span><span>
+<span id="line340"></span>
+<span id="line341"></span></span><span>&lt;/<span class="end-tag">xs:schema</span>&gt;</span><span>
+<span id="line342"></span>
+<span id="line343"></span>
+<span id="line344"></span></span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Go to Line…" accesskey="L"></menuitem><menuitem id="wrapLongLines" label="Wrap Long Lines" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Syntax Highlighting" type="checkbox" checked="true"></menuitem></menu></body></html>

@@ -824,12 +824,10 @@ namespace VDS.RDF.Parsing
             if (this._jitter > 100) this._jitter = 100;
         }
 
-#if NET40
         public override void Close()
         {
             this._reader.Close();
         }
-#endif
 
         protected override void Dispose(bool disposing)
         {

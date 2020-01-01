@@ -120,10 +120,9 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-#if NET40
             if (Options.UsePLinqEvaluation)
             {
-                // Use a paralllel join
+                // Use a parallel join
                 other.Sets.AsParallel().ForAll(y => EvalJoin(y, joinVars, values, nulls, joinedSet));
             }
             else
@@ -135,14 +134,6 @@ namespace VDS.RDF.Query.Algebra
                     this.EvalJoin(y, joinVars, values, nulls, joinedSet);
                 }
             }
-#else
-            // Use a serial join
-            // Then do a pass over the RHS and work out the intersections
-            foreach (ISet y in other.Sets)
-            {
-                EvalJoin(y, joinVars, values, nulls, joinedSet);
-            }
-#endif
             return joinedSet;
         }
 
@@ -207,14 +198,12 @@ namespace VDS.RDF.Query.Algebra
             List<String> joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
-#if NET40
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     PartitionedMultiset partitionedSet = new PartitionedMultiset(this.Count, other.Count + 1);
                     this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr));
                     return partitionedSet;
                 }
-#endif
                 // Do a serial Left Join Product
 
                 // Calculate a Product filtering as we go
@@ -246,8 +235,6 @@ namespace VDS.RDF.Query.Algebra
                     }
                     if (standalone && !matched) joinedSet.Add(x.Copy());
                 }
-#if NET40
-#endif
             }
             else
             {
@@ -289,7 +276,6 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 // Then do a pass over the LHS and work out the intersections
-#if NET40
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     this.Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr));
@@ -302,18 +288,9 @@ namespace VDS.RDF.Query.Algebra
                         this.EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
                     }
                 }
-#else
-                // Use a Serial Left Join
-                foreach (var x in Sets)
-                {
-                    EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
-                }
-#endif
             }
             return joinedSet;
         }
-
-#if NET40
 
         private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr)
         {
@@ -353,8 +330,6 @@ namespace VDS.RDF.Query.Algebra
                 partitionedSet.Add(z);
             }
         }
-
-#endif
 
         private void EvalLeftJoin(ISet x, BaseMultiset other, List<String> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr)
         {
@@ -711,7 +686,6 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return other;
             if (other.IsEmpty) return new NullMultiset();
 
-#if NET40
             if (Options.UsePLinqEvaluation)
             {
                 // Determine partition sizes so we can do a parallel product
@@ -742,21 +716,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 return productSet;
             }
-#else
-            // Use serial calculation which is likely to really suck for big products
-            var productSet = new Multiset();
-            foreach (var x in Sets)
-            {
-                foreach (var y in other.Sets)
-                {
-                    productSet.Add(x.Join(y));
-                }
-            }
-            return productSet;
-#endif
         }
-
-#if NET40
 
         private void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet)
         {
@@ -769,8 +729,6 @@ namespace VDS.RDF.Query.Algebra
                 productSet.Add(z);
             }
         }
-
-#endif
 
         /// <summary>
         /// Does a Union of this Multiset and another Multiset.
