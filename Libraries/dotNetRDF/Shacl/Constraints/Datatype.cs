@@ -45,7 +45,7 @@ namespace VDS.RDF.Shacl.Constraints
             : base(shape, node)
         {
         }
-
+    
         internal override INode ConstraintComponent
         {
             get
@@ -53,6 +53,8 @@ namespace VDS.RDF.Shacl.Constraints
                 return Vocabulary.DatatypeConstraintComponent;
             }
         }
+
+        protected override string DefaultMessage => $"Value node is either 1. not a literal or 2. its datatype does not match {this} or 3. it's ill-typed.";
 
         private Uri DataTypeParameter
         {

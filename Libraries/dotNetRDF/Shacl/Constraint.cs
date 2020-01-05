@@ -46,6 +46,26 @@ namespace VDS.RDF.Shacl
 
         protected Shape Shape { get; private set; }
 
+        protected virtual string DefaultMessage { get; }
+
+        private INode Message
+        {
+            get
+            {
+                if (Shape.Message is INode message)
+                {
+                    return message;
+                }
+
+                if (DefaultMessage is null)
+                {
+                    return null;
+                }
+
+                return Graph.CreateLiteralNode(DefaultMessage);
+            }
+        }
+
         internal static Constraint Parse(Shape shape, INode type, INode value)
         {
             switch (type)
@@ -106,7 +126,7 @@ namespace VDS.RDF.Shacl
                 var result = Result.Create(report.Graph);
                 result.SourceConstraintComponent = ConstraintComponent;
                 result.Severity = Shape.Severity;
-                result.Message = Shape.Message;
+                result.Message = Message;
                 result.SourceShape = Shape;
                 result.FocusNode = focusNode;
 
@@ -143,7 +163,7 @@ namespace VDS.RDF.Shacl
                 var result = Result.Create(report.Graph);
                 result.SourceConstraintComponent = ConstraintComponent;
                 result.Severity = Shape.Severity;
-                result.Message = Shape.Message;
+                result.Message = Message;
                 result.SourceShape = Shape;
                 result.FocusNode = invalidValue.Subject;
                 result.ResultPath = Path.Parse(invalidValue.Predicate);
@@ -173,7 +193,7 @@ namespace VDS.RDF.Shacl
             var result = Result.Create(report.Graph);
             result.SourceConstraintComponent = ConstraintComponent;
             result.Severity = Shape.Severity;
-            result.Message = Shape.Message;
+            result.Message = Message;
             result.SourceShape = Shape;
             result.FocusNode = focusNode;
 
@@ -207,7 +227,7 @@ namespace VDS.RDF.Shacl
                 var result = Result.Create(report.Graph);
                 result.SourceConstraintComponent = ConstraintComponent;
                 result.Severity = Shape.Severity;
-                result.Message = Shape.Message;
+                result.Message = Message;
                 result.SourceShape = Shape;
                 result.FocusNode = focusNode;
 

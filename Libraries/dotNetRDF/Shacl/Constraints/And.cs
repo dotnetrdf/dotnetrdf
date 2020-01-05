@@ -38,7 +38,7 @@ namespace VDS.RDF.Shacl.Constraints
             : base(shape, node)
         {
         }
-
+ 
         internal override INode ConstraintComponent
         {
             get
@@ -46,6 +46,8 @@ namespace VDS.RDF.Shacl.Constraints
                 return Vocabulary.AndConstraintComponent;
             }
         }
+
+        protected override string DefaultMessage => "Value node does not conform to all provided shapes.";
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {

@@ -101,11 +101,11 @@ namespace VDS.RDF.Shacl
                 var actual = new ShapesGraph(shapesGraph).Validate(dataGraph).Normalised;
                 var expected = Report.Parse(testGraph).Normalised;
 
-                RemoveUnnecessaryResultMessages(actual, expected);
-
                 var writer = new CompressingTurtleWriter();
                 output.WriteLine(StringWriter.Write(expected, writer));
                 output.WriteLine(StringWriter.Write(actual, writer));
+
+                RemoveUnnecessaryResultMessages(actual, expected);
 
                 Assert.Equal(expected, actual);
             }
