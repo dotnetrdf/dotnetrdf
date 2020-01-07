@@ -48,6 +48,7 @@ namespace VDS.RDF.Shacl
 
         protected virtual string DefaultMessage { get; }
 
+        // TODO: Spec says this is a collection
         private ILiteralNode Message
         {
             get

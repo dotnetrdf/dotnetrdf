@@ -49,6 +49,7 @@ namespace VDS.RDF.Shacl
             }
         }
 
+        // TODO: Spec says this is a collection
         internal ILiteralNode Message
         {
             get
