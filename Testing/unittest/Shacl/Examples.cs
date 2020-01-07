@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace VDS.RDF.Shacl
 {
+    using System.Linq;
     using Xunit;
 
     public class Examples
@@ -105,6 +106,39 @@ namespace VDS.RDF.Shacl
             var conforms = processor.Conforms(dataGraph);
 
             Assert.False(conforms);
+        }
+
+        [Fact]
+        public void Consume_validation_results()
+        {
+            var dataGraph = new Graph();
+            dataGraph.LoadFromString(@"
+@prefix : <urn:> .
+
+:s :p :o .
+");
+
+            var shapesGraph = new Graph();
+            shapesGraph.LoadFromString(@"
+@prefix : <urn:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+[
+    sh:targetNode :s ;
+    sh:property [
+        sh:path :p ;
+        sh:class :C ;
+        sh:message ""test message"" ;
+    ]
+] .
+");
+
+            var processor = new ShapesGraph(shapesGraph);
+            var report = processor.Validate(dataGraph);
+
+            var result = report.Results.Single();
+
+            Assert.Equal("test message", result.Message.Value);
         }
     }
 }

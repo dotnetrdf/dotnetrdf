@@ -35,8 +35,15 @@ namespace VDS.RDF.Shacl
     using VDS.RDF.Query.Patterns;
     using VDS.RDF.Shacl.Paths;
 
-    internal abstract class Path : WrapperNode
+    /// <summary>
+    /// Represents a SHACL property path.
+    /// </summary>
+    public abstract class Path : WrapperNode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Path"/> class.
+        /// </summary>
+        /// <param name="node"></param>
         [DebuggerStepThrough]
         protected Path(INode node)
             : base(node)

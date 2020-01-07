@@ -30,7 +30,10 @@ namespace VDS.RDF.Shacl.Validation
     using System.Linq;
     using VDS.RDF;
 
-    internal class Result : WrapperNode
+    /// <summary>
+    /// Represents a SHACL validation result.
+    /// </summary>
+    public class Result : WrapperNode
     {
         [DebuggerStepThrough]
         private Result(INode node)
@@ -38,7 +41,10 @@ namespace VDS.RDF.Shacl.Validation
         {
         }
 
-        internal INode Severity
+        /// <summary>
+        /// Gets or sets the severity of the result.
+        /// </summary>
+        public INode Severity
         {
             get
             {
@@ -61,7 +67,10 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal INode FocusNode
+        /// <summary>
+        /// Gets or sets the focus node that has caused thes result.
+        /// </summary>
+        public INode FocusNode
         {
             get
             {
@@ -84,7 +93,10 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal INode ResultValue
+        /// <summary>
+        /// Gets or sets the value that has caused the result.
+        /// </summary>
+        public INode ResultValue
         {
             get
             {
@@ -107,7 +119,10 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal INode SourceShape
+        /// <summary>
+        /// Gets or sets the shape that the given focus node was validated against.
+        /// </summary>
+        public INode SourceShape
         {
             get
             {
@@ -130,7 +145,11 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal ILiteralNode Message
+        // TODO: Spec says this is a collection
+        /// <summary>
+        /// Gets or sets additional textual details about the result.
+        /// </summary>
+        public ILiteralNode Message
         {
             get
             {
@@ -153,7 +172,10 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal INode SourceConstraintComponent
+        /// <summary>
+        /// Gets or sets the IRI of the constraint component that has caused the result.
+        /// </summary>
+        public INode SourceConstraintComponent
         {
             get
             {
@@ -176,7 +198,10 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal Path ResultPath
+        /// <summary>
+        /// Gets or sets the optional path of the property shape that has caused the result.
+        /// </summary>
+        public Path ResultPath
         {
             get
             {
@@ -199,7 +224,10 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal INode SourceConstraint
+        /// <summary>
+        /// Gets or sets the optional SPARQL-based constraint the has caused the result.
+        /// </summary>
+        public INode SourceConstraint
         {
             get
             {

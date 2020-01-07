@@ -31,7 +31,10 @@ namespace VDS.RDF.Shacl.Validation
     using System.Diagnostics;
     using System.Linq;
 
-    internal class ResultCollection : ICollection<Result>
+    /// <summary>
+    /// Represents a collection of SHACL validation results.
+    /// </summary>
+    public class ResultCollection : ICollection<Result>
     {
         private readonly Report report;
 
