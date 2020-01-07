@@ -48,11 +48,11 @@ namespace VDS.RDF.Shacl
 
         protected virtual string DefaultMessage { get; }
 
-        private INode Message
+        private ILiteralNode Message
         {
             get
             {
-                if (Shape.Message is INode message)
+                if (Shape.Message is ILiteralNode message)
                 {
                     return message;
                 }

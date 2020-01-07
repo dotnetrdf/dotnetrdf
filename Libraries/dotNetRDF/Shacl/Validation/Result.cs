@@ -28,6 +28,7 @@ namespace VDS.RDF.Shacl.Validation
 {
     using System.Diagnostics;
     using System.Linq;
+    using VDS.RDF;
 
     internal class Result : WrapperNode
     {
@@ -129,11 +130,11 @@ namespace VDS.RDF.Shacl.Validation
             }
         }
 
-        internal INode Message
+        internal ILiteralNode Message
         {
             get
             {
-                return Vocabulary.ResultMessage.ObjectsOf(this).SingleOrDefault();
+                return (ILiteralNode)Vocabulary.ResultMessage.ObjectsOf(this).SingleOrDefault();
             }
 
             set
