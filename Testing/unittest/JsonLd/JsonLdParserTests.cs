@@ -57,6 +57,32 @@ namespace VDS.RDF.JsonLd
                     x.Object.As<IUriNode>().Uri.ToString().Equals("http://dbpedia.org/resource/Cynthia_Lennon"));
         }
 
+        [Fact]
+        public void ItAddsListTriplesToTheGraphContainingTheList()
+        {
+            var jsonLdParser = new JsonLdParser();
+            ITripleStore tripleStore = new TripleStore();
+            using (var reader = new StringReader(@"{
+            ""@id"": ""urn:graph:1"",
+            ""@graph"": [
+            {
+                ""@id"": ""urn:subject:1"",
+                ""urn:predicate:1"": { ""@list"": [ ""foo"", ""bar"" ]
+                }
+            }
+            ]}"))
+            {
+                jsonLdParser.Load(tripleStore, reader);
+            }
+
+            var defaultGraph = tripleStore.Graphs.FirstOrDefault(g => g.BaseUri == null);
+            Assert.True(defaultGraph == null || defaultGraph.IsEmpty);
+            var contentGraph = tripleStore.Graphs[new Uri("urn:graph:1")];
+            Assert.NotNull(contentGraph);
+            Assert.Equal(5, contentGraph.Triples.Count);
+        }
+
+
         public static IEnumerable<object[]> DateTimeValues
         {
             get

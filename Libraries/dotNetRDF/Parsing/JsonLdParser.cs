@@ -136,8 +136,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            Uri subjectIri;
-                            if (!Uri.TryCreate(subject, UriKind.Absolute, out subjectIri)) continue;
+                            if (!Uri.TryCreate(subject, UriKind.Absolute, out var subjectIri)) continue;
                             subjectNode = handler.CreateUriNode(subjectIri);
                         }
                         foreach (var np in node.Properties())
@@ -148,7 +147,7 @@ namespace VDS.RDF.Parsing
                             {
                                 foreach (var type in values)
                                 {
-                                    var typeNode = MakeNode(handler, type);
+                                    var typeNode = MakeNode(handler, type, graphIri);
                                     handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphIri));
                                 }
                             }
@@ -168,8 +167,8 @@ namespace VDS.RDF.Parsing
                             {
                                 foreach (var item in values)
                                 {
-                                    var predicateNode = MakeNode(handler, property);
-                                    var objectNode = MakeNode(handler, item);
+                                    var predicateNode = MakeNode(handler, property, graphIri);
+                                    var objectNode = MakeNode(handler, item, graphIri);
                                     if (objectNode != null)
                                     {
                                         handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode,
@@ -191,9 +190,9 @@ namespace VDS.RDF.Parsing
 
         private const string XsdNs = "http://www.w3.org/2001/XMLSchema#";
         private const string RdfNs = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-        private static Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
+        private static readonly Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
 
-        private static INode MakeNode(IRdfHandler handler, JToken token, bool allowRelativeIri = false)
+        private static INode MakeNode(IRdfHandler handler, JToken token, Uri graphIri, bool allowRelativeIri = false)
         {
             if (token is JValue)
             {
@@ -247,18 +246,18 @@ namespace VDS.RDF.Parsing
             else if (JsonLdProcessor.IsListObject(token))
             {
                 var listArray = token["@list"] as JArray;
-                return MakeRdfList(handler, listArray);
+                return MakeRdfList(handler, listArray, graphIri);
             }
             else if((token as JObject)?.Property("@id")!=null)
             {
                 // Must be a node object
                 var nodeObject = (JObject) token;
-                return MakeNode(handler, nodeObject["@id"]);
+                return MakeNode(handler, nodeObject["@id"], graphIri);
             }
             return null;
         }
 
-        private static INode MakeRdfList(IRdfHandler handler, JArray list)
+        private static INode MakeRdfList(IRdfHandler handler, JArray list, Uri graphIri)
         {
             var rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
             var rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
@@ -268,13 +267,13 @@ namespace VDS.RDF.Parsing
             for(int ix = 0; ix < list.Count; ix++)
             {
                 var subject = bNodes[ix];
-                var obj = MakeNode(handler, list[ix]);
+                var obj = MakeNode(handler, list[ix], graphIri);
                 if (obj != null)
                 {
-                    handler.HandleTriple(new Triple(subject, rdfFirst, obj));
+                    handler.HandleTriple(new Triple(subject, rdfFirst, obj, graphIri));
                 }
                 var rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
-                handler.HandleTriple(new Triple(subject, rdfRest, rest));
+                handler.HandleTriple(new Triple(subject, rdfRest, rest, graphIri));
             }
             return bNodes[0];
         }
