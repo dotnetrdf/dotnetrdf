@@ -47,8 +47,6 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        protected override string DefaultMessage => $"Value node is not SHACL instance of type {this}.";
-
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             var invalidValues =

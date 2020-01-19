@@ -43,8 +43,6 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        protected override string DefaultMessage => "SPARQL ASK returned false for value node.";
-    
         protected override string Query
         {
             get

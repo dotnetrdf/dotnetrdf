@@ -53,8 +53,6 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        protected override string DefaultMessage => $"Value node is either 1. not a literal or 2. its datatype does not match {this} or 3. it's ill-typed.";
-
         private Uri DataTypeParameter
         {
             get
