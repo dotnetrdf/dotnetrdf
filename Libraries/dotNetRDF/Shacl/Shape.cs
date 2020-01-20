@@ -49,11 +49,12 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal INode Message
+        // TODO: Spec says this is a collection
+        internal ILiteralNode Message
         {
             get
             {
-                return Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+                return (ILiteralNode)Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
             }
         }
 

@@ -107,7 +107,7 @@ namespace VDS.RDF.Shacl.Constraints
 
                 if (solution.HasValue("message"))
                 {
-                    result.Message = solution["message"];
+                    result.Message = (ILiteralNode)solution["message"];
                 }
                 else
                 {

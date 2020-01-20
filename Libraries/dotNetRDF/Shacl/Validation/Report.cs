@@ -94,6 +94,17 @@ WHERE {
             }
         }
 
+        /// <summary>
+        /// Gets the collection of validation results for this report.
+        /// </summary>
+        public ICollection<Result> Results
+        {
+            get
+            {
+                return new ResultCollection(this);
+            }
+        }
+
         internal INode Type
         {
             get
@@ -114,14 +125,6 @@ WHERE {
                 }
 
                 Graph.Assert(this, Vocabulary.RdfType, value);
-            }
-        }
-
-        internal ICollection<Result> Results
-        {
-            get
-            {
-                return new ResultCollection(this);
             }
         }
 

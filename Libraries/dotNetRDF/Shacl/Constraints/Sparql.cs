@@ -61,11 +61,11 @@ namespace VDS.RDF.Shacl.Constraints
 
         protected abstract string Query { get; }
 
-        protected INode Message
+        protected ILiteralNode Message
         {
             get
             {
-                return Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
+                return (ILiteralNode)Vocabulary.Message.ObjectsOf(this).SingleOrDefault();
             }
         }
 

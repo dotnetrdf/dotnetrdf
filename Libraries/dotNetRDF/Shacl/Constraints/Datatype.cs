@@ -24,20 +24,19 @@
 // </copyright>
 */
 
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Schema;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Shacl.Validation;
-
 namespace VDS.RDF.Shacl.Constraints
 {
-    
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.Schema;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using VDS.RDF.Parsing;
+    using VDS.RDF.Query;
+    using VDS.RDF.Shacl.Validation;
+
     internal class Datatype : Constraint
     {
         [DebuggerStepThrough]

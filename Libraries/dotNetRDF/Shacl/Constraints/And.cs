@@ -38,7 +38,7 @@ namespace VDS.RDF.Shacl.Constraints
             : base(shape, node)
         {
         }
-
+ 
         internal override INode ConstraintComponent
         {
             get
