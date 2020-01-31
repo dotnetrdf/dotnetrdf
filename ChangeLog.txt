@@ -14,6 +14,7 @@ FIX: Reinstated a large number of features from the .NET Framework version of do
   * Multi-threaded writing in store writers
 FIX: Fix to the JSON-LD processor to better handle the use of URNs in places where an absolute IRI is allowed. Thanks to @jrdouceur for the report. (#282) 
 FIX: Fix to the JSON-LD processor to ensure that quads generated for RDF list nodes are inserted into the same graph as the list itself. Thanks to @jrdouceur for the report. (#297) 
+NEW: SHACL processor now provides default result messages for each of the constraints. Thanks to @o-tim for the report and @langsamu for the PR (#293)
 
 2.3
 ---
