@@ -38,7 +38,9 @@ namespace VDS.RDF.Shacl.Constraints
             : base(shape, node)
         {
         }
- 
+
+        protected override string DefaultMessage => "Value must conform to all of the specified shapes.";
+
         internal override INode ConstraintComponent
         {
             get

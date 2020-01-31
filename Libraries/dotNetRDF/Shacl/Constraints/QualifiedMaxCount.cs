@@ -39,6 +39,9 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage =>
+            $"Number of value nodes matching the shape {Shape} must not exceed {NumericValue}.";
+
         internal override INode ConstraintComponent
         {
             get

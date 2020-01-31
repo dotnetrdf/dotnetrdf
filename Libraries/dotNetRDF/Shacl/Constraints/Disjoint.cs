@@ -39,6 +39,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => $"Value must be disjoint with the values of {this}.";
+
         internal override INode ConstraintComponent
         {
             get

@@ -50,6 +50,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => "SPARQL SELECT query must not return any result bindings.";
+
         protected override string Query
         {
             get

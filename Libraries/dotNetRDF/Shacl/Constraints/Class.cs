@@ -39,6 +39,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => $"Value node must be an instance of type {this}.";
+
         internal override INode ConstraintComponent
         {
             get

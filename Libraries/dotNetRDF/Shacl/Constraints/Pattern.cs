@@ -40,6 +40,9 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage =>
+            $"Value must match the expected regular expression \"{this}\" with flags \"{Flags}\".";
+
         internal override INode ConstraintComponent
         {
             get

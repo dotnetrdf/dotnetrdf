@@ -36,6 +36,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => $"Value length must be greater than or equal to {NumericValue}.";
+
         internal override INode ConstraintComponent
         {
             get

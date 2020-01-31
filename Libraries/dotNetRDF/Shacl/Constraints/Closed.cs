@@ -39,6 +39,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => "Value node must not have properties other than those defined by this shape.";
+
         internal override INode ConstraintComponent
         {
             get
