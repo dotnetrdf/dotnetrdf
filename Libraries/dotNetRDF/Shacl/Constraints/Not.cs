@@ -39,6 +39,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => "Value must not conform to the prohibited node shape.";
+
         internal override INode ConstraintComponent
         {
             get

@@ -39,6 +39,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => "Value nodes must not use the same language tag.";
+
         internal override INode ConstraintComponent
         {
             get

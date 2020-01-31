@@ -64,6 +64,7 @@ namespace VDS.RDF.Shacl
     sh:conforms false ;
     sh:result [
         a sh:ValidationResult ;
+        sh:resultMessage ""Value node must be an instance of type urn:C."" ;
         sh:sourceConstraintComponent sh:ClassConstraintComponent ;
         sh:resultSeverity sh:Violation ;
         sh:sourceShape [] ;

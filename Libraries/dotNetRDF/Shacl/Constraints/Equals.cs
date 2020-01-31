@@ -39,6 +39,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => $"Values nodes must be the same as the values of the property {this}.";
+
         internal override INode ConstraintComponent
         {
             get

@@ -36,6 +36,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
+        protected override string DefaultMessage => $"Value must be less than or equal to the value of {this}.";
+
         internal override INode ConstraintComponent
         {
             get
