@@ -116,6 +116,8 @@ namespace VDS.RDF.Storage
         private string _activeTrans;
         private readonly TriGWriter _writer = new TriGWriter();
 
+        private bool? _isReady = null;
+
         /// <summary>
         /// The underlying server connection.
         /// </summary>
@@ -268,7 +270,17 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is ready.
         /// </summary>
-        public override bool IsReady => true;
+        public override bool IsReady
+        {
+            get
+            {
+                if (!_isReady.HasValue)
+                {
+                    _isReady = Server.ListStores().Contains(_kb);
+                }
+                return _isReady.Value;
+            }
+        }
 
         /// <summary>
         /// Returns that the Connection is not read-only.
@@ -2448,6 +2460,7 @@ namespace VDS.RDF.Storage
         public override void Dispose()
         {
             // No Dispose actions
+            _isReady = false;
         }
 
         /// <summary>
