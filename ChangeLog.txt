@@ -1,6 +1,12 @@
 ﻿Change Log
 ==========
 
+2.5
+---
+
+NEW: The `IsReady` property of the `StardogConnector` now checks that the knowledgebase specified in the connector exists on the remote server. If the it is not found, `IsReady` will return `false`. Thanks to @joephayes for the suggestion and the PR. (#278)
+
+
 2.4
 ---
 

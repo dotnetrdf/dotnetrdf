@@ -659,6 +659,28 @@ namespace VDS.RDF.Storage
             stardog.Dispose();
         }
 
+        [SkippableFact]
+        public void StorageStardogIsReadyValidDb()
+        {
+            StardogConnector stardog = StardogTests.GetConnection();
+            Assert.True(stardog.IsReady);
+
+            stardog.Dispose();
+        }
+
+        [SkippableFact]
+        public void StorageStardogIsReadyInvalidDb()
+        {
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
+            StardogConnector stardog =  new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
+                "i_dont_exist",
+                TestConfigManager.GetSetting(TestConfigManager.StardogUser),
+                TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
+            Assert.False(stardog.IsReady);
+
+            stardog.Dispose();
+        }
+
         public void Dispose()
         {
             Options.HttpDebugging = false;
