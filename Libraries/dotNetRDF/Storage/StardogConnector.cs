@@ -270,6 +270,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is ready.
         /// </summary>
+        /// <remarks>Returns true if the knowledge base specified in the class constructor is found on the server, false otherwise.</remarks>
         public override bool IsReady
         {
             get
@@ -2459,7 +2460,6 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            // No Dispose actions
             _isReady = false;
         }
 
