@@ -71,6 +71,7 @@ namespace VDS.RDF.Parsing
         {
             using (WebClient client = new WebClient())
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
                 {
                     ParsingTextReader reader = ParsingTextReader.Create(stream);

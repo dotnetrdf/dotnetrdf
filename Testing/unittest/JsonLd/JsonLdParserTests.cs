@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -175,6 +176,7 @@ namespace VDS.RDF.JsonLd
         [Fact]
         public void ItRetainsLocalContextWhenProcessingARemoteContext()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             var jsonLd = @"
 {
   '@context': [
