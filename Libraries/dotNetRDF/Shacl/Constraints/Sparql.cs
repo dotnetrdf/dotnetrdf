@@ -94,7 +94,11 @@ namespace VDS.RDF.Shacl.Constraints
 
             BindFocusNode(query.RootGraphPattern, focusNode);
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
-            query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
+
+            if (Shape.GraphUri is object)
+            {
+                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
+            }
 
             foreach (var parameter in Parameters)
             {
