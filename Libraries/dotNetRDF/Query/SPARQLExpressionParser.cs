@@ -310,8 +310,7 @@ namespace VDS.RDF.Query
                         tokens.Dequeue();
                         return new SubtractionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
                     case Token.PLAINLITERAL:
-                        tokens.Dequeue();
-                        return new AdditionExpression(firstTerm, TryParseNumericLiteral(next, tokens, true));
+                        return new AdditionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
                     default:
                         return firstTerm;
                 }
@@ -333,11 +332,38 @@ namespace VDS.RDF.Query
                 switch (next.TokenType)
                 {
                     case Token.MULTIPLY:
+                    {
                         tokens.Dequeue();
-                        return new MultiplicationExpression(firstTerm, TryParseUnaryExpression(tokens));
+                        var rhs = TryParseMultiplicativeExpression(tokens);
+                        if (rhs is DivisionExpression)
+                        {
+                            var args = rhs.Arguments.ToList();
+                            return new DivisionExpression(new MultiplicationExpression(firstTerm, args[0]), args[1]);
+                        }
+                        if (rhs is MultiplicationExpression)
+                        {
+                            var args = rhs.Arguments.ToList();
+                            return new MultiplicationExpression(new MultiplicationExpression(firstTerm, args[0]),
+                                args[1]);
+                        }
+                        return new MultiplicationExpression(firstTerm, rhs);
+                    }
                     case Token.DIVIDE:
+                    {
                         tokens.Dequeue();
-                        return new DivisionExpression(firstTerm, TryParseUnaryExpression(tokens));
+                        var rhs = TryParseMultiplicativeExpression(tokens);
+                        if (rhs is DivisionExpression)
+                        {
+                            var args = rhs.Arguments.ToList();
+                            return new DivisionExpression(new DivisionExpression(firstTerm, args[0]), args[1]);
+                        }
+                        if (rhs is MultiplicationExpression)
+                        {
+                            var args = rhs.Arguments.ToList();
+                            return new MultiplicationExpression(new DivisionExpression(firstTerm, args[0]), args[1]);
+                        }
+                        return new DivisionExpression(firstTerm, rhs);
+                    }
                     default:
                         return firstTerm;
                 }
