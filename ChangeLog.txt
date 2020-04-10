@@ -7,6 +7,7 @@
 NEW: The `IsReady` property of the `StardogConnector` now checks that the knowledgebase specified in the connector exists on the remote server. If the it is not found, `IsReady` will return `false`. Thanks to @joephayes for the suggestion and the PR. (#278)
 FIX: SparqlParamaterizedString has been fixed to replace variables whose name starts with an underscore character. Thanks to @giacomociti for the bug report. (#230)
 FIX: The SPARQL query parser has been fixed to better handle math expressions without brackets, such as 1*2*3 or 10/5/2. Thanks to @alaendle for the bug report. (#225)
+FIX: The SHACL processor has been fixed to support the use of unnamed graphs as the shapes graph to validate with. Thanks to @langsamu for the bug report and fix. (#303)
 
 
 2.4
