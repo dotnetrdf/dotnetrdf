@@ -26,14 +26,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Data;
 using System.Linq;
-using Xunit;
+using System.Text;
+using VDS.RDF;
 using VDS.RDF.Data.DataTables;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using Xunit;
+using Xunit.Abstractions;
 
-namespace VDS.RDF.Query
+namespace dotNetRDF.Data.DataTables.Tests
 {
     public class DataTableTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public DataTableTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void SparqlResultSetToDataTable()
         {
@@ -78,12 +89,13 @@ namespace VDS.RDF.Query
 
                 foreach (DataRow row in table.Rows)
                 {
+                    var s = new StringBuilder();
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
+                        var temp = row[col];
+                        s.Append(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : string.Empty) + " , ");
                     }
-                    Console.WriteLine();
+                    _output.WriteLine(s.ToString());
                 }
             }
             else
@@ -136,12 +148,13 @@ namespace VDS.RDF.Query
 
                 foreach (DataRow row in table.Rows)
                 {
+                    var sb = new StringBuilder();
                     foreach (DataColumn col in table.Columns)
                     {
                         Object temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
+                        sb.Append(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
-                    Console.WriteLine();
+                    _output.WriteLine(sb.ToString());
                 }
             }
             else
@@ -170,19 +183,26 @@ namespace VDS.RDF.Query
                 Assert.Equal(rset.Variables.Count(), table.Columns.Count);
                 Assert.Equal(rset.Count, table.Rows.Count);
 
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        Object temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                DumpTable(table);
             }
             else
             {
                 Assert.True(false, "Query should have returned a Result Set");
+            }
+        }
+
+        private void DumpTable(DataTable table)
+        {
+            foreach (DataRow row in table.Rows)
+            {
+                var sb = new StringBuilder();
+                foreach (DataColumn col in table.Columns)
+                {
+                    var temp = row[col];
+                    sb.Append(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : string.Empty) + " , ");
+                }
+
+                _output.WriteLine(sb.ToString());
             }
         }
 
@@ -205,16 +225,7 @@ namespace VDS.RDF.Query
 
                 Assert.Equal(rset.Variables.Count(), table.Columns.Count);
                 Assert.Equal(rset.Count, table.Rows.Count);
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        Object temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                DumpTable(table);
             }
             else
             {
@@ -243,16 +254,7 @@ namespace VDS.RDF.Query
                 Assert.Single(table.Columns);
                 Assert.Single(table.Rows);
                 Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        Object temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                DumpTable(table);
             }
             else
             {
@@ -281,16 +283,7 @@ namespace VDS.RDF.Query
                 Assert.Single(table.Columns);
                 Assert.Single(table.Rows);
                 Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        Object temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                DumpTable(table);
             }
             else
             {
@@ -309,16 +302,7 @@ namespace VDS.RDF.Query
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
-
-            foreach (DataRow row in table.Rows)
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    Object temp = row[col];
-                    Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                }
-                Console.WriteLine();
-            }
+            DumpTable(table);
         }
 
         [Fact]
@@ -332,34 +316,17 @@ namespace VDS.RDF.Query
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
-
-            foreach (DataRow row in table.Rows)
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    Object temp = row[col];
-                    Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                }
-                Console.WriteLine();
-            }
+            DumpTable(table);
         }
 
         [Fact]
         public void SparqlResultSetToDataTable9()
         {
-            SparqlResultSet results = new SparqlResultSet();
-            try
+            var results = new SparqlResultSet();
+            Assert.Throws<InvalidCastException>(() =>
             {
-                DataTable table = results.ToDataTable();
-                Assert.True(false, "Should have thrown an InvalidCastException");
-            }
-            catch (InvalidCastException ex)
-            {
-                Assert.Equal(SparqlResultsType.Unknown, results.ResultsType);
-                Console.WriteLine("Errored as expected");
-                Console.WriteLine();
-                TestTools.ReportError("Invalid Cast", ex);
-            }
+                var t = results.ToDataTable();
+            });
         }
     }
 }

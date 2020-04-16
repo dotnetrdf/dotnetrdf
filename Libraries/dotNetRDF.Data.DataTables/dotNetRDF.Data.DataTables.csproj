@@ -6,7 +6,7 @@
     <AssemblyTitle>dotNetRDF.Data.DataTables</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
-    <TargetFrameworks>net40-client;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Data.DataTables</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
@@ -35,18 +35,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>client</TargetFrameworkProfile>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40-client'">
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
-    <Reference Include="System.Data" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup>
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
 	<PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
