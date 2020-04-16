@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
-using System.Web.UI;
+using VDS.RDF.Compatibility;
 
 // TODO: Embed RDFa in the HTML Output
 

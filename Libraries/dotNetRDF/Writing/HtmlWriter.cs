@@ -30,7 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Writing.Contexts;
-using System.Web.UI;
+using VDS.RDF.Compatibility;
 
 namespace VDS.RDF.Writing
 {

@@ -26,7 +26,7 @@
 
 using System;
 using System.IO;
-using System.Web.UI;
+using VDS.RDF.Compatibility;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
@@ -36,8 +36,6 @@ namespace VDS.RDF.Writing.Contexts
     /// </summary>
     public class HtmlWriterContext : BaseWriterContext
     {
-        private HtmlTextWriter _writer;
-
         /// <summary>
         /// Creates a new HTML Writer Context.
         /// </summary>
@@ -46,7 +44,7 @@ namespace VDS.RDF.Writing.Contexts
         public HtmlWriterContext(IGraph g, TextWriter writer)
             : base(g, writer) 
         {
-            _writer = new HtmlTextWriter(writer);
+            HtmlWriter = new HtmlTextWriter(writer);
             // Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
             _qnameMapper.RemoveNamespace(String.Empty);
 
@@ -56,12 +54,6 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// HTML Writer to use.
         /// </summary>
-        public HtmlTextWriter HtmlWriter
-        {
-            get
-            {
-                return _writer;
-            }
-        }
+        public HtmlTextWriter HtmlWriter { get; }
     }
 }

@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-namespace System.Web.UI
+namespace VDS.RDF.Compatibility
 {
     /// <summary>
     /// HTML Tags.

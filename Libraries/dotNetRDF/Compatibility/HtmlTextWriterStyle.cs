@@ -24,228 +24,184 @@
 // </copyright>
 */
 
-namespace System.Web.UI
+namespace VDS.RDF.Compatibility
 {
     /// <summary>
-    /// HTML Attributes.
+    /// CSS Styles.
     /// </summary>
-    public enum HtmlTextWriterAttribute
+    public enum HtmlTextWriterStyle
     {
-        /// <summary>
-        /// Access Key
-        /// </summary>
-        Accesskey,
-        /// <summary>
-        /// Align
-        /// </summary>
-        Align,
-        /// <summary>
-        /// Alternative Text
-        /// </summary>
-        Alt,
-        /// <summary>
-        /// Background Image
-        /// </summary>
-        Background,
         /// <summary>
         /// Background Colour
         /// </summary>
-        Bgcolor,
+        BackgroundColor,
         /// <summary>
-        /// Border
+        /// Background Image
         /// </summary>
-        Border,
+        BackgroundImage,
+        /// <summary>
+        /// Border Collapse
+        /// </summary>
+        BorderCollapse,
         /// <summary>
         /// Border Colour
         /// </summary>
-        Bordercolor,
+        BorderColor,
         /// <summary>
-        /// Cell Padding
+        /// Border Style
         /// </summary>
-        Cellpadding,
+        BorderStyle,
         /// <summary>
-        /// Cell Spacing
+        /// Border Width
         /// </summary>
-        Cellspacing,
+        BorderWidth,
         /// <summary>
-        /// Checked
+        /// Colour
         /// </summary>
-        Checked,
+        Color,
         /// <summary>
-        /// CSS Class
+        /// Font Family
         /// </summary>
-        Class,
+        FontFamily,
         /// <summary>
-        /// Columns
+        /// Font Size
         /// </summary>
-        Cols,
+        FontSize,
         /// <summary>
-        /// Column Span
+        /// Font Style
         /// </summary>
-        Colspan,
+        FontStyle,
         /// <summary>
-        /// Disabled
+        /// Font Weight
         /// </summary>
-        Disabled,
-        /// <summary>
-        /// For
-        /// </summary>
-        For,
+        FontWeight,
         /// <summary>
         /// Height
         /// </summary>
         Height,
         /// <summary>
-        /// Hyper Reference
+        /// Text Decoration
         /// </summary>
-        Href,
-        /// <summary>
-        /// ID
-        /// </summary>
-        Id,
-        /// <summary>
-        /// Maximum Length
-        /// </summary>
-        Maxlength,
-        /// <summary>
-        /// Multiple Values permitted
-        /// </summary>
-        Multiple,
-        /// <summary>
-        /// Name
-        /// </summary>
-        Name,
-        /// <summary>
-        /// No Wrapping
-        /// </summary>
-        Nowrap,
-        /// <summary>
-        /// On Change
-        /// </summary>
-        Onchange,
-        /// <summary>
-        /// On Click
-        /// </summary>
-        Onclick,
-        /// <summary>
-        /// Read Only
-        /// </summary>
-        ReadOnly,
-        /// <summary>
-        /// Rows
-        /// </summary>
-        Rows,
-        /// <summary>
-        /// Row Span
-        /// </summary>
-        Rowspan,
-        /// <summary>
-        /// Rules
-        /// </summary>
-        Rules,
-        /// <summary>
-        /// Selected
-        /// </summary>
-        Selected,
-        /// <summary>
-        /// Size
-        /// </summary>
-        Size,
-        /// <summary>
-        /// Source
-        /// </summary>
-        Src,
-        /// <summary>
-        /// CSS Styles
-        /// </summary>
-        Style,
-        /// <summary>
-        /// Tab Index
-        /// </summary>
-        Tabindex,
-        /// <summary>
-        /// Target
-        /// </summary>
-        Target,
-        /// <summary>
-        /// Title
-        /// </summary>
-        Title,
-        /// <summary>
-        /// Type
-        /// </summary>
-        Type,
-        /// <summary>
-        /// Vertical Align
-        /// </summary>
-        Valign,
-        /// <summary>
-        /// Value
-        /// </summary>
-        Value,
+        TextDecoration,
         /// <summary>
         /// Width
         /// </summary>
         Width,
         /// <summary>
-        /// Wrapping
+        /// List Style Image
         /// </summary>
-        Wrap,
+        ListStyleImage,
         /// <summary>
-        /// Abbreviation
+        /// List Style Type
         /// </summary>
-        Abbr,
+        ListStyleType,
         /// <summary>
-        /// Auto-Complete
+        /// Cursor
         /// </summary>
-        AutoComplete,
-        /// <summary>
-        /// Axis
-        /// </summary>
-        Axis,
-        /// <summary>
-        /// Content
-        /// </summary>
-        Content,
-        /// <summary>
-        /// Coordinates
-        /// </summary>
-        Coords,
-        /// <summary>
-        /// Designer Region
-        /// </summary>
-        DesignerRegion,
+        Cursor,
         /// <summary>
         /// Direction
         /// </summary>
-        Dir,
+        Direction,
         /// <summary>
-        /// Headers
+        /// Display
         /// </summary>
-        Headers,
+        Display,
         /// <summary>
-        /// Long Description
+        /// Filter
         /// </summary>
-        Longdesc,
+        Filter,
         /// <summary>
-        /// Relationship
+        /// Font Variant
         /// </summary>
-        Rel,
+        FontVariant,
         /// <summary>
-        /// Scope
+        /// Left Position
         /// </summary>
-        Scope,
+        Left,
         /// <summary>
-        /// Shape
+        /// Margin
         /// </summary>
-        Shape,
+        Margin,
         /// <summary>
-        /// Use Map
+        /// Bottom Margin
         /// </summary>
-        Usemap,
+        MarginBottom,
         /// <summary>
-        /// VCard Name
+        /// Left Margin
         /// </summary>
-        VCardName,
+        MarginLeft,
+        /// <summary>
+        /// Right Margin
+        /// </summary>
+        MarginRight,
+        /// <summary>
+        /// Top Margin
+        /// </summary>
+        MarginTop,
+        /// <summary>
+        /// Overflow
+        /// </summary>
+        Overflow,
+        /// <summary>
+        /// X Overflow
+        /// </summary>
+        OverflowX,
+        /// <summary>
+        /// Y Overflow
+        /// </summary>
+        OverflowY,
+        /// <summary>
+        /// Padding
+        /// </summary>
+        Padding,
+        /// <summary>
+        /// Bottom Padding
+        /// </summary>
+        PaddingBottom,
+        /// <summary>
+        /// Left Padding
+        /// </summary>
+        PaddingLeft,
+        /// <summary>
+        /// Right Padding
+        /// </summary>
+        PaddingRight,
+        /// <summary>
+        /// Top Padding
+        /// </summary>
+        PaddingTop,
+        /// <summary>
+        /// Position
+        /// </summary>
+        Position,
+        /// <summary>
+        /// Text Alignment
+        /// </summary>
+        TextAlign,
+        /// <summary>
+        /// Vertical Alignment
+        /// </summary>
+        VerticalAlign,
+        /// <summary>
+        /// Text Overflow
+        /// </summary>
+        TextOverflow,
+        /// <summary>
+        /// Top Position
+        /// </summary>
+        Top,
+        /// <summary>
+        /// Visibility
+        /// </summary>
+        Visibility,
+        /// <summary>
+        /// Whitespace
+        /// </summary>
+        WhiteSpace,
+        /// <summary>
+        /// Z Index
+        /// </summary>
+        ZIndex,
     }
 }

@@ -29,7 +29,7 @@ using System.IO;
 using System.Text;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-using System.Web.UI;
+using VDS.RDF.Compatibility;
 
 namespace VDS.RDF.Writing
 {
