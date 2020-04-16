@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// TODO: These tests should be moved to a dotNetRDF.Web.Tests assembly
+/*
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,10 +32,11 @@ using System.Linq;
 using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Web;
+using VDS.RDF;
 
 namespace VDS.RDF.Web
 {
+    
     public class ETagTests
     {
         [Fact]
@@ -80,3 +83,4 @@ namespace VDS.RDF.Web
         }
     }
 }
+*/

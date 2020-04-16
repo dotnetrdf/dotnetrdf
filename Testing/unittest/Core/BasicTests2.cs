@@ -27,13 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Net;
 using Xunit;
-using VDS.RDF;
-using VDS.RDF.Data.DataTables;
 using VDS.RDF.Parsing;
-using VDS.RDF.Writing.Formatting;
 
 #pragma warning disable CS1718 // Comparison made to same variable
 
@@ -324,47 +320,6 @@ namespace VDS.RDF
             {
                 Options.UriLoaderCaching = true;
                 Options.UriLoaderTimeout = defaultTimeout;
-            }
-        }
-
-        [Fact]
-        public void GraphToDataTable()
-        {
-            Graph g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-
-            DataTable table = g.ToDataTable();
-
-            Assert.Equal(g.Triples.Count, table.Rows.Count);
-            Assert.Equal(3, table.Columns.Count);
-
-            foreach (DataRow row in table.Rows)
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    Console.Write(col.ColumnName + " = " + row[col].ToString() + " , ");
-                }
-                Console.WriteLine();
-            }
-        }
-
-        [Fact]
-        public void GraphToDataTable2()
-        {
-            Graph g = new Graph();
-
-            DataTable table = g.ToDataTable();
-
-            Assert.Equal(g.Triples.Count, table.Rows.Count);
-            Assert.Equal(3, table.Columns.Count);
-
-            foreach (DataRow row in table.Rows)
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    Console.Write(col.ColumnName + " = " + row[col].ToString() + " , ");
-                }
-                Console.WriteLine();
             }
         }
     }

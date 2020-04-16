@@ -218,28 +218,6 @@ namespace VDS.RDF.Parsing.Handlers
             this.TestWriteToStoreHandlerWithBNodes(manager);
         }
 
-#if !NO_VIRTUOSO
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandler(virtuoso);
-        }
-
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreDatasetsHandler(virtuoso);
-        }
-
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
-        }
-#endif
         [SkippableFact]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
