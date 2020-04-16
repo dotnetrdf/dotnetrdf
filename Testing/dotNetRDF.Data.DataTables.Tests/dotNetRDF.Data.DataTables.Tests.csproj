@@ -18,4 +18,10 @@
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="resources\InferenceTest.ttl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
