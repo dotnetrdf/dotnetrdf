@@ -367,7 +367,7 @@ namespace VDS.RDF.Query.Datasets
             if (_dataset is IConfigurationSerializable)
             {
                 INode dataset = context.NextSubject;
-                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
                 INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
                 INode datasetClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlDataset));
                 INode usingDataset = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset));

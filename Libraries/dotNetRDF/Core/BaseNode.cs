@@ -53,7 +53,7 @@ namespace VDS.RDF
         /// <summary>
         /// Stores the computed Hash Code for this Node.
         /// </summary>
-        protected int _hashcode;
+        protected readonly int _hashcode;
 
         /// <summary>
         /// Base Constructor which instantiates the Graph reference, Graph Uri and Node Type of the Node.
@@ -65,6 +65,7 @@ namespace VDS.RDF
             _graph = g;
             if (_graph != null) _graphUri = _graph.BaseUri;
             _nodetype = type;
+            _hashcode = ComputeHashCode();
         }
 
         /// <summary>

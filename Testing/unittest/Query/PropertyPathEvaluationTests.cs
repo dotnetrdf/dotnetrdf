@@ -118,7 +118,7 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             FixedCardinality path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+                new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 0);
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             FixedCardinality path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+                new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 0);
             INode rdfsClass = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
             ISparqlAlgebra algebra = this.GetAlgebra(path, null, rdfsClass);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             FixedCardinality path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+                new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 0);
             ISparqlAlgebra algebra = this.GetAlgebra(path,
                                                      new Graph().CreateUriNode(
                                                          UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             FixedCardinality path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+                new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 0);
             ISparqlAlgebra algebra = this.GetAlgebra(path,
                                                      new Graph().CreateUriNode(
                                                          UriFactory.Create(ConfigurationLoader.ClassHttpHandler)),
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query
 
             NegatedSet path =
                 new NegatedSet(
-                    new Property[] {new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
+                    new Property[] {new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType))},
                     Enumerable.Empty<Property>());
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query
                                              new Property[]
                                                  {
                                                      new Property(
-                                                 this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))
+                                                 this._factory.CreateUriNode(RdfSpecsHelper.RdfType))
                                                  });
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            INode a = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode a = this._factory.CreateUriNode(RdfSpecsHelper.RdfType);
             INode b = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
             SequencePath path = new SequencePath(new AlternativePath(new Property(a), new Property(b)),
                                                  new AlternativePath(new Property(a), new Property(a)));

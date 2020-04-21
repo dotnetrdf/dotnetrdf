@@ -228,7 +228,7 @@ namespace VDS.RDF.Storage
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to remove some triples...");
-                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).ToList();
+                    List<Triple> ts = g.GetTriplesWithPredicate(RdfSpecsHelper.RdfType).ToList();
                     resArgs = null;
                     signal.Reset();
                     provider.UpdateGraph(RemoveTriplesUri, null, ts, (_, args, state) =>
@@ -313,7 +313,7 @@ namespace VDS.RDF.Storage
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to add some triples...");
-                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("http://example.org/Test")))).ToList();
+                    List<Triple> ts = g.GetTriplesWithPredicate(RdfSpecsHelper.RdfType).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("http://example.org/Test")))).ToList();
                     resArgs = null;
                     signal.Reset();
                     provider.UpdateGraph(AddTripleUri, ts, null, (_, args, state) =>

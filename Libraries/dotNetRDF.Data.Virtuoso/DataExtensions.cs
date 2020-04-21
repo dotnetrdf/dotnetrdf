@@ -56,7 +56,7 @@ namespace VDS.RDF
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             String assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 

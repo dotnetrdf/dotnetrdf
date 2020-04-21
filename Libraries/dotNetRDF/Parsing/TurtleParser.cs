@@ -437,7 +437,7 @@ namespace VDS.RDF.Parsing
                     {
                         // An Empty Collection => rdf:nil
                         context.Tokens.Dequeue();
-                        subj = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                        subj = context.Handler.CreateUriNode(RdfSpecsHelper.RdfListNil);
                     }
                     else
                     {
@@ -653,7 +653,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Empty Collection => rdf:nil
                             context.Tokens.Dequeue();
-                            obj = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                            obj = context.Handler.CreateUriNode(RdfSpecsHelper.RdfListNil);
                         }
                         else
                         {
@@ -759,9 +759,9 @@ namespace VDS.RDF.Parsing
             IToken next;
             INode subj = firstSubj;
             INode obj = null, nextSubj;
-            INode rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            INode rdfFirst = context.Handler.CreateUriNode(RdfSpecsHelper.RdfListFirst);
+            INode rdfRest = context.Handler.CreateUriNode(RdfSpecsHelper.RdfListRest);
+            INode rdfNil = context.Handler.CreateUriNode(RdfSpecsHelper.RdfListNil);
 
             do
             {
@@ -790,7 +790,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Empty Collection => rdf:nil
                             context.Tokens.Dequeue();
-                            obj = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                            obj = context.Handler.CreateUriNode(RdfSpecsHelper.RdfListNil);
                         }
                         else
                         {

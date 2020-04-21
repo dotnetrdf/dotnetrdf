@@ -624,7 +624,7 @@ namespace VDS.RDF.Storage
                 Assert.NotNull(manager);
 
                 Graph g = new Graph();
-                INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                INode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
                 INode dnrType = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
                 INode objFactory = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory));
                 INode virtFactory = g.CreateLiteralNode("VDS.RDF.Configuration.VirtuosoObjectFactory, dotNetRDF.Data.Virtuoso");

@@ -364,7 +364,7 @@ namespace VDS.RDF.Writing
             // First off determine what the XML Element should be
             // If there is a rdf:type triple then create a typed node
             // Otherwise create a rdf:Description node
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             Triple typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
             INode subj;
             if (typeTriple != null)
@@ -681,7 +681,7 @@ namespace VDS.RDF.Writing
                 }
 
                 // First see if there is a typed triple available (only applicable if we have more than one triple)
-                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
                 Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
                 if (typeTriple != null)
                 {
@@ -704,7 +704,7 @@ namespace VDS.RDF.Writing
                 // If No Triples then use rdf:about rdf:nil and return
                 if (c.Triples.Count == 0)
                 {
-                    context.Writer.WriteAttributeString("rdf", "about", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil);
+                    context.Writer.WriteAttributeString("rdf", "about", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil.ToString());
                     return;
                 }
 
@@ -735,7 +735,7 @@ namespace VDS.RDF.Writing
                 context.Writer.WriteStartElement("rdf", "rest", NamespaceMapper.RDF);
             }
             // Terminate the list and close all the open rdf:rest elements
-            context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil);
+            context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil.ToString());
             for (int i = 0; i < toClose; i++)
             {
                 context.Writer.WriteEndElement();

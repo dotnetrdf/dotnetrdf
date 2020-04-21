@@ -209,7 +209,7 @@ namespace VDS.RDF.Ontology
         /// <returns>Enumeration of classes.</returns>
         public IEnumerable<OntologyClass> GetClasses(INode classType)
         {
-            INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = CreateUriNode(RdfSpecsHelper.RdfType);
             return (from t in GetTriplesWithPredicateObject(rdfType, classType)
                     select CreateOntologyClass(t.Subject));
         }
@@ -272,13 +272,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty).
         /// </summary>
-        public IEnumerable<OntologyProperty> AllProperties
-        {
-            get
-            {
-                return RdfProperties.Concat(OwlAnnotationProperties).Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
-            }
-        }
+        public IEnumerable<OntologyProperty> AllProperties => RdfProperties.Concat(OwlAnnotationProperties).Concat(OwlDatatypeProperties).Concat(OwlObjectProperties);
 
         /// <summary>
         /// Get all properties defined in the graph where anything of a specific type is considered a property.
@@ -287,7 +281,7 @@ namespace VDS.RDF.Ontology
         /// <returns>Enumeration of properties.</returns>
         public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
         {
-            INode rdfType = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = CreateUriNode(RdfSpecsHelper.RdfType);
             return (from t in GetTriplesWithPredicateObject(rdfType, propertyType)
                     select CreateOntologyProperty(t.Subject));
         }

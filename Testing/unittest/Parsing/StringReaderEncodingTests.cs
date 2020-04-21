@@ -51,6 +51,7 @@ namespace VDS.RDF.Parsing
             Graph h = new Graph();
             parser.Load(h, "encoding.ttl");
 
+            var equal = g.Equals(h);
             Assert.Equal(g, h);
         }
     }

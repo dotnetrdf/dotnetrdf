@@ -374,7 +374,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Create the Triple Pattern we want to query with
             IUriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
             IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
             IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
@@ -485,7 +485,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Create the Triple Pattern we want to query with
             IUriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
             IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
             IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));

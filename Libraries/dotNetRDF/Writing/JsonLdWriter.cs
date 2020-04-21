@@ -208,13 +208,13 @@ namespace VDS.RDF.Writing
                 var graphObject = gp.Value;
 
                 // 5.1 - If graph object has no rdf:nil member, continue with the next name-graph object pair as the graph does not contain any lists that need to be converted.
-                if (!graphObject.ContainsKey(RdfSpecsHelper.RdfListNil))
+                if (!graphObject.ContainsKey(RdfSpecsHelper.RdfListNil.ToString()))
                 {
                     continue;
                 }
 
                 // 5.2 - Initialize nil to the value of the rdf:nil member of graph object.
-                var nil = graphObject[RdfSpecsHelper.RdfListNil];
+                var nil = graphObject[RdfSpecsHelper.RdfListNil.ToString()];
 
                 // 5.3 - For each item usage in the usages member of nil, perform the following steps:
                 var nilUsages = nil.Usages;

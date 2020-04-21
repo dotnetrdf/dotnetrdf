@@ -323,7 +323,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.KEYWORDA:
-                    path =  new Property(new UriNode(null, UriFactory.Create(RdfSpecsHelper.RdfType)));
+                    path =  new Property(new UriNode(null, RdfSpecsHelper.RdfType));
                     break;
 
                 case Token.LEFTBRACKET:
@@ -567,7 +567,7 @@ namespace VDS.RDF.Parsing
                     return new Property(new UriNode(null, UriFactory.Create(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri))));
 
                 case Token.KEYWORDA:
-                    return new Property(new UriNode(null, UriFactory.Create(RdfSpecsHelper.RdfType)));
+                    return new Property(new UriNode(null, RdfSpecsHelper.RdfType));
 
                 case Token.HAT:
                     next = tokens.Dequeue();
@@ -579,7 +579,7 @@ namespace VDS.RDF.Parsing
                             return new Property(new UriNode(null, UriFactory.Create(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri))));
 
                         case Token.KEYWORDA:
-                            return new Property(new UriNode(null, UriFactory.Create(RdfSpecsHelper.RdfType)));
+                            return new Property(new UriNode(null, RdfSpecsHelper.RdfType));
 
                         default:
                             throw new RdfParseException("Unexpected Token Type '" + next.GetType().Name + "' encountered, expected a QName/URI or the 'a' Keyword after an inverse operator in a negated property set", next);

@@ -224,7 +224,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public IGraph ExplainInstance(INode instance, INode cls)
         {
             _baseQuery.SetParameter("s", instance);
-            _baseQuery.SetUri("p", UriFactory.Create(RdfSpecsHelper.RdfType));
+            _baseQuery.SetUri("p", RdfSpecsHelper.RdfType);
             _baseQuery.SetParameter("o", cls);
 
             return Explain(_baseQuery.ToString());
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public void ExplainInstance(INode instance, INode cls, GraphCallback callback, Object state)
         {
             _baseQuery.SetParameter("s", instance);
-            _baseQuery.SetUri("p", UriFactory.Create(RdfSpecsHelper.RdfType));
+            _baseQuery.SetUri("p", RdfSpecsHelper.RdfType);
             _baseQuery.SetParameter("o", cls);
 
             Explain(_baseQuery.ToString(), callback, state);

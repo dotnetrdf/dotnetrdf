@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Operators
             INode op = context.NextSubject;
             INode opClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlOperator));
 
-            context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), opClass);
+            context.Graph.Assert(op, context.Graph.CreateUriNode(RdfSpecsHelper.RdfType), opClass);
             context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().AssemblyQualifiedName));
         }
     }

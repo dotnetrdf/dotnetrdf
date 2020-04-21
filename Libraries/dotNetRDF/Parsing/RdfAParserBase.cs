@@ -707,7 +707,7 @@ namespace VDS.RDF.Parsing
             // If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
             if (newSubj != null)
             {
-                INode rdfType = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Handler.CreateUriNode(RdfSpecsHelper.RdfType);
                 if (type)
                 {
                     foreach (var dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
@@ -866,7 +866,7 @@ namespace VDS.RDF.Parsing
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
-                        currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement), UriFactory.Create(RdfSpecsHelper.RdfXmlLiteral));
+                        currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement), RdfSpecsHelper.RdfXmlLiteral);
                     }
                 }
 

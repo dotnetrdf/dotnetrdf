@@ -340,7 +340,7 @@ namespace VDS.RDF
         {
             if (!objects.Any())
             {
-                return g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                return g.CreateUriNode(RdfSpecsHelper.RdfListNil);
             }
             else
             {
@@ -360,9 +360,9 @@ namespace VDS.RDF
         /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see>.</param>
         public static void AssertList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
         {
-            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = g.CreateUriNode(RdfSpecsHelper.RdfListNil);
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
+            INode rdfRest = g.CreateUriNode(RdfSpecsHelper.RdfListRest);
             INode listCurrent = listRoot;
 
             // Then we can assert the collection
@@ -417,9 +417,9 @@ namespace VDS.RDF
         /// <returns>Triples that make up the List.</returns>
         public static IEnumerable<Triple> GetListAsTriples(this IGraph g, INode listRoot)
         {
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
+            INode rdfRest = g.CreateUriNode(RdfSpecsHelper.RdfListRest);
+            INode rdfNil = g.CreateUriNode(RdfSpecsHelper.RdfListNil);
 
             if (listRoot.Equals(rdfNil)) return Enumerable.Empty<Triple>();
 
@@ -455,7 +455,7 @@ namespace VDS.RDF
         /// <returns>Nodes that are the items in the list.</returns>
         public static IEnumerable<INode> GetListItems(this IGraph g, INode listRoot)
         {
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
             return GetListAsTriples(g, listRoot).Where(t => t.Predicate.Equals(rdfFirst)).Select(t => t.Object);
         }
 
@@ -467,7 +467,7 @@ namespace VDS.RDF
         /// <returns>Nodes that are the intermediate nodes of the list.</returns>
         public static IEnumerable<INode> GetListNodes(this IGraph g, INode listRoot)
         {
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
             return GetListAsTriples(g, listRoot).Where(t => t.Predicate.Equals(rdfFirst)).Select(t => t.Subject);
         }
 
@@ -482,8 +482,8 @@ namespace VDS.RDF
         /// </remarks>
         public static bool IsListRoot(this INode n, IGraph g)
         {
-            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = g.CreateUriNode(RdfSpecsHelper.RdfListRest);
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
             return !g.GetTriplesWithPredicateObject(rdfRest, n).Any() && (g.GetTriplesWithSubjectPredicate(n, rdfFirst).Count() == 1);
         }
 
@@ -525,13 +525,13 @@ namespace VDS.RDF
             INode listTail = GetListTail(g, listRoot);
 
             // Remove the rdf:rest rdf:nil triple
-            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            INode rdfRest = g.CreateUriNode(RdfSpecsHelper.RdfListRest);
+            INode rdfNil = g.CreateUriNode(RdfSpecsHelper.RdfListNil);
             g.Retract(new Triple(listTail, rdfRest, rdfNil));
 
             // Create a new tail for the list that will act as the root of the extended list
             INode newRoot = g.CreateBlankNode();
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
             g.Assert(new Triple(listTail, rdfRest, newRoot));
 
             // Then assert the new list

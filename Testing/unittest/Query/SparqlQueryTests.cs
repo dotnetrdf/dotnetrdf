@@ -49,7 +49,7 @@ namespace VDS.RDF.Query
             query.AddVariable(new SparqlVariable("s", true));
             query.RootGraphPattern = new GraphPattern();
             var subj = new VariablePattern("s");
-            var rdfType = new NodeMatchPattern(new UriNode(null, new Uri(RdfSpecsHelper.RdfType)));
+            var rdfType = new NodeMatchPattern(new UriNode(null, RdfSpecsHelper.RdfType));
             var type = new VariablePattern("type");
             var triplePattern = new TriplePattern(subj, rdfType, type);
             query.RootGraphPattern.AddTriplePattern(triplePattern);

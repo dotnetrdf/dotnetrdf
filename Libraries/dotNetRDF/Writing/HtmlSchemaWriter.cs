@@ -114,7 +114,7 @@ namespace VDS.RDF.Writing
             // Find the Node that represents the Schema Ontology
             // Assumes there is exactly one thing given rdf:type owl:Ontology
             IUriNode ontology = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
-            IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
             INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;

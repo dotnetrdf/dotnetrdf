@@ -24,6 +24,9 @@
 // </copyright>
 */
 
+using VDS.RDF.Core;
+using VDS.RDF.Parsing;
+
 namespace VDS.RDF.Dynamic
 {
     using System;
@@ -126,7 +129,7 @@ namespace VDS.RDF.Dynamic
                 case NumericNode numericNode:
                     return numericNode.AsInteger();
 
-                case StringNode stringNode when stringNode.DataType is null && string.IsNullOrEmpty(stringNode.Language):
+                case StringNode stringNode when stringNode.DataType.Equals((Uri)Namespace.Xsd["string"]):
                     return stringNode.AsString();
 
                 default:

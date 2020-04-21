@@ -77,19 +77,19 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathTransformationProperty()
         {
-            this.RunTest(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), new String[] { "BGP" });
+            this.RunTest(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationInverse()
         {
-            this.RunTest(new InversePath(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))), new String[] { "BGP" });
+            this.RunTest(new InversePath(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType))), new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationSequence()
         {
-            SequencePath path = new SequencePath(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            SequencePath path = new SequencePath(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             this.RunTest(path, new String[] { "BGP" });
         }
 
@@ -103,105 +103,105 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathTransformationOptional()
         {
-            ZeroOrOne path = new ZeroOrOne(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))));
+            ZeroOrOne path = new ZeroOrOne(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)));
             this.RunTest(path, new String[] { "BGP", "ZeroLengthPath" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationZeroOrMore()
         {
-            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))));
+            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)));
             this.RunTest(path, new String[] { "ZeroOrMorePath" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationOneOrMore()
         {
-            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))));
+            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)));
             this.RunTest(path, new String[] { "OneOrMorePath" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationFixed1()
         {
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 1);
+            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 1);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationFixed2()
         {
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 2);
+            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 2);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationFixed10()
         {
-            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 10);
+            FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 10);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationVariable1To2()
         {
-            NToM path = new NToM(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 1, 2);
+            NToM path = new NToM(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 1, 2);
             this.RunTest(path, new String[] { "BGP", "Union" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationVariable1To10()
         {
-            NToM path = new NToM(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 1, 10);
+            NToM path = new NToM(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 1, 10);
             this.RunTest(path, new String[] { "BGP", "Union" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationVariable1To1()
         {
-            NToM path = new NToM(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 1, 1);
+            NToM path = new NToM(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 1, 1);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationVariable3To7()
         {
-            NToM path = new NToM(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 3, 7);
+            NToM path = new NToM(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 3, 7);
             this.RunTest(path, new String[] { "BGP", "Union" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationNOrMore1()
         {
-            NOrMore path = new NOrMore(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 1);
+            NOrMore path = new NOrMore(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 1);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationNOrMore0()
         {
-            NOrMore path = new NOrMore(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            NOrMore path = new NOrMore(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 0);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationZeroToN1()
         {
-            ZeroToN path = new ZeroToN(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 1);
+            ZeroToN path = new ZeroToN(new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)), 1);
             this.RunTest(path, new String[] { "BGP" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationNegatedPropertySet()
         {
-            NegatedSet path = new NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            NegatedSet path = new NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)) }, Enumerable.Empty<Property>());
             this.RunTest(path, new String[] { "NegatedPropertySet" });
         }
 
         [Fact]
         public void SparqlPropertyPathTransformationNegatedPropertyInverseSet()
         {
-            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
+            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(RdfSpecsHelper.RdfType)) });
             this.RunTest(path, new String[] { "NegatedPropertySet" });
         }
 

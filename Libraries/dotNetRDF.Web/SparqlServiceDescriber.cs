@@ -138,7 +138,7 @@ namespace VDS.RDF.Web
 
             // Add the Top Level Node representing the Service
             IUriNode descrip = g.CreateUriNode(descripUri);
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
@@ -209,7 +209,7 @@ namespace VDS.RDF.Web
             if (config.ServiceDescription != null) return config.ServiceDescription;
 
             IGraph g = SparqlServiceDescriber.GetNewGraph();
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
 
             INode queryNode, updateNode, protocolNode;
@@ -382,7 +382,7 @@ namespace VDS.RDF.Web
 
             // Add the Top Level Node representing the Service
             IUriNode descrip = g.CreateUriNode(descripUri);
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
@@ -431,7 +431,7 @@ namespace VDS.RDF.Web
 
             // Add the Top Level Node representing the Service
             IUriNode descrip = g.CreateUriNode(descripUri);
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 

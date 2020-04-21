@@ -37,66 +37,66 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// URI for rdf:List.
         /// </summary>
-        public const string RdfList = "http://www.w3.org/1999/02/22-rdf-syntax-ns#List";
+        public static readonly Uri RdfList = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#List");
         /// <summary>
         /// URI for rdf:first.
         /// </summary>
-        public const String RdfListFirst = "http://www.w3.org/1999/02/22-rdf-syntax-ns#first";
+        public static readonly Uri RdfListFirst = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#first");
         /// <summary>
         /// URI for rdf:rest.
         /// </summary>
-        public const String RdfListRest = "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest";
+        public static readonly Uri RdfListRest = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest");
         /// <summary>
         /// URI for rdf:nil.
         /// </summary>
-        public const String RdfListNil = "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil";
+        public static readonly Uri RdfListNil = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil");
         /// <summary>
         /// URI for rdf:type.
         /// </summary>
-        public const String RdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+        public static readonly Uri RdfType = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
         /// <summary>
         /// URI for rdf:XMLLiteral.
         /// </summary>
-        public const String RdfXmlLiteral = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
+        public static readonly Uri RdfXmlLiteral = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
         /// <summary>
         /// URI for rdf:subject.
         /// </summary>
-        public const String RdfSubject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject";
+        public static readonly Uri RdfSubject = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#subject");
         /// <summary>
         /// URI for rdf:predicate.
         /// </summary>
-        public const String RdfPredicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate";
+        public static readonly Uri RdfPredicate = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate");
         /// <summary>
         /// URI for rdf:object.
         /// </summary>
-        public const String RdfObject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#object";
+        public static readonly Uri RdfObject = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#object");
         /// <summary>
         /// URI for rdf:Statement.
         /// </summary>
-        public const String RdfStatement = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement";
+        public static readonly Uri RdfStatement = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement");
         /// <summary>
         /// URI for rdf:langString the implicit type of language specified literals.
         /// </summary>
-        public const String RdfLangString = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString";
+        public static readonly Uri RdfLangString = UriFactory.Create("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
 
         /// <summary>
         /// Pattern for Valid Language Specifiers.
         /// </summary>
-        public const String ValidLangSpecifiersPattern = "^@?[A-Za-z]+(\\-[A-Za-z0-9]+)*$";
+        public const string ValidLangSpecifiersPattern = "^@?[A-Za-z]+(\\-[A-Za-z0-9]+)*$";
 
         /// <summary>
         /// Regular Expression for Valid Language Specifiers.
         /// </summary>
-        private static Regex _validLangSpecifier = new Regex(ValidLangSpecifiersPattern);
+        private static readonly Regex ValidLangSpecifier = new Regex(ValidLangSpecifiersPattern);
 
         /// <summary>
         /// Determines whether a given String is a valid Language Specifier.
         /// </summary>
         /// <param name="value">String to test.</param>
         /// <returns></returns>
-        public static bool IsValidLangSpecifier(String value)
+        public static bool IsValidLangSpecifier(string value)
         {
-            return _validLangSpecifier.IsMatch(value);
+            return ValidLangSpecifier.IsMatch(value);
         }
     }
 }

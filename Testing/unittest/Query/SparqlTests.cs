@@ -46,7 +46,6 @@ namespace VDS.RDF.Query
 
     public class SparqlTests
     {
-
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
             var parser = new SparqlQueryParser();

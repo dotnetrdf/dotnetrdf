@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.Shacl
 {
     using System.Collections.Generic;
@@ -748,5 +750,7 @@ namespace VDS.RDF.Shacl
         private static IUriNode ShaclNode(string name) => AnyNode($"{BaseUri}{name}");
 
         private static IUriNode AnyNode(string uri) => Factory.CreateUriNode(UriFactory.Create(uri));
+
+        private static IUriNode AnyNode(Uri uri) => Factory.CreateUriNode(uri);
     }
 }

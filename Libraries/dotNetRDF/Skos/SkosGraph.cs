@@ -100,7 +100,7 @@ namespace VDS.RDF.Skos
 
         private IEnumerable<INode> GetInstances(string typeUri)
         {
-            var a = this.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            var a = this.CreateUriNode(RdfSpecsHelper.RdfType);
             var type = this.CreateUriNode(UriFactory.Create(typeUri));
 
             return this

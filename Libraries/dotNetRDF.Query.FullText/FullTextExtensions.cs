@@ -194,7 +194,7 @@ namespace VDS.RDF.Query
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode indexClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassIndex));
             INode dirObj = context.NextSubject;
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode analyzerClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassAnalyzer));
             INode analyzerObj = context.NextSubject;
@@ -265,7 +265,7 @@ namespace VDS.RDF.Query
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             String assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 

@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Builder
             builder.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             var q = builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
-                                            .Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("foaf:Person")
+                                            .Subject("s").PredicateUri(RdfSpecsHelper.RdfType).Object<IUriNode>("foaf:Person")
                                             .Subject("s").PredicateUri("foaf:Name").Object("Tomasz Pluskiewicz")
                                             .Subject<IBlankNode>("bnode_id").Predicate("p").Object("o"))
                 .BuildQuery();
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Builder
             var builder = QueryBuilder.SelectAll()
                                       .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                       .Optional(gpb => gpb.Where(tpb => tpb.Subject("s")
-                                                                           .PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType))
+                                                                           .PredicateUri(RdfSpecsHelper.RdfType)
                                                                            .Object("type")));
 
             // when
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Builder
             var builder = QueryBuilder.SelectAll()
                                       .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                       .Optional(gpb => gpb.Where(tpb => tpb.Subject("s")
-                                                                           .PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType))
+                                                                           .PredicateUri(RdfSpecsHelper.RdfType)
                                                                            .Object("type")))
                                       .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Query.Builder
             // given
             var builder = QueryBuilder.SelectAll()
                 .Where(tpb => tpb.Subject(new Uri("http://example.com/Resource"))
-                                 .PredicateUri(new Uri(RdfSpecsHelper.RdfType))
+                                 .PredicateUri(RdfSpecsHelper.RdfType)
                                  .Object(new Uri("http://example.com/Class")))
                 .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
                                                      .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o")));
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Builder
                 .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
                                                      .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o")))
                 .Where(tpb => tpb.Subject(new Uri("http://example.com/Resource"))
-                                 .PredicateUri(new Uri(RdfSpecsHelper.RdfType))
+                                 .PredicateUri(RdfSpecsHelper.RdfType)
                                  .Object(new Uri("http://example.com/Class")));
 
             // when

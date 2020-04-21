@@ -183,7 +183,7 @@ namespace VDS.RDF.Writing
             Graph g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-            INode o = g.CreateLiteralNode("<tag />", new Uri(RdfSpecsHelper.RdfXmlLiteral));
+            INode o = g.CreateLiteralNode("<tag />", RdfSpecsHelper.RdfXmlLiteral);
             g.Assert(s, p, o);
 
             this.CheckRoundTrip(g);
@@ -195,7 +195,7 @@ namespace VDS.RDF.Writing
             Graph g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
-            INode o = g.CreateLiteralNode("<tag>this &amp; that</tag>", new Uri(RdfSpecsHelper.RdfXmlLiteral));
+            INode o = g.CreateLiteralNode("<tag>this &amp; that</tag>", RdfSpecsHelper.RdfXmlLiteral);
             g.Assert(s, p, o);
 
             this.CheckRoundTrip(g);

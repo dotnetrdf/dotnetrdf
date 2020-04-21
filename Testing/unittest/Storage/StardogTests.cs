@@ -233,7 +233,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = new Uri("http://example.org/graph");
                 stardog.SaveGraph(g);
 
-                INode rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
+                INode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
 
                 stardog.UpdateGraph(g.BaseUri, null, g.GetTriplesWithPredicate(rdfType));
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -271,7 +271,7 @@ namespace VDS.RDF.Storage
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/addGraph");
 
-                INode rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
+                INode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
                 Graph types = new Graph();
                 types.Assert(g.GetTriplesWithPredicate(rdfType));
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());

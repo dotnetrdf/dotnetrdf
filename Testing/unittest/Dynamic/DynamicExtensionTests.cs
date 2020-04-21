@@ -112,6 +112,19 @@ WHERE {
         }
 
         [Fact]
+        public void test()
+        {
+            var g = new Graph();
+            var s = g.CreateUriNode(new Uri("urn:s"));
+            var p = g.CreateUriNode(new Uri("urn:p"));
+            var o = g.CreateLiteralNode("");
+            g.Assert(new Triple(s, p, o));
+            var d = new DynamicNode(s);
+            var objects = new DynamicObjectCollection(d, p);
+            Assert.IsType<string>(objects.First());
+        }
+
+        [Fact]
         public void Converts_objects_to_native_datatypes()
         {
             var g = new Graph();

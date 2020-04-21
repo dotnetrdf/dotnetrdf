@@ -284,7 +284,7 @@ namespace VDS.RDF
             if (Proxy is WebProxy webProxy)
             {
                 INode proxy = context.NextSubject;
-                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
                 INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
                 INode proxyType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassProxy));
                 INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));

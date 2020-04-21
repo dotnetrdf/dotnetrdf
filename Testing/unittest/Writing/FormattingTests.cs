@@ -52,14 +52,14 @@ namespace VDS.RDF.Writing
             Uri dtDecimal = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
             Uri dtBoolean = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
             Uri dtUnknown = new Uri("http://example.org/unknownType");
-            Uri dtXmlLiteral = new Uri(RdfSpecsHelper.RdfXmlLiteral);
+            Uri dtXmlLiteral = RdfSpecsHelper.RdfXmlLiteral;
 
             //Create Nodes used for our test Triples
             IBlankNode subjBnode = g.CreateBlankNode();
             IUriNode subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
             IUriNode subjUri2 = g.CreateUriNode(new Uri("http://example.org/123"));
             IUriNode predUri = g.CreateUriNode(new Uri("http://example.org/vocab#predicate"));
-            IUriNode predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode predType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             IBlankNode objBnode = g.CreateBlankNode();
             IUriNode objUri = g.CreateUriNode(new Uri("http://example.org/object"));
             ILiteralNode objString = g.CreateLiteralNode("This is a literal");

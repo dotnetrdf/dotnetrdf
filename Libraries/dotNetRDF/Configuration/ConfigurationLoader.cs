@@ -447,7 +447,7 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureObjectFactories(IGraph g)
         {
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             INode objLoader = g.CreateUriNode(UriFactory.Create(ClassObjectFactory));
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
@@ -570,7 +570,7 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureReadersAndWriters(IGraph g)
         {
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             INode desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfParser));
             INode formatMimeType = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
             INode formatExtension = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
@@ -709,7 +709,7 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureSparqlOperators(IGraph g)
         {
-            INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)),
+            INode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType),
                   operatorClass = g.CreateUriNode(UriFactory.Create(ClassSparqlOperator)),
                   enabled = g.CreateUriNode(UriFactory.Create(PropertyEnabled));
 
@@ -1315,7 +1315,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static String GetDefaultType(IGraph g, INode objNode)
         {
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             INode declaredType = GetConfigurationNode(g, objNode, rdfType);
             if (declaredType == null) return null; //Fixes Bug CORE-98
             if (declaredType.NodeType == NodeType.Uri)

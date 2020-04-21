@@ -261,7 +261,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
             INode indexerObj = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode indexerClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassIndexer));
             INode index = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndex));

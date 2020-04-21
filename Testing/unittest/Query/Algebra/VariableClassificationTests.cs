@@ -30,7 +30,7 @@ namespace VDS.RDF.Query.Algebra
 
         public VariableClassificationTests()
         {
-            this._rdfType = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            this._rdfType = this._factory.CreateUriNode(RdfSpecsHelper.RdfType);
             this._s = this._factory.CreateUriNode(new Uri("http://s"));
             this._p = this._factory.CreateUriNode(new Uri("http://p"));
             this._o = this._factory.CreateUriNode(new Uri("http://o"));

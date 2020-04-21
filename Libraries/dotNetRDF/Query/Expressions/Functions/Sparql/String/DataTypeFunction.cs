@@ -164,11 +164,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         {
                             if (!lit.Language.Equals(string.Empty))
                             {
-                                return new UriNode(null, UriFactory.Create(RdfSpecsHelper.RdfLangString));
+                                return new UriNode(null, RdfSpecsHelper.RdfLangString);
                             }
                             else
                             {
-                                return new UriNode(null, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                                return new UriNode(null, XmlSpecsHelper.XmlSchemaDataTypeString);
                             }
                         }
                         else

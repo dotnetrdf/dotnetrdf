@@ -149,7 +149,7 @@ namespace VDS.RDF.Update
             g.BaseUri = null;
             store.Add(g);
 
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
 
             Assert.NotEmpty(store.GetTriplesWithPredicate(rdfType));
 

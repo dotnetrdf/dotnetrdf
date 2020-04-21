@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using VDS.RDF.Core;
 
 namespace VDS.RDF.Parsing
 {
@@ -133,33 +134,34 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method.
         /// </summary>
-        public static String[] SupportedTypes = new String[] {
-            XmlSchemaDataTypeAnyUri,
-            XmlSchemaDataTypeBase64Binary,
-            XmlSchemaDataTypeBoolean,
-            XmlSchemaDataTypeByte,
-            XmlSchemaDataTypeDate,
-            XmlSchemaDataTypeDateTime,
-            /*XmlSchemaDataTypeDayTimeDuration,*/
-            XmlSchemaDataTypeDuration,
-            XmlSchemaDataTypeDecimal,
-            XmlSchemaDataTypeDouble,
-            XmlSchemaDataTypeFloat,
-            XmlSchemaDataTypeHexBinary,
-            XmlSchemaDataTypeInt,
-            XmlSchemaDataTypeInteger,
-            XmlSchemaDataTypeLong,
-            XmlSchemaDataTypeNegativeInteger,
-            XmlSchemaDataTypeNonNegativeInteger,
-            XmlSchemaDataTypeNonPositiveInteger,
-            XmlSchemaDataTypePositiveInteger,
-            XmlSchemaDataTypeShort,
-            XmlSchemaDataTypeString,
-            XmlSchemaDataTypeUnsignedByte,
-            XmlSchemaDataTypeUnsignedInt,
-            XmlSchemaDataTypeUnsignedLong,
-            XmlSchemaDataTypeUnsignedShort,
-            /*XmlSchemaDataTypeXmlLiteral*/
+        public static string[] SupportedTypes = {
+            Namespace.Xsd["anyUri"],
+            Namespace.Xsd["base64Binary"],
+            Namespace.Xsd["boolean"],
+            Namespace.Xsd["byte"],
+            Namespace.Xsd["date"],
+            Namespace.Xsd["dateTime"],
+            // Namespace.Xsd["dayTimeDuration"],
+            Namespace.Xsd["duration"],
+            Namespace.Xsd["decimal"],
+            Namespace.Xsd["double"],
+            Namespace.Xsd["float"],
+            Namespace.Xsd["hexBinary"],
+            Namespace.Xsd["int"],
+            Namespace.Xsd["integer"],
+            Namespace.Xsd["long"],
+            Namespace.Xsd["negativeInteger"],
+            Namespace.Xsd["nonNegativeInteger"],
+            Namespace.Xsd["nonPositiveInteger"],
+            Namespace.Xsd["positiveInteger"],
+            Namespace.Xsd["short"],
+            Namespace.Xsd["time"],
+            Namespace.Xsd["string"],
+            Namespace.Xsd["unsignedByte"],
+            Namespace.Xsd["unsignedInt"],
+            Namespace.Xsd["unsignedLong"],
+            Namespace.Xsd["unsignedShort"],
+            // Namespace.Xsd["xmlLiteral"],
         };
 
         #region Name Validation

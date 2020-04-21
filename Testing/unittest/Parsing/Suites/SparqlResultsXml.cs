@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using VDS.RDF.Core;
 using VDS.RDF.Query;
 using Xunit;
 using Xunit.Abstractions;
@@ -89,7 +90,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.Equal(NodeType.Literal, third.NodeType);
             ILiteralNode thirdLit = (ILiteralNode) third;
             Assert.Equal(String.Empty, thirdLit.Language);
-            Assert.Null(thirdLit.DataType);
+            Assert.Equal((Uri)Namespace.Xsd["string"], thirdLit.DataType);
             Assert.Equal("test plain literal", thirdLit.Value);
         }
 

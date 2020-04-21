@@ -72,9 +72,9 @@ namespace VDS.RDF.Writing
             g.Assert(data2, g.CreateUriNode(new Uri("http://property")), g.CreateLiteralNode("test2"));
 
             INode listEntry1 = g.CreateUriNode(new Uri("http://test/1"));
-            INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+            INode rdfFirst = g.CreateUriNode(RdfSpecsHelper.RdfListFirst);
+            INode rdfRest = g.CreateUriNode(RdfSpecsHelper.RdfListRest);
+            INode rdfNil = g.CreateUriNode(RdfSpecsHelper.RdfListNil);
             g.Assert(listEntry1, rdfFirst, data1);
             g.Assert(listEntry1, rdfRest, rdfNil);
 

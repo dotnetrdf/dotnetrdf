@@ -419,9 +419,9 @@ namespace VDS.RDF.Writing
         {
             // Prepare the RDF Nodes we need
             INode first, rest, nil;
-            first = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            rest = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            nil = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            first = context.Graph.CreateUriNode(RdfSpecsHelper.RdfListFirst);
+            rest = context.Graph.CreateUriNode(RdfSpecsHelper.RdfListRest);
+            nil = context.Graph.CreateUriNode(RdfSpecsHelper.RdfListNil);
 
             // First we're going to look for implicit collections we can represent using the
             // brackets syntax of (a b c)

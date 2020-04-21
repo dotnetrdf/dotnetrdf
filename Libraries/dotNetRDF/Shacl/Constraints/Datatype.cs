@@ -83,7 +83,7 @@ namespace VDS.RDF.Shacl.Constraints
             var literal = (ILiteralNode)n;
             var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
 
-            var rdf_langString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
+            var rdf_langString = RdfSpecsHelper.RdfLangString;
             var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
             var datatype = literal.DataType ?? stringDatatype;
 

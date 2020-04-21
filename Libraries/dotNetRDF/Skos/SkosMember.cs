@@ -38,7 +38,7 @@ namespace VDS.RDF.Skos
 
         internal static SkosMember Create(INode node)
         {
-            var a = node.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            var a = node.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
             var typeStatements = node.Graph.GetTriplesWithSubjectPredicate(node, a);
 
             var skosOrderedCollection = node.Graph.CreateUriNode(UriFactory.Create(SkosHelper.OrderedCollection));

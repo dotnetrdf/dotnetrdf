@@ -98,7 +98,7 @@ namespace VDS.RDF
 
             Assert.False(g.IsEmpty);
 
-            INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = g.CreateUriNode(RdfSpecsHelper.RdfType);
             Assert.True(g.GetTriplesWithPredicate(rdfType).Any());
 
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
