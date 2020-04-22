@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Globalization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -57,7 +58,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Double value.</param>
         public DoubleNode(IGraph g, double value)
-            : this(g, value, value.ToString()) { }
+            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the integer value of the double.

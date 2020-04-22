@@ -34,6 +34,7 @@ using System.Threading;
 using FluentAssertions;
 using Xunit;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -724,6 +725,7 @@ WHERE
             Assert.NotNull(resultGraph);
             Assert.Equal(9, resultGraph.Triples.Count); // Returns 3 rather than 9
         }
+
         [Fact]
         public void SparqlParameterizedStringDefaultPrefixOrder()
         {
@@ -742,6 +744,60 @@ WHERE {
             // then
             query.Namespaces.Prefixes.Should().HaveCount(2);
             query.Namespaces.GetNamespaceUri(string.Empty).Should().Be(new Uri("http://id.ukpds.org/schema/"));
+        }
+
+
+        [Theory]
+        [InlineData("en")]
+        [InlineData("de")]
+        public void SparqlMathWithCultureVariation(string culture)
+        {
+            TestTools.ExecuteWithChangedCulture(new CultureInfo(culture), SparqlMathTest);
+        }
+
+        private void SparqlMathTest()
+        {
+            const string update = @"
+DELETE { ?s ?p ?o. }
+INSERT { ?s ?p ?a. }
+WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
+";
+            const string query = @"SELECT * WHERE { ?s ?p ?o.}";
+
+            var graph = new Graph();
+            graph.Assert(graph.CreateBlankNode(), graph.CreateBlankNode(), 0.5.ToLiteral(graph));
+            Assert.Equal(0.5, graph.Triples.Select(t=>t.Object.AsValuedNode().AsDouble()).First());
+
+            var store = new TripleStore();
+            store.Add(graph);
+
+            var queryProcessor = new LeviathanQueryProcessor(store);
+            var queryParser = new SparqlQueryParser();
+            var q = queryParser.ParseFromString(query);
+            var result = q.Process(queryProcessor) as SparqlResultSet;
+            var oNode = result.First()["o"];
+            Assert.Equal("0.5", ((ILiteralNode)oNode).Value);
+
+            q = queryParser.ParseFromString("SELECT ?a WHERE { ?s ?p ?o. BIND(?o / 2 AS ?a) }");
+            //q = queryParser.ParseFromString("SELECT ?a WHERE { BIND (0.25 as ?a) }");
+            result = q.Process(queryProcessor) as SparqlResultSet;
+            oNode = result.First()["a"];
+            var o = oNode.AsValuedNode().AsDouble();
+            Assert.Equal(0.25, o);
+            Assert.Equal("0.25", ((ILiteralNode)oNode).Value);
+
+
+            var updateProcessor = new LeviathanUpdateProcessor(store);
+            var updateParser = new SparqlUpdateParser();
+            updateParser.ParseFromString(update).Process(updateProcessor);
+
+            result = queryParser.ParseFromString(query).Process(queryProcessor) as SparqlResultSet;
+            oNode = result.First()["o"];
+            //Assert.Equal("0.25", ((ILiteralNode)oNode).Value);
+            o = oNode.AsValuedNode().AsDouble();
+            Assert.Equal(0.25, o);
+            //@object is 25 when using German (Germany) regional format
+            //@object is 0.25 when using English (United Kingdom) regional format
         }
     }
 }

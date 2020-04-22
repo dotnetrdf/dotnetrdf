@@ -107,6 +107,7 @@ namespace VDS.RDF
             foreach (var ci in TestedCultureInfos)
             {
                 TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4m, n => n.AsDecimal()));
+                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(1000000.0m, n => n.AsDecimal()));
             }
         }
 
@@ -116,6 +117,7 @@ namespace VDS.RDF
             foreach (var ci in TestedCultureInfos)
             {
                 TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4d, n => n.AsDouble()));
+                TestTools.ExecuteWithChangedCulture(ci, ()=>RoundTripValuedNodeConversion(1000000.0d, n=>n.AsDouble()));
             }
         }
 
@@ -125,7 +127,42 @@ namespace VDS.RDF
             foreach (var ci in TestedCultureInfos)
             {
                 TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(3.4f, n => n.AsFloat()));
+                TestTools.ExecuteWithChangedCulture(ci, () => RoundTripValuedNodeConversion(1000.0e3f, n => n.AsFloat()));
             }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTestCultures))]
+        public void ShouldApplyInvariantFormattingToDecimalLiteralStringRegardlessOfCulture(CultureInfo ci)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", ()=>new DecimalNode(_graph, 3.4m)));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTestCultures))]
+        public void ShouldApplyInvariantFormattingToDoubleLiteralStringRegardlessOfCulture(CultureInfo ci)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new DoubleNode(_graph, 3.4d)));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTestCultures))]
+        public void ShouldApplyInvariantFormattingToFloatLiteralStringRegardlessOfCulture(CultureInfo ci)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new FloatNode(_graph, 3.4f)));
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTestCultures))]
+        public void ShouldApplyInvariantFormattingToLongLiteralStringRegardlessOfCulture(CultureInfo ci)
+        {
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3400000", () => new LongNode(_graph, 3400000L)));
+        }
+
+        private void AssertLiteralString(string expectLiteral, Func<IValuedNode> constructor)
+        {
+            var valuedNode = constructor();
+            Assert.Equal(expectLiteral, (valuedNode as ILiteralNode).Value);
         }
 
         private void RoundTripValuedNodeConversion<T>(dynamic value, Func<IValuedNode, T> convertBack)
