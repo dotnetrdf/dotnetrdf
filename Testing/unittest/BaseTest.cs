@@ -43,5 +43,10 @@ namespace VDS.RDF
                 new CultureInfo("ru-RU"), 
                 new CultureInfo("pt-BR")
             };
+
+        public static IEnumerable<object[]> GetTestCultures()
+        {
+            return TestedCultureInfos.Select(ci => new object[]{ci});
+        }
     }
 }

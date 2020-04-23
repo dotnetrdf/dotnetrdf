@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Globalization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -45,7 +46,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Decimal value.</param>
         /// <param name="lexicalValue">Lexical value.</param>
-        public DecimalNode(IGraph g, decimal value, String lexicalValue)
+        public DecimalNode(IGraph g, decimal value, string lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
         {
             _value = value;
@@ -57,7 +58,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Decimal value.</param>
         public DecimalNode(IGraph g, decimal value)
-            : this(g, value, value.ToString()) { }
+            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the integer value of the decimal.
