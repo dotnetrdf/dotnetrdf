@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+2.5.1
+-----
+
+Updated the constructors for classes derived from NumericNode so that the string literal value that is generated uses the C# InvariantCulture. This ensures that the literal string generated conforms to the lexical value space for the corresponding XML schema datatype. Thanks to @uyha for the bug report. (#305)
+
 2.5
 ---
 
