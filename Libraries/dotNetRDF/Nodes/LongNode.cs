@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Globalization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -45,7 +46,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public LongNode(IGraph g, long value, String lexicalValue)
+        public LongNode(IGraph g, long value, string lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        public LongNode(IGraph g, long value, String lexicalValue, Uri datatype)
+        public LongNode(IGraph g, long value, string lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
             _value = value;
@@ -67,7 +68,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Long value.</param>
         public LongNode(IGraph g, long value)
-            : this(g, value, value.ToString()) { }
+            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the long value.
@@ -141,7 +142,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Unsigned Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public UnsignedLongNode(IGraph g, ulong value, String lexicalValue)
+        public UnsignedLongNode(IGraph g, ulong value, string lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
 
         /// <summary>
@@ -151,19 +152,19 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Unsigned Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        public UnsignedLongNode(IGraph g, ulong value, String lexicalValue, Uri datatype)
+        public UnsignedLongNode(IGraph g, ulong value, string lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
             _value = value;
         }
 
         /// <summary>
-        /// Creates a new usigned long valued node.
+        /// Creates a new unsigned long valued node.
         /// </summary>
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Unsigned Long value.</param>
         public UnsignedLongNode(IGraph g, ulong value)
-            : this(g, value, value.ToString()) { }
+            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the long value of the ulong.
