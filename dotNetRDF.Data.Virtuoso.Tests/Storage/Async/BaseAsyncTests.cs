@@ -26,13 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using VDS.RDF.Core;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
@@ -51,7 +48,6 @@ namespace VDS.RDF.Storage
         /// Method to be implemented by derived classes to obtain the storage provider to test
         /// </summary>
         /// <returns></returns>
-        /// <r
         protected abstract IAsyncStorageProvider GetAsyncProvider();
 
         protected void Fail(IAsyncStorageProvider provider, String msg)
