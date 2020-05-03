@@ -233,9 +233,9 @@ namespace VDS.RDF.Writing
             {
                 // Create the DOCTYPE declaration
                 StringBuilder entities = new StringBuilder();
-                String uri;
+                string uri;
                 entities.Append('\n');
-                foreach (String prefix in context.NamespaceMap.Prefixes)
+                foreach (string prefix in context.NamespaceMap.Prefixes)
                 {
                     uri = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;
                     if (!uri.Equals(context.NamespaceMap.GetNamespaceUri(prefix).ToString()))
@@ -243,7 +243,7 @@ namespace VDS.RDF.Writing
                         context.UseDtd = false;
                         break;
                     }
-                    if (!prefix.Equals(String.Empty))
+                    if (!prefix.Equals(string.Empty))
                     {
                         entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
                     }
@@ -260,11 +260,11 @@ namespace VDS.RDF.Writing
 
             // Add all the existing Namespace Definitions here
             context.NamespaceMap.IncrementNesting();
-            foreach (String prefix in context.NamespaceMap.Prefixes)
+            foreach (string prefix in context.NamespaceMap.Prefixes)
             {
                 if (prefix.Equals("rdf")) continue;
 
-                if (!prefix.Equals(String.Empty))
+                if (!prefix.Equals(string.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
                     context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));
@@ -375,11 +375,11 @@ namespace VDS.RDF.Writing
                 // Generate the Type Reference creating a temporary namespace if necessary
                 UriRefType outType;
                 IUriNode typeNode = (IUriNode)typeTriple.Object;
-                String uriref = GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
+                string uriref = GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName)
                 {
                     // Need to generate a temporary namespace and try generating a QName again
-                    String tempPrefix, tempUri;
+                    string tempPrefix, tempUri;
                     GenerateTemporaryNamespace(context, typeNode, out tempPrefix, out tempUri);
  
                     uriref = GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
@@ -422,7 +422,7 @@ namespace VDS.RDF.Writing
                     if (uriref.Contains(':'))
                     {
                         // Create an element with appropriate namespace
-                        String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                        string ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                         context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
                     }
                     else
@@ -475,7 +475,7 @@ namespace VDS.RDF.Writing
                     if (t.Object.NodeType == NodeType.Literal)
                     {
                         ILiteralNode lit = (ILiteralNode)t.Object;
-                        if (lit.DataType == null && lit.Language.Equals(String.Empty))
+                        if (lit.DataType == null && lit.Language.Equals(string.Empty))
                         {
                             if (!simpleLiteralPredicates.Contains(t.Predicate))
                             {
@@ -524,11 +524,11 @@ namespace VDS.RDF.Writing
             {
                 UriRefType outType;
                 IUriNode p = (IUriNode)t.Predicate;
-                String uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
+                string uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName)
                 {
                     // Need to generate a temporary namespace
-                    String tempPrefix, tempUri;
+                    string tempPrefix, tempUri;
                     GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
                     context.Writer.WriteAttributeString("xmlns", tempPrefix, null, Uri.EscapeUriString(tempUri));
                     uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
@@ -539,7 +539,7 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':'))
                 {
                     // Create an attribute in appropriate namespace
-                    String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                    string ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                     context.Writer.WriteAttributeString(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns, t.Object.ToString());
                 }
                 else
@@ -570,8 +570,8 @@ namespace VDS.RDF.Writing
 
             // First generate the Predicate Node
             UriRefType outType;
-            String uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
-            String tempPrefix = null, tempUri = null;
+            string uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
+            string tempPrefix = null, tempUri = null;
             if (outType != UriRefType.QName)
             {
                 // Need to generate a temporary namespace
@@ -583,7 +583,7 @@ namespace VDS.RDF.Writing
             if (uriref.Contains(':'))
             {
                 // Create an element in the appropriate namespace
-                String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                string ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                 context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
             }
             else
@@ -629,11 +629,22 @@ namespace VDS.RDF.Writing
                     ILiteralNode lit = (ILiteralNode)t.Object;
                     if (lit.DataType != null)
                     {
-                        if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
+                        if (lit.DataType.AbsoluteUri.Equals(Namespace.Rdf["langString"]))
+                        {
+                            // Language-tagged string
+                            context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
+                            context.Writer.WriteString(lit.Value);
+                        }
+                        else if (lit.DataType.AbsoluteUri.Equals(Namespace.Rdf["XMLLiteral"]))
                         {
                             // XML Literal
                             context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Literal");
                             context.Writer.WriteRaw(lit.Value);
+                        }
+                        else if (lit.DataType.AbsoluteUri.Equals(Namespace.Xsd["string"]) && CompressionLevel > WriterCompressionLevel.None)
+                        {
+                            // Simple literal
+                            context.Writer.WriteString(lit.Value);
                         }
                         else
                         {
@@ -642,7 +653,7 @@ namespace VDS.RDF.Writing
                             context.Writer.WriteString(lit.Value);
                         }
                     }
-                    else if (!lit.Language.Equals(String.Empty))
+                    else if (!lit.Language.Equals(string.Empty))
                     {
                         // Language specified Literal
                         context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
@@ -742,9 +753,9 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private String GenerateUriRef(RdfXmlWriterContext context, Uri u, UriRefType type, out UriRefType outType)
+        private string GenerateUriRef(RdfXmlWriterContext context, Uri u, UriRefType type, out UriRefType outType)
         {
-            String uriref, qname;
+            string uriref, qname;
 
             if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && (type != UriRefType.QName || RdfXmlSpecsHelper.IsValidQName(qname)))
             {
@@ -764,7 +775,7 @@ namespace VDS.RDF.Writing
             {
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
                 {
-                    String prefix = uriref.Substring(0, uriref.IndexOf(':'));
+                    string prefix = uriref.Substring(0, uriref.IndexOf(':'));
                     if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
                     {
                         // Muse have used a DTD to generate this style of URI Reference
@@ -780,14 +791,14 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    if (context.NamespaceMap.HasNamespace(String.Empty))
+                    if (context.NamespaceMap.HasNamespace(string.Empty))
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
+                        uriref = context.NamespaceMap.GetNamespaceUri(string.Empty).AbsoluteUri + uriref.Substring(1);
                         outType = UriRefType.Uri;
                     }
                     else
                     {
-                        String baseUri = context.Graph.BaseUri.AbsoluteUri;
+                        string baseUri = context.Graph.BaseUri.AbsoluteUri;
                         if (!baseUri.EndsWith("#")) baseUri += "#";
                         uriref = baseUri + uriref;
                         outType = UriRefType.Uri;
@@ -798,10 +809,10 @@ namespace VDS.RDF.Writing
             return uriref;
         }
 
-        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out String tempPrefix, out String tempUri)
+        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out string tempPrefix, out string tempUri)
         {
-            String uri = u.Uri.AbsoluteUri;
-            String nsUri;
+            string uri = u.Uri.AbsoluteUri;
+            string nsUri;
             if (uri.Contains("#"))
             {
                 // Create a Hash Namespace Uri
@@ -819,7 +830,7 @@ namespace VDS.RDF.Writing
             {
                 context.NextNamespaceID++;
             }
-            String prefix = "ns" + context.NextNamespaceID;
+            string prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
             context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
 
@@ -833,7 +844,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for raising the Warning event.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             if (Warning != null)
             {

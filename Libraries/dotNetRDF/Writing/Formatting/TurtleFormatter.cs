@@ -211,7 +211,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append('@');
                     output.Append(l.Language.ToLower());
                 }
-                else if (l.DataType != null)
+                else if (l.DataType != null && !Namespace.Xsd["string"].Equals(l.DataType.AbsoluteUri))
                 {
                     output.Append("^^");
                     if (_qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out var qname))

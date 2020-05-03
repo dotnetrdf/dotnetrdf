@@ -62,6 +62,11 @@ namespace VDS.RDF.Nodes
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.AbsoluteUri;
+                        if (dt.Equals(Namespace.Rdf["langString"]))
+                        {
+                            return new StringNode(n.Graph, lit.Value, lit.Language);
+                        }
+
                         switch (dt)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:

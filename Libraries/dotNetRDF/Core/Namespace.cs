@@ -26,16 +26,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Reflection;
-using System.Text;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
-    public class Namespace : DynamicObject
+    /// <summary>
+    /// Provides a convenient way to generate URIs from a fixed URI prefix and string suffix.
+    /// </summary>
+    public class Namespace 
     {
-        private string BaseUri { get; }
+        /// <summary>
+        /// The internal cache mapping a suffix string to its full expansion.
+        /// </summary>
+        private readonly Dictionary<string, string> _mappings = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Get the base URI for this namespace.
+        /// </summary>
+        public string BaseUri { get; }
+
+        /// <summary>
+        /// Create a new namespace with the specified URI prefix.
+        /// </summary>
+        /// <param name="baseUri">The prefix used to generate URIs in this namespace.</param>
         public Namespace(string baseUri)
         {
             if (baseUri == null) throw new ArgumentNullException(nameof(baseUri), "Base URI must not be null");
@@ -43,54 +55,42 @@ namespace VDS.RDF.Core
             BaseUri = baseUri;
         }
 
-        public Expansion this[string suffix] => new Expansion(BaseUri + suffix);
-
-        /// <inheritdoc />
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        /// <summary>
+        /// Return a string created by concatenating <paramref name="suffix"/> with the <see cref="BaseUri"/> of this namespace instance.
+        /// </summary>
+        /// <param name="suffix">The string to be concatenated with the <see cref="BaseUri"/> of this namespace.</param>
+        /// <returns>The concatenation of <see cref="BaseUri"/> and <paramref name="suffix"/>.</returns>
+        /// <remarks>This class uses an internal cache of the concatenated strings and will return the value from that cache on repeated calls with the same suffix.</remarks>
+        public string this[string suffix]
         {
-            if (binder.ReturnType.IsAssignableFrom(typeof(Expansion)))
+            get
             {
-                result = new Expansion(BaseUri + binder.Name);
-                return true;
+                if (_mappings.TryGetValue(suffix, out var result))
+                {
+                    return result;
+                }
+                result = BaseUri + suffix;
+                _mappings[suffix] = result;
+                return result;
             }
-            result = null;
-            return false;
         }
 
+        /// <summary>
+        /// The <see cref="Namespace"/> instance for the standard XML Schema namespace.
+        /// </summary>
+        public static readonly Namespace Xsd = new Namespace("http://www.w3.org/2001/XMLSchema#");
 
-        public static readonly dynamic Xsd = new Namespace("http://www.w3.org/2001/XMLSchema#");
-        public static readonly dynamic Rdf = new Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        public static readonly dynamic Rdfs = new Namespace("http://www.w3.org/2000/01/rdf-schema#");
-    }
+        /// <summary>
+        /// The Namespace instance for the standard RDF namespace.
+        /// </summary>
+        public static readonly Namespace Rdf = new Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
-    public class Expansion
-    {
-        private readonly string _value;
+        /// <summary>
+        /// The Namespace instance for the standard RDF Schema namespace.
+        /// </summary>
+        public static readonly Namespace Rdfs = new Namespace("http://www.w3.org/2000/01/rdf-schema#");
 
-        public Expansion(string value)
-        {
-            _value = value;
-        }
 
-        public static implicit operator Uri(Expansion e)
-        {
-            return e.AsUri();
-        }
-
-        public static implicit operator string(Expansion e)
-        {
-            return e.AsString();
-        }
-
-        public Uri AsUri()
-        {
-            return UriFactory.Create(_value);
-        }
-
-        public string AsString()
-        {
-            return _value;
-        }
     }
 
 }

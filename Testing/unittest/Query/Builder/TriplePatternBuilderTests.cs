@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using Xunit;
 using Moq;
+using VDS.RDF.Dynamic;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
@@ -289,7 +290,7 @@ namespace VDS.RDF.Query.Builder
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
-            Assert.Null(((dynamic)pattern.Object).Node.DataType);
+            Assert.Equal(Namespace.Xsd["string"], ((dynamic)pattern.Object).Node.DataType.AbsoluteUri);
             Assert.True(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
@@ -308,7 +309,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         [Fact]
-        public void CanCreateTriplePatternsUsingLiteralObjectWithLanuageTag()
+        public void CanCreateTriplePatternsUsingLiteralObjectWithLanguageTag()
         {
             // when
             _builder.Subject("s").Predicate("p").ObjectLiteral(42, "pl-PL");
@@ -318,12 +319,12 @@ namespace VDS.RDF.Query.Builder
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
-            Assert.Null(((dynamic)pattern.Object).Node.DataType);
+            Assert.Equal(Namespace.Rdf["langString"], ((dynamic)pattern.Object).Node.DataType.AbsoluteUri);
             Assert.Equal("pl-pl", ((dynamic)pattern.Object).Node.Language);
         }
 
         [Fact]
-        public void CanCreateTriplePatternsUsingLiteralObjectWithLanuageTag2()
+        public void CanCreateTriplePatternsUsingLiteralObjectWithLanguageTag2()
         {
             // when
             _builder.Subject("s").Predicate("p").ObjectLiteral(42, "pl-PL");
@@ -333,7 +334,7 @@ namespace VDS.RDF.Query.Builder
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
-            Assert.Null(((dynamic)pattern.Object).Node.DataType);
+            Assert.Equal(Namespace.Rdf["langString"], ((dynamic)pattern.Object).Node.DataType.AbsoluteUri);
             Assert.Equal("pl-pl", ((dynamic)pattern.Object).Node.Language);
         }
 
@@ -351,7 +352,7 @@ namespace VDS.RDF.Query.Builder
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
-            Assert.Null(((dynamic)pattern.Object).Node.DataType);
+            Assert.Equal(Namespace.Xsd["string"], ((dynamic) pattern.Object).Node.DataType.AbsoluteUri);
             Assert.True(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
@@ -369,7 +370,7 @@ namespace VDS.RDF.Query.Builder
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
-            Assert.Null(((dynamic)pattern.Object).Node.DataType);
+            Assert.Equal(Namespace.Xsd["string"], ((dynamic)pattern.Object).Node.DataType.AbsoluteUri);
             Assert.True(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
@@ -387,7 +388,7 @@ namespace VDS.RDF.Query.Builder
             IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("2012-10-13T20:35:10.000000+01:30", ((dynamic)pattern.Object).Node.Value);
-            Assert.Null(((dynamic)pattern.Object).Node.DataType);
+            Assert.Equal(Namespace.Xsd["string"], ((dynamic)pattern.Object).Node.DataType.AbsoluteUri);
             Assert.True(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 

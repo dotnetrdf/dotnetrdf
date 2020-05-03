@@ -157,7 +157,7 @@ namespace VDS.RDF.Writing
                     // append object to the value of the @type member of node; unless such an item already exists. 
                     // If no such member exists, create one and initialize it to an array whose only item is object. 
                     // Finally, continue to the next RDF triple.
-                    if (predicate.Equals(RdfSpecsHelper.RdfType) && !_options.UseRdfType &&
+                    if (predicate.Equals(Namespace.Rdf["type"]) && !_options.UseRdfType &&
                         (triple.Object is IUriNode || triple.Object is IBlankNode))
                     {
                         if (node.Property("@type") == null)
@@ -239,7 +239,7 @@ namespace VDS.RDF.Writing
                         while (IsWellFormedListNode(node, property, nodeUsagesMap))
                         {
                             // 5.3.3.1 - Append the only item of rdf:first member of node to the list array.
-                            list.Add((node[RdfSpecsHelper.RdfListFirst] as JArray)[0]);
+                            list.Add((node[Namespace.Rdf["first"]] as JArray)[0]);
                             // 5.3.3.2 - Append the value of the @id member of node to the list nodes array.
                             listNodes.Add(node["@id"]);
                             // 5.3.3.3 - Initialize node usage to the only item of the usages member of node.
@@ -252,10 +252,10 @@ namespace VDS.RDF.Writing
                             if (!JsonLdProcessor.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
                         }
                         // 5.3.4 - If property equals rdf:first, i.e., the detected list is nested inside another list
-                        if (property.Equals(RdfSpecsHelper.RdfListFirst))
+                        if (property.Equals(Namespace.Rdf["first"]))
                         {
                             // 5.3.4.1 - and the value of the @id of node equals rdf:nil, i.e., the detected list is empty, continue with the next usage item. The rdf:nil node cannot be converted to a list object as it would result in a list of lists, which isn't supported.
-                            if (RdfSpecsHelper.RdfListNil.Equals(node["@id"].Value<string>()))
+                            if (Namespace.Rdf["nil"].Equals(node["@id"].Value<string>()))
                             {
                                 continue;
                             }
@@ -265,7 +265,7 @@ namespace VDS.RDF.Writing
                             // 5.3.4.4 - Set head to the value of the head id member of graph object so that all it's properties can be accessed.
                             head = graphObject[headId];
                             // 5.3.4.5 - Then, set head to the only item in the value of the rdf:rest member of head.
-                            head = (head[RdfSpecsHelper.RdfListRest] as JArray)[0] as JObject;
+                            head = (head[Namespace.Rdf["rest"]] as JArray)[0] as JObject;
                             // 5.3.4.6 - Finally, remove the last item of the list array and the last item of the list nodes array.
                             list.RemoveAt(list.Count - 1);
                             listNodes.RemoveAt(listNodes.Count - 1);
@@ -339,13 +339,13 @@ namespace VDS.RDF.Writing
 
             if (node.Usages.Count != 1) return false;
 
-            var first = node[RdfSpecsHelper.RdfListFirst] as JArray;
-            var rest = node[RdfSpecsHelper.RdfListRest] as JArray;
+            var first = node[Namespace.Rdf["first"]] as JArray;
+            var rest = node[Namespace.Rdf["rest"]] as JArray;
             if (first == null || rest == null) return false;
             if (first.Count != 1 || rest.Count != 1) return false;
             var type = node["@type"] as JArray;
             if (type != null && (type.Count != 1 ||
-                                 type.Count == 1 && !type[0].Value<string>().Equals(RdfSpecsHelper.RdfList)))
+                                 type.Count == 1 && !type[0].Value<string>().Equals(Namespace.Rdf["list"])))
                 return false;
             var propCount = node.Properties().Count();
             if (type == null && propCount != 3 || type != null && propCount != 4) return false;

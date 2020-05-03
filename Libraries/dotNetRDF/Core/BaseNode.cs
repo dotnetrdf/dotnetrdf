@@ -25,9 +25,6 @@
 */
 
 using System;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -50,10 +47,6 @@ namespace VDS.RDF
         /// Node Type for the Node.
         /// </summary>
         protected NodeType _nodetype = NodeType.Literal;
-        /// <summary>
-        /// Stores the computed Hash Code for this Node.
-        /// </summary>
-        protected readonly int _hashcode;
 
         /// <summary>
         /// Base Constructor which instantiates the Graph reference, Graph Uri and Node Type of the Node.
@@ -65,7 +58,6 @@ namespace VDS.RDF
             _graph = g;
             if (_graph != null) _graphUri = _graph.BaseUri;
             _nodetype = type;
-            _hashcode = ComputeHashCode();
         }
 
         /// <summary>
@@ -131,7 +123,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="formatter">Formatter.</param>
         /// <returns></returns>
-        public virtual String ToString(INodeFormatter formatter)
+        public virtual string ToString(INodeFormatter formatter)
         {
             return formatter.Format(this);
         }
@@ -142,27 +134,13 @@ namespace VDS.RDF
         /// <param name="formatter">Formatter.</param>
         /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
-        public virtual String ToString(INodeFormatter formatter, TripleSegment segment)
+        public virtual string ToString(INodeFormatter formatter, TripleSegment segment)
         {
             return formatter.Format(this, segment);
         }
 
-        /// <summary>
-        /// Gets a Hash Code for a Node.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Implemented by getting the Hash Code of the result of ToString for a Node prefixed with its Node Type, this is pre-computed for efficiency when a Node is created since Nodes are immutable.  See remarks on ToString for more detail.
-        /// </para>
-        /// <para>
-        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Node will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details).
-        /// </para>
-        /// </remarks>
-        public override int GetHashCode()
-        {
-            return _hashcode;
-        }
+        /// <inheritdoc />
+        public abstract override int GetHashCode();
 
         /// <summary>
         /// The Equality operator is defined for Nodes.
@@ -324,45 +302,5 @@ namespace VDS.RDF
         /// </remarks>
         public abstract bool Equals(IVariableNode other);
 
-#if !NETCORE
-
-        /// <summary>
-        /// Gets the information for serialization.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException("This INode implementation does not support Serialization");
-        }
-
-        /// <summary>
-        /// Gets the schema for XML serialization.
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public virtual void ReadXml(XmlReader reader)
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization.
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public virtual void WriteXml(XmlWriter writer)
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
-        }
-
-#endif
     }
 }

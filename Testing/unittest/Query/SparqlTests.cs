@@ -41,12 +41,20 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
 
     public class SparqlTests
     {
+        private ITestOutputHelper _output;
+
+        public SparqlTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
             var parser = new SparqlQueryParser();
@@ -111,12 +119,12 @@ namespace VDS.RDF.Query
 
             //Set a URI to a valid value
             query.SetUri("s", new Uri("http://example.org"));
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _output.WriteLine(query.ToString());
+            _output.WriteLine(string.Empty);
 
             //Set the parameter to a null
             query.SetParameter("s", null);
-            Console.WriteLine(query.ToString());
+            _output.WriteLine(query.ToString());
         }
 
         [Fact]
@@ -127,8 +135,8 @@ namespace VDS.RDF.Query
 
             //Set a URI to a valid value
             query.SetUri("s", new Uri("http://example.org"));
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _output.WriteLine(query.ToString());
+            _output.WriteLine(string.Empty);
 
             //Set the URI to a null
             Assert.Throws<ArgumentNullException>(() => query.SetUri("s", null));
@@ -175,7 +183,7 @@ namespace VDS.RDF.Query
                     {
                         while (!reader.EndOfStream)
                         {
-                            Console.WriteLine(reader.ReadLine());
+                            _output.WriteLine(reader.ReadLine());
                         }
                         reader.Close();
                     }
@@ -211,7 +219,7 @@ namespace VDS.RDF.Query
                     {
                         while (!reader.EndOfStream)
                         {
-                            Console.WriteLine(reader.ReadLine());
+                            _output.WriteLine(reader.ReadLine());
                         }
                         reader.Close();
                     }
@@ -255,40 +263,40 @@ where {
 }";
 
                 SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-                Console.WriteLine("Results obtained with QueryWithResultSet()");
+                _output.WriteLine("Results obtained with QueryWithResultSet()");
                 SparqlResultSet results = endpoint.QueryWithResultSet(query);
                 TestTools.ShowResults(results);
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
-                Console.WriteLine("Results obtained with QueryRaw()");
+                _output.WriteLine("Results obtained with QueryRaw()");
                 using (HttpWebResponse response = endpoint.QueryRaw(query))
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         while (!reader.EndOfStream)
                         {
-                            Console.WriteLine(reader.ReadLine());
+                            _output.WriteLine(reader.ReadLine());
                         }
                         reader.Close();
                     }
                     response.Close();
                 }
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
-                Console.WriteLine("Results obtained with QueryRaw() requesting JSON");
+                _output.WriteLine("Results obtained with QueryRaw() requesting JSON");
                 using (HttpWebResponse response = endpoint.QueryRaw(query, new String[] { "application/sparql-results+json" }))
                 {
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         while (!reader.EndOfStream)
                         {
-                            Console.WriteLine(reader.ReadLine());
+                            _output.WriteLine(reader.ReadLine());
                         }
                         reader.Close();
                     }
                     response.Close();
                 }
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
             }
             finally
@@ -334,7 +342,7 @@ where {
         [Fact]
         public void SparqlJsonResultSet()
         {
-            Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
+            _output.WriteLine("Tests that JSON Parser parses language specifiers correctly");
 
             String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + ">\nSELECT DISTINCT ?comment WHERE {?s rdfs:comment ?comment}";
 
@@ -359,26 +367,26 @@ where {
                 SparqlXmlParser xmlparser = new SparqlXmlParser();
                 SparqlResultSet r1 = new SparqlResultSet();
                 xmlparser.Load(r1, "results.xml");
-                Console.WriteLine("Result Set after XML serialization and reparsing contains:");
+                _output.WriteLine("Result Set after XML serialization and reparsing contains:");
                 foreach (SparqlResult r in r1)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 SparqlJsonParser jsonparser = new SparqlJsonParser();
                 SparqlResultSet r2 = new SparqlResultSet();
                 jsonparser.Load(r2, "results.json");
-                Console.WriteLine("Result Set after JSON serialization and reparsing contains:");
+                _output.WriteLine("Result Set after JSON serialization and reparsing contains:");
                 foreach (SparqlResult r in r2)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 Assert.Equal(r1, r2);
 
-                Console.WriteLine("Result Sets were equal as expected");
+                _output.WriteLine("Result Sets were equal as expected");
             }
         }
 
@@ -405,8 +413,8 @@ SELECT * WHERE {
             {
                 query.SetLiteral("type", value);
                 query.SetLiteral("@type", value);
-                Console.WriteLine(query.ToString());
-                Console.WriteLine();
+                _output.WriteLine(query.ToString());
+                _output.WriteLine(string.Empty);
 
                 SparqlQuery q = parser.ParseFromString(query.ToString());
                 Assert.Single(q.Variables);
@@ -424,16 +432,16 @@ SELECT * WHERE {
 
             query.SetUri("type", new Uri("http://example.org/type"));
 
-            Console.WriteLine("Only one of the type parameters should be replaced here");
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _output.WriteLine("Only one of the type parameters should be replaced here");
+            _output.WriteLine(query.ToString());
+            _output.WriteLine(string.Empty);
 
             query.SetUri("type1", new Uri("http://example.org/anotherType"));
             query.SetUri("type2", new Uri("http://example.org/yetAnotherType"));
 
-            Console.WriteLine("Now all the type parameters should have been replaced");
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _output.WriteLine("Now all the type parameters should have been replaced");
+            _output.WriteLine(query.ToString());
+            _output.WriteLine(string.Empty);
 
             Assert.Throws<FormatException>(() =>
             {
@@ -467,9 +475,9 @@ SELECT * WHERE {
             String testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 1";
 
-            Console.WriteLine("Testing Sparql Connector with vendor specific extensions in query");
-            Console.WriteLine();
-            Console.WriteLine(testQuery);
+            _output.WriteLine("Testing Sparql Connector with vendor specific extensions in query");
+            _output.WriteLine(string.Empty);
+            _output.WriteLine(testQuery);
 
             Assert.Throws<RdfException>(() =>
             {
@@ -516,7 +524,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r);
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.Equal(1, rset.Count);
             }
@@ -610,11 +618,11 @@ WHERE
         {
             foreach (String query in this._langSpecCaseQueries)
             {
-                Console.WriteLine("Checking query:\n" + query);
+                _output.WriteLine("Checking query:\n" + query);
                 SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(1, results.Count);
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
             }
         }
 

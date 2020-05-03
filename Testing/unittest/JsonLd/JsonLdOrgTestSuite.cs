@@ -114,7 +114,7 @@ namespace VDS.RDF.JsonLd
             var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
             var input = new TripleStore();
             nqParser.Load(input, inputPath);
-            FixStringLiterals(input);
+            //FixStringLiterals(input);
             var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var expectedOutput = JToken.Parse(expectedOutputJson);
             var jsonLdWriter =

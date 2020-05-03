@@ -29,55 +29,48 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class for representing Blank RDF Nodes.
+    /// Class for representing Literal Nodes where the Literal values are not normalized.
     /// </summary>
-    public class BlankNode 
-        : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
+    internal class NonNormalizedLiteralNode 
+        : LiteralNode, IComparable<NonNormalizedLiteralNode>
     {
         /// <summary>
-        /// Internal Only Constructor for Blank Nodes.
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to.</param>
-        protected internal BlankNode(IGraph g)
-            : base(g) { }
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, string literal)
+            : base(g, literal, false) { }
 
         /// <summary>
-        /// Internal Only constructor for Blank Nodes.
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to.</param>
-        /// <param name="id">Custom Node ID to use.</param>
-        protected internal BlankNode(IGraph g, string id)
-            : base(g, id) { }
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="langspec">Lanaguage Specifier for the Literal.</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, string literal, string langspec)
+            : base(g, literal, langspec, false) { }
 
         /// <summary>
-        /// Internal Only constructor for Blank Nodes.
+        /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="factory">Node Factory from which to obtain a Node ID.</param>
-        protected internal BlankNode(INodeFactory factory)
-            : base(factory) { }
-
+        /// <param name="g">Graph this Node is in.</param>
+        /// <param name="literal">String value of the Literal.</param>
+        /// <param name="datatype">Uri for the Literals Data Type.</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, string literal, Uri datatype)
+            : base(g, literal, datatype, false) { }
 
         /// <summary>
-        /// Implementation of Compare To for Blank Nodes.
+        /// Implementation of Compare To for Literal Nodes.
         /// </summary>
-        /// <param name="other">Blank Node to Compare To.</param>
+        /// <param name="other">Literal Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
         /// Simply invokes the more general implementation of this method.
         /// </remarks>
-        public int CompareTo(BlankNode other)
+        public int CompareTo(NonNormalizedLiteralNode other)
         {
-            return CompareTo((IBlankNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Blank Node.
-        /// </summary>
-        /// <param name="other">Blank Node.</param>
-        /// <returns></returns>
-        public bool Equals(BlankNode other)
-        {
-            return base.Equals((IBlankNode)other);
+            return CompareTo((ILiteralNode)other);
         }
     }
 }

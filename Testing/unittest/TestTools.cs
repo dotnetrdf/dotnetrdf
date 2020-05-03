@@ -68,7 +68,7 @@ namespace VDS.RDF
             }
             else
             {
-                Assert.NotEqual(a.GetHashCode(), b.GetHashCode());
+                // Assert.NotEqual(a.GetHashCode(), b.GetHashCode()); - Not conclusive, URIs may differ but have the same hashcode
                 Assert.NotEqual(a, b);
             }
         }

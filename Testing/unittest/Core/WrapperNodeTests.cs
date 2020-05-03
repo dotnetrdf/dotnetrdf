@@ -23,12 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml;
-using System.Xml.Serialization;
-
 namespace VDS.RDF
 {
     using System;
@@ -397,50 +391,6 @@ namespace VDS.RDF
             var actual = ((ILiteralNode)wrapper).DataType;
 
             Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void Doesnt_implement_GetObjectData()
-        {
-            var node = new NodeFactory().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node);
-            var serializer = new BinaryFormatter(null, default(StreamingContext));
-
-            using (var stream = new MemoryStream())
-            {
-                Assert.Throws<NotImplementedException>(() =>
-                    serializer.Serialize(stream, wrapper));
-            }
-        }
-
-        [Fact]
-        public void Doesnt_implement_GetSchema()
-        {
-            var node = new NodeFactory().CreateBlankNode();
-            IXmlSerializable wrapper = new MockWrapperNode(node);
-
-            Assert.Throws<NotImplementedException>(() =>
-                wrapper.GetSchema());
-        }
-
-        [Fact]
-        public void Doesnt_implement_ReadXml()
-        {
-            var node = new NodeFactory().CreateBlankNode();
-            IXmlSerializable wrapper = new MockWrapperNode(node);
-
-            Assert.Throws<NotImplementedException>(() =>
-                wrapper.ReadXml(XmlReader.Create(Stream.Null)));
-        }
-
-        [Fact]
-        public void Doesnt_implement_WriteXml()
-        {
-            var node = new NodeFactory().CreateBlankNode();
-            IXmlSerializable wrapper = new MockWrapperNode(node);
-
-            Assert.Throws<NotImplementedException>(() =>
-                wrapper.WriteXml(XmlWriter.Create(Stream.Null)));
         }
     }
 }

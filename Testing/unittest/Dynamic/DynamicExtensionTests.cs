@@ -179,44 +179,43 @@ WHERE {
 
 :s
     :p
-        :x ,
         _:blank ,
+        :x ,
+        """"@en ,
         0E0 ,
         ""0""^^xsd:float ,
+        0 ,
         0.0 ,
         false ,
         ""1900-01-01""^^xsd:dateTime ,
         ""P1D""^^xsd:duration ,
-        0 ,
         """" ,
-        """"^^:datatype ,
-        """"@en .
+        """"^^:datatype .
 ");
 
             var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT ?o
 WHERE {
     ?s ?p ?o .
-}
+} ORDER BY ?o
 ");
 
             var d = new DynamicSparqlResultSet(results);
 
             Assert.Collection(
                 d,
-                item => Assert.IsType<Uri>(item["o"]),
                 item => Assert.IsAssignableFrom<IBlankNode>(item["o"]),
+                item => Assert.IsType<Uri>(item["o"]),
+                item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]),
                 item => Assert.IsType<double>(item["o"]),
                 item => Assert.IsType<float>(item["o"]),
+                item => Assert.IsType<long>(item["o"]),
                 item => Assert.IsType<decimal>(item["o"]),
                 item => Assert.IsType<bool>(item["o"]),
                 item => Assert.IsType<DateTimeOffset>(item["o"]),
                 item => Assert.IsType<TimeSpan>(item["o"]),
-                item => Assert.IsType<long>(item["o"]),
                 item => Assert.IsType<string>(item["o"]),
-                item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]));
-
         }
 
         [Fact]

@@ -24,43 +24,32 @@
 // </copyright>
 */
 
-using System;
-
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Node Type Values.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    public enum NodeType
     {
         /// <summary>
-        /// Creates a new Variable Node.
+        /// A Blank Node
         /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="varName">Variable Name.</param>
-        protected internal VariableNode(IGraph g, string varName)
-            : base(g, varName) { }
-
-
+        Blank = 0, 
         /// <summary>
-        /// Compares this Node to another Variable Node.
+        /// A Uri Node
         /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
-        {
-            return base.CompareTo((IVariableNode)other);
-        }
-
+        Uri = 1, 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
+        /// A Literal Node
         /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
-        {
-            return base.Equals((IVariableNode)other);
-        }
+        Literal = 2,
+        /// <summary>
+        /// A Graph Literal Node
+        /// </summary>
+        GraphLiteral = 3,
+        /// <summary>
+        /// A Variable Node (currently only used in N3)
+        /// </summary>
+        Variable = 4,
     }
 }

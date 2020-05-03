@@ -144,7 +144,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append('@');
                 output.Append(l.Language.ToLower());
             }
-            else if (l.DataType != null)
+            else if (l.DataType != null && !Namespace.Xsd["string"].Equals(l.DataType.AbsoluteUri))
             {
                 output.Append("^^<");
                 output.Append(FormatUri(l.DataType));

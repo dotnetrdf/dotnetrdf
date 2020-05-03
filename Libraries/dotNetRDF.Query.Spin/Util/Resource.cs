@@ -27,12 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Model;
 using System.Reflection;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.Spin.Util
 {
@@ -44,8 +41,8 @@ namespace VDS.RDF.Query.Spin.Util
 
         #region "Basic resource wrapper implementation "
 
-        private INode _source;
-        private SpinProcessor _model;
+        private readonly INode _source;
+        private readonly SpinProcessor _model;
 
         //TODO DO NOT USE THIS ONE !!!
         //internal static Resource Get(INode node)
@@ -60,9 +57,9 @@ namespace VDS.RDF.Query.Spin.Util
         internal static Resource Get(INode node, SpinProcessor spinModel)
         {
             if (node == null) return null;
-            if (node is Resource && ((IResource)node).getModel() == spinModel)
+            if (node is Resource resource && resource.getModel() == spinModel)
             {
-                return (Resource)node;
+                return resource;
             }
             return new Resource(node, spinModel);
         }
@@ -311,32 +308,14 @@ namespace VDS.RDF.Query.Spin.Util
 
         #region "INode implementation "
 
-        public NodeType NodeType
-        {
-            get
-            {
-                return _source.NodeType;
-            }
-        }
+        public NodeType NodeType => _source.NodeType;
 
-        public IGraph Graph
-        {
-            get
-            {
-                return _source.Graph;
-            }
-        }
+        public IGraph Graph => _source.Graph;
 
         public Uri GraphUri
         {
-            get
-            {
-                return _source.GraphUri;
-            }
-            set
-            {
-                _source.GraphUri = value;
-            }
+            get => _source.GraphUri;
+            set => _source.GraphUri = value;
         }
 
         public string ToString(Writing.Formatting.INodeFormatter formatter)
@@ -423,24 +402,9 @@ namespace VDS.RDF.Query.Spin.Util
             return _source.Equals(other);
         }
 
-        public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        public override int GetHashCode()
         {
-            _source.GetObjectData(info, context);
-        }
-
-        public System.Xml.Schema.XmlSchema GetSchema()
-        {
-            return _source.GetSchema();
-        }
-
-        public void ReadXml(System.Xml.XmlReader reader)
-        {
-            _source.ReadXml(reader);
-        }
-
-        public void WriteXml(System.Xml.XmlWriter writer)
-        {
-            _source.WriteXml(writer);
+            return _source.GetHashCode();
         }
 
         #endregion

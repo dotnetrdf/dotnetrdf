@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.RDF.Core;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -228,7 +229,7 @@ namespace VDS.RDF.Storage
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to remove some triples...");
-                    List<Triple> ts = g.GetTriplesWithPredicate(RdfSpecsHelper.RdfType).ToList();
+                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(Namespace.Rdf["type"])).ToList();
                     resArgs = null;
                     signal.Reset();
                     provider.UpdateGraph(RemoveTriplesUri, null, ts, (_, args, state) =>

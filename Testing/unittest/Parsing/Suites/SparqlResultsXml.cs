@@ -23,7 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.IO;
 using VDS.RDF.Core;
 using VDS.RDF.Query;
@@ -83,14 +82,14 @@ namespace VDS.RDF.Parsing.Suites
 
             Assert.Equal(NodeType.Literal, second.NodeType);
             ILiteralNode secondLit = (ILiteralNode) second;
-            Assert.NotEqual(String.Empty, secondLit.Language);
+            Assert.NotEqual(string.Empty, secondLit.Language);
             Assert.Equal("en", secondLit.Language);
             Assert.Equal("test", secondLit.Value);
 
             Assert.Equal(NodeType.Literal, third.NodeType);
             ILiteralNode thirdLit = (ILiteralNode) third;
-            Assert.Equal(String.Empty, thirdLit.Language);
-            Assert.Equal((Uri)Namespace.Xsd["string"], thirdLit.DataType);
+            Assert.Equal(string.Empty, thirdLit.Language);
+            Assert.Equal(Namespace.Xsd["string"], thirdLit.DataType.AbsoluteUri);
             Assert.Equal("test plain literal", thirdLit.Value);
         }
 
@@ -98,7 +97,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSparqlResultsXmlConflictingAttributes()
         {
             // Test case based off of CORE-410
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
             Assert.Throws<RdfParseException>(() => ResultsParser.Load(results, @"resources\sparql\bad-core-410.srx"));
         }

@@ -31,11 +31,19 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
     public class RdfXmlWriterTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public RdfXmlWriterTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         private readonly List<IRdfWriter> _writers = new List<IRdfWriter>()
         {
             new RdfXmlWriter(WriterCompressionLevel.High),
@@ -52,28 +60,28 @@ namespace VDS.RDF.Writing
         {
             foreach (IRdfWriter writer in this._writers)
             {
-                Console.WriteLine("Checking round trip with " + writer.GetType().Name);
+                _output.WriteLine("Checking round trip with " + writer.GetType().Name);
                 System.IO.StringWriter strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 Graph h = new Graph();
                 try
                 {
                     this._parser.Load(h, new StringReader(strWriter.ToString()));
-                    Console.WriteLine("Output was parsed OK");
+                    _output.WriteLine("Output was parsed OK");
                 }
                 catch
                 {
-                    Console.WriteLine("Invalid Output:");
-                    Console.WriteLine(strWriter.ToString());
+                    _output.WriteLine("Invalid Output:");
+                    _output.WriteLine(strWriter.ToString());
                     throw;
                 }
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 if (exceptions.Contains(writer.GetType()))
                 {
-                    Console.WriteLine("Graph Equality test was skipped");
+                    _output.WriteLine("Graph Equality test was skipped");
                 }
                 else
                 {
@@ -83,11 +91,11 @@ namespace VDS.RDF.Writing
                     }
                     catch
                     {
-                        Console.WriteLine("Output did not round trip:");
-                        Console.WriteLine(strWriter.ToString());
+                        _output.WriteLine("Output did not round trip:");
+                        _output.WriteLine(strWriter.ToString());
                         throw;
                     }
-                    Console.WriteLine("Graphs are equal");
+                    _output.WriteLine("Graphs are equal");
                 }
             }
         }
@@ -99,33 +107,33 @@ namespace VDS.RDF.Writing
 
         private void CheckFailure(IGraph g)
         {
-            Console.WriteLine("Original Triples:");
+            _output.WriteLine("Original Triples:");
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString(this._formatter));
+                _output.WriteLine(t.ToString(this._formatter));
             }
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             foreach (IRdfWriter writer in this._writers)
             {
-                Console.WriteLine("Checking for Failure with " + writer.GetType().Name);
+                _output.WriteLine("Checking for Failure with " + writer.GetType().Name);
                 bool failed = false;
                 try
                 {
                     System.IO.StringWriter sw = new System.IO.StringWriter();
                     writer.Save(g, sw);
 
-                    Console.WriteLine("Produced Output when failure was expected:");
-                    Console.WriteLine(sw.ToString());
+                    _output.WriteLine("Produced Output when failure was expected:");
+                    _output.WriteLine(sw.ToString());
 
                     failed = true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Failed as expected - " + ex.Message);
+                    _output.WriteLine("Failed as expected - " + ex.Message);
                 }
                 if (failed) Assert.True(false, writer.GetType().Name + " produced output when failure was expected");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
             }
         }
 
@@ -313,8 +321,8 @@ namespace VDS.RDF.Writing
             System.IO.StringWriter strWriter = new System.IO.StringWriter();
             writer.Save(g, strWriter);
 
-            Console.WriteLine(strWriter.ToString());
-            Console.WriteLine();
+            _output.WriteLine(strWriter.ToString());
+            _output.WriteLine(string.Empty);
 
             Graph h = new Graph();
             h.LoadFromString(strWriter.ToString(), new RdfXmlParser());

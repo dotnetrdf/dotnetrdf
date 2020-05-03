@@ -24,11 +24,6 @@
 // </copyright>
 */
 
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-
 namespace VDS.RDF
 {
     using System;
@@ -53,35 +48,17 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc/>
-        public NodeType NodeType
-        {
-            get
-            {
-                return Node.NodeType;
-            }
-        }
+        public NodeType NodeType => Node.NodeType;
 
         /// <inheritdoc/>
-        public IGraph Graph
-        {
-            get
-            {
-                return Node.Graph;
-            }
-        }
+        public IGraph Graph => Node.Graph;
 
         /// <inheritdoc/>
         public Uri GraphUri
         {
-            get
-            {
-                return Node.GraphUri;
-            }
+            get => Node.GraphUri;
 
-            set
-            {
-                Node.GraphUri = value;
-            }
+            set => Node.GraphUri = value;
         }
 
         /// <inheritdoc/>
@@ -157,7 +134,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the underlying node this is a wrapper around.
         /// </summary>
-        protected INode Node { get; private set; }
+        protected INode Node { get; }
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
@@ -171,7 +148,7 @@ namespace VDS.RDF
             return Node.GetHashCode();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Object.ToString"/>
         public override string ToString()
         {
             return Node.ToString();
@@ -259,30 +236,6 @@ namespace VDS.RDF
         public string ToString(INodeFormatter formatter, TripleSegment segment)
         {
             return Node.ToString(formatter, segment);
-        }
-
-        /// <inheritdoc/>
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException("This INode implementation does not support Serialization.");
-        }
-
-        /// <inheritdoc/>
-        XmlSchema IXmlSerializable.GetSchema()
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
-        }
-
-        /// <inheritdoc/>
-        void IXmlSerializable.ReadXml(XmlReader reader)
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
-        }
-
-        /// <inheritdoc/>
-        void IXmlSerializable.WriteXml(XmlWriter writer)
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
     }
 }
