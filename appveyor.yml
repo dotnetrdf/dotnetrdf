@@ -17,15 +17,16 @@ install:
 
 before_build:
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
+  - ps: dotnet restore dotNetRDF.sln
 
 configuration: Release
 
 build_script:
-  - ps: ./build.ps1 -Target Pack --configuration=Release --NuGetVersion=$env:GitVersion_NuGetVersion
+  - ps: dotnet build dotNetRDF.sln --configuration=Release
 
 test_script:
-  - ps: ./build.ps1 -Target Cover --configuration=Release *> test.log
-  - ps: ./build.ps1 -Target Codecov --configuration=Release -no-build=true
+  - ps: dotnet test -c Release Testing\unittest\unittest.csproj
+  - ps: dotnet test -c Release Testing\dotNetRDF.MockServerTests\dotNetRDF.MockServerTests.csproj
 
 before_deploy:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
