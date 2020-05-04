@@ -4,8 +4,8 @@
     <Description>Provides a framework for building RDF-powered web applications and web APIs.</Description>
     <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
     <AssemblyTitle>dotNetRDF.Web</AssemblyTitle>
-    <VersionPrefix>1.0.13-pre6</VersionPrefix>
-    <TargetFrameworks>net40</TargetFrameworks>
+    <VersionPrefix>$(Version)</VersionPrefix>
+    <TargetFrameworks>net472</TargetFrameworks>
     <AssemblyName>dotNetRDF.Web</AssemblyName>
     <Authors>RobVesse;tpluscode;kal_ahmed;dotnetrdf</Authors>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>

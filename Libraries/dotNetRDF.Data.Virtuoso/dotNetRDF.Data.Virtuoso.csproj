@@ -6,7 +6,7 @@
     <AssemblyTitle>dotNetRDF.Data.Virtuoso</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
-    <TargetFrameworks>net40</TargetFrameworks>
+    <TargetFrameworks>net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Data.Virtuoso</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
@@ -44,14 +44,11 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 

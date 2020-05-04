@@ -6,7 +6,7 @@
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
-    <TargetFrameworks>net40;net40-client;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
@@ -35,12 +35,6 @@
     <LangVersion>7.1</LangVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>client</TargetFrameworkProfile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -79,19 +73,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
@@ -105,22 +90,14 @@
     <Compile Include="**\*.cs" Exclude="obj\**\*.cs;**\*.NetCore.cs;Compatibility\Core\*.cs" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;Compatibility\NO_WEB\*.cs;**\*.NetCore.cs" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
-  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Compatibility\Core\*.cs;**\*.NetCore.cs" />
-  </ItemGroup>
-  
   <ItemGroup>
     <None Include="..\..\rdf_w3c_icon.64.png" Pack="True" PackagePath="\" />
   </ItemGroup>

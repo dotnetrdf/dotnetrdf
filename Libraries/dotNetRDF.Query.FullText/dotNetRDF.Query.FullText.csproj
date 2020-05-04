@@ -6,7 +6,7 @@
     <AssemblyTitle>dotNetRDF.Query.FullText</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
-    <TargetFrameworks>net40</TargetFrameworks>
+    <TargetFrameworks>net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Query.FullText</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
@@ -51,19 +51,13 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <ItemGroup>
     <Reference Include="System.Xml" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-    <Reference Include="System.Xml" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 

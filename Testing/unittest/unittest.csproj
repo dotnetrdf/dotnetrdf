@@ -3,8 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>dotNetRDF.Test</AssemblyTitle>
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
-    <TargetFrameworks>net452;netcoreapp2.2</TargetFrameworks>
-    <TargetFrameworks>net452;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>dotNetRDF.Test</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -49,7 +48,7 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta1-build3642" />
  </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Web\dotNetRDF.Web.csproj" />
@@ -61,17 +60,17 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
   </ItemGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <DefineConstants>$(DefineConstants);NO_VIRTUOSO</DefineConstants>
   </PropertyGroup>
 
@@ -82,11 +81,11 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetCore.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <Compile Include="**\*.cs" Exclude="obj\**\*cs;**\*.NetCore.cs;Storage\VirtuosoTest.cs;Query\FullText\*.cs;Web\*.cs" />
   </ItemGroup>
 
