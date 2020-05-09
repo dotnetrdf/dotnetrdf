@@ -180,14 +180,14 @@ namespace VDS.RDF.Writing.Serialization
             Graph g = new Graph();
             List<INode> nodes = new List<INode>()
             {
-                g.CreateLiteralNode(String.Empty),
-                g.CreateLiteralNode("simple literal"),
+                //g.CreateLiteralNode(String.Empty),
+                //g.CreateLiteralNode("simple literal"),
                 g.CreateLiteralNode("literal with language", "en"),
-                g.CreateLiteralNode("literal with different language", "fr"),
-                (12345).ToLiteral(g),
-                DateTime.Now.ToLiteral(g),
-                (123.45).ToLiteral(g),
-                (123.45m).ToLiteral(g)
+                //g.CreateLiteralNode("literal with different language", "fr"),
+                //(12345).ToLiteral(g),
+                //DateTime.Now.ToLiteral(g),
+                //(123.45).ToLiteral(g),
+                //(123.45m).ToLiteral(g)
             };
             return nodes;
         }

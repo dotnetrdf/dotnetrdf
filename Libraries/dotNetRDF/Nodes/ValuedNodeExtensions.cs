@@ -208,6 +208,10 @@ namespace VDS.RDF.Nodes
                                 {
                                     return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
+                            case RdfSpecsHelper.RdfLangString:
+                                return !lit.Language.Equals(string.Empty)
+                                    ? new StringNode(n.Graph, lit.Value, lit.Language)
+                                    : new StringNode(n.Graph, lit.Value);
                             default:
                                 if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
                                 {

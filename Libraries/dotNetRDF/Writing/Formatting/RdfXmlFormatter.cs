@@ -210,8 +210,16 @@ namespace VDS.RDF.Writing.Formatting
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)t.Object;
-                    if (lit.DataType != null)
+                    var lit = (ILiteralNode)t.Object;
+                    if (lit.DataType.AbsoluteUri == RdfSpecsHelper.RdfLangString && !lit.Language.Equals(string.Empty))
+                    {
+                        output.AppendLine(" xml:lang=\"" + lit.Language + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                    }
+                    else if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                    {
+                        output.AppendLine(">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                    }
+                    else if (lit.DataType != null)
                     {
                         if (lit.DataType.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
@@ -222,14 +230,6 @@ namespace VDS.RDF.Writing.Formatting
                             output.AppendLine(" rdf:datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
                         }
                     } 
-                    else if (!lit.Language.Equals(String.Empty))
-                    {
-                        output.AppendLine(" xml:lang=\"" + lit.Language + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
-                    }
-                    else 
-                    {
-                        output.AppendLine(">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
-                    }
                     break;
                 case NodeType.Uri:
                     output.AppendLine(" rdf:resource=\"" + WriterHelper.EncodeForXml(t.Object.ToString()) + "\" />");

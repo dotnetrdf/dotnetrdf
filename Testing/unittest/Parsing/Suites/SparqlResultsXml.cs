@@ -83,13 +83,16 @@ namespace VDS.RDF.Parsing.Suites
             Assert.Equal(NodeType.Literal, second.NodeType);
             ILiteralNode secondLit = (ILiteralNode) second;
             Assert.NotEqual(String.Empty, secondLit.Language);
+            Assert.NotNull(secondLit.DataType);
             Assert.Equal("en", secondLit.Language);
             Assert.Equal("test", secondLit.Value);
+            Assert.Equal(RdfSpecsHelper.RdfLangString, secondLit.DataType.AbsoluteUri);
 
             Assert.Equal(NodeType.Literal, third.NodeType);
             ILiteralNode thirdLit = (ILiteralNode) third;
             Assert.Equal(String.Empty, thirdLit.Language);
-            Assert.Null(thirdLit.DataType);
+            Assert.NotNull(thirdLit.DataType);
+            Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeString, thirdLit.DataType.AbsoluteUri);
             Assert.Equal("test plain literal", thirdLit.Value);
         }
 

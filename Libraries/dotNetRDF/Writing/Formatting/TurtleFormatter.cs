@@ -206,19 +206,31 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append('"');
                 if (longlit) output.Append("\"\"");
 
-                if (!l.Language.Equals(string.Empty))
+                switch (l.DataType.AbsoluteUri)
                 {
-                    output.Append('@');
-                    output.Append(l.Language.ToLower());
-                }
-                else if (l.DataType != null)
-                {
-                    output.Append("^^");
-                    if (_qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out var qname))
-                    {
-                        if (TurtleSpecsHelper.IsValidQName(qname))
+                    case XmlSpecsHelper.XmlSchemaDataTypeString:
+                        // Simple string literal with no language or datatype
+                        break;
+                    case RdfSpecsHelper.RdfLangString:
+                        // Language-tagged literal
+                        output.Append('@');
+                        output.Append(l.Language.ToLower());
+                        break;
+                    default:
+                        // Datatyped literal
+                        output.Append("^^");
+                        if (_qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out var qname))
                         {
-                            output.Append(qname);
+                            if (TurtleSpecsHelper.IsValidQName(qname))
+                            {
+                                output.Append(qname);
+                            }
+                            else
+                            {
+                                output.Append('<');
+                                output.Append(FormatUri(l.DataType));
+                                output.Append('>');
+                            }
                         }
                         else
                         {
@@ -226,13 +238,7 @@ namespace VDS.RDF.Writing.Formatting
                             output.Append(FormatUri(l.DataType));
                             output.Append('>');
                         }
-                    }
-                    else
-                    {
-                        output.Append('<');
-                        output.Append(FormatUri(l.DataType));
-                        output.Append('>');
-                    }
+                        break;
                 }
             }
 

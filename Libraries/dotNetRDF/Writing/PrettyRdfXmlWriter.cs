@@ -626,32 +626,29 @@ namespace VDS.RDF.Writing
 
                 case NodeType.Literal:
                     // Write as content of the current element
-                    ILiteralNode lit = (ILiteralNode)t.Object;
-                    if (lit.DataType != null)
+                    var lit = (ILiteralNode)t.Object;
+                    switch (lit.DataType.AbsoluteUri)
                     {
-                        if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
-                        {
+                        case RdfSpecsHelper.RdfXmlLiteral:
                             // XML Literal
                             context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Literal");
                             context.Writer.WriteRaw(lit.Value);
-                        }
-                        else
-                        {
-                            // Datatyped Literal
-                            context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF, lit.DataType.AbsoluteUri);//Uri.EscapeUriString(lit.DataType.ToString()));
+                            break;
+                        case RdfSpecsHelper.RdfLangString when !lit.Language.Equals(string.Empty):
+                            // Language specified Literal
+                            context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
                             context.Writer.WriteString(lit.Value);
-                        }
-                    }
-                    else if (!lit.Language.Equals(String.Empty))
-                    {
-                        // Language specified Literal
-                        context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
-                        context.Writer.WriteString(lit.Value);
-                    }
-                    else
-                    {
-                        // Simple Literal
-                        context.Writer.WriteString(lit.Value);
+                            break;
+                        case XmlSpecsHelper.XmlSchemaDataTypeString:
+                            // Simple Literal
+                            context.Writer.WriteString(lit.Value);
+                            break;
+                        default:
+                            // Datatyped Literal
+                            context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF,
+                                lit.DataType.AbsoluteUri); //Uri.EscapeUriString(lit.DataType.ToString()));
+                            context.Writer.WriteString(lit.Value);
+                            break;
                     }
                     break;
 

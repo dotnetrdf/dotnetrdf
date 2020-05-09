@@ -76,7 +76,7 @@ namespace dotNetRDF.MockServerTests
             Server2.Given(Request.Create().WithPath("/fail"))
                 .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.Forbidden));
             Server2.Given(Request.Create().WithPath("/timeout"))
-                .RespondWith(Response.Create().WithDelay(4000).WithBody(Server2ResultsXml, encoding: Encoding.UTF8)
+                .RespondWith(Response.Create().WithDelay(6000).WithBody(Server2ResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0]).WithStatusCode(HttpStatusCode.OK));
 
         }

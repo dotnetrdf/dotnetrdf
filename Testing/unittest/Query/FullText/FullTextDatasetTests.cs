@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.FullText
 
             //Now do a search to check all the triples got indexed
             String searchTerm = "http";
-            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains("http"));
+            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
             LuceneSearchProvider searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
             foreach (Triple searchTriple in searchTriples)
             {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.FullText
 
             //Now do a search to check all the triples got indexed
             String searchTerm = "http";
-            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains("http"));
+            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http"));
             foreach (Triple searchTriple in searchTriples)
             {
                 INode targetNode = searchTriple.Subject;
