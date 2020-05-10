@@ -222,7 +222,7 @@ namespace VDS.RDF
         /// <remarks>
         /// When enabled certain parsers will validate all IRIs they see to ensure that they are valid and throw a parser error if they are not.  Since there is a performance penalty associated with this and many older RDF standards were written pre-IRIs (thus enforcing IRI validity would reject data considered valid by those specifications) this feature is disabled by default.
         /// </remarks>
-        public static bool ValidateIris { get; set; } = false;
+        //public static bool ValidateIris { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether Blocking IO should be forced.

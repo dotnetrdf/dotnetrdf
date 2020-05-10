@@ -64,7 +64,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public Turtle11(ITestOutputHelper testOutputHelper)
-            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11\\")
+            : base(new TurtleParser(TurtleSyntax.W3C, true), new NTriplesParser(), "turtle11\\")
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -72,43 +72,33 @@ namespace VDS.RDF.Parsing.Suites
         [Fact]
         public void ParsingSuiteTurtleW3C()
         {
-            try
+            //Nodes for positive and negative tests
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+            INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
+
+            //Run manifests
+            RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+
+            if (Count == 0) Assert.True(false, "No tests found");
+
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed - " + Indeterminate + " Indeterminate");
+            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+
+            if (Failed > 0)
             {
-                //Need IRI validation on to pass some of the tests
-                Options.ValidateIris = true;
-
-                //Nodes for positive and negative tests
-                Graph g = new Graph();
-                g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
-                INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
-                INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
-                INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
-
-                //Run manifests
-                RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
-
-                if (Count == 0) Assert.True(false, "No tests found");
-
-                _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed - " + Indeterminate + " Indeterminate");
-                _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
-
-                if (Failed > 0)
+                if (Indeterminate == 0)
                 {
-                    if (Indeterminate == 0)
-                    {
-                        Assert.True(false, Failed + " Tests failed and " + Passed + " Tests Passed");
-                    }
-                    else
-                    {
-                        Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
-                    }
+                    Assert.True(false, Failed + " Tests failed and " + Passed + " Tests Passed");
                 }
-                Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+                else
+                {
+                    Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+                }
             }
-            finally
-            {
-                Options.ValidateIris = false;
-            }
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
         }
 
         [Fact]

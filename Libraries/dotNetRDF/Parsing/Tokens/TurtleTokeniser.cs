@@ -35,36 +35,42 @@ namespace VDS.RDF.Parsing.Tokens
     public class TurtleTokeniser 
         : BaseTokeniser
     {
-        private ParsingTextReader _in;
-        private TurtleSyntax _syntax = TurtleSyntax.W3C;
+        private readonly ParsingTextReader _in;
+        private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
+        private readonly bool _validateIris = false;
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from.</param>
-        public TurtleTokeniser(StreamReader input)
-            : this(ParsingTextReader.Create(input)) { }
+        /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        public TurtleTokeniser(StreamReader input, bool validateIris = false)
+            : this(ParsingTextReader.Create(input), validateIris) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from.</param>
-        public TurtleTokeniser(ParsingTextReader input)
-            : this(input, TurtleSyntax.W3C) { }
+        /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        public TurtleTokeniser(ParsingTextReader input, bool validateIris = false)
+            : this(input, TurtleSyntax.W3C, validateIris) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
         /// </summary>
         /// <param name="input">Input to read from.</param>
-        public TurtleTokeniser(TextReader input)
-            : this(ParsingTextReader.Create(input)) { }
+        /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        public TurtleTokeniser(TextReader input, bool validateIris = false)
+            : this(ParsingTextReader.Create(input), validateIris) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from.</param>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax)
+        /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax, bool validateIris = false)
             : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
@@ -72,12 +78,15 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from.</param>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax)
+        /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+        public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax, bool validateIris = false)
             : base(input)
         {
             _in = input;
             Format = "Turtle";
             _syntax = syntax;
+            _validateIris = validateIris;
         }
 
         /// <summary>
@@ -85,8 +94,10 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read from.</param>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleTokeniser(TextReader input, TurtleSyntax syntax)
-            : this(ParsingTextReader.Create(input), syntax) { }
+        /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+        public TurtleTokeniser(TextReader input, TurtleSyntax syntax, bool validateIris = false)
+            : this(ParsingTextReader.Create(input), syntax, validateIris) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error.
@@ -806,7 +817,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         ConsumeCharacter();
 
                                         // Produce the Token
-                                        if (Options.ValidateIris && _syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
+                                        if (_validateIris && _syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
                                         return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
                                     }
                                     else if (!anycharallowed)

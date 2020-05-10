@@ -42,8 +42,9 @@ namespace VDS.RDF.Parsing
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
+        private readonly bool _validateIris = false;
         private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
-        private TurtleSyntax _syntax = TurtleSyntax.W3C;
+        private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
         /// Creates a new Turtle Parser.
@@ -54,9 +55,12 @@ namespace VDS.RDF.Parsing
         /// Creates a new Turtle Parser.
         /// </summary>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleParser(TurtleSyntax syntax) 
+        /// <param name="validateIris">Whether or not to validate IRIs during tokenization.</param>
+        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+        public TurtleParser(TurtleSyntax syntax, bool validateIris = false) 
         {
             _syntax = syntax;
+            _validateIris = validateIris;
         }
 
         /// <summary>
@@ -73,8 +77,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Queue Mode for Turtle.</param>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax)
-            : this(syntax)
+        /// <param name="validateIris">Whether or not to validate IRIs during tokenization.</param>
+        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
+        public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax, bool validateIris = false)
+            : this(syntax, validateIris)
         {
             _queueMode = queueMode;
         }
@@ -189,7 +195,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, _syntax), _syntax, _queueMode, _traceParsing, _traceTokeniser);
+                var context = new TurtleParserContext(handler, new TurtleTokeniser(input, _syntax, _validateIris), _syntax, _queueMode, _traceParsing, _traceTokeniser);
                 Parse(context);
             }
             catch
