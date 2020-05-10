@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Text;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing
@@ -42,16 +43,15 @@ namespace VDS.RDF.Writing
     public abstract class BaseGZipResultsWriter
         : ISparqlResultsWriter
     {
-        private ISparqlResultsWriter _writer;
+        private readonly ISparqlResultsWriter _writer;
 
         /// <summary>
         /// Creates a new GZipped Results writer.
         /// </summary>
         /// <param name="writer">Underlying writer.</param>
-        public BaseGZipResultsWriter(ISparqlResultsWriter writer)
+        protected BaseGZipResultsWriter(ISparqlResultsWriter writer)
         {
-            if (writer == null) throw new ArgumentNullException("writer");
-            _writer = writer;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
             _writer.Warning += RaiseWarning;
         }
 
@@ -62,8 +62,16 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to.</param>
         public void Save(SparqlResultSet results, string filename)
         {
-            if (filename == null) throw new RdfOutputException("Cannot write RDF to a null file");
-            Save(results, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write), CompressionMode.Compress)));
+            Save(results, filename, new UTF8Encoding(false));
+        }
+
+        /// <inheritdoc />
+        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+        {
+            if (results == null) throw new ArgumentNullException(nameof(results), "Cannot write a null results sets");
+            if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot write RDF to a null file");
+            using var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write);
+            Save(results, new StreamWriter(fileStream, fileEncoding));
         }
 
         /// <summary>

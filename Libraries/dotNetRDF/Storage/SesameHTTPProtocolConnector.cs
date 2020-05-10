@@ -315,7 +315,7 @@ namespace VDS.RDF.Storage
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -1026,7 +1026,7 @@ namespace VDS.RDF.Storage
                             StringBuilder postData = new StringBuilder();
                             postData.Append("query=");
                             postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write(postData);
                                 writer.Close();
@@ -1355,7 +1355,7 @@ namespace VDS.RDF.Storage
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -1403,7 +1403,7 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write(postData);
                                 writer.Close();

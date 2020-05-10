@@ -46,9 +46,7 @@ namespace VDS.RDF.Writing
     public class TurtleWriter
         : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
     {
-        private bool _prettyprint = true;
-        private bool _allowhispeed = false;
-        private TurtleSyntax _syntax = TurtleSyntax.Original;
+        private readonly TurtleSyntax _syntax = TurtleSyntax.Original;
 
         /// <summary>
         /// Creates a new Turtle Writer.
@@ -67,39 +65,18 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether Pretty Printing is used.
         /// </summary>
-        public bool PrettyPrintMode
-        {
-            get => _prettyprint;
-            set => _prettyprint = value;
-        }
+        public bool PrettyPrintMode { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether the Writer is allowed to use High Speed write mode.
         /// </summary>
         /// <remarks>High Speed Write Mode is engaged when the Writer determines that the contents of the Graph are not well suited to Turtle syntax compressions.  Usually the writer compresses triples into groups by Subject using Predicate-Object lists to output the Triples relating to each Subject.  If the number of distinct Subjects is greater than 75% of the Triples in the Graph then High Speed write mode will be used, in High Speed mode all Triples are written fully and no grouping of any sort is done.</remarks>
-        public bool HighSpeedModePermitted
-        {
-            get => _allowhispeed;
-            set => _allowhispeed = value;
-        }
+        public bool HighSpeedModePermitted { get; set; } = false;
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
         public Type TripleFormatterType => (_syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
-
-        /// <summary>
-        /// Saves a Graph to a File.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        /// <param name="filename">Filename to save to.</param>
-        public override void Save(IGraph g, string filename)
-        {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
-        }
 
         /// <summary>
         /// Saves a Graph using an arbitrary <see cref="TextWriter">TextWriter</see>.
@@ -108,7 +85,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Writer to save using.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            TurtleWriterContext context = new TurtleWriterContext(g, output, _prettyprint, _allowhispeed, _syntax);
+            var context = new TurtleWriterContext(g, output, PrettyPrintMode, HighSpeedModePermitted, _syntax);
             GenerateOutput(context);
         }
 
@@ -126,19 +103,19 @@ namespace VDS.RDF.Writing
             }
 
             // Write Prefixes
-            foreach (string prefix in context.Graph.NamespaceMap.Prefixes)
+            foreach (var prefix in context.Graph.NamespaceMap.Prefixes)
             {
                 if (TurtleSpecsHelper.IsValidQName(prefix + ":", _syntax))
                 {
                     context.Output.Write("@prefix " + prefix + ": <");
-                    string nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
+                    var nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
                     context.Output.WriteLine(nsUri + ">.");
                 }
             }
             context.Output.WriteLine();
 
             // Decide which write mode to use
-            bool hiSpeed = false;
+            var hiSpeed = false;
             double subjNodes = context.Graph.Triples.SubjectNodes.Count();
             double triples = context.Graph.Triples.Count;
             if ((subjNodes / triples) > 0.75)
@@ -152,7 +129,7 @@ namespace VDS.RDF.Writing
                 // Writes everything as individual Triples
                 RaiseWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
                 context.NodeFormatter = new UncompressedTurtleFormatter();
-                foreach (Triple t in context.Graph.Triples)
+                foreach (var t in context.Graph.Triples)
                 {
                     context.Output.Write(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
                     context.Output.Write(" ");
@@ -174,9 +151,9 @@ namespace VDS.RDF.Writing
                 int subjIndent = 0, predIndent = 0;
                 string temp;
 
-                for (int i = 0; i < ts.Count; i++)
+                for (var i = 0; i < ts.Count; i++)
                 {
-                    Triple t = ts[i];
+                    var t = ts[i];
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
                         // Terminate previous Triples
@@ -288,7 +265,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
-            RdfWriterWarning d = Warning;
+            var d = Warning;
             if (d != null)
             {
                 d(message);

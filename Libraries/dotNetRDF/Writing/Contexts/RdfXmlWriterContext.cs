@@ -77,7 +77,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             _g = g;
             _output = output;
-            _writer = XmlWriter.Create(_output, GetSettings());
+            _writer = XmlWriter.Create(_output, GetSettings(output.Encoding));
             _nsmapper.Import(_g.NamespaceMap);
         }
 
@@ -85,17 +85,17 @@ namespace VDS.RDF.Writing.Contexts
         /// Generates the required settings for the <see cref="XmlWriter">XmlWriter</see>.
         /// </summary>
         /// <returns></returns>
-        private XmlWriterSettings GetSettings()
+        private XmlWriterSettings GetSettings(Encoding fileEncoding)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.CloseOutput = true;
-            settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
-            settings.Indent = _prettyPrint;
-            settings.NewLineHandling = NewLineHandling.None;
-            settings.OmitXmlDeclaration = false;
-
-            return settings;
+            return new XmlWriterSettings
+            {
+                ConformanceLevel = ConformanceLevel.Document,
+                CloseOutput = true,
+                Encoding = fileEncoding,
+                Indent = _prettyPrint,
+                NewLineHandling = NewLineHandling.None,
+                OmitXmlDeclaration = false,
+            };
         }
 
         /// <summary>

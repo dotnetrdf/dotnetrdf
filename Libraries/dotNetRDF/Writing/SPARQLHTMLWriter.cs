@@ -34,28 +34,17 @@ using System.Web.UI;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for saving SPARQL Result Sets to a HTML Table format (this is not a standardised format).
+    /// Class for saving SPARQL Result Sets to a HTML Table format (this is not a standardized format).
     /// </summary>
     public class SparqlHtmlWriter 
         : BaseHtmlWriter, ISparqlResultsWriter, INamespaceWriter
     {
-        private HtmlFormatter _formatter = new HtmlFormatter();
-        private INamespaceMapper _namespaces = new NamespaceMapper();
+        private readonly HtmlFormatter _formatter = new HtmlFormatter();
 
         /// <summary>
         /// Gets/Sets the Default Namespaces used to pretty print URIs in the output.
         /// </summary>
-        public INamespaceMapper DefaultNamespaces
-        {
-            get
-            {
-                return _namespaces;
-            }
-            set
-            {
-                _namespaces = value;
-            }
-        }
+        public INamespaceMapper DefaultNamespaces { get; set; } = new NamespaceMapper();
 
 
         /// <summary>
@@ -63,12 +52,18 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="results">Result Set to save.</param>
         /// <param name="filename">File to save to.</param>
-        public void Save(SparqlResultSet results, String filename)
+        public void Save(SparqlResultSet results, string filename)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
+            if (results == null) throw  new ArgumentNullException(nameof(results), "Cannot write a null results set");
+            if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot write to a null file");
+            Save(results, filename, new UTF8Encoding(false));
+        }
+
+        /// <inheritdoc />
+        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+        {
+            using var stream = File.Open(filename, FileMode.Create);
+            Save(results, new StreamWriter(stream, fileEncoding));
         }
 
         /// <summary>
@@ -81,19 +76,10 @@ namespace VDS.RDF.Writing
             try
             {
                 GenerateOutput(results, output);
-                output.Close();
             }
-            catch
+            finally
             {
-                try
-                {
-                    output.Close();
-                }
-                catch
-                {
-                    // No Catch Actions
-                }
-                throw;
+                output.Close();
             }
         }
 
@@ -105,7 +91,7 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(SparqlResultSet results, TextWriter output)
         {
             HtmlTextWriter writer = new HtmlTextWriter(output);
-            QNameOutputMapper qnameMapper = new QNameOutputMapper(_namespaces != null ? _namespaces : new NamespaceMapper(true));
+            QNameOutputMapper qnameMapper = new QNameOutputMapper(DefaultNamespaces != null ? DefaultNamespaces : new NamespaceMapper(true));
 
             // Page Header
             writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -114,7 +100,7 @@ namespace VDS.RDF.Writing
             writer.RenderBeginTag(HtmlTextWriterTag.Title);
             writer.WriteEncodedText("SPARQL Query Results");
             writer.RenderEndTag();
-            if (!Stylesheet.Equals(String.Empty))
+            if (!Stylesheet.Equals(string.Empty))
             {
                 writer.AddAttribute(HtmlTextWriterAttribute.Href, Stylesheet);
                 writer.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
@@ -138,7 +124,7 @@ namespace VDS.RDF.Writing
                 writer.RenderBeginTag(HtmlTextWriterTag.Thead);
                 writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
-                foreach (String var in results.Variables)
+                foreach (string var in results.Variables)
                 {
                     writer.RenderBeginTag(HtmlTextWriterTag.Th);
                     writer.WriteEncodedText(var);
@@ -158,7 +144,7 @@ namespace VDS.RDF.Writing
                     // Start Row
                     writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
-                    foreach (String var in results.Variables)
+                    foreach (string var in results.Variables)
                     {
                         // Start Column
                         writer.RenderBeginTag(HtmlTextWriterTag.Td);
@@ -196,7 +182,7 @@ namespace VDS.RDF.Writing
                                         else
                                         {
                                             writer.WriteEncodedText(lit.Value);
-                                            if (!lit.Language.Equals(String.Empty))
+                                            if (!lit.Language.Equals(string.Empty))
                                             {
                                                 writer.RenderEndTag();
                                                 writer.WriteEncodedText("@");
@@ -221,7 +207,7 @@ namespace VDS.RDF.Writing
                                         writer.AddAttribute(HtmlTextWriterAttribute.Href, _formatter.FormatUri(UriPrefix + value.ToString()));
                                         writer.RenderBeginTag(HtmlTextWriterTag.A);
 
-                                        String qname;
+                                        string qname;
                                         if (qnameMapper.ReduceToQName(value.ToString(), out qname))
                                         {
                                             writer.WriteEncodedText(qname);
@@ -282,7 +268,7 @@ namespace VDS.RDF.Writing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

@@ -37,31 +37,12 @@ namespace VDS.RDF.Writing
     public class TsvWriter 
         : BaseRdfWriter, IFormatterBasedWriter
     {
-        private TsvFormatter _formatter = new TsvFormatter();
+        private readonly TsvFormatter _formatter = new TsvFormatter();
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
-        public Type TripleFormatterType
-        {
-            get
-            {
-                return _formatter.GetType();
-            }
-        }
-
-        /// <summary>
-        /// Saves a Graph to TSV format.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="filename">File to save to.</param>
-        public override void Save(IGraph g, string filename)
-        {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
-        }
+        public Type TripleFormatterType => _formatter.GetType();
 
         /// <summary>
         /// Saves a Graph to TSV format.
@@ -70,7 +51,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Writer to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            foreach (Triple t in g.Triples)
+            foreach (var t in g.Triples)
             {
                 GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
                 output.Write('\t');

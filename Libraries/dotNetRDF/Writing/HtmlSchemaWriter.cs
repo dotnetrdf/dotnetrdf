@@ -45,16 +45,18 @@ namespace VDS.RDF.Writing
     public class HtmlSchemaWriter
         : BaseHtmlWriter, IRdfWriter
     {
-        /// <summary>
-        /// Saves the Graph to the given File as an XHTML Table with embedded RDFa.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(IGraph g, String filename)
+        /// <inheritdoc />
+        public void Save(IGraph g, string filename)
+        {
+            Save(g, filename, new UTF8Encoding(false));
+        }
+
+        /// <inheritdoc />
+        public void Save(IGraph g, string filename, Encoding fileEncoding)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, fileEncoding));
             }
         }
 
@@ -100,7 +102,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context.</param>
         private void GenerateOutput(HtmlWriterContext context)
         {
-            Object results;
+            object results;
 
             // Add the Namespaces we want to use later on
             context.QNameMapper.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
@@ -140,7 +142,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
-            if (!Stylesheet.Equals(String.Empty))
+            if (!Stylesheet.Equals(string.Empty))
             {
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, Stylesheet);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
@@ -236,7 +238,7 @@ namespace VDS.RDF.Writing
                                 if (ontoInfo["nsPrefix"].NodeType == NodeType.Literal && ontoInfo["nsUri"].NodeType == NodeType.Uri)
                                 {
                                     // Add this QName to the QName Mapper so we can get nice QNames later on
-                                    String prefix = ((ILiteralNode)ontoInfo["nsPrefix"]).Value;
+                                    string prefix = ((ILiteralNode)ontoInfo["nsPrefix"]).Value;
                                     context.QNameMapper.AddNamespace(prefix, ((IUriNode)ontoInfo["nsUri"]).Uri);
 
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
@@ -358,7 +360,7 @@ namespace VDS.RDF.Writing
 
                         // Get the QName and output a Link to an anchor that we'll generate later to let
                         // users jump to a Class/Property definition
-                        String qname = context.NodeFormatter.Format(r["class"]);
+                        string qname = context.NodeFormatter.Format(r["class"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
@@ -408,7 +410,7 @@ namespace VDS.RDF.Writing
 
                         // Get the QName and output a Link to an anchor that we'll generate later to let
                         // users jump to a Class/Property definition
-                        String qname = context.NodeFormatter.Format(r["property"]);
+                        string qname = context.NodeFormatter.Format(r["property"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
@@ -460,7 +462,7 @@ namespace VDS.RDF.Writing
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
                         if (!r.HasValue("class")) continue;
-                        String qname = context.NodeFormatter.Format(r["class"]);
+                        string qname = context.NodeFormatter.Format(r["class"]);
 
                         // Use a <div> for each Class
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
@@ -485,7 +487,7 @@ namespace VDS.RDF.Writing
                         else
                         {
                             Uri temp = new Uri(qname, UriKind.RelativeOrAbsolute);
-                            if (!temp.Fragment.Equals(String.Empty))
+                            if (!temp.Fragment.Equals(string.Empty))
                             {
                                 context.HtmlWriter.WriteEncodedText(temp.Fragment);
                             } 
@@ -569,7 +571,7 @@ namespace VDS.RDF.Writing
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
                         if (!r.HasValue("property")) continue;
-                        String qname = context.NodeFormatter.Format(r["property"]);
+                        string qname = context.NodeFormatter.Format(r["property"]);
 
                         // Use a <div> for each Property
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
@@ -594,7 +596,7 @@ namespace VDS.RDF.Writing
                         else
                         {
                             Uri temp = new Uri(qname, UriKind.RelativeOrAbsolute);
-                            if (!temp.Fragment.Equals(String.Empty))
+                            if (!temp.Fragment.Equals(string.Empty))
                             {
                                 context.HtmlWriter.WriteEncodedText(temp.Fragment);
                             }
@@ -672,18 +674,18 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderEndTag(); //End Html
         }
 
-        private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<Triple> ts, Func<Triple,INode> displaySelector)
+        private void GenerateCaptionedInformation(HtmlWriterContext context, string caption, IEnumerable<Triple> ts, Func<Triple,INode> displaySelector)
         {
             GenerateCaptionedInformation(context, caption, ts.Select(t => displaySelector(t)));
         }
 
-        private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, SparqlResultSet results, String var)
+        private void GenerateCaptionedInformation(HtmlWriterContext context, string caption, SparqlResultSet results, string var)
         {
             if (results == null) return;
             GenerateCaptionedInformation(context, caption, results.Select(r => r[var]).Where(n => n != null));
         }
 
-        private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<INode> ns)
+        private void GenerateCaptionedInformation(HtmlWriterContext context, string caption, IEnumerable<INode> ns)
         {
             if (ns.Any())
             {
@@ -696,7 +698,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteLine();
                 foreach (INode n in ns.OrderBy(x => x))
                 {
-                    String qname = context.NodeFormatter.Format(n);
+                    string qname = context.NodeFormatter.Format(n);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
@@ -713,7 +715,7 @@ namespace VDS.RDF.Writing
         /// Helper method for raising the <see cref="Warning">Warning</see> event.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfWriterWarning d = Warning;
             if (d != null)

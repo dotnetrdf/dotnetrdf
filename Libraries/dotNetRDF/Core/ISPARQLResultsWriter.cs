@@ -24,8 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.IO;
+using System.Text;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
@@ -36,11 +36,19 @@ namespace VDS.RDF
     public interface ISparqlResultsWriter
     {
         /// <summary>
-        /// Saves the Result Set to the given File.
+        /// Saves the Result Set to the given file using UTF-8 text encoding with no byte-order mark.
         /// </summary>
         /// <param name="results">Result Set to save.</param>
         /// <param name="filename">File to save to.</param>
-        void Save(SparqlResultSet results, String filename);
+        void Save(SparqlResultSet results, string filename);
+
+        /// <summary>
+        /// Saves the result set to the specified file using the specified text encoding.
+        /// </summary>
+        /// <param name="results">The results set to save.</param>
+        /// <param name="filename">The path to the file to be written.</param>
+        /// <param name="fileEncoding">The text encoding to use.</param>
+        void Save(SparqlResultSet results, string filename, Encoding fileEncoding);
 
         /// <summary>
         /// Saves the Result Set to the given Stream.

@@ -191,19 +191,9 @@ namespace VDS.RDF.Storage
             // Add Credentials if needed
             if (_hasCredentials)
             {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    // Forcibly include a HTTP basic authentication header
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Username + ":" + this.Password));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-                }
-                else
-                {
-                    // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(Username, Password);
-                    request.Credentials = credentials;
-                    request.PreAuthenticate = true;
-                }
+                var credentials = new NetworkCredential(Username, Password);
+                request.Credentials = credentials;
+                request.PreAuthenticate = true;
             }
             // Disable Keep Alive since it can cause errors when carrying out high volumes of operations or when performing long running operations
             request.KeepAlive = false;

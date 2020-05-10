@@ -25,9 +25,7 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +40,7 @@ namespace VDS.RDF.Writing
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax.
     /// </summary>
     public class NQuadsWriter 
-        : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
+        : BaseStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
     {
         private int _threads = 4;
 
@@ -79,13 +77,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer.
         /// </summary>
-        public Type TripleFormatterType
-        {
-            get
-            {
-                return typeof(NQuadsFormatter);
-            }
-        }
+        public Type TripleFormatterType => typeof(NQuadsFormatter);
 
         /// <summary>
         /// Gets/Sets the NQuads syntax mode.
@@ -96,33 +88,9 @@ namespace VDS.RDF.Writing
         /// Saves a Store in NQuads format.
         /// </summary>
         /// <param name="store">Store to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(ITripleStore store, string filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            using (var writer = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.ASCII))
-            {
-                Save(store, writer, false);
-            }
-        }
-
-        /// <summary>
-        /// Saves a Store in NQuads format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
-        /// <param name="writer">Writer to save to.</param>
-        public void Save(ITripleStore store, TextWriter writer)
-        {
-            Save(store, writer, false);
-        }
-
-        /// <summary>
-        /// Saves a Store in NQuads format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
         /// <param name="writer">Writer to save to.</param>
         /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is written.</param>
-        public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
+        public override void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
@@ -328,7 +296,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public override event StoreWriterWarning Warning;
 
         /// <summary>
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.

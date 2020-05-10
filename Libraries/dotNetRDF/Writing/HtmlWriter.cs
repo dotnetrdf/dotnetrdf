@@ -65,24 +65,22 @@ namespace VDS.RDF.Writing
             }
         }
 
-        /// <summary>
-        /// Saves the Graph to the given File as an XHTML Table with embedded RDFa.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(IGraph g, String filename)
+        /// <inheritdoc />
+        public void Save(IGraph g, string filename, Encoding fileEncoding)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(g, new StreamWriter(stream, fileEncoding));
             }
         }
 
-        /// <summary>
-        /// Saves the Result Set to the given Stream as an XHTML Table with embedded RDFa.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        /// <param name="output">Stream to save to.</param>
+        /// <inheritdoc />
+        public void Save(IGraph g, string filename)
+        {
+            Save(g, filename, new UTF8Encoding(false));
+        }
+
+        /// <inheritdoc />
         public void Save(IGraph g, TextWriter output)
         {
             Save(g, output, false);
@@ -138,7 +136,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
-            if (!Stylesheet.Equals(String.Empty))
+            if (!Stylesheet.Equals(string.Empty))
             {
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, Stylesheet);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
@@ -204,7 +202,7 @@ namespace VDS.RDF.Writing
                 // For each Subject add an anchor if it can be reduced to a QName
                 if (subj.NodeType == NodeType.Uri)
                 {
-                    String qname;
+                    string qname;
                     if (context.QNameMapper.ReduceToQName(subj.ToString(), out qname))
                     {
                         if (!qname.EndsWith(":"))
@@ -330,12 +328,12 @@ namespace VDS.RDF.Writing
                     if (rdfASerializable)
                     {
                         // Get the CURIE for the Predicate
-                        String curie;
-                        String tempNamespace;
+                        string curie;
+                        string tempNamespace;
                         if (context.QNameMapper.ReduceToQName(t.Predicate.ToString(), out curie, out tempNamespace))
                         {
                             // Extract the Namespace and make sure it's registered on this Attribute
-                            String ns = curie.Substring(0, curie.IndexOf(':'));
+                            string ns = curie.Substring(0, curie.IndexOf(':'));
                             context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                         }
                         else
@@ -372,7 +370,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            String qname;
+            string qname;
             switch (n.NodeType)
             {
                 case NodeType.Blank:
@@ -395,11 +393,11 @@ namespace VDS.RDF.Writing
                         if (rdfASerializable)
                         {
                             // Need to embed the datatype in the @datatype attribute
-                            String dtcurie, dtnamespace;
+                            string dtcurie, dtnamespace;
                             if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
                             {
                                 // Extract the Namespace and make sure it's registered on this Attribute
-                                String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
+                                string ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
                                 context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                                 context.HtmlWriter.AddAttribute("datatype", dtcurie);
                             }
@@ -436,7 +434,7 @@ namespace VDS.RDF.Writing
                     {
                         if (rdfASerializable)
                         {
-                            if (!lit.Language.Equals(String.Empty))
+                            if (!lit.Language.Equals(string.Empty))
                             {
                                 // Need to add the language as an xml:lang attribute
                                 context.HtmlWriter.AddAttribute("xml:lang", lit.Language);
@@ -446,7 +444,7 @@ namespace VDS.RDF.Writing
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                         context.HtmlWriter.WriteEncodedText(lit.Value);
                         context.HtmlWriter.RenderEndTag();
-                        if (!lit.Language.Equals(String.Empty))
+                        if (!lit.Language.Equals(string.Empty))
                         {
                             context.HtmlWriter.WriteEncodedText("@");
                             context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLangSpec);
@@ -462,7 +460,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("HTML"));
 
                 case NodeType.Uri:
-                    if (rdfASerializable && !UriPrefix.Equals(String.Empty))
+                    if (rdfASerializable && !UriPrefix.Equals(string.Empty))
                     {
                         // If the URIs are being prefixed with something then we need to set the original
                         // URI in the resource attribute to generate the correct triple
@@ -492,7 +490,7 @@ namespace VDS.RDF.Writing
         /// Helper method for raising the <see cref="Warning">Warning</see> event.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfWriterWarning d = Warning;
             if (d != null)

@@ -25,8 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml;
@@ -40,7 +38,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlXsltWriter : SparqlXmlWriter
     {
-        private XslCompiledTransform _transform;
+        private readonly XslCompiledTransform _transform;
 
         /// <summary>
         /// Creates a new SPARQL XSLT Writer.
@@ -53,7 +51,7 @@ namespace VDS.RDF.Writing
         /// Creates a new SPARQL XSLT Writer.
         /// </summary>
         /// <param name="stylesheetUri">Stylesheet URI.</param>
-        public SparqlXsltWriter(String stylesheetUri)
+        public SparqlXsltWriter(string stylesheetUri)
         {
             // Load the Transform
             _transform = new XslCompiledTransform();
@@ -61,15 +59,6 @@ namespace VDS.RDF.Writing
             _transform.Load(stylesheetUri, settings, null);
         }
 
-        /// <summary>
-        /// Saves a SPARQL Result Set to the given File.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        /// <param name="filename">File to save to.</param>
-        public override void Save(SparqlResultSet results, string filename)
-        {
-            Save(results, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
-        }
 
         /// <summary>
         /// Saves a SPARQL Result Set to the given Text Writer.

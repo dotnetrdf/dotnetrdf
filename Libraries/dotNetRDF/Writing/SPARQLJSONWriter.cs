@@ -43,12 +43,22 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="results">Result Set to save.</param>
         /// <param name="filename">File to save to.</param>
-        public void Save(SparqlResultSet results, String filename)
+        /// <remarks>The output file will be written using UTF-8 text encoding with no byte-order mark</remarks>
+        public void Save(SparqlResultSet results, string filename)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
+            Save(results, filename, new UTF8Encoding(false));
+        }
+
+        /// <summary>
+        /// Saves the Result Set to the given File in the SPARQL Results JSON Format.
+        /// </summary>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
+        /// <param name="fileEncoding">The text encoding to use for the output file.</param>
+        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+        {
+            using var stream = File.Open(filename, FileMode.Create);
+            Save(results, new StreamWriter(stream, fileEncoding));
         }
 
         /// <summary>

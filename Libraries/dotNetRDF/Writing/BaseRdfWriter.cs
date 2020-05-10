@@ -25,9 +25,7 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace VDS.RDF.Writing
@@ -40,8 +38,21 @@ namespace VDS.RDF.Writing
         /// <inheritdoc/>
         public abstract event RdfWriterWarning Warning;
 
+
         /// <inheritdoc/>
-        public abstract void Save(IGraph g, string filename);
+        public virtual void Save(IGraph g, string filename)
+        {
+            Save(g, filename, new UTF8Encoding(false));
+        }
+
+        /// <inheritdoc/>
+        public virtual void Save(IGraph g, string filename, Encoding fileEncoding)
+        {
+            using (var stream = File.Open(filename, FileMode.Create))
+            {
+                Save(g, new StreamWriter(stream, fileEncoding));
+            }
+        }
 
         /// <inheritdoc/>
         public void Save(IGraph g, TextWriter output)

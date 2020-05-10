@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Text;
 using FluentAssertions;
 using Xunit;
 
@@ -35,27 +34,7 @@ namespace VDS.RDF.Core
             request.Credentials.Should().Be(cred);
         }
 
-        [Fact]
-        public void ApplyRequestOptionsSetsBasicAuthHeader()
-        {
-            var target = new Uri("http://example.org/");
-            var cred = new NetworkCredential("test", "password");
-            var endpoint = new TestEndpoint(target) { Credentials = cred };
-            var expectedAuthorization = "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes("test:password"));
-            Options.ForceHttpBasicAuth = true;
-            try
-            {
-                var request = endpoint.CreateWebRequest();
-                request.Credentials.Should().BeNull();
-                request.Headers[HttpRequestHeader.Authorization].Should().Be(expectedAuthorization);
-            }
-            finally
-            {
-                Options.ForceHttpBasicAuth = false;
-            }
-        }
 
-#if NET452
         [Fact]
         public void ApplyRequestOptionsSetsWebProxy()
         {
@@ -112,9 +91,6 @@ namespace VDS.RDF.Core
             var request = endpoint.CreateWebRequest();
             request.Timeout.Should().Be(1234);
         }
-
-
-#endif
     }
 
     class TestEndpoint : BaseEndpoint

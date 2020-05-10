@@ -125,7 +125,7 @@ namespace VDS.RDF.Update
                 {
                     request.Method = "POST";
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                     {
                         writer.Write(postData);
                         writer.Close();
@@ -174,7 +174,7 @@ namespace VDS.RDF.Update
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write("update=");
                                 writer.Write(HttpUtility.UrlEncode(sparqlUpdate));

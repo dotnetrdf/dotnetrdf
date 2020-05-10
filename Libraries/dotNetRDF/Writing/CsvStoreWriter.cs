@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// Class for generating CSV output from RDF Datasets.
     /// </summary>
     public class CsvStoreWriter 
-        : IStoreWriter, IFormatterBasedWriter
+        : BaseStoreWriter, IFormatterBasedWriter
     {
         private int _threads = 4;
         private readonly CsvFormatter _formatter = new CsvFormatter();
@@ -54,33 +54,12 @@ namespace VDS.RDF.Writing
         /// Saves a Triple Store to CSV Format.
         /// </summary>
         /// <param name="store">Triple Store to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(ITripleStore store, string filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot write to a null file");
-            Save(store, new StreamWriter(File.OpenWrite(filename)), false);
-        }
-
-        /// <summary>
-        /// Saves a Triple Store to CSV Format.
-        /// </summary>
-        /// <param name="store">Triple Store to save.</param>
-        /// <param name="writer">Writer to save to.</param>
-        public void Save(ITripleStore store, TextWriter writer)
-        {
-            Save(store, writer, false);
-        }
-
-        /// <summary>
-        /// Saves a Triple Store to CSV Format.
-        /// </summary>
-        /// <param name="store">Triple Store to save.</param>
         /// <param name="writer">Writer to save to.</param>
         /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the writer completes.</param>
-        public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
+        public override void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
-            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
-            if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
+            if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null Triple Store");
+            if (writer == null) throw new ArgumentNullException(nameof(writer), "Cannot output to a null writer");
 
             var context = new ThreadedStoreWriterContext(store, writer);
 
@@ -248,7 +227,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when a non-fatal error occurs while outputting CSV
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public override event StoreWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.

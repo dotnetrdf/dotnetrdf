@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -38,29 +37,43 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlXmlWriter : ISparqlResultsWriter
     {
-
         /// <summary>
         /// Saves the Result Set to the given File in the Sparql Results XML Format.
         /// </summary>
         /// <param name="results">Result Set to save.</param>
         /// <param name="filename">File to save to.</param>
-        public virtual void Save(SparqlResultSet results, String filename)
+        /// <param name="fileEncoding">The text encoding to use for the output file.</param>
+        public virtual void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(results, new StreamWriter(stream, fileEncoding));
             }
         }
 
-        private XmlWriterSettings GetSettings()
+        /// <summary>
+        /// Saves the Result Set to the given File in the Sparql Results XML Format using UTF-8 text encoding with no byte-order mark (BOM)
+        /// </summary>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
+        /// <remarks>To use a different file encoding (including UTF-8 with BOM), use <see cref="Save(SparqlResultSet,string,Encoding)"/> passing the appropriate <see cref="Encoding"/> instance, or <see cref="Save(SparqlResultSet,TextWriter)"/> with a configured TextWriter object.</remarks>
+        public virtual void Save(SparqlResultSet results, string filename)
+
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.CloseOutput = true;
-            settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
-            settings.Indent = true;
-            settings.NewLineHandling = NewLineHandling.None;
-            settings.OmitXmlDeclaration = false;
+            Save(results, filename, new UTF8Encoding(false));
+        }
+
+        private static XmlWriterSettings GetSettings(Encoding fileEncoding)
+        {
+            var settings = new XmlWriterSettings
+            {
+                CloseOutput = true,
+                ConformanceLevel = ConformanceLevel.Document,
+                Encoding = fileEncoding,
+                Indent = true,
+                NewLineHandling = NewLineHandling.None,
+                OmitXmlDeclaration = false,
+            };
             return settings;
         }
 
@@ -73,7 +86,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                XmlWriter writer = XmlWriter.Create(output, GetSettings());
+                var writer = XmlWriter.Create(output, GetSettings(output.Encoding));
                 GenerateOutput(results, writer);
                 output.Close();
             }
@@ -109,7 +122,7 @@ namespace VDS.RDF.Writing
             // Variables in the Header?
             if (resultSet.ResultsType == SparqlResultsType.VariableBindings)
             {
-                foreach (String var in resultSet.Variables)
+                foreach (var var in resultSet.Variables)
                 {
                     // <variable> element
                     writer.WriteStartElement("variable");
@@ -123,16 +136,16 @@ namespace VDS.RDF.Writing
                 // <results> Element
                 writer.WriteStartElement("results");
 
-                foreach (SparqlResult r in resultSet.Results)
+                foreach (var r in resultSet.Results)
                 {
                     // <result> Element
                     writer.WriteStartElement("result");
 
-                    foreach (String var in resultSet.Variables)
+                    foreach (var var in resultSet.Variables)
                     {
                         if (r.HasValue(var))
                         {
-                            INode n = r.Value(var);
+                            var n = r.Value(var);
                             if (n == null) continue; //NULLs don't get serialized in the XML Format
 
                             // <binding> Element
@@ -155,9 +168,9 @@ namespace VDS.RDF.Writing
                                 case NodeType.Literal:
                                     // <literal> element
                                     writer.WriteStartElement("literal");
-                                    ILiteralNode l = (ILiteralNode)n;
+                                    var l = (ILiteralNode)n;
 
-                                    if (!l.Language.Equals(String.Empty))
+                                    if (!l.Language.Equals(string.Empty))
                                     {
                                         writer.WriteStartAttribute("xml", "lang", XmlSpecsHelper.NamespaceXml);
                                         writer.WriteRaw(l.Language);
@@ -222,9 +235,9 @@ namespace VDS.RDF.Writing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        protected void RaiseWarning(String message)
+        protected void RaiseWarning(string message)
         {
-            SparqlWarning d = Warning;
+            var d = Warning;
             if (d != null)
             {
                 d(message);

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF.Parsing;
@@ -48,117 +47,38 @@ namespace VDS.RDF.Writing
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call <see cref="TriGWriter.Save(ITripleStore,TextWriter)">Save()</see> from several threads with no issue.  See Remarks for potential performance impact of this.</threadsafety>
     public class TriGWriter 
-        : IStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter, IMultiThreadedWriter
+        : BaseStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter, IMultiThreadedWriter
     {
         private int _threads = 4;
         private const int PollInterval = 50;
-        private bool _allowHiSpeed = true;
-        private bool _prettyprint = true;
-        private bool _n3compat = false;
-        private int _compressionLevel = WriterCompressionLevel.Default;
-        private bool _useMultiThreading = Options.AllowMultiThreadedWriting;
 
         /// <summary>
         /// Gets/Sets whether High Speed Write Mode is permitted.
         /// </summary>
-        public bool HighSpeedModePermitted
-        {
-            get
-            {
-                return _allowHiSpeed;
-            }
-            set
-            {
-                _allowHiSpeed = value;
-            }
-        }
+        public bool HighSpeedModePermitted { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether Pretty Printing is used.
         /// </summary>
-        public bool PrettyPrintMode 
-        {
-            get 
-            {
-                return _prettyprint;
-            }
-            set 
-            {
-                _prettyprint = value;
-            }
-        }
+        public bool PrettyPrintMode { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Compression Level for the writer.
         /// </summary>
-        public int CompressionLevel
-        {
-            get
-            {
-                return _compressionLevel;
-            }
-            set
-            {
-                _compressionLevel = value;
-            }
-        }
+        public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
 
         /// <summary>
-        /// Gets/Sets whether N3 Compatability Mode is used, in this mode an = is written after Graph Names so an N3 parser can read the TriG file correctly.
+        /// Gets/Sets whether N3 Compatibility Mode is used, in this mode an = is written after Graph Names so an N3 parser can read the TriG file correctly.
         /// </summary>
         /// <remarks>
         /// Defaults to <strong>false</strong> from the 0.4.1 release onwards.
         /// </remarks>
-        public bool N3CompatabilityMode
-        {
-            get
-            {
-                return _n3compat;
-            }
-            set
-            {
-                _n3compat = value;
-            }
-        }
+        public bool N3CompatibilityMode { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether multi-threaded writing will be used to generate output faster.
         /// </summary>
-        public bool UseMultiThreadedWriting
-        {
-            get
-            {
-                return _useMultiThreading;
-            }
-            set
-            {
-                _useMultiThreading = value;
-            }
-        }
-
-        /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)), false);
-            }
-        }
-
-        /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
-        /// <param name="writer">Writer to save to.</param>
-        public void Save(ITripleStore store, TextWriter writer)
-        {
-            Save(store, writer, false);
-        }
+        public bool UseMultiThreadedWriting { get; set; } = Options.AllowMultiThreadedWriting;
 
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format.
@@ -166,12 +86,12 @@ namespace VDS.RDF.Writing
         /// <param name="store">Store to save.</param>
         /// <param name="writer">Writer to save to.</param>
         /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is saved.</param>
-        public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
+        public override void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
 
-            TriGWriterContext context = new TriGWriterContext(store, writer, _prettyprint, _allowHiSpeed, _compressionLevel, _n3compat);
+            var context = new TriGWriterContext(store, writer, PrettyPrintMode, HighSpeedModePermitted, CompressionLevel, N3CompatibilityMode);
 
             // Check there's something to do
             if (context.Store.Graphs.Count == 0)
@@ -192,7 +112,7 @@ namespace VDS.RDF.Writing
             {
                 // Only add @prefix declarations if compression is enabled
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
-                foreach (string prefix in context.NamespaceMap.Prefixes)
+                foreach (var prefix in context.NamespaceMap.Prefixes)
                 {
                     if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
                     {
@@ -206,19 +126,19 @@ namespace VDS.RDF.Writing
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(new NamespaceMapper(true));
             }
 
-            if (_useMultiThreading)
+            if (UseMultiThreadedWriting)
             {
                 // Standard Multi-Threaded Writing
 
                 // Queue the Graphs to be written
-                foreach (IGraph g in context.Store.Graphs)
+                foreach (var g in context.Store.Graphs)
                 {
                     context.Add(g.BaseUri);
                 }
 
                 // Start making the async calls
                 var workers = new Task[_threads];
-                for (int i = 0; i < _threads; i++)
+                for (var i = 0; i < _threads; i++)
                 {
                     workers[i] = Task.Factory.StartNew(() => SaveGraphs(context));
                 }
@@ -250,9 +170,9 @@ namespace VDS.RDF.Writing
                 try
                 {
                     // Optional Single Threaded Writing
-                    foreach (IGraph g in store.Graphs)
+                    foreach (var g in store.Graphs)
                     {
-                        TurtleWriterContext graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
+                        var graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
                         if (context.CompressionLevel > WriterCompressionLevel.None)
                         {
                             graphContext.NodeFormatter = new TurtleFormatter(context.QNameMapper);
@@ -292,13 +212,13 @@ namespace VDS.RDF.Writing
         /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
-        private String GenerateGraphOutput(TriGWriterContext globalContext, TurtleWriterContext context)
+        private string GenerateGraphOutput(TriGWriterContext globalContext, TurtleWriterContext context)
         {
             if (context.Graph.BaseUri != null)
             {
                 // Named Graph
-                String gname;
-                String sep = (globalContext.N3CompatabilityMode) ? " = " : " ";
+                string gname;
+                var sep = (globalContext.N3CompatabilityMode) ? " = " : " ";
                 if (globalContext.CompressionLevel > WriterCompressionLevel.None && globalContext.QNameMapper.ReduceToQName(context.Graph.BaseUri.AbsoluteUri, out gname))
                 {
                     if (TurtleSpecsHelper.IsValidQName(gname))
@@ -337,7 +257,7 @@ namespace VDS.RDF.Writing
         private void GenerateTripleOutput(TriGWriterContext globalContext, TurtleWriterContext context)
         {
             // Decide which write mode to use
-            bool hiSpeed = false;
+            var hiSpeed = false;
             double subjNodes = context.Graph.Triples.SubjectNodes.Count();
             double triples = context.Graph.Triples.Count;
             if ((subjNodes / triples) > 0.75) hiSpeed = true;
@@ -345,10 +265,10 @@ namespace VDS.RDF.Writing
             if (globalContext.CompressionLevel == WriterCompressionLevel.None || hiSpeed && context.HighSpeedModePermitted)
             {
                 // Use High Speed Write Mode
-                String indentation = new String(' ', 4);
+                var indentation = new string(' ', 4);
                 context.Output.Write(indentation);
                 if (globalContext.CompressionLevel > WriterCompressionLevel.None) context.Output.WriteLine("# Written using High Speed Mode");
-                foreach (Triple t in context.Graph.Triples)
+                foreach (var t in context.Graph.Triples)
                 {
                     context.Output.Write(indentation);
                     context.Output.Write(GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject));
@@ -362,25 +282,25 @@ namespace VDS.RDF.Writing
             else
             {
                 // Get the Triples as a Sorted List
-                List<Triple> ts = context.Graph.Triples.ToList();
+                var ts = context.Graph.Triples.ToList();
                 ts.Sort();
 
                 // Variables we need to track our writing
                 INode lastSubj, lastPred;
                 lastSubj = lastPred = null;
                 int subjIndent = 0, predIndent = 0;
-                int baseIndent = 4;
-                String temp;
+                var baseIndent = 4;
+                string temp;
 
-                for (int i = 0; i < ts.Count; i++)
+                for (var i = 0; i < ts.Count; i++)
                 {
-                    Triple t = ts[i];
+                    var t = ts[i];
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
                         // Terminate previous Triples
                         if (lastSubj != null) context.Output.WriteLine(".");
 
-                        if (context.PrettyPrint) context.Output.Write(new String(' ', baseIndent));
+                        if (context.PrettyPrint) context.Output.Write(new string(' ', baseIndent));
 
                         // Start a new set of Triples
                         temp = GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject);
@@ -401,7 +321,7 @@ namespace VDS.RDF.Writing
                         // Terminate previous Predicate Object list
                         context.Output.WriteLine(";");
 
-                        if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
+                        if (context.PrettyPrint) context.Output.Write(new string(' ', subjIndent));
 
                         // Write the next Predicate
                         temp = GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
@@ -415,7 +335,7 @@ namespace VDS.RDF.Writing
                         // Continue Object List
                         context.Output.WriteLine(",");
 
-                        if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent + predIndent));
+                        if (context.PrettyPrint) context.Output.Write(new string(' ', subjIndent + predIndent));
                     }
 
                     // Write the Object
@@ -435,7 +355,7 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node to generate output for.</param>
         /// <param name="segment">Segment of the Triple being written.</param>
         /// <returns></returns>
-        private String GenerateNodeOutput(TriGWriterContext globalContext, TurtleWriterContext context, INode n, TripleSegment segment)
+        private string GenerateNodeOutput(TriGWriterContext globalContext, TurtleWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
             {
@@ -462,12 +382,6 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Delegate for the SaveGraphs method.
-        /// </summary>
-        /// <param name="globalContext">Context for writing the Store.</param>
-        private delegate void SaveGraphsDelegate(TriGWriterContext globalContext);
-
-        /// <summary>
         /// Thread Worker method which writes Graphs to the output.
         /// </summary>
         /// <param name="globalContext">Context for writing the Store.</param>
@@ -479,10 +393,10 @@ namespace VDS.RDF.Writing
                 while (globalContext.TryGetNextUri(out u))
                 {
                     // Get the Graph from the Store
-                    IGraph g = globalContext.Store.Graphs[u];
+                    var g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
-                    TurtleWriterContext context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    var context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     if (globalContext.CompressionLevel > WriterCompressionLevel.None)
                     {
                         context.NodeFormatter = new TurtleFormatter(globalContext.QNameMapper);
@@ -491,16 +405,12 @@ namespace VDS.RDF.Writing
                     {
                         context.NodeFormatter = new UncompressedTurtleFormatter();
                     }
-                    String graphContent = GenerateGraphOutput(globalContext, context);
+                    var graphContent = GenerateGraphOutput(globalContext, context);
                     try
                     {
                         Monitor.Enter(globalContext.Output);
                         globalContext.Output.WriteLine(graphContent);
                         globalContext.Output.Flush();
-                    }
-                    catch
-                    {
-                        throw;
                     }
                     finally
                     {
@@ -519,22 +429,16 @@ namespace VDS.RDF.Writing
             }
         }
 
-        /// <summary>
-        /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
-        /// </summary>
-        public event StoreWriterWarning Warning;
+        /// <inheritdoc />
+        public override event StoreWriterWarning Warning;
 
         /// <summary>
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message) 
+        private void RaiseWarning(string message) 
         {
-            StoreWriterWarning d = Warning;
-            if (d != null)
-            {
-                d(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>

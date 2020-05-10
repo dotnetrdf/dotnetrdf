@@ -45,12 +45,22 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="results">Result Set.</param>
         /// <param name="filename">File to save to.</param>
+        /// <remarks>The output file is encoded in UTF-8 with no byte-order mark.</remarks>
         public void Save(SparqlResultSet results, string filename)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
+            Save(results, filename, new UTF8Encoding(false));
+        }
+
+        /// <summary>
+        /// Saves a SPARQL Result Set to TSV format.
+        /// </summary>
+        /// <param name="results">Result Set.</param>
+        /// <param name="filename">File to save to.</param>
+        /// <param name="fileEncoding">The text encoding to use for the file.</param>
+        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+        {
+            using var stream = File.Open(filename, FileMode.Create);
+            Save(results, new StreamWriter(stream, fileEncoding));
         }
 
         /// <summary>
@@ -65,21 +75,21 @@ namespace VDS.RDF.Writing
                 if (results.ResultsType == SparqlResultsType.VariableBindings)
                 {
                     // Output Variables first
-                    String[] vars = results.Variables.ToArray();
-                    for (int i = 0; i < vars.Length; i++)
+                    var vars = results.Variables.ToArray();
+                    for (var i = 0; i < vars.Length; i++)
                     {
                         output.Write("?" + vars[i]);
                         if (i < vars.Length - 1) output.Write('\t');
                     }
                     output.Write('\n');
 
-                    foreach (SparqlResult result in results)
+                    foreach (var result in results)
                     {
-                        for (int i = 0; i < vars.Length; i++)
+                        for (var i = 0; i < vars.Length; i++)
                         {
                             if (result.HasValue(vars[i]))
                             {
-                                INode temp = result[vars[i]];
+                                var temp = result[vars[i]];
                                 if (temp != null)
                                 {
                                     switch (temp.NodeType)
@@ -126,9 +136,9 @@ namespace VDS.RDF.Writing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
-            SparqlWarning d = Warning;
+            var d = Warning;
             if (d != null)
             {
                 d(message);

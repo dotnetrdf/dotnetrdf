@@ -24,62 +24,44 @@
 // </copyright>
 */
 
+using System;
 using System.IO;
 using System.Text;
 
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// A convenience wrapper that allows a single graph to be written as the default
-    /// graph using a store writer.
+    /// Abstract base class for store writers that provides the default logic for implementing the Save method overrides
     /// </summary>
-    public class SingleGraphWriter: IRdfWriter
+    public abstract class BaseStoreWriter : IStoreWriter
     {
-        private readonly IStoreWriter _storeWriter;
-
-        /// <summary>
-        /// Create a new writer instance that wraps the specified <see cref="IStoreWriter"/> instance.
-        /// </summary>
-        /// <param name="storeWriter">The <see cref="IStoreWriter"/> instance that will do the writing.</param>
-        public SingleGraphWriter(IStoreWriter storeWriter)
+        /// <inheritdoc />
+        public void Save(ITripleStore store, string filename)
         {
-            _storeWriter = storeWriter;
-            _storeWriter.Warning += RaiseGraphWriterWarning;
-        }
-
-        private void RaiseGraphWriterWarning(string message)
-        {
-            Warning?.Invoke(message);
+            Save(store, filename, new UTF8Encoding(false));
         }
 
         /// <inheritdoc />
-        public void Save(IGraph g, string filename)
+        public void Save(ITripleStore store, string filename, Encoding fileEncoding)
         {
-            _storeWriter.Save(g.AsTripleStore(), filename);
+            if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
+            if (filename == null) throw new ArgumentNullException(nameof(filename), "Cannot output to a null file");
+            using var stream = File.Open(filename, FileMode.Create);
+            Save(store, new StreamWriter(stream, fileEncoding), false);
         }
 
         /// <inheritdoc />
-        public void Save(IGraph g, string filename, Encoding fileEncoding)
+        public void Save(ITripleStore store, TextWriter output)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, fileEncoding));
-            }
+            if (store == null) throw new ArgumentNullException(nameof(store), "Cannot output a null ITripleStore instance.");
+            if (output == null) throw new ArgumentNullException(nameof(output), "The output TextWriter must not be null.");
+            Save(store, output, false);
         }
 
         /// <inheritdoc />
-        public void Save(IGraph g, TextWriter output)
-        {
-            _storeWriter.Save(g.AsTripleStore(), output);
-        }
+        public abstract void Save(ITripleStore store, TextWriter writer, bool leaveOpen);
 
         /// <inheritdoc />
-        public void Save(IGraph g, TextWriter output, bool leaveOpen)
-        {
-            _storeWriter.Save(g.AsTripleStore(), output, leaveOpen);
-        }
-
-        /// <inheritdoc/>
-        public event RdfWriterWarning Warning;
+        public abstract event StoreWriterWarning Warning;
     }
 }

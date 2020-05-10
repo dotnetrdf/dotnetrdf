@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a Triple Store in JSON-LD syntax.
     /// </summary>
-    public class JsonLdWriter : IStoreWriter
+    public class JsonLdWriter : BaseStoreWriter
     {
         private readonly JsonLdWriterOptions _options;
 
@@ -62,25 +62,10 @@ namespace VDS.RDF.Writing
         }
 
         /// <inheritdoc/>
-        public void Save(ITripleStore store, string filename)
+        public override void Save(ITripleStore store, TextWriter output, bool leaveOpen)
         {
-            var jsonArray = SerializeStore(store);
-            using (var writer = new StreamWriter(File.Open(filename, FileMode.Create, FileAccess.Write),
-                Encoding.UTF8))
-            {
-                writer.Write(jsonArray);
-            }
-        }
-
-        /// <inheritdoc/>
-        public void Save(ITripleStore store, TextWriter output)
-        {
-            Save(store, output, false);
-        }
-
-        /// <inheritdoc/>
-        public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
-        {
+            if (store == null) throw new ArgumentNullException(nameof(store), "Cannot write a null store");
+            if(output == null) throw new ArgumentNullException(nameof(output), "Cannot write to a null writer");
             var jsonArray = SerializeStore(store);
             output.Write(jsonArray.ToString(_options.JsonFormatting));
             output.Flush();
@@ -462,21 +447,16 @@ namespace VDS.RDF.Writing
 
         private static string MakeNodeString(INode node)
         {
-            var uriNode = node as IUriNode;
-            if (uriNode != null)
+            return node switch
             {
-                return uriNode.Uri.OriginalString;
-            }
-            var blankNode = node as IBlankNode;
-            if (blankNode != null)
-            {
-                return "_:" + blankNode.InternalID;
-            }
-            throw new ArgumentException("Node must be a blank node or URI node", nameof(node));
+                IUriNode uriNode => uriNode.Uri.OriginalString,
+                IBlankNode blankNode => "_:" + blankNode.InternalID,
+                _ => throw new ArgumentException("Node must be a blank node or URI node", nameof(node))
+            };
         }
 
         /// <inheritdoc/>
-        public event StoreWriterWarning Warning;
+        public override event StoreWriterWarning Warning;
 
         private class JObjectWithUsages : JObject
         {

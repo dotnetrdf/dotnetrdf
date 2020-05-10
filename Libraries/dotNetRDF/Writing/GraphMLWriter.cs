@@ -34,7 +34,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a <see cref="IGraph">graph</see> in GraphML format.
     /// </summary>
-    public class GraphMLWriter : IStoreWriter, ICollapseLiteralsWriter
+    public class GraphMLWriter : BaseStoreWriter, ICollapseLiteralsWriter
     {
         /// <summary>
         /// Controls whether to collapse distinct literals.
@@ -45,30 +45,8 @@ namespace VDS.RDF.Writing
         /// Event raised when there is ambiguity in the syntax being producing
         /// </summary>
         /// <remarks>This class doesn't raise this event</remarks>
-        public event StoreWriterWarning Warning;
+        public override event StoreWriterWarning Warning;
 
-        /// <summary>
-        /// Saves a triple store to a file in GraphML format.
-        /// </summary>
-        /// <param name="store">The source triple store.</param>
-        /// <param name="filename">The name of the target file.</param>
-        public void Save(ITripleStore store, string filename)
-        {
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
-            {
-                this.Save(store, writer);
-            }
-        }
-
-        /// <summary>
-        /// Saves a triple store to a text writer in GraphML format.
-        /// </summary>
-        /// <param name="store">The source triple store.</param>
-        /// <param name="output">The target text writer.</param>
-        public void Save(ITripleStore store, TextWriter output)
-        {
-            this.Save(store, output, false);
-        }
 
         /// <summary>
         /// Saves a triple store to a text writer in GraphML format.
@@ -76,12 +54,10 @@ namespace VDS.RDF.Writing
         /// <param name="store">The source triple store.</param>
         /// <param name="output">The target text writer.</param>
         /// <param name="leaveOpen">Boolean flag indicating if the output writer should be left open by the writer when it completes.</param>
-        public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
+        public override void Save(ITripleStore store, TextWriter output, bool leaveOpen)
         {
-            using (var writer = XmlWriter.Create(output, new XmlWriterSettings { CloseOutput = !leaveOpen, OmitXmlDeclaration = true }))
-            {
-                this.Save(store, writer);
-            }
+            using var writer = XmlWriter.Create(output, new XmlWriterSettings { CloseOutput = !leaveOpen, OmitXmlDeclaration = true });
+            Save(store, writer);
         }
 
         /// <summary>

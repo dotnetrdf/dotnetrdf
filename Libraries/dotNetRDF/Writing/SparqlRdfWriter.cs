@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -36,7 +37,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlRdfWriter : ISparqlResultsWriter
     {
-        private IRdfWriter _writer;
+        private readonly IRdfWriter _writer;
 
         /// <summary>
         /// Creates a new SPARQL RDF Writer which will save Result Sets in the RDF serialization using Turtle syntax.
@@ -62,6 +63,17 @@ namespace VDS.RDF.Writing
         public void Save(SparqlResultSet results, string filename)
         {
             _writer.Save(GenerateOutput(results), filename);
+        }
+
+        /// <summary>
+        /// Saves the SPARQL Result Set to the given File.
+        /// </summary>
+        /// <param name="results">Result Set to save.</param>
+        /// <param name="filename">File to save to.</param>
+        /// <param name="fileEncoding">The text encoding to use for the output file.</param>
+        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
+        {
+            _writer.Save(GenerateOutput(results), filename, fileEncoding);
         }
 
         /// <summary>

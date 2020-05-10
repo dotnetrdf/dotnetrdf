@@ -534,7 +534,7 @@ namespace VDS.RDF.Query
             {
                 httpRequest.Method = "POST";
                 httpRequest.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                using (var writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(Options.UseBomForUtf8)))
+                using (var writer = new StreamWriter(httpRequest.GetRequestStream(), new UTF8Encoding(false)))
                 {
                     writer.Write(postData);
                     writer.Close();
@@ -582,7 +582,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -676,7 +676,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -763,7 +763,7 @@ namespace VDS.RDF.Query
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write("query=");
                                 writer.Write(HttpUtility.UrlEncode(query));
@@ -852,7 +852,7 @@ namespace VDS.RDF.Query
                 try
                 {
                     Stream stream = request.EndGetRequestStream(result);
-                    using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                    using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                     {
                         writer.Write("query=");
                         writer.Write(HttpUtility.UrlEncode(query));

@@ -214,7 +214,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether a UTF-8 BOM is used for UTF-8 Streams created by dotNetRDF (this does not affect Streams passed directly to methods as open streams cannot have their encoding changed).
         /// </summary>
-        public static bool UseBomForUtf8 { get; set; } = false;
+        //public static bool UseBomForUtf8 { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether IRIs are validated by parsers which support this functionality.
@@ -243,7 +243,7 @@ namespace VDS.RDF
         /// <strong>Warning:</strong> Under Silverlight this will only work correctly if usernames and passwords are composed only of characters within the ASCII range.
         /// </para>
         /// </remarks>
-        public static bool ForceHttpBasicAuth { get; set; } = false;
+        // public static bool ForceHttpBasicAuth { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether a DTD should be used for some XML formats to compress output.

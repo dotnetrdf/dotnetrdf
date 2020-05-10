@@ -831,7 +831,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("query=");
                             writer.Write(HttpUtility.UrlEncode(sparqlQuery));

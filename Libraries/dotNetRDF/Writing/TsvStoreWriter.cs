@@ -37,10 +37,10 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for generating TSV output from RDF Datasets.
+    /// Class for generating TSV output from RDF datasets.
     /// </summary>
     public class TsvStoreWriter 
-        : IStoreWriter, IFormatterBasedWriter
+        : BaseStoreWriter, IFormatterBasedWriter
     {
         private int _threads = 4;
         private readonly TsvFormatter _formatter = new TsvFormatter();
@@ -54,33 +54,9 @@ namespace VDS.RDF.Writing
         /// Saves a Triple Store to TSV format.
         /// </summary>
         /// <param name="store">Triple Store to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(ITripleStore store, string filename)
-        {
-            if (filename == null)
-            {
-                throw new RdfOutputException("Cannot output to a null file");
-            }
-            Save(store, new StreamWriter(File.OpenWrite(filename)), false);
-        }
-
-        /// <summary>
-        /// Saves a Triple Store to TSV format.
-        /// </summary>
-        /// <param name="store">Triple Store to save.</param>
-        /// <param name="writer">Writer to save to.</param>
-        public void Save(ITripleStore store, TextWriter writer)
-        {
-            Save(store, writer, false);
-        }
-
-        /// <summary>
-        /// Saves a Triple Store to TSV format.
-        /// </summary>
-        /// <param name="store">Triple Store to save.</param>
         /// <param name="writer">Writer to save to.</param>
         /// <param name="leaveOpen">Boolean flag indicating if <paramref name="writer"/> should be left open after the store is saved.</param>
-        public void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
+        public override void Save(ITripleStore store, TextWriter writer, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
@@ -148,7 +124,7 @@ namespace VDS.RDF.Writing
 
                     // Generate the Graph Output and add to Stream
                     var context = new BaseWriterContext(g, new System.IO.StringWriter());
-                    var graphContent = GenerateGraphOutput(globalContext, context);
+                    var graphContent = GenerateGraphOutput(context);
                     try
                     {
                         Monitor.Enter(globalContext.Output);
@@ -175,21 +151,20 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Generates the Output for a Graph as a String in TSV syntax.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
-        private string GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
+        private string GenerateGraphOutput(IWriterContext context)
         {
             if (context.Graph.BaseUri != null)
             {
                 // Named Graphs have a fourth context field added
                 foreach (var t in context.Graph.Triples)
                 {
-                    GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                    GenerateNodeOutput(context, t.Subject);
                     context.Output.Write('\t');
-                    GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    GenerateNodeOutput(context, t.Predicate);
                     context.Output.Write('\t');
-                    GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                    GenerateNodeOutput(context, t.Object);
                     context.Output.Write('\t');
                     context.Output.Write('<');
                     context.Output.Write(_formatter.FormatUri(context.Graph.BaseUri));
@@ -202,11 +177,11 @@ namespace VDS.RDF.Writing
                 // Default Graph has an empty field added
                 foreach (var t in context.Graph.Triples)
                 {
-                    GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                    GenerateNodeOutput(context, t.Subject);
                     context.Output.Write('\t');
-                    GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    GenerateNodeOutput(context, t.Predicate);
                     context.Output.Write('\t');
-                    GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                    GenerateNodeOutput(context, t.Object);
                     context.Output.Write('\t');
                     context.Output.Write('\n');
                 }
@@ -220,8 +195,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="context">Writer Context.</param>
         /// <param name="n">Node.</param>
-        /// <param name="segment">Triple Context.</param>
-        private void GenerateNodeOutput(BaseWriterContext context, INode n, TripleSegment segment)
+        private void GenerateNodeOutput(IWriterContext context, INode n)
         {
             switch (n.NodeType)
             {
@@ -240,7 +214,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if the Writer detects a non-fatal error with the RDF being output
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public override event StoreWriterWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.

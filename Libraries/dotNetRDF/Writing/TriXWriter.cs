@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -33,18 +32,18 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for serialzing Triple Stores in the TriX format.
+    /// Class for serializing Triple Stores in the TriX format.
     /// </summary>
     public class TriXWriter
-        : IStoreWriter
+        : BaseStoreWriter
     {
-        private XmlWriterSettings GetSettings(bool leaveOpen)
+        private static XmlWriterSettings GetSettings(Encoding fileEncoding, bool leaveOpen)
         {
             var settings = new XmlWriterSettings
             {
                 CloseOutput = !leaveOpen,
                 ConformanceLevel = ConformanceLevel.Document,
-                Encoding = new UTF8Encoding(Options.UseBomForUtf8),
+                Encoding = fileEncoding,
                 Indent = true,
                 NewLineHandling = NewLineHandling.None,
                 OmitXmlDeclaration = false,
@@ -56,33 +55,9 @@ namespace VDS.RDF.Writing
         /// Saves a Store in TriX format.
         /// </summary>
         /// <param name="store">Store to save.</param>
-        /// <param name="filename">File to save to.</param>
-        public void Save(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(store, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)), false);
-            }
-        }
-
-        /// <summary>
-        /// Saves a Store in TriX format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
-        /// <param name="output">Writer to save to.</param>
-        public void Save(ITripleStore store, TextWriter output)
-        {
-            Save(store, output , false);
-        }
-
-        /// <summary>
-        /// Saves a Store in TriX format.
-        /// </summary>
-        /// <param name="store">Store to save.</param>
         /// <param name="output">Writer to save to.</param>
         /// <param name="leaveOpen">Boolean flag indicating if <paramref name="output"/> should be closed after the store is saved.</param>
-        public void Save(ITripleStore store, TextWriter output, bool leaveOpen)
+        public override void Save(ITripleStore store, TextWriter output, bool leaveOpen)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (output == null) throw new RdfOutputException("Cannot output to a null writer");
@@ -90,7 +65,7 @@ namespace VDS.RDF.Writing
             try
             {
                 // Setup the XML document
-                var writer = XmlWriter.Create(output, GetSettings(leaveOpen));
+                var writer = XmlWriter.Create(output, GetSettings(output.Encoding, leaveOpen));
                 writer.WriteStartDocument();
                 writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
                 writer.WriteStartAttribute("xmlns");
@@ -200,7 +175,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         writer.WriteStartElement("plainLiteral");
-                        if (!lit.Language.Equals(String.Empty))
+                        if (!lit.Language.Equals(string.Empty))
                         {
                             writer.WriteAttributeString("xml", "lang", null, lit.Language);
                         }
@@ -221,22 +196,15 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised when there is an issue with the Graphs being serialized that doesn't prevent serialization but the user should be aware of
         /// </summary>
-        public event StoreWriterWarning Warning;
+        public override event StoreWriterWarning Warning;
 
         /// <summary>
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
-            if (Warning == null)
-            {
-                // Do Nothing
-            }
-            else
-            {
-                Warning(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>

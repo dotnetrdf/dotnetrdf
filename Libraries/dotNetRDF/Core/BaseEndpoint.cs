@@ -26,12 +26,12 @@
 
 using System;
 using System.Net;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
+
     /// <summary>
     /// Abstract Base class for HTTP endpoints.
     /// </summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF
         public Uri Uri { get; }
 
         /// <summary>
-        /// Gets/Sets the HTTP authentication credentials to be used.
+        /// Gets the HTTP authentication credentials to be used to access the endpoint.
         /// </summary>
         public NetworkCredential Credentials { get; set; }
 
@@ -314,18 +314,8 @@ namespace VDS.RDF
             // Apply Credentials to request if necessary
             if (Credentials != null)
             {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    // Forcibly include a HTTP basic authentication header
-                    var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(Credentials.UserName + ":" + Credentials.Password));
-                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
-                }
-                else
-                {
-                    // Leave .Net to handle the HTTP auth challenge response itself
-                    httpRequest.Credentials = Credentials;
-                    httpRequest.PreAuthenticate = true;
-                }
+                httpRequest.Credentials = Credentials;
+                httpRequest.PreAuthenticate = true;
             }
 
             // Use a Proxy if required

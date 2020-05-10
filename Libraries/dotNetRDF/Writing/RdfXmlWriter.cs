@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 using VDS.RDF.Parsing;
@@ -160,18 +161,6 @@ namespace VDS.RDF.Writing
             }
         }
 
-        /// <summary>
-        /// Saves a Graph in RDF/XML syntax to the given File.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        /// <param name="filename">Filename to save to.</param>
-        public override void Save(IGraph g, string filename)
-        {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
-        }
 
         /// <summary>
         /// Saves a Graph to an arbitrary output stream.

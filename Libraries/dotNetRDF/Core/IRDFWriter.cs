@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -40,9 +41,24 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">The Graph to Save.</param>
         /// <param name="filename">The filename to save the Graph in.</param>
+        /// <remarks>
+        /// The output will be written in UTF-8 with no byte-order mark specified. To override this behaviour,
+        /// call either <see cref="Save(VDS.RDF.IGraph,string, Encoding)"/> with the specific encoding to use,
+        /// or <see cref="Save(VDS.RDF.IGraph,TextWriter)"/> with a TextWriter created with the required text encoding set.
+        /// </remarks>
         /// <exception cref="RdfException">Thrown if the RDF in the Graph is not representable by the Writer.</exception>
         /// <exception cref="IOException">Thrown if the Writer is unable to write to the File.</exception>
-        void Save(IGraph g, String filename);
+        void Save(IGraph g, string filename);
+
+        /// <summary>
+        /// Method for saving a graph to a concrete RDF syntax in a file-based format with a specific text encoding.
+        /// </summary>
+        /// <param name="g">The graph to save.</param>
+        /// <param name="filename">The path to the file to write to.</param>
+        /// <param name="fileEncoding">The text encoding to use when writing the file content.</param>
+        /// <exception cref="RdfException">Thrown if the RDF in the Graph is not representable by the Writer.</exception>
+        /// <exception cref="IOException">Thrown if the Writer is unable to write to the File.</exception>
+        void Save(IGraph g, string filename, Encoding fileEncoding);
 
         /// <summary>
         /// Method for Saving a Graph to a Concrete RDF Syntax via some arbitrary <see cref="TextWriter">TextWriter</see>.
@@ -54,7 +70,7 @@ namespace VDS.RDF
         void Save(IGraph g, TextWriter output);
 
         /// <summary>
-        /// Method for saving a graph to a concrete RDF syntax via some arbitray <see cref="TextWriter"/>.
+        /// Method for saving a graph to a concrete RDF syntax via some arbitrary <see cref="TextWriter"/>.
         /// </summary>
         /// <param name="g">The graph to save.</param>
         /// <param name="output">The <see cref="TextWriter"/> to save the graph to.</param>
@@ -186,7 +202,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets a Stylesheet file used to format the HTML.
         /// </summary>
-        String Stylesheet
+        string Stylesheet
         {
             get;
             set;
@@ -195,7 +211,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes.
         /// </summary>
-        String CssClassUri
+        string CssClassUri
         {
             get;
             set;
@@ -204,7 +220,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs.
         /// </summary>
-        String CssClassBlankNode
+        string CssClassBlankNode
         {
             get;
             set;
@@ -213,7 +229,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for the span tags used to display Literals.
         /// </summary>
-        String CssClassLiteral
+        string CssClassLiteral
         {
             get;
             set;
@@ -222,7 +238,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes.
         /// </summary>
-        String CssClassDatatype
+        string CssClassDatatype
         {
             get;
             set;
@@ -231,7 +247,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers.
         /// </summary>
-        String CssClassLangSpec
+        string CssClassLangSpec
         {
             get;
             set;
@@ -240,7 +256,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for the div tags used to group chunks of markup into a box.
         /// </summary>
-        String CssClassBox
+        string CssClassBox
         {
             get;
             set;
@@ -249,7 +265,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets a Prefix that is applied to all href attributes.
         /// </summary>
-        String UriPrefix
+        string UriPrefix
         {
             get;
             set;

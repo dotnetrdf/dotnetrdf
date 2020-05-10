@@ -54,19 +54,6 @@ namespace VDS.RDF.Writing
         /// Saves a Graph to CSV format.
         /// </summary>
         /// <param name="g">Graph.</param>
-        /// <param name="filename">File to save to.</param>
-        public override void Save(IGraph g, string filename)
-        {
-            using (var stream = File.Open(filename, FileMode.Create))
-            {
-                Save(g, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
-            }
-        }
-
-        /// <summary>
-        /// Saves a Graph to CSV format.
-        /// </summary>
-        /// <param name="g">Graph.</param>
         /// <param name="output">Writer to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {

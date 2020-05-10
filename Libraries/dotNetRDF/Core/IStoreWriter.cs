@@ -24,8 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.IO;
+using System.Text;
 
 namespace VDS.RDF
 {    
@@ -35,11 +35,20 @@ namespace VDS.RDF
     public interface IStoreWriter
     {
         /// <summary>
-        /// Method for saving data to a Triple Store.
+        /// Writes the RDF content of the triple store to the specified file.
         /// </summary>
         /// <param name="store">Triple Store.</param>
         /// <param name="filename">File to save to.</param>
+        /// <remarks>The output file will use the UTF-8 text encoding with no byte-order mark.</remarks>
         void Save(ITripleStore store, string filename);
+
+        /// <summary>
+        /// Writes the content of the triple store to the specified file using the specified text encoding.
+        /// </summary>
+        /// <param name="store">The store whose content is to be written.</param>
+        /// <param name="filename">The path to the file to write the store content to.</param>
+        /// <param name="fileEncoding">The text encoding to use for the output file.</param>
+        void Save(ITripleStore store, string filename, Encoding fileEncoding);
 
         /// <summary>
         /// Method for saving data to a Triple Store.

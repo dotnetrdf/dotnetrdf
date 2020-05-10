@@ -39,18 +39,20 @@ namespace VDS.RDF.Writing
     public class SparqlCsvWriter
         : ISparqlResultsWriter
     {
-        private CsvFormatter _formatter = new CsvFormatter();
+        private readonly CsvFormatter _formatter = new CsvFormatter();
 
-        /// <summary>
-        /// Saves a SPARQL Result Set to CSV format.
-        /// </summary>
-        /// <param name="results">Result Set.</param>
-        /// <param name="filename">File to save to.</param>
+        /// <inheritdoc />
         public void Save(SparqlResultSet results, string filename)
+        {
+            Save(results, filename, new UTF8Encoding(false));
+        }
+
+        /// <inheritdoc />
+        public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
             using (var stream = File.Open(filename, FileMode.Create))
             {
-                Save(results, new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)));
+                Save(results, new StreamWriter(stream, fileEncoding));
             }
         }
 

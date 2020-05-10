@@ -193,22 +193,22 @@ namespace VDS.RDF.Storage.Management
             {
                 try
                 {
-                    Dictionary<String, String> createParams = new Dictionary<string, string>();
-                    BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
+                    var createParams = new Dictionary<string, string>();
+                    var sesameTemplate = (BaseSesameTemplate)template;
                     if (template.Validate().Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    IGraph g = sesameTemplate.GetTemplateGraph();
+                    var g = sesameTemplate.GetTemplateGraph();
 
                     // Firstly we need to save the Repository Template as a new Context to Sesame
                     createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    HttpWebRequest request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+                    var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
                     request.ContentType = MimeTypesHelper.NTriples[0];
-                    NTriplesWriter ntwriter = new NTriplesWriter();
+                    var ntwriter = new NTriplesWriter();
                     ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
                     Tools.HttpDebugRequest(request);
                     
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    using (var response = (HttpWebResponse)request.GetResponse())
                     {
                         Tools.HttpDebugResponse(response);
                         // If we get then it was OK
@@ -216,7 +216,7 @@ namespace VDS.RDF.Storage.Management
                     }
 
                     // Then we need to declare that said Context is of type rep:RepositoryContext
-                    Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
+                    var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
                     EnsureSystemConnection();
                     _sysConnection.UpdateGraph(String.Empty, repoType.AsEnumerable(), null);
 
@@ -254,11 +254,11 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+                var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
                     // If we get here it completed OK
@@ -279,13 +279,13 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+                var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
                 Tools.HttpDebugRequest(request);
 
-                ListStringsHandler handler = new ListStringsHandler("id");
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                var handler = new ListStringsHandler("id");
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    SparqlXmlParser parser = new SparqlXmlParser();
+                    var parser = new SparqlXmlParser();
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
                 }
@@ -361,12 +361,12 @@ namespace VDS.RDF.Storage.Management
                     return;
                 }
 
-                IGraph g = sesameTemplate.GetTemplateGraph();
+                var g = sesameTemplate.GetTemplateGraph();
                 createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                HttpWebRequest request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+                var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
                 request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
+                var ntwriter = new NTriplesWriter();
 
                 EnsureSystemConnection();
                 _sysConnection.SaveGraphAsync(request, ntwriter, g, (sender, args, st) =>
@@ -374,7 +374,7 @@ namespace VDS.RDF.Storage.Management
                     if (args.WasSuccessful)
                     {
                         // Then we need to declare that said Context is of type rep:RepositoryContext
-                        Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
+                        var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
                         _sysConnection.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
                         {
                             if (args.WasSuccessful)
@@ -432,14 +432,14 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+                var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
                 Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
                         Tools.HttpDebugResponse(response);
                         // If we get here it completed OK
                         response.Close();
@@ -471,16 +471,16 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback.</param>
         public virtual void ListStores(AsyncStorageCallback callback, Object state)
         {
-            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
-            ListStringsHandler handler = new ListStringsHandler("id");
+            var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+            var handler = new ListStringsHandler("id");
             try
             {
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-                        SparqlXmlParser parser = new SparqlXmlParser();
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
+                        var parser = new SparqlXmlParser();
                         parser.Load(handler, new StreamReader(response.GetResponseStream()));
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, handler.Strings), state);
@@ -516,13 +516,13 @@ namespace VDS.RDF.Storage.Management
         protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
             // Build the Request Uri
-            String requestUri = _baseUri + servicePath;
+            var requestUri = _baseUri + servicePath;
             if (queryParams != null)
             {
                 if (queryParams.Count > 0)
                 {
                     requestUri += "?";
-                    foreach (String p in queryParams.Keys)
+                    foreach (var p in queryParams.Keys)
                     {
                         requestUri += p + "=" + HttpUtility.UrlEncode(queryParams[p]) + "&";
                     }
@@ -531,33 +531,16 @@ namespace VDS.RDF.Storage.Management
             }
 
             // Create our Request
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
 
             // Add Credentials if needed
             if (_hasCredentials)
             {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    // Forcibly include a HTTP basic authentication header
-#if !NETCORE
-                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(_username + ":" + _pwd));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(_username + ":" + _pwd));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(_username, _pwd);
-                    request.Credentials = credentials;
-#if !NETCORE
-                    request.PreAuthenticate = true;
-#endif
-                }
+                var credentials = new NetworkCredential(_username, _pwd);
+                request.Credentials = credentials;
+                request.PreAuthenticate = true;
             }
 
             return ApplyRequestOptions(request);
@@ -588,7 +571,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            INode manager = context.NextSubject;
+            var manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));

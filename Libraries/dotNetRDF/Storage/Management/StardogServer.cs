@@ -148,26 +148,26 @@ namespace VDS.RDF.Storage.Management
         public virtual IEnumerable<string> ListStores()
         {
             // GET /admin/databases - application/json
-            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            var request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
             Tools.HttpDebugRequest(request);
 
             try
             {
-                List<String> stores = new List<string>();
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                var stores = new List<string>();
+                using (var response = (HttpWebResponse) request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
                     String data = null;
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    using (var reader = new StreamReader(response.GetResponseStream()))
                     {
                         data = reader.ReadToEnd();
                     }
                     if (String.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
 
-                    JObject obj = JObject.Parse(data);
-                    JArray dbs = (JArray) obj["databases"];
-                    foreach (JValue db in dbs.OfType<JValue>())
+                    var obj = JObject.Parse(data);
+                    var dbs = (JArray) obj["databases"];
+                    foreach (var db in dbs.OfType<JValue>())
                     {
                         stores.Add(db.Value.ToString());
                     }
@@ -199,9 +199,9 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public virtual IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
-            List<IStoreTemplate> templates = new List<IStoreTemplate>();
-            Object[] args = new Object[] {id};
-            foreach (Type t in _templateTypes)
+            var templates = new List<IStoreTemplate>();
+            var args = new Object[] {id};
+            foreach (var t in _templateTypes)
             {
                 try
                 {
@@ -237,26 +237,26 @@ namespace VDS.RDF.Storage.Management
                 try
                 {
                     // Get the Template
-                    BaseStardogTemplate stardogTemplate = (BaseStardogTemplate) template;
-                    IEnumerable<String> errors = stardogTemplate.Validate();
+                    var stardogTemplate = (BaseStardogTemplate) template;
+                    var errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
+                    var jsonTemplate = stardogTemplate.GetTemplateJson();
                     Console.WriteLine(jsonTemplate.ToString());
 
                     // Create the request and write the JSON
-                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                    String boundary = StorageHelper.HttpMultipartBoundary;
-                    byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                    var request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    var boundary = StorageHelper.HttpMultipartBoundary;
+                    var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                    var terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
-                    using (Stream stream = request.GetRequestStream())
+                    using (var stream = request.GetRequestStream())
                     {
                         // Boundary
                         stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                         // Then the root Item
-                        String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
-                        byte[] itemBytes = Encoding.UTF8.GetBytes(templateItem);
+                        var templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                        var itemBytes = Encoding.UTF8.GetBytes(templateItem);
                         stream.Write(itemBytes, 0, itemBytes.Length);
                         // Then terminating boundary
                         stream.Write(terminatorBytes, 0, terminatorBytes.Length);
@@ -266,7 +266,7 @@ namespace VDS.RDF.Storage.Management
                     Tools.HttpDebugRequest(request);
 
                     // Make the request
-                    using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    using (var response = (HttpWebResponse) request.GetResponse())
                     {
                         Tools.HttpDebugResponse(response);
 
@@ -293,13 +293,13 @@ namespace VDS.RDF.Storage.Management
         public virtual void DeleteStore(string storeID)
         {
             // DELETE /admin/databases/{db}
-            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+            var request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
             Tools.HttpDebugRequest(request);
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (var response = (HttpWebResponse) request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
@@ -332,31 +332,31 @@ namespace VDS.RDF.Storage.Management
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
             // GET /admin/databases - application/json
-            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            var request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
             Tools.HttpDebugRequest(request);
 
             try
             {
-                List<String> stores = new List<string>();
+                var stores = new List<string>();
                 request.BeginGetResponse(r =>
                     {
                         try
                         {
-                            HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                            var response = (HttpWebResponse) request.EndGetResponse(r);
 
                             Tools.HttpDebugResponse(response);
 
                             String data = null;
-                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                            using (var reader = new StreamReader(response.GetResponseStream()))
                             {
                                 data = reader.ReadToEnd();
                             }
                             if (String.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
 
-                            JObject obj = JObject.Parse(data);
-                            JArray dbs = (JArray) obj["databases"];
-                            foreach (JValue db in dbs.OfType<JValue>())
+                            var obj = JObject.Parse(data);
+                            var dbs = (JArray) obj["databases"];
+                            foreach (var db in dbs.OfType<JValue>())
                             {
                                 stores.Add(db.Value.ToString());
                             }
@@ -405,9 +405,9 @@ namespace VDS.RDF.Storage.Management
         /// <returns></returns>
         public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
-            List<IStoreTemplate> templates = new List<IStoreTemplate>();
-            Object[] args = new Object[] {id};
-            foreach (Type t in _templateTypes)
+            var templates = new List<IStoreTemplate>();
+            var args = new Object[] {id};
+            foreach (var t in _templateTypes)
             {
                 try
                 {
@@ -441,30 +441,30 @@ namespace VDS.RDF.Storage.Management
                 try
                 {
                     // Get the Template
-                    BaseStardogTemplate stardogTemplate = (BaseStardogTemplate) template;
-                    IEnumerable<String> errors = stardogTemplate.Validate();
+                    var stardogTemplate = (BaseStardogTemplate) template;
+                    var errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
+                    var jsonTemplate = stardogTemplate.GetTemplateJson();
                     Console.WriteLine(jsonTemplate.ToString());
 
                     // Create the request and write the JSON
-                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                    String boundary = StorageHelper.HttpMultipartBoundary;
-                    byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                    byte[] terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                    var request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    var boundary = StorageHelper.HttpMultipartBoundary;
+                    var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                    var terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     request.BeginGetRequestStream(r =>
                         {
                             try
                             {
-                                using (Stream stream = request.EndGetRequestStream(r))
+                                using (var stream = request.EndGetRequestStream(r))
                                 {
                                     // Boundary
                                     stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                                     // Then the root Item
-                                    String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
-                                    byte[] itemBytes = Encoding.UTF8.GetBytes(templateItem);
+                                    var templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                                    var itemBytes = Encoding.UTF8.GetBytes(templateItem);
                                     stream.Write(itemBytes, 0, itemBytes.Length);
                                     // Then terminating boundary
                                     stream.Write(terminatorBytes, 0, terminatorBytes.Length);
@@ -478,7 +478,7 @@ namespace VDS.RDF.Storage.Management
                                     {
                                         try
                                         {
-                                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r2))
+                                            using (var response = (HttpWebResponse) request.EndGetResponse(r2))
                                             {
                                                 Tools.HttpDebugResponse(response);
 
@@ -531,7 +531,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             // DELETE /admin/databases/{db}
-            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+            var request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
             Tools.HttpDebugRequest(request);
 
@@ -541,7 +541,7 @@ namespace VDS.RDF.Storage.Management
                     {
                         try
                         {
-                            HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(r);
+                            var response = (HttpWebResponse) request.EndGetResponse(r);
 
                             Tools.HttpDebugResponse(response);
 
@@ -590,11 +590,11 @@ namespace VDS.RDF.Storage.Management
         protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<String, String> requestParams)
         {
             // Build the Request Uri
-            string requestUri = AdminUri + servicePath;
+            var requestUri = AdminUri + servicePath;
             if (requestParams.Count > 0)
             {
                 requestUri += "?";
-                foreach (String p in requestParams.Keys)
+                foreach (var p in requestParams.Keys)
                 {
                     requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                 }
@@ -602,41 +602,20 @@ namespace VDS.RDF.Storage.Management
             }
 
             // Create our Request
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(requestUri);
+            var request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
             request = ApplyRequestOptions(request);
 
             // Add the special Stardog Headers
-#if !NETCORE
             request.Headers.Add("SD-Protocol", "1.0");
-#else
-            request.Headers["SD-Protocol"] = "1.0";
-#endif
 
             // Add Credentials if needed
             if (HasCredentials)
             {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    // Forcibly include a HTTP basic authentication header
-#if !NETCORE
-                    string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(Username + ":" + Password));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Username + ":" + this.Password));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(Username, Password);
-                    request.Credentials = credentials;
-#if !NETCORE
-                    request.PreAuthenticate = true;
-#endif
-                }
+                var credentials = new NetworkCredential(Username, Password);
+                request.Credentials = credentials;
+                request.PreAuthenticate = true;
             }
 
             return request;
@@ -656,7 +635,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            INode manager = context.NextSubject;
+            var manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
@@ -814,7 +793,7 @@ namespace VDS.RDF.Storage.Management
                 {
                     try
                     {
-                        Uri u = new Uri(uri);
+                        var u = new Uri(uri);
                         return u.IsAbsoluteUri;
                     }
                     catch (UriFormatException)

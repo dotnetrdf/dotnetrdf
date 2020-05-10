@@ -310,8 +310,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public virtual object Query(string sparqlQuery)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
@@ -332,8 +332,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public virtual object Query(string sparqlQuery, bool reasoning)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, reasoning);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
@@ -363,16 +363,16 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
 
                 // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                string accept =
+                var accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 // Create the Request
-                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                var queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
                     queryParams.Add("query", sparqlQuery);
@@ -384,10 +384,10 @@ namespace VDS.RDF.Storage
 
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    StringBuilder postData = new StringBuilder();
+                    var postData = new StringBuilder();
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
+                    using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
                     {
                         writer.Write(postData);
                         writer.Close();
@@ -397,16 +397,16 @@ namespace VDS.RDF.Storage
                 Tools.HttpDebugRequest(request);
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
-                    StreamReader data = new StreamReader(response.GetResponseStream());
-                    string ctype = response.ContentType;
+                    var data = new StreamReader(response.GetResponseStream());
+                    var ctype = response.ContentType;
                     try
                     {
                         // Is the Content Type referring to a Sparql Result Set format?
-                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
+                        var resreader = MimeTypesHelper.GetSparqlParser(ctype,
                             Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
                         resreader.Load(resultsHandler, data);
                         response.Close();
@@ -416,7 +416,7 @@ namespace VDS.RDF.Storage
                         // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
                         // Is the Content Type referring to a RDF format?
-                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        var rdfreader = MimeTypesHelper.GetParser(ctype);
                         rdfreader.Load(rdfHandler, data);
                         response.Close();
                     }
@@ -443,16 +443,16 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
 
                 // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                string accept =
+                var accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 // Create the Request
-                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                var queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
                     queryParams.Add("query", sparqlQuery);
@@ -466,7 +466,7 @@ namespace VDS.RDF.Storage
 
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    StringBuilder postData = new StringBuilder();
+                    var postData = new StringBuilder();
                     if (reasoning)
                     {
                         postData.Append("reasoning=");
@@ -474,7 +474,7 @@ namespace VDS.RDF.Storage
                     }
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
+                    using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
                     {
                         writer.Write(postData);
                         writer.Close();
@@ -484,16 +484,16 @@ namespace VDS.RDF.Storage
                 Tools.HttpDebugRequest(request);
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
-                    StreamReader data = new StreamReader(response.GetResponseStream());
-                    string ctype = response.ContentType;
+                    var data = new StreamReader(response.GetResponseStream());
+                    var ctype = response.ContentType;
                     try
                     {
                         // Is the Content Type referring to a Sparql Result Set format?
-                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
+                        var resreader = MimeTypesHelper.GetSparqlParser(ctype,
                             Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
                         resreader.Load(resultsHandler, data);
                         response.Close();
@@ -503,7 +503,7 @@ namespace VDS.RDF.Storage
                         // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
                         // Is the Content Type referring to a RDF format?
-                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        var rdfreader = MimeTypesHelper.GetParser(ctype);
                         rdfreader.Load(rdfHandler, data);
                         response.Close();
                     }
@@ -571,11 +571,11 @@ namespace VDS.RDF.Storage
             try
             {
                 HttpWebRequest request;
-                Dictionary<string, string> serviceParams = new Dictionary<string, string>();
+                var serviceParams = new Dictionary<string, string>();
 
-                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
-                string requestUri = _kb + tID + "/query";
-                SparqlParameterizedString construct = new SparqlParameterizedString();
+                var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                var requestUri = _kb + tID + "/query";
+                var construct = new SparqlParameterizedString();
                 if (!graphUri.Equals(string.Empty))
                 {
                     construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
@@ -591,11 +591,11 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    var parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
                 }
@@ -638,18 +638,18 @@ namespace VDS.RDF.Storage
                 // Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
                 tID = _activeTrans ?? BeginTransaction();
 
-                HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
+                var request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
                     new Dictionary<string, string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
 
                 // Save the Data as TriG to the Request Stream
-                TripleStore store = new TripleStore();
+                var store = new TripleStore();
                 store.Add(g);
                 _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
@@ -703,7 +703,7 @@ namespace VDS.RDF.Storage
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             // If there are no adds or deletes, just return and avoid creating empty transaction
-            bool anyData = (removals != null && removals.Any()) || (additions != null && additions.Any());
+            var anyData = (removals != null && removals.Any()) || (additions != null && additions.Any());
             if (!anyData) return;
 
             string tID = null;
@@ -717,19 +717,19 @@ namespace VDS.RDF.Storage
                 {
                     if (removals.Any())
                     {
-                        HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/remove",
+                        var request = CreateRequest(_kb + "/" + tID + "/remove",
                             MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                         request.ContentType = MimeTypesHelper.TriG[0];
 
                         // Save the Data to be removed as TriG to the Request Stream
-                        TripleStore store = new TripleStore();
-                        Graph g = new Graph();
+                        var store = new TripleStore();
+                        var g = new Graph();
                         g.Assert(removals);
                         g.BaseUri = graphUri;
                         store.Add(g);
                         _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
-                        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                        using (var response = (HttpWebResponse)request.GetResponse())
                         {
                             response.Close();
                         }
@@ -741,19 +741,19 @@ namespace VDS.RDF.Storage
                 {
                     if (additions.Any())
                     {
-                        HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
+                        var request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                             "POST", new Dictionary<string, string>());
                         request.ContentType = MimeTypesHelper.TriG[0];
 
                         // Save the Data to be removed as TriG to the Request Stream
-                        TripleStore store = new TripleStore();
-                        Graph g = new Graph();
+                        var store = new TripleStore();
+                        var g = new Graph();
                         g.Assert(additions);
                         g.BaseUri = graphUri;
                         store.Add(g);
                         _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
-                        using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                        using (var response = (HttpWebResponse)request.GetResponse())
                         {
                             response.Close();
                         }
@@ -848,7 +848,7 @@ namespace VDS.RDF.Storage
 
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
                     // If we get here then the Delete worked OK
@@ -898,15 +898,15 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
-                    List<Uri> graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    var graphs = new List<Uri>();
+                    foreach (var r in ((SparqlResultSet)results))
                     {
                         if (r.HasValue("g"))
                         {
-                            INode temp = r["g"];
+                            var temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
                                 graphs.Add(((IUriNode)temp).Uri);
@@ -1007,7 +1007,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
+                var request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST",
                     new Dictionary<string, string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1140,11 +1140,11 @@ namespace VDS.RDF.Storage
             try
             {
                 HttpWebRequest request;
-                Dictionary<string, string> serviceParams = new Dictionary<string, string>();
+                var serviceParams = new Dictionary<string, string>();
 
-                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
-                string requestUri = _kb + tID + "/query";
-                SparqlParameterizedString construct = new SparqlParameterizedString();
+                var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                var requestUri = _kb + tID + "/query";
+                var construct = new SparqlParameterizedString();
                 if (!graphUri.Equals(string.Empty))
                 {
                     construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
@@ -1164,10 +1164,10 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
                         Tools.HttpDebugResponse(response);
 
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        var parser = MimeTypesHelper.GetParser(response.ContentType);
                         parser.Load(handler, new StreamReader(response.GetResponseStream()));
                         response.Close();
 
@@ -1214,7 +1214,7 @@ namespace VDS.RDF.Storage
             AsyncStorageCallback callback, object state)
         {
             // If there are no adds or deletes, just callback and avoid creating empty transaction
-            bool anyData = removals != null && removals.Any();
+            var anyData = removals != null && removals.Any();
             if (additions != null && additions.Any()) anyData = true;
             if (!anyData)
             {
@@ -1280,7 +1280,7 @@ namespace VDS.RDF.Storage
             {
                 if (removals != null && removals.Any())
                 {
-                    HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/remove", MimeTypesHelper.Any,
+                    var request = CreateRequest(_kb + "/" + tID + "/remove", MimeTypesHelper.Any,
                         "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1301,7 +1301,7 @@ namespace VDS.RDF.Storage
                             {
                                 try
                                 {
-                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                    var response = (HttpWebResponse)request.EndGetResponse(r2);
                                     Tools.HttpDebugResponse(response);
 
                                     // If we get here then it was OK
@@ -1502,7 +1502,7 @@ namespace VDS.RDF.Storage
                 }
                 else if (additions != null && additions.Any())
                 {
-                    HttpWebRequest request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
+                    var request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                         "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.TriG[0];
 
@@ -1511,9 +1511,9 @@ namespace VDS.RDF.Storage
                         try
                         {
                             // Save the Data as TriG to the Request Stream
-                            Stream stream = request.EndGetRequestStream(r);
-                            TripleStore store = new TripleStore();
-                            Graph g = new Graph();
+                            var stream = request.EndGetRequestStream(r);
+                            var store = new TripleStore();
+                            var g = new Graph();
                             g.Assert(additions);
                             g.BaseUri = graphUri.ToSafeUri();
                             store.Add(g);
@@ -1525,7 +1525,7 @@ namespace VDS.RDF.Storage
                             {
                                 try
                                 {
-                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                    var response = (HttpWebResponse)request.EndGetResponse(r2);
                                     Tools.HttpDebugResponse(response);
 
                                     // If we get here then it was OK
@@ -1698,7 +1698,7 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
 
                         Tools.HttpDebugResponse(response);
                         // If we get here then the Delete worked OK
@@ -1786,8 +1786,8 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public virtual void Query(string query, AsyncStorageCallback callback, object state)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), query, (sender, args, st) =>
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
@@ -1819,16 +1819,16 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                string tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+                var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
 
                 // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                string accept =
+                var accept =
                     MimeTypesHelper.CustomHttpAcceptHeader(
                         MimeTypesHelper.SparqlResultsXml.Concat(
                             MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 // Create the Request, for simplicity async requests are always POST
-                Dictionary<string, string> queryParams = new Dictionary<string, string>();
+                var queryParams = new Dictionary<string, string>();
                 request = CreateRequest(_kb + tID + "/query", accept, "POST", queryParams);
 
                 // Build the Post Data and add to the Request Body
@@ -1838,8 +1838,8 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                        var stream = request.EndGetRequestStream(r);
+                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("query=");
                             writer.Write(HttpUtility.UrlEncode(query));
@@ -1853,15 +1853,15 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                var response = (HttpWebResponse)request.EndGetResponse(r2);
                                 Tools.HttpDebugResponse(response);
 
-                                StreamReader data = new StreamReader(response.GetResponseStream());
-                                string ctype = response.ContentType;
+                                var data = new StreamReader(response.GetResponseStream());
+                                var ctype = response.ContentType;
                                 try
                                 {
                                     // Is the Content Type referring to a Sparql Result Set format?
-                                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype,
+                                    var resreader = MimeTypesHelper.GetSparqlParser(ctype,
                                         Regex.IsMatch(query, "ASK", RegexOptions.IgnoreCase));
                                     resreader.Load(resultsHandler, data);
                                     response.Close();
@@ -1871,7 +1871,7 @@ namespace VDS.RDF.Storage
                                     // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
                                     // Is the Content Type referring to a RDF format?
-                                    IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                    var rdfreader = MimeTypesHelper.GetParser(ctype);
                                     rdfreader.Load(rdfHandler, data);
                                     response.Close();
                                 }
@@ -1935,11 +1935,11 @@ namespace VDS.RDF.Storage
             Dictionary<string, string> requestParams)
         {
             // Build the Request Uri
-            string requestUri = _baseUri + servicePath + "?";
+            var requestUri = _baseUri + servicePath + "?";
 
             if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
             {
-                foreach (string p in requestParams.Keys)
+                foreach (var p in requestParams.Keys)
                 {
                     requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                 }
@@ -1948,7 +1948,7 @@ namespace VDS.RDF.Storage
             requestUri += GetReasoningParameter();
 
             // Create our Request
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
             request = ApplyRequestOptions(request);
@@ -1959,27 +1959,9 @@ namespace VDS.RDF.Storage
             // Add Credentials if needed
             if (_hasCredentials)
             {
-                if (Options.ForceHttpBasicAuth)
-                {
-                    // Forcibly include a HTTP basic authentication header
-#if !NETCORE
-                    string credentials =
-                        Convert.ToBase64String(Encoding.ASCII.GetBytes(_username + ":" + _pwd));
-                    request.Headers.Add("Authorization", "Basic " + credentials);
-#else
-                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this._username + ":" + this._pwd));
-                    request.Headers["Authorization"] = "Basic " + credentials;
-#endif
-                }
-                else
-                {
-                    // Leave .Net to cope with HTTP auth challenge response
-                    NetworkCredential credentials = new NetworkCredential(_username, _pwd);
-                    request.Credentials = credentials;
-#if !NETCORE
-                    request.PreAuthenticate = true;
-#endif
-                }
+                var credentials = new NetworkCredential(_username, _pwd);
+                request.Credentials = credentials;
+                request.PreAuthenticate = true;
             }
 
             return request;
@@ -2043,16 +2025,16 @@ namespace VDS.RDF.Storage
             var queryParams = new Dictionary<string, string>();
             if (enableReasoning) queryParams.Add("reasoning", "true");
 
-            HttpWebRequest request = CreateRequest(_kb + "/transaction/begin", "text/plain"
+            var request = CreateRequest(_kb + "/transaction/begin", "text/plain"
                 /*MimeTypesHelper.Any*/, "POST", queryParams);
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             try
             {
                 Tools.HttpDebugRequest(request);
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    using (var reader = new StreamReader(response.GetResponseStream()))
                     {
                         Tools.HttpDebugResponse(response);
 
@@ -2080,13 +2062,13 @@ namespace VDS.RDF.Storage
         /// <param name="tID">The ID of the transaction to commit.</param>
         protected virtual void CommitTransaction(string tID)
         {
-            HttpWebRequest request = CreateRequest(_kb + "/transaction/commit/" + tID, "text/plain"
+            var request = CreateRequest(_kb + "/transaction/commit/" + tID, "text/plain"
                 /* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
             Tools.HttpDebugRequest(request);
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 Tools.HttpDebugResponse(response);
                 response.Close();
@@ -2108,7 +2090,7 @@ namespace VDS.RDF.Storage
             var request = CreateRequest(_kb + "/transaction/rollback/" + tID, MimeTypesHelper.Any,
                 "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 response.Close();
             }
@@ -2223,7 +2205,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    HttpWebRequest request = CreateRequest(_kb + "/transaction/begin", "text/plain"
+                    var request = CreateRequest(_kb + "/transaction/begin", "text/plain"
                         /*MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     try
@@ -2233,9 +2215,9 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                                var response = (HttpWebResponse)request.EndGetResponse(r);
                                 string tID;
-                                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                                using (var reader = new StreamReader(response.GetResponseStream()))
                                 {
                                     Tools.HttpDebugResponse(response);
                                     tID = reader.ReadToEnd();
@@ -2316,7 +2298,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    HttpWebRequest request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
+                    var request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                         "text/plain" /* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     Tools.HttpDebugRequest(request);
@@ -2326,7 +2308,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                                var response = (HttpWebResponse)request.EndGetResponse(r);
 
                                 Tools.HttpDebugResponse(response);
                                 response.Close();
@@ -2395,7 +2377,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    HttpWebRequest request = CreateRequest(
+                    var request = CreateRequest(
                         _kb + "/transaction/rollback/" + _activeTrans, MimeTypesHelper.Any, "POST",
                         new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
@@ -2405,7 +2387,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                                var response = (HttpWebResponse)request.EndGetResponse(r);
                                 response.Close();
                                 _activeTrans = null;
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback),
@@ -2469,7 +2451,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            string mode = string.Empty;
+            var mode = string.Empty;
             switch (_reasoning)
             {
                 case StardogReasoningMode.QL:
@@ -2500,7 +2482,7 @@ namespace VDS.RDF.Storage
         /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            INode manager = context.NextSubject;
+            var manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
@@ -2752,7 +2734,7 @@ namespace VDS.RDF.Storage
         /// <param name="request"></param>
         protected override void AddStardogHeaders(HttpWebRequest request)
         {
-            string reasoning = GetReasoningParameter();
+            var reasoning = GetReasoningParameter();
 #if !NETCORE
             request.Headers.Add("SD-Connection-String", reasoning);
             // Only reasoning parameter needed in Stardog 2.0, but < 2.2
@@ -2801,11 +2783,11 @@ namespace VDS.RDF.Storage
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
                 // Create the Request
-                HttpWebRequest request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, "POST", null);
+                var request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, "POST", null);
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
+                using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding()))
                 {
                     writer.Write(sparqlUpdate);
                     writer.Close();
@@ -2814,7 +2796,7 @@ namespace VDS.RDF.Storage
                 Tools.HttpDebugRequest(request);
 
                 // Check the response
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Tools.HttpDebugResponse(response);
 
@@ -2844,7 +2826,7 @@ namespace VDS.RDF.Storage
                 // NB - Updates don't run inside a transaction rather they use their own self-contained transaction
 
                 // Create the Request, for simplicity async requests are always POST
-                HttpWebRequest request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, "POST", null);
+                var request = CreateRequest(KbId + "/update", MimeTypesHelper.Any, "POST", null);
 
                 // Create the request body
                 request.ContentType = MimeTypesHelper.SparqlUpdate;
@@ -2853,8 +2835,8 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(Options.UseBomForUtf8)))
+                        var stream = request.EndGetRequestStream(r);
+                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write(sparqlUpdates);
                             writer.Close();
@@ -2867,7 +2849,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2))
+                                using (var response = (HttpWebResponse)request.EndGetResponse(r2))
                                 {
                                     Tools.HttpDebugResponse(response);
                                     // If we get here the update completed OK
