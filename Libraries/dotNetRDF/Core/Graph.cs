@@ -39,7 +39,7 @@ namespace VDS.RDF
 #if !NETCORE
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
-    public class Graph 
+    public class Graph
         : BaseGraph
     {
         #region Constructor
@@ -47,7 +47,7 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new instance of a Graph.
         /// </summary>
-        public Graph() 
+        public Graph()
             : base() { }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists.</returns>
         public override IUriNode GetUriNode(Uri uri)
         {
-            return GetNode(new UriNode(this, uri));
+            return GetNode<IUriNode>(new UriNode(this, uri));
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IUriNode GetUriNode(String qname)
         {
-            return GetNode(new UriNode(this, qname));
+            return GetNode<IUriNode>(new UriNode(this, qname));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace VDS.RDF
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set.</remarks>
         public override ILiteralNode GetLiteralNode(String literal)
         {
-            return GetNode(new LiteralNode(this, literal));
+            return GetNode<ILiteralNode>(new LiteralNode(this, literal));
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists.</returns>
         public override ILiteralNode GetLiteralNode(String literal, String langspec)
         {
-            return GetNode(new LiteralNode(this, literal, langspec));
+            return GetNode<ILiteralNode>(new LiteralNode(this, literal, langspec));
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists.</returns>
         public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
         {
-            return GetNode(new LiteralNode(this, literal, datatype));
+            return GetNode<ILiteralNode>(new LiteralNode(this, literal, datatype));
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace VDS.RDF
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists.</returns>
         public override IBlankNode GetBlankNode(String nodeId)
         {
-            return GetNode(new BlankNode(this, nodeId));
+            return GetNode<IBlankNode>(new BlankNode(this, nodeId));
         }
 
         private T GetNode<T>(T node) where T: INode
