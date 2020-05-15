@@ -194,6 +194,25 @@ namespace VDS.RDF
         }
 
         [Fact]
+        public void GetUriNode_ShouldReturnAnyUriNode()
+        {
+            // given
+            var graph = GetInstance();
+            var uri = new Uri("http://example.com/subj");
+            var node = new DifferentUriNode(graph, uri);
+            graph.Assert(
+                graph.CreateBlankNode(),
+                graph.CreateUriNode(new Uri("http://example.com/pred")),
+                node);
+
+            // subj
+            var uriNode = graph.GetUriNode(uri);
+
+            // then
+            Assert.Equal(node, uriNode);
+        }
+
+        [Fact]
         public void GetBlankNode_ShouldReturnIfUsedAsSubject()
         {
             // given
@@ -240,6 +259,25 @@ namespace VDS.RDF
 
             // then
             Assert.Null(uriNode);
+        }
+
+        [Fact]
+        public void GetBlankNode_ShouldReturnAnyBlankNode()
+        {
+            // given
+            var graph = GetInstance();
+            var nodeId = "xyz";
+            var node = new DifferentBlankNode(graph, nodeId);
+            graph.Assert(
+                graph.CreateBlankNode(),
+                graph.CreateUriNode(new Uri("http://example.com/pred")),
+                node);
+
+            // subj
+            var blankNode = graph.GetBlankNode(nodeId);
+
+            // then
+            Assert.Equal(node, blankNode);
         }
 
         [Fact]
@@ -312,6 +350,49 @@ namespace VDS.RDF
 
             // then
             Assert.Null(uriNode);
+        }
+
+        [Fact]
+        public void GetLiteralNode_ShouldReturnAnyLiteralNode()
+        {
+            // given
+            var graph = GetInstance();
+            var literal = "test";
+            var node = new DifferentLiteralNode(graph, literal);
+            graph.Assert(
+                graph.CreateBlankNode(),
+                graph.CreateUriNode(new Uri("http://example.com/pred")),
+                node);
+
+            // subj
+            var literalNode = graph.GetLiteralNode(literal);
+
+            // then
+            Assert.Equal(node, literalNode);
+        }
+
+        private class DifferentUriNode : BaseUriNode
+        {
+            internal DifferentUriNode(IGraph g, Uri uri)
+                : base(g, uri)
+            {
+            }
+        }
+
+        private class DifferentLiteralNode : BaseLiteralNode
+        {
+            internal DifferentLiteralNode(IGraph g, string literal)
+                : base(g, literal)
+            {
+            }
+        }
+
+        private class DifferentBlankNode : BaseBlankNode
+        {
+            internal DifferentBlankNode(IGraph g, string nodeId)
+                : base(g, nodeId)
+            {
+            }
         }
     }
 
