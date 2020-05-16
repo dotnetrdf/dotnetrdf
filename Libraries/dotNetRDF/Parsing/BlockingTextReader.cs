@@ -44,31 +44,32 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader.
+        /// Creates a new Parsing Text Reader.
         /// </summary>
         /// <param name="input">Text Reader to wrap.</param>
         /// <param name="bufferSize">Buffer Size.</param>
         /// <remarks>
-        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op.
+        /// If the given <see cref="TextReader">TextReader</see> is already a <see cref="ParsingTextReader"/> instance, a <see cref="NonBlockingTextReader"/> or a <see cref="BlockingTextReader"/> this is a no-op.
+        /// If the given <see cref="TextReader"/> uses a <see cref="FileStream"/> or <see cref="MemoryStream"/> as its underlying stream source, then this method will create and return a <see cref="NonBlockingTextReader"/>,
+        /// otherwise the method will create a <see cref="BlockingTextReader"/>.
         /// </remarks>
         public static ParsingTextReader Create(TextReader input, int bufferSize)
         {
-            if (input is ParsingTextReader) return (ParsingTextReader)input;
-            if (input is StreamReader)
+            switch (input)
             {
-                Stream s = ((StreamReader)input).BaseStream;
-                if (!Options.ForceBlockingIO && (s is FileStream || s is MemoryStream))
+                case ParsingTextReader parsingTextReader:
+                    return parsingTextReader;
+                case StreamReader streamReader:
                 {
-                    return new NonBlockingTextReader(input, bufferSize);
+                    var s = streamReader.BaseStream;
+                    if (s is FileStream || s is MemoryStream)
+                    {
+                        return new NonBlockingTextReader(streamReader, bufferSize);
+                    }
+                    return new BlockingTextReader(streamReader, bufferSize);
                 }
-                else
-                {
+                default:
                     return new BlockingTextReader(input, bufferSize);
-                }
-            }
-            else
-            {
-                return new BlockingTextReader(input, bufferSize);
             }
         }
 
@@ -76,9 +77,6 @@ namespace VDS.RDF.Parsing
         /// Creates a new Blocking Text Reader.
         /// </summary>
         /// <param name="input">Text Reader to wrap.</param>
-        /// <remarks>
-        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op.
-        /// </remarks>
         public static ParsingTextReader Create(TextReader input)
         {
             return Create(input, BufferedTextReader.DefaultBufferSize);
@@ -89,22 +87,26 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="input">Input Stream.</param>
         /// <param name="bufferSize">Buffer Size.</param>
+
         public static ParsingTextReader Create(Stream input, int bufferSize)
         {
-            if (!Options.ForceBlockingIO && (input is FileStream || input is MemoryStream))
+            if (input is FileStream || input is MemoryStream)
             {
                 return CreateNonBlocking(new StreamReader(input), bufferSize);
             }
-            else
-            {
-                return CreateBlocking(new StreamReader(input), bufferSize);
-            }
+            return CreateBlocking(new StreamReader(input), bufferSize);
         }
 
         /// <summary>
         /// Creates a new Blocking Text Reader.
         /// </summary>
         /// <param name="input">Input Stream.</param>
+        /// <remarks>
+        /// Blocking IO refers to how the parsing sub-system reads in inputs, it will use Blocking/Non-Blocking IO depending on the input source.
+        /// In most cases the detection of which to use should never cause an issue but theoretically in some rare cases using non-blocking IO
+        /// may lead to incorrect parsing errors being thrown (premature end of input detected), if you suspect this is the case try enabling this
+        /// setting.  If you still experience this problem with this setting enabled then there is some other issue with your input.
+        /// </remarks>
         public static ParsingTextReader Create(Stream input)
         {
             return Create(input, BufferedTextReader.DefaultBufferSize);
@@ -445,7 +447,9 @@ namespace VDS.RDF.Parsing
     /// The NonBlockingTextReader is an implementation of a <see cref="BufferedTextReader"/> designed to wrap other readers where latency is known not to be a problem and we don't expect to ever have an empty read occur before the actual end of the stream.
     /// </summary>
     /// <remarks>
-    /// Currently we only use this for file and network streams, you can force this to never be used with the global static <see cref="Options.ForceBlockingIO"/> option.
+    /// By default, dotNetRDF parsers will wrap a <see cref="MemoryStream"/> or <see cref="FileStream"/> (or a <see cref="TextReader"/> that uses such a stream) in a <see cref="NonBlockingTextReader"/>, and all other types of <see cref="Stream"/> or <see cref="TextReader"/>
+    /// in a <see cref="BlockingTextReader"/> to handle potential latency issues. In some rare cases you may find that non-blocking IO leads to incorrect parsing errors being thrown (typically a premature end-of-input detected due to latency in reading from the
+    /// underlying stream. In such cases it is recommended to use <see cref="ParsingTextReader.CreateBlocking(TextReader)"/> or <see cref="ParsingTextReader.CreateBlocking(TextReader,int)"/> to force the use of blocking IO.
     /// </remarks>
     public sealed class NonBlockingTextReader
         : BufferedTextReader

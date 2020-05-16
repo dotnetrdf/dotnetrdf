@@ -230,7 +230,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Blocking IO refers to how the parsing sub-system reads in inputs, it will use Blocking/Non-Blocking IO depending on the input source.  In most cases the detection of which to use should never cause an issue but theoretically in some rare cases using non-blocking IO may lead to incorrect parsing errors being thrown (premature end of input detected), if you suspect this is the case try enabling this setting.  If you still experience this problem with this setting enabled then there is some other issue with your input.
         /// </remarks>
-        public static bool ForceBlockingIO { get; set; } = false;
+        //public static bool ForceBlockingIO { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether Basic HTTP authentication should be forced.

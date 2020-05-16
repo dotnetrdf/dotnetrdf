@@ -82,48 +82,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-
-        [Fact]
-        public void ParsingTextReaderCreation4()
-        {
-            try
-            {
-                Options.ForceBlockingIO = true;
-
-                File.WriteAllText("ParsingTextReaderCreation4.txt", "ParsingTextReaderCreation1");
-                using (StreamReader stream = File.OpenText("ParsingTextReaderCreation4.txt"))
-                {
-                    ParsingTextReader reader = ParsingTextReader.Create(stream);
-                    Assert.IsType<BlockingTextReader>(reader);
-                    stream.Close();
-                }
-            }
-            finally
-            {
-                Options.ForceBlockingIO = false;
-            }
-        }
-
-        [Fact]
-        public void ParsingTextReaderCreation5()
-        {
-            try
-            {
-                Options.ForceBlockingIO = true;
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    ParsingTextReader reader = ParsingTextReader.Create(stream);
-                    Assert.IsType<BlockingTextReader>(reader);
-                    stream.Close();
-                }
-            }
-            finally
-            {
-                Options.ForceBlockingIO = false;
-            }
-        }
-
         [Fact]
         public void ParsingTextReaderBlockingBadInstantiation()
         {
