@@ -15,3 +15,6 @@ This option has been removed. To force use of blocking IO you must now explicitl
 ### ValidateIris
 
 This option to force validation of parsed IRIs was only used in the Turtle parsers and can now be specified in the constructor of those parsers.
+
+### InternUris
+This options has been removed. The UriFactory class will be refactored to allow the creation of factories that do not intern URIs with a default root implementation that does.

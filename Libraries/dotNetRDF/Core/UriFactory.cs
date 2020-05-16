@@ -46,8 +46,9 @@ namespace VDS.RDF
         /// </remarks>
         public static Uri Create(String uri)
         {
-            if (Options.InternUris)
-            {
+            // TODO: This should become a constructor-injected option
+            //if (Options.InternUris)
+            //{
                 ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
                 if (node.HasValue)
                 {
@@ -56,8 +57,8 @@ namespace VDS.RDF
                 Uri u = new Uri(uri);
                 node.Value = u;
                 return node.Value;
-            }
-            return new Uri(uri);
+            //}
+            //return new Uri(uri);
         }
 
         /// <summary>

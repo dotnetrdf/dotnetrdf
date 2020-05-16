@@ -251,7 +251,7 @@ namespace VDS.RDF
         public static bool UseDtd { get; set; } = true;
 
         /// <summary>
-        /// Gets/Sets whether multi-theaded writing is permitted.
+        /// Gets/Sets whether multi-threaded writing is permitted.
         /// </summary>
         /// <remarks>
         /// In some contexts multi-threaded writing may not even work due to restrictions on thread types since we use the System.Threading.WaitAll method which is only valid in <strong>MTA</strong> contexts.
@@ -261,7 +261,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage.
         /// </summary>
-        public static bool InternUris { get; set; } = true;
+        //public static bool InternUris { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the default token queue mode used for tokeniser based parsers.
