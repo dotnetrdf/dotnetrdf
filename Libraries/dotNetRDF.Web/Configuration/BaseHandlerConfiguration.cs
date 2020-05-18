@@ -81,7 +81,7 @@ namespace VDS.RDF.Web.Configuration
         /// <summary>
         /// Writer Compression Level
         /// </summary>
-        protected int _writerCompressionLevel = Options.DefaultCompressionLevel;
+        protected int _writerCompressionLevel = Writing.WriterCompressionLevel.More;
         /// <summary>
         /// Writer Pretty Printing Mode
         /// </summary>

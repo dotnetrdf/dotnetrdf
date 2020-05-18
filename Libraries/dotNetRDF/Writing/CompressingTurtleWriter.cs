@@ -46,11 +46,7 @@ namespace VDS.RDF.Writing
     public class CompressingTurtleWriter 
         : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
     {
-        private bool _prettyprint = true;
-        private bool _allowHiSpeed = true;
-        private int _compressionLevel = Options.DefaultCompressionLevel;
-        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
-        private TurtleSyntax _syntax = TurtleSyntax.Original;
+        private readonly TurtleSyntax _syntax = TurtleSyntax.Original;
 
         /// <summary>
         /// Creates a new Compressing Turtle Writer which uses the Default Compression Level.
@@ -67,7 +63,7 @@ namespace VDS.RDF.Writing
         /// <remarks>See Remarks for this classes <see cref="CompressingTurtleWriter.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have.</remarks>
         public CompressingTurtleWriter(int compressionLevel)
         {
-            _compressionLevel = compressionLevel;
+            CompressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -94,32 +90,12 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether Pretty Printing is used.
         /// </summary>
-        public bool PrettyPrintMode
-        {
-            get
-            {
-                return _prettyprint;
-            }
-            set
-            {
-                _prettyprint = value;
-            }
-        }
+        public bool PrettyPrintMode { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether High Speed Write Mode should be allowed.
         /// </summary>
-        public bool HighSpeedModePermitted
-        {
-            get
-            {
-                return _allowHiSpeed;
-            }
-            set
-            {
-                _allowHiSpeed = value;
-            }
-        }
+        public bool HighSpeedModePermitted { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Compression Level to be used.
@@ -134,43 +110,17 @@ namespace VDS.RDF.Writing
         /// <para>
         /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
         /// </remarks>
-        public int CompressionLevel
-        {
-            get
-            {
-                return _compressionLevel;
-            }
-            set
-            {
-                _compressionLevel = value;
-            }
-        }
+        public int CompressionLevel { get; set; } = WriterCompressionLevel.More;
 
         /// <summary>
         /// Gets/Sets the Default Namespaces that are always available.
         /// </summary>
-        public INamespaceMapper DefaultNamespaces
-        {
-            get
-            {
-                return _defaultNamespaces;
-            }
-            set
-            {
-                _defaultNamespaces = value;
-            }
-        }
+        public INamespaceMapper DefaultNamespaces { get; set; } = new NamespaceMapper();
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by the writer.
         /// </summary>
-        public Type TripleFormatterType
-        {
-            get
-            {
-                return (_syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
-            }
-        }
+        public Type TripleFormatterType => (_syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
 
         /// <summary>
         /// Saves a Graph to the given Stream using Turtle Syntax.
@@ -180,8 +130,8 @@ namespace VDS.RDF.Writing
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             // Create the Writing Context
-            g.NamespaceMap.Import(_defaultNamespaces);
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, _compressionLevel, _prettyprint, _allowHiSpeed, _syntax);
+            g.NamespaceMap.Import(DefaultNamespaces);
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, CompressionLevel, PrettyPrintMode, HighSpeedModePermitted, _syntax);
             GenerateOutput(context);
         }
 

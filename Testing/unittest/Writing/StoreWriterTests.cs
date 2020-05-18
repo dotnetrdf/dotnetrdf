@@ -31,7 +31,7 @@ namespace VDS.RDF.Writing
 {
     public class StoreWriterTests
     {
-        private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel)
+        private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel = WriterCompressionLevel.More)
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();
@@ -70,11 +70,6 @@ namespace VDS.RDF.Writing
                 Assert.True(store2.HasGraph(graph.BaseUri), "Parsed Stored should have contained serialized graph");
                 Assert.Equal(graph, store2[graph.BaseUri]);
             }
-        }
-
-        private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded)
-        {
-            this.TestWriter(writer, reader, useMultiThreaded, Options.DefaultCompressionLevel);
         }
 
         [Fact]

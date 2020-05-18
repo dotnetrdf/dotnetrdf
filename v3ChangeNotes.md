@@ -17,4 +17,13 @@ This option has been removed. To force use of blocking IO you must now explicitl
 This option to force validation of parsed IRIs was only used in the Turtle parsers and can now be specified in the constructor of those parsers.
 
 ### InternUris
-This options has been removed. The UriFactory class will be refactored to allow the creation of factories that do not intern URIs with a default root implementation that does.
+This option has been moved to the UriFactory static class. Interning is enabled by default and can be disabled by setting UriFactory.InternUris to false.
+
+### UseDtd
+This option should be set explicitly when creating a writer. All writer instances that support the use of a DTD provide a UseDtd property (through the IDtdWriter interface) which can be used to change this option after the writer is created. The MimeTypesHelper methods for creating writers also provide an optional parameter for setting this option.
+
+### DefaultCompressionLevel
+The compression level desited for a writer should be set explicitly when creating a writer. All writer instances that support compression also provide a CompressionLevel property (through the ICompressingWriter interface) which may be used to change the compression level after the writer is created. The MimeTypesHelper methods for creating writers also provide an optional parameter for setting this option.
+
+### DefaultTokenQueueMode
+The token queue mode for tokenizing parsers should be set explicitly when creating a parser. All parsers that implement the ITokenisingParser interface provide a TokenQueueMode property which may be used to change the mode after the parser is created. The MimeTypesHelper methods for creating parsers also provides an optional parameter for setting this option.

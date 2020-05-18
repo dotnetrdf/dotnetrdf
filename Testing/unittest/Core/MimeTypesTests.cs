@@ -2457,137 +2457,65 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesApplyWriterOptions1()
         {
-            int compressionLevel = Options.DefaultCompressionLevel;
-            try
-            {
-                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
-                IRdfWriter writer = MimeTypesHelper.GetWriter("application/turtle");
-                Assert.IsType<CompressingTurtleWriter>(writer);
-                Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
-            }
-            finally
-            {
-                Options.DefaultCompressionLevel = compressionLevel;
-            }
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/turtle", WriterCompressionLevel.High);
+            Assert.IsType<CompressingTurtleWriter>(writer);
+            Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
         }
 
         [Fact]
         public void MimeTypesApplyWriterOptions2()
         {
-            int compressionLevel = Options.DefaultCompressionLevel;
-            try
-            {
-                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
-                IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(".ttl");
-                Assert.IsType<CompressingTurtleWriter>(writer);
-                Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
-            }
-            finally
-            {
-                Options.DefaultCompressionLevel = compressionLevel;
-            }
+            IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(".ttl", WriterCompressionLevel.High);
+            Assert.IsType<CompressingTurtleWriter>(writer);
+            Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
         }
 
         [Fact]
         public void MimeTypesApplyWriterOptions3()
         {
-            int compressionLevel = Options.DefaultCompressionLevel;
-            try
-            {
-                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
-                IStoreWriter writer = MimeTypesHelper.GetStoreWriter("application/x-trig");
-                Assert.IsType<TriGWriter>(writer);
-                Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
-            }
-            finally
-            {
-                Options.DefaultCompressionLevel = compressionLevel;
-            }
+            IStoreWriter writer = MimeTypesHelper.GetStoreWriter("application/x-trig", WriterCompressionLevel.High);
+            Assert.IsType<TriGWriter>(writer);
+            Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
         }
 
         [Fact]
         public void MimeTypesApplyWriterOptions4()
         {
-            int compressionLevel = Options.DefaultCompressionLevel;
-            try
-            {
-                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
-                IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(".trig");
-                Assert.IsType<TriGWriter>(writer);
-                Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
-            }
-            finally
-            {
-                Options.DefaultCompressionLevel = compressionLevel;
-            }
+            IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(".trig", WriterCompressionLevel.High);
+            Assert.IsType<TriGWriter>(writer);
+            Assert.Equal(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
         }
 
         [Fact]
         public void MimeTypesApplyParserOptions1()
         {
-            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
-            try
-            {
-                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
-                IRdfReader parser = MimeTypesHelper.GetParser("application/turtle");
-                Assert.IsType<TurtleParser>(parser);
-                Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
-            }
-            finally
-            {
-                Options.DefaultTokenQueueMode = queueMode;
-            }
+            IRdfReader parser = MimeTypesHelper.GetParser("application/turtle", TokenQueueMode.AsynchronousBufferDuringParsing);
+            Assert.IsType<TurtleParser>(parser);
+            Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
         }
 
         [Fact]
         public void MimeTypesApplyParserOptions2()
         {
-            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
-            try
-            {
-                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
-                IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl");
-                Assert.IsType<TurtleParser>(parser);
-                Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
-            }
-            finally
-            {
-                Options.DefaultTokenQueueMode = queueMode;
-            }
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl", TokenQueueMode.AsynchronousBufferDuringParsing);
+            Assert.IsType<TurtleParser>(parser);
+            Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
         }
 
         [Fact]
         public void MimeTypesApplyParserOptions3()
         {
-            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
-            try
-            {
-                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
-                IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads");
-                Assert.IsType<NQuadsParser>(parser);
-                Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
-            }
-            finally
-            {
-                Options.DefaultTokenQueueMode = queueMode;
-            }
+            IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads", TokenQueueMode.AsynchronousBufferDuringParsing);
+            Assert.IsType<NQuadsParser>(parser);
+            Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
         }
 
         [Fact]
         public void MimeTypesApplyParserOptions4()
         {
-            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
-            try
-            {
-                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
-                IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq");
-                Assert.IsType<NQuadsParser>(parser);
-                Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
-            }
-            finally
-            {
-                Options.DefaultTokenQueueMode = queueMode;
-            }
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq", TokenQueueMode.AsynchronousBufferDuringParsing);
+            Assert.IsType<NQuadsParser>(parser);
+            Assert.Equal(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
         }
 
         [Fact]

@@ -45,6 +45,11 @@ namespace VDS.RDF.Update.Protocol
         public const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
         /// <summary>
+        /// Get or set the default compression to use when serializing a response using a writer that implements the <see cref="ICompressingWriter"/> interface.
+        /// </summary>
+        public int DefaultCompressionLevel { get; set; } = WriterCompressionLevel.More;
+
+        /// <summary>
         /// Processes a GET operation.
         /// </summary>
         /// <param name="context">HTTP Context.</param>
@@ -243,9 +248,9 @@ namespace VDS.RDF.Update.Protocol
             }
 
             // Set up the Writer
-            if (writer is ICompressingWriter)
+            if (writer is ICompressingWriter compressingWriter)
             {
-                ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+                compressingWriter.CompressionLevel = DefaultCompressionLevel;
             }
 
             // Send Content to Client

@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
         /// <summary>
         /// The Uri for log:implies.

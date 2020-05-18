@@ -176,7 +176,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the Default Compression Level used for Writers returned by the <see cref="MimeTypesHelper">MimeTypesHelper</see> class when the writers implement <see cref="ICompressingWriter">ICompressingWriter</see>.
         /// </summary>
-        public static int DefaultCompressionLevel { get; set; } = WriterCompressionLevel.More;
+        // public static int DefaultCompressionLevel { get; set; } = WriterCompressionLevel.More;
 
         /// <summary>
         /// Controls whether the indexed triple collections will create full indexes for the Triples inserted into it.
@@ -248,7 +248,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether a DTD should be used for some XML formats to compress output.
         /// </summary>
-        public static bool UseDtd { get; set; } = true;
+        //public static bool UseDtd { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether multi-threaded writing is permitted.
@@ -266,7 +266,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the default token queue mode used for tokeniser based parsers.
         /// </summary>
-        public static TokenQueueMode DefaultTokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
+        //public static TokenQueueMode DefaultTokenQueueMode { get; set; } = TokenQueueMode.SynchronousBufferDuringParsing;
 
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes.

@@ -40,33 +40,7 @@ namespace VDS.RDF.Writing.Contexts
     public class RdfXmlWriterContext 
         : IWriterContext, ICollectionCompressingWriterContext
     {
-        /// <summary>
-        /// Pretty Printing Mode setting.
-        /// </summary>
-        protected bool _prettyPrint = true;
-        /// <summary>
-        /// Graph being written.
-        /// </summary>
-        private IGraph _g;
-        /// <summary>
-        /// TextWriter being written to.
-        /// </summary>
-        private TextWriter _output;
-        /// <summary>
-        /// XmlWriter being written to.
-        /// </summary>
-        private XmlWriter _writer;
-        /// <summary>
-        /// Nested Namespace Mapper.
-        /// </summary>
-        private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
-        private bool _useDTD = Options.UseDtd;
-        private bool _useAttributes = true;
-        private int _compressionLevel = WriterCompressionLevel.Default;
-        private int _nextNamespaceID = 0;
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(XmlSpecsHelper.IsName);
-        private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
-        private TripleCollection _triplesDone = new TripleCollection();
+        private readonly TripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new RDF/XML Writer Context.
@@ -75,10 +49,10 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">Output destination.</param>
         public RdfXmlWriterContext(IGraph g, TextWriter output)
         {
-            _g = g;
-            _output = output;
-            _writer = XmlWriter.Create(_output, GetSettings(output.Encoding));
-            _nsmapper.Import(_g.NamespaceMap);
+            Graph = g;
+            Output = output;
+            Writer = XmlWriter.Create(Output, GetSettings(output.Encoding));
+            NamespaceMap.Import(Graph.NamespaceMap);
         }
 
         /// <summary>
@@ -92,7 +66,7 @@ namespace VDS.RDF.Writing.Contexts
                 ConformanceLevel = ConformanceLevel.Document,
                 CloseOutput = true,
                 Encoding = fileEncoding,
-                Indent = _prettyPrint,
+                Indent = PrettyPrint,
                 NewLineHandling = NewLineHandling.None,
                 OmitXmlDeclaration = false,
             };
@@ -101,50 +75,22 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Gets the Graph being written.
         /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
+        public IGraph Graph { get; }
 
         /// <summary>
         /// Gets the TextWriter being written to.
         /// </summary>
-        public TextWriter Output
-        {
-            get
-            {
-                return _output;
-            }
-        }
+        public TextWriter Output { get; }
 
         /// <summary>
         /// Gets the XML Writer in use.
         /// </summary>
-        public XmlWriter Writer
-        {
-            get
-            {
-                return _writer;
-            }
-        }
+        public XmlWriter Writer { get; }
 
         /// <summary>
         /// Gets/Sets the Pretty Printing Mode used.
         /// </summary>
-        public bool PrettyPrint
-        {
-            get
-            {
-                return _prettyPrint;
-            }
-            set
-            {
-                _prettyPrint = value;
-            }
-        }
+        public bool PrettyPrint { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Node Formatter.
@@ -154,14 +100,8 @@ namespace VDS.RDF.Writing.Contexts
         /// </remarks>
         public INodeFormatter NodeFormatter
         {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                throw new NotSupportedException("Node Formatters are not used for RDF/XML output");
-            }
+            get => null;
+            set => throw new NotSupportedException("Node Formatters are not used for RDF/XML output");
         }
 
         /// <summary>
@@ -172,37 +112,19 @@ namespace VDS.RDF.Writing.Contexts
         /// </remarks>
         public IUriFormatter UriFormatter
         {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                throw new NotSupportedException("URI Formatters are not used for RDF/XML output");
-            }
+            get => null;
+            set => throw new NotSupportedException("URI Formatters are not used for RDF/XML output");
         }
 
         /// <summary>
         /// Gets the Namespace Map in use.
         /// </summary>
-        public NestedNamespaceMapper NamespaceMap
-        {
-            get
-            {
-                return _nsmapper;
-            }
-        }
+        public NestedNamespaceMapper NamespaceMap { get; } = new NestedNamespaceMapper(true);
 
         /// <summary>
         /// Gets the Blank Node map in use.
         /// </summary>
-        public BlankNodeOutputMapper BlankNodeMapper
-        {
-            get
-            {
-                return _bnodeMapper;
-            }
-        }
+        public BlankNodeOutputMapper BlankNodeMapper { get; } = new BlankNodeOutputMapper(XmlSpecsHelper.IsName);
 
         /// <summary>
         /// Gets/Sets whether High Speed Mode is permitted.
@@ -212,10 +134,7 @@ namespace VDS.RDF.Writing.Contexts
         /// </remarks>
         public bool HighSpeedModePermitted
         {
-            get
-            {
-                return false;
-            }
+            get => false;
             set
             {
                 // Do Nothing
@@ -228,83 +147,31 @@ namespace VDS.RDF.Writing.Contexts
         /// <remarks>
         /// Not currently supported.
         /// </remarks>
-        public int CompressionLevel
-        {
-            get
-            {
-                return _compressionLevel;
-            }
-            set
-            {
-                _compressionLevel = value;
-            }
-        }
+        public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
 
         /// <summary>
         /// Gets/Sets the next ID to use for issuing Temporary Namespaces.
         /// </summary>
-        public int NextNamespaceID
-        {
-            get
-            {
-                return _nextNamespaceID;
-            }
-            set
-            {
-                _nextNamespaceID = value;
-            }
-        }
+        public int NextNamespaceID { get; set; } = 0;
 
         /// <summary>
         /// Gets/Sets whether a DTD is used.
         /// </summary>
-        public bool UseDtd
-        {
-            get
-            {
-                return _useDTD;
-            }
-            set
-            {
-                _useDTD = value;
-            }
-        }
+        public bool UseDtd { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether attributes are used to encode the predicates and objects of triples with simple literal properties.
         /// </summary>
-        public bool UseAttributes
-        {
-            get
-            {
-                return _useAttributes;
-            }
-            set
-            {
-                _useAttributes = value;
-            }
-        }
+        public bool UseAttributes { get; set; } = true;
 
         /// <summary>
         /// Represents the mapping from Blank Nodes to Collections.
         /// </summary>
-        public Dictionary<INode, OutputRdfCollection> Collections
-        {
-            get
-            {
-                return _collections;
-            }
-        }
+        public Dictionary<INode, OutputRdfCollection> Collections { get; } = new Dictionary<INode, OutputRdfCollection>();
 
         /// <summary>
         /// Stores the Triples that should be excluded from standard output as they are part of collections.
         /// </summary>
-        public BaseTripleCollection TriplesDone
-        {
-            get
-            {
-                return _triplesDone;
-            }
-        }
+        public BaseTripleCollection TriplesDone => _triplesDone;
     }
 }

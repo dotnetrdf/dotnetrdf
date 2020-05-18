@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
         public NQuadsParser(NQuadsSyntax syntax)
         {
             Syntax = syntax;
-            TokenQueueMode = Options.DefaultTokenQueueMode;
+            TokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
             TraceTokeniser = false;
         }
 

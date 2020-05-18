@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">NTriples syntax to parse.</param>
         public NTriplesParser(NTriplesSyntax syntax)
         {
-            TokenQueueMode = Options.DefaultTokenQueueMode;
+            TokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
             TraceParsing = false;
             TraceTokeniser = false;
             Syntax = syntax;

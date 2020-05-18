@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
         private readonly bool _validateIris = false;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
         private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>

@@ -50,12 +50,6 @@ namespace VDS.RDF.Writing
         : BaseRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter,
         INamespaceWriter, IFormatterBasedWriter, IAttributeWriter
     {
-        private bool _prettyprint = true;
-        private int _compressionLevel = WriterCompressionLevel.High;
-        private bool _useDTD = Options.UseDtd;
-        private bool _useAttributes = true;
-        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
-
         /// <summary>
         /// Creates a new RDF/XML Writer.
         /// </summary>
@@ -71,7 +65,7 @@ namespace VDS.RDF.Writing
         public PrettyRdfXmlWriter(int compressionLevel)
             : this()
         {
-            _compressionLevel = compressionLevel;
+            CompressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -82,7 +76,7 @@ namespace VDS.RDF.Writing
         public PrettyRdfXmlWriter(int compressionLevel, bool useDtd)
             : this(compressionLevel)
         {
-            _useDTD = useDtd;
+            UseDtd = useDtd;
         }
 
         /// <summary>
@@ -94,23 +88,13 @@ namespace VDS.RDF.Writing
         public PrettyRdfXmlWriter(int compressionLevel, bool useDtd, bool useAttributes)
             : this(compressionLevel, useDtd)
         {
-            _useAttributes = useAttributes;
+            UseAttributes = useAttributes;
         }
 
         /// <summary>
         /// Gets/Sets Pretty Print Mode for the Writer.
         /// </summary>
-        public bool PrettyPrintMode
-        {
-            get
-            {
-                return _prettyprint;
-            }
-            set
-            {
-                _prettyprint = value;
-            }
-        }
+        public bool PrettyPrintMode { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Compression Level in use.
@@ -120,73 +104,27 @@ namespace VDS.RDF.Writing
         /// Compression Level defaults to <see cref="WriterCompressionLevel.High">High</see> - if Compression Level is set to below <see cref="WriterCompressionLevel.More">More</see> i.e. &lt; 5 then Collections will not be compressed into more compact syntax.
         /// </para>
         /// </remarks>
-        public int CompressionLevel
-        {
-            get
-            {
-                return _compressionLevel;
-            }
-            set
-            {
-                _compressionLevel = value;
-            }
-        }
+        public int CompressionLevel { get; set; } = WriterCompressionLevel.High;
 
         /// <summary>
         /// Gets/Sets whether DTDs are used in the output.
         /// </summary>
-        public bool UseDtd
-        {
-            get
-            {
-                return _useDTD;
-            }
-            set
-            {
-                _useDTD = value;
-            }
-        }
+        public bool UseDtd { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether triples which have a literal object will be expressed as attributes rather than elements where possible (defaults to true).
         /// </summary>
-        public bool UseAttributes
-        {
-            get
-            {
-                return _useAttributes;
-            }
-            set
-            {
-                _useAttributes = value;
-            }
-        }
+        public bool UseAttributes { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Default Namespaces that are always available.
         /// </summary>
-        public INamespaceMapper DefaultNamespaces
-        {
-            get
-            {
-                return _defaultNamespaces;
-            }
-            set
-            {
-                _defaultNamespaces = value;
-            }
-        }
+        public INamespaceMapper DefaultNamespaces { get; set; } = new NamespaceMapper();
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by the writer.
         /// </summary>
-        public Type TripleFormatterType
-        {
-            get
-            {
-                return typeof(RdfXmlFormatter);
-            }
-        }
+        public Type TripleFormatterType => typeof(RdfXmlFormatter);
 
         /// <summary>
         /// Saves a Graph to an arbitrary output stream.
@@ -206,23 +144,23 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             // Always force RDF Namespace to be correctly defined
-            g.NamespaceMap.Import(_defaultNamespaces);
+            g.NamespaceMap.Import(DefaultNamespaces);
             g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
             // Create our Writer Context and start the XML Document
-            RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
-            context.CompressionLevel = _compressionLevel;
-            context.UseDtd = _useDTD;
-            context.UseAttributes = _useAttributes;
+            var context = new RdfXmlWriterContext(g, output);
+            context.CompressionLevel = CompressionLevel;
+            context.UseDtd = UseDtd;
+            context.UseAttributes = UseAttributes;
             context.Writer.WriteStartDocument();
 
             if (context.UseDtd)
             {
                 // Create the DOCTYPE declaration
-                StringBuilder entities = new StringBuilder();
-                String uri;
+                var entities = new StringBuilder();
+                string uri;
                 entities.Append('\n');
-                foreach (String prefix in context.NamespaceMap.Prefixes)
+                foreach (var prefix in context.NamespaceMap.Prefixes)
                 {
                     uri = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;
                     if (!uri.Equals(context.NamespaceMap.GetNamespaceUri(prefix).ToString()))
@@ -230,7 +168,7 @@ namespace VDS.RDF.Writing
                         context.UseDtd = false;
                         break;
                     }
-                    if (!prefix.Equals(String.Empty))
+                    if (!prefix.Equals(string.Empty))
                     {
                         entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
                     }
@@ -247,11 +185,11 @@ namespace VDS.RDF.Writing
 
             // Add all the existing Namespace Definitions here
             context.NamespaceMap.IncrementNesting();
-            foreach (String prefix in context.NamespaceMap.Prefixes)
+            foreach (var prefix in context.NamespaceMap.Prefixes)
             {
                 if (prefix.Equals("rdf")) continue;
 
-                if (!prefix.Equals(String.Empty))
+                if (!prefix.Equals(string.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
                     context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));
@@ -272,13 +210,13 @@ namespace VDS.RDF.Writing
             }
 
             // Get the Triples as a Sorted List
-            List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
+            var ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
             ts.Sort(new RdfXmlTripleComparer());
 
 
             INode lastSubj = null;
-            List<Triple> sameSubject = new List<Triple>();
-            for (int i = 0; i < ts.Count; i++)
+            var sameSubject = new List<Triple>();
+            for (var i = 0; i < ts.Count; i++)
             {
                 // Find the first group of Triples with the same subject
                 if (lastSubj == null)
@@ -322,7 +260,7 @@ namespace VDS.RDF.Writing
             }
 
             // Take care of any collections that weren't yet written
-            foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
+            foreach (var kvp in context.Collections)
             {
                 if (!kvp.Value.HasBeenWritten)
                 {
@@ -352,7 +290,7 @@ namespace VDS.RDF.Writing
             // If there is a rdf:type triple then create a typed node
             // Otherwise create a rdf:Description node
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            Triple typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
+            var typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
             INode subj;
             if (typeTriple != null)
             {
@@ -361,12 +299,12 @@ namespace VDS.RDF.Writing
 
                 // Generate the Type Reference creating a temporary namespace if necessary
                 UriRefType outType;
-                IUriNode typeNode = (IUriNode)typeTriple.Object;
-                String uriref = GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
+                var typeNode = (IUriNode)typeTriple.Object;
+                var uriref = GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName)
                 {
                     // Need to generate a temporary namespace and try generating a QName again
-                    String tempPrefix, tempUri;
+                    string tempPrefix, tempUri;
                     GenerateTemporaryNamespace(context, typeNode, out tempPrefix, out tempUri);
  
                     uriref = GenerateUriRef(context, typeNode.Uri, UriRefType.QName, out outType);
@@ -409,7 +347,7 @@ namespace VDS.RDF.Writing
                     if (uriref.Contains(':'))
                     {
                         // Create an element with appropriate namespace
-                        String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                        var ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                         context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
                     }
                     else
@@ -455,14 +393,14 @@ namespace VDS.RDF.Writing
             if (context.UseAttributes)
             {
                 // Next find any simple literals we can attach directly to the Subject Node
-                List<Triple> simpleLiterals = new List<Triple>();
-                HashSet<INode> simpleLiteralPredicates = new HashSet<INode>();
-                foreach (Triple t in ts)
+                var simpleLiterals = new List<Triple>();
+                var simpleLiteralPredicates = new HashSet<INode>();
+                foreach (var t in ts)
                 {
                     if (t.Object.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode lit = (ILiteralNode)t.Object;
-                        if (lit.DataType == null && lit.Language.Equals(String.Empty))
+                        var lit = (ILiteralNode)t.Object;
+                        if (lit.DataType == null && lit.Language.Equals(string.Empty))
                         {
                             if (!simpleLiteralPredicates.Contains(t.Predicate))
                             {
@@ -480,7 +418,7 @@ namespace VDS.RDF.Writing
             }
 
             // Then generate Predicate Output for each remaining Triple
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 GeneratePredicateOutput(context, t);
                 context.TriplesDone.Add(t);
@@ -489,7 +427,7 @@ namespace VDS.RDF.Writing
             // Also check for the rare case where the subject is the key to a collection
             if (context.Collections.ContainsKey(subj))
             {
-                OutputRdfCollection collection = context.Collections[subj];
+                var collection = context.Collections[subj];
                 if (!collection.IsExplicit)
                 {
                     GenerateCollectionItemOutput(context, collection);
@@ -507,15 +445,15 @@ namespace VDS.RDF.Writing
             if (ts.Count == 0) return;
 
             // Otherwise attach each Simple Literal directly to the Subject
-            foreach (Triple t in ts)
+            foreach (var t in ts)
             {
                 UriRefType outType;
-                IUriNode p = (IUriNode)t.Predicate;
-                String uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
+                var p = (IUriNode)t.Predicate;
+                var uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName)
                 {
                     // Need to generate a temporary namespace
-                    String tempPrefix, tempUri;
+                    string tempPrefix, tempUri;
                     GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
                     context.Writer.WriteAttributeString("xmlns", tempPrefix, null, Uri.EscapeUriString(tempUri));
                     uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
@@ -526,7 +464,7 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':'))
                 {
                     // Create an attribute in appropriate namespace
-                    String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                    var ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                     context.Writer.WriteAttributeString(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns, t.Object.ToString());
                 }
                 else
@@ -553,12 +491,12 @@ namespace VDS.RDF.Writing
                 case NodeType.Variable:
                     throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable("RDF/XML"));
             }
-            IUriNode p = (IUriNode)t.Predicate;
+            var p = (IUriNode)t.Predicate;
 
             // First generate the Predicate Node
             UriRefType outType;
-            String uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
-            String tempPrefix = null, tempUri = null;
+            var uriref = GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
+            string tempPrefix = null, tempUri = null;
             if (outType != UriRefType.QName)
             {
                 // Need to generate a temporary namespace
@@ -570,7 +508,7 @@ namespace VDS.RDF.Writing
             if (uriref.Contains(':'))
             {
                 // Create an element in the appropriate namespace
-                String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
+                var ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                 context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
             }
             else
@@ -652,7 +590,7 @@ namespace VDS.RDF.Writing
 
         private void GenerateCollectionOutput(RdfXmlWriterContext context, INode key)
         {
-            OutputRdfCollection c = context.Collections[key];
+            var c = context.Collections[key];
             c.HasBeenWritten = true;
 
             if (c.IsExplicit)
@@ -666,7 +604,7 @@ namespace VDS.RDF.Writing
 
                 // First see if there is a typed triple available (only applicable if we have more than one triple)
                 INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
+                var typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
                 if (typeTriple != null)
                 {
                     // Should be safe to invoke GenerateSubjectOutput but we can't allow rdf:Description
@@ -676,7 +614,7 @@ namespace VDS.RDF.Writing
                 {
                     // Otherwise we invoke GeneratePredicateOutput (and use rdf:parseType="Resource" if there was more than 1 triple)
                     context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
-                    foreach (Triple t in c.Triples)
+                    foreach (var t in c.Triples)
                     {
                         GeneratePredicateOutput(context, t);
                         context.TriplesDone.Add(t);
@@ -702,10 +640,10 @@ namespace VDS.RDF.Writing
         private void GenerateCollectionItemOutput(RdfXmlWriterContext context, OutputRdfCollection c)
         {
             // Then output the elements of the Collection
-            int toClose = c.Triples.Count;
+            var toClose = c.Triples.Count;
             while (c.Triples.Count > 0)
             {
-                Triple t = c.Triples[0];
+                var t = c.Triples[0];
                 c.Triples.RemoveAt(0);
 
                 // rdf:first Node
@@ -720,15 +658,15 @@ namespace VDS.RDF.Writing
             }
             // Terminate the list and close all the open rdf:rest elements
             context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil);
-            for (int i = 0; i < toClose; i++)
+            for (var i = 0; i < toClose; i++)
             {
                 context.Writer.WriteEndElement();
             }
         }
 
-        private String GenerateUriRef(RdfXmlWriterContext context, Uri u, UriRefType type, out UriRefType outType)
+        private string GenerateUriRef(RdfXmlWriterContext context, Uri u, UriRefType type, out UriRefType outType)
         {
-            String uriref, qname;
+            string uriref, qname;
 
             if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && (type != UriRefType.QName || RdfXmlSpecsHelper.IsValidQName(qname)))
             {
@@ -748,7 +686,7 @@ namespace VDS.RDF.Writing
             {
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
                 {
-                    String prefix = uriref.Substring(0, uriref.IndexOf(':'));
+                    var prefix = uriref.Substring(0, uriref.IndexOf(':'));
                     if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
                     {
                         // Muse have used a DTD to generate this style of URI Reference
@@ -764,14 +702,14 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    if (context.NamespaceMap.HasNamespace(String.Empty))
+                    if (context.NamespaceMap.HasNamespace(string.Empty))
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
+                        uriref = context.NamespaceMap.GetNamespaceUri(string.Empty).AbsoluteUri + uriref.Substring(1);
                         outType = UriRefType.Uri;
                     }
                     else
                     {
-                        String baseUri = context.Graph.BaseUri.AbsoluteUri;
+                        var baseUri = context.Graph.BaseUri.AbsoluteUri;
                         if (!baseUri.EndsWith("#")) baseUri += "#";
                         uriref = baseUri + uriref;
                         outType = UriRefType.Uri;
@@ -782,10 +720,10 @@ namespace VDS.RDF.Writing
             return uriref;
         }
 
-        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out String tempPrefix, out String tempUri)
+        private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out string tempPrefix, out string tempUri)
         {
-            String uri = u.Uri.AbsoluteUri;
-            String nsUri;
+            var uri = u.Uri.AbsoluteUri;
+            string nsUri;
             if (uri.Contains("#"))
             {
                 // Create a Hash Namespace Uri
@@ -803,7 +741,7 @@ namespace VDS.RDF.Writing
             {
                 context.NextNamespaceID++;
             }
-            String prefix = "ns" + context.NextNamespaceID;
+            var prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
             context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
 
@@ -817,7 +755,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for raising the Warning event.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             if (Warning != null)
             {

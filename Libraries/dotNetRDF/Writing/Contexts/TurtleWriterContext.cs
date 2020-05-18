@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter to write to.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         public TurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, true, true, syntax) { }
+            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings.
@@ -63,7 +63,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="hiSpeed">High Speed Mode.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, prettyPrint, hiSpeed, syntax) { }
+            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings.
@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode.</param>
         /// <param name="hiSpeed">High Speed Mode.</param>
         public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : this(g, output, Options.DefaultCompressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings.
@@ -98,8 +98,7 @@ namespace VDS.RDF.Writing.Contexts
     public class CompressingTurtleWriterContext 
         : TurtleWriterContext, ICollectionCompressingWriterContext
     {
-        private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
-        private TripleCollection _triplesDone = new TripleCollection();
+        private readonly TripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings.
@@ -116,7 +115,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter to write to.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         public CompressingTurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, true, true, syntax) { }
+            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings.
@@ -126,7 +125,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode.</param>
         /// <param name="hiSpeed">High Speed Mode.</param>
         public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : this(g, output, Options.DefaultCompressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
         
         /// <summary>
@@ -138,7 +137,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="hiSpeed">High Speed Mode.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, Options.DefaultCompressionLevel, true, true, syntax) { }
+            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings.
@@ -166,23 +165,11 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Represents the mapping from Blank Nodes to Collections.
         /// </summary>
-        public Dictionary<INode, OutputRdfCollection> Collections
-        {
-            get
-            {
-                return _collections;
-            }
-        }
+        public Dictionary<INode, OutputRdfCollection> Collections { get; } = new Dictionary<INode, OutputRdfCollection>();
 
         /// <summary>
         /// Stores the Triples that should be excluded from standard output as they are part of collections.
         /// </summary>
-        public BaseTripleCollection TriplesDone
-        {
-            get
-            {
-                return _triplesDone;
-            }
-        }
+        public BaseTripleCollection TriplesDone => _triplesDone;
     }
 }

@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _tracetokeniser = false;
         private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
-        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
+        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
         /// <summary>
         /// Creates a TriG Parser than uses the default syntax.
