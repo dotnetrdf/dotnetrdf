@@ -34,31 +34,36 @@ namespace VDS.RDF
     /// </summary>
     public static class UriFactory
     {
-        private static readonly ITrie<String, char, Uri> _uris = new SparseStringTrie<Uri>();
+        private static readonly ITrie<string, char, Uri> _uris = new SparseStringTrie<Uri>();
 
         /// <summary>
-        /// Creates a URI interning it if interning is enabled via the <see cref="Options.InternUris">Options.InternUris</see>.
+        /// Get / set the flag that controls the caching of Uri instances constructed by this factory.
+        /// </summary>
+        /// <remarks>When <see cref="InternUris"/> is set to true, the factory will cache each constructed URI against the original string value used for construction and return a cached Uri where available in preference to calling the Uri constructor.</remarks>
+        public static bool InternUris { get; set; }
+
+        /// <summary>
+        /// Creates a URI interning it if interning is enabled via the <see cref="InternUris"/> property.
         /// </summary>
         /// <param name="uri">String URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// When URI interning is disabled this is equivalent to just invoking the constructor of the <see cref="Uri">Uri</see> class.
         /// </remarks>
-        public static Uri Create(String uri)
+        public static Uri Create(string uri)
         {
-            // TODO: This should become a constructor-injected option
-            //if (Options.InternUris)
-            //{
-                ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
+            if (InternUris)
+            {
+                var node = _uris.MoveToNode(uri);
                 if (node.HasValue)
                 {
                     return node.Value;
                 }
-                Uri u = new Uri(uri);
+                var u = new Uri(uri);
                 node.Value = u;
                 return node.Value;
-            //}
-            //return new Uri(uri);
+            }
+            return new Uri(uri);
         }
 
         /// <summary>
