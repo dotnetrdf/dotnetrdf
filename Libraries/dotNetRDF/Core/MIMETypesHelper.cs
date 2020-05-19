@@ -1664,7 +1664,7 @@ namespace VDS.RDF
                 ctypes = new string[] { acceptHeader };
             }
 
-            return GetStoreWriter(ctypes, out contentType);
+            return GetStoreWriter(ctypes, out contentType, compressionLevel, useDtd);
         }
 
         /// <summary>
@@ -1677,8 +1677,7 @@ namespace VDS.RDF
         /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header.</remarks>
         public static IStoreWriter GetStoreWriter(string acceptHeader, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
         {
-            string temp;
-            return GetStoreWriter(acceptHeader, out temp, compressionLevel, useDtd);
+            return GetStoreWriter(acceptHeader, out _, compressionLevel, useDtd);
         }
 
         /// <summary>
