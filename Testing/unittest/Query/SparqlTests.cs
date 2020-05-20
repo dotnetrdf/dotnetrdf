@@ -158,71 +158,62 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlDBPedia()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            try
+            String query =
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
+
+            SparqlRemoteEndpoint endpoint =
+                new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+            SparqlResultSet results = endpoint.QueryWithResultSet(query);
+            TestTools.ShowResults(results);
+
+            using (HttpWebResponse response = endpoint.QueryRaw(query))
             {
-                Options.HttpDebugging = true;
-
-                String query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
-
-                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-                SparqlResultSet results = endpoint.QueryWithResultSet(query);
-                TestTools.ShowResults(results);
-
-                using (HttpWebResponse response = endpoint.QueryRaw(query))
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    while (!reader.EndOfStream)
                     {
-                        while (!reader.EndOfStream)
-                        {
-                            Console.WriteLine(reader.ReadLine());
-                        }
-                        reader.Close();
+                        Console.WriteLine(reader.ReadLine());
                     }
-                    response.Close();
+
+                    reader.Close();
                 }
 
+                response.Close();
             }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
+
         }
 
         [SkippableFact]
         public void SparqlWikidata()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            try
+            String query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"),
+                "https://www.wikidata.org");
+            endpoint.UserAgent =
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
+            SparqlResultSet results = endpoint.QueryWithResultSet(query);
+            TestTools.ShowResults(results);
+
+            using (HttpWebResponse response = endpoint.QueryRaw(query))
             {
-                Options.HttpDebugging = true;
-
-                String query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
-
-                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"), "https://www.wikidata.org");
-                endpoint.UserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
-                SparqlResultSet results = endpoint.QueryWithResultSet(query);
-                TestTools.ShowResults(results);
-
-                using (HttpWebResponse response = endpoint.QueryRaw(query))
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    while (!reader.EndOfStream)
                     {
-                        while (!reader.EndOfStream)
-                        {
-                            Console.WriteLine(reader.ReadLine());
-                        }
-                        reader.Close();
+                        Console.WriteLine(reader.ReadLine());
                     }
-                    response.Close();
+
+                    reader.Close();
                 }
 
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
+                response.Close();
             }
         }
 
@@ -242,60 +233,60 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlDbPediaDotIssue()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            try
-            {
-                Options.HttpDebugging = true;
-
-                String query = @"PREFIX dbpediaO: <http://dbpedia.org/ontology/>
+            String query = @"PREFIX dbpediaO: <http://dbpedia.org/ontology/>
 select distinct ?entity ?redirectedEntity
 where {
  ?entity rdfs:label 'Apple Computer'@en .
  ?entity dbpediaO:wikiPageRedirects ?redirectedEntity .
 }";
 
-                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-                Console.WriteLine("Results obtained with QueryWithResultSet()");
-                SparqlResultSet results = endpoint.QueryWithResultSet(query);
-                TestTools.ShowResults(results);
-                Console.WriteLine();
+            SparqlRemoteEndpoint endpoint =
+                new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+            Console.WriteLine("Results obtained with QueryWithResultSet()");
+            SparqlResultSet results = endpoint.QueryWithResultSet(query);
+            TestTools.ShowResults(results);
+            Console.WriteLine();
 
-                Console.WriteLine("Results obtained with QueryRaw()");
-                using (HttpWebResponse response = endpoint.QueryRaw(query))
-                {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        while (!reader.EndOfStream)
-                        {
-                            Console.WriteLine(reader.ReadLine());
-                        }
-                        reader.Close();
-                    }
-                    response.Close();
-                }
-                Console.WriteLine();
-
-                Console.WriteLine("Results obtained with QueryRaw() requesting JSON");
-                using (HttpWebResponse response = endpoint.QueryRaw(query, new String[] { "application/sparql-results+json" }))
-                {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        while (!reader.EndOfStream)
-                        {
-                            Console.WriteLine(reader.ReadLine());
-                        }
-                        reader.Close();
-                    }
-                    response.Close();
-                }
-                Console.WriteLine();
-
-            }
-            finally
+            Console.WriteLine("Results obtained with QueryRaw()");
+            using (HttpWebResponse response = endpoint.QueryRaw(query))
             {
-                Options.HttpDebugging = false;
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        Console.WriteLine(reader.ReadLine());
+                    }
+
+                    reader.Close();
+                }
+
+                response.Close();
             }
+
+            Console.WriteLine();
+
+            Console.WriteLine("Results obtained with QueryRaw() requesting JSON");
+            using (HttpWebResponse response =
+                endpoint.QueryRaw(query, new String[] {"application/sparql-results+json"}))
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        Console.WriteLine(reader.ReadLine());
+                    }
+
+                    reader.Close();
+                }
+
+                response.Close();
+            }
+
+            Console.WriteLine();
+
         }
 
         [Fact]

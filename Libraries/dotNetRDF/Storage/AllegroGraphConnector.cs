@@ -186,12 +186,9 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here it completed OK
                     response.Close();
                 }
@@ -234,15 +231,12 @@ namespace VDS.RDF.Storage
                             writer.Close();
                         }
 
-                        Tools.HttpDebugRequest(request);
-
                         // Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
                         {
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-                                Tools.HttpDebugResponse(response);
                                 // If we get here it completed OK
                                 response.Close();
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);

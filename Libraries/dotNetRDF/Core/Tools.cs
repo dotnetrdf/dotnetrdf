@@ -25,8 +25,6 @@
 */
 
 using System;
-using System.IO;
-using System.Net;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 
@@ -460,80 +458,6 @@ namespace VDS.RDF
             hash = hash * 31 + x.GetHashCode();
             hash = hash * 31 + y.GetHashCode();
             return hash;
-        }
-
-        /// <summary>
-        /// Prints Debugging Output to the Console Standard Out for a HTTP Web Request.
-        /// </summary>
-        /// <param name="httpRequest">HTTP Web Request.</param>
-        /// <remarks><strong>Only available in Debug builds</strong></remarks>
-        public static void HttpDebugRequest(HttpWebRequest httpRequest)
-        {
-            if (!Options.HttpDebugging && !Options.HttpFullDebugging)
-                return;
-
-            // Output the Request Headers
-            Console.Error.WriteLine("# HTTP DEBUGGING #");
-            Console.Error.WriteLine("HTTP Request to " + httpRequest.RequestUri.AbsoluteUri);
-            Console.Error.WriteLine();
-            Console.Error.WriteLine(httpRequest.Method);
-            foreach (String header in httpRequest.Headers.AllKeys)
-            {
-                Console.Error.WriteLine(header + ":" + httpRequest.Headers[header]);
-            }
-            Console.Error.WriteLine();
-        }
-
-        /// <summary>
-        /// Prints Debugging Output to the Console Standard Out for a HTTP Web Response.
-        /// </summary>
-        /// <param name="httpResponse">HTTP Web Response.</param>
-        /// <remarks><strong>Only available in Debug builds</strong></remarks>
-        public static void HttpDebugResponse(HttpWebResponse httpResponse)
-        {
-            if (!Options.HttpDebugging && !Options.HttpFullDebugging)
-                return;
-
-            // Output the Response Uri and Headers
-            Console.Error.WriteLine();
-            Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri.AbsoluteUri);
-#if NETCORE
-            Console.Error.WriteLine("HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
-#else
-            Console.Error.WriteLine("HTTP/" + httpResponse.ProtocolVersion + " " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
-#endif
-            Console.Error.WriteLine();
-            foreach (String header in httpResponse.Headers.AllKeys)
-            {
-                Console.Error.WriteLine(header + ":" + httpResponse.Headers[header]);
-            }
-            Console.Error.WriteLine();
-
-            if (Options.HttpFullDebugging)
-            {
-                // Output the actual Response
-                Stream data = httpResponse.GetResponseStream();
-                if (data != null)
-                {
-                    StreamReader reader = new StreamReader(data);
-                    while (!reader.EndOfStream)
-                    {
-                        Console.Error.WriteLine(reader.ReadLine());
-                    }
-                    Console.Error.WriteLine();
-
-                    if (data.CanSeek)
-                    {
-                        data.Seek(0, SeekOrigin.Begin);
-                    }
-                    else
-                    {
-                        throw new RdfException("Full HTTP Debugging is enabled and the HTTP response stream has been consumed and written to the standard error stream, the stream is no longer available for calling code to consume");
-                    }
-                }
-            }
-
-            Console.Error.WriteLine("# END HTTP DEBUGGING #");
         }
     }
 }

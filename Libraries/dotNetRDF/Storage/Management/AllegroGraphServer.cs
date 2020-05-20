@@ -166,11 +166,8 @@ namespace VDS.RDF.Storage.Management
                 var createParams = new Dictionary<string, string> {{"override", "false"}};
                 request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
-                Tools.HttpDebugRequest(request);
-
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     response.Close();
                 }
                 return true;
@@ -179,8 +176,10 @@ namespace VDS.RDF.Storage.Management
             {
                 if (webEx.Response != null)
                 {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    
+                    if (webEx.Response != null)
+                    {
+                    }
+
                     // Got a Response so we can analyse the Response Code
                     response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -209,11 +208,9 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 HttpWebRequest request = CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
-                Tools.HttpDebugRequest(request);
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     response.Close();
                 }
             }
@@ -364,14 +361,11 @@ namespace VDS.RDF.Storage.Management
                 var createParams = new Dictionary<string, string> {{"override", "false"}};
                 var request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
-                Tools.HttpDebugRequest(request);
-
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-                        Tools.HttpDebugResponse(response);
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
                     }
@@ -379,8 +373,10 @@ namespace VDS.RDF.Storage.Management
                     {
                         if (webEx.Response != null)
                         {
-                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            
+                            if (webEx.Response != null)
+                            {
+                            }
+
                             // Got a Response so we can analyse the Response Code
                             var response = (HttpWebResponse)webEx.Response;
                             var code = (int)response.StatusCode;
@@ -409,8 +405,10 @@ namespace VDS.RDF.Storage.Management
             {
                 if (webEx.Response != null)
                 {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    
+                    if (webEx.Response != null)
+                    {
+                    }
+
                     // Got a Response so we can analyse the Response Code
                     HttpWebResponse response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -447,15 +445,12 @@ namespace VDS.RDF.Storage.Management
             {
                 var request = CreateRequest("repositories/" + storeId, "*/*", "DELETE", new Dictionary<string, string>());
 
-                Tools.HttpDebugRequest(request);
-
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-                        Tools.HttpDebugResponse(response);
-                        
+
                         // If we get here then the operation completed OK
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId), state);

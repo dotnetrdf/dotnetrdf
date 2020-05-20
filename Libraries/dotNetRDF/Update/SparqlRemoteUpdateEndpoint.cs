@@ -120,7 +120,6 @@ namespace VDS.RDF.Update
                 // Make the request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
                 ApplyRequestOptions(request);
-                Tools.HttpDebugRequest(request);
                 if (longUpdate)
                 {
                     request.Method = "POST";
@@ -138,7 +137,6 @@ namespace VDS.RDF.Update
                 request.Accept = MimeTypesHelper.Any;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we don't get an error then we should be fine
                     response.Close();
                 }
@@ -146,7 +144,10 @@ namespace VDS.RDF.Update
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                if (webEx.Response != null)
+                {
+                }
+
                 // Some sort of HTTP Error occurred
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }
@@ -165,7 +166,6 @@ namespace VDS.RDF.Update
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.Any;
             ApplyRequestOptions(request);
-            Tools.HttpDebugRequest(request);
 
             try
             {
@@ -188,8 +188,6 @@ namespace VDS.RDF.Update
                                     {
                                         using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
                                         {
-                                            Tools.HttpDebugResponse(response);
-
                                             response.Close();
                                             callback(state);
                                         }
@@ -200,7 +198,10 @@ namespace VDS.RDF.Update
                                     }
                                     catch (WebException webEx)
                                     {
-                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        if (webEx.Response != null)
+                                        {
+                                        }
+
                                         callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
                                     }
                                     catch (Exception ex)
@@ -215,7 +216,10 @@ namespace VDS.RDF.Update
                         }
                         catch (WebException webEx)
                         {
-                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            if (webEx.Response != null)
+                            {
+                            }
+
                             callback(new AsyncError(new SparqlUpdateException("A HTTP error occurred while making an asynchronous update, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)

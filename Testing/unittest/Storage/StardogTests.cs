@@ -41,7 +41,7 @@ namespace VDS.RDF.Storage
 {
 
     public class StardogTests
-        : GenericUpdateProcessorTests, IDisposable
+        : GenericUpdateProcessorTests
     {
         public static StardogConnector GetConnection()
         {
@@ -58,11 +58,6 @@ namespace VDS.RDF.Storage
             return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer),
                 TestConfigManager.GetSetting(TestConfigManager.StardogUser),
                 TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
-        }
-
-        public StardogTests()
-        {
-            Options.HttpDebugging = true;
         }
 
         protected override IStorageProvider GetManager()
@@ -679,11 +674,6 @@ namespace VDS.RDF.Storage
             Assert.False(stardog.IsReady);
 
             stardog.Dispose();
-        }
-
-        public void Dispose()
-        {
-            Options.HttpDebugging = false;
         }
     }
 }

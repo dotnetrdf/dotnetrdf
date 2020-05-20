@@ -206,11 +206,8 @@ namespace VDS.RDF.Storage.Management
                     var ntwriter = new NTriplesWriter();
                     ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                    Tools.HttpDebugRequest(request);
-                    
                     using (var response = (HttpWebResponse)request.GetResponse())
                     {
-                        Tools.HttpDebugResponse(response);
                         // If we get then it was OK
                         response.Close();
                     }
@@ -256,11 +253,8 @@ namespace VDS.RDF.Storage.Management
             {
                 var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
-                Tools.HttpDebugRequest(request);
-
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here it completed OK
                     response.Close();
                 }
@@ -280,7 +274,6 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
-                Tools.HttpDebugRequest(request);
 
                 var handler = new ListStringsHandler("id");
                 using (var response = (HttpWebResponse)request.GetResponse())
@@ -433,14 +426,12 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
-                Tools.HttpDebugRequest(request);
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         var response = (HttpWebResponse)request.EndGetResponse(r);
-                        Tools.HttpDebugResponse(response);
                         // If we get here it completed OK
                         response.Close();
                     }

@@ -205,8 +205,6 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 try
                 {
                     request.BeginGetResponse(result =>
@@ -215,8 +213,6 @@ namespace VDS.RDF.Parsing
                             {
                                 using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
                                 {
-                                    Tools.HttpDebugResponse(response);
-
                                     // Get a Parser and load the RDF
                                     if (parser == null)
                                     {
@@ -233,7 +229,10 @@ namespace VDS.RDF.Parsing
                             }
                             catch (WebException webEx)
                             {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                if (webEx.Response != null)
+                                {
+                                }
+
                                 callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
                             }
                             catch (Exception ex)
@@ -244,7 +243,10 @@ namespace VDS.RDF.Parsing
                 }
                 catch (WebException webEx)
                 {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse) webEx.Response);
+                    if (webEx.Response != null)
+                    {
+                    }
+
                     callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
                 }
                 catch (Exception ex)
@@ -408,8 +410,6 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 try
                 {
                     request.BeginGetResponse(result =>
@@ -418,8 +418,6 @@ namespace VDS.RDF.Parsing
                             {
                                 using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
                                 {
-                                    Tools.HttpDebugResponse(response);
-
                                     // Get a Parser and load the RDF
                                     if (parser == null)
                                     {
@@ -461,7 +459,10 @@ namespace VDS.RDF.Parsing
                             }
                             catch (WebException webEx)
                             {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                if (webEx.Response != null)
+                                {
+                                }
+
                                 callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
                             }
                             catch (Exception ex)
@@ -472,7 +473,10 @@ namespace VDS.RDF.Parsing
                 }
                 catch (WebException webEx)
                 {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    if (webEx.Response != null)
+                    {
+                    }
+
                     callback(handler, new AsyncError(new RdfParseException("A HTTP Error occurred loading the URI '" + u.AbsoluteUri + "' asynchronously, see inner exeption for details", webEx), state));
                 }
                 catch (Exception ex)

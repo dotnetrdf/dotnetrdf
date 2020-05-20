@@ -129,8 +129,6 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
-                    Tools.HttpDebugRequest(request);
-                    Tools.HttpDebugResponse(response);
                 }
             }
             catch (WebException webEx)
@@ -153,8 +151,6 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
-                    Tools.HttpDebugRequest(request);
-                    Tools.HttpDebugResponse(response);
                 }
             }
             catch (WebException webEx)
@@ -168,7 +164,6 @@ namespace VDS.RDF.Parsing
             try
             {
                 Graph g = new Graph();
-                Options.HttpDebugging = true;
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/London"));
                 Console.WriteLine("OK");
                 Console.WriteLine(g.Triples.Count + " Triples retrieved");
@@ -179,10 +174,6 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 Assert.True(false);
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
             }
         }
 
@@ -199,7 +190,6 @@ namespace VDS.RDF.Parsing
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
-                Options.HttpDebugging = true;
                 SetUriLoaderCaching(false);
                 Options.UriLoaderTimeout = 45000;
 
@@ -214,7 +204,6 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.HttpDebugging = false;
                 SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
             }
@@ -245,7 +234,6 @@ namespace VDS.RDF.Parsing
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
-                Options.HttpDebugging = true;
                 SetUriLoaderCaching(false);
                 Options.UriLoaderTimeout = 45000;
 
@@ -256,7 +244,6 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.HttpDebugging = false;
                 SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
             }

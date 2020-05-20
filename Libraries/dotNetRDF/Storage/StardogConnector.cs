@@ -394,13 +394,9 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 // Get the Response and process based on the Content Type
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     var data = new StreamReader(response.GetResponseStream());
                     var ctype = response.ContentType;
                     try
@@ -481,13 +477,9 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 // Get the Response and process based on the Content Type
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     var data = new StreamReader(response.GetResponseStream());
                     var ctype = response.ContentType;
                     try
@@ -589,12 +581,8 @@ namespace VDS.RDF.Storage
 
                 request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-                Tools.HttpDebugRequest(request);
-
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     var parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
@@ -647,11 +635,8 @@ namespace VDS.RDF.Storage
                 store.Add(g);
                 _writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
-                Tools.HttpDebugRequest(request);
-
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
                     response.Close();
                 }
@@ -846,11 +831,8 @@ namespace VDS.RDF.Storage
 
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
-                Tools.HttpDebugRequest(request);
-
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then the Delete worked OK
                     response.Close();
                 }
@@ -1021,13 +1003,11 @@ namespace VDS.RDF.Storage
                         store.Add(g);
                         _writer.Save(store, new StreamWriter(stream));
 
-                        Tools.HttpDebugRequest(request);
                         request.BeginGetResponse(r2 =>
                         {
                             try
                             {
                                 var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                Tools.HttpDebugResponse(response);
 
                                 // If we get here then it was OK
                                 response.Close();
@@ -1158,14 +1138,11 @@ namespace VDS.RDF.Storage
 
                 request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-                Tools.HttpDebugRequest(request);
-
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         var response = (HttpWebResponse)request.EndGetResponse(r);
-                        Tools.HttpDebugResponse(response);
 
                         var parser = MimeTypesHelper.GetParser(response.ContentType);
                         parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -1296,13 +1273,11 @@ namespace VDS.RDF.Storage
                             store.Add(g);
                             _writer.Save(store, new StreamWriter(stream));
 
-                            Tools.HttpDebugRequest(request);
                             request.BeginGetResponse(r2 =>
                             {
                                 try
                                 {
                                     var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                    Tools.HttpDebugResponse(response);
 
                                     // If we get here then it was OK
                                     response.Close();
@@ -1326,14 +1301,11 @@ namespace VDS.RDF.Storage
                                                 store.Add(g);
                                                 _writer.Save(store, new StreamWriter(stream));
 
-                                                Tools.HttpDebugRequest(request);
-
                                                 request.BeginGetResponse(r4 =>
                                                 {
                                                     try
                                                     {
                                                         response = (HttpWebResponse)request.EndGetResponse(r4);
-                                                        Tools.HttpDebugResponse(response);
 
                                                         // If we get here then it was OK
                                                         response.Close();
@@ -1519,14 +1491,11 @@ namespace VDS.RDF.Storage
                             store.Add(g);
                             _writer.Save(store, new StreamWriter(stream));
 
-                            Tools.HttpDebugRequest(request);
-
                             request.BeginGetResponse(r2 =>
                             {
                                 try
                                 {
                                     var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                    Tools.HttpDebugResponse(response);
 
                                     // If we get here then it was OK
                                     response.Close();
@@ -1693,14 +1662,12 @@ namespace VDS.RDF.Storage
 
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
-                Tools.HttpDebugRequest(request);
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
                         var response = (HttpWebResponse)request.EndGetResponse(r);
 
-                        Tools.HttpDebugResponse(response);
                         // If we get here then the Delete worked OK
                         response.Close();
 
@@ -1846,15 +1813,12 @@ namespace VDS.RDF.Storage
                             writer.Close();
                         }
 
-                        Tools.HttpDebugRequest(request);
-
                         // Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
                         {
                             try
                             {
                                 var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                Tools.HttpDebugResponse(response);
 
                                 var data = new StreamReader(response.GetResponseStream());
                                 var ctype = response.ContentType;
@@ -2030,14 +1994,10 @@ namespace VDS.RDF.Storage
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             try
             {
-                Tools.HttpDebugRequest(request);
-
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
-                        Tools.HttpDebugResponse(response);
-
                         tID = reader.ReadToEnd();
                         reader.Close();
                     }
@@ -2066,11 +2026,8 @@ namespace VDS.RDF.Storage
                 /* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
-            Tools.HttpDebugRequest(request);
-
             using (var response = (HttpWebResponse)request.GetResponse())
             {
-                Tools.HttpDebugResponse(response);
                 response.Close();
             }
 
@@ -2210,7 +2167,6 @@ namespace VDS.RDF.Storage
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     try
                     {
-                        Tools.HttpDebugRequest(request);
                         request.BeginGetResponse(r =>
                         {
                             try
@@ -2219,7 +2175,6 @@ namespace VDS.RDF.Storage
                                 string tID;
                                 using (var reader = new StreamReader(response.GetResponseStream()))
                                 {
-                                    Tools.HttpDebugResponse(response);
                                     tID = reader.ReadToEnd();
                                     reader.Close();
                                 }
@@ -2301,7 +2256,6 @@ namespace VDS.RDF.Storage
                     var request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
                         "text/plain" /* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                    Tools.HttpDebugRequest(request);
                     try
                     {
                         request.BeginGetResponse(r =>
@@ -2310,7 +2264,6 @@ namespace VDS.RDF.Storage
                             {
                                 var response = (HttpWebResponse)request.EndGetResponse(r);
 
-                                Tools.HttpDebugResponse(response);
                                 response.Close();
                                 _activeTrans = null;
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit),
@@ -2793,13 +2746,9 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 // Check the response
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     // If we got here then the update succeeded
                     response.Close();
                 }
@@ -2842,8 +2791,6 @@ namespace VDS.RDF.Storage
                             writer.Close();
                         }
 
-                        Tools.HttpDebugRequest(request);
-
                         // Get the Response and process based on the Content Type
                         request.BeginGetResponse(r2 =>
                         {
@@ -2851,7 +2798,6 @@ namespace VDS.RDF.Storage
                             {
                                 using (var response = (HttpWebResponse)request.EndGetResponse(r2))
                                 {
-                                    Tools.HttpDebugResponse(response);
                                     // If we get here the update completed OK
                                     response.Close();
                                 }

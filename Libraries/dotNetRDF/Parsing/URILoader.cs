@@ -347,12 +347,8 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-                Tools.HttpDebugRequest(httpRequest);
-
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
-                    Tools.HttpDebugResponse(httpResponse);
-
                     if (Options.UriLoaderCaching)
                     {
                         // Are we using ETag based caching?
@@ -446,7 +442,6 @@ namespace VDS.RDF.Parsing
             {
                 if (webEx.Response != null)
                 {
-                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 
                 if (Options.UriLoaderCaching)
@@ -594,12 +589,9 @@ namespace VDS.RDF.Parsing
                 }
 
                 // HTTP Debugging
-                Tools.HttpDebugRequest(httpRequest);
 
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
-                    Tools.HttpDebugResponse(httpResponse);
-
                     // Get a Parser and Load the RDF
                     if (parser == null)
                     {
@@ -643,7 +635,9 @@ namespace VDS.RDF.Parsing
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                if (webEx.Response != null)
+                {
+                }
 
                 // Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.AbsoluteUri + "', see innner exception for details", webEx);

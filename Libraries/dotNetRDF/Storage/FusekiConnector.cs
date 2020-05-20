@@ -228,16 +228,12 @@ namespace VDS.RDF.Storage
                     request.ContentType = "application/sparql-update";
                     request = ApplyRequestOptions(request);
 
-                    Tools.HttpDebugRequest(request);
-
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(update.ToString());
                     writer.Close();
 
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
-                        Tools.HttpDebugResponse(response);
-
                         // If we get here without erroring then the request was OK
                         response.Close();
                     }
@@ -323,13 +319,9 @@ namespace VDS.RDF.Storage
                     }
                 }
 
-                Tools.HttpDebugRequest(request);
-
                 // Get the Response and process based on the Content Type
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     StreamReader data = new StreamReader(response.GetResponseStream());
                     String ctype = response.ContentType;
                     try
@@ -374,11 +366,8 @@ namespace VDS.RDF.Storage
                 writer.Write(sparqlUpdate);
                 writer.Close();
 
-                Tools.HttpDebugRequest(request);
-
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here without erroring then the request was OK
                     response.Close();
                 }
@@ -453,15 +442,12 @@ namespace VDS.RDF.Storage
                                 writer.Close();
                             }
 
-                            Tools.HttpDebugRequest(request);
-
                             // Get the Response and process based on the Content Type
                             request.BeginGetResponse(r2 =>
                             {
                                 try
                                 {
                                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-                                    Tools.HttpDebugResponse(response);
 
                                     StreamReader data = new StreamReader(response.GetResponseStream());
                                     String ctype = response.ContentType;
@@ -538,14 +524,11 @@ namespace VDS.RDF.Storage
                             writer.Write(sparqlUpdate);
                             writer.Close();
 
-                            Tools.HttpDebugRequest(request);
-
                             request.BeginGetResponse(r2 =>
                                 {
                                     try
                                     {
                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-                                        Tools.HttpDebugResponse(response);
                                         // If we get here without erroring then the request was OK
                                         response.Close();
                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);

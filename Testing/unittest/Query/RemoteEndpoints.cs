@@ -54,25 +54,16 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlRemoteEndpointLongQuery()
         {
-            try
-            {
-                Options.HttpDebugging = true;
+            StringBuilder input = new StringBuilder();
+            input.AppendLine("SELECT * WHERE {?s ?p ?o}");
+            input.AppendLine(new String('#', 2048));
 
-                StringBuilder input = new StringBuilder();
-                input.AppendLine("SELECT * WHERE {?s ?p ?o}");
-                input.AppendLine(new String('#', 2048));
-
-                SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                Object results = endpoint.QueryWithResultSet(input.ToString());
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
-                {
-                    TestTools.ShowResults(results);
-                }
-            }
-            finally
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
+            Object results = endpoint.QueryWithResultSet(input.ToString());
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet)
             {
-                Options.HttpDebugging = false;
+                TestTools.ShowResults(results);
             }
         }
 
@@ -82,21 +73,12 @@ namespace VDS.RDF.Query
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            try
-            {
-                Options.HttpDebugging = true;
+            StringBuilder input = new StringBuilder();
+            input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
+            input.AppendLine(new String('#', 2048));
 
-                StringBuilder input = new StringBuilder();
-                input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
-                input.AppendLine(new String('#', 2048));
-
-                SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
-                endpoint.Update(input.ToString());
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
+            SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
+            endpoint.Update(input.ToString());
         }
 
         [SkippableFact]

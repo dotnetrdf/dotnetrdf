@@ -35,7 +35,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Storage
 {
 
-    public class AllegroGraphTests : IDisposable
+    public class AllegroGraphTests
     {
         public static AllegroGraphConnector GetConnection()
         {
@@ -45,16 +45,6 @@ namespace VDS.RDF.Storage
         }
 
         // These tests are using the synchronous API
-
-        public AllegroGraphTests()
-        {
-            Options.HttpDebugging = true;
-        }
-
-        public void Dispose()
-        {
-            Options.HttpDebugging = false;
-        }
 
         [SkippableFact]
         public void StorageAllegroGraphSaveLoad()

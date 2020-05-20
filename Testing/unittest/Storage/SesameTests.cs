@@ -44,13 +44,11 @@ namespace VDS.RDF.Storage
 
         public SesameTests()
         {
-            Options.HttpDebugging = true;
             Options.UriLoaderCaching = false;
         }
 
         public void Dispose()
         {
-            Options.HttpDebugging = false;
             Options.UriLoaderCaching = true;
         }
 

@@ -231,11 +231,8 @@ namespace VDS.RDF.Storage
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
                 request = ApplyRequestOptions(request);
 
-                Tools.HttpDebugRequest(request);
-
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -250,7 +247,6 @@ namespace VDS.RDF.Storage
                 // Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
-                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound) return;
                 }
                 throw StorageHelper.HandleHttpError(webEx, "loading a Graph from");
@@ -287,11 +283,8 @@ namespace VDS.RDF.Storage
                 request.Method = "HEAD";
                 request = ApplyRequestOptions(request);
 
-                Tools.HttpDebugRequest(request);
-
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
                     response.Close();
                     return true;
@@ -303,7 +296,6 @@ namespace VDS.RDF.Storage
                 // Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
-                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
                     {
                         return false;
@@ -340,11 +332,8 @@ namespace VDS.RDF.Storage
                 IRdfWriter writer = _writerMimeTypeDefinition.GetRdfWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                Tools.HttpDebugRequest(request);
-
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
                     response.Close();
                 }
@@ -408,11 +397,8 @@ namespace VDS.RDF.Storage
                 g.Assert(additions);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                Tools.HttpDebugRequest(request);
-
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
                     response.Close();
                 }
@@ -454,11 +440,8 @@ namespace VDS.RDF.Storage
                 request.Method = "DELETE";
                 request = ApplyRequestOptions(request);
 
-                Tools.HttpDebugRequest(request);
-
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
                     response.Close();
                 }

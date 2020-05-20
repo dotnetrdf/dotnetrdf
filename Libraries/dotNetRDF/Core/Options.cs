@@ -271,12 +271,12 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether HTTP Request and Response Information should be output to the Console Standard Out for Debugging purposes.
         /// </summary>
-        public static bool HttpDebugging { get; set; } = false;
+        //public static bool HttpDebugging { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether the HTTP Response Stream should be output to the Console Standard Output for Debugging purposes.
         /// </summary>
-        public static bool HttpFullDebugging { get; set; } = false;
+        //public static bool HttpFullDebugging { get; set; } = false;
 
 
         /// <summary>

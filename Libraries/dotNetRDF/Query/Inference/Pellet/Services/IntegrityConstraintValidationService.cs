@@ -55,13 +55,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
 
-            Tools.HttpDebugRequest(request);
-
             try
             {
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
                     TripleStore store = new TripleStore();
                     parser.Load(store, new StreamReader(response.GetResponseStream()));
@@ -72,7 +69,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                if (webEx.Response != null)
+                {
+                }
+
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
@@ -91,8 +91,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
 
-            Tools.HttpDebugRequest(request);
-
             try
             {
                 request.BeginGetResponse(result =>
@@ -101,7 +99,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                         {
                             using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
                             {
-                                Tools.HttpDebugResponse(response);
                                 IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
                                 TripleStore store = new TripleStore();
                                 parser.Load(store, new StreamReader(response.GetResponseStream()));
@@ -112,7 +109,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                         }
                         catch (WebException webEx)
                         {
-                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            if (webEx.Response != null)
+                            {
+                            }
+
                             callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
                         }
                         catch (Exception ex)
@@ -123,7 +123,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                if (webEx.Response != null)
+                {
+                }
+
                 callback(null, new AsyncError(new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server, see inner exception for details", webEx), state));
             }
             catch (Exception ex)

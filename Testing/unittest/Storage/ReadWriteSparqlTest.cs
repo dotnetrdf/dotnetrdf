@@ -363,63 +363,45 @@ namespace VDS.RDF.Storage
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            try
+            ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+
+            //Try doing a SPARQL Update LOAD command
+            String command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
+            readWrite.Update(command);
+
+            //Then see if we can retrieve the newly loaded graph
+            IGraph g = new Graph();
+            readWrite.LoadGraph(g, "http://example.org/Ilson");
+            Assert.False(g.IsEmpty, "Graph should be non-empty");
+            foreach (Triple t in g.Triples)
             {
-                Options.HttpDebugging = true;
-
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
-
-                //Try doing a SPARQL Update LOAD command
-                String command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
-                readWrite.Update(command);
-
-                //Then see if we can retrieve the newly loaded graph
-                IGraph g = new Graph();
-                readWrite.LoadGraph(g, "http://example.org/Ilson");
-                Assert.False(g.IsEmpty, "Graph should be non-empty");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString(this._formatter));
-                }
-                Console.WriteLine();
-
-                //Try a DROP Graph to see if that works
-                command = "DROP GRAPH <http://example.org/Ilson>";
-                readWrite.Update(command);
-
-                g = new Graph();
-                readWrite.LoadGraph(g, "http://example.org/Ilson");
-                Assert.True(g.IsEmpty, "Graph should be empty as it should have been DROPped by ReadWriteSparql");
+                Console.WriteLine(t.ToString(this._formatter));
             }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
+            Console.WriteLine();
+
+            //Try a DROP Graph to see if that works
+            command = "DROP GRAPH <http://example.org/Ilson>";
+            readWrite.Update(command);
+
+            g = new Graph();
+            readWrite.LoadGraph(g, "http://example.org/Ilson");
+            Assert.True(g.IsEmpty, "Graph should be empty as it should have been DROPped by ReadWriteSparql");
             
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlDescribe()
         {
-            try
+            ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+
+            Object results = readWrite.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
+            if (results is IGraph)
             {
-                Options.HttpDebugging = true;
-
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
-
-                Object results = readWrite.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
-                if (results is IGraph)
-                {
-                    TestTools.ShowGraph((IGraph)results);
-                }
-                else
-                {
-                    Assert.True(false, "Did not return a Graph as expected");
-                }
+                TestTools.ShowGraph((IGraph) results);
             }
-            finally
+            else
             {
-                Options.HttpDebugging = false;
+                Assert.True(false, "Did not return a Graph as expected");
             }
         }
 

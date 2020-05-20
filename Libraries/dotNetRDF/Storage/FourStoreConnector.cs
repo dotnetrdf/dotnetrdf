@@ -294,12 +294,9 @@ namespace VDS.RDF.Storage
                 CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                Tools.HttpDebugRequest(request);
-
                 // Make the Request
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
                     // If we get here then it was OK
                     response.Close();
                 }
@@ -511,13 +508,9 @@ namespace VDS.RDF.Storage
                 request.Method = "DELETE";
                 request = ApplyRequestOptions(request);
 
-                Tools.HttpDebugRequest(request);
-
                 // Make the Request
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-
-                    Tools.HttpDebugResponse(response);
                     response.Close();
                 }
 
@@ -824,8 +817,6 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
                 request = ApplyRequestOptions(request);
 
-                Tools.HttpDebugRequest(request);
-
                 request.BeginGetRequestStream(r =>
                 {
                     try
@@ -844,7 +835,6 @@ namespace VDS.RDF.Storage
                             try
                             {
                                 HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-                                Tools.HttpDebugResponse(response);
                                 StreamReader data = new StreamReader(response.GetResponseStream());
                                 String ctype = response.ContentType;
                                 if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)

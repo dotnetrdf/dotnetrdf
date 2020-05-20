@@ -149,15 +149,12 @@ namespace VDS.RDF.Storage.Management
         {
             // GET /admin/databases - application/json
             var request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
-            Tools.HttpDebugRequest(request);
 
             try
             {
                 var stores = new List<string>();
                 using (var response = (HttpWebResponse) request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     String data = null;
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
@@ -263,13 +260,9 @@ namespace VDS.RDF.Storage.Management
                         stream.Close();
                     }
 
-                    Tools.HttpDebugRequest(request);
-
                     // Make the request
                     using (var response = (HttpWebResponse) request.GetResponse())
                     {
-                        Tools.HttpDebugResponse(response);
-
                         // If we get here it completed OK
                         response.Close();
                     }
@@ -295,14 +288,10 @@ namespace VDS.RDF.Storage.Management
             // DELETE /admin/databases/{db}
             var request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
-            Tools.HttpDebugRequest(request);
-
             try
             {
                 using (var response = (HttpWebResponse) request.GetResponse())
                 {
-                    Tools.HttpDebugResponse(response);
-
                     // If we get here then it completed OK
                     response.Close();
                 }
@@ -334,8 +323,6 @@ namespace VDS.RDF.Storage.Management
             // GET /admin/databases - application/json
             var request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
-            Tools.HttpDebugRequest(request);
-
             try
             {
                 var stores = new List<string>();
@@ -344,8 +331,6 @@ namespace VDS.RDF.Storage.Management
                         try
                         {
                             var response = (HttpWebResponse) request.EndGetResponse(r);
-
-                            Tools.HttpDebugResponse(response);
 
                             String data = null;
                             using (var reader = new StreamReader(response.GetResponseStream()))
@@ -471,8 +456,6 @@ namespace VDS.RDF.Storage.Management
                                     stream.Close();
                                 }
 
-                                Tools.HttpDebugRequest(request);
-
                                 // Make the request
                                 request.BeginGetResponse(r2 =>
                                     {
@@ -480,8 +463,6 @@ namespace VDS.RDF.Storage.Management
                                         {
                                             using (var response = (HttpWebResponse) request.EndGetResponse(r2))
                                             {
-                                                Tools.HttpDebugResponse(response);
-
                                                 // If we get here it completed OK
                                                 response.Close();
                                             }
@@ -533,8 +514,6 @@ namespace VDS.RDF.Storage.Management
             // DELETE /admin/databases/{db}
             var request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
 
-            Tools.HttpDebugRequest(request);
-
             try
             {
                 request.BeginGetResponse(r =>
@@ -542,8 +521,6 @@ namespace VDS.RDF.Storage.Management
                         try
                         {
                             var response = (HttpWebResponse) request.EndGetResponse(r);
-
-                            Tools.HttpDebugResponse(response);
 
                             // If we get here then it completed OK
                             response.Close();

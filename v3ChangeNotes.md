@@ -27,3 +27,6 @@ The compression level desited for a writer should be set explicitly when creatin
 
 ### DefaultTokenQueueMode
 The token queue mode for tokenizing parsers should be set explicitly when creating a parser. All parsers that implement the ITokenisingParser interface provide a TokenQueueMode property which may be used to change the mode after the parser is created. The MimeTypesHelper methods for creating parsers also provides an optional parameter for setting this option.
+
+### HttpDebugging, HttpFullDebugging
+Console logging of HTTP requests and responses has been removed. Please use the standard .NET HttpClient logging facility instead.
