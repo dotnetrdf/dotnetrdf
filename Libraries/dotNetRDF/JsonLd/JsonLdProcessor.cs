@@ -295,7 +295,7 @@ namespace VDS.RDF.JsonLd
                 foreach (var property in contextObject.Properties())
                 {
                     var key = property.Name;
-                    if(!(key.Equals("@base") || key.Equals("@vocab") || key.Equals("@language")))
+                    if(!(key.Equals("@base") || key.Equals("@vocab") || key.Equals("@language") || key.Equals("@version")))
                     {
                         CreateTermDefinition(result, contextObject, key, defined);
                     }
