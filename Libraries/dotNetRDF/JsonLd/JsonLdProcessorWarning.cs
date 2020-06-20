@@ -27,41 +27,38 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// Represents a warning message raised during JSON-LD processing
     /// </summary>
-    public enum JsonLdContainer
+    public class JsonLdProcessorWarning
     {
         /// <summary>
-        /// No container mapping
+        /// The error code associated with the warning.
         /// </summary>
-        Null,
+        public JsonLdErrorCode ErrorCode { get; }
+
         /// <summary>
-        /// @graph container mapping
+        /// The detailed warning message.
         /// </summary>
-        Graph,
+        public string Message { get;}
+
         /// <summary>
-        /// @list container mapping
+        /// Create a new warning message with the specified code and message.
         /// </summary>
-        List,
+        /// <param name="errorCode"></param>
+        /// <param name="message"></param>
+        public JsonLdProcessorWarning(JsonLdErrorCode errorCode, string message)
+        {
+            ErrorCode = errorCode;
+            Message = message;
+        }
+
         /// <summary>
-        /// @set container mapping
+        /// Get a string representation of the warning.
         /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"{ErrorCode}: {Message}";
+        }
     }
 }

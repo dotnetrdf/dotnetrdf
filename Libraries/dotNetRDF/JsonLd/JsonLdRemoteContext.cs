@@ -24,44 +24,30 @@
 // </copyright>
 */
 
+using System;
+using Newtonsoft.Json.Linq;
+
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// Represents a JSON-LD context loaded from a remote document
     /// </summary>
-    public enum JsonLdContainer
+    public class JsonLdRemoteContext
     {
+        internal JsonLdRemoteContext(Uri documentUrl, JToken loadedContext)
+        {
+            DocumentUrl = documentUrl;
+            Context = loadedContext;
+        }
+
         /// <summary>
-        /// No container mapping
+        /// Get the document URL of the context document
         /// </summary>
-        Null,
+        public Uri DocumentUrl { get; }
+
         /// <summary>
-        /// @graph container mapping
+        /// Get the context value as a JSON representation
         /// </summary>
-        Graph,
-        /// <summary>
-        /// @list container mapping
-        /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        public JToken Context { get; }
     }
 }

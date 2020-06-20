@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -27,41 +27,18 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// Defines string constants for elements of the JSON-LD vocabulary that are required by the <see cref="JsonLdProcessor"/>.
     /// </summary>
-    public enum JsonLdContainer
+    public static class JsonLdVocabulary
     {
         /// <summary>
-        /// No container mapping
+        /// The prefix part of each JSON-LD vocabulary IRI up to and including the fragment separator.
         /// </summary>
-        Null,
+        public static string VocabularyBase = "http://www.w3.org/ns/json-ld#";
+
         /// <summary>
-        /// @graph container mapping
+        /// Identifier for the context term.
         /// </summary>
-        Graph,
-        /// <summary>
-        /// @list container mapping
-        /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        public static string Context = VocabularyBase + "context";
     }
 }

@@ -27,41 +27,21 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// An enumeration of the text flow directions supported by JSON-LD 1.1.
     /// </summary>
-    public enum JsonLdContainer
+    public enum LanguageDirection
     {
         /// <summary>
-        /// No container mapping
+        /// Text direction is unspecified / null
         /// </summary>
-        Null,
+        Unspecified = 0,
         /// <summary>
-        /// @graph container mapping
+        /// Text direction is left to right
         /// </summary>
-        Graph,
+        LeftToRight = 0,
         /// <summary>
-        /// @list container mapping
+        /// Text direction is right to left
         /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        RightToLeft = 1,
     }
 }

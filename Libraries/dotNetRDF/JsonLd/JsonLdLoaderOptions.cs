@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -26,42 +26,22 @@
 
 namespace VDS.RDF.JsonLd
 {
-    /// <summary>
-    /// Enumeration of the supported container mappings.
-    /// </summary>
-    public enum JsonLdContainer
+    public class JsonLdLoaderOptions
     {
         /// <summary>
-        /// No container mapping
+        /// If set to true, when extracting JSON-LD script elements from HTML, unless a specific fragment identifier is targeted,
+        /// extracts all encountered JSON-LD script elements using an array form, if necessary.
         /// </summary>
-        Null,
+        public bool ExtractAllScripts;
+
         /// <summary>
-        /// @graph container mapping
+        /// When the resulting contentType is text/html or application/xhtml+xml, this option determines the profile to use for selecting JSON-LD script elements.
         /// </summary>
-        Graph,
+        public string Profile;
+
         /// <summary>
-        /// @list container mapping
+        /// One or more IRIs to use in the request as a profile parameter. (See IANA Considerations in [JSON-LD11]).
         /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        public string RequestProfile;
     }
 }
