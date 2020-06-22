@@ -1378,8 +1378,9 @@ namespace VDS.RDF.JsonLd
             }
 
             // 12 - Initialize two empty maps, result and nests. Initialize input type to expansion of the last value of the first entry in element expanding to @type (if any), ordering entries lexicographically by key. Both the key and value of the matched entry are IRI expanded. 
+            // NOTE: nests is only used in steps 13/14 so is initialized in ExpandElement
+            // TODO: Should inputType also be calculated in ExpandElement rather than here?
             result = new JObject();
-            var nests = new JObject();
             var resultObject = result as JObject;
             var firstTypeProperty = elementObject.Properties()
                 .OrderBy(p => p.Name).FirstOrDefault(p => "@type".Equals(ExpandIri(activeContext, p.Name, true)));
@@ -1393,7 +1394,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // Implements 13 - 14
-            ExpandElement(resultObject, nests, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, elementObject, typeScopedContext);
+            ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, elementObject, typeScopedContext);
 
             // 15 - If result contains the entry @value: 
             if (resultObject.ContainsKey("@value"))
@@ -1486,9 +1487,10 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        private void ExpandElement(JObject resultObject, JObject nests, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl, bool frameExpansion,
+        private void ExpandElement(JObject resultObject, JToken inputType, JsonLdContext activeContext, string activeProperty, Uri baseUrl, bool frameExpansion,
             bool ordered, JObject elementObject, JsonLdContext typeScopedContext)
         {
+            var nests = new JObject();
 
             // 13 - For each key and value in element, ordered lexicographically by key if ordered is true: 
             var elementProperties = elementObject.Properties();
