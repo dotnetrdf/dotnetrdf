@@ -38,10 +38,10 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Text direction is left to right
         /// </summary>
-        LeftToRight = 0,
+        LeftToRight = 1,
         /// <summary>
         /// Text direction is right to left
         /// </summary>
-        RightToLeft = 1,
+        RightToLeft = 2,
     }
 }

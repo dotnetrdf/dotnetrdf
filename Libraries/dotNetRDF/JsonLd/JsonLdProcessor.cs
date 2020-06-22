@@ -282,11 +282,10 @@ namespace VDS.RDF.JsonLd
                     // 5.2.4 If context was previously dereferenced, then the processor MUST NOT do a further dereference,
                     // and context is set to the previously established internal representation:
                     // set context document to the previously dereferenced document, and set loaded context to the value of the @context entry from the document in context document.
-                    // 
                     var loadedContext = GetRemoteContext(remoteUrl); // 5.2.4, 5.2.5
-
                     // 5.2.6 Set result to the result of recursively calling this algorithm, passing result for active context, loaded context for local context, the documentUrl of context document for base URL, a copy of remote contexts, and validate scoped context. 
-                    result = ProcessContext(result, loadedContext.Context, loadedContext.DocumentUrl, remoteContexts, validateScopedContext:validateScopedContext);
+                    result = ProcessContext(result, loadedContext.Context, loadedContext.DocumentUrl,
+                        remoteContexts, validateScopedContext: validateScopedContext);
 
                     // 5.2.7 Continue with the next context.
                     continue;
@@ -396,6 +395,11 @@ namespace VDS.RDF.JsonLd
                     // 5.8.3 -Otherwise, if value is an IRI or blank node identifier, the vocabulary mapping of result is set to
                     // the result of IRI expanding value using true for document relative . If it is not an IRI, or a blank node
                     // identifier, an invalid vocab mapping error has been detected and processing is aborted. 
+                    else if (value.Type != JTokenType.String)
+                    {
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVocabMapping,
+                            "The value of @vocab must be a string.");
+                    }
                     else
                     {
                         var str = value.Value<string>();
@@ -453,10 +457,10 @@ namespace VDS.RDF.JsonLd
                 if (propagateProperty != null)
                 {
                     // 5.11.1 - If processing mode is json - ld - 1.0, an invalid context entry error has been detected and processing is aborted.
-                    CheckProcessingMode("@propagate");
+                    CheckProcessingMode("@propagate", JsonLdErrorCode.InvalidContextEntry);
 
                     // 5.11.2 - Otherwise, if the value of @propagate is not boolean true or false, an invalid @propagate value error has been detected and processing is aborted.
-                    if (propagateProperty.Type != JTokenType.Boolean)
+                    if (propagateProperty.Value.Type != JTokenType.Boolean)
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidPropagateValue,
                             "The value of @propagate must be a boolean");
@@ -538,11 +542,11 @@ namespace VDS.RDF.JsonLd
         /// <see cref="JsonLdErrorCode.ProcessingModeConflict"/>.
         /// </summary>
         /// <param name="keyword">The keyword that caused the check.</param>
-        private void CheckProcessingMode(string keyword)
+        private void CheckProcessingMode(string keyword, JsonLdErrorCode errorCode = JsonLdErrorCode.ProcessingModeConflict)
         {
             if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.ProcessingModeConflict,
+                throw new JsonLdProcessorException(errorCode,
                     $"Processing mode conflict. Processor options specify JSON-LD 1.0 processing mode, but encountered {keyword} that requires JSON-LD 1.1 processing features");
             }
         }
@@ -868,7 +872,7 @@ namespace VDS.RDF.JsonLd
                 // 16.2 - Set the IRI mapping of definition to the result of IRI expanding term.
                 definition.IriMapping = ExpandIri(activeContext, term, vocab:true);
                 // If the resulting IRI mapping is not an IRI, an invalid IRI mapping error has been detected and processing is aborted.
-                if (IsAbsoluteIri(definition.IriMapping))
+                if (!IsIri(definition.IriMapping))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, 
                         $"The expansion of the term {term} resulted in the value {definition.IriMapping} which is not an IRI.");
@@ -1169,7 +1173,7 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 6.5 - If value has the form of an IRI, return value.
-                if (IsAbsoluteIri(value)) return value;
+                if (IsIri(value)) return value;
             }
 
             // 7 If vocab is true, and active context has a vocabulary mapping, return the result of concatenating the vocabulary mapping with value.
@@ -1300,7 +1304,7 @@ namespace VDS.RDF.JsonLd
                             activePropertyTermDefinition.ContainerMapping.Contains(JsonLdContainer.List) &&
                             expandedItem.Type == JTokenType.Array)
                         {
-                            expandedItem = new JObject(new JProperty("@list"), expandedItem);
+                            expandedItem = new JObject(new JProperty("@list", expandedItem));
                         }
                         // 5.2.3 - If expanded item is an array, append each of its items to result. Otherwise, if expanded item is not null, append it to result.
                         if (expandedItem.Type == JTokenType.Array)
@@ -2209,15 +2213,15 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Creates a new array which is a concatenation of the values of token1 and token2
+        /// Creates a new array which is a concatenation of the values of token1 and token2.
         /// </summary>
         /// <param name="token1"></param>
         /// <param name="token2"></param>
-        /// <remarks>This method flattens any input arrays</remarks>
+        /// <remarks>This method flattens any input arrays.</remarks>
         /// <returns></returns>
         private JArray ConcatenateValues(JToken token1, JToken token2)
         {
-            var result = new JArray(token1);
+            var result = EnsureArray(token1);
             if (token2 is JArray)
             {
                 foreach(var c in token2.Children()) result.Add(c);
@@ -5717,7 +5721,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Determine if the specified string is an IRI
+        /// Determine if the specified string is an IRI.
         /// </summary>
         /// <param name="value">The value to be validated</param>
         /// <returns>True if <paramref name="value"/> can be parsed as an IRI, false otherwise.</returns>
@@ -5726,7 +5730,9 @@ namespace VDS.RDF.JsonLd
             // The following would have been ideal, but returns false when the value contains a fragment identifier.
             //return Uri.IsWellFormedUriString(value, UriKind.RelativeOrAbsolute);
 
-            return Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _) && Uri.EscapeUriString(value).Equals(value);
+            return Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _) && 
+                   Uri.EscapeUriString(value).Equals(value) && // Value must be fully escaped
+                   !value.StartsWith("#");  // Value cannot be a fragment identifier on its own
         }
 
         /// <summary>
@@ -5786,7 +5792,7 @@ namespace VDS.RDF.JsonLd
             //   - it does not contain the @value, @list, or @set keywords, or
             //   - it is not the top - most map in the JSON-LD document consisting of no other entries than @graph and @context.
             if (!(token is JObject o)) return false;
-            if (o.ContainsKey("@value") || o.ContainsKey("@list") || o.ContainsKey("@set")) return true;
+            if (!(o.ContainsKey("@value") || o.ContainsKey("@list") || o.ContainsKey("@set"))) return true;
             if (!isTopmostMap)
             {
                 if (o.ContainsKey("@graph") || o.ContainsKey("@set") && o.Count == 1) return true;
@@ -6021,7 +6027,7 @@ namespace VDS.RDF.JsonLd
             }
             catch (Exception ex)
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed, 
+                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingRemoteContextFailed, 
                     $"Failed to load remote context from {reference}.", ex);
             }
         }

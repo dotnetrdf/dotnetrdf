@@ -147,7 +147,9 @@ namespace VDS.RDF.JsonLd
                 Base = Base,
                 HasBase = HasBase,
                 Language = Language,
+                BaseDirection = BaseDirection,
                 Version = Version,
+                PreviousContext = PreviousContext,
                 Vocab = Vocab,
             };
             foreach(var termDefEntry in _termDefinitions)
