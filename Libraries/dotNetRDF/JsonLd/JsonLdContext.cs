@@ -197,10 +197,17 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="term">The key for the term to be retrieved.</param>
         /// <param name="termDefinition">Receives the term definition found.</param>
+        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions</param>
         /// <returns>True if an entry was found for <paramref name="term"/>, false otherwise.</returns>
-        public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition)
+        public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition, bool includeAliases = false)
         {
-            return _termDefinitions.TryGetValue(term, out termDefinition);
+            var foundTerm =  _termDefinitions.TryGetValue(term, out termDefinition);
+            if (foundTerm || !includeAliases) return foundTerm;
+            foreach (var alias in GetAliases(term))
+            {
+                if (_termDefinitions.TryGetValue(alias, out termDefinition)) return true;
+            }
+            return false;
         }
 
         /// <summary>

@@ -323,7 +323,7 @@ namespace VDS.RDF.JsonLd
                 if (importProperty != null)
                 {
                     // 5.6.1 - If processing mode is json-ld-1.0, an invalid context entry error has been detected and processing is aborted.
-                    CheckProcessingMode("@import");
+                    CheckProcessingMode("@import", JsonLdErrorCode.InvalidContextEntry);
 
                     // 5.6.2 - Otherwise, if the value of @import is not a string, an invalid @import value error has been detected and processing is aborted.
                     if (importProperty.Value.Type != JTokenType.String)
@@ -332,15 +332,25 @@ namespace VDS.RDF.JsonLd
                             "The value of an @import property must be a string");
                     }
 
+                    // 5.6.3 - Initialize import to the result of resolving the value of @import against base URL.
                     var import = new Uri(baseUrl, importProperty.Value.Value<string>());
-                    var remoteContext = GetRemoteContext(import);
+
+                    // Implements 5.6.4, 5.6.5, 5.6.6
+                    var remoteContext = GetRemoteContext(import); 
                     if (!(remoteContext.Context is JObject importContext))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
                             "The value of the @context of the remote document referenced by @import must be a map.");
+                    } else if (importContext.ContainsKey("@import"))
+                    {
+                        // 5.6.7 - If import context has a @import entry, an invalid context entry error has been detected and processing is aborted.
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContextEntry,
+                            $"The remote context from {import} contains an @import property.");
                     }
-
-                    contextObject.Merge(importContext);
+                    // 5.6.8 - Set context to the result of merging context into import context, replacing common entries with those from context.
+                    var tmp = new JObject(importContext);
+                    tmp.Merge(contextObject);
+                    contextObject = tmp;
                 }
 
                 // 5.7 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context
@@ -477,7 +487,7 @@ namespace VDS.RDF.JsonLd
                 var protectedProperty = contextObject.Property("@protected");
                 if (protectedProperty != null)
                 {
-                    if (propagateProperty.Value.Type != JTokenType.Boolean)
+                    if (protectedProperty.Value.Type != JTokenType.Boolean)
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidProtectedValue,
                             "The value of @protected must be a boolean");
@@ -560,6 +570,7 @@ namespace VDS.RDF.JsonLd
             var isValid = value.Type == JTokenType.Object;
             if (isValid)
             {
+                isValid = false;
                 var o = value as JObject;
                 foreach (var p in o.Properties())
                 {
@@ -594,8 +605,10 @@ namespace VDS.RDF.JsonLd
             return protectedProperty.Value.Value<bool>();
         }
 
-        private void CreateTermDefinition(JsonLdContext activeContext, JObject localContext, string term, Dictionary<string, bool> defined = null, 
-            Uri baseUrl = null, bool @protected = false, bool overrideProtected = false, List<Uri> remoteContexts = null, bool validateScopedContexts = true)
+        private void CreateTermDefinition(JsonLdContext activeContext, JObject localContext, string term,
+            Dictionary<string, bool> defined = null,
+            Uri baseUrl = null, bool @protected = false, bool overrideProtected = false,
+            List<Uri> remoteContexts = null, bool validateScopedContexts = true)
         {
             if (defined == null) defined = new Dictionary<string, bool>();
             if (remoteContexts == null) remoteContexts = new List<Uri>();
@@ -604,16 +617,23 @@ namespace VDS.RDF.JsonLd
             // Otherwise, if the value is false, a cyclic IRI mapping error has been detected and processing is aborted.
             if (defined.TryGetValue(term, out var created))
             {
-                if (created) { return; }
-                throw new JsonLdProcessorException(JsonLdErrorCode.CyclicIriMapping, $"Cyclic IRI mapping detected while processing term {term}");
+                if (created)
+                {
+                    return;
+                }
+
+                throw new JsonLdProcessorException(JsonLdErrorCode.CyclicIriMapping,
+                    $"Cyclic IRI mapping detected while processing term {term}");
             }
 
             // 2 - If term is the empty string (""), an invalid term definition error has been detected and processing is aborted.
             // Otherwise, set the value associated with defined's term entry to false. This indicates that the term definition is now being created but is not yet complete.
             if (string.IsNullOrEmpty(term))
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, "Attempt to create a term with an empty string for a name.");
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
+                    "Attempt to create a term with an empty string for a name.");
             }
+
             defined[term] = false;
 
             // 3 - Initialize value to a copy of the value associated with the entry term in local context.
@@ -624,28 +644,29 @@ namespace VDS.RDF.JsonLd
             {
                 if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition, "Cannot redefine the @type keyword under JSON-LD 1.0 processing rules.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition,
+                        "Cannot redefine the @type keyword under JSON-LD 1.0 processing rules.");
                 }
+
                 // At this point, value MUST be a map with only either or both of the following entries:
                 //   An entry for @container with value @set.
                 //   An entry for @protected.
                 // Any other value means that a keyword redefinition error has been detected and processing is aborted.
                 ValidateTypeRedefinition(v);
             }
-
-            // 5 Otherwise, since keywords cannot be overridden, term MUST NOT be a keyword and a keyword redefinition error has been detected and processing is aborted.
-            if (IsKeyword(term))
+            else if (IsKeyword(term))
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition, $"Cannot redefine JSON-LD keyword {term}.");
+                // 5 Otherwise, since keywords cannot be overridden, term MUST NOT be a keyword and a keyword redefinition error has been detected and processing is aborted.
+                throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition,
+                    $"Cannot redefine JSON-LD keyword {term}.");
             }
-
-            if (MatchesKeywordProduction(term))
+            else if (MatchesKeywordProduction(term))
             {
+                // 5 (cont.) If term has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
                 Warn(JsonLdErrorCode.InvalidTermDefinition,
                     $"The term {term} has been ignored as it matches the pattern @[a-zA-Z] which is reserved for JSON-LD keywords.");
                 return;
             }
-            // TODO: If term has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
 
             // 6 - Initialize previous definition to any existing term definition for term in active context, removing that term definition from active context.
             var previousDefinition = activeContext.RemoveTerm(term);
@@ -722,13 +743,18 @@ namespace VDS.RDF.JsonLd
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"@reverse property value must be a string on term {term}");
                 }
 
-                // TODO: 13.3 - If the value associated with the @reverse entry is a string having the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
+                // 13.3 - If the value associated with the @reverse entry is a string having the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
+                if (MatchesKeywordProduction(reverseValue.Value<string>()))
+                {
+                    Warn(JsonLdErrorCode.InvalidIriMapping, "$@reverse property value on {term} matches the JSON-LD keyword production @[a-zA-Z]+.");
+                    return;
+                }
 
                 // 13.4 - Otherwise, set the IRI mapping of definition to the result of IRI expanding the value associated with the @reverse entry, using local context,
                 // and defined. If the result does not have the form of an IRI or a blank node identifier, an invalid IRI mapping error has been detected and processing
                 // is aborted.
                 var iriMapping = ExpandIri(activeContext, reverseValue.Value<string>(), true, false, localContext, defined);
-                if (!IsAbsoluteIri(iriMapping) && !IsBlankNodeIdentifier(iriMapping))
+                if (iriMapping == null || !(IsAbsoluteIri(iriMapping) || IsBlankNodeIdentifier(iriMapping)))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
                 }
@@ -934,12 +960,17 @@ namespace VDS.RDF.JsonLd
                         $"Invalid Term Definition. The definition of term '{term}' includes an @index entry, but the container mapping for the term does not include @index.");
                 }
 
+                if (indexValue.Type != JTokenType.String)
+                {
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
+                        $"Invalid Term Definition. The @index property on '{term}' must expand to an IRI.");
+                }
                 var index = indexValue.Value<string>();
                 index = ExpandIri(activeContext, index, vocab: true);
                 if (!IsAbsoluteIri(index))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
-                        $"Invalid Term Definition. The expansion of the @id property of '{term}' resulted in a value ({index}) which is not an IRI.");
+                        $"Invalid Term Definition. The expansion of the @index property of '{term}' resulted in a value ({index}) which is not an IRI.");
                 }
 
                 definition.IndexMapping = index;
@@ -2025,6 +2056,7 @@ namespace VDS.RDF.JsonLd
                                 }
 
                                 // 13.8.7.2.4 - Add the key - value pair(expanded index key - index property values) to item.
+                                item.Remove(expandedIndexKey); // Overwriting any existing value (which should have been appended to indexPropertyValues
                                 item.Add(new JProperty(expandedIndexKey, indexPropertyValues));
 
                                 // 13.8.7.2.5 - If item is a value object, it MUST NOT contain any extra properties; an invalid value object error has been detected and processing is aborted.
@@ -2161,7 +2193,7 @@ namespace VDS.RDF.JsonLd
                     }
 
                     // 14.2.2 - Recursively repeat steps 13 and 14 using nested value for element. 
-                    ExpandElement(resultObject, /*nests*/ new JObject(), inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
+                    ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
                 }
 
                 nestingProperty.Value = expandedNestedValues;
@@ -2815,7 +2847,7 @@ namespace VDS.RDF.JsonLd
         /// <returns></returns>
         private JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
         {
-            var activePropertyTermDefinition = activeContext.GetTerm(activeProperty);
+            activeContext.TryGetTerm(activeProperty, out var activePropertyTermDefinition, true);
             var typeMapping = activePropertyTermDefinition?.TypeMapping;
 
             // 1 - If the active property has a type mapping in active context that is @id, and the value is a string, return a new map containing a single entry
