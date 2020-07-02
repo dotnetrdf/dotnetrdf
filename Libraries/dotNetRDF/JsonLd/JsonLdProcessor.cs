@@ -108,7 +108,7 @@ namespace VDS.RDF.JsonLd
         {
             "@graph",
             "@id",
-            "@index"
+            "@index",
         };
 
         private static readonly string[] JsonLdContextKeywords = {
@@ -3009,6 +3009,7 @@ namespace VDS.RDF.JsonLd
 
             // Set expanded input to the result of using the expand method using input and options.
             JArray expandedInput = null;
+            Uri remoteDocumentUrl = null;
             Uri contextBase = null;
             if (input.Type == JTokenType.String)
             {
@@ -3016,7 +3017,7 @@ namespace VDS.RDF.JsonLd
                     new JsonLdLoaderOptions {ExtractAllScripts = options.ExtractAllScripts}, options);
                 expandedInput = Expand(remoteDocument, remoteDocument.DocumentUrl,
                     new JsonLdLoaderOptions {ExtractAllScripts = false}, options);
-                contextBase = remoteDocument.DocumentUrl;
+                remoteDocumentUrl = contextBase = remoteDocument.DocumentUrl;
             }
             else
             {
@@ -3030,20 +3031,35 @@ namespace VDS.RDF.JsonLd
             }
 
             var activeContext = processor.ProcessContext(new JsonLdContext(), context, contextBase);
-            activeContext.Base = options?.Base ?? (options.CompactToRelative ? contextBase : null);
+            if (activeContext.Base == null)
+            {
+                activeContext.Base = options?.Base ?? (options.CompactToRelative ? remoteDocumentUrl : null);
+            }
+
             var compactedOutput = processor.CompactAlgorithm(activeContext, null, expandedInput, options.CompactArrays,
                 options.Ordered);
             if (IsEmptyArray(compactedOutput))
             {
                 compactedOutput = new JObject();
-            } else if (compactedOutput is JArray)
+            }
+            else if (compactedOutput is JArray)
             {
-                compactedOutput = new JObject(new JProperty(processor.CompactIri(activeContext, "@graph", vocab:true), compactedOutput));
-            } else if (context != null)
+                compactedOutput = new JObject(new JProperty(processor.CompactIri(activeContext, "@graph", vocab: true),
+                    compactedOutput));
+            }
+
+            if (context != null && !IsEmptyObject(context))
             {
                 (compactedOutput as JObject)["@context"] = context;
             }
+
             return compactedOutput as JObject;
+        }
+
+        private static bool IsEmptyObject(JToken token)
+        {
+            if (token.Type != JTokenType.Object) return false;
+            return (token as JObject).Count == 0;
         }
 
         /*
@@ -3086,7 +3102,11 @@ namespace VDS.RDF.JsonLd
 
         private JToken CompactAlgorithm(JsonLdContext activeContext, string activeProperty, JToken element, bool compactArrays = false, bool ordered = false)
         {
-            var activeTermDefinition = activeContext.GetTerm(activeProperty);
+            JsonLdTermDefinition activeTermDefinition = null;
+            if (activeProperty != null)
+            {
+                activeContext.TryGetTerm(activeProperty, out activeTermDefinition, true);
+            }
 
             // 1 - Initialize type-scoped context to active context. This is used for compacting values that may be relevant to any previous type - scoped context.
             var typeScopedContext = activeContext;
@@ -3097,15 +3117,19 @@ namespace VDS.RDF.JsonLd
             // 3 - If element is an array: 
             if (element is JArray elementArray)
             {
+                // 3.1 - Initialize result to an empty array.
                 var arrayResult = new JArray();
+
+                // 3.2 - For each item in element: 
                 foreach (var item in element)
                 {
+                    // 3.2.1 - Initialize compacted item to the result of using this algorithm recursively, passing active context, active property, item for element, and the compactArrays and ordered flags.
                     var compactedItem = CompactAlgorithm(activeContext, activeProperty, item, compactArrays, ordered);
+                    // 3.2.2 - If compacted item is not null, then append it to result.
                     if (compactedItem != null) arrayResult.Add(compactedItem);
                 }
-
-                if (arrayResult.Count != 1 || !compactArrays || activeProperty.Equals("@graph") ||
-                    activeProperty.Equals("@set"))
+                // 3.3 - If result is empty or contains more than one value, or compactArrays is false, or active property is either @graph or @set, or container mapping for active property in active context includes either @list or @set, return result.
+                if (arrayResult.Count != 1 || !compactArrays || "@graph".Equals(activeProperty) || "@set".Equals(activeProperty))
                 {
                     return arrayResult;
                 }
@@ -3130,7 +3154,9 @@ namespace VDS.RDF.JsonLd
                     (elementObject.Count > 1 || !elementObject.ContainsKey("@id")))
                 {
                     activeContext = activeContext.PreviousContext;
-                    activeTermDefinition = activeContext.GetTerm(activeProperty);
+                    // KA: Spec implies that step 6 uses the term definition in active context (after revert), but implementation uses typeScopedContext (before revert)
+                    // Checking this at https://github.com/w3c/json-ld-api/issues/502
+                    //activeTermDefinition = activeContext.GetTerm(activeProperty);
                 }
             }
 
@@ -3146,10 +3172,14 @@ namespace VDS.RDF.JsonLd
 
             // 7 - If element has an @value or @id entry and the result of using the Value Compaction algorithm, passing active context, active property,
             // and element as value is a scalar, or the term definition for active property has a type mapping of @json, return that result.
-            if (elementObject.ContainsKey("@value") || elementObject.ContainsKey("@key"))
+            if (elementObject.ContainsKey("@value") || elementObject.ContainsKey("@id"))
             {
                 var compactValue = CompactValue(activeContext, activeProperty, elementObject);
-                if (IsScalar(compactValue) || "@json".Equals(activeTermDefinition.TypeMapping)) return compactValue;
+                if (IsScalar(compactValue) ||
+                    (activeTermDefinition != null && "@json".Equals(activeTermDefinition.TypeMapping)))
+                {
+                    return compactValue;
+                }
             }
             // 8 - If element is a list object, and the container mapping for active property in active context includes @list, return the result of using this
             // algorithm recursively, passing active context, active property, value of @list in element for element, and the compactArrays and ordered flags.
@@ -3158,7 +3188,7 @@ namespace VDS.RDF.JsonLd
                 return CompactAlgorithm(activeContext, activeProperty, elementObject["@list"], compactArrays, ordered);
             }
             // 9 - Initialize inside reverse to true if active property equals @reverse, otherwise to false.
-            var insideReverse = activeProperty.Equals("@reverse");
+            var insideReverse = "@reverse".Equals(activeProperty);
             // 10 - Initialize result to an empty map.
             var result = new JObject();
             // 11 - If element has an @type entry...
@@ -3234,9 +3264,11 @@ namespace VDS.RDF.JsonLd
                     var alias = CompactIri(activeContext, expandedProperty, vocab: true);
 
                     // 12.2.4 - Initialize as array to true if processing mode is json - ld - 1.1 and the container mapping for alias in the active context includes @set, otherwise to the negation of compactArrays.
+                    var aliasTermDefinition = activeContext.GetTerm(alias);
                     var asArray =
                         _options.ProcessingMode == JsonLdProcessingMode.JsonLd11 &&
-                         activeTermDefinition.ContainerMapping.Contains(JsonLdContainer.Set)
+                        aliasTermDefinition != null &&
+                        aliasTermDefinition.ContainerMapping.Contains(JsonLdContainer.Set)
                             ? true
                             : !compactArrays;
                     // 12.2.5 - Use add value to add compacted value to the alias entry in result using as array.
@@ -3257,7 +3289,7 @@ namespace VDS.RDF.JsonLd
                         foreach (var compactedObjectProperty in compactedObject.Properties().ToList())
                         {
                             // 12.3.1 - If the term definition for property in the active context indicates that property is a reverse property
-                            var td = activeContext.GetTerm(compactedObjectProperty.Name);
+                            var td = activeContext.GetTerm(compactedObjectProperty.Name, true);
                             if (td != null && td.Reverse)
                             {
                                 // 12.3.2.1.1 - Initialize as array to true if the container mapping for property in the active context includes @set, otherwise the negation of compactArrays.
@@ -3424,15 +3456,15 @@ namespace VDS.RDF.JsonLd
                         }
                     }
                     // 12.8.8 - If expanded item is a graph object: 
-                    if (IsGraphObject(expandedItem))
+                    // KA: Although algorithm doesn't say "Otherwise", I think this is an else-if branch as nestResult gets updated in the preceding if branch.
+                    else if (IsGraphObject(expandedItem)) 
                     {
                         // 12.8.8.1 - If container includes @graph and @id: 
                         if (container.Contains(JsonLdContainer.Graph) && container.Contains(JsonLdContainer.Id))
                         {
                             // 12.8.8.1.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
-                            var mapObject = nestResult.ContainsKey(itemActiveProperty)
-                                ? nestResult[itemActiveProperty] as JObject
-                                : new JObject();
+                            var mapObject = EnsureMapEntry(nestResult, itemActiveProperty);
+
                             // 12.8.8.1.2 - Initialize map key by IRI compacting the value of @id in expanded item or @none if no such value exists with vocab set to false if there is an @id entry in expanded item.
                             var mapKey =
                                 (expandedItem is JObject expandedItemObject && expandedItemObject.ContainsKey("@id"))
@@ -3447,9 +3479,7 @@ namespace VDS.RDF.JsonLd
                                  container.Contains(JsonLdContainer.Index))
                         {
                             // 12.8.8.2.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
-                            var mapObject = nestResult.ContainsKey(itemActiveProperty)
-                                ? nestResult[itemActiveProperty] as JObject
-                                : new JObject();
+                            var mapObject = EnsureMapEntry(nestResult, itemActiveProperty);
                             // 12.8.8.2.2 - Initialize map key the value of @index in expanded item or @none, if no such value exists.
                             var mapKey =
                                 expandedItem is JObject expandedItemObject && expandedItemObject.ContainsKey("@index")
@@ -3462,8 +3492,14 @@ namespace VDS.RDF.JsonLd
                         else if (IsSimpleGraphObject(expandedItem) && container.Contains(JsonLdContainer.Graph))
                         {
                             // 12.8.8.3.1 - If compacted item is an array with more than one value, it cannot be directly represented, as multiple objects would be interpreted as different named graphs.
-                            // Set compacted item to a new map, containing the key from IRI compacting @included and the original compacted item as the value.
-                            compactedItem = new JObject(new JProperty(CompactIri(activeContext, "@inncluded", vocab:true), compactedItem));
+                            if ((compactedItem is JArray compactedItemArray) && compactedItemArray.Count > 1)
+                            {
+                                // Set compacted item to a new map, containing the key from IRI compacting @included and the original compacted item as the value.
+                                compactedItem =
+                                    new JObject(new JProperty(CompactIri(activeContext, "@included", vocab: true),
+                                        compactedItem));
+                            }
+
                             // 12.8.8.3.2 - Use add value to add compacted item to the item active property entry in nest result using as array.
                             AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
                         }
@@ -3503,9 +3539,12 @@ namespace VDS.RDF.JsonLd
                               container.Contains(JsonLdContainer.Type)) && !container.Contains(JsonLdContainer.Graph))
                     {
                         // 12.8.9.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
-                        var mapObject = nestResult.ContainsKey(itemActiveProperty)
-                            ? nestResult["itemActiveProeprty"] as JObject
-                            : new JObject();
+                        if (!nestResult.ContainsKey(itemActiveProperty))
+                        {
+                            nestResult[itemActiveProperty] = new JObject();
+                        }
+                        var mapObject = nestResult[itemActiveProperty] as JObject;
+
                         // 12.8.9.2 - Initialize container key by IRI compacting either @language, @index, @id, or @type based on the contents of container.
                         string expandedKey = null;
                         if (container.Contains(JsonLdContainer.Language)) expandedKey = "@langauge";
@@ -3517,7 +3556,7 @@ namespace VDS.RDF.JsonLd
                         // 12.8.9.3 - Initialize index key to the value of index mapping in the term definition associated with item active property in active context, or @index, if no such value exists.
                         var indexKey = activeTermDefinition != null && activeTermDefinition.IndexMapping != null
                             ? activeTermDefinition.IndexMapping
-                            : "@none";
+                            : "@index";
 
                         // 12.8.9.4 - If container includes @language and expanded item contains a @value entry, then set compacted item to the value associated with its @value entry.
                         // Set map key to the value of @language in expanded item, if any.
@@ -3578,14 +3617,9 @@ namespace VDS.RDF.JsonLd
                             if (array.Count > 0)
                             {
                                 mapKey = array[0].Value<string>();
-                                if (array.Count > 1)
-                                {
-                                    array.RemoveAt(0);
-                                }
-                                else
-                                {
-                                    (compactedItem as JObject).Remove(containerKey);
-                                }
+                                array.RemoveAt(0);
+                                if (array.Count == 0) (compactedItem as JObject).Remove(containerKey);
+                                else if (array.Count == 1) compactedItem[containerKey] = array[0];
                             }
                             // 12.8.9.8.4 - If compacted item contains a single entry with a key expanding to @id, set compacted item to the result of using this algorithm recursively, passing active context, item active property for active property, and a map composed of the single entry for @id from expanded item for element.
                             if ((compactedItem is JObject compactedItemObject) && compactedItemObject.Count == 1)
@@ -3612,6 +3646,21 @@ namespace VDS.RDF.JsonLd
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Ensure that a JObject has an entry for a given property, initializing it to an empty map if it does not exist
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        private static JObject EnsureMapEntry(JObject parent, string property)
+        {
+            if (!parent.ContainsKey(property))
+            {
+                parent[property] = new JObject();
+            }
+            return parent[property] as JObject;
         }
 
         /// <summary>
@@ -4055,12 +4104,16 @@ namespace VDS.RDF.JsonLd
             {
                 var termDefinition = activeContext.GetTerm(term);
                 // 3.1 - If the term definition is null, term cannot be selected during compaction, so continue to the next term.
-                if (termDefinition == null)
+                // KA: Term defniitions with a null IriMapping are not used for IRI expansion (or compaction) so they should be skipped too.
+                if (termDefinition == null || termDefinition.IriMapping == null)
                 {
                     continue;
                 }
                 // 3.2 - Initialize container to @none. If there is a container mapping in term definition, set container to its associated value.
-                var container = termDefinition.ContainerMapping.Select(ContainerAsString).OrderBy(s => s).Aggregate(string.Empty, (seed, add)=>seed + add);
+                var container = termDefinition.ContainerMapping.Any()
+                    ? termDefinition.ContainerMapping.Select(ContainerAsString).OrderBy(s => s)
+                        .Aggregate(string.Empty, (seed, add) => seed + add)
+                    : "@none";
 
                 // 3.3 - Initialize var to the value of the IRI mapping for the term definition.
                 var iri = termDefinition.IriMapping;
@@ -4178,7 +4231,7 @@ namespace VDS.RDF.JsonLd
                 else if (activeContext.BaseDirection.HasValue)
                 {
                     // 3.16.1 - Initialize a variable lang dir with the concatenation of default language and default base direction, separate by an underscore ("_"), normalized to lower case.
-                    var langDir = activeContext.Language.ToLowerInvariant() + "_" +
+                    var langDir = (activeContext.Language?.ToLowerInvariant() ?? string.Empty) + "_" +
                                   SerializeLanguageDirection(activeContext.BaseDirection.Value);
                     // 3.16.2 - If language map does not have a lang dir entry, create one and set its value to the term being processed.
                     if (!languageMap.ContainsKey(langDir))
@@ -4282,7 +4335,7 @@ namespace VDS.RDF.JsonLd
                 if (reverse)
                 {
                     typeLanguage = "@type";
-                    typeLanguageValue = "@set";
+                    typeLanguageValue = "@reverse";
                     containers.Add("@set");
                 }
                 else if (IsListObject(value))
@@ -4311,7 +4364,7 @@ namespace VDS.RDF.JsonLd
                         // 4.7.4.2 - If item contains an @value entry:
                         if (itemObject != null && itemObject.ContainsKey("@value"))
                         {
-                            if (itemObject.ContainsKey("@diretion"))
+                            if (itemObject.ContainsKey("@direction"))
                             {
                                 if (itemObject.ContainsKey("@language"))
                                 {
@@ -4327,6 +4380,10 @@ namespace VDS.RDF.JsonLd
                             else if (itemObject.ContainsKey("@language"))
                             {
                                 itemLanguage = itemObject["@language"].Value<string>().ToLowerInvariant();
+                            }
+                            else if (itemObject.ContainsKey("@type"))
+                            {
+                                itemType = itemObject["@type"].Value<string>();
                             }
                             else
                             {
@@ -4487,21 +4544,23 @@ namespace VDS.RDF.JsonLd
 
                 // 4.10 - Append @none to containers. This represents the non-existence of a container mapping, and it will be the last container mapping value to be checked as it is the most generic.
                 containers.Add("@none");
-                // 4.11 - If processing mode is not json-ld-1.0 and value is not a map or does not contain an @index entry, append @index and @index@set to containers.
-                if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10 &&
-                    (value.Type != JTokenType.Object || (value as JObject).ContainsKey("@index")))
+                if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
                 {
-                    containers.Add("@index");
-                    containers.Add("@index@set");
-                }
+                    // 4.11 - If processing mode is not json-ld-1.0 and value is not a map or does not contain an @index entry, append @index and @index@set to containers.
+                    if (value == null || value.Type != JTokenType.Object || (value as JObject).ContainsKey("@index"))
+                    {
+                        containers.Add("@index");
+                        containers.Add("@index@set");
+                    }
 
-                // 4.12 - If processing mode is not json - ld - 1.0 and value is a map containing only an @value entry, append @language and @language@set to containers.
-                if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10 &&
-                    (value.Type == JTokenType.Object) && (value as JObject).ContainsKey("@value") &&
-                    (value as JObject).Count == 1)
-                {
-                    containers.Add("@langauge");
-                    containers.Add("@langauge@set");
+                    // 4.12 - If processing mode is not json - ld - 1.0 and value is a map containing only an @value entry, append @language and @language@set to containers.
+                    if (value is JObject valueObject &&
+                        valueObject.Count == 1 && 
+                        valueObject.ContainsKey("@value"))
+                    {
+                        containers.Add("@langauge");
+                        containers.Add("@langauge@set");
+                    }
                 }
 
                 // 4.13 - If type / language value is null, set type/ language value to @null.This is the key under which null values are stored in the inverse context entry.
@@ -4520,7 +4579,7 @@ namespace VDS.RDF.JsonLd
                 {
                     // 4.16.1 If the result of IRI compacting the value of the @id entry in value has a term definition in the active context with an IRI mapping that equals the value of the @id entry in value, then append @vocab, @id, and @none, in that order, to preferred values.
                     var idValue = value["@id"].Value<string>();
-                    var compactedId = CompactIri(activeContext, idValue, vocab = true);
+                    var compactedId = CompactIri(activeContext, idValue, vocab: true);
                     if (activeContext.TryGetTerm(compactedId, out var td2) && td2.IriMapping.Equals(idValue))
                     {
                         preferredValues.Add("@vocab");
@@ -4599,20 +4658,39 @@ namespace VDS.RDF.JsonLd
             }
 
             // 8 - If compact IRI is not null, return compact IRI.
-            if (compactIri != null) return compactIri;
-            // 9 - To ensure that the IRI var is not confused with a compact IRI, if the IRI scheme of var matches any term in active context with prefix flag set to true, and var has no IRI authority (preceded by double-forward-slash (//), an IRI confused with prefix error has been detected, and processing is aborted.
-            var parsedIri = new Uri(iri);
-            if (activeContext.TryGetTerm(parsedIri.Scheme, out var td) && td.Prefix &&
-                string.IsNullOrEmpty(parsedIri.Authority))
+            if (compactIri != null)
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.IriConfusedWithPrefix,
-                    $"IRI confused with prefix. The {iri} has a scheme that is confusable with a term in the JSON-LD context and no authority to disabmiguate it from a JSON-LD term.");
+                return compactIri;
+            }
+
+            // 9 - To ensure that the IRI var is not confused with a compact IRI, if the IRI scheme of var matches any term in active context with prefix flag set to true, and var has no IRI authority (preceded by double-forward-slash (//), an IRI confused with prefix error has been detected, and processing is aborted.
+            var ix = iri.IndexOf(':');
+            if (ix > 0 && iri.IndexOf("://") != ix)
+            {
+                var scheme = iri.Substring(0, ix);
+                if (activeContext.TryGetTerm(scheme, out var td) && td.Prefix)
+                {
+                    throw new JsonLdProcessorException(JsonLdErrorCode.IriConfusedWithPrefix,
+                        $"IRI confused with prefix. The {iri} has a scheme that is confusable with a term in the JSON-LD context and no authority to disabmiguate it from a JSON-LD term.");
+                }
             }
 
             // 10 - If vocab is false, transform var to a relative IRI reference using the base IRI from active context, if it exists.
             if (!vocab && activeContext.HasBase)
             {
-                var relativeIri = parsedIri.MakeRelativeUri(activeContext.Base);
+                if (iri.StartsWith("_:"))
+                {
+                    // Just return a blank node identifier unchanged
+                    return iri;
+                }
+                var parsedIri = new Uri(iri);
+                var relativeIri = activeContext.Base.MakeRelativeUri(parsedIri);
+                // KA: If IRI is equivalent to base IRI just return last path segment rather than an empty string
+                if (string.Empty.Equals(relativeIri.ToString()))
+                {
+                    var lastSlashIx = parsedIri.PathAndQuery.LastIndexOf('/');
+                    return parsedIri.PathAndQuery.Substring(lastSlashIx + 1);
+                }
                 return relativeIri.ToString();
             }
 
@@ -4647,7 +4725,7 @@ namespace VDS.RDF.JsonLd
             foreach (var container in containers)
             {
                 // 4.1 - If container is not an entry of container map, then there is no term with a matching container mapping for it, so continue to the next container.
-                if (containerMap.Property(container) == null) continue;
+                if (!containerMap.ContainsKey(container)) continue;
 
                 // 4.2 - Initialize type/language map to the value associated with the container entry in container map.
                 var typeLanguageMap = containerMap[container];
@@ -4670,7 +4748,7 @@ namespace VDS.RDF.JsonLd
 
         private JToken CompactValue(JsonLdContext activeContext, string activeProperty, JObject value)
         {
-            var activeTermDefinition = activeContext.GetTerm(activeProperty);
+            var activeTermDefinition = activeProperty == null ? null : activeContext.GetTerm(activeProperty);
 
             // 1 - Initialize result to a copy of value.
             var result = value.DeepClone();
@@ -4696,27 +4774,34 @@ namespace VDS.RDF.JsonLd
                 if (activeTermDefinition.DirectionMapping.HasValue) direction = activeTermDefinition.DirectionMapping;
             }
 
+            var activeTermDefinitionTypeMapping = activeTermDefinition?.TypeMapping ?? null;
+            var valueHasType = value.ContainsKey("@type");
+            var valueType = valueHasType && value["@type"].Type == JTokenType.String ? value["@type"].Value<string>() : null;
+            
             // 6 - If value has an @id entry and has no other entries other than @index:
             if (value.ContainsKey("@id") &&
                 value.Properties().All(p => p.Name.Equals("@id") || p.Name.Equals("@index")))
             {
-                var typeMapping = activeTermDefinition != null ? activeTermDefinition.TypeMapping : string.Empty;
-                // 6.1 - If the type mapping of active property is set to @id, set result to the result of IRI compacting the value associated with the @id entry using false for vocab.
-                // 6.2 - Otherwise, if the type mapping of active property is set to @vocab, set result to the result of IRI compacting the value associated with the @id entry.
-                if (typeMapping.Equals("@id") || typeMapping.Equals("@vocab"))
+                var typeMapping = activeTermDefinition != null ? activeTermDefinition.TypeMapping : null;
+                if (typeMapping != null)
                 {
-                    result = CompactIri(activeContext, value["@id"].Value<string>(), vocab: typeMapping.Equals("@vocab"));
+                    // 6.1 - If the type mapping of active property is set to @id, set result to the result of IRI compacting the value associated with the @id entry using false for vocab.
+                    // 6.2 - Otherwise, if the type mapping of active property is set to @vocab, set result to the result of IRI compacting the value associated with the @id entry.
+                    if (typeMapping.Equals("@id") || typeMapping.Equals("@vocab"))
+                    {
+                        result = CompactIri(activeContext, value["@id"].Value<string>(),
+                            vocab: typeMapping.Equals("@vocab"));
+                    }
                 }
             }
             // 7 - Otherwise, if value has an @type entry whose value matches the type mapping of active property, set result to the value associated with the @value entry of value.
-            else if (value.ContainsKey("@type") && activeTermDefinition != null &&
-                     value["@type"].Value<string>().Equals(activeTermDefinition.TypeMapping))
+            else if (valueType != null && valueType.Equals(activeTermDefinitionTypeMapping))
             {
                 result = value["@value"];
             }
             // 8 - Otherwise, if the type mapping of active property is @none, or value has an @type entry, and the value of @type in value does not match the type mapping of active property, leave value as is, as value compaction is disabled.
-            else if (activeTermDefinition != null &&
-                     (activeTermDefinition.TypeMapping.Equals("@none") || value.ContainsKey("@type")))
+            else if ("@none".Equals(activeTermDefinitionTypeMapping) || 
+                     valueHasType && (valueType == null || valueType != activeTermDefinitionTypeMapping))
             {
                 // 8.1 - Replace any value of @type in result with the result of IRI compacting the value of the @type entry.
                 if (result is JObject resultObject && resultObject.ContainsKey("@type"))
@@ -4750,7 +4835,7 @@ namespace VDS.RDF.JsonLd
                 }
             }
             // 10 - Otherwise, if value has an @language entry whose value exactly matches language, using a case-insensitive comparison if it is not null, or is not present, if language is null, and the value has an @direction entry whose value exactly matches direction, if it is not null, or is not present, if direction is null:
-            else if (SafeEquals(languageMapping, value.ContainsKey("@language")? value["@langauge"]: null, StringComparison.OrdinalIgnoreCase) &&
+            else if (SafeEquals(languageMapping, value.ContainsKey("@language")? value["@language"]: null, StringComparison.OrdinalIgnoreCase) &&
                      SafeEquals(direction.HasValue ? SerializeLanguageDirection(direction.Value) : null,
                          value.ContainsKey("@direction") ? value["@direction"] : null, StringComparison.OrdinalIgnoreCase))
             {
@@ -4765,7 +4850,7 @@ namespace VDS.RDF.JsonLd
             // 11 - If result is a map, replace each key in result with the result of IRI compacting that key.
             if (result is JObject r)
             {
-                foreach (var p in r.Properties())
+                foreach (var p in r.Properties().ToList())
                 {
                     var compactKey = CompactIri(activeContext, p.Name, vocab: true);
                     if (!compactKey.Equals(p.Name))
@@ -5628,8 +5713,7 @@ namespace VDS.RDF.JsonLd
         {
             if (!(token is JObject o)) return false;
             if (!o.ContainsKey("@graph")) return false;
-            if (o.Properties().Any(p => !GraphObjectKeys.Contains(p.Name))) return false;
-            return true;
+            return o.Properties().All(p => GraphObjectKeys.Contains(p.Name));
         }
 
 
@@ -5642,8 +5726,7 @@ namespace VDS.RDF.JsonLd
         {
             if (!(token is JObject o)) return false;
             if (!o.ContainsKey("@graph")) return false;
-            if (o.Properties().Any(p => p.Name != "@graph" && p.Name != "@index")) return false;
-            return true;
+            return (o.Properties().All(p => p.Name == "@graph" || p.Name == "@index"));
         }
 
         /// <summary>
@@ -5658,7 +5741,7 @@ namespace VDS.RDF.JsonLd
 
         private bool IsScalar(JToken token)
         {
-            return !(token.Type == JTokenType.Array || token.Type == JTokenType.Object);
+            return !(token == null || token.Type == JTokenType.Array || token.Type == JTokenType.Object);
         }
 
         /// <summary>

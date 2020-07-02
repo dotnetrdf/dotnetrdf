@@ -186,11 +186,14 @@ namespace VDS.RDF.JsonLd
         /// Get an existing term definition.
         /// </summary>
         /// <param name="term">The key for the term to be retrieved.</param>
+        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions</param>
         /// <returns>The term definition found for the specified key or a default empty term definition if there is no term definition defined for that key.</returns>
-        public JsonLdTermDefinition GetTerm(string term)
+        public JsonLdTermDefinition GetTerm(string term, bool includeAliases = false)
         {
-            return _termDefinitions.TryGetValue(term, out var ret) ? ret : null;
+            if (_termDefinitions.TryGetValue(term, out var ret)) return ret;
+            return includeAliases ? _termDefinitions.Values.FirstOrDefault(td => td.IriMapping.Equals(term)) : null;
         }
+
 
         /// <summary>
         /// Attempt to get an existing term definition.
