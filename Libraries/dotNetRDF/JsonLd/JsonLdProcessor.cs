@@ -230,7 +230,7 @@ namespace VDS.RDF.JsonLd
                 {
                     // 5.1.1 If override protected is false and active context contains any protected term definitions,
                     // an invalid context nullification has been detected and processing is aborted.
-                    if (!overrideProtected && activeContext.HasProtectedTerms())
+                    if (!overrideProtected && result.HasProtectedTerms())
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContextNullification,
                             "Attempt to nullify a context containing one or more protected term definitions.");
@@ -1456,7 +1456,7 @@ namespace VDS.RDF.JsonLd
                 } else if (resultObject.ContainsKey("@language") && resultValue.Type != JTokenType.String)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedValue,
-                        $"Invalid langauge-tagged value. The expansion of {activeProperty} has an @language entry, but its @value entry is not a JSON string.");
+                        $"Invalid language-tagged value. The expansion of {activeProperty} has an @language entry, but its @value entry is not a JSON string.");
                 } else if (resultObject.ContainsKey("@type") && !IsAbsoluteIri(resultType))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypedValue, 
@@ -1933,13 +1933,13 @@ namespace VDS.RDF.JsonLd
                     // 13.7.4 - For each key - value pair language-language value in value, ordered lexicographically by language if ordered is true: 
                     var properties = (value as JObject).Properties();
                     if (ordered) properties = properties.OrderBy(prop => prop.Name);
-                    foreach (var langaugeMappingProperty in properties)
+                    foreach (var languageMappingProperty in properties)
                     {
-                        var language = langaugeMappingProperty.Name;
+                        var language = languageMappingProperty.Name;
                         // 13.4.7.1 - If language value is not an array set language value to an array containing only language value.
-                        var langaugeValue = EnsureArray(langaugeMappingProperty.Value);
+                        var languageValue = EnsureArray(languageMappingProperty.Value);
                         // 13.4.7.2 - For each item in language value: 
-                        foreach (var item in langaugeValue)
+                        foreach (var item in languageValue)
                         {
                             // 13.4.7.2.1 - If item is null, continue to the next entry in language value.
                             if (IsNull(item)) continue;
@@ -1947,7 +1947,7 @@ namespace VDS.RDF.JsonLd
                             {
                                 // 13.4.7.2.2 - item must be a string, otherwise an invalid language map value error has been detected and processing is aborted.
                                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageMapValue,
-                                    $"Invalid language map value. An invalid langauge map was found for language {language} in the langauge map of the property {key} in {activeProperty}");
+                                    $"Invalid language map value. An invalid language map was found for language {language} in the language map of the property {key} in {activeProperty}");
                             }
 
                             // 13.4.7.2.3 - Initialize a new map v consisting of two key-value pairs: (@value-item) and (@language-language).
@@ -3387,24 +3387,20 @@ namespace VDS.RDF.JsonLd
                     var itemActiveProperty =
                         CompactIri(activeContext, expandedProperty, expandedItem, true, insideReverse);
                     // 12.8.2 - If the term definition for item active property in the active context has a nest value entry (nest term):
-                    var td = activeContext.GetTerm(itemActiveProperty);
+                    var itemActiveTermDefinition = activeContext.GetTerm(itemActiveProperty);
                     JObject nestResult = null;
-                    if (td != null && td.Nest != null)
+                    if (itemActiveTermDefinition != null && itemActiveTermDefinition.Nest != null)
                     {
                         // 12.8.2.1 - If nest term is not @nest, or a term in the active context that expands to @nest, an invalid @nest value error has been detected, and processing is aborted.
-                        var nestTerm = ExpandIri(activeContext, td.Nest, true);
-                        if (!"@nest".Equals(nestTerm))
+                        var nestTerm = itemActiveTermDefinition.Nest;
+                        if (!"@nest".Equals(ExpandIri(activeContext, nestTerm, true)))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                                 $"Invalid Nest Value. Error compacting property {expandedProperty} of {activeProperty}. The value of {expandedProperty} should be '@nest' or a term that expands to '@nest'.");
                         }
                         // 12.8.2.2 - If result does not have a nest term entry, initialize it to an empty map.
-                        if (!result.ContainsKey("@nest"))
-                        {
-                            result.Add("@nest", new JObject());
-                        }
                         // 12.8.2.3 - Initialize nest result to the value of nest term in result.
-                        nestResult = result["@nest"] as JObject;
+                        nestResult = EnsureMapEntry(result, nestTerm);
                     }
                     // 12.8.3 - Otherwise, initialize nest result to result.
                     else
@@ -3413,8 +3409,8 @@ namespace VDS.RDF.JsonLd
                     }
 
                     // 12.8.4 - Initialize container to container mapping for item active property in active context, or to a new empty array, if there is no such container mapping.
-                    var container = (td != null && td.ContainerMapping != null)
-                        ? td.ContainerMapping
+                    var container = (itemActiveTermDefinition != null && itemActiveTermDefinition.ContainerMapping != null)
+                        ? itemActiveTermDefinition.ContainerMapping
                         : new HashSet<JsonLdContainer>();
                     // 12.8.5 - Initialize as array to true if container includes @set, or if item active property is @graph or @list, otherwise the negation of compactArrays.
                     var asArray =
@@ -3547,15 +3543,15 @@ namespace VDS.RDF.JsonLd
 
                         // 12.8.9.2 - Initialize container key by IRI compacting either @language, @index, @id, or @type based on the contents of container.
                         string expandedKey = null;
-                        if (container.Contains(JsonLdContainer.Language)) expandedKey = "@langauge";
+                        if (container.Contains(JsonLdContainer.Language)) expandedKey = "@language";
                         if (container.Contains(JsonLdContainer.Index)) expandedKey = "@index";
                         if (container.Contains(JsonLdContainer.Id)) expandedKey = "@id";
                         if (container.Contains(JsonLdContainer.Type)) expandedKey = "@type";
                         var containerKey = CompactIri(activeContext, expandedKey, vocab: true);
 
                         // 12.8.9.3 - Initialize index key to the value of index mapping in the term definition associated with item active property in active context, or @index, if no such value exists.
-                        var indexKey = activeTermDefinition != null && activeTermDefinition.IndexMapping != null
-                            ? activeTermDefinition.IndexMapping
+                        var indexKey = itemActiveTermDefinition != null && itemActiveTermDefinition.IndexMapping != null
+                            ? itemActiveTermDefinition.IndexMapping
                             : "@index";
 
                         // 12.8.9.4 - If container includes @language and expanded item contains a @value entry, then set compacted item to the value associated with its @value entry.
@@ -3580,32 +3576,52 @@ namespace VDS.RDF.JsonLd
                             }
                         }
                         // 12.8.9.6 - Otherwise, if container includes @index and index key is not @index: 
-                        else if (container.Contains(JsonLdContainer.Index))
-                        {
+                        else if (container.Contains(JsonLdContainer.Index) && compactedItem is JObject) {
                             // 12.8.9.6.1 - Reinitialize container key by IRI compacting index key.
                             containerKey = CompactIri(activeContext, indexKey, vocab: true);
                             // 12.8.9.6.2 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.6.3 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // Otherwise, remove that entry from compacted item.
                             var array = EnsureArray(compactedItem[containerKey]);
-                            if (array.Count > 0)
+                            
+                            (compactedItem as JObject).Remove(containerKey);
+                            foreach(var item in array)
                             {
-                                mapKey = array[0].Value<string>();
-                                if (array.Count > 1)
+                                if (mapKey == null && item.Type == JTokenType.String)
                                 {
-                                    array.RemoveAt(0);
+                                    mapKey = item.Value<string>();
                                 }
                                 else
                                 {
-                                    (compactedItem as JObject).Remove(containerKey);
+                                    AddValue(compactedItem as JObject, containerKey, item);
                                 }
                             }
+                            //if (array.Count > 0)
+                            //{
+                            //    mapKey = array[0].Value<string>();
+                            //    if (array.Count > 1)
+                            //    {
+                            //        array.RemoveAt(0);
+                            //        if (array.Count == 1)
+                            //        {
+                            //            compactedItem[containerKey] = array[0];
+                            //        }
+                            //    }
+                            //    else
+                            //    {
+                            //        (compactedItem as JObject).Remove(containerKey);
+                            //    }
+                            //}
                         }
                         // 12.8.9.7 - Otherwise, if container includes @id, set map key to the value of container key in compacted item and remove container key from compacted item.
                         else if (container.Contains(JsonLdContainer.Id))
                         {
-                            mapKey = compactedItem[containerKey].Value<string>();
-                            (compactedItem as JObject).Remove(containerKey);
+                            if (compactedItem is JObject compactedItemObject &&
+                                compactedItemObject.ContainsKey(containerKey))
+                            {
+                                mapKey = compactedItemObject[containerKey].Value<string>();
+                                compactedItemObject.Remove(containerKey);
+                            }
                         }
                         // 12.8.9.8 - Otherwise, if container includes @type: 
                         else if (container.Contains(JsonLdContainer.Type))
@@ -3628,7 +3644,7 @@ namespace VDS.RDF.JsonLd
                                     .Equals("@id"))
                                 {
                                     compactedItem = CompactAlgorithm(activeContext, itemActiveProperty,
-                                        new JObject("@id", expandedItemObject["@id"]));
+                                        new JObject(new JProperty("@id", expandedItemObject["@id"])));
                                 }
                             }
                         }
@@ -4547,7 +4563,7 @@ namespace VDS.RDF.JsonLd
                 if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
                 {
                     // 4.11 - If processing mode is not json-ld-1.0 and value is not a map or does not contain an @index entry, append @index and @index@set to containers.
-                    if (value == null || value.Type != JTokenType.Object || (value as JObject).ContainsKey("@index"))
+                    if (value == null || value.Type != JTokenType.Object || !(value as JObject).ContainsKey("@index"))
                     {
                         containers.Add("@index");
                         containers.Add("@index@set");
@@ -4558,8 +4574,8 @@ namespace VDS.RDF.JsonLd
                         valueObject.Count == 1 && 
                         valueObject.ContainsKey("@value"))
                     {
-                        containers.Add("@langauge");
-                        containers.Add("@langauge@set");
+                        containers.Add("@language");
+                        containers.Add("@language@set");
                     }
                 }
 
