@@ -73,7 +73,7 @@ namespace VDS.RDF.JsonLd
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutputElement = JToken.Parse(expectedOutputJson);
                     var actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
-                    Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
+                    Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                         $"Error processing compact test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                     break;
                 case JsonLdTestType.NegativeEvaluationTest:
@@ -91,22 +91,32 @@ namespace VDS.RDF.JsonLd
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays)
         {
-            if (testType != JsonLdTestType.PositiveEvaluationTest)
-            {
-                Assert.True(false, $"Test type {testType} is not yet implemented in the test runner");
-            }
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
-            var expectedOutputJson = File.ReadAllText(expectedOutputPath);
             var inputElement = JToken.Parse(inputJson);
             var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
-            var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
-            var actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
-            Assert.True(JToken.DeepEquals(actualOutputElement, expectedOutputElement),
-                $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
+            switch (testType)
+            {
+                case JsonLdTestType.PositiveEvaluationTest:
+                    var expectedOutputJson = File.ReadAllText(expectedOutputPath);
+                    var expectedOutputElement = JToken.Parse(expectedOutputJson);
+
+                    var actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
+                    Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
+                        $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
+                    break;
+                case JsonLdTestType.NegativeEvaluationTest:
+                    var exception = Assert.Throws<JsonLdProcessorException>(() =>
+                        JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions));
+                    Assert.Equal(expectedErrorCode, exception.ErrorCode);
+                    break;
+                default:
+                    Assert.True(false, $"Test type {testType} has not been implemented for Flatten tests");
+                    break;
+            }
         }
 
         public virtual void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 

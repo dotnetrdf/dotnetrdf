@@ -30,7 +30,7 @@ using Newtonsoft.Json.Linq;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Represents a JSON-LD context loaded from a remote document
+    /// Represents a JSON-LD context loaded from a remote document.
     /// </summary>
     public class JsonLdRemoteContext
     {
@@ -41,12 +41,12 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Get the document URL of the context document
+        /// Get the document URL of the context document.
         /// </summary>
         public Uri DocumentUrl { get; }
 
         /// <summary>
-        /// Get the context value as a JSON representation
+        /// Get the context value as a JSON representation.
         /// </summary>
         public JToken Context { get; }
     }

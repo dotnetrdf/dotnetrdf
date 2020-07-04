@@ -53,7 +53,7 @@ namespace VDS.RDF.JsonLd
         /// Create a new empty context with the Base and OriginalBase properties
         /// both set to the specified base URI.
         /// </summary>
-        /// <param name="baseIri">The base IRI</param>
+        /// <param name="baseIri">The base IRI.</param>
         public JsonLdContext(Uri baseIri)
         {
             Base = OriginalBase = baseIri;
@@ -186,7 +186,7 @@ namespace VDS.RDF.JsonLd
         /// Get an existing term definition.
         /// </summary>
         /// <param name="term">The key for the term to be retrieved.</param>
-        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions</param>
+        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions.</param>
         /// <returns>The term definition found for the specified key or a default empty term definition if there is no term definition defined for that key.</returns>
         public JsonLdTermDefinition GetTerm(string term, bool includeAliases = false)
         {
@@ -200,7 +200,7 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="term">The key for the term to be retrieved.</param>
         /// <param name="termDefinition">Receives the term definition found.</param>
-        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions</param>
+        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions.</param>
         /// <returns>True if an entry was found for <paramref name="term"/>, false otherwise.</returns>
         public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition, bool includeAliases = false)
         {
@@ -233,6 +233,11 @@ namespace VDS.RDF.JsonLd
             return _termDefinitions.Values.Any(td => td.Protected);
         }
 
+        /// <summary>
+        /// Check if this context contains a Term Definition for a specific term.
+        /// </summary>
+        /// <param name="term">The term to check for.</param>
+        /// <returns>True if this context contains a definition for <paramref name="term"/>, false otherwise.</returns>
         public bool HasTerm(string term)
         {
             return _termDefinitions.ContainsKey(term);

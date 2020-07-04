@@ -186,8 +186,15 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// The maximum number of remote context references to load during processing.
         /// </summary>
-        /// <remarks>If set to a value less than 0, there is no limit on the number of remote contexts that can be processed. Defaults to -1 (no limit).</remarks>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
+        /// <remarks>
+        /// <para>
+        ///     If set to a value less than 0, there is no limit on the number of remote contexts that can be processed.
+        ///     Defaults to -1 (no limit).
+        /// </para>
+        /// <para>This property is no longer part of the JSON-LD specification but is provided as as convenience for
+        /// developers to ensure that there is a limit to remote context processing (or that remote context processing
+        /// is completely disabled by setting this property to 0).</para>
+        /// </remarks>
         public int RemoteContextLimit = -1;
     }
 }
