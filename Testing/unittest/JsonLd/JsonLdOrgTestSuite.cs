@@ -21,10 +21,10 @@ namespace VDS.RDF.JsonLd
 
         public virtual void ExpandTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
-                compactArrays);
+                compactArrays, rdfDirection);
             var inputJson = File.ReadAllText(inputPath);
             var inputElement = JToken.Parse(inputJson);
 
@@ -59,10 +59,10 @@ namespace VDS.RDF.JsonLd
         
         public virtual void CompactTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
-                compactArrays);
+                compactArrays, rdfDirection);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var inputElement = JToken.Parse(inputJson);
@@ -89,10 +89,10 @@ namespace VDS.RDF.JsonLd
 
         public virtual void FlattenTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
-                compactArrays);
+                compactArrays, rdfDirection);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var inputElement = JToken.Parse(inputJson);
@@ -121,52 +121,135 @@ namespace VDS.RDF.JsonLd
 
         public virtual void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            if (testType != JsonLdTestType.PositiveEvaluationTest)
-            {
-                Assert.True(false, $"Test type {testType} is not yet implemented in the test runner");
-            }
             var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
-                compactArrays);
-            var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
-            var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
-            var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
-            var expectedStore = new TripleStore();
-            nqParser.Load(expectedStore, expectedOutputPath);
-            FixStringLiterals(expectedStore);
+                compactArrays, rdfDirection);
             var jsonldParser = new JsonLdParser(processorOptions);
             var actualStore = new TripleStore();
-            jsonldParser.Load(actualStore, inputPath);
-            Assert.True(expectedStore.Graphs.Count.Equals(actualStore.Graphs.Count),
-                $"Test failed for input {Path.GetFileName(inputPath)}.\r\nActual graph count {actualStore.Graphs.Count} does not match expected graph count {expectedStore.Graphs.Count}.");
-            foreach (var expectGraph in expectedStore.Graphs)
+
+            switch (testType)
             {
-                Assert.True(actualStore.HasGraph(expectGraph.BaseUri),
-                    $"Test failed for input {Path.GetFileName(inputPath)}.\r\nCould not find expected graph {expectGraph.BaseUri}");
-                var actualGraph = actualStore.Graphs[expectGraph.BaseUri];
-                var graphsEqual = actualGraph.Equals(expectGraph, out _);
-                if (!graphsEqual)
+                case JsonLdTestType.PositiveEvaluationTest:
+                    var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
+                    var expectedStore = new TripleStore();
+                    nqParser.Load(expectedStore, expectedOutputPath);
+                    FixStringLiterals(expectedStore);
+                    jsonldParser.Load(actualStore, inputPath);
+                    Assert.True(expectedStore.Graphs.Count.Equals(actualStore.Graphs.Count) ||
+                                (expectedStore.Graphs.Count == 0 && actualStore.Graphs.Count == 1 &&
+                                 actualStore.Graphs[null].IsEmpty),
+                        $"Test failed for input {Path.GetFileName(inputPath)}.\r\nActual graph count {actualStore.Graphs.Count} does not match expected graph count {expectedStore.Graphs.Count}.");
+                    AssertStoresEqual(expectedStore, actualStore, Path.GetFileName(inputPath));
+                    break;
+
+                case JsonLdTestType.NegativeEvaluationTest:
+                    var exception =
+                        Assert.Throws<JsonLdProcessorException>(() => jsonldParser.Load(actualStore, inputPath));
+                    Assert.Equal(expectedErrorCode, exception.ErrorCode);
+                    break;
+
+                case JsonLdTestType.PositiveSyntaxTest:
+                    // Positive syntax test should load input file without raising any exceptions
+                    jsonldParser.Load(actualStore, inputPath);
+                    break;
+
+                default:
+                    Assert.True(false, $"Test type {testType} is not currently supported for the JSON-LD Parser tests");
+                    break;
+            }
+        }
+
+        private void AssertStoresEqual(ITripleStore expectedTripleStore, ITripleStore actualTripleStore, string testFile)
+        {
+            foreach (var graphUri in expectedTripleStore.Graphs.GraphUris)
+            {
+                if (graphUri == null)
                 {
-                    var expectedLines = MakeNQuadsList(expectedStore);
-                    var actualLines = MakeNQuadsList(actualStore);
-                    Assert.True(graphsEqual,
-                        $"Test failed for input {Path.GetFileName(inputPath)}.\r\nGraph {expectGraph.BaseUri} differs in actual output from expected output.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+                    Assert.True(actualTripleStore.HasGraph(null), 
+                        $"Test failed for input {testFile}.\r\nExpected a default graph to be present.");
+                    AssertGraphsEqual(expectedTripleStore[null], actualTripleStore[null],
+                        expectedTripleStore, actualTripleStore, testFile);
+                } 
+                else if (graphUri.ToString().StartsWith("nquads:bnode:"))
+                {
+                    Uri matchedGraph = null;
+                    foreach (var actualGraphUri in actualTripleStore.Graphs.GraphUris.Where(u =>
+                        u != null && u.ToString().StartsWith("nquads:bnode:")))
+                    {
+                        var expectedGraph = expectedTripleStore[graphUri];
+                        var actualGraph = actualTripleStore[actualGraphUri];
+                        if (actualGraph.Equals(expectedGraph, out _))
+                        {
+                            matchedGraph = actualGraphUri;
+                            break;
+                        }
+                    }
+
+                    if (matchedGraph == null)
+                    {
+                        var expectedLines = MakeNQuadsList(expectedTripleStore);
+                        var actualLines = MakeNQuadsList(actualTripleStore);
+                        Assert.True(false,
+                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphUri}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+                    }
+                    else
+                    {
+                        actualTripleStore.Graphs.Remove(matchedGraph);
+                    }
+                }
+                else
+                {
+                    if (!actualTripleStore.Graphs.Contains(graphUri))
+                    {
+                        var expectedLines = MakeNQuadsList(expectedTripleStore);
+                        var actualLines = MakeNQuadsList(actualTripleStore);
+                        Assert.True(false,
+                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphUri}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+                    }
+                    AssertGraphsEqual(expectedTripleStore[graphUri], actualTripleStore[graphUri],
+                        expectedTripleStore, actualTripleStore, testFile);
                 }
             }
         }
 
+        private void AssertGraphsEqual(IGraph expectedGraph, IGraph actualGraph, ITripleStore expectedStore, ITripleStore actualStore, string testFile)
+        {
+            var graphsEqual = actualGraph.Equals(expectedGraph, out _);
+            if (!graphsEqual)
+            {
+                var expectedLines = MakeNQuadsList(expectedStore);
+                var actualLines = MakeNQuadsList(actualStore);
+                Assert.True(graphsEqual,
+                    $"Test failed for input {testFile}.\r\nGraph {expectedGraph.BaseUri} differs in actual output from expected output.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+            }
+        }
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public virtual void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType)
+            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
 #pragma warning restore xUnit1026 // Theory methods should use all of their parameters
         {
             var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11);
             var input = new TripleStore();
             nqParser.Load(input, inputPath);
             FixStringLiterals(input);
-            var jsonLdWriter =
-                new JsonLdWriter(new JsonLdWriterOptions {UseNativeTypes = useNativeTypes, UseRdfType = useRdfType});
+            var writerOptions = new JsonLdWriterOptions
+                {UseNativeTypes = useNativeTypes, UseRdfType = useRdfType, Ordered = ordered};
+            if (rdfDirection != null)
+            {
+                switch (rdfDirection)
+                {
+                    case "i18n-datatype":
+                        writerOptions.RdfDirection = JsonLdRdfDirectionMode.I18NDatatype;
+                        break;
+                    case "compound-literal":
+                        writerOptions.RdfDirection = JsonLdRdfDirectionMode.CompoundLiteral;
+                        break;
+                    default:
+                        throw new Exception($"Test {testId} specifies an unrecognized value for the rdfDirection option: {rdfDirection}.");
+                }
+            }
+            var jsonLdWriter = new JsonLdWriter(writerOptions);
 
             switch (testType)
             {
@@ -289,7 +372,7 @@ namespace VDS.RDF.JsonLd
                    o1.Properties().All(p => DeepEquals(p.Value, o2[p.Name], arraysAreOrdered));
         }
 
-        private static string MakeNQuadsList(TripleStore store)
+        private static string MakeNQuadsList(ITripleStore store)
         {
             var ser = new NQuadsWriter();
             using (var expectedTextWriter = new System.IO.StringWriter())
@@ -409,7 +492,9 @@ namespace VDS.RDF.JsonLd
         private static JsonLdProcessorOptions MakeProcessorOptions(string inputPath, 
             string baseIri,
             string processorMode,
-            string expandContextPath, bool compactArrays)
+            string expandContextPath, 
+            bool compactArrays,
+            string rdfDirection)
         {
             var processorOptions = new JsonLdProcessorOptions
             {
@@ -427,6 +512,20 @@ namespace VDS.RDF.JsonLd
                 processorOptions.ExpandContext = JObject.Parse(expandContextJson);
             }
             processorOptions.CompactArrays = compactArrays;
+            if (!string.IsNullOrEmpty(rdfDirection))
+            {
+                switch (rdfDirection)
+                {
+                    case "i18n-datatype":
+                        processorOptions.RdfDirection = JsonLdRdfDirectionMode.I18NDatatype;
+                        break;
+                    case "compound-literal":
+                        processorOptions.RdfDirection = JsonLdRdfDirectionMode.CompoundLiteral;
+                        break;
+                    default:
+                        throw new Exception($"Unexpected value for rdfDirection option in test {inputPath}");
+                }
+            }
             return processorOptions;
         }
     }
@@ -438,48 +537,48 @@ namespace VDS.RDF.JsonLd
         [MemberData(nameof(JsonLdTestSuiteDataSource.ExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         //[MemberData(nameof(JsonLdTestSuiteDataSource.W3CExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void ExpandTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            base.ExpandTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, baseIri, processorMode, expandContextPath, compactArrays);
+            base.ExpandTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.CompactTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void CompactTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             base.CompactTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays);
+                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.FlattenTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void FlattenTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             base.FlattenTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays);
+                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.ToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             base.JsonLdParserTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays);
+                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.FromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType)
+            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
         {
             base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode,
-                useNativeTypes, useRdfType);
+                useNativeTypes, useRdfType, ordered, rdfDirection);
         }
 
         [Theory]
@@ -499,20 +598,20 @@ namespace VDS.RDF.JsonLd
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void ExpandTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             base.ExpandTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays);
+                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CCompactTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void CompactTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays)
+            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
             base.CompactTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays);
+                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
 
@@ -521,28 +620,43 @@ namespace VDS.RDF.JsonLd
         public override void FlattenTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath,
             JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode, string expandContextPath,
-            bool compactArrays)
+            bool compactArrays, string rdfDirection)
         {
             base.FlattenTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays);
+                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
-        [Theory]
+        private readonly Dictionary<string, string> SkippedParserTests = new Dictionary<string, string>
+        {
+            {"#t0120", "Test fails due to .NET URI parsing library"},
+            {"#t0121", "Test fails due to .NET URI parsing library"},
+            {"#t0122", "Test fails due to .NET URI parsing library"},
+            {"#t0123", "Test fails due to .NET URI parsing library"},
+            {"#t0124", "Test fails due to .NET URI parsing library"},
+            {"#t0125", "Test fails due to .NET URI parsing library"},
+            {"#t0126", "Test fails due to .NET URI parsing library"},
+            {"#te075", "Test uses a blank-node property"},
+            {"#tjs12", "Test depends on decimal representation of a float"},
+        };
+
+        [SkippableTheory(typeof(SkipException))]
+        //[Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode,
-            string expandContextPath, bool compactArrays)
+            string expandContextPath, bool compactArrays, string rdfDirection)
         {
+            if (SkippedParserTests.ContainsKey(testId)) throw new SkipException(SkippedParserTests[testId]);
             base.JsonLdParserTests(testId, testType, inputPath, contextPath, expectedOutputPath,
-                expectedErrorCode, baseIri, processorMode, expandContextPath, compactArrays);
+                expectedErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
         }
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
         public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType)
+            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
         {
-            base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, useNativeTypes, useRdfType);
+            base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, useNativeTypes, useRdfType, ordered, rdfDirection);
         }
 
         [Theory]
@@ -631,7 +745,8 @@ namespace VDS.RDF.JsonLd
                 string baseIri = defaultBaseIri,
                     processorMode = null,
                     expandContext = null,
-                    specVersion = null;
+                    specVersion = null,
+                    rdfDirection = null;
                 var compactArrays = true;
                 var options = optionsProperty?.Value as JObject;
                 if (options != null)
@@ -652,6 +767,9 @@ namespace VDS.RDF.JsonLd
                             case "compactArrays":
                                 compactArrays = p.Value.Value<bool>();
                                 break;
+                            case "rdfDirection":
+                                rdfDirection = p.Value.Value<string>();
+                                break;
                             case "specVersion":
                                 specVersion = p.Value.Value<string>();
                                 break;
@@ -669,7 +787,8 @@ namespace VDS.RDF.JsonLd
                     baseIri,
                     processorMode,
                     expandContext,
-                    compactArrays
+                    compactArrays,
+                    rdfDirection
                 };
             }
         }
@@ -725,7 +844,8 @@ namespace VDS.RDF.JsonLd
                     ? GetErrorCode(testConfiguration.Property("expectErrorCode").Value.Value<string>())
                     : null;
                 var optionsProperty = testConfiguration.Property("option");
-                bool useNativeTypes = false, useRdfType = false;
+                bool useNativeTypes = false, useRdfType = false, ordered=false;
+                string specVersion = null, rdfDirection = null;
                 var options = optionsProperty?.Value as JObject;
                 if (options != null)
                 {
@@ -739,9 +859,19 @@ namespace VDS.RDF.JsonLd
                             case "useRdfType":
                                 useRdfType = p.Value.Value<bool>();
                                 break;
+                            case "rdfDirection":
+                                rdfDirection = p.Value.Value<string>();
+                                break;
+                            case "specVersion":
+                                specVersion = p.Value.Value<string>();
+                                break;
+                            case "ordered":
+                                ordered = p.Value.Value<bool>();
+                                break;
                         }
                     }
                 }
+                if ("json-ld-1.0".Equals(specVersion)) continue; // Tests that are specifically against the 1.0 version of the spec will not work with a 1.1 processor
                 yield return new object[] {
                     testId,
                     testType,
@@ -750,7 +880,9 @@ namespace VDS.RDF.JsonLd
                     expect == null ? null : Path.Combine(resourceDir.FullName, expect),
                     expectErrorCode,
                     useNativeTypes,
-                    useRdfType
+                    useRdfType,
+                    ordered,
+                    rdfDirection
                 };
             }
         }

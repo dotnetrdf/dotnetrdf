@@ -118,8 +118,11 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// If set to true, the JSON-LD processor may emit blank nodes for triple predicates, otherwise they will be omitted.
         /// </summary>
-        /// <remarks>Defaults to. <code>true</code></remarks>
-        public bool ProduceGeneralizedRdf = true;
+        /// <remarks>
+        /// <para>This feature of JSON-LD is deprecated in JSON-LD 1.1 and may be removed in future versions of the specification.</para>
+        /// <para>Default to false.</para>
+        /// </remarks>
+        public bool ProduceGeneralizedRdf = false;
 
         /// <summary>
         /// Get or set the method by which literal values containing a base direction are transformed to and from RDF.

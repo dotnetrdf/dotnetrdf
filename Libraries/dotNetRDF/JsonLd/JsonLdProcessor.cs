@@ -3887,6 +3887,7 @@ namespace VDS.RDF.JsonLd
                 {
                     id = elementObject["@id"].Value<string>();
                     elementObject.Remove("@id");
+                    if (id == null) return; // Required to pass W3C test e122
                     if (IsBlankNodeIdentifier(id))
                     {
                         id = GenerateBlankNodeIdentifier(id);
@@ -5935,7 +5936,7 @@ namespace VDS.RDF.JsonLd
         /// <returns></returns>
         public static bool IsBlankNodeIdentifier(string value)
         {
-            return value.StartsWith("_:");
+            return value != null && value.StartsWith("_:");
         }
 
         private static bool IsNodeReference(JToken token)
