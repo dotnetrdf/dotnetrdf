@@ -27,10 +27,10 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the error code defined in the JSON-LD specification.
+    /// Enumeration of the error code defined in the JSON-LD processing and framing specifications.
     /// </summary>
     /// <remarks>
-    /// The error codes are converted to C# canel-case as follows:
+    /// The error codes are converted to C# camel-case as follows:
     /// (1) Replace IRI by Iri
     /// (2) Remove @ character
     /// (3) Replace "language-tagged" by "Language Tagged"
@@ -247,5 +247,17 @@ namespace VDS.RDF.JsonLd
         /// A cycle in remote context inclusions has been detected.
         /// </summary>
         RecursiveContextInclusion,
+
+        // The following codes are defined in the JSON-LD Framing specification
+
+        /// <summary>
+        /// invalid frame
+        /// </summary>
+        InvalidFrame,
+
+        /// <summary>
+        /// invalid @embed value
+        /// </summary>
+        InvalidEmbedValue,
     };
 }

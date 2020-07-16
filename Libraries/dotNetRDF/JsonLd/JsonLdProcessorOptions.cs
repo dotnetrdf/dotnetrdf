@@ -153,31 +153,37 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Sets the value object embed flag used in the Framing Algorithm.
         /// </summary>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
-        public JsonLdEmbed Embed = JsonLdEmbed.Last;
+        public JsonLdEmbed Embed = JsonLdEmbed.Once;
 
         /// <summary>
         /// Sets the value explicit inclusion flag used in the Framing Algorithm.
         /// </summary>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
         public bool Explicit = false;
 
         /// <summary>
         /// Sets the value omit default flag used in the Framing Algorithm.
         /// </summary>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
         public bool OmitDefault = false;
+
+        private bool? _omitGraph;
+        /// <summary>
+        /// GEt or set the value of the omit graph flag used in the Framing Algorithm.
+        /// </summary>
+        /// <remarks>Defaults to false if <see cref="ProcessingMode"/> is <see cref="JsonLdProcessingMode.JsonLd10"/>, true otherwise.</remarks>
+        public bool OmitGraph
+        {
+            get => _omitGraph ?? ProcessingMode != JsonLdProcessingMode.JsonLd10;
+            set => _omitGraph = value;
+        }
 
         /// <summary>
         /// Sets the value require all flag used in the Framing Algorithm.
         /// </summary>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
         public bool RequireAll = false;
 
         /// <summary>
         /// Instead of framing a merged graph, frame only the default graph.
         /// </summary>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
         public bool FrameDefault = false;
 
         /// <summary>
@@ -199,5 +205,35 @@ namespace VDS.RDF.JsonLd
         /// is completely disabled by setting this property to 0).</para>
         /// </remarks>
         public int RemoteContextLimit = -1;
+
+        /// <summary>
+        /// Create a copy of this instance, cloning all of its values.
+        /// </summary>
+        /// <returns></returns>
+        public JsonLdProcessorOptions Clone()
+        {
+            return new JsonLdProcessorOptions
+            {
+                Base = Base, 
+                CompactArrays = CompactArrays, 
+                CompactToRelative = CompactToRelative,
+                DocumentLoader = DocumentLoader, 
+                Embed = Embed, 
+                Explicit=Explicit, 
+                ExpandContext = ExpandContext, 
+                ExtractAllScripts = ExtractAllScripts,
+                FrameDefault=FrameDefault,
+                FrameExpansion = FrameExpansion, 
+                OmitDefault=OmitDefault, 
+                Ordered = Ordered, 
+                ProcessingMode = ProcessingMode, 
+                ProduceGeneralizedRdf = ProduceGeneralizedRdf,
+                RdfDirection = RdfDirection, 
+                RemoteContextLimit = RemoteContextLimit, 
+                RequireAll = RequireAll, 
+                UseNativeTypes = UseNativeTypes, 
+                UseRdfType = UseRdfType,
+            };
+        }
     }
 }

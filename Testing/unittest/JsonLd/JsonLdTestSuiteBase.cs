@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using Xunit;
-using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Net;
+using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using Xunit;
 
 namespace VDS.RDF.JsonLd
 {
@@ -261,7 +260,7 @@ namespace VDS.RDF.JsonLd
 
                     try
                     {
-                        Assert.True((bool) DeepEquals(expectedOutput, actualOutput, true, true),
+                        Assert.True(DeepEquals(expectedOutput, actualOutput, true, true),
                             $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutput}\nActual:\n{actualOutput}");
                     }
                     catch (DeepEqualityFailure ex)
@@ -288,21 +287,31 @@ namespace VDS.RDF.JsonLd
         }
 
         public virtual void JsonLdFramingTests(string testId, JsonLdTestType testType, string inputPath, string framePath, 
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool pruneBlankNodeIdentifiers)
+            string expectedOutputPath, JsonLdErrorCode expectErrorCode, string processingMode, 
+            bool pruneBlankNodeIdentifiers, bool? omitGraph, bool ordered)
         {
             var inputJson = File.ReadAllText(inputPath);
             var frameJson = File.ReadAllText(framePath);
-            var options = new JsonLdProcessorOptions {PruneBlankNodeIdentifiers = pruneBlankNodeIdentifiers};
+            var jsonLdProcessingMode = "json-ld-1.0".Equals(processingMode)
+                ? JsonLdProcessingMode.JsonLd10
+                : JsonLdProcessingMode.JsonLd11FrameExpansion;
+            var options = new JsonLdProcessorOptions
+            {
+                ProcessingMode = jsonLdProcessingMode,
+                PruneBlankNodeIdentifiers = pruneBlankNodeIdentifiers,
+                Ordered = ordered,
+            };
+            if (omitGraph.HasValue) options.OmitGraph = omitGraph.Value;
             var inputElement = JToken.Parse(inputJson);
             var frameElement = JToken.Parse(frameJson);
-            /*
+            
             switch (testType)
             {
                 case JsonLdTestType.PositiveEvaluationTest:
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutputElement = JToken.Parse(expectedOutputJson);
                     var actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
-                    Assert.True(JToken.DeepEquals(expectedOutputElement, actualOutput),
+                    Assert.True(DeepEquals(expectedOutputElement, actualOutput),
                         $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}");
                     break;
                 case JsonLdTestType.NegativeEvaluationTest:
@@ -318,7 +327,7 @@ namespace VDS.RDF.JsonLd
                         JsonLdProcessor.Frame(inputElement, frameElement, options));
                     break;
             }
-            */
+            
         }
 
         private static bool DeepEquals(JToken t1, JToken t2, bool arraysAreOrdered = false)
@@ -345,7 +354,7 @@ namespace VDS.RDF.JsonLd
             if (a1.Count != a2.Count) return false;
             if (arraysAreOrdered)
             {
-                return !a1.Where((t, i) => !DeepEquals(t, a2[i], arraysAreOrdered)).Any();
+                return !a1.Where((t, i) => !DeepEquals(t, a2[i], true)).Any();
             }
             var a2Clone = new JArray(a2);
             foreach (var item in a1)
@@ -353,7 +362,7 @@ namespace VDS.RDF.JsonLd
                 var matched = false;
                 for (var j = 0; j < a2Clone.Count; j++)
                 {
-                    if (DeepEquals(item, a2Clone[j], arraysAreOrdered))
+                    if (DeepEquals(item, a2Clone[j], false))
                     {
                         a2Clone.RemoveAt(j);
                         matched = true;
@@ -394,8 +403,7 @@ namespace VDS.RDF.JsonLd
             switch (token1.Type)
             {
                 case JTokenType.Object:
-                    var o1 = token1 as JObject;
-                    var o2 = token2 as JObject;
+                    if (!(token1 is JObject o1 && token2 is JObject o2)) return false;
                     foreach (var p in o1.Properties())
                     {
                         if (o2[p.Name] == null)
@@ -416,8 +424,7 @@ namespace VDS.RDF.JsonLd
                     }
                     return true;
                 case JTokenType.Array:
-                    var a1 = token1 as JArray;
-                    var a2 = token2 as JArray;
+                    if (!(token1 is JArray a1 && token2 is JArray a2)) return false;
                     if (a1.Count != a2.Count)
                     {
                         if (throwOnMismatch) throw new DeepEqualityFailure(token1, token2);
@@ -471,7 +478,7 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private static void FixStringLiterals(TripleStore store)
+        private static void FixStringLiterals(ITripleStore store)
         {
             var xsdString = new Uri("http://www.w3.org/2001/XMLSchema#string");
             foreach (var t in store.Triples.ToList())
@@ -527,423 +534,6 @@ namespace VDS.RDF.JsonLd
                 }
             }
             return processorOptions;
-        }
-    }
-
-    public class JsonLdOrgTestSuite : JsonLdTestSuiteBase
-    {
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.ExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        //[MemberData(nameof(JsonLdTestSuiteDataSource.W3CExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void ExpandTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            base.ExpandTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.CompactTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void CompactTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
-            string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            base.CompactTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.FlattenTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void FlattenTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
-            string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            base.FlattenTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.ToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
-            string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            base.JsonLdParserTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.FromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
-        {
-            base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode,
-                useNativeTypes, useRdfType, ordered, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.FrameTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void JsonLdFramingTests(string testId, JsonLdTestType testType, string inputPath, string framePath,
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool pruneBlankNodeIdentifiers)
-        {
-            base.JsonLdFramingTests(testId, testType, inputPath, framePath, expectedOutputPath, expectErrorCode, pruneBlankNodeIdentifiers);
-        }
-    }
-
-
-    public class W3CJsonLd11TestSuite : JsonLdTestSuiteBase
-    {
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.W3CExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void ExpandTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            base.ExpandTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.W3CCompactTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void CompactTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
-            string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
-            string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            base.CompactTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFlattenTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void FlattenTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
-            string expectedOutputPath,
-            JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode, string expandContextPath,
-            bool compactArrays, string rdfDirection)
-        {
-            base.FlattenTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectedErrorCode,
-                baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        private readonly Dictionary<string, string> SkippedParserTests = new Dictionary<string, string>
-        {
-            {"#t0120", "Test fails due to .NET URI parsing library"},
-            {"#t0121", "Test fails due to .NET URI parsing library"},
-            {"#t0122", "Test fails due to .NET URI parsing library"},
-            {"#t0123", "Test fails due to .NET URI parsing library"},
-            {"#t0124", "Test fails due to .NET URI parsing library"},
-            {"#t0125", "Test fails due to .NET URI parsing library"},
-            {"#t0126", "Test fails due to .NET URI parsing library"},
-            {"#te075", "Test uses a blank-node property"},
-            {"#tjs12", "Test depends on decimal representation of a float"},
-        };
-
-        [SkippableTheory(typeof(SkipException))]
-        //[Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.W3CToRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void JsonLdParserTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
-            string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri, string processorMode,
-            string expandContextPath, bool compactArrays, string rdfDirection)
-        {
-            if (SkippedParserTests.ContainsKey(testId)) throw new SkipException(SkippedParserTests[testId]);
-            base.JsonLdParserTests(testId, testType, inputPath, contextPath, expectedOutputPath,
-                expectedErrorCode, baseIri, processorMode, expandContextPath, compactArrays, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFromRdfTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath,
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
-        {
-            base.JsonLdWriterTests(testId, testType, inputPath, contextPath, expectedOutputPath, expectErrorCode, useNativeTypes, useRdfType, ordered, rdfDirection);
-        }
-
-        [Theory]
-        [MemberData(nameof(JsonLdTestSuiteDataSource.W3CFrameTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
-        public override void JsonLdFramingTests(string testId, JsonLdTestType testType, string inputPath, string framePath,
-            string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool pruneBlankNodeIdentifiers)
-        {
-            base.JsonLdFramingTests(testId, testType, inputPath, framePath, expectedOutputPath, expectErrorCode, pruneBlankNodeIdentifiers);
-        }
-    }
-
-    public enum JsonLdTestType
-    {
-        PositiveEvaluationTest,
-        NegativeEvaluationTest,
-        PositiveSyntaxTest,
-        NegativeSyntaxTest
-    }
-
-    public static class JsonLdTestSuiteDataSource
-    {
-        public static IEnumerable<object[]> ExpandTests => ProcessManifest(Path.Combine("resources","jsonld"), "expand-manifest.jsonld");
-
-        public static IEnumerable<object[]> CompactTests => ProcessManifest(Path.Combine("resources", "jsonld"), "compact-manifest.jsonld");
-
-        public static IEnumerable<object[]> FlattenTests => ProcessManifest(Path.Combine("resources", "jsonld"), "flatten-manifest.jsonld");
-
-        public static IEnumerable<object[]> ToRdfTests => ProcessManifest(Path.Combine("resources", "jsonld"), "toRdf-manifest.jsonld", "toRdf-skip.txt");
-
-        public static IEnumerable<object[]> FromRdfTests => ProcessFromRdfManifest(Path.Combine("resources", "jsonld"), "fromRdf-manifest.jsonld");
-
-        public static IEnumerable<object[]> FrameTests => ProcessFrameManifest(Path.Combine("resources", "jsonld"), "frame-manifest.jsonld");
-
-        public static IEnumerable<object[]> W3CExpandTests =>
-            ProcessManifest(Path.Combine("resources", "jsonld11"), "expand-manifest.jsonld");
-
-        public static IEnumerable<object[]> W3CCompactTests =>
-            ProcessManifest(Path.Combine("resources", "jsonld11"), "compact-manifest.jsonld");
-
-        public static IEnumerable<object[]> W3CFlattenTests =>
-            ProcessManifest(Path.Combine("resources", "jsonld11"), "flatten-manifest.jsonld");
-
-        public static IEnumerable<object[]> W3CToRdfTests =>
-            ProcessManifest(Path.Combine("resources", "jsonld11"), "toRdf-manifest.jsonld");
-
-        public static IEnumerable<object[]> W3CFromRdfTests =>
-            ProcessFromRdfManifest(Path.Combine("resources", "jsonld11"), "fromRdf-manifest.jsonld");
-
-        public static IEnumerable<object[]> W3CFrameTests =>
-            ProcessFrameManifest(Path.Combine("resources", "jsonld-framing11"), "frame-manifest.jsonld");
-
-
-        private static IEnumerable<object[]> ProcessManifest(string resourceDirPath, string manifestPath, string skipTestsPath = null)
-        {
-            var resourceDir = new DirectoryInfo(resourceDirPath);
-            manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
-            var manifestJson = File.ReadAllText(manifestPath);
-            var manifest = JObject.Parse(manifestJson);
-            var skipTests = new List<string>();
-            if (skipTestsPath != null)
-            {
-                skipTestsPath = Path.Combine(resourceDir.FullName, skipTestsPath);
-                skipTests = File.ReadAllLines(skipTestsPath).ToList();
-            }
-
-            var testSuiteBaseIri = manifest.Property("baseIri").Value.Value<string>();
-            var sequence = manifest.Property("sequence").Value as JArray;
-            foreach (var testConfiguration in sequence.OfType<JObject>())
-            {
-                var testId = testConfiguration.Property("@id").Value.Value<string>();
-                var testType = GetTestType(testConfiguration);
-                // For now ignore type as everything in this manifest is a positive test
-                var input = testConfiguration.Property("input").Value.Value<string>();
-                var defaultBaseIri = testSuiteBaseIri + input;
-                if (skipTests.Contains(input)) continue;
-                var context = testConfiguration.Property("context")?.Value.Value<string>();
-
-                var expect = testType == JsonLdTestType.PositiveEvaluationTest
-                    ? testConfiguration.Property("expect").Value.Value<string>()
-                    : null;
-                var expectErrorCodeString = testType == JsonLdTestType.NegativeEvaluationTest
-                    ? testConfiguration.Property("expectErrorCode").Value.Value<string>()
-                    : null;
-                var expectErrorCode = GetErrorCode(expectErrorCodeString);
-                var optionsProperty = testConfiguration.Property("option");
-                string baseIri = defaultBaseIri,
-                    processorMode = null,
-                    expandContext = null,
-                    specVersion = null,
-                    rdfDirection = null;
-                var compactArrays = true;
-                var options = optionsProperty?.Value as JObject;
-                if (options != null)
-                {
-                    foreach (var p in options.Properties())
-                    {
-                        switch (p.Name)
-                        {
-                            case "base":
-                                baseIri = p.Value.Value<string>();
-                                break;
-                            case "processingMode":
-                                processorMode = p.Value.Value<string>();
-                                break;
-                            case "expandContext":
-                                expandContext = Path.Combine(resourceDir.FullName, p.Value.Value<string>());
-                                break;
-                            case "compactArrays":
-                                compactArrays = p.Value.Value<bool>();
-                                break;
-                            case "rdfDirection":
-                                rdfDirection = p.Value.Value<string>();
-                                break;
-                            case "specVersion":
-                                specVersion = p.Value.Value<string>();
-                                break;
-                        }
-                    }
-                }
-                if ("json-ld-1.0".Equals(specVersion)) continue; // Tests that are specifically against the 1.0 version of the spec will not work with a 1.1 processor
-                yield return new object[] {
-                    testId,
-                    testType,
-                    Path.Combine(resourceDir.FullName, input),
-                    context == null ? null : Path.Combine(resourceDir.FullName, context),
-                    expect == null ? null : Path.Combine(resourceDir.FullName, expect),
-                    expectErrorCode,
-                    baseIri,
-                    processorMode,
-                    expandContext,
-                    compactArrays,
-                    rdfDirection
-                };
-            }
-        }
-
-        private static JsonLdTestType GetTestType(JObject testConfiguration)
-        {
-            var types = testConfiguration.Property("@type")?.Value.Values<string>().ToArray();
-            if (types == null) throw new ArgumentException("No @types property on test configuration");
-            if (types.Contains("jld:PositiveEvaluationTest")) return JsonLdTestType.PositiveEvaluationTest;
-            if (types.Contains("jld:NegativeEvaluationTest")) return JsonLdTestType.NegativeEvaluationTest;
-            if (types.Contains("jld:PositiveSyntaxTest")) return JsonLdTestType.PositiveSyntaxTest;
-            if (types.Contains("jld:NegativeSyntaxTest")) return JsonLdTestType.NegativeSyntaxTest;
-            throw new ArgumentException($"Unable to determine test type from @type={types}");
-        }
-
-        private static JsonLdErrorCode? GetErrorCode(string errorCodeString)
-        {
-            if (string.IsNullOrEmpty(errorCodeString)) return null;
-            var errorCodeName = string.Join("", errorCodeString.Split(new [] {' ', '@', '-'}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Capitalize()));
-            if (Enum.IsDefined(typeof(JsonLdErrorCode), errorCodeName))
-            {
-                return (JsonLdErrorCode)Enum.Parse(typeof(JsonLdErrorCode), errorCodeName);
-            }
-
-            throw new ArgumentException($"Unable to process string '{errorCodeString}' as a JsonLdErrorCode enum value",
-                nameof(errorCodeString));
-        }
-
-        public static string Capitalize(this string s)
-        {
-            return s.Substring(0, 1).ToUpper() + s.Substring(1).ToLower();
-        }
-
-        private static IEnumerable<object[]> ProcessFromRdfManifest(string resourceDirPath, string manifestPath, string skipTestsPath = null)
-        {
-            var resourceDir = new DirectoryInfo(resourceDirPath);
-            manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
-            var manifestJson = File.ReadAllText(manifestPath);
-            var manifest = JObject.Parse(manifestJson);
-            var skipTests = ReadSkipTests(skipTestsPath, resourceDir);
-            var sequence = manifest.Property("sequence").Value as JArray;
-            foreach (var testConfiguration in sequence.OfType<JObject>())
-            {
-                var testId = testConfiguration.Property("@id").Value.Value<string>();
-                var testType = GetTestType(testConfiguration);
-                var input = testConfiguration.Property("input").Value.Value<string>();
-                if (skipTests.Contains(input)) continue;
-                var context = testConfiguration.Property("context")?.Value.Value<string>();
-                var expect = testType == JsonLdTestType.PositiveEvaluationTest
-                    ? testConfiguration.Property("expect").Value.Value<string>()
-                    : null;
-                var expectErrorCode = testType == JsonLdTestType.NegativeEvaluationTest
-                    ? GetErrorCode(testConfiguration.Property("expectErrorCode").Value.Value<string>())
-                    : null;
-                var optionsProperty = testConfiguration.Property("option");
-                bool useNativeTypes = false, useRdfType = false, ordered=false;
-                string specVersion = null, rdfDirection = null;
-                var options = optionsProperty?.Value as JObject;
-                if (options != null)
-                {
-                    foreach (var p in options.Properties())
-                    {
-                        switch (p.Name)
-                        {
-                            case "useNativeTypes":
-                                useNativeTypes = p.Value.Value<bool>();
-                                break;
-                            case "useRdfType":
-                                useRdfType = p.Value.Value<bool>();
-                                break;
-                            case "rdfDirection":
-                                rdfDirection = p.Value.Value<string>();
-                                break;
-                            case "specVersion":
-                                specVersion = p.Value.Value<string>();
-                                break;
-                            case "ordered":
-                                ordered = p.Value.Value<bool>();
-                                break;
-                        }
-                    }
-                }
-                if ("json-ld-1.0".Equals(specVersion)) continue; // Tests that are specifically against the 1.0 version of the spec will not work with a 1.1 processor
-                yield return new object[] {
-                    testId,
-                    testType,
-                    Path.Combine(resourceDir.FullName, input),
-                    context == null ? null : Path.Combine(resourceDir.FullName, context),
-                    expect == null ? null : Path.Combine(resourceDir.FullName, expect),
-                    expectErrorCode,
-                    useNativeTypes,
-                    useRdfType,
-                    ordered,
-                    rdfDirection
-                };
-            }
-        }
-
-        private static List<string> ReadSkipTests(string skipTestsPath, DirectoryInfo resourceDir)
-        {
-            var skipTests = new List<string>();
-            if (skipTestsPath != null)
-            {
-                skipTestsPath = Path.Combine(resourceDir.FullName, skipTestsPath);
-                skipTests = File.ReadAllLines(skipTestsPath).ToList();
-            }
-            return skipTests;
-        }
-
-        private static IEnumerable<object[]> ProcessFrameManifest(string resourceDirPath, string manifestPath, string skipTestsPath = null)
-        {
-            var resourceDir = new DirectoryInfo(resourceDirPath);
-            var skipTests = ReadSkipTests(skipTestsPath, resourceDir);
-            manifestPath = Path.Combine(resourceDir.FullName, manifestPath);
-            var manifestJson = File.ReadAllText(manifestPath);
-            var manifest = JObject.Parse(manifestJson);
-            var sequence = manifest.Property("sequence").Value as JArray;
-            foreach (var testConfiguration in sequence.OfType<JObject>())
-            {
-                var testId = testConfiguration.Property("@id").Value.Value<string>();
-                var testType = GetTestType(testConfiguration);
-                var input = testConfiguration.Property("input").Value.Value<string>();
-                if (skipTests.Contains(input)) continue;
-                var frame = testConfiguration.Property("frame")?.Value.Value<string>();
-                var expect = testType == JsonLdTestType.PositiveEvaluationTest
-                    ? testConfiguration.Property("expect").Value.Value<string>()
-                    : null;
-                var expectErrorCode = testType == JsonLdTestType.NegativeEvaluationTest
-                    ? testConfiguration.Property("expectErrorCode").Value.Value<string>()
-                    : null;
-                var optionsProperty = testConfiguration.Property("option");
-                var pruneBlankNodeIdentifiers = false;
-                var options = optionsProperty?.Value as JObject;
-                if (options != null)
-                {
-                    foreach (var p in options.Properties())
-                    {
-                        switch (p.Name)
-                        {
-                            case "pruneBlankNodeIdentifiers":
-                                pruneBlankNodeIdentifiers = p.Value.Value<bool>();
-                                break;
-                        }
-                    }
-                }
-                yield return new object[] {
-                    testId,
-                    testType,
-                    Path.Combine(resourceDir.FullName, input),
-                    Path.Combine(resourceDir.FullName, frame),
-                    expect == null ? null : Path.Combine(resourceDir.FullName, expect),
-                    expectErrorCode,
-                    pruneBlankNodeIdentifiers
-                };
-            }
         }
     }
 }
