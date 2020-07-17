@@ -36,6 +36,10 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         Null,
         /// <summary>
+        /// @graph container mapping
+        /// </summary>
+        Graph,
+        /// <summary>
         /// @list container mapping
         /// </summary>
         List,

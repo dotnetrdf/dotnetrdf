@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
@@ -40,10 +41,14 @@ namespace VDS.RDF.JsonLd
         public JObject Subjects => GraphMap[GraphName] as JObject;
         public Stack<string> GraphStack { get; set; }
         public JObject Link { get; set; }
+        public bool Embedded { get; set; }
+
+        private readonly Dictionary<string, Dictionary<string, Tuple<JToken, string>>> _embeds;
 
         public FramingState(JsonLdProcessorOptions options, JObject graphMap, string graphName)
         {
             Embed = options.Embed;
+            Embedded = false;
             ExplicitInclusion = options.Explicit;
             RequireAll = options.RequireAll;
             OmitDefault = options.OmitDefault;
@@ -51,6 +56,40 @@ namespace VDS.RDF.JsonLd
             GraphName = graphName;
             GraphStack = new Stack<string>();
             Link = new JObject();
+            _embeds = new Dictionary<string, Dictionary<string, Tuple<JToken, string>>>();
+        }
+
+        public void TrackEmbeddedNodes(bool forceNew)
+        {
+            if (forceNew || !_embeds.ContainsKey(GraphName))
+            {
+                _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
+            }
+        }
+
+        public bool HasEmbeddedNode(string id)
+        {
+            return _embeds[GraphName].ContainsKey(id);
+        }
+
+        public void AddEmbeddedNode(string id, JToken node, string property)
+        {
+            if (!_embeds.ContainsKey(GraphName))
+            {
+                _embeds[GraphName] = new Dictionary<string, Tuple<JToken, string>>();
+            }
+
+            _embeds[GraphName][id] = new Tuple<JToken, string>(node, property);
+        }
+
+        public Tuple<JToken, string> GetEmbeddedNode(string id)
+        {
+            if (_embeds.ContainsKey(GraphName) && _embeds[GraphName].ContainsKey(id))
+            {
+                return _embeds[GraphName][id];
+            }
+
+            return null;
         }
     }
 }

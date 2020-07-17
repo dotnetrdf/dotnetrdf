@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+using System;
+
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
@@ -36,6 +38,10 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         Always,
         /// <summary>
+        /// @first
+        /// </summary>
+        First,
+        /// <summary>
         /// @last
         /// </summary>
         Last,
@@ -43,6 +49,10 @@ namespace VDS.RDF.JsonLd
         /// @link
         /// </summary>
         Link,
+        /// <summary>
+        /// @once
+        /// </summary>
+        Once,
         /// <summary>
         /// @never
         /// </summary>

@@ -39,7 +39,7 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// The collection of active term definitions indexed by the term key.
         /// </summary>
-        private Dictionary<string, JsonLdTermDefinition> _termDefinitions;
+        private readonly Dictionary<string, JsonLdTermDefinition> _termDefinitions;
 
         /// <summary>
         /// Create a new empty context.
@@ -49,12 +49,26 @@ namespace VDS.RDF.JsonLd
             _termDefinitions = new Dictionary<string, JsonLdTermDefinition>();
         }
 
+        /// <summary>
+        /// Create a new empty context with the Base and OriginalBase properties
+        /// both set to the specified base URI.
+        /// </summary>
+        /// <param name="baseIri">The base IRI.</param>
+        public JsonLdContext(Uri baseIri)
+        {
+            Base = OriginalBase = baseIri;
+            _termDefinitions = new Dictionary<string, JsonLdTermDefinition>();
+        }
+
         private Uri _base;
         /// <summary>
         /// Get or set the base IRI specified by this context.
         /// </summary>
         /// <remarks>The value may be a relative or an absolute IRI or null.</remarks>
-        public Uri Base { get { return _base; } set { _base = value; HasBase = true; } }
+        public Uri Base { 
+            get => _base;
+            set { _base = value; HasBase = true; }
+        }
 
         /// <summary>
         /// Returns true if the Base property of this context has been explicitly set.
@@ -62,10 +76,23 @@ namespace VDS.RDF.JsonLd
         public bool HasBase { get; private set; }
 
         /// <summary>
+        /// Get the base IRI that this context was originally created with.
+        /// </summary>
+        public Uri OriginalBase
+        {
+            get;
+        }
+
+        /// <summary>
         /// Get the default language code specified by this context.
         /// </summary>
         /// <remarks>May be null.</remarks>
         public string Language { get; set; }
+
+        /// <summary>
+        /// Get or set the direction used when a string does not have a direction associated with it directly.
+        /// </summary>
+        public LanguageDirection? BaseDirection { get; set; }
 
         /// <summary>
         /// Get the default vocabulary IRI.
@@ -76,6 +103,11 @@ namespace VDS.RDF.JsonLd
         /// Get or set the version of the JSON-LD syntax specified by this context.
         /// </summary>
         public JsonLdSyntax Version { get; private set; }
+
+        /// <summary>
+        /// Get or set the previous context to be used when a non-propagated context is defined.
+        /// </summary>
+        public JsonLdContext PreviousContext { get; set; }
 
         /// <summary>
         /// An enumeration of the terms defined by this context.
@@ -92,18 +124,32 @@ namespace VDS.RDF.JsonLd
             _termDefinitions.Add(key, termDefinition);
         }
 
+        public JObject InverseContext { get; set; }
+
+        /// <summary>
+        /// Remove the base IRI from this context.
+        /// </summary>
+        /// <remarks>Sets <see cref="Base"/> to null and <see cref="HasBase"/> to false.</remarks>
+        public void RemoveBase()
+        {
+            Base = null;
+            HasBase = false;
+        }
+
         /// <summary>
         /// Create a deep clone of this context.
         /// </summary>
         /// <returns>A new JsonLdContext that is a clone of this context.</returns>
         public JsonLdContext Clone()
         {
-            var clone = new JsonLdContext
+            var clone = new JsonLdContext(OriginalBase)
             {
                 Base = Base,
                 HasBase = HasBase,
                 Language = Language,
+                BaseDirection = BaseDirection,
                 Version = Version,
+                PreviousContext = PreviousContext,
                 Vocab = Vocab,
             };
             foreach(var termDefEntry in _termDefinitions)
@@ -127,30 +173,44 @@ namespace VDS.RDF.JsonLd
         /// Remote an existing term definition.
         /// </summary>
         /// <param name="term">The key for the term to be removed.</param>
-        public void RemoveTerm(string term)
+        /// <returns>The removed term definition, or null if the term was not defined in this context.</returns>
+        public JsonLdTermDefinition RemoveTerm(string term)
         {
+            if (!_termDefinitions.TryGetValue(term, out var termDefinition)) return null;
             _termDefinitions.Remove(term);
+            return termDefinition;
+
         }
 
         /// <summary>
-        /// Get an existing term defintiion.
+        /// Get an existing term definition.
         /// </summary>
         /// <param name="term">The key for the term to be retrieved.</param>
-        /// <returns>The term definition found for the specified key or null if there is no term definition defined for that key.</returns>
-        public JsonLdTermDefinition GetTerm(string term)
+        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions.</param>
+        /// <returns>The term definition found for the specified key or a default empty term definition if there is no term definition defined for that key.</returns>
+        public JsonLdTermDefinition GetTerm(string term, bool includeAliases = false)
         {
-            return _termDefinitions.TryGetValue(term, out var ret) ? ret : null;
+            if (_termDefinitions.TryGetValue(term, out var ret)) return ret;
+            return includeAliases ? _termDefinitions.Values.FirstOrDefault(td => td.IriMapping.Equals(term)) : null;
         }
 
+
         /// <summary>
-        /// Attempt to get an existing term defintion.
+        /// Attempt to get an existing term definition.
         /// </summary>
         /// <param name="term">The key for the term to be retrieved.</param>
         /// <param name="termDefinition">Receives the term definition found.</param>
+        /// <param name="includeAliases">Include searching for <paramref name="term"/> against the <see cref="JsonLdTermDefinition.IriMapping"/> values of the term definitions.</param>
         /// <returns>True if an entry was found for <paramref name="term"/>, false otherwise.</returns>
-        public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition)
+        public bool TryGetTerm(string term, out JsonLdTermDefinition termDefinition, bool includeAliases = false)
         {
-            return _termDefinitions.TryGetValue(term, out termDefinition);
+            var foundTerm =  _termDefinitions.TryGetValue(term, out termDefinition);
+            if (foundTerm || !includeAliases) return foundTerm;
+            foreach (var alias in GetAliases(term))
+            {
+                if (_termDefinitions.TryGetValue(alias, out termDefinition)) return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -163,6 +223,24 @@ namespace VDS.RDF.JsonLd
             if (keyword == null) throw new ArgumentNullException(nameof(keyword));
             return _termDefinitions.Where(entry => keyword.Equals(entry.Value?.IriMapping)).Select(entry => entry.Key);
         }
-    }
 
+        /// <summary>
+        /// Determine if this context contains any protected term definitions.
+        /// </summary>
+        /// <returns>True if any term definition in this context is protected, false otherwise.</returns>
+        public bool HasProtectedTerms()
+        {
+            return _termDefinitions.Values.Any(td => td.Protected);
+        }
+
+        /// <summary>
+        /// Check if this context contains a Term Definition for a specific term.
+        /// </summary>
+        /// <param name="term">The term to check for.</param>
+        /// <returns>True if this context contains a definition for <paramref name="term"/>, false otherwise.</returns>
+        public bool HasTerm(string term)
+        {
+            return _termDefinitions.ContainsKey(term);
+        }
+    }
 }
