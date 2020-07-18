@@ -30,6 +30,9 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
+    /// <summary>
+    /// Base class for the API and Framing JSON-LD processors.
+    /// </summary>
     public class JsonLdProcessorBase
     {
         /// <summary>
@@ -43,6 +46,9 @@ namespace VDS.RDF.JsonLd
             return new JArray(token);
         }
 
+        /// <summary>
+        /// The list of JSON-LD keywords added by the Framing specification.
+        /// </summary>
         public static readonly string[] JsonLdFramingKeywords =
         {
             "@default",
@@ -62,6 +68,9 @@ namespace VDS.RDF.JsonLd
             return token.Type == JTokenType.Object && !token.Children().Any();
         }
 
+        /// <summary>
+        /// The list of JSON-LD keywords defined by the API and Processing specification.
+        /// </summary>
         public static readonly string[] JsonLdKeywords =
         {
             "@base",
@@ -91,7 +100,7 @@ namespace VDS.RDF.JsonLd
         };
 
         /// <summary>
-        /// Determine if the specified string is a JSON-LD keyword.
+        /// Determine if the specified string is a JSON-LD keyword (either API or Framing).
         /// </summary>
         /// <param name="value"></param>
         /// <returns>True if <paramref name="value"/> is a JSON-LD keyword, false otherwise.</returns>
@@ -232,7 +241,7 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Compare to value objects
+        /// Compare to value objects.
         /// </summary>
         /// <param name="t1"></param>
         /// <param name="t2"></param>
@@ -282,23 +291,35 @@ namespace VDS.RDF.JsonLd
         /// <param name="propertyIsArray">True if the value of the property is always an array.</param>
         public static void RemoveValue(JObject subject, string property, JToken value, bool propertyIsArray = false)
         {
-            var values = EnsureArray(subject[property]).Where((t) => !CompareValues(t, value)).ToList();
-            if (values.Count == 0)
+            var values = EnsureArray(subject[property]).Where(t => !CompareValues(t, value)).ToList();
+            switch (values.Count)
             {
-                subject.Remove(property);
-            }
-            else if (values.Count == 1 && !propertyIsArray)
-            {
-                subject[property] = values[0];
-            }
-            else
-            {
-                var array = new JArray();
-                foreach (var v in values) array.Add(v);
-                subject[property] = array;
+                case 0:
+                    subject.Remove(property);
+                    break;
+                case 1 when !propertyIsArray:
+                    subject[property] = values[0];
+                    break;
+                default:
+                {
+                    var array = new JArray();
+                    foreach (var v in values) array.Add(v);
+                    subject[property] = array;
+                    break;
+                }
             }
         }
 
+        /// <summary>
+        /// Adds a value to a subject. If the value is a array, all values in the array will be added.
+        /// </summary>
+        /// <param name="subject">The subject to add the value to.</param>
+        /// <param name="property">The property that relates the value to the subject.</param>
+        /// <param name="value">The value to add.</param>
+        /// <param name="propertyIsArray">True if the property is always an array. Defaults to false.</param>
+        /// <param name="valueIsArray">True if the value to be added should be preserved as an array. Defaults to false.</param>
+        /// <param name="allowDuplicate">True to allow duplicates. Defaults to true.</param>
+        /// <param name="prependValue">True to prepend <paramref name="value"/> to any existing values, false to append. Defaults to false.</param>
         public static void AddValue(JObject subject, string property, JToken value,
             bool propertyIsArray = false, bool valueIsArray = false, bool allowDuplicate = true,
             bool prependValue = false)
