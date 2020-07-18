@@ -36,7 +36,7 @@ namespace VDS.RDF.JsonLd
     public class JsonLdTermDefinition
     {
         /// <summary>
-        /// Create a new term definition
+        /// Create a new term definition.
         /// </summary>
         public JsonLdTermDefinition()
         {

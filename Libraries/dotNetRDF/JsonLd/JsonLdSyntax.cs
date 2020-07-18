@@ -39,7 +39,7 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// The currently in-development 1.1 version of the JSON-LD syntax
         /// </summary>
-        /// <remarks>PLEASE NOTE: the features supported by this version of the parser are subject to change as the specificiation is still in development.</remarks>
+        /// <remarks>PLEASE NOTE: the features supported by this version of the parser are subject to change as the specification is still in development.</remarks>
         JsonLd11,
     }
 }
