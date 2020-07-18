@@ -28,10 +28,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
-using VDS.RDF.Query;
+using VDS.RDF.Parsing;
 using Exception = System.Exception;
 using JObject = Newtonsoft.Json.Linq.JObject;
 
@@ -43,7 +41,8 @@ namespace VDS.RDF.JsonLd
     public class JsonLdProcessor : JsonLdProcessorBase
     {
         private Uri _base;
-        private readonly JsonLdProcessorOptions _options;
+        private JsonLdProcessorOptions _options;
+
 
         private static readonly string[] TermDefinitionKeys = {
             "@id",
@@ -260,10 +259,10 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 5.4 - Otherwise, context is a context definition.
-                var contextObject = context as JObject; // TODO: Rename local variable to contextDefinition
+                var contextDefinition = context as JObject;
 
                 // 5.5 - If context has an @version entry:
-                var versionProperty = contextObject.Property("@version");
+                var versionProperty = contextDefinition.Property("@version");
                 if (versionProperty != null)
                 {
                     // 5.5.1 - If the associated value is not 1.1, an invalid @version value has been detected, and processing is aborted.
@@ -281,7 +280,7 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 5.6 - If context has an @import entry: 
-                var importProperty = contextObject.Property("@import");
+                var importProperty = contextDefinition.Property("@import");
                 if (importProperty != null)
                 {
                     // 5.6.1 - If processing mode is json-ld-1.0, an invalid context entry error has been detected and processing is aborted.
@@ -311,12 +310,12 @@ namespace VDS.RDF.JsonLd
                     }
                     // 5.6.8 - Set context to the result of merging context into import context, replacing common entries with those from context.
                     var tmp = new JObject(importContext);
-                    tmp.Merge(contextObject);
-                    contextObject = tmp;
+                    tmp.Merge(contextDefinition);
+                    contextDefinition = tmp;
                 }
 
                 // 5.7 - If context has an @base key and remote contexts is empty, i.e., the currently being processed context is not a remote context
-                var baseProperty = contextObject.Property("@base");
+                var baseProperty = contextDefinition.Property("@base");
                 if (baseProperty != null && remoteContexts.Count == 0)
                 {
                     // 5.7.1 - Initialize value to the value associated with the @base entry.
@@ -354,7 +353,7 @@ namespace VDS.RDF.JsonLd
 
                 
                 // 5.8 - If context has an @vocab key:
-                var contextProperty = contextObject.Property("@vocab");
+                var contextProperty = contextDefinition.Property("@vocab");
                 if (contextProperty != null)
                 {
                     // 5.8.1 - Initialize value to the value associated with the @vocab key.
@@ -388,7 +387,7 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 5.9 - If context has an @language key
-                var languageProperty = contextObject.Property("@language");
+                var languageProperty = contextDefinition.Property("@language");
                 if (languageProperty != null)
                 {
                     // 5.9.1 - Initialize value to the value associated with the @language key.
@@ -402,7 +401,11 @@ namespace VDS.RDF.JsonLd
                         case JTokenType.String:
                             // 5.9.3 - Otherwise, if value is string, the default language of result is set to value.
                             result.Language = value.Value<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
-                            // TODO:  If value is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
+                            if (!LanguageTag.IsWellFormed(result.Language))
+                            {
+                                Warn(JsonLdErrorCode.MalformedLanguageTag, 
+                                    $"The value of the @language property ({result.Language}) is not a well-formed BCP-47 language tag.");
+                            }
                             break;
                         default:
                             // 5.9.3 (cont) - If it is not a string, an invalid default language error has been detected and processing is aborted.
@@ -412,7 +415,7 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 5.10 - If context has an @direction entry
-                var directionProperty = contextObject.Property("@direction");
+                var directionProperty = contextDefinition.Property("@direction");
                 if (directionProperty != null)
                 {
                     // 5.10.1 - If processing mode is json - ld - 1.0, an invalid context entry error has been detected and processing is aborted.
@@ -425,7 +428,7 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 5.11 - context has an @propagate entry:
-                var propagateProperty = contextObject.Property("@propagate");
+                var propagateProperty = contextDefinition.Property("@propagate");
                 if (propagateProperty != null)
                 {
                     // 5.11.1 - If processing mode is json - ld - 1.0, an invalid context entry error has been detected and processing is aborted.
@@ -446,7 +449,7 @@ namespace VDS.RDF.JsonLd
                 // Create Term Definition algorithm, passing result for active context, context for local context, key, defined, base URL, the value of the @protected
                 // entry from context, if any, for protected, override protected, and a copy of remote contexts. 
                 var @protected = false;
-                var protectedProperty = contextObject.Property("@protected");
+                var protectedProperty = contextDefinition.Property("@protected");
                 if (protectedProperty != null)
                 {
                     if (protectedProperty.Value.Type != JTokenType.Boolean)
@@ -457,12 +460,12 @@ namespace VDS.RDF.JsonLd
 
                     @protected = protectedProperty.Value.Value<bool>();
                 }
-                foreach (var property in contextObject.Properties())
+                foreach (var property in contextDefinition.Properties())
                 {
                     var key = property.Name;
                     if (!JsonLdContextKeywords.Contains(key))
                     {
-                        CreateTermDefinition(result, contextObject, key, defined, baseUrl, @protected, overrideProtected, new List<Uri>(remoteContexts) );
+                        CreateTermDefinition(result, contextDefinition, key, defined, baseUrl, @protected, overrideProtected, new List<Uri>(remoteContexts) );
                     }
                 }
 
@@ -470,7 +473,7 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        private LanguageDirection ParseLanguageDirection(JToken value)
+        private static LanguageDirection ParseLanguageDirection(JToken value)
         {
             switch (value.Type)
             {
@@ -496,7 +499,7 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private string SerializeLanguageDirection(LanguageDirection dir)
+        private static string SerializeLanguageDirection(LanguageDirection dir)
         {
             switch (dir)
             {
@@ -600,7 +603,7 @@ namespace VDS.RDF.JsonLd
             defined[term] = false;
 
             // 3 - Initialize value to a copy of the value associated with the entry term in local context.
-            var v = localContext[term].DeepClone();
+            var v = localContext[term]?.DeepClone();
 
             // 4 - If term is @type, and processing mode is json-ld-1.0, a keyword redefinition error has been detected and processing is aborted.
             if (term.Equals("@type"))
@@ -617,7 +620,7 @@ namespace VDS.RDF.JsonLd
                 // Any other value means that a keyword redefinition error has been detected and processing is aborted.
                 ValidateTypeRedefinition(v);
             }
-            else if (JsonLdProcessorBase.IsKeyword(term))
+            else if (IsKeyword(term))
             {
                 // 5 Otherwise, since keywords cannot be overridden, term MUST NOT be a keyword and a keyword redefinition error has been detected and processing is aborted.
                 throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition,
@@ -638,7 +641,7 @@ namespace VDS.RDF.JsonLd
             // 7 - If value is null, convert it to a map consisting of a single entry whose key is @id and whose value is null.
             if (v == null || v.Type == JTokenType.Null)
             {
-                v = new JObject(new JProperty("@id", null));
+                v = new JObject(new JProperty("@id", JValue.CreateNull()));
             }
             
             // 8 - Otherwise, if value is a string, convert it to a map consisting of a single entry whose key is @id and whose value is value. Set simple term to true.
@@ -651,8 +654,10 @@ namespace VDS.RDF.JsonLd
             // 9 - Otherwise, value MUST be a map, if not, an invalid term definition error has been detected and processing is aborted. Set simple term to false.
             if (v.Type != JTokenType.Object)
             {
-                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition, "A term definition must be a string, a map or null.");
+                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
+                    "A term definition must be a string, a map or null.");
             }
+
             var value = v as JObject;
             
             // 10 - Create a new term definition, definition, initializing prefix flag to false, protected to protected, and reverse property to false.
@@ -668,14 +673,16 @@ namespace VDS.RDF.JsonLd
                 // 12.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
                 if (typeValue.Type != JTokenType.String)
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.Type}");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, 
+                        $"Invalid type mapping for term {term}. The @type value must be a string, got {typeValue.Type}");
                 }
 
                 // 12.2 - Set type to the result of IRI expanding type, using local context, and defined.
                 var type = ExpandIri(activeContext, typeValue.Value<string>(), true, false, localContext, defined);
                 if ((type == "@json" || type == "@none") && _options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, $"Invalid type mapping for term {term}. Unexpanded value was {typeValue.Value<string>()}, and the expanded type IRI is '{type}', but the JSON-LD Processing mode is set to 1.0 which does not support @none or @json types.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, 
+                        $"Invalid type mapping for term {term}. Unexpanded value was {typeValue.Value<string>()}, and the expanded type IRI is '{type}', but the JSON-LD Processing mode is set to 1.0 which does not support @none or @json types.");
                 }
                 if (type == "@id" || type == "@vocab" || type == "@json" || type == "@none" || IsAbsoluteIri(type))
                 {
@@ -684,7 +691,8 @@ namespace VDS.RDF.JsonLd
                 }
                 else
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, $"Invalid type mapping for term {term}. Expected @type value to expand to @id, @vocab, @json, @none or an absolute IRI. Unexpanded value was {typeValue.Value<string>()}, expanded value was {type}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping, 
+                        $"Invalid type mapping for term {term}. Expected @type value to expand to @id, @vocab, @json, @none or an absolute IRI. Unexpanded value was {typeValue.Value<string>()}, expanded value was {type}.");
                 }
             }
 
@@ -697,19 +705,22 @@ namespace VDS.RDF.JsonLd
                 if (GetPropertyValue(activeContext, value, "@id") != null ||
                     GetPropertyValue(activeContext, value, "@nest") != null)
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty, $"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty, 
+                        $"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
                 }
 
                 // 13.2 - If the value associated with the @reverse key is not a string, an invalid IRI mapping error has been detected and processing is aborted.
                 if (reverseValue.Type != JTokenType.String)
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"@reverse property value must be a string on term {term}");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, 
+                        $"@reverse property value must be a string on term {term}");
                 }
 
                 // 13.3 - If the value associated with the @reverse entry is a string having the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
                 if (MatchesKeywordProduction(reverseValue.Value<string>()))
                 {
-                    Warn(JsonLdErrorCode.InvalidIriMapping, "$@reverse property value on {term} matches the JSON-LD keyword production @[a-zA-Z]+.");
+                    Warn(JsonLdErrorCode.InvalidIriMapping, 
+                        "$@reverse property value on {term} matches the JSON-LD keyword production @[a-zA-Z]+.");
                     return;
                 }
 
@@ -719,7 +730,8 @@ namespace VDS.RDF.JsonLd
                 var iriMapping = ExpandIri(activeContext, reverseValue.Value<string>(), true, false, localContext, defined);
                 if (iriMapping == null || !(IsAbsoluteIri(iriMapping) || IsBlankNodeIdentifier(iriMapping)))
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, $"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping, 
+                        $"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
                 }
                 definition.IriMapping = iriMapping;
 
@@ -745,12 +757,14 @@ namespace VDS.RDF.JsonLd
                         }
                         else
                         {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty, $"Invalid reverse property for term {term}. Reverse properties only support set and index container types. ");
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty, 
+                                $"Invalid reverse property for term {term}. Reverse properties only support set and index container types. ");
                         }
                     }
                     else
                     {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, $"Invalid @container property for term {term}. Property value must be a string or null.");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping, 
+                            $"Invalid @container property for term {term}. Property value must be a string or null.");
                     }
                 }
                 // 13.6 - Set the reverse property flag of definition to true.
@@ -779,7 +793,7 @@ namespace VDS.RDF.JsonLd
                     // 14.2.2 - If the value associated with the @id entry is not a keyword, but has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return;
                     // processors SHOULD generate a warning.
                     var idValueString = idValue.Value<string>();
-                    if (!JsonLdProcessorBase.IsKeyword(idValueString) && MatchesKeywordProduction(idValueString))
+                    if (!IsKeyword(idValueString) && MatchesKeywordProduction(idValueString))
                     {
                         Warn(JsonLdErrorCode.InvalidIdValue,
                             $"The value of the @id property of {term} matches the pattern @[a-zA-Z] which is reserved by the JSON-LD specification. This property will be ignored.");
@@ -789,7 +803,7 @@ namespace VDS.RDF.JsonLd
                     var iriMapping = ExpandIri(activeContext, idValue.Value<string>(), vocab:true, documentRelative:false, localContext:localContext, defined:defined);
                     
                     // If the resulting IRI mapping is neither a keyword, nor an IRI, nor a blank node identifier, an invalid IRI mapping error has been detected and processing is aborted;
-                    if (!JsonLdProcessorBase.IsKeyword(iriMapping) && !IsAbsoluteIri(iriMapping) && !IsBlankNodeIdentifier(iriMapping))
+                    if (!IsKeyword(iriMapping) && !IsAbsoluteIri(iriMapping) && !IsBlankNodeIdentifier(iriMapping))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                             $"Invalid IRI Mapping. The value of the @id property of term '{term}' must be a keyword, an absolute IRI or a blank node identifier. Got value {iriMapping}.");
@@ -798,7 +812,8 @@ namespace VDS.RDF.JsonLd
                     // if it equals @context, an invalid keyword alias error has been detected and processing is aborted.
                     if ("@context".Equals(iriMapping))
                     {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidKeywordAlias, $"Invalid keyword alias at term {term}.");
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidKeywordAlias, 
+                            $"Invalid keyword alias at term {term}.");
                     }
 
                     definition.IriMapping = iriMapping;
@@ -975,7 +990,7 @@ namespace VDS.RDF.JsonLd
                 switch (languageValue.Type)
                 {
                     // 22.1 - Initialize language to the value associated with the @language entry, which MUST be either null or a string.
-                    // TODO: If language is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
+                    // If language is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
                     // Otherwise, an invalid language mapping error has been detected and processing is aborted.
                     // 22.2 - Set the language mapping of definition to language. 
                     case JTokenType.Null:
@@ -983,6 +998,11 @@ namespace VDS.RDF.JsonLd
                         break;
                     case JTokenType.String:
                         definition.LanguageMapping = languageValue.Value<string>().ToLowerInvariant(); // Processors MAY normalize language tags to lower case.
+                        if (!LanguageTag.IsWellFormed(definition.LanguageMapping))
+                        {
+                            Warn(JsonLdErrorCode.MalformedLanguageTag, 
+                                $"The definition of term {term} includes an @language property whose value is not a well-formed BCP-47 language tag.");
+                        }
                         break;
                     default:
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageMapping, 
@@ -1124,7 +1144,7 @@ namespace VDS.RDF.JsonLd
             var hasTerm = activeContext.TryGetTerm(value, out var termDefinition);
 
             // 4. If active context has a term definition for value, and the associated IRI mapping is a keyword, return that keyword.
-            if (hasTerm && JsonLdProcessorBase.IsKeyword(termDefinition.IriMapping))
+            if (hasTerm && IsKeyword(termDefinition.IriMapping))
             {
                 return termDefinition.IriMapping;
             }
@@ -1132,7 +1152,7 @@ namespace VDS.RDF.JsonLd
             // 5. If vocab is true and the active context has a term definition for value, return the associated IRI mapping.
             if (vocab && hasTerm)
             {
-                return termDefinition?.IriMapping;
+                return termDefinition.IriMapping;
             }
 
             // 6. If value contains a colon (:) anywhere after the first character, it is either an IRI, a compact IRI, or a blank node identifier:
@@ -1188,51 +1208,13 @@ namespace VDS.RDF.JsonLd
             return value;
         }
 
-        private static IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
-        {
-            foreach(var linkHeaderValue in linkHeaderValues)
-            {
-                var fields = linkHeaderValue.Split(';').Select(x => x.Trim());
-                var linkValue = fields.First().TrimStart('<').TrimEnd('>');
-                var relTypes = new List<string>();
-                var mediaTypes = new List<string>();
-                foreach(var field in fields)
-                {
-                    var split = field.Split(new char[] { '=' }, 2);
-                    if (split.Length == 2)
-                    {
-                        var key = split[0].Trim();
-                        var value = split[1].Trim();
-                        if (key.Equals("rel"))
-                        {
-                            value = value.Trim('"');
-                            relTypes.AddRange(value.Split(' '));
-                        }
-                        else if (key.Equals("type"))
-                        {
-                            mediaTypes.Add(value);
-                        }
-                    }
-                }
-
-                yield return new WebLink {LinkValue = linkValue, RelationTypes = relTypes, MediaTypes = mediaTypes};
-            }
-        }
-
-        internal class WebLink
-        {
-            public string LinkValue { get; set; }
-            public List<string> RelationTypes { get; set; }
-            public List<string> MediaTypes { get; set; }
-        }
-
         /// <summary>
         /// Implementation of the Expansion Algorithm.
         /// </summary>
         /// <param name="activeContext"></param>
         /// <param name="activeProperty"></param>
         /// <param name="element"></param>
-        /// <param name="baseUrl">The base URL assocaited with the document URL of the original document to expand.</param>
+        /// <param name="baseUrl">The base URL associated with the document URL of the original document to expand.</param>
         /// <param name="frameExpansion"></param>
         /// <param name="ordered"></param>
         /// <param name="fromMap"></param>
@@ -1240,7 +1222,7 @@ namespace VDS.RDF.JsonLd
         private JToken ExpandAlgorithm(JsonLdContext activeContext, string activeProperty, JToken element, Uri baseUrl, 
             bool frameExpansion = false, bool ordered = false, bool fromMap = false)
         {
-            JToken result = null;
+            JToken result;
 
             // 1 - If element is null, return null.
             if (element.Type == JTokenType.Null)
@@ -1279,14 +1261,14 @@ namespace VDS.RDF.JsonLd
             }
 
             // 5 - If element is an array,
-            if (element.Type == JTokenType.Array)
+            if (element is JArray elementArray)
             {
                 // 5.1 - Initialize an empty array, result.
                 result = new JArray();
-                var resultArray = result as JArray;
+                var resultArray = (JArray) result;
 
                 // 5.2 - For each item in element:
-                foreach(var item in (element as JArray))
+                foreach(var item in elementArray)
                 {
                     // 5.2.1 - Initialize expanded item to the result of using this algorithm recursively, passing active context, active property, and item as element.
                     var expandedItem = ExpandAlgorithm(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
@@ -1301,9 +1283,9 @@ namespace VDS.RDF.JsonLd
                             expandedItem = new JObject(new JProperty("@list", expandedItem));
                         }
                         // 5.2.3 - If expanded item is an array, append each of its items to result. Otherwise, if expanded item is not null, append it to result.
-                        if (expandedItem.Type == JTokenType.Array)
+                        if (expandedItem is JArray expandedItemArray)
                         {
-                            foreach (var arrayItem in expandedItem as JArray)
+                            foreach (var arrayItem in expandedItemArray)
                             {
                                 resultArray.Add(arrayItem);
                             }
@@ -1373,7 +1355,6 @@ namespace VDS.RDF.JsonLd
 
             // 12 - Initialize two empty maps, result and nests. Initialize input type to expansion of the last value of the first entry in element expanding to @type (if any), ordering entries lexicographically by key. Both the key and value of the matched entry are IRI expanded. 
             // NOTE: nests is only used in steps 13/14 so is initialized in ExpandElement
-            // TODO: Should inputType also be calculated in ExpandElement rather than here?
             result = new JObject();
             var resultObject = result as JObject;
             var firstTypeProperty = elementObject.Properties()
@@ -1432,7 +1413,7 @@ namespace VDS.RDF.JsonLd
             // 16 - Otherwise, if result contains the entry @type and its associated value is not an array, set it to an array containing only the associated value.
             else if (resultObject.ContainsKey("@type"))
             {
-                resultObject["@type"] = JsonLdProcessorBase.EnsureArray(resultObject["@type"]);
+                resultObject["@type"] = EnsureArray(resultObject["@type"]);
             }
             // 17 - Otherwise, if result contains the entry @set or @list: 
             else if (resultObject.ContainsKey("@set"))
@@ -1470,7 +1451,6 @@ namespace VDS.RDF.JsonLd
                     if (resultObject.Count == 0 ||
                         resultObject.Properties().Any(p => p.Name.Equals("@value") || p.Name.Equals("@list")))
                     {
-                        // TOCHECK: If a wildcard @graph value is replaced with null during frame expansion framing test t0047 fails
                         if (!frameExpansion)
                         {
                             result = null;
@@ -1506,11 +1486,11 @@ namespace VDS.RDF.JsonLd
                 var expandedProperty = ExpandIri(activeContext, key, true);
                 // 13.3 - If expanded property is null or it neither contains a colon (:) nor it is a keyword, drop key by continuing to the next key.
                 if (expandedProperty == null) continue;
-                if (!expandedProperty.Contains(':') && !JsonLdProcessorBase.IsKeyword(expandedProperty)) continue;
+                if (!expandedProperty.Contains(':') && !IsKeyword(expandedProperty)) continue;
                 JToken expandedValue = null;
 
                 // 13.4 - If expanded property is a keyword: 
-                if (JsonLdProcessorBase.IsKeyword(expandedProperty))
+                if (IsKeyword(expandedProperty))
                 {
                     // 13.4.1 - If active property equals @reverse, an invalid reverse property map error has been detected and processing is aborted.
                     if ("@reverse".Equals(activeProperty))
@@ -1641,7 +1621,7 @@ namespace VDS.RDF.JsonLd
                         // 13.4.6.1 - If processing mode is json-ld-1.0, continue with the next key from element.
                         if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10) continue;
                         // 13.4.6.2 - Set expanded value to the result of using this algorithm recursively passing active context, null for active property, value for element, base URL, and the frameExpansion and ordered flags, ensuring that the result is an array.
-                        expandedValue = JsonLdProcessorBase.EnsureArray(ExpandAlgorithm(activeContext, null, value, baseUrl, frameExpansion,
+                        expandedValue = EnsureArray(ExpandAlgorithm(activeContext, null, value, baseUrl, frameExpansion,
                             ordered));
                         // 13.4.6.3 - If any element of expanded value is not a node object, an invalid @included value error has been detected and processing is aborted.
                         if (expandedValue.Children().Any(c => !IsNodeObject(c)))
@@ -1701,20 +1681,27 @@ namespace VDS.RDF.JsonLd
                         // 13.4.8.1 - If value is not a string, an invalid language-tagged string error has been detected and processing is aborted.
                         // When the frameExpansion flag is set, value MAY be an empty map or an array of zero or more strings.
                         if (!frameExpansion && !IsString(value) ||
-                            frameExpansion && !(IsString(value) || JsonLdProcessorBase.IsEmptyMap(value) || IsArray(value, IsString)))
+                            frameExpansion && !(IsString(value) || IsEmptyMap(value) || IsArray(value, IsString)))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString,
                                 $"Invalid language-tagged string. The expanded property {key} of {activeProperty} expands to an @language property but the value of the {key} is not a string.");
                         }
 
                         // 13.4.8.2 - Otherwise, set expanded value to value.
-                        // TODO: If value is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
+                        // If value is not well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
                         // When the frameExpansion flag is set, expanded value will be an array of one or more string values or an array containing an empty map.
-                        expandedValue = frameExpansion ? JsonLdProcessorBase.EnsureArray(value) : value;
+                        expandedValue = frameExpansion ? EnsureArray(value) : value;
                         // Processors MAY normalize language tags to lower case.
                         if (IsString(expandedValue))
                         {
-                            expandedValue = new JValue(expandedValue.Value<string>().ToLower());
+                            var languageTag = expandedValue.Value<string>().ToLowerInvariant();
+                            if (!LanguageTag.IsWellFormed(languageTag))
+                            {
+                                Warn(JsonLdErrorCode.MalformedLanguageTag,
+                                    $"The @language value of {activeProperty} is not a well-formed BCP-47 language tag.");
+                            }
+
+                            expandedValue = new JValue(languageTag);
                         }
                     }
 
@@ -1730,7 +1717,7 @@ namespace VDS.RDF.JsonLd
                         // 13.4.9.2 - If value is neither "ltr" nor "rtl", an invalid base direction error has been detected and processing is aborted.
                         // When the frameExpansion flag is set, value MAY be an empty map or an array of zero or more strings.
                         if (!frameExpansion && !IsValidBaseDirection(value) ||
-                            frameExpansion && !(IsValidBaseDirection(value) || JsonLdProcessorBase.IsEmptyMap(value) ||
+                            frameExpansion && !(IsValidBaseDirection(value) || IsEmptyMap(value) ||
                                                 IsArray(value, IsString)))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseDirection,
@@ -1740,8 +1727,8 @@ namespace VDS.RDF.JsonLd
                         // 13.4.9.3 - Otherwise, set expanded value to value.
                         // When the frameExpansion flag is set, expanded value will be an array of one or more string values or an array containing an empty map.
                         expandedValue = value;
-                        if (frameExpansion) expandedValue = JsonLdProcessorBase.EnsureArray(expandedValue);
-                        if (frameExpansion && !(IsArray(expandedValue, IsString) || IsArray(expandedValue, JsonLdProcessorBase.IsEmptyMap)))
+                        if (frameExpansion) expandedValue = EnsureArray(expandedValue);
+                        if (frameExpansion && !(IsArray(expandedValue, IsString) || IsArray(expandedValue, IsEmptyMap)))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseDirection,
                                 $"Invalid base direction. During frame expansion, the value of the property {key} of {activeProperty} does not expand to an array of strings or an array containing an empty map.");
@@ -1773,7 +1760,7 @@ namespace VDS.RDF.JsonLd
 
                         // 13.4.11.2 - Otherwise, initialize expanded value to the result of using this algorithm recursively passing active context, active property, value for element,
                         // base URL, and the frameExpansion and ordered flags, ensuring that the result is an array.
-                        expandedValue = JsonLdProcessorBase.EnsureArray(
+                        expandedValue = EnsureArray(
                             ExpandAlgorithm(activeContext, activeProperty, value, baseUrl, frameExpansion, ordered));
                     }
 
@@ -1798,8 +1785,7 @@ namespace VDS.RDF.JsonLd
                         // 13.4.13.2 - Otherwise initialize expanded value to the result of using this algorithm recursively, passing active context, @reverse as active property, value as element, base URL, and the frameExpansion and ordered flags.
                         expandedValue = ExpandAlgorithm(activeContext, "@reverse", value, baseUrl, frameExpansion,
                             ordered);
-                        var expandedValueObject = expandedValue as JObject;
-                        if (expandedValueObject != null)
+                        if (expandedValue is JObject expandedValueObject)
                         {
                             // 13.4.13.3 - If expanded value contains an @reverse entry, i.e., properties that are reversed twice, execute for each of its property and item the following steps: 
                             if (expandedValueObject.ContainsKey("@reverse"))
@@ -1863,7 +1849,6 @@ namespace VDS.RDF.JsonLd
                     // 13.4.15 - When the frameExpansion flag is set, if expanded property is any other framing keyword (@default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, value for element, base URL, and the frameExpansion and ordered flags.
                     if (frameExpansion && JsonLdFramingKeywords.Contains(expandedProperty))
                     {
-                        // KA - TODO: Check this with the editors: Spec says pass activeProperty, but makes more sense to pass expandedProperty 
                         expandedValue = ExpandAlgorithm(activeContext, expandedProperty, value, baseUrl, frameExpansion,
                             ordered);
                     }
@@ -1897,9 +1882,7 @@ namespace VDS.RDF.JsonLd
 
                     // 13.7.2 - Initialize direction to the default base direction from active context.
                     // 13.7.3 - If key's term definition in active context has a direction mapping, update direction with that value.
-                    var direction = termDefinition.DirectionMapping.HasValue
-                        ? termDefinition.DirectionMapping
-                        : activeContext.BaseDirection;
+                    var direction = termDefinition.DirectionMapping ?? activeContext.BaseDirection;
 
                     // 13.7.4 - For each key - value pair language-language value in value, ordered lexicographically by language if ordered is true: 
                     var properties = (value as JObject).Properties();
@@ -1922,11 +1905,17 @@ namespace VDS.RDF.JsonLd
                             }
 
                             // 13.4.7.2.3 - Initialize a new map v consisting of two key-value pairs: (@value-item) and (@language-language).
-                            // TODO: If item is neither @none nor well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
-                            var v = new JObject(new JProperty("@value", item),
-                                new JProperty("@language",
-                                    language
-                                        .ToLowerInvariant())); // Processors MAY normalize language tags to lower case.
+                            // If item is neither @none nor well-formed according to section 2.2.9 of [BCP47], processors SHOULD issue a warning.
+                            language = language.ToLowerInvariant();
+                            if (!("@none".Equals(language) || LanguageTag.IsWellFormed(language)))
+                            {
+                                Warn(JsonLdErrorCode.MalformedLanguageTag,
+                                    $"The property {languageMappingProperty} in {activeProperty} must be either a " +
+                                    $"well-formed BCP-47 language tag or '@none'.");
+                            }
+                            var v = new JObject(
+                                new JProperty("@value", item), 
+                                new JProperty("@language", language.ToLowerInvariant())); // Processors MAY normalize language tags to lower case.
 
                             // 13.4.7.2.4 - If language is @none, or expands to @none, remove @language from v.
                             if (language.Equals("@none") || activeContext.GetAliases("@none").Contains(language))
@@ -1963,7 +1952,7 @@ namespace VDS.RDF.JsonLd
                     foreach (var indexValueProperty in properties)
                     {
                         var index = indexValueProperty.Name;
-                        var indexValue = JsonLdProcessorBase.EnsureArray(indexValueProperty.Value);
+                        var indexValue = EnsureArray(indexValueProperty.Value);
 
                         JsonLdContext mapContext = null;
                         // 13.8.3.1 - If container mapping includes @id or @type, initialize map context to the previous context from active context if it exists, otherwise, set map context to active context.
@@ -1975,7 +1964,7 @@ namespace VDS.RDF.JsonLd
                             if (containerMapping.Contains(JsonLdContainer.Type))
                             {
                                 var indexTermDefinition = mapContext.GetTerm(index);
-                                if (indexTermDefinition != null && indexTermDefinition.LocalContext != null)
+                                if (indexTermDefinition?.LocalContext != null)
                                 {
                                     mapContext = ProcessContext(mapContext, indexTermDefinition.LocalContext,
                                         indexTermDefinition.BaseUrl);
@@ -1995,7 +1984,7 @@ namespace VDS.RDF.JsonLd
                         // Already done at initialization
 
                         // 13.8.3.6 - Initialize index value to the result of using this algorithm recursively, passing map context as active context, key as active property, index value as element, base URL, true for from map, and the frameExpansion and ordered flags.
-                        indexValue = JsonLdProcessorBase.EnsureArray(ExpandAlgorithm(mapContext, key, indexValue, baseUrl, frameExpansion,
+                        indexValue = EnsureArray(ExpandAlgorithm(mapContext, key, indexValue, baseUrl, frameExpansion,
                             ordered, true));
 
                         // 13.8.3.7 - For each item in index value: 
@@ -2005,7 +1994,7 @@ namespace VDS.RDF.JsonLd
                             // 13.8.7.3.1 - If container mapping includes @graph, and item is not a graph object, set item to a new map containing the key - value pair @graph-item, ensuring that the value is represented using an array.
                             if (containerMapping.Contains(JsonLdContainer.Graph) && !IsGraphObject(item))
                             {
-                                item = new JObject(new JProperty("@graph", JsonLdProcessorBase.EnsureArray(item)));
+                                item = new JObject(new JProperty("@graph", EnsureArray(item)));
                             }
 
                             // 13.8.3.7.2 - If container mapping includes @index, index key is not @index, and expanded index is not @none: 
@@ -2078,7 +2067,7 @@ namespace VDS.RDF.JsonLd
                 // 13.11 If container mapping includes @list and expanded value is not already a list object, convert expanded value to a list object by first setting it to an array containing only expanded value if it is not already an array, and then by setting it to a map containing the key-value pair @list-expanded value.
                 if (containerMapping.Contains(JsonLdContainer.List) && !IsListObject(expandedValue))
                 {
-                    expandedValue = new JObject(new JProperty("@list", JsonLdProcessorBase.EnsureArray(expandedValue)));
+                    expandedValue = new JObject(new JProperty("@list", EnsureArray(expandedValue)));
                 }
 
                 // 13.12 - If container mapping includes @graph, and includes neither @id nor @index, convert expanded value into an array, if necessary,
@@ -2092,7 +2081,7 @@ namespace VDS.RDF.JsonLd
                     {
                         // 13.12.1 - Convert ev into a graph object by creating a map containing the key-value pair @graph-ev where ev is represented as an array.
                         // Note: This may lead to a graph object including another graph object, if ev was already in the form of a graph object.
-                        expandedValueArray.Add(new JObject(new JProperty("@graph", JsonLdProcessorBase.EnsureArray(ev))));
+                        expandedValueArray.Add(new JObject(new JProperty("@graph", EnsureArray(ev))));
                     }
 
                     expandedValue = expandedValueArray;
@@ -2149,24 +2138,24 @@ namespace VDS.RDF.JsonLd
                 foreach (var nestedValue in nestedValues)
                 {
                     // 14.2.1 - If nested value is not a map, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
-                    var nestedValueObject = nestedValue as JObject;
-                    if (nestedValueObject == null)
+                    // 14.2.2 - Recursively repeat steps 13 and 14 using nested value for element. 
+                    if (nestedValue is JObject nestedValueObject)
+                    {
+                        if (nestedValueObject.Properties()
+                            .Any(p => ExpandIri(activeContext, p.Name, true).Equals("@value")))
+                        {
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
+                                $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value contains a property which is, or which expands to @value.");
+                        }
+
+                        ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
+                    }
+                    else
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                             $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value is not a JSON object.");
                     }
-
-                    if (nestedValueObject.Properties()
-                        .Any(p => ExpandIri(activeContext, p.Name, true).Equals("@value")))
-                    {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
-                            $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value contains a property which is, or which expands to @value.");
-                    }
-
-                    // 14.2.2 - Recursively repeat steps 13 and 14 using nested value for element. 
-                    ExpandElement(resultObject, inputType, activeContext, activeProperty, baseUrl, frameExpansion, ordered, nestedValueObject, typeScopedContext);
                 }
-
                 nestingProperty.Value = expandedNestedValues;
             }
         }
@@ -2181,7 +2170,7 @@ namespace VDS.RDF.JsonLd
                 }
                 else
                 {
-                    o[entry] = JsonLdProcessorBase.EnsureArray(o[entry]);
+                    o[entry] = EnsureArray(o[entry]);
                 }
             }
 
@@ -2236,567 +2225,6 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        /*
-        private void ExpandKeys(JsonLdContext activeContext, string activeProperty, JObject elementObject, JObject result, bool frameExpansion)
-        {
-            JArray nests = new JArray();
-            // 8 - For each key and value in element, ordered lexicographically by key:
-            foreach (var property in elementObject.Properties().OrderBy(p => p.Name))
-            {
-                var key = property.Name;
-                var value = property.Value;
-                JToken expandedValue = null;
-
-                // 8.1 - If key is @context, continue to the next key.
-                if (key.Equals("@context"))
-                {
-                    continue;
-                }
-
-                // 8.2 - Set expanded property to the result of using the IRI Expansion algorithm, passing active context, key for value, and true for vocab.
-                var expandedProperty = ExpandIri(activeContext, key, true);
-
-                // 8.3 - If expanded property is null or it neither contains a colon (:) nor it is a keyword, drop key by continuing to the next key.
-                if (expandedProperty == null ||
-                    !(expandedProperty.Contains(':') || IsKeyword(expandedProperty)))
-                {
-                    continue;
-                }
-
-                // 8.4 - If expanded property is a keyword:
-                if (IsKeyword(expandedProperty))
-                {
-                    // 8.4.1 - If active property equals @reverse, an invalid reverse property map error has been detected and processing is aborted.
-                    if ("@reverse".Equals(activeProperty))
-                    {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReversePropertyMap, "Reverse property map cannot contain a keyword");
-                    }
-
-                    // 8.4.2 - If result has already an expanded property member, an colliding keywords error has been detected and processing is aborted.
-                    if (result.Property(expandedProperty) != null)
-                    {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.CollidingKeywords, $"Colliding Keywords: {expandedProperty}");
-                    }
-
-                    // 8.4.3 - If expanded property is @id and value is not a string, 
-                    // an invalid @id value error has been detected and processing is aborted.
-                    // Otherwise, set expanded value to the result of using the IRI Expansion algorithm, 
-                    // passing active context, value, and true for document relative. 
-                    // When the frame expansion flag is set, value may be an empty dictionary, 
-                    // or an array of one or more strings. Expanded value will be an array of one 
-                    // or more of these, with string values expanded using the IRI Expansion Algorithm.
-
-                    if (expandedProperty.Equals("@id"))
-                    {
-                        switch (value.Type)
-                        {
-                            case JTokenType.Object:
-                                if (frameExpansion && !(value as JObject).Properties().Any())
-                                {
-                                    expandedValue = new JArray(new JObject());
-                                }
-                                else
-                                {
-                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
-                                        "Invalid @id value");
-                                }
-                                break;
-                            case JTokenType.Array:
-                                if (frameExpansion)
-                                {
-                                    expandedValue = new JArray();
-                                    foreach (var item in (value as JArray))
-                                    {
-                                        if (item.Type != JTokenType.String)
-                                        {
-                                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
-                                                "Invalid @id value");
-                                        }
-                                        (expandedValue as JArray).Add(ExpandIri(activeContext, item.Value<string>(),
-                                            documentRelative: true));
-                                    }
-                                }
-                                else
-                                {
-                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
-                                        "Invalid @id value");
-                                }
-                                break;
-                            case JTokenType.String:
-                                if (frameExpansion)
-                                {
-                                    expandedValue = new JArray(ExpandIri(activeContext, value.Value<string>(),
-                                        documentRelative: true));
-                                }
-                                else
-                                {
-                                    expandedValue = ExpandIri(activeContext, value.Value<string>(),
-                                        documentRelative: true);
-                                }
-                                break;
-                            default:
-                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIdValue,
-                                    "Invalid @id value");
-                        }
-                    }
-
-                    // 8.4.4 - If expanded property is @type
-                    if (expandedProperty.Equals("@type"))
-                    {
-                        if (value.Type == JTokenType.String)
-                        {
-                            expandedValue = ExpandIri(activeContext, value.Value<string>(), true, true);
-                        }
-                        else if (value.Type == JTokenType.Array)
-                        {
-                            var array = new JArray();
-                            foreach (var item in (value as JArray))
-                            {
-                                if (item.Type != JTokenType.String)
-                                {
-                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue, "The value of the @type property must be a string or an array of strings");
-                                }
-                                array.Add(ExpandIri(activeContext, item.Value<string>(), true, true));
-                            }
-                            expandedValue = array;
-                        }
-                        // When the frame expansion flag is set, value may also be an empty dictionary.
-                        else if (value.Type == JTokenType.Object && frameExpansion &&
-                                   !((value as JObject).Properties().Any()))
-                        {
-                            expandedValue = new JObject();
-                        }
-                        else
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue, "The value of the @type property must be a string or an array of strings");
-                        }
-                    }
-
-                    // 8.4.5 - If expanded property is @graph,...
-                    if (expandedProperty.Equals("@graph"))
-                    {
-                        // set expanded value to the result of using this algorithm recursively 
-                        // passing active context, @graph for active property, and value for 
-                        // element, ensuring that expanded value is an array of one or more dictionaries.
-                        expandedValue = Expand(activeContext, "@graph", value);
-                        // NOTE: The following lines are supposed to ensure the array contains at least one dictionary,
-                        // but it causes a failure in the JSON-LD.org test suite on the test specifically for expanding an empty graph
-                        // var array = expandedValue as JArray;
-                        //if (array.Count == 0) { array.Add(new JObject());  }
-                    }
-
-                    // 8.4.6 - If expanded property is @value and value is not a scalar or null, an invalid value object value error has been detected and processing is aborted. Otherwise, set expanded value to value. 
-                    // If expanded value is null, set the @value member of result to null and continue with the next key from element. 
-                    // Null values need to be preserved in this case as the meaning of an @type member depends on the existence of an @value member. When the frame expansion flag is set, value may also be an empty dictionary or an array of scalar values. Expanded value will be null, or an array of one or more scalar values.
-                    // When the frame expansion flag is set, value may also be an empty dictionary or an array of scalar values. 
-                    // Expanded value will be null, or an array of one or more scalar values.
-                    if (expandedProperty.Equals("@value"))
-                    {
-                        if (!(value.Type == JTokenType.Null || IsScalar(value) ||
-                              (frameExpansion && value.Type == JTokenType.Array) ||
-                              (frameExpansion && value.Type == JTokenType.Object)))
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
-                                "The expanded value of @value must be a scalar or null.");
-                        }
-                        expandedValue = value;
-                        if (expandedValue.Type == JTokenType.Object)
-                        {
-                            if ((expandedValue as JObject).Properties().Any())
-                            {
-                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
-                                    $"Expected an empty object when expanding @value at {value.Path}.");
-                            }
-                        }
-                        else if (expandedValue.Type == JTokenType.Array)
-                        {
-                            if ((expandedValue as JArray).Any(item => !(item.Type == JTokenType.Null || IsScalar(item)))
-                            )
-                            {
-                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObject,
-                                    $"Expected array of scalar values when expanding @value at {value.Path}");
-                            }
-                        }
-                        if (expandedValue == null || expandedValue.Type == JTokenType.Null)
-                        {
-                            result["@value"] = null;
-                            continue;
-                        }
-                    }
-
-                    // 8.4.7 - If expanded property is @language and value is not a string, an invalid language-tagged string error has been detected and processing is aborted. Otherwise, set expanded value to lowercased value. When the frame expansion flag is set, value may also be an empty dictionary or an array of zero or strings. Expanded value will be an array of one or more string values converted to lower case.
-                    if (expandedProperty.Equals("@language"))
-                    {
-                        if (value.Type == JTokenType.String)
-                        {
-                            expandedValue = value.Value<string>().ToLowerInvariant();
-                        }
-                        // When the frame expansion flag is set, value may also be an empty dictionary or an array of zero or strings. Expanded value will be an array of one or more string values converted to lower case.
-                        else if (value.Type == JTokenType.Array && frameExpansion)
-                        {
-                            expandedValue = new JArray();
-                            foreach (var item in value as JArray)
-                            {
-                                if (item.Type != JTokenType.String)
-                                {
-                                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected a JSON string, got {item.Type}.");
-                                }
-                                (expandedValue as JArray).Add(item.Value<string>().ToLowerInvariant());
-                            }
-                        }
-                        else if (value.Type == JTokenType.Object && frameExpansion)
-                        {
-                            if ((value as JObject).Properties().Any())
-                            {
-                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected an object value to have no properties.");
-                            }
-                            expandedValue = value;
-                        }
-                        else
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString, $"Invalid value for @language property in {activeProperty}. Expected a JSON string, got {value.Type}.");
-                        }
-                    }
-
-                    // 8.4.8 - If expanded property is @index and value is not a string, an invalid @index value error has been detected and processing is aborted. Otherwise, set expanded value to value.
-                    if (expandedProperty.Equals("@index"))
-                    {
-                        if (value.Type == JTokenType.String)
-                        {
-                            expandedValue = value;
-                        }
-                        else
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIndexValue, $"Invalid @index value. Expected a JSON string, got {value.Type}");
-                        }
-                    }
-
-                    // 8.4.9 - If expanded property is @list:
-                    if (expandedProperty.Equals("@list"))
-                    {
-                        // 8.4.9.1 - If active property is null or @graph, continue with the next key from element to remove the free-floating list.
-                        if (activeProperty == null || activeProperty.Equals("@graph"))
-                        {
-                            continue;
-                        }
-
-                        // 8.4.9.2 - Otherwise, initialize expanded value to the result of using this algorithm recursively passing active context, active property, and value for element.
-                        expandedValue = Expand(activeContext, activeProperty, value);
-
-                        // 8.4.9.3 - If expanded value is a list object, a list of lists error has been detected and processing is aborted.
-                        if (IsListObject(expandedValue))
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.ListOfLists, "The expanded value of an @list property must not be a list object");
-                        }
-                    }
-
-                    // 8.4.10 - If expanded property is @set, set expanded value to the result of using this algorithm recursively, passing active context, active property, and value for element.
-                    if (expandedProperty.Equals("@set"))
-                    {
-                        expandedValue = ExpandAlgorithm(activeContext, activeProperty, value);
-                    }
-
-                    // 8.4.11 - If expanded property is @reverse and value is not a JSON object, an invalid @reverse value error has been detected and processing is aborted.
-                    if (expandedProperty.Equals("@reverse"))
-                    {
-                        if (value.Type != JTokenType.Object)
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseValue, $"The value of an @reverse property must be a JSON object. Found {value.Type}.");
-                        }
-
-                        // 8.4.11.1 - Initialize expanded value to the result of using this algorithm recursively, passing active context, @reverse as active property, and value as element.
-                        expandedValue = ExpandAlgorithm(activeContext, "@reverse", value);
-                        
-                        // 8.4.11.2 - If expanded value contains an @reverse member, i.e., properties that are reversed twice...
-                        var nestedReverseProperty = (expandedValue as JObject).Property("@reverse");
-                        if (nestedReverseProperty != null)
-                        {
-                            // ... execute for each of its property and item the following steps:
-                            foreach (var nestedProperty in (nestedReverseProperty.Value as JObject).Properties())
-                            {
-                                // 8.4.11.2.1 - If result does not have a property member, create one and set its value to an empty array.
-                                if (result.Property(nestedProperty.Name) == null)
-                                {
-                                    result.Add(new JProperty(nestedProperty.Name, new JArray()));
-                                }
-                                // 8.4.11.2.2 - Append item to the value of the property member of result.
-                                var resultArray = result.Property(nestedProperty.Name).Value as JArray;
-                                if (nestedProperty.Value is JArray)
-                                {
-                                    foreach (var item in (nestedProperty.Value as JArray))
-                                    {
-                                        resultArray.Add(item);
-                                    }
-                                }
-                                else
-                                {
-                                    resultArray.Add(nestedProperty.Value);
-                                }
-                            }
-                        }
-
-                        // 8.4.11.3 - If expanded value contains members other than @reverse:
-                        if ((expandedValue as JObject).Properties().Any(x => !x.Name.Equals("@reverse")))
-                        {
-                            // 8.4.11.3.1 - If result does not have an @reverse member, create one and set its value to an empty JSON object.
-                            if (result.Property("@reverse") == null)
-                            {
-                                result.Add(new JProperty("@reverse", new JObject()));
-                            }
-
-                            // 8.4.11.3.2 - Reference the value of the @reverse member in result using the variable reverse map.
-                            var reverseMap = result.Property("@reverse").Value as JObject;
-
-                            // 8.4.11.3.3 - For each property and items in expanded value other than @reverse:
-                            foreach (var entry in (expandedValue as JObject).Properties())
-                            {
-                                // 8.4.11.3.3.1 - For each item in items:
-                                var items = entry.Value as JArray;
-                                foreach (var item in items)
-                                {
-                                    // 8.4.11.3.3.1.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
-                                    if (IsValueObject(item) || IsListObject(item))
-                                    {
-                                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReversePropertyValue,
-                                            "Reverse property value must not be a value object or list object.");
-                                    }
-                                    // 8.4.11.3.3.1.2 - If reverse map has no property member, create one and initialize its value to an empty array.
-                                    if (reverseMap.Property(entry.Name) == null)
-                                    {
-
-                                        reverseMap[entry.Name] = new JArray();
-                                    }
-                                    // 8.4.11.3.3.1.3 - ppend item to the value of the property member in reverse map.
-                                    (reverseMap[entry.Name] as JArray).Add(item);
-                                }
-                            }
-                        }
-                        // 8.4.11.4 - Continue with the next key from element.
-                        continue;
-                    }
-    
-                    // 8.4.12 - If expanded property is @nest, add key to nests, initializing it to an empty array, if necessary. Continue with the next key from element.
-                    if (expandedProperty.Equals("@nest"))
-                    {
-                        if (nests == null)
-                        {
-                            nests = new JArray();
-                        }
-                        nests.Add(key);
-                        continue;
-                    }
-
-                    // 8.4.13 - When the frame expansion flag is set, if expanded property is any other framing keyword (@explicit, @default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, and value for element.
-                    if (frameExpansion && JsonLdFramingKeywords.Contains(expandedProperty))
-                    {
-                        expandedValue = ExpandAlgorithm(activeContext, expandedProperty, value);
-                    }
-                    // 8.4.14 - Unless expanded value is null, set the expanded property member of result to expanded value.
-                    if (expandedValue != null)
-                    {
-                        result.Add(new JProperty(expandedProperty, expandedValue));
-                    }
-
-                    // 8.4.15 - Continue with the next key from element.
-                    continue;
-                }
-
-                // 8.5 - If key's term definition in active context has a local context, set term context to the result of the Context Processing algorithm, passing active context and the value of the key's local context as local context. Otherwise, set term context to active context.
-                var termDefinition = activeContext.GetTerm(key);
-                JsonLdContext termContext;
-                if (termDefinition?.LocalContext != null)
-                {
-                    termContext = ProcessContext(activeContext, termDefinition.LocalContext);
-                }
-                else
-                {
-                    termContext = activeContext;
-                }
-
-                // 8.6 - If key's container mapping in term context is @language and value is a JSON object then value is expanded from a language map as follows:
-                termDefinition = termContext.GetTerm(key);
-                if (termDefinition?.ContainerMapping == JsonLdContainer.Language && value is JObject)
-                {
-                    // 8.6.1 - Initialize expanded value to an empty array.
-                    expandedValue = new JArray();
-                    // 8.6.2 - For each key-value pair language-language value in value, ordered lexicographically by language:
-                    foreach (var p in (value as JObject).Properties().OrderBy(p => p.Name))
-                    {
-                        var language = p.Name;
-                        // 8.6.2.1 - If language value is not an array set it to an array containing only language value.
-                        var languageValue = p.Value.Type == JTokenType.Array ? p.Value as JArray : new JArray(p.Value);
-
-                        // 8.6.2.2 - For each item in language value:
-                        foreach (var item in languageValue)
-                        {
-                            // 8.6.2.2.1 - item must be a string or null, otherwise an invalid language map value error has been detected and processing is aborted.
-                            if (!(item.Type == JTokenType.Null || item.Type == JTokenType.String))
-                            {
-                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageMapValue, $"Invalid value for language map at {activeProperty}. Expected null or JSON string, got {item.Type}");
-                            }
-                            // 8.6.2.2.2 - Append a JSON object to expanded value that consists of two key-value pairs: (@value-item) and (@language-lowercased language), unless item is null.
-                            if (item.Type != JTokenType.Null)
-                            {
-                                (expandedValue as JArray).Add(new JObject(
-                                    new JProperty("@value", item),
-                                    new JProperty("@language", language.ToLowerInvariant())));
-                            }
-                        }
-                    }
-                }
-                // 8.7 - Otherwise, if key's container mapping in term context is @index, @type, or @id and value is a JSON object then value is expanded from an map as follows:                
-                else if ((termDefinition?.ContainerMapping == JsonLdContainer.Index ||
-                    termDefinition?.ContainerMapping == JsonLdContainer.Type ||
-                    termDefinition?.ContainerMapping == JsonLdContainer.Id) &&
-                    value is JObject)
-                {
-                    // 8.7.1 - Initialize expanded value to an empty array.
-                    expandedValue = new JArray();
-                    // 8.7.2 - For each key-value pair index-index value in value, ordered lexicographically by index:
-                    foreach (var p in (value as JObject).Properties().OrderBy(p => p.Name))
-                    {
-                        var index = p.Name;
-                        var indexValue = p.Value;
-                        var indexTermDefinition = termContext.GetTerm(index);
-                        // 8.7.2.1 - If container mapping is @type, and index's term definition in term context has a local context, set map context to the result of the Context Processing algorithm, passing term context as active context and the value of the index's local context as local context. Otherwise, set map context to term context.
-                        var mapContext = 
-                            (termDefinition.ContainerMapping == JsonLdContainer.Type && 
-                             indexTermDefinition?.LocalContext != null) ? 
-                             ProcessContext(activeContext, indexTermDefinition.LocalContext) : 
-                             termContext;
-                        // 8.7.2.2 - If index value is not an array set it to an array containing only index value.
-                        if (!(indexValue is JArray)) indexValue = new JArray(indexValue);
-                        // 8.7.2.3 - Initialize index value to the result of using this algorithm recursively, passing map context as active context, key as active property, and index value as element.
-                        indexValue = Expand(mapContext, key, indexValue);
-                        // 8.7.2.4 - For each item in index value:
-                        foreach (var i in indexValue)
-                        {
-                            // 8.7.2.4.1 - If container mapping is @index and item does not have the key @index, add the key-value pair (@index-index) to item.
-                            var item = i as JObject;
-                            if (termDefinition.ContainerMapping == JsonLdContainer.Index && item.Property("@index") == null)
-                            {
-                                item.Add(new JProperty("@index", index));
-                            }
-                            // 8.7.2.4.2 - Otherwise, if container mapping is @id and item does not have the key @id, add the key-value pair (@id-expanded index) to item, where expanded index is set to the result of using the IRI Expansion algorithm, passing active context, index, and true for document relative.
-                            else if (termDefinition.ContainerMapping == JsonLdContainer.Id && item.Property("@id") == null)
-                            {
-                                var expandedIndex = ExpandIri(activeContext, index, documentRelative: true);
-                                item.Add(new JProperty("@id", expandedIndex));
-                            }
-                            // 8.7.2.4.3 - Otherwise, if container mapping is @type set types to the concatenation of expanded index with any existing values of @type in item, where expanded index is set to the result of using the IRI Expansion algorithm, passing active context, index, true for vocab, and true for document relative and add the key - value pair(@type - types) to item.
-                            else if (termDefinition.ContainerMapping == JsonLdContainer.Type)
-                            {
-                                var expandedIndex = ExpandIri(activeContext, index, true, true);
-                                var existingTypes = item.GetValue("@type") as JArray;
-                                if (existingTypes != null)
-                                {
-                                    existingTypes.Insert(0, expandedIndex);
-                                }
-                                else
-                                {
-                                    item.Add(new JProperty("@type", new JArray(expandedIndex)));
-                                }
-                            }
-                            // 8.7.2.4.4 - Append item to expanded value.
-                            (expandedValue as JArray).Add(item);
-                        }
-                    }
-                }
-                // 8.8 - Otherwise, initialize expanded value to the result of using this algorithm recursively, passing term context as active context, key for active property, and value for element.
-                else
-                {
-                    expandedValue = ExpandAlgorithm(termContext, key, value);
-                }
-                // 8.9 - If expanded value is null, ignore key by continuing to the next key from element.
-                if (expandedValue == null)
-                {
-                    continue;
-                }
-                // 8.10 - If the container mapping associated to key in term context is @list and expanded value is not already a list object, convert expanded value to a list object by first setting it to an array containing only expanded value if it is not already an array, and then by setting it to a JSON object containing the key-value pair @list-expanded value.
-                if (termDefinition?.ContainerMapping == JsonLdContainer.List && !IsListObject(value))
-                {
-                    expandedValue = expandedValue is JArray ? expandedValue : new JArray(expandedValue);
-                    expandedValue = new JObject(new JProperty("@list", expandedValue));
-                }
-                // 8.11 - Otherwise, if the term definition associated to key indicates that it is a reverse property
-                // NOTE: Although the spec says "Otherwise" here, making this an else if means that the expandedValue set above would never get added to the result object (and this results in some test suite failures), so I think the spec is in error here
-                if (termDefinition != null &&  termDefinition.Reverse)
-                {
-                    // 8.11.1 - If result has no @reverse member, create one and initialize its value to an empty JSON object.
-                    if (result.Property("@reverse") == null)
-                    {
-                        result.Add(new JProperty("@reverse", new JObject()));
-                    }
-                    // 8.11.2 - Reference the value of the @reverse member in result using the variable reverse map.
-                    var reverseMap = result.Property("@reverse").Value as JObject;
-                    // 8.11.3 - If expanded value is not an array, set it to an array containing expanded value.
-                    expandedValue = (expandedValue is JArray) ? expandedValue : new JArray(expandedValue);
-                    // 8.11.4 - For each item in expanded value
-                    foreach (var item in expandedValue)
-                    {
-                        // 8.11.4.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
-                        if (IsValueObject(item) || IsListObject(item))
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReversePropertyValue, "Reverse property value must not be a value object or list object.");
-                        }
-                        // 8.11.4.2 - If reverse map has no expanded property member, create one and initialize its value to an empty array.
-                        if (reverseMap.Property(expandedProperty) == null)
-                        {
-                            reverseMap.Add(new JProperty(expandedProperty, new JArray()));
-                        }
-                        (reverseMap[expandedProperty] as JArray).Add(item);
-                    }
-                }
-                // 8.12 - Otherwise, if key is not a reverse property:
-                else if (termDefinition == null || !termDefinition.Reverse)
-                {
-                    // 8.12.1 - If result does not have an expanded property member, create one and initialize its value to an empty array.
-                    if (result.Property(expandedProperty) == null)
-                    {
-                        result.Add(new JProperty(expandedProperty, new JArray()));
-                    }
-                    // 8.12.2 - Append expanded value to value of the expanded property member of result.
-                    if (expandedValue is JArray)
-                    {
-                        foreach (var item in (expandedValue as JArray))
-                        {
-                            (result[expandedProperty] as JArray).Add(item);
-                        }
-                    }
-                    else
-                    {
-                        (result[expandedProperty] as JArray).Add(expandedValue);
-                    }
-                }
-            }
-            // 8.13 - For each key nesting-key in nests
-            foreach (var nestingKey in nests)
-            {
-                // 8.13.1 - Set nested values to the value of nesting-key in element, ensuring that it is an array.
-                var nestedValues = elementObject.GetValue(nestingKey.Value<string>());
-                if (!(nestedValues is JArray))
-                {
-                    nestedValues = new JArray(nestedValues);
-                }
-
-                // 8.13.2 - For each nested value in nested values:
-                foreach (var nestedValue in nestedValues)
-                {
-                    // If nested value is not a JSON object, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
-                    if (!(nestedValue is JObject))
-                    {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, "Nested value must be a JSON object");
-                    }
-                    if ((nestedValue as JObject).Properties().Any(p => ExpandIri(activeContext, p.Name, true).Equals("@value")))
-                    {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue, "Nested values may not contain keys that expand to @value");
-                    }
-                    // 8.13.2.2 - Recursively repeat step 7 using nested value for element.
-                    ExpandKeys(activeContext, activeProperty, nestedValue as JObject, result, frameExpansion);
-                }
-            }
-        }
-*/
 
         /// <summary>
         /// Implementation of the Value Expansion algorithm.
@@ -2968,7 +2396,7 @@ namespace VDS.RDF.JsonLd
             var processor = new JsonLdProcessor(options);
 
             // Set expanded input to the result of using the expand method using input and options.
-            JArray expandedInput = null;
+            JArray expandedInput;
             Uri remoteDocumentUrl = null;
             Uri contextBase = null;
             if (input.Type == JTokenType.String)
@@ -3111,7 +2539,7 @@ namespace VDS.RDF.JsonLd
             var results = new JArray();
             // 16 - Invoke the Framing algorithm, passing state, the keys from subject map in state for subjects, expanded frame, results for parent, and null as active property.
             FrameProcessor.ProcessFrame(state, state.Subjects.Properties().Select(p => p.Name).ToList(), expandedFrame, results, null, 
-                processingMode: options.ProcessingMode.HasValue? options.ProcessingMode.Value : JsonLdProcessingMode.JsonLd11);
+                processingMode: options.ProcessingMode ?? JsonLdProcessingMode.JsonLd11);
 
             // 17 - If the processing mode is not json-ld-1.0, remove the @id entry of each node object in results where the entry value is a blank node identifier which appears only once in any property value within results.
             if (options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
@@ -3408,9 +2836,7 @@ namespace VDS.RDF.JsonLd
                     var asArray =
                         _options.ProcessingMode == JsonLdProcessingMode.JsonLd11 &&
                         aliasTermDefinition != null &&
-                        aliasTermDefinition.ContainerMapping.Contains(JsonLdContainer.Set)
-                            ? true
-                            : !compactArrays;
+                        aliasTermDefinition.ContainerMapping.Contains(JsonLdContainer.Set) || !compactArrays;
                     // 12.2.5 - Use add value to add compacted value to the alias entry in result using as array.
                     AddValue(result, alias, compactedValue, asArray);
 
@@ -3433,7 +2859,7 @@ namespace VDS.RDF.JsonLd
                             if (td != null && td.Reverse)
                             {
                                 // 12.3.2.1.1 - Initialize as array to true if the container mapping for property in the active context includes @set, otherwise the negation of compactArrays.
-                                var asArray = td.ContainerMapping.Contains(JsonLdContainer.Set) ? true : !compactArrays;
+                                var asArray = td.ContainerMapping.Contains(JsonLdContainer.Set) || !compactArrays;
                                 // 12.3.2.1.2 - Use add value to add value to the property entry in result using as array.
                                 AddValue(result, compactedObjectProperty.Name, compactedObjectProperty.Value, asArray);
                                 // 12.3.2.1.3 - Remove the property entry from compacted value.
@@ -3553,11 +2979,10 @@ namespace VDS.RDF.JsonLd
                         ? itemActiveTermDefinition.ContainerMapping
                         : new HashSet<JsonLdContainer>();
                     // 12.8.5 - Initialize as array to true if container includes @set, or if item active property is @graph or @list, otherwise the negation of compactArrays.
-                    var asArray =
-                        (container.Contains(JsonLdContainer.Set) || "@graph".Equals(itemActiveProperty) ||
-                         "@list".Equals(itemActiveProperty))
-                            ? true
-                            : !compactArrays;
+                    var asArray = container.Contains(JsonLdContainer.Set) || 
+                                  "@graph".Equals(itemActiveProperty) ||
+                                   "@list".Equals(itemActiveProperty) || 
+                                  !compactArrays;
                     // 12.8.6 - Initialize compacted item to the result of using this algorithm recursively, passing active context,
                     // item active property for active property, expanded item for element, along with the compactArrays and ordered flags.
                     // If expanded item is a list object or a graph object, use the value of the @list or @graph entries, respectively, for element instead of expanded item.
@@ -4024,7 +3449,7 @@ namespace VDS.RDF.JsonLd
                 // 6.1 - If element has an @id member, set id to its value and remove the member from element. If id is a blank node identifier, replace it with a newly generated blank node identifier passing id for identifier.
                 if (elementObject.ContainsKey("@id"))
                 {
-                    id = elementObject["@id"].Value<string>();
+                    id = elementObject["@id"]?.Value<string>();
                     elementObject.Remove("@id");
                     if (id == null) return; // Required to pass W3C test e122
                     if (IsBlankNodeIdentifier(id))
@@ -4188,14 +3613,13 @@ namespace VDS.RDF.JsonLd
                 {
                     var id = np.Name;
                     var node = np.Value as JObject;
-                    var mergedNode = result[id] as JObject;
-                    if (mergedNode == null)
+                    if (!(result[id] is JObject mergedNode))
                     {
                         result[id] = mergedNode = new JObject(new JProperty("@id", id));
                     }
                     foreach (var nodeProperty in node.Properties())
                     {
-                        if (!JsonLdProcessorBase.IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
+                        if (!IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
                         {
                             MergeValues(mergedNode, nodeProperty.Name, nodeProperty.Value);
                         }
@@ -4292,8 +3716,8 @@ namespace VDS.RDF.JsonLd
             {
                 var termDefinition = activeContext.GetTerm(term);
                 // 3.1 - If the term definition is null, term cannot be selected during compaction, so continue to the next term.
-                // KA: Term defniitions with a null IriMapping are not used for IRI expansion (or compaction) so they should be skipped too.
-                if (termDefinition == null || termDefinition.IriMapping == null)
+                // KA: Term definitions with a null IriMapping are not used for IRI expansion (or compaction) so they should be skipped too.
+                if (termDefinition?.IriMapping == null)
                 {
                     continue;
                 }
@@ -4371,14 +3795,17 @@ namespace VDS.RDF.JsonLd
                 else if (termDefinition.HasLanguageMapping && termDefinition.DirectionMapping.HasValue)
                 {
                     string langDir;
-                    if (termDefinition.LanguageMapping != null && termDefinition.DirectionMapping != LanguageDirection.Unspecified)
+                    if (termDefinition.LanguageMapping != null &&
+                        termDefinition.DirectionMapping != LanguageDirection.Unspecified)
                     {
                         langDir = termDefinition.LanguageMapping.ToLowerInvariant() + "_" +
                                   SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
-                    } else if (termDefinition.LanguageMapping != null)
+                    }
+                    else if (termDefinition.LanguageMapping != null)
                     {
                         langDir = termDefinition.LanguageMapping.ToLowerInvariant();
-                    }else if (termDefinition.DirectionMapping != LanguageDirection.Unspecified)
+                    }
+                    else if (termDefinition.DirectionMapping != LanguageDirection.Unspecified)
                     {
                         langDir = "_" + SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
                     }
@@ -4970,7 +4397,7 @@ namespace VDS.RDF.JsonLd
             if (value.ContainsKey("@id") &&
                 value.Properties().All(p => p.Name.Equals("@id") || p.Name.Equals("@index")))
             {
-                var typeMapping = activeTermDefinition != null ? activeTermDefinition.TypeMapping : null;
+                var typeMapping = activeTermDefinition?.TypeMapping;
                 if (typeMapping != null)
                 {
                     // 6.1 - If the type mapping of active property is set to @id, set result to the result of IRI compacting the value associated with the @id entry using false for vocab.
@@ -5072,82 +4499,6 @@ namespace VDS.RDF.JsonLd
             return t != null && t.Type == JTokenType.String && t.Value<string>().Equals(str, comparisonOptions);
         }
 
-        /*
-        /// <summary>
-        /// Applies the JSON-LD Framing algorithm to the specified input JSON object.
-        /// </summary>
-        /// <param name="input">The RDF data to be framed as a JSON-LD document.</param>
-        /// <param name="frame">The JSON-LD frame to be applied.</param>
-        /// <param name="options">Processor options.</param>
-        /// <returns>A JSON object representing the framed RDF data.</returns>
-        public static JObject Frame(JToken input, JToken frame, JsonLdProcessorOptions options)
-        {
-            options.ProcessingMode = JsonLdProcessingMode.JsonLd11FrameExpansion;
-            var expandedFrame = Expand(frame, options);
-            options.ProcessingMode = JsonLdProcessingMode.JsonLd11;
-            var expandedInput = Expand(input, options);
-            var frameProcessor = new JsonLdProcessor(options);
-            var context = frame["@context"] ?? new JObject();
-            if (frame is JObject && frame["@graph"] != null) options.FrameDefault = true;
-            return frameProcessor.FrameAlgorithm(expandedInput, expandedFrame, context);
-        }
-
-        private JObject FrameAlgorithm(JToken expandedInput, JToken expandedFrame, JToken context)
-        {
-            // If an error is detected in the expanded frame, a invalid frame error has been detected and processing is aborted. Need more specifics as to what constitutes a valid frame.
-            ValidateFrame(expandedFrame);
-
-            // Set graph map to the result of performing the Node Map Generation algorithm on expanded input.
-            var graphMap = GenerateNodeMapAlgorithm(expandedInput, _options);
-
-            // If the frameDefault option is present with the value true, set graph name to @default. 
-            // Otherwise, create merged node map using the the Merge Node Maps algorithm with graph map and add merged node map as the value of @merged in graph map and set graph name to @merged.
-            var graphName = _options.FrameDefault ? "@default" : "@merged";
-            if (!_options.FrameDefault)
-            {
-                var mergedNodeMap = MergeNodeMaps(graphMap);
-                graphMap["@merged"] = mergedNodeMap;
-            }
-            var framingState = new FramingState(_options, graphMap, graphName);
-            var results = new JArray();
-            ProcessFrame(framingState, framingState.Subjects.Properties().Select(p => p.Name).ToList(), expandedFrame,
-                results, null);
-
-            // If the pruneBlankNodeIdentifiers is true, remove the @id member of each node object where the member value is a blank node identifier which appears only once in any property value within result.
-            if (_options.PruneBlankNodeIdentifiers)
-            {
-                PruneBlankNodeIdentifiers(results);
-            }
-
-            // Using result from the recursive algorithm, set compacted results to the result of using the compact method using results, context, and options.
-            var compactedResults = CompactWrapper(context, new JObject(), null, results, _options.CompactArrays);
-            //var compactedResults = Compact(results, context, _options);
-
-            // If compacted results does not have a top-level @graph keyword, or if its value is not an array, modify compacted results to place the non @context properties of compacted results into a dictionary contained within the array value of @graph.
-            if (compactedResults["@graph"] == null)
-            {
-                var compactedResultContext = compactedResults["@context"];
-                compactedResults.Remove("@context");
-                var updatedResults = new JObject(
-                    new JProperty("@graph", 
-                    compactedResults.Properties().Any() ? new JArray(compactedResults) : new JArray()));
-                if (compactedResultContext != null)
-                {
-                    updatedResults.Add("@context", compactedResultContext);
-                }
-                compactedResults = updatedResults;
-            }
-
-            // Recursively, replace all key-value pairs in compacted results where the key is @preserve with the value from the key-pair. If the value from the key-pair is @null, replace the value with null. If, after replacement, an array contains only the value null remove the value, leaving an empty array.
-            var jsonLdContext = ProcessContext(new JsonLdContext(), context);
-            ReplacePreservedValues(compactedResults, jsonLdContext, _options.CompactArrays);
-            if (compactedResults["@graph"].Type != JTokenType.Array)
-            {
-                compactedResults["@graph"] = new JArray(compactedResults["@graph"]);
-            }
-            return compactedResults;
-        }
-        */
 
         private void ReplacePreservedValues(JToken token, JsonLdContext context, bool compactArrays)
         {
@@ -5161,19 +4512,13 @@ namespace VDS.RDF.JsonLd
                         var preserveValue = o["@preserve"];
                         if (preserveValue.Type == JTokenType.String && preserveValue.Value<string>().Equals("@null"))
                         {
-                            // KA - although spec says only drop null if all elements are null, playground impl and unit test indicate otherwise...
-                            // o.Replace(null);
-                            //if (parent is JArray && parent.All(x => x.Type == JTokenType.Null))
-                            //{
-                            //    parent.Replace(new JArray());
-                            //}
                             if (parent is JArray)
                             {
                                 o.Remove();
                             }
                             else
                             {
-                                o.Replace(null);
+                                o.Replace(JValue.CreateNull());
                             }
                         }
                         else
@@ -5195,13 +4540,12 @@ namespace VDS.RDF.JsonLd
                     
                     if (compactArrays && a.Count == 1)
                     {
-                        var parentProperty = a.Parent as JProperty;
-                        if (parentProperty != null)
+                        if (a.Parent is JProperty parentProperty)
                         {
                             var termDefinition = context.GetTerm(parentProperty.Name);
                             var expandedName = termDefinition?.TypeMapping ?? parentProperty.Name;
-                            if (expandedName != "@graph" && 
-                                expandedName != "@list" && 
+                            if (expandedName != "@graph" &&
+                                expandedName != "@list" &&
                                 (termDefinition == null || termDefinition.ContainerMapping == null))
                             {
                                 a.Replace(a[0]);
@@ -5231,9 +4575,9 @@ namespace VDS.RDF.JsonLd
             {
                 toUpdate.Remove();
             }
-            else if (toUpdate.Value is JArray)
+            else if (toUpdate.Value is JArray valueArray)
             {
-                foreach (var item in (JArray) toUpdate.Value)
+                foreach (var item in valueArray)
                 {
                     if (item.Value<string>().Equals(id))
                     {
@@ -5243,6 +4587,7 @@ namespace VDS.RDF.JsonLd
                 }
             }
         }
+
         private class BlankNodeMapEntry
         {
             public bool IsReferenced;
@@ -5257,8 +4602,7 @@ namespace VDS.RDF.JsonLd
                     var str = token.Value<string>();
                     if (IsBlankNodeIdentifier(str))
                     {
-                        BlankNodeMapEntry mapEntry;
-                        if (!objectMap.TryGetValue(str, out mapEntry))
+                        if (!objectMap.TryGetValue(str, out BlankNodeMapEntry mapEntry))
                         {
                             mapEntry = new BlankNodeMapEntry();
                             objectMap[str] = mapEntry;
@@ -5289,282 +4633,6 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        /*
-        private void ProcessFrame(FramingState state, List<string> subjects, JToken frame, JToken parent,
-            string activeProperty, Stack<string> idStack = null)
-        {
-            // Stack to track circular references when processing embedded nodes
-            if (idStack == null) idStack = new Stack<string>();
-
-            // 1 - If frame is an array, set frame to the first member of the array, which must be a valid frame.
-            var frameArray = frame as JArray;
-            if (frameArray !=null)
-            {
-                frame = frameArray.Count == 0 ? new JObject() : frameArray[0];
-                ValidateFrame(frame);
-            }
-            var frameObject = frame as JObject;
-
-            // 2 - Initialize flags embed, explicit, and requireAll from object embed flag, explicit inclusion flag, and require all flag in state overriding from any property values for @embed, @explicit, and @requireAll in frame.
-            var embed = GetEmbedOption(frameObject, state.Embed);
-            var explicitFlag = GetBooleanOption(frameObject, "@explicit", state.ExplicitInclusion);
-            var requireAll = GetBooleanOption(frameObject, "@requireAll", state.RequireAll);
-
-            // 3 - Create a list of matched subjects by filtering subjects against frame using the Frame Matching algorithm with state, subjects, frame, and requireAll.
-            var matchedSubjects = MatchFrame(state, subjects, frameObject, requireAll);
-
-            // 4 - Set link the the value of link in state associated with graph name in state, creating a new empty dictionary, if necessary.
-            if (state.Link[state.GraphName] == null)
-            {
-                state.Link[state.GraphName] = new JObject();
-            }
-            var link = state.Link[state.GraphName] as JObject;
-
-            // 5 - For each id and associated node object node from the set of matched subjects, ordered by id:
-            foreach (var match in matchedSubjects.OrderBy(x=>x.Key))
-            {
-                var id = match.Key;
-                var node = match.Value;
-
-                // 5.1 - Initialize output to a new dictionary with @id and id and add output to link associated with id.
-                var output = new JObject(new JProperty("@id", id));
-                link[id] = output;
-
-                // 5.2 - If embed is @link and id is in link, node already exists in results. Add the associated node object from link to parent and do not perform additional processing for this node.
-                if (embed == JsonLdEmbed.Link && link[id] != null)
-                {
-                    FramingAppend(parent, node, activeProperty);
-                    continue;
-                }
-                // 5.3 - Otherwise, if embed is @never or if a circular reference would be created by an embed, add output to parent and do not perform additional processing for this node.
-                else if (embed == JsonLdEmbed.Never || idStack.Contains(id))
-                {
-                    FramingAppend(parent, output, activeProperty);
-                    continue;
-                }
-                // 5.4 - Otherwise, if embed is @last, remove any existing embedded node from parent accociate with graph name in state. Requires sorting of subjects. We could consider @sample, to embed just the first matched node. With sorting, we could also consider @first.
-                else if (embed == JsonLdEmbed.Last)
-                {
-                    var parentObject = parent as JObject;
-                    if (parentObject != null)
-                    {
-                        parentObject.Remove(state.GraphName);
-                    }
-                }
-                // 5.5 - If embed is @last or @always
-                if (embed == JsonLdEmbed.Last || embed == JsonLdEmbed.Always)
-                {
-                    idStack.Push(id);
-                    // 5.5.1 - If graph map in state has an entry for id:
-                    if (state.GraphMap[id] != null)
-                    {
-                        bool recurse = false;
-                        JObject subframe = null;
-                        // 5.5.1.1 - If frame does not have the key @graph, set recurse to true, unless graph name in state is @merged and set subframe to a new empty dictionary.
-                        if (frame["@graph"] == null)
-                        {
-                            recurse = !state.GraphName.Equals("@merged");
-                            subframe = new JObject();
-                        }
-                        // 5.5.1.2 - Otherwise, set subframe to the first entry for @graph in frame, or a new empty dictionary, if it does not exist, and set recurse to true, unless id is @merged or @default.
-                        else
-                        {
-                            var graphEntry = (frame["@graph"] as JArray);
-                            if (graphEntry == null)
-                            {
-                                graphEntry = new JArray(new JObject());
-                                frame["@graph"] = graphEntry;
-                            } else if (graphEntry.Count == 0)
-                            {
-                                graphEntry.Add(new JObject());
-                            }
-                            subframe = graphEntry[0] as JObject;
-                            recurse = !(id.Equals("@merged") || id.Equals("@default"));
-                        }
-                        // 5.5.1.3 - If recurse is true:
-                        if (recurse)
-                        {
-                            // 5.5.1.3.1 - Push graph name from state onto graph stack in state.
-                            state.GraphStack.Push(state.GraphName);
-                            // 5.5.1.3.2 - Set the value of graph name in state to id.
-                            state.GraphName = id;
-                            // 5.5.1.3.3 - Invoke the recursive algorithm using state, the keys from the graph map in state associated with id as subjects, subframe as frame, output as parent, and @graph as active property.
-                            ProcessFrame(state,
-                                (state.GraphMap[state.GraphName] as JObject).Properties().Select(p => p.Name).ToList(),
-                                subframe, output, "@graph", idStack);
-                            // 5.5.1.3.4 - Pop the value from graph stack in state and set graph name in state back to that value.
-                            state.GraphName = state.GraphStack.Pop();
-                        }
-                    }
-
-                    // 5.5.2 - For each property and objects in node, ordered by property:
-                    foreach (var p in node.Properties().OrderBy(p=>p.Name))
-                    {
-                        var property = p.Name;
-                        // Skip the @id property as it is already copied
-                        if (property.Equals("@id")) continue;
-                        var objects = p.Value as JArray;
-                        
-                        // 5.5.2.1 - If property is a keyword, add property and objects to output.
-                        if (IsKeyword(property))
-                        {
-                            output[property] = objects;
-                            continue;
-                        }
-                        // 5.5.2.2 - Otherwise, if property is not in frame, and explicit is true, processors must not add any values for property to output, and the following steps are skipped.
-                        else if (frame[property] == null && explicitFlag)
-                        {
-                            continue;
-                        }
-                        // 5.5.2.3 - For each item in objects:
-                        foreach (var item in objects)
-                        {
-                            // 5.5.2.3.1 - If item is a dictionary with the property @list, 
-                            // then each listitem in the list is processed in sequence and 
-                            // added to a new list dictionary in output:
-                            if (IsListObject(item))
-                            {
-                                var list = new JObject();
-                                output[property] = new JArray(list); // KA: Not sure what the correct key is for the list object
-                                foreach (var listItem in item["@list"] as JArray)
-                                {
-                                    // If listitem is a node reference, invoke the recursive algorithm using state, 
-                                    // the value of @id from listitem as the sole member of a new subjects array, 
-                                    // the first value from @list in frame as frame, list as parent, 
-                                    // and @list as active property. 
-                                    // If frame does not exist, create a new frame using a new dictionary 
-                                    // with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll. 
-                                    if (IsNodeReference(listItem))
-                                    {
-                                        var listFrames = frame["@list"] as JArray;
-                                        var listFrame = listFrames?[0] as JObject;
-                                        if (listFrame == null)
-                                        {
-                                            listFrame = MakeFrameObject(embed, explicitFlag, requireAll);
-                                        }
-                                        ProcessFrame(state,
-                                            new List<string> {listItem["@id"].Value<string>()},
-                                            listFrame,
-                                            list,
-                                            "@list",
-                                            idStack);
-                                    }
-                                    // 5.5.2.3.1.2 - Otherwise, append a copy of listitem to @list in list.
-                                    else
-                                    {
-                                        if (list["@list"] == null)
-                                        {
-                                            list["@list"] = new JArray();
-                                        }
-                                        (list["@list"] as JArray).Add(listItem.DeepClone());
-                                    }
-                                }
-                            }
-                            // 5.5.2.3.2 - If item is a node reference, invoke the recursive algorithm using state, 
-                            // the value of @id from item as the sole member of a new subjects array, 
-                            // the first value from property in frame as frame, output as parent, and property as active property. 
-                            // If frame does not exist, create a new frame using a new dictionary with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll.
-                            else if (IsNodeReference(item))
-                            {
-                                var newFrame = ((frame[property] as JArray)?[0]) as JObject ??
-                                               MakeFrameObject(embed, explicitFlag, requireAll);
-                                ProcessFrame(state,
-                                    new List<string> {item["@id"].Value<string>()},
-                                    newFrame,
-                                    output,
-                                    property,
-                                    idStack);
-                            }
-                            // 5.5.2.3.3 - Otherwise, append a copy of item to active property in output.
-                            else
-                            {
-                                // KA - should only append if value pattern matches?
-                                if (frame[property] == null || frame[property][0]["@value"] == null || ValuePatternMatch(frame[property], item))
-                                {
-                                    FramingAppend(output, item, property);
-                                }
-                            }
-                        }
-                    }
-
-                    // 5.5.3 - For each non-keyword property and objects in frame that is not in output:
-                    foreach (var frameProperty in frameObject.Properties())
-                    {
-                        var property = frameProperty.Name;
-                        if (output[property] != null) continue;
-                        if (IsKeyword(property) || IsFramingKeyword(property)) continue;
-                        var objects = frameProperty.Value as JArray;
-                        if (objects == null || objects.Count == 0)
-                        {
-                            // Initialise as an array containing an empty frame
-                            objects = new JArray(new JObject());
-                        }
-                        // 5.5.3.1 - Let item be the first element in objects, which must be a frame object.
-                        var item = objects[0];
-                        ValidateFrame(item);
-                        // 5.5.3.2 - Set property frame to the first item in objects or a newly created frame object if value is objects. property frame must be a dictionary.
-                        var propertyFrame = objects[0] as JObject; // KA - ncomplete as I can't make sense of the spec algorithm here
-                        // 5.5.3.3 - Skip property and property frame if property frame contains @omitDefault with a value of true, or does not contain @omitDefault and the value of the omit default flag is true.
-                        var frameOmitDefault = GetBooleanOption(propertyFrame, "@omitDefault", state.OmitDefault);
-                        if (frameOmitDefault)
-                        {
-                            continue;
-                        }
-                        // 5.5.3.4 - Add property to output with a new dictionary having a property @preserve and a value that is a copy of the value of @default in frame if it exists, or the string @null otherwise.
-                        var defaultValue = propertyFrame["@default"] ?? new JArray("@null");
-                        if (!(defaultValue is JArray)) defaultValue = new JArray(defaultValue);
-                        FramingAppend(output, new JObject(new JProperty("@preserve", defaultValue)), property);
-                        //output[property] = new JObject(new JProperty("@preserve", frame["@default"] ?? "@null"));
-                    }
-
-                    // 5.5.4 - If frame has the property @reverse, then for each reverse property and sub frame that are the values of @reverse in frame:
-                    if (frame["@reverse"] != null)
-                    {
-                        foreach(var rp in (frame["@reverse"] as JObject).Properties())
-                        {
-                            var reverseProperty = rp.Name;
-                            var subframe = rp.Value;
-                            // 5.5.4.1 - Create a @reverse property in output with a new dictionary reverse dict as its value.
-                            var reverseDict = new JObject();
-                            output["@reverse"] = reverseDict;
-                            // 5.5.4.2 - For each reverse id and node in the map of flattened subjects that has the property reverse property containing a node reference with an @id of id:
-                            foreach (var p in state.Subjects.Properties())
-                            {
-                                var n = p.Value as JObject;
-                                var reversePropertyValues = n[reverseProperty] as JArray;
-                                if (reversePropertyValues == null) continue;
-                                if (reversePropertyValues.Any(x => x["@id"]?.Value<string>().Equals(id) == true))
-                                {
-                                    // 5.5.4.2.1 - Add reverse property to reverse dict with a new empty array as its value.
-                                    var reverseId = p.Name;
-                                    if (reverseDict[reverseProperty] == null)
-                                        reverseDict[reverseProperty] = new JArray();
-                                    // 5.5.4.2.2 - Invoke the recursive algorithm using state, the reverse id as the sole member of a new subjects array, sub frame as frame, null as active property, and the array value of reverse property in reverse dict as parent.
-                                    ProcessFrame(state, 
-                                        new List<string> {reverseId}, 
-                                        subframe,
-                                        reverseDict[reverseProperty], 
-                                        null,
-                                        idStack);
-                                }
-                            }
-                        }
-                    }
-
-                    // 5.5.5 - Once output has been set are required in the previous steps, add output to parent.
-                    FramingAppend(parent, output, activeProperty);
-
-                    idStack.Pop();
-                }
-            }
-        }
-        */
-
-        
-        
-
-        
-
         private bool IsWildcard(JToken token)
         {
             if (token is JObject o) return o.Count == 0;
@@ -5573,15 +4641,6 @@ namespace VDS.RDF.JsonLd
         }
 
         
-
-        private void ValidateFrame(JToken expandedFrame)
-        {
-            // TODO: Implement frame validation (not currently defined in spec) - throw an invalid frame error if validation fails
-            return;
-        }
-
-        
-
         /// <summary>
         /// Determine if a JSON token is a JSON-LD graph object.
         /// </summary>
@@ -5608,7 +4667,7 @@ namespace VDS.RDF.JsonLd
         }
 
         
-        private bool IsScalar(JToken token)
+        private static bool IsScalar(JToken token)
         {
             return !(token == null || token.Type == JTokenType.Array || token.Type == JTokenType.Object);
         }
@@ -5618,18 +4677,16 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="token">The token to test.</param>
         /// <returns>True if <paramref name="token"/> represents a string value, false otherwise.</returns>
-        private bool IsString(JToken token)
+        private static bool IsString(JToken token)
         {
             return token.Type == JTokenType.String;
         }
 
-        private bool IsValidBaseDirection(JToken token)
+        private static bool IsValidBaseDirection(JToken token)
         {
             if (token.Type != JTokenType.String) return false;
             return token.Value<string>() == "ltr" || token.Value<string>() == "rtl";
         }
-
-        
 
         
         /// <summary>
@@ -5637,12 +4694,12 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="token">The token to test.</param>
         /// <returns>True if the token represents JSON null, false otherwise.</returns>
-        private bool IsNull(JToken token)
+        private static bool IsNull(JToken token)
         {
             return token.Type == JTokenType.Null;
         }
 
-        private bool IsAbsoluteIri(JToken token)
+        private static bool IsAbsoluteIri(JToken token)
         {
             if (!(token is JValue value)) return false;
             return value.Type == JTokenType.String && IsAbsoluteIri(value.Value<string>());
@@ -5685,17 +4742,6 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Determine if the specified string is a JSON-LD framing keyword.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static bool IsFramingKeyword(string value)
-        {
-            return JsonLdProcessorBase.JsonLdFramingKeywords.Contains(value);
-        }
-
-        
-        /// <summary>
         /// Determines if a token represents a JSON-LD node object.
         /// </summary>
         /// <param name="token"></param>
@@ -5717,10 +4763,9 @@ namespace VDS.RDF.JsonLd
             return false;
         }
 
-        private JToken GetPropertyValue(JsonLdContext activeContext, JObject obj, string key)
+        private static JToken GetPropertyValue(JsonLdContext activeContext, JObject obj, string key)
         {
-            JToken ret;
-            if (obj.TryGetValue(key, out ret)) return ret;
+            if (obj.TryGetValue(key, out var ret)) return ret;
             foreach (var alias in activeContext.GetAliases(key))
             {
                 if (obj.TryGetValue(alias, out ret)) return ret;
@@ -5733,7 +4778,7 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="contextUrl">The URL to load the source context from.</param>
         /// <param name="options">Options to apply during the expansion processing.</param>
-        /// <returns>The expanded JSON-LD contex.</returns>
+        /// <returns>The expanded JSON-LD context.</returns>
         public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
         {
             var parsedJson = LoadJson(contextUrl, null, options);
@@ -5745,14 +4790,14 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="input">The context JSON object to be expanded.</param>
         /// <param name="options">Options to apply during the expansion processing.</param>
-        /// <returns>The expanded JSON-LD contex.</returns>
+        /// <returns>The expanded JSON-LD context.</returns>
         public static JArray Expand(JToken input, JsonLdProcessorOptions options = null)
         {
-            if (input is JValue && (input as JValue).Type == JTokenType.String)
+            var remoteDoc = new RemoteDocument
             {
-                return Expand((input as JValue).Value<string>(), options);
-            }
-            return Expand(new RemoteDocument { Document = input }, null, null, options);
+                Document = input is JValue v && v.Type == JTokenType.String ? v.Value<string>() : input,
+            };
+            return Expand(remoteDoc, null, null, options);
         }
 
         private static JArray Expand(RemoteDocument doc, Uri documentLocation,
@@ -5773,23 +4818,17 @@ namespace VDS.RDF.JsonLd
             }
 
             if (documentLocation == null) documentLocation = doc.DocumentUrl;
-            var contextBase = options.Base ?? documentLocation;
+            var contextBase = options?.Base ?? documentLocation;
             var activeContext = contextBase != null ? new JsonLdContext(contextBase) : new JsonLdContext();
             var processor = new JsonLdProcessor(options);
             if (options?.ExpandContext != null)
             {
-                var expandObject = options.ExpandContext as JObject;
-                if (expandObject != null)
+                if (options.ExpandContext is JObject expandObject)
                 {
                     var contextProperty = expandObject.Property("@context");
-                    if (contextProperty != null)
-                    {
-                        activeContext = processor.ProcessContext(activeContext, contextProperty.Value, activeContext.OriginalBase);
-                    }
-                    else
-                    {
-                        activeContext = processor.ProcessContext(activeContext, expandObject, activeContext.OriginalBase);
-                    }
+                    activeContext = processor.ProcessContext(activeContext, 
+                        contextProperty != null ? contextProperty.Value : expandObject, 
+                        activeContext.OriginalBase);
                 }
                 else
                 {
@@ -5799,96 +4838,35 @@ namespace VDS.RDF.JsonLd
             if (doc.ContextUrl != null)
             {
                 var contextDoc = LoadJson(doc.ContextUrl, loaderOptions, options);
-                if (contextDoc.Document is string)
+                if (contextDoc.Document is string contextJson)
                 {
-                    contextDoc.Document = JToken.Parse(contextDoc.Document as string);
+                    contextDoc.Document = JToken.Parse(contextJson);
                 }
                 activeContext = processor.ProcessContext(activeContext, contextDoc.Document as JToken, doc.ContextUrl);
             }
 
-            var expandedOutput =  processor.ExpandAlgorithm(activeContext, null, doc.Document as JToken,
-                doc.DocumentUrl ?? options.Base, options.FrameExpansion, options.Ordered);
+            var expandedOutput = processor.ExpandAlgorithm(activeContext, null, doc.Document as JToken,
+                doc.DocumentUrl ?? options?.Base, 
+                options?.FrameExpansion ?? false, 
+                options?.Ordered ?? false);
             if (expandedOutput is JObject expandedObject)
             {
                 if (expandedObject.ContainsKey("@graph") && expandedObject.Count == 1)
                     expandedOutput = expandedObject["@graph"];
             }
             if (expandedOutput == null) expandedOutput = new JArray();
-            expandedOutput = JsonLdProcessorBase.EnsureArray(expandedOutput);
+            expandedOutput = EnsureArray(expandedOutput);
             return expandedOutput as JArray;
         }
 
         private static RemoteDocument LoadJson(Uri remoteRef, JsonLdLoaderOptions loaderOptions, JsonLdProcessorOptions options)
         {
-            if (options.DocumentLoader != null) return options.DocumentLoader(remoteRef, loaderOptions);
-
-            var client = new RedirectingWebClient();
-            client.Headers.Set(HttpRequestHeader.Accept, "application/ld+json;q=1.0, application/json;q=0.9, */*+json;q=0.8");
-
-            var responseString = client.DownloadString(remoteRef);
-            var contentType = client.ResponseHeaders.GetValues("Content-Type");
-            bool matchesContentType =
-                contentType != null &&
-                contentType.Any(x => x.Contains("application/json") ||
-                                     (x.Contains("application/ld+json") &&
-                                      string.IsNullOrEmpty(loaderOptions.RequestProfile)) ||
-                                     (x.Contains("application/ld+json") &&
-                                      !string.IsNullOrEmpty(loaderOptions.RequestProfile) &&
-                                      x.Contains(loaderOptions.RequestProfile)) ||
-                                     x.Contains("+json"));
-            var documentUrl = client.ResponseUri;
-            string contextLink = null;
-            if (!matchesContentType)
-            {
-                var contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"));
-                var alternateLink = contextLinks.FirstOrDefault(link =>
-                    link.RelationTypes.Contains("alternate") && link.MediaTypes.Contains("application/ld+json"));
-                if (alternateLink != null)
-                {
-                    return LoadJson(new Uri(remoteRef, alternateLink.LinkValue), loaderOptions, options);
-                }
-                else
-                {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed,
-                        "Loading document failed. The server did not resopnd with a processable JSON document.");
-                }
-            }
-
-            // If content type is application/ld+json the context link header is ignored
-            if (!contentType.Any(x => x.Contains("application/ld+json")))
-            {
-                var contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"))
-                    .Where(x => x.RelationTypes.Contains(JsonLdVocabulary.Context))
-                    .Select(x => x.LinkValue).ToList();
-                if (contextLinks.Count > 1)
-                {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.MultipleContextLinkHeaders, "Multiple context link headers");
-                }
-                contextLink = contextLinks.FirstOrDefault();
-            }
-
-            var ret = new RemoteDocument
-            {
-                ContextUrl = contextLink == null ? null : new Uri(contextLink),
-                DocumentUrl = client.ResponseUri,
-                Document = JToken.Parse(responseString),
-            };
-            return ret;
+            return options.DocumentLoader != null ? options.DocumentLoader(remoteRef, loaderOptions) : DefaultDocumentLoader.LoadJson(remoteRef, loaderOptions);
         }
 
-        private class RedirectingWebClient : WebClient
-        {
-            public Uri ResponseUri { get; private set; }
+        
 
-            protected override WebResponse GetWebResponse(WebRequest request)
-            {
-                var webResponse = base.GetWebResponse(request);
-                ResponseUri = webResponse?.ResponseUri;
-                return webResponse;
-            }
-        }
-
-        private JToken GetJsonRepresentation(RemoteDocument remoteDoc)
+        private static JToken GetJsonRepresentation(RemoteDocument remoteDoc)
         {
             switch (remoteDoc.Document)
             {

@@ -259,5 +259,11 @@ namespace VDS.RDF.JsonLd
         /// invalid @embed value
         /// </summary>
         InvalidEmbedValue,
+
+        // The following error codes are specific to DNR and are used to report warnings
+        /// <summary>
+        /// A language tag value was encountered that was not well-formed
+        /// </summary>
+        MalformedLanguageTag,
     };
 }
