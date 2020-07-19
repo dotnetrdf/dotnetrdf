@@ -33,8 +33,15 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    internal class ExpandProcessor : ProcessorBase
     {
+        private readonly ContextProcessor _contextProcessor;
+
+        public ExpandProcessor(JsonLdProcessorOptions options, ContextProcessor contextProcessor) : base(options)
+        {
+            _contextProcessor = contextProcessor;
+        }
+
         /// <summary>
         /// Implementation of the Expansion Algorithm.
         /// </summary>
@@ -46,7 +53,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="ordered"></param>
         /// <param name="fromMap"></param>
         /// <returns></returns>
-        private JToken ExpandAlgorithm(JsonLdContext activeContext, string activeProperty, JToken element, Uri baseUrl,
+        public JToken ExpandElement(JsonLdContext activeContext, string activeProperty, JToken element, Uri baseUrl,
             bool frameExpansion = false, bool ordered = false, bool fromMap = false)
         {
             JToken result;
@@ -79,7 +86,7 @@ namespace VDS.RDF.JsonLd
                 // 4.2 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, and base URL from the term definition for active property in active context.
                 if (propertyScopedContext != null)
                 {
-                    activeContext = ProcessContext(activeContext, propertyScopedContext,
+                    activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext,
                         activePropertyTermDefinition.BaseUrl);
                 }
 
@@ -98,7 +105,7 @@ namespace VDS.RDF.JsonLd
                 foreach (var item in elementArray)
                 {
                     // 5.2.1 - Initialize expanded item to the result of using this algorithm recursively, passing active context, active property, and item as element.
-                    var expandedItem = ExpandAlgorithm(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
+                    var expandedItem = ExpandElement(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
                     if (expandedItem != null)
                     {
                         // 5.2.2 - If the container mapping of active property includes @list, and expanded item is an array, set expanded item to a new map
@@ -144,7 +151,7 @@ namespace VDS.RDF.JsonLd
             // 8 - If property-scoped context is defined, set active context to the result of the Context Processing algorithm, passing active context, property-scoped context as local context, base URL from the term definition for active property, in active context and true for override protected.
             if (propertyScopedContext != null)
             {
-                activeContext = ProcessContext(activeContext, propertyScopedContext,
+                activeContext = _contextProcessor.ProcessContext(activeContext, propertyScopedContext,
                     activePropertyTermDefinition.BaseUrl, overrideProtected: true);
             }
 
@@ -154,14 +161,14 @@ namespace VDS.RDF.JsonLd
             var contextValue = JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@context");
             if (contextValue != null)
             {
-                activeContext = ProcessContext(activeContext, contextValue, baseUrl);
+                activeContext = _contextProcessor.ProcessContext(activeContext, contextValue, baseUrl);
             }
 
             // 10 - Initialize type-scoped context to active context. This is used for expanding values that may be relevant to any previous type-scoped context.
             var typeScopedContext = activeContext;
 
             // 11 - For each key/value pair in element ordered lexicographically by key where key expands to @type using the IRI Expansion algorithm, passing active context, key for value, and true for vocab:
-            var typeProperties = elementObject.Properties().Where(property => "@type".Equals(ExpandIri(activeContext, property.Name, true))).OrderBy(p => p.Name).ToList();
+            var typeProperties = elementObject.Properties().Where(property => "@type".Equals(_contextProcessor.ExpandIri(activeContext, property.Name, true))).OrderBy(p => p.Name).ToList();
             foreach (var property in typeProperties)
             {
                 // 11.1 Convert value into an array, if necessary.
@@ -174,7 +181,7 @@ namespace VDS.RDF.JsonLd
                         typeScopedContext.TryGetTerm(term.Value<string>(), out var termDefinition) &&
                         termDefinition.LocalContext != null)
                     {
-                        activeContext = ProcessContext(activeContext, termDefinition.LocalContext,
+                        activeContext = _contextProcessor.ProcessContext(activeContext, termDefinition.LocalContext,
                             termDefinition.BaseUrl, propagate: false);
                     }
                 }
@@ -185,7 +192,7 @@ namespace VDS.RDF.JsonLd
             result = new JObject();
             var resultObject = result as JObject;
             var firstTypeProperty = elementObject.Properties()
-                .OrderBy(p => p.Name).FirstOrDefault(p => "@type".Equals(ExpandIri(activeContext, p.Name, true)));
+                .OrderBy(p => p.Name).FirstOrDefault(p => "@type".Equals(_contextProcessor.ExpandIri(activeContext, p.Name, true)));
             JToken inputType = null;
             if (firstTypeProperty != null)
             {
@@ -194,7 +201,7 @@ namespace VDS.RDF.JsonLd
                     : firstTypeProperty.Value;
                 if (inputType is JValue) // Don't try to expand a framing wildcard
                 {
-                    inputType = ExpandIri(activeContext, inputType.Value<string>(), true);
+                    inputType = _contextProcessor.ExpandIri(activeContext, inputType.Value<string>(), true);
                 }
             }
 
@@ -313,7 +320,7 @@ namespace VDS.RDF.JsonLd
                 // 13.1 - If key is @context, continue to the next key.
                 if (key.Equals("@context")) continue;
                 // 13.2 - Initialize expanded property to the result of IRI expanding key.
-                var expandedProperty = ExpandIri(activeContext, key, true);
+                var expandedProperty = _contextProcessor.ExpandIri(activeContext, key, true);
                 // 13.3 - If expanded property is null or it neither contains a colon (:) nor it is a keyword, drop key by continuing to the next key.
                 if (expandedProperty == null) continue;
                 if (!expandedProperty.Contains(':') && !JsonLdUtils.IsKeyword(expandedProperty)) continue;
@@ -347,7 +354,7 @@ namespace VDS.RDF.JsonLd
                         switch (value.Type)
                         {
                             case JTokenType.String:
-                                expandedValue = ExpandIri(activeContext, value.Value<string>(), false, true);
+                                expandedValue = _contextProcessor.ExpandIri(activeContext, value.Value<string>(), false, true);
                                 if (frameExpansion) expandedValue = new JArray(expandedValue);
                                 break;
 
@@ -363,7 +370,7 @@ namespace VDS.RDF.JsonLd
                             case JTokenType.Array:
                                 var newArray = new JArray();
                                 foreach (var child in value.Children())
-                                    newArray.Add(ExpandIri(activeContext, child.Value<string>(), false, true));
+                                    newArray.Add(_contextProcessor.ExpandIri(activeContext, child.Value<string>(), false, true));
                                 expandedValue = newArray;
                                 break;
 
@@ -393,7 +400,7 @@ namespace VDS.RDF.JsonLd
                         switch (value.Type)
                         {
                             case JTokenType.String:
-                                expandedValue = ExpandIri(typeScopedContext, value.Value<string>(), true, true);
+                                expandedValue = _contextProcessor.ExpandIri(typeScopedContext, value.Value<string>(), true, true);
                                 break;
                             case JTokenType.Array when value.Children().Any(c => c.Type != JTokenType.String):
                                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeValue,
@@ -402,7 +409,7 @@ namespace VDS.RDF.JsonLd
                                 var expandedItems = new JArray();
                                 foreach (var item in value.Children())
                                 {
-                                    expandedItems.Add(ExpandIri(typeScopedContext, item.Value<string>(), true, true));
+                                    expandedItems.Add(_contextProcessor.ExpandIri(typeScopedContext, item.Value<string>(), true, true));
                                 }
 
                                 expandedValue = expandedItems;
@@ -413,7 +420,7 @@ namespace VDS.RDF.JsonLd
                             case JTokenType.Object when frameExpansion && (value as JObject).ContainsKey("@default"):
                                 var toExpand = (value as JObject)["@default"].Value<string>();
                                 expandedValue = new JObject(new JProperty("@default",
-                                    ExpandIri(typeScopedContext, toExpand, true, true)));
+                                    _contextProcessor.ExpandIri(typeScopedContext, toExpand, true, true)));
                                 break;
                             default:
                                 if (frameExpansion)
@@ -437,7 +444,7 @@ namespace VDS.RDF.JsonLd
                     // value for element, base URL, and the frameExpansion and ordered flags, ensuring that expanded value is an array of one or more maps.
                     if ("@graph".Equals(expandedProperty))
                     {
-                        expandedValue = ExpandAlgorithm(activeContext, "@graph", value, baseUrl, frameExpansion,
+                        expandedValue = ExpandElement(activeContext, "@graph", value, baseUrl, frameExpansion,
                             ordered);
                         if (expandedValue.Type == JTokenType.Object)
                         {
@@ -449,9 +456,9 @@ namespace VDS.RDF.JsonLd
                     if ("@included".Equals(expandedProperty))
                     {
                         // 13.4.6.1 - If processing mode is json-ld-1.0, continue with the next key from element.
-                        if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10) continue;
+                        if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10) continue;
                         // 13.4.6.2 - Set expanded value to the result of using this algorithm recursively passing active context, null for active property, value for element, base URL, and the frameExpansion and ordered flags, ensuring that the result is an array.
-                        expandedValue = JsonLdUtils.EnsureArray(ExpandAlgorithm(activeContext, null, value, baseUrl, frameExpansion,
+                        expandedValue = JsonLdUtils.EnsureArray(ExpandElement(activeContext, null, value, baseUrl, frameExpansion,
                             ordered));
                         // 13.4.6.3 - If any element of expanded value is not a node object, an invalid @included value error has been detected and processing is aborted.
                         if (expandedValue.Children().Any(c => !JsonLdUtils.IsNodeObject(c)))
@@ -473,7 +480,7 @@ namespace VDS.RDF.JsonLd
                         // If processing mode is json-ld-1.0, an invalid value object value error has been detected and processing is aborted.
                         if (inputType != null && inputType.Type == JTokenType.String && inputType.Value<string>().Equals("@json"))
                         {
-                            if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                            if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                             {
                                 throw new JsonLdProcessorException(JsonLdErrorCode.InvalidValueObjectValue,
                                     $"Invalid value object value. The @value entry of {key} in {activeProperty} must be either scalar or null.");
@@ -541,7 +548,7 @@ namespace VDS.RDF.JsonLd
                     if ("@direction".Equals(expandedProperty))
                     {
                         // 13.4.9.1 - If processing mode is json-ld-1.0, continue with the next key from element.
-                        if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                        if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                         {
                             continue;
                         }
@@ -593,14 +600,14 @@ namespace VDS.RDF.JsonLd
                         // 13.4.11.2 - Otherwise, initialize expanded value to the result of using this algorithm recursively passing active context, active property, value for element,
                         // base URL, and the frameExpansion and ordered flags, ensuring that the result is an array.
                         expandedValue = JsonLdUtils.EnsureArray(
-                            ExpandAlgorithm(activeContext, activeProperty, value, baseUrl, frameExpansion, ordered));
+                            ExpandElement(activeContext, activeProperty, value, baseUrl, frameExpansion, ordered));
                     }
 
                     // 13.4.12 - If expanded property is @set, set expanded value to the result of using this algorithm recursively, passing active context, active property,
                     // value for element, base URL, and the frameExpansion and ordered flags.
                     if ("@set".Equals(expandedProperty))
                     {
-                        expandedValue = ExpandAlgorithm(activeContext, activeProperty, value, baseUrl, frameExpansion,
+                        expandedValue = ExpandElement(activeContext, activeProperty, value, baseUrl, frameExpansion,
                             ordered);
                     }
 
@@ -615,7 +622,7 @@ namespace VDS.RDF.JsonLd
                         }
 
                         // 13.4.13.2 - Otherwise initialize expanded value to the result of using this algorithm recursively, passing active context, @reverse as active property, value as element, base URL, and the frameExpansion and ordered flags.
-                        expandedValue = ExpandAlgorithm(activeContext, "@reverse", value, baseUrl, frameExpansion,
+                        expandedValue = ExpandElement(activeContext, "@reverse", value, baseUrl, frameExpansion,
                             ordered);
                         if (expandedValue is JObject expandedValueObject)
                         {
@@ -681,7 +688,7 @@ namespace VDS.RDF.JsonLd
                     // 13.4.15 - When the frameExpansion flag is set, if expanded property is any other framing keyword (@default, @embed, @explicit, @omitDefault, or @requireAll), set expanded value to the result of performing the Expansion Algorithm recursively, passing active context, active property, value for element, base URL, and the frameExpansion and ordered flags.
                     if (frameExpansion && JsonLdKeywords.FramingKeywords.Contains(expandedProperty))
                     {
-                        expandedValue = ExpandAlgorithm(activeContext, expandedProperty, value, baseUrl, frameExpansion,
+                        expandedValue = ExpandElement(activeContext, expandedProperty, value, baseUrl, frameExpansion,
                             ordered);
                     }
 
@@ -798,7 +805,7 @@ namespace VDS.RDF.JsonLd
                                 var indexTermDefinition = mapContext.GetTerm(index);
                                 if (indexTermDefinition?.LocalContext != null)
                                 {
-                                    mapContext = ProcessContext(mapContext, indexTermDefinition.LocalContext,
+                                    mapContext = _contextProcessor.ProcessContext(mapContext, indexTermDefinition.LocalContext,
                                         indexTermDefinition.BaseUrl);
                                 }
                             }
@@ -810,13 +817,13 @@ namespace VDS.RDF.JsonLd
                         }
 
                         // 13.8.3.4 - Initialize expanded index to the result of IRI expanding index.
-                        var expandedIndex = ExpandIri(activeContext, index, true);
+                        var expandedIndex = _contextProcessor.ExpandIri(activeContext, index, true);
 
                         // 13.8.3.5 - If index value is not an array set index value to an array containing only index value.
                         // Already done at initialization
 
                         // 13.8.3.6 - Initialize index value to the result of using this algorithm recursively, passing map context as active context, key as active property, index value as element, base URL, true for from map, and the frameExpansion and ordered flags.
-                        indexValue = JsonLdUtils.EnsureArray(ExpandAlgorithm(mapContext, key, indexValue, baseUrl, frameExpansion,
+                        indexValue = JsonLdUtils.EnsureArray(ExpandElement(mapContext, key, indexValue, baseUrl, frameExpansion,
                             ordered, true));
 
                         // 13.8.3.7 - For each item in index value: 
@@ -837,7 +844,7 @@ namespace VDS.RDF.JsonLd
                                 var reExpandedIndex = ExpandValue(activeContext, indexKey, index);
 
                                 // 13.8.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
-                                var expandedIndexKey = ExpandIri(activeContext, indexKey, true);
+                                var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey, true);
 
                                 // 13.8.7.2.3 - Initialize index property values to an array consisting of re-expanded index followed by the existing values of the concatenation of expanded index key in item, if any.
                                 var indexPropertyValues = new JArray(reExpandedIndex);
@@ -868,7 +875,7 @@ namespace VDS.RDF.JsonLd
                             else if (containerMapping.Contains(JsonLdContainer.Id) && !item.ContainsKey("@id") &&
                                      !expandedIndex.Equals("@none"))
                             {
-                                expandedIndex = ExpandIri(activeContext, index, false, true);
+                                expandedIndex = _contextProcessor.ExpandIri(activeContext, index, false, true);
                                 item.Add("@id", expandedIndex);
                             }
                             // 13.8.7.5 - Otherwise, if container mapping includes @type and expanded index is not @none, initialize types to a new array consisting of expanded index followed by any existing values of @type in item.Add the key - value pair(@type - types) to item.
@@ -891,7 +898,7 @@ namespace VDS.RDF.JsonLd
                 // 13.9 - Otherwise, initialize expanded value to the result of using this algorithm recursively, passing active context, key for active property, value for element, base URL, and the frameExpansion and ordered flags.
                 else
                 {
-                    expandedValue = ExpandAlgorithm(activeContext, key, value, baseUrl, frameExpansion, ordered);
+                    expandedValue = ExpandElement(activeContext, key, value, baseUrl, frameExpansion, ordered);
                 }
 
                 // 13.10 - If expanded value is null, ignore key by continuing to the next key from element.
@@ -974,7 +981,7 @@ namespace VDS.RDF.JsonLd
                     if (nestedValue is JObject nestedValueObject)
                     {
                         if (nestedValueObject.Properties()
-                            .Any(p => ExpandIri(activeContext, p.Name, true).Equals("@value")))
+                            .Any(p => _contextProcessor.ExpandIri(activeContext, p.Name, true).Equals("@value")))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                                 $"Invalid nest value. Invalid value found when expanding the nesting property {nestingKey} of {activeProperty}. The nested value contains a property which is, or which expands to @value.");
@@ -992,105 +999,6 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        /// <summary>
-        /// Implementation of IRI Expansion algorithm.
-        /// </summary>
-        /// <param name="activeContext"></param>
-        /// <param name="value"></param>
-        /// <param name="vocab"></param>
-        /// <param name="documentRelative"></param>
-        /// <param name="localContext"></param>
-        /// <param name="defined"></param>
-        /// <returns></returns>
-        private string ExpandIri(JsonLdContext activeContext, string value, bool vocab = false, bool documentRelative = false, JObject localContext = null, Dictionary<string, bool> defined = null)
-        {
-            if (defined == null) defined = new Dictionary<string, bool>();
-
-            // 1. If value is a keyword or null, return value as is.
-            if (value == null || JsonLdUtils.IsKeyword(value)) return value;
-
-            // 2 - If value has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), a processor SHOULD generate a warning and return null.
-            if (JsonLdUtils.MatchesKeywordProduction(value))
-            {
-                Warn(JsonLdErrorCode.InvalidTermDefinition,
-                    $"The term {value} matches the production @[a-zA-Z] which is reserved by the JSON-LD specification.");
-                return null;
-            }
-
-            // 3 -  If local context is not null, it contains an entry with a key that equals value, and the value of the entry for value in defined is not true,
-            // invoke the Create Term Definition algorithm, passing active context, local context, value as term, and defined.
-            // This will ensure that a term definition is created for value in active context during Context Processing. 
-            if (localContext != null && localContext.ContainsKey(value) && defined.TryGetValue(value, out var isDefined) && !isDefined)
-            {
-                CreateTermDefinition(activeContext, localContext, value, defined);
-            }
-
-            var hasTerm = activeContext.TryGetTerm(value, out var termDefinition);
-
-            // 4. If active context has a term definition for value, and the associated IRI mapping is a keyword, return that keyword.
-            if (hasTerm && JsonLdUtils.IsKeyword(termDefinition.IriMapping))
-            {
-                return termDefinition.IriMapping;
-            }
-
-            // 5. If vocab is true and the active context has a term definition for value, return the associated IRI mapping.
-            if (vocab && hasTerm)
-            {
-                return termDefinition.IriMapping;
-            }
-
-            // 6. If value contains a colon (:) anywhere after the first character, it is either an IRI, a compact IRI, or a blank node identifier:
-            var ix = value.IndexOf(':');
-            if (ix > 0)
-            {
-                // 6.1 Split value into a prefix and suffix at the first occurrence of a colon (:).
-                var prefix = value.Substring(0, ix);
-                var suffix = value.Substring(ix + 1);
-
-                // 6.2 If prefix is underscore (_) or suffix begins with double-forward-slash (//), 
-                // return value as it is already an absolute IRI or a blank node identifier.
-                if (prefix.Equals("_") || suffix.StartsWith("//"))
-                {
-                    return value;
-                }
-
-                // 6.3 If local context is not null, it contains a prefix entry, and the value of the prefix entry in defined is not true,
-                // invoke the Create Term Definition algorithm, passing active context, local context, prefix as term, and defined.
-                // This will ensure that a term definition is created for prefix in active context during Context Processing.
-                defined.TryGetValue(prefix, out bool prefixDefined);
-                if (localContext?.Property(prefix) != null && !prefixDefined)
-                {
-                    CreateTermDefinition(activeContext, localContext, prefix, defined);
-                }
-
-                // 6.4 If active context contains a term definition for prefix having a non-null IRI mapping and the prefix flag of the term
-                // definition is true, return the result of concatenating the IRI mapping associated with prefix and suffix.
-                if (activeContext.TryGetTerm(prefix, out termDefinition) && termDefinition.Prefix && termDefinition.IriMapping != null)
-                {
-                    return termDefinition.IriMapping + suffix;
-                }
-
-                // 6.5 - If value has the form of an IRI, return value.
-                if (JsonLdUtils.IsIri(value)) return value;
-            }
-
-            // 7 If vocab is true, and active context has a vocabulary mapping, return the result of concatenating the vocabulary mapping with value.
-            if (vocab && activeContext.Vocab != null)
-            {
-                return activeContext.Vocab + value;
-            }
-
-            // 8 Otherwise, if document relative is true, set value to the result of resolving value against the base IRI. 
-            // TODO: Only the basic algorithm in section 5.2 of [RFC3986] is used; neither Syntax-Based Normalization nor Scheme-Based Normalization are performed. Characters additionally allowed in IRI references are treated in the same way that unreserved characters are treated in URI references, per section 6.5 of [RFC3987].
-            if (documentRelative && activeContext.HasBase)
-            {
-                var iri = new Uri(activeContext.Base, value);
-                return iri.ToString();
-            }
-
-            // 9 Return value as is
-            return value;
-        }
 
         /// <summary>
         /// Implementation of the Value Expansion algorithm.
@@ -1108,13 +1016,13 @@ namespace VDS.RDF.JsonLd
             // where the key is @id and the value is the result IRI expanding value using true for document relative and false for vocab.
             if (typeMapping != null && typeMapping == "@id" && value.Type == JTokenType.String)
             {
-                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), documentRelative: true, vocab: false)));
+                return new JObject(new JProperty("@id", _contextProcessor.ExpandIri(activeContext, value.Value<string>(), documentRelative: true, vocab: false)));
             }
 
             // 2 - If active property has a type mapping in active context that is @vocab, and the value is a string, return a new map containing a single entry where the key is @id and the value is the result of IRI expanding value using true for document relative.
             if (typeMapping != null && typeMapping == "@vocab" && value.Type == JTokenType.String)
             {
-                return new JObject(new JProperty("@id", ExpandIri(activeContext, value.Value<string>(), vocab: true, documentRelative: true)));
+                return new JObject(new JProperty("@id", _contextProcessor.ExpandIri(activeContext, value.Value<string>(), vocab: true, documentRelative: true)));
             }
 
             // 3 - Otherwise, initialize result to a map with an @value entry whose value is set to value.

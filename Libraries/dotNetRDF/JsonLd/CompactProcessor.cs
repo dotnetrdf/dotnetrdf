@@ -31,9 +31,25 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    internal class CompactProcessor : ProcessorBase
     {
-        private JToken CompactAlgorithm(JsonLdContext activeContext, string activeProperty, JToken element, bool compactArrays = false, bool ordered = false)
+        private readonly ContextProcessor _contextProcessor;
+
+        public CompactProcessor(JsonLdProcessorOptions options, ContextProcessor contextProcessor):base(options)
+        {
+            _contextProcessor = contextProcessor;
+        }
+
+        /// <summary>
+        /// Implementation of the JSON-LD Compact Algorithm
+        /// </summary>
+        /// <param name="activeContext"></param>
+        /// <param name="activeProperty"></param>
+        /// <param name="element"></param>
+        /// <param name="compactArrays"></param>
+        /// <param name="ordered"></param>
+        /// <returns></returns>
+        public JToken CompactElement(JsonLdContext activeContext, string activeProperty, JToken element, bool compactArrays = false, bool ordered = false)
         {
             JsonLdTermDefinition activeTermDefinition = null;
             if (activeProperty != null)
@@ -54,10 +70,10 @@ namespace VDS.RDF.JsonLd
                 var arrayResult = new JArray();
 
                 // 3.2 - For each item in element: 
-                foreach (var item in element)
+                foreach (var item in elementArray)
                 {
                     // 3.2.1 - Initialize compacted item to the result of using this algorithm recursively, passing active context, active property, item for element, and the compactArrays and ordered flags.
-                    var compactedItem = CompactAlgorithm(activeContext, activeProperty, item, compactArrays, ordered);
+                    var compactedItem = CompactElement(activeContext, activeProperty, item, compactArrays, ordered);
                     // 3.2.2 - If compacted item is not null, then append it to result.
                     if (compactedItem != null) arrayResult.Add(compactedItem);
                 }
@@ -98,7 +114,7 @@ namespace VDS.RDF.JsonLd
             {
                 // 6.1 - Set active context to the result of the Context Processing algorithm, passing active context, the value of the active property's
                 // local context as local context, base URL from the term definition for active property in active context, and true for override protected.
-                activeContext = ProcessContext(activeContext, activeTermDefinition.LocalContext,
+                activeContext = _contextProcessor.ProcessContext(activeContext, activeTermDefinition.LocalContext,
                     activeTermDefinition.BaseUrl, overrideProtected: true);
                 activeTermDefinition = activeContext.GetTerm(activeProperty);
             }
@@ -118,7 +134,7 @@ namespace VDS.RDF.JsonLd
             // algorithm recursively, passing active context, active property, value of @list in element for element, and the compactArrays and ordered flags.
             if (JsonLdUtils.IsListObject(elementObject) && activeTermDefinition != null && activeTermDefinition.ContainerMapping.Contains(JsonLdContainer.List))
             {
-                return CompactAlgorithm(activeContext, activeProperty, elementObject["@list"], compactArrays, ordered);
+                return CompactElement(activeContext, activeProperty, elementObject["@list"], compactArrays, ordered);
             }
             // 9 - Initialize inside reverse to true if active property equals @reverse, otherwise to false.
             var insideReverse = "@reverse".Equals(activeProperty);
@@ -144,7 +160,7 @@ namespace VDS.RDF.JsonLd
                     // local context base URL from the term definition for term in type-scoped context, and false for propagate. 
                     if (typeScopedContext.TryGetTerm(term, out var termDef) && termDef.LocalContext != null)
                     {
-                        activeContext = ProcessContext(activeContext, termDef.LocalContext, termDef.BaseUrl,
+                        activeContext = _contextProcessor.ProcessContext(activeContext, termDef.LocalContext, termDef.BaseUrl,
                             propagate: false);
                     }
                 }
@@ -199,7 +215,7 @@ namespace VDS.RDF.JsonLd
                     // 12.2.4 - Initialize as array to true if processing mode is json - ld - 1.1 and the container mapping for alias in the active context includes @set, otherwise to the negation of compactArrays.
                     var aliasTermDefinition = activeContext.GetTerm(alias);
                     var asArray =
-                        _options.ProcessingMode == JsonLdProcessingMode.JsonLd11 &&
+                        Options.ProcessingMode == JsonLdProcessingMode.JsonLd11 &&
                         aliasTermDefinition != null &&
                         aliasTermDefinition.ContainerMapping.Contains(JsonLdContainer.Set) || !compactArrays;
                     // 12.2.5 - Use add value to add compacted value to the alias entry in result using as array.
@@ -213,7 +229,7 @@ namespace VDS.RDF.JsonLd
                 {
                     // 12.3.1 - Initialize compacted value to the result of using this algorithm recursively, passing active context, @reverse for active property, expanded value for element, and the compactArrays and ordered flags.
                     var compactedValue =
-                        CompactAlgorithm(activeContext, "@reverse", expandedValue, compactArrays, ordered);
+                        CompactElement(activeContext, "@reverse", expandedValue, compactArrays, ordered);
                     if (compactedValue is JObject compactedObject)
                     {
                         // 12.3.2 - For each property and value in compacted value:
@@ -248,7 +264,7 @@ namespace VDS.RDF.JsonLd
                     {
                         // 12.4.1 - Initialize compacted value to the result of using this algorithm recursively, passing
                         // active context, active property, expanded value for element, and the compactArrays and ordered flags.
-                        var compactedValue = CompactAlgorithm(activeContext, activeProperty, expandedValue,
+                        var compactedValue = CompactElement(activeContext, activeProperty, expandedValue,
                             compactArrays,
                             ordered);
                         // 12.4.2 Add compacted value as the value of @preserve in result unless expanded value is an empty array.
@@ -289,7 +305,7 @@ namespace VDS.RDF.JsonLd
                     {
 
                         // 12.7.2.1 - If nest term is not @nest, or a term in the active context that expands to @nest, an invalid @nest value error has been detected, and processing is aborted.
-                        var nestTerm = ExpandIri(activeContext, td.Nest, true);
+                        var nestTerm = _contextProcessor.ExpandIri(activeContext, td.Nest, true);
                         if (!"@nest".Equals(nestTerm))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
@@ -324,7 +340,7 @@ namespace VDS.RDF.JsonLd
                     {
                         // 12.8.2.1 - If nest term is not @nest, or a term in the active context that expands to @nest, an invalid @nest value error has been detected, and processing is aborted.
                         var nestTerm = itemActiveTermDefinition.Nest;
-                        if (!"@nest".Equals(ExpandIri(activeContext, nestTerm, true)))
+                        if (!"@nest".Equals(_contextProcessor.ExpandIri(activeContext, nestTerm, true)))
                         {
                             throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                                 $"Invalid Nest Value. Error compacting property {expandedProperty} of {activeProperty}. The value of {expandedProperty} should be '@nest' or a term that expands to '@nest'.");
@@ -353,7 +369,7 @@ namespace VDS.RDF.JsonLd
                     // If expanded item is a list object or a graph object, use the value of the @list or @graph entries, respectively, for element instead of expanded item.
                     var elementToCompact = JsonLdUtils.IsListObject(expandedItem) ? expandedItem["@list"] :
                         JsonLdUtils.IsGraphObject(expandedItem) ? expandedItem["@graph"] : expandedItem;
-                    var compactedItem = CompactAlgorithm(activeContext, itemActiveProperty, elementToCompact,
+                    var compactedItem = CompactElement(activeContext, itemActiveProperty, elementToCompact,
                         compactArrays, ordered);
                     // 12.8.7 - If expanded item is a list object: 
                     if (JsonLdUtils.IsListObject(expandedItem))
@@ -555,10 +571,10 @@ namespace VDS.RDF.JsonLd
                             // 12.8.9.8.4 - If compacted item contains a single entry with a key expanding to @id, set compacted item to the result of using this algorithm recursively, passing active context, item active property for active property, and a map composed of the single entry for @id from expanded item for element.
                             if ((compactedItem is JObject compactedItemObject) && compactedItemObject.Count == 1)
                             {
-                                if (ExpandIri(activeContext, compactedItemObject.Properties().First().Name, vocab: true)
+                                if (_contextProcessor.ExpandIri(activeContext, compactedItemObject.Properties().First().Name, vocab: true)
                                     .Equals("@id"))
                                 {
-                                    compactedItem = CompactAlgorithm(activeContext, itemActiveProperty,
+                                    compactedItem = CompactElement(activeContext, itemActiveProperty,
                                         new JObject(new JProperty("@id", expandedItemObject["@id"])));
                                 }
                             }
@@ -579,7 +595,7 @@ namespace VDS.RDF.JsonLd
             return result;
         }
 
-        private string CompactIri(JsonLdContext activeContext, string iri, JToken value = null,
+        public string CompactIri(JsonLdContext activeContext, string iri, JToken value = null,
     bool vocab = false, bool reverse = false)
         {
             // 1 - If var is null, return null.
@@ -844,7 +860,7 @@ namespace VDS.RDF.JsonLd
 
                 // 4.10 - Append @none to containers. This represents the non-existence of a container mapping, and it will be the last container mapping value to be checked as it is the most generic.
                 containers.Add("@none");
-                if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
+                if (Options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
                 {
                     // 4.11 - If processing mode is not json-ld-1.0 and value is not a map or does not contain an @index entry, append @index and @index@set to containers.
                     if (value == null || value.Type != JTokenType.Object || !(value as JObject).ContainsKey("@index"))
@@ -1141,104 +1157,7 @@ namespace VDS.RDF.JsonLd
             return t != null && t.Type == JTokenType.String && t.Value<string>().Equals(str, comparisonOptions);
         }
 
-        private ISet<JsonLdContainer> ValidateContainerMapping(string term, JToken containerValue)
-        {
-            // 19.1 Initialize container to the value associated with the @container entry, which MUST be either @graph, @id, @index, @language, @list, @set, @type,
-            // or an array containing exactly any one of those keywords, an array containing @graph and either @id or @index optionally including @set,
-            // or an array containing a combination of @set and any of @index, @graph, @id, @type, @language in any order.
-            // Otherwise, an invalid container mapping has been detected and processing is aborted.
-            var containerMapping = new HashSet<JsonLdContainer>();
-            switch (containerValue.Type)
-            {
-                case JTokenType.String:
-                    containerMapping.Add(ParseContainerMapping(term, containerValue.Value<string>()));
-                    break;
-                case JTokenType.Array when _options.ProcessingMode == JsonLdProcessingMode.JsonLd10:
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                        $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array, but the processing mode is set to JSON-LD 1.0.");
-                case JTokenType.Array:
-                    {
-                        foreach (var entry in containerValue.Children())
-                        {
-                            if (entry.Type != JTokenType.String)
-                            {
-                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                                    $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array containing non-string entries.");
-                            }
-
-                            containerMapping.Add(ParseContainerMapping(term, entry.Value<string>()));
-                        }
-
-                        break;
-                    }
-                default:
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                        $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string or an array of strings.");
-            }
-
-            if (containerMapping.Count == 1) return containerMapping;
-            if (containerMapping.Contains(JsonLdContainer.Graph) &&
-                containerMapping.Contains(JsonLdContainer.Id) || containerMapping.Contains(JsonLdContainer.Index))
-            {
-                switch (containerMapping.Count)
-                {
-                    case 2:
-                        return containerMapping;
-                    case 3 when containerMapping.Contains(JsonLdContainer.Set):
-                        return containerMapping;
-                }
-            }
-
-            if (containerMapping.Contains(JsonLdContainer.Set) && !containerMapping.Contains(JsonLdContainer.List))
-                return containerMapping;
-
-            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                $"Invalid Container Mapping. The value of the @container property of term '{term}' contains an invalid combination of container keywords.");
-        }
-
-        private JsonLdContainer ParseContainerMapping(string term, string containerValue)
-        {
-            if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
-            {
-                switch (containerValue)
-                {
-                    case "@graph":
-                    case "@id":
-                    case "@type":
-                        // 19.2 - If the container value is @graph, @id, or @type, or is otherwise not a string, generate an invalid container mapping error and abort processing if processing mode is json-ld-1.0.
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                            $"The term {term} specifies a container mapping of {containerValue} which is not supported under the JSON-LD 1.0 processing model.");
-                    case "@index":
-                        return JsonLdContainer.Index;
-                    case "@language":
-                        return JsonLdContainer.Language;
-                    case "@list":
-                        return JsonLdContainer.List;
-                    case "@set":
-                        return JsonLdContainer.Set;
-                }
-
-            }
-            switch (containerValue)
-            {
-                case "@graph":
-                    return JsonLdContainer.Graph;
-                case "@id":
-                    return JsonLdContainer.Id;
-                case "@index":
-                    return JsonLdContainer.Index;
-                case "@language":
-                    return JsonLdContainer.Language;
-                case "@list":
-                    return JsonLdContainer.List;
-                case "@set":
-                    return JsonLdContainer.Set;
-                case "@type":
-                    return JsonLdContainer.Type;
-            }
-            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
-                $"The term {term} specifies an unrecognized container mapping of {containerValue}.");
-        }
+        
 
         /// <summary>
         /// Ensure that a JObject has an entry for a given property, initializing it to an empty map if it does not exist.

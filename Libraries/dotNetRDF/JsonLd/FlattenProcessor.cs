@@ -32,7 +32,7 @@ namespace VDS.RDF.JsonLd
     /// <summary>
     /// Implements the JSON-LD Flatten algorithm.
     /// </summary>
-    public class Flatten
+    internal class FlattenProcessor
     {
         private readonly INodeMapGenerator _nodeMapGenerator;
 
@@ -40,7 +40,7 @@ namespace VDS.RDF.JsonLd
         /// Create a new flatten processor instance.
         /// </summary>
         /// <param name="nodeMapGenerator">The node map generator to use for the initial node mapping step of the algorithm. Defaults to a new instance of <see cref="NodeMapGenerator"/>.</param>
-        public Flatten(INodeMapGenerator nodeMapGenerator = null)
+        public FlattenProcessor(INodeMapGenerator nodeMapGenerator = null)
         {
             _nodeMapGenerator = nodeMapGenerator ?? new NodeMapGenerator();
         }

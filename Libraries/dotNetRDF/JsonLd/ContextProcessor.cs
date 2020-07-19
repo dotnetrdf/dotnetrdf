@@ -27,13 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    /// <summary>
+    /// Implements the JSON-LD context processing, term definition creation and IRI expansion algorithms
+    /// </summary>
+    public class ContextProcessor : ProcessorBase
     {
         private static readonly char[] GenDelimChars =
         {
@@ -45,6 +47,18 @@ namespace VDS.RDF.JsonLd
             ']',
             '@',
         };
+
+        private readonly IRemoteContextProvider _contextProvider;
+
+        /// <summary>
+        /// Create a new context processor instance.
+        /// </summary>
+        /// <param name="options">The processing options to use.</param>
+        /// <param name="contextProvider">The provider for retrieving remote context documents.</param>
+        public ContextProcessor(JsonLdProcessorOptions options, IRemoteContextProvider contextProvider = null) : base(options)
+        {
+            _contextProvider = contextProvider ?? new RemoteContextProvider(options);
+        }
 
         /// <summary>
         /// Process a context in the scope of a current active context resulting in a new context.
@@ -141,7 +155,7 @@ namespace VDS.RDF.JsonLd
                     }
                     // 5.2.3 If the number of entries in the remote contexts array exceeds a processor defined limit, a context overflow error has been
                     // detected and processing is aborted; otherwise, add context to remote contexts.
-                    if (_options.RemoteContextLimit >= 0 && remoteContexts.Count >= _options.RemoteContextLimit)
+                    if (Options.RemoteContextLimit >= 0 && remoteContexts.Count >= Options.RemoteContextLimit)
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.ContextOverflow, "Number of loaded remote context references exceeds the limit.");
                     }
@@ -150,7 +164,8 @@ namespace VDS.RDF.JsonLd
                     // 5.2.4 If context was previously dereferenced, then the processor MUST NOT do a further dereference,
                     // and context is set to the previously established internal representation:
                     // set context document to the previously dereferenced document, and set loaded context to the value of the @context entry from the document in context document.
-                    var loadedContext = GetRemoteContext(remoteUrl); // 5.2.4, 5.2.5
+                    var loadedContext = _contextProvider.GetRemoteContext(remoteUrl); // 5.2.4, 5.2.5
+
                     // 5.2.6 Set result to the result of recursively calling this algorithm, passing result for active context, loaded context for local context, the documentUrl of context document for base URL, a copy of remote contexts, and validate scoped context. 
                     result = ProcessContext(result, loadedContext.Context, loadedContext.DocumentUrl,
                         remoteContexts, validateScopedContext: validateScopedContext);
@@ -179,7 +194,7 @@ namespace VDS.RDF.JsonLd
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidVersionValue, $"Found invalid value for @version property: {versionValue}.");
                     }
                     // 5.5.2 - If processing mode is set to json-ld-1.0, a processing mode conflict error has been detected and processing is aborted.
-                    if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                    if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.ProcessingModeConflict,
                             "Processing mode conflict. Processor options specify JSON-LD 1.0 processing mode, but encountered @version that requires JSON-LD 1.1 processing features");
@@ -204,7 +219,7 @@ namespace VDS.RDF.JsonLd
                     var import = new Uri(baseUrl, importProperty.Value.Value<string>());
 
                     // Implements 5.6.4, 5.6.5, 5.6.6
-                    var remoteContext = GetRemoteContext(import);
+                    var remoteContext = _contextProvider.GetRemoteContext(import);
                     if (!(remoteContext.Context is JObject importContext))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
@@ -418,7 +433,7 @@ namespace VDS.RDF.JsonLd
             // 4 - If term is @type, and processing mode is json-ld-1.0, a keyword redefinition error has been detected and processing is aborted.
             if (term.Equals("@type"))
             {
-                if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition,
                         "Cannot redefine the @type keyword under JSON-LD 1.0 processing rules.");
@@ -489,7 +504,7 @@ namespace VDS.RDF.JsonLd
 
                 // 12.2 - Set type to the result of IRI expanding type, using local context, and defined.
                 var type = ExpandIri(activeContext, typeValue.Value<string>(), true, false, localContext, defined);
-                if ((type == "@json" || type == "@none") && _options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if ((type == "@json" || type == "@none") && Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping,
                         $"Invalid type mapping for term {term}. Unexpanded value was {typeValue.Value<string>()}, and the expanded type IRI is '{type}', but the JSON-LD Processing mode is set to 1.0 which does not support @none or @json types.");
@@ -738,7 +753,7 @@ namespace VDS.RDF.JsonLd
             if (indexValue != null)
             {
                 // 20.1 - If processing mode is json-ld-1.0 or container mapping does not include @index, an invalid term definition has been detected and processing is aborted.
-                if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition. The definition of term '{term}' includes an @index entry, which is not supported by the JSON-LD 1.0 processing mode.");
@@ -771,7 +786,7 @@ namespace VDS.RDF.JsonLd
             if (contextValue != null)
             {
                 // 21.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
-                if (ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition for term '{term}'. The @context property is not supported on a term definition when the processing mode is JSON-LD 1.0.");
@@ -836,7 +851,7 @@ namespace VDS.RDF.JsonLd
             if (nestValue != null)
             {
                 // 24.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
-                if (ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition for term '{term}. Term definitions may not contain the @nest property when the processing mode is JSON-LD 1.0.");
@@ -863,7 +878,7 @@ namespace VDS.RDF.JsonLd
             if (prefixValue != null)
             {
                 // 25.1 - If processing mode is json - ld - 1.0, or if term contains a colon(:) or slash(/), an invalid term definition has been detected and processing is aborted.
-                if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+                if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition for term '{term}'. Term definitions may not contain the @prefix property when the processing mode is JSON-LD 1.0.");
@@ -916,6 +931,105 @@ namespace VDS.RDF.JsonLd
             defined[term] = true;
         }
 
+        /// <summary>
+        /// Implementation of IRI Expansion algorithm.
+        /// </summary>
+        /// <param name="activeContext"></param>
+        /// <param name="value"></param>
+        /// <param name="vocab"></param>
+        /// <param name="documentRelative"></param>
+        /// <param name="localContext"></param>
+        /// <param name="defined"></param>
+        /// <returns></returns>
+        public string ExpandIri(JsonLdContext activeContext, string value, bool vocab = false, bool documentRelative = false, JObject localContext = null, Dictionary<string, bool> defined = null)
+        {
+            if (defined == null) defined = new Dictionary<string, bool>();
+
+            // 1. If value is a keyword or null, return value as is.
+            if (value == null || JsonLdUtils.IsKeyword(value)) return value;
+
+            // 2 - If value has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), a processor SHOULD generate a warning and return null.
+            if (JsonLdUtils.MatchesKeywordProduction(value))
+            {
+                Warn(JsonLdErrorCode.InvalidTermDefinition,
+                    $"The term {value} matches the production @[a-zA-Z] which is reserved by the JSON-LD specification.");
+                return null;
+            }
+
+            // 3 -  If local context is not null, it contains an entry with a key that equals value, and the value of the entry for value in defined is not true,
+            // invoke the Create Term Definition algorithm, passing active context, local context, value as term, and defined.
+            // This will ensure that a term definition is created for value in active context during Context Processing. 
+            if (localContext != null && localContext.ContainsKey(value) && defined.TryGetValue(value, out var isDefined) && !isDefined)
+            {
+                CreateTermDefinition(activeContext, localContext, value, defined);
+            }
+
+            var hasTerm = activeContext.TryGetTerm(value, out var termDefinition);
+
+            // 4. If active context has a term definition for value, and the associated IRI mapping is a keyword, return that keyword.
+            if (hasTerm && JsonLdUtils.IsKeyword(termDefinition.IriMapping))
+            {
+                return termDefinition.IriMapping;
+            }
+
+            // 5. If vocab is true and the active context has a term definition for value, return the associated IRI mapping.
+            if (vocab && hasTerm)
+            {
+                return termDefinition.IriMapping;
+            }
+
+            // 6. If value contains a colon (:) anywhere after the first character, it is either an IRI, a compact IRI, or a blank node identifier:
+            var ix = value.IndexOf(':');
+            if (ix > 0)
+            {
+                // 6.1 Split value into a prefix and suffix at the first occurrence of a colon (:).
+                var prefix = value.Substring(0, ix);
+                var suffix = value.Substring(ix + 1);
+
+                // 6.2 If prefix is underscore (_) or suffix begins with double-forward-slash (//), 
+                // return value as it is already an absolute IRI or a blank node identifier.
+                if (prefix.Equals("_") || suffix.StartsWith("//"))
+                {
+                    return value;
+                }
+
+                // 6.3 If local context is not null, it contains a prefix entry, and the value of the prefix entry in defined is not true,
+                // invoke the Create Term Definition algorithm, passing active context, local context, prefix as term, and defined.
+                // This will ensure that a term definition is created for prefix in active context during Context Processing.
+                defined.TryGetValue(prefix, out bool prefixDefined);
+                if (localContext?.Property(prefix) != null && !prefixDefined)
+                {
+                    CreateTermDefinition(activeContext, localContext, prefix, defined);
+                }
+
+                // 6.4 If active context contains a term definition for prefix having a non-null IRI mapping and the prefix flag of the term
+                // definition is true, return the result of concatenating the IRI mapping associated with prefix and suffix.
+                if (activeContext.TryGetTerm(prefix, out termDefinition) && termDefinition.Prefix && termDefinition.IriMapping != null)
+                {
+                    return termDefinition.IriMapping + suffix;
+                }
+
+                // 6.5 - If value has the form of an IRI, return value.
+                if (JsonLdUtils.IsIri(value)) return value;
+            }
+
+            // 7 If vocab is true, and active context has a vocabulary mapping, return the result of concatenating the vocabulary mapping with value.
+            if (vocab && activeContext.Vocab != null)
+            {
+                return activeContext.Vocab + value;
+            }
+
+            // 8 Otherwise, if document relative is true, set value to the result of resolving value against the base IRI. 
+            // TODO: Only the basic algorithm in section 5.2 of [RFC3986] is used; neither Syntax-Based Normalization nor Scheme-Based Normalization are performed. Characters additionally allowed in IRI references are treated in the same way that unreserved characters are treated in URI references, per section 6.5 of [RFC3987].
+            if (documentRelative && activeContext.HasBase)
+            {
+                var iri = new Uri(activeContext.Base, value);
+                return iri.ToString();
+            }
+
+            // 9 Return value as is
+            return value;
+        }
 
 
         private static void ValidateTypeRedefinition(JToken value)
@@ -947,7 +1061,7 @@ namespace VDS.RDF.JsonLd
         {
             var protectedProperty = map.Property("@protected");
             if (protectedProperty == null) return defaultValue;
-            if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+            if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
             {
                 throw new JsonLdProcessorException(JsonLdErrorCode.ProcessingModeConflict,
                     "Processing mode conflict. Processor options specify JSON-LD 1.0 processing mode, but encountered @protected that requires JSON-LD 1.1 processing features");
@@ -960,6 +1074,105 @@ namespace VDS.RDF.JsonLd
             }
 
             return protectedProperty.Value.Value<bool>();
+        }
+
+        private ISet<JsonLdContainer> ValidateContainerMapping(string term, JToken containerValue)
+        {
+            // 19.1 Initialize container to the value associated with the @container entry, which MUST be either @graph, @id, @index, @language, @list, @set, @type,
+            // or an array containing exactly any one of those keywords, an array containing @graph and either @id or @index optionally including @set,
+            // or an array containing a combination of @set and any of @index, @graph, @id, @type, @language in any order.
+            // Otherwise, an invalid container mapping has been detected and processing is aborted.
+            var containerMapping = new HashSet<JsonLdContainer>();
+            switch (containerValue.Type)
+            {
+                case JTokenType.String:
+                    containerMapping.Add(ParseContainerMapping(term, containerValue.Value<string>()));
+                    break;
+                case JTokenType.Array when Options.ProcessingMode == JsonLdProcessingMode.JsonLd10:
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                        $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array, but the processing mode is set to JSON-LD 1.0.");
+                case JTokenType.Array:
+                    {
+                        foreach (var entry in containerValue.Children())
+                        {
+                            if (entry.Type != JTokenType.String)
+                            {
+                                throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                                    $"Invalid Container Mapping. The value of the @container property of term '{term}' is an array containing non-string entries.");
+                            }
+
+                            containerMapping.Add(ParseContainerMapping(term, entry.Value<string>()));
+                        }
+
+                        break;
+                    }
+                default:
+                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                        $"Invalid Container Mapping. The value of the @container property of term '{term}' must be a string or an array of strings.");
+            }
+
+            if (containerMapping.Count == 1) return containerMapping;
+            if (containerMapping.Contains(JsonLdContainer.Graph) &&
+                containerMapping.Contains(JsonLdContainer.Id) || containerMapping.Contains(JsonLdContainer.Index))
+            {
+                switch (containerMapping.Count)
+                {
+                    case 2:
+                        return containerMapping;
+                    case 3 when containerMapping.Contains(JsonLdContainer.Set):
+                        return containerMapping;
+                }
+            }
+
+            if (containerMapping.Contains(JsonLdContainer.Set) && !containerMapping.Contains(JsonLdContainer.List))
+                return containerMapping;
+
+            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                $"Invalid Container Mapping. The value of the @container property of term '{term}' contains an invalid combination of container keywords.");
+        }
+
+        private JsonLdContainer ParseContainerMapping(string term, string containerValue)
+        {
+            if (Options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+            {
+                switch (containerValue)
+                {
+                    case "@graph":
+                    case "@id":
+                    case "@type":
+                        // 19.2 - If the container value is @graph, @id, or @type, or is otherwise not a string, generate an invalid container mapping error and abort processing if processing mode is json-ld-1.0.
+                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                            $"The term {term} specifies a container mapping of {containerValue} which is not supported under the JSON-LD 1.0 processing model.");
+                    case "@index":
+                        return JsonLdContainer.Index;
+                    case "@language":
+                        return JsonLdContainer.Language;
+                    case "@list":
+                        return JsonLdContainer.List;
+                    case "@set":
+                        return JsonLdContainer.Set;
+                }
+
+            }
+            switch (containerValue)
+            {
+                case "@graph":
+                    return JsonLdContainer.Graph;
+                case "@id":
+                    return JsonLdContainer.Id;
+                case "@index":
+                    return JsonLdContainer.Index;
+                case "@language":
+                    return JsonLdContainer.Language;
+                case "@list":
+                    return JsonLdContainer.List;
+                case "@set":
+                    return JsonLdContainer.Set;
+                case "@type":
+                    return JsonLdContainer.Type;
+            }
+            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContainerMapping,
+                $"The term {term} specifies an unrecognized container mapping of {containerValue}.");
         }
     }
 }
