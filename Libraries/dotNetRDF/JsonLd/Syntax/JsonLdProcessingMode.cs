@@ -24,38 +24,24 @@
 // </copyright>
 */
 
-using System;
-
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Enumeration of the allowed values for the object embed option for JSON-LD framing.
+    /// Enumeration of the processing modes supported by the <see cref="JsonLdProcessor"/>.
     /// </summary>
-    public enum JsonLdEmbed
+    public enum JsonLdProcessingMode
     {
         /// <summary>
-        /// @always
+        /// Process only JSON-LD 1.0 features
         /// </summary>
-        Always,
+        JsonLd10,
         /// <summary>
-        /// @first
+        /// Process JSON-LD 1.1 features with frame expansion features disabled.
         /// </summary>
-        First,
+        JsonLd11,
         /// <summary>
-        /// @last
+        /// Process JSON-LD 1.1 features with frame expansion features enabled.
         /// </summary>
-        Last,
-        /// <summary>
-        /// @link
-        /// </summary>
-        Link,
-        /// <summary>
-        /// @once
-        /// </summary>
-        Once,
-        /// <summary>
-        /// @never
-        /// </summary>
-        Never,
+        JsonLd11FrameExpansion,
     }
 }

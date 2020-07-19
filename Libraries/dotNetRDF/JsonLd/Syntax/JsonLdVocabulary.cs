@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,24 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Enumeration of the processing modes supported by the <see cref="JsonLdProcessor"/>.
+    /// Defines string constants for elements of the JSON-LD vocabulary that are required by the <see cref="JsonLdProcessor"/>.
     /// </summary>
-    public enum JsonLdProcessingMode
+    public static class JsonLdVocabulary
     {
         /// <summary>
-        /// Process only JSON-LD 1.0 features
+        /// The prefix part of each JSON-LD vocabulary IRI up to and including the fragment separator.
         /// </summary>
-        JsonLd10,
+        public static string VocabularyBase = "http://www.w3.org/ns/json-ld#";
+
         /// <summary>
-        /// Process JSON-LD 1.1 features with frame expansion features disabled.
+        /// Identifier for the context term.
         /// </summary>
-        JsonLd11,
-        /// <summary>
-        /// Process JSON-LD 1.1 features with frame expansion features enabled.
-        /// </summary>
-        JsonLd11FrameExpansion,
+        public static string Context = VocabularyBase + "context";
     }
 }

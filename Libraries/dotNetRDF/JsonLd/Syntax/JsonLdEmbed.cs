@@ -24,24 +24,36 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// An enumeration of the text flow directions supported by JSON-LD 1.1.
+    /// Enumeration of the allowed values for the object embed option for JSON-LD framing.
     /// </summary>
-    public enum LanguageDirection
+    public enum JsonLdEmbed
     {
         /// <summary>
-        /// Text direction is unspecified / null
+        /// @always
         /// </summary>
-        Unspecified = 0,
+        Always,
         /// <summary>
-        /// Text direction is left to right
+        /// @first
         /// </summary>
-        LeftToRight = 1,
+        First,
         /// <summary>
-        /// Text direction is right to left
+        /// @last
         /// </summary>
-        RightToLeft = 2,
+        Last,
+        /// <summary>
+        /// @link
+        /// </summary>
+        Link,
+        /// <summary>
+        /// @once
+        /// </summary>
+        Once,
+        /// <summary>
+        /// @never
+        /// </summary>
+        Never,
     }
 }

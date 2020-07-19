@@ -25,6 +25,7 @@
 */
 
 using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd.Processors;
 
 namespace VDS.RDF.JsonLd
 {

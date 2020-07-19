@@ -32,6 +32,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
+using VDS.RDF.JsonLd.Processors;
+using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing

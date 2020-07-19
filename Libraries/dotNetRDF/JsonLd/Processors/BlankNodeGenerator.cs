@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
     /// Default implementation of the <see cref="IBlankNodeGenerator"/> interface.

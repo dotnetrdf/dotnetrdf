@@ -24,44 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// An enumeration of the options allowed by the <see cref="JsonLdProcessorOptions.RdfDirection"/> property.
     /// </summary>
-    public enum JsonLdContainer
+    public enum JsonLdRdfDirectionMode
     {
         /// <summary>
-        /// No container mapping
+        /// Specifies the use of W3C I18N datatype IRIs when serializing literals containing a base direction.
         /// </summary>
-        Null,
+        I18NDatatype,
+
         /// <summary>
-        /// @graph container mapping
+        /// Specifies the use of a blank node and rdf:direction property when serializing literals containing a base direction.
         /// </summary>
-        Graph,
-        /// <summary>
-        /// @list container mapping
-        /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        CompoundLiteral
     }
 }

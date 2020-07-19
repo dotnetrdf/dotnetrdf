@@ -28,8 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd.Syntax;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Processors
 {
     internal class CompactProcessor : ProcessorBase
     {

@@ -24,7 +24,7 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
     /// Defines the keywords and categories of keywords that are valid in JSON-LD 1.1.

@@ -28,9 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
     /// Implements the JSON-LD context processing, term definition creation and IRI expansion algorithms

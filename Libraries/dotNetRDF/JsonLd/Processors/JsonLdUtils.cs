@@ -28,8 +28,9 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd.Syntax;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
     /// Various utility methods used by the JSON-LD processor and algorithm implementations

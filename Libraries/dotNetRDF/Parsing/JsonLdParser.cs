@@ -34,6 +34,8 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using VDS.RDF.JsonLd.Processors;
+using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.Parsing
 {

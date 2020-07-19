@@ -24,21 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// An enumeration of the options allowed by the <see cref="JsonLdProcessorOptions.RdfDirection"/> property.
+    /// Enumeration of the supported JSON-LD syntax versions.
     /// </summary>
-    public enum JsonLdRdfDirectionMode
+    public enum JsonLdSyntax
     {
         /// <summary>
-        /// Specifies the use of W3C I18N datatype IRIs when serializing literals containing a base direction.
+        /// The original 1.0 version of the JSON-LD syntax.
         /// </summary>
-        I18NDatatype,
+        JsonLd10,
 
         /// <summary>
-        /// Specifies the use of a blank node and rdf:direction property when serializing literals containing a base direction.
+        /// The current 1.1 version of the JSON-LD syntax.
         /// </summary>
-        CompoundLiteral
+        JsonLd11,
     }
 }

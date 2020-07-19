@@ -25,8 +25,9 @@
 */
 
 using System.Collections.Generic;
+using VDS.RDF.JsonLd.Syntax;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
     /// Base class for processors that make use of <see cref="JsonLdProcessorOptions"/>.

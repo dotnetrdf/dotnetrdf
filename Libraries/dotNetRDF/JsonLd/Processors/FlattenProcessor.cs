@@ -27,7 +27,7 @@
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
     /// Implements the JSON-LD Flatten algorithm.

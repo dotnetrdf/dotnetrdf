@@ -33,8 +33,17 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
+    /// <summary>
+    /// Overrides some of the default Newtonsoft.Json JSON value formatting so that
+    /// the output of the JSON-LD writer is better conforming to the JSON-LD 1.1 specification.
+    /// </summary>
     internal class JsonLiteralSerializer
     {
+        /// <summary>
+        /// Return a string serialization of the provided token.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public string Serialize(JToken token)
         {
             var sb = new StringBuilder();
