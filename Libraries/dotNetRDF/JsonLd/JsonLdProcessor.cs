@@ -304,7 +304,7 @@ namespace VDS.RDF.JsonLd
             var toReverse = processor.ProcessContext(new JsonLdContext(), context, reverseContextBase);
 
             // 12 - Initialize inverse context to the result of performing the Inverse Context Creation algorithm.
-            var inverseContext = CreateInverseContext(toReverse);
+            var inverseContext = toReverse.InverseContext;
 
             // 13 - If frame has a top-level property which expands to @graph set the frameDefault option to options with the value true.
             if (frame is JObject frameObject && frameObject.Properties()

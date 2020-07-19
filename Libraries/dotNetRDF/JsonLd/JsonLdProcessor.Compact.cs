@@ -587,11 +587,6 @@ namespace VDS.RDF.JsonLd
             if (iri == null) return null;
 
             // 2 - If the active context has a null inverse context, set inverse context in active context to the result of calling the Inverse Context Creation algorithm using active context.
-            if (activeContext.InverseContext == null)
-            {
-                activeContext.InverseContext = CreateInverseContext(activeContext);
-            }
-
             // Initialize inverse context to the value of inverse context in active context.
             var inverseContext = activeContext.InverseContext;
 
@@ -1016,11 +1011,6 @@ namespace VDS.RDF.JsonLd
         private static string SelectTerm(JsonLdContext activeContext, string iri, List<string> containers, string typeLanguage, List<string> preferredValues)
         {
             // 1 - If the active context has a null inverse context, set inverse context in active context to the result of calling the Inverse Context Creation algorithm using active context.
-            if (activeContext.InverseContext == null)
-            {
-                activeContext.InverseContext = CreateInverseContext(activeContext);
-            }
-
             // 2 - Initialize inverse context to the value of inverse context in active context.
             var inverseContext = activeContext.InverseContext;
 
@@ -1061,13 +1051,8 @@ namespace VDS.RDF.JsonLd
 
             // 2 - If the active context has a null inverse context, set inverse context in active context to the result of calling the
             // Inverse Context Creation algorithm using active context.
-            if (activeContext.InverseContext == null)
-            {
-                activeContext.InverseContext = CreateInverseContext(activeContext);
-            }
-
             // 3 - Initialize inverse context to the value of inverse context in active context.
-            var inverseContext = activeContext.InverseContext;
+            // var inverseContext = activeContext.InverseContext; -- Not used?
 
 
             // 4 - Initialize language to the language mapping for active property in active context, if any, otherwise to the default language of active context.
