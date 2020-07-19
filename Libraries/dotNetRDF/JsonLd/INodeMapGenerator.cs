@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,22 +24,29 @@
 // </copyright>
 */
 
+using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd.Processors;
+
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the supported JSON-LD syntax versions.
+    /// Interface for the JSON-LD node map generator.
     /// </summary>
-    public enum JsonLdSyntax
+    public interface INodeMapGenerator
     {
         /// <summary>
-        /// The original 1.0 version of the JSON-LD syntax
+        /// Applies the Node Map Generation algorithm to the specified input.
         /// </summary>
-        JsonLd10,
+        /// <param name="element">The element to be processed.</param>
+        /// <param name="identifierGenerator">The identifier generator instance to use when creating new blank node identifiers. Defaults to a new instance of <see cref="BlankNodeGenerator"/>.</param>
+        /// <returns>The generated node map dictionary as a JObject instance.</returns>
+        JObject GenerateNodeMap(JToken element, IBlankNodeGenerator identifierGenerator = null);
 
         /// <summary>
-        /// The currently in-development 1.1 version of the JSON-LD syntax
+        /// Creates a new node map object by merging the graph-level node maps contained in the input graph map object.
         /// </summary>
-        /// <remarks>PLEASE NOTE: the features supported by this version of the parser are subject to change as the specificiation is still in development.</remarks>
-        JsonLd11,
+        /// <param name="graphMap">The input graph map to be merged.</param>
+        /// <returns>The merged node map as a new object (the original node map is not modified).</returns>
+        JObject GenerateMergedNodeMap(JObject graphMap);
     }
 }

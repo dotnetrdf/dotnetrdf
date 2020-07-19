@@ -24,44 +24,21 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Enumeration of the supported container mappings.
+    /// Enumeration of the supported JSON-LD syntax versions.
     /// </summary>
-    public enum JsonLdContainer
+    public enum JsonLdSyntax
     {
         /// <summary>
-        /// No container mapping
+        /// The original 1.0 version of the JSON-LD syntax.
         /// </summary>
-        Null,
+        JsonLd10,
+
         /// <summary>
-        /// @graph container mapping
+        /// The current 1.1 version of the JSON-LD syntax.
         /// </summary>
-        Graph,
-        /// <summary>
-        /// @list container mapping
-        /// </summary>
-        List,
-        /// <summary>
-        /// @set container mapping
-        /// </summary>
-        Set,
-        /// <summary>
-        /// @index container mapping
-        /// </summary>
-        Index,
-        /// <summary>
-        /// @id container mapping
-        /// </summary>
-        Id,
-        /// <summary>
-        /// @type container mapping
-        /// </summary>
-        Type,
-        /// <summary>
-        /// @language container mapping
-        /// </summary>
-        Language,
+        JsonLd11,
     }
 }

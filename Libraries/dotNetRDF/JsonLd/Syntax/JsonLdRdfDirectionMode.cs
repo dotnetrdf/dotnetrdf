@@ -24,43 +24,21 @@
 // </copyright>
 */
 
-using VDS.RDF.JsonLd.Syntax;
-
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Represents a warning message raised during JSON-LD processing
+    /// An enumeration of the options allowed by the <see cref="JsonLdProcessorOptions.RdfDirection"/> property.
     /// </summary>
-    public class JsonLdProcessorWarning
+    public enum JsonLdRdfDirectionMode
     {
         /// <summary>
-        /// The error code associated with the warning.
+        /// Specifies the use of W3C I18N datatype IRIs when serializing literals containing a base direction.
         /// </summary>
-        public JsonLdErrorCode ErrorCode { get; }
+        I18NDatatype,
 
         /// <summary>
-        /// The detailed warning message.
+        /// Specifies the use of a blank node and rdf:direction property when serializing literals containing a base direction.
         /// </summary>
-        public string Message { get;}
-
-        /// <summary>
-        /// Create a new warning message with the specified code and message.
-        /// </summary>
-        /// <param name="errorCode"></param>
-        /// <param name="message"></param>
-        public JsonLdProcessorWarning(JsonLdErrorCode errorCode, string message)
-        {
-            ErrorCode = errorCode;
-            Message = message;
-        }
-
-        /// <summary>
-        /// Get a string representation of the warning.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return $"{ErrorCode}: {Message}";
-        }
+        CompoundLiteral
     }
 }

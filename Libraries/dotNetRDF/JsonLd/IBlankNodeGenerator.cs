@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -27,21 +27,17 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the processing modes supported by the <see cref="JsonLdProcessor"/>.
+    /// Interface for a blank node identifier generator that generates a unique blank node identifier
+    /// for a given input identifier.
     /// </summary>
-    public enum JsonLdProcessingMode
+    public interface IBlankNodeGenerator
     {
         /// <summary>
-        /// Process only JSON-LD 1.0 features
+        /// Return a unique blank node identifier for the specified input identifier.
         /// </summary>
-        JsonLd10,
-        /// <summary>
-        /// Process JSON-LD 1.1 features with frame expansion features disabled.
-        /// </summary>
-        JsonLd11,
-        /// <summary>
-        /// Process JSON-LD 1.1 features with frame expansion features enabled.
-        /// </summary>
-        JsonLd11FrameExpansion,
+        /// <param name="identifier"></param>
+        /// <returns>A blank node identifier string (using standard Turtle notation for blank node identifiers).</returns>
+        /// <remarks>An implementation MUST guarantee to return the same blank node identifier when called multiple times with the same input identifier.</remarks>
+        string GenerateBlankNodeIdentifier(string identifier);
     }
 }

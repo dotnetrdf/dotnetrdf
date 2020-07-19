@@ -25,8 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,8 +33,17 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    class JsonLiteralSerializer
+    /// <summary>
+    /// Overrides some of the default Newtonsoft.Json JSON value formatting so that
+    /// the output of the JSON-LD writer is better conforming to the JSON-LD 1.1 specification.
+    /// </summary>
+    internal class JsonLiteralSerializer
     {
+        /// <summary>
+        /// Return a string serialization of the provided token.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public string Serialize(JToken token)
         {
             var sb = new StringBuilder();
@@ -50,7 +57,7 @@ namespace VDS.RDF.JsonLd
             return sb.ToString();
         }
 
-        private void Serialize(JsonWriter writer, JToken token)
+        private static void Serialize(JsonWriter writer, JToken token)
         {
             switch (token.Type)
             {

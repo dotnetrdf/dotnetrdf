@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,43 +24,21 @@
 // </copyright>
 */
 
-using VDS.RDF.JsonLd.Syntax;
-
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Represents a warning message raised during JSON-LD processing
+    /// Defines string constants for elements of the JSON-LD vocabulary that are required by the <see cref="JsonLdProcessor"/>.
     /// </summary>
-    public class JsonLdProcessorWarning
+    public static class JsonLdVocabulary
     {
         /// <summary>
-        /// The error code associated with the warning.
+        /// The prefix part of each JSON-LD vocabulary IRI up to and including the fragment separator.
         /// </summary>
-        public JsonLdErrorCode ErrorCode { get; }
+        public static string VocabularyBase = "http://www.w3.org/ns/json-ld#";
 
         /// <summary>
-        /// The detailed warning message.
+        /// Identifier for the context term.
         /// </summary>
-        public string Message { get;}
-
-        /// <summary>
-        /// Create a new warning message with the specified code and message.
-        /// </summary>
-        /// <param name="errorCode"></param>
-        /// <param name="message"></param>
-        public JsonLdProcessorWarning(JsonLdErrorCode errorCode, string message)
-        {
-            ErrorCode = errorCode;
-            Message = message;
-        }
-
-        /// <summary>
-        /// Get a string representation of the warning.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return $"{ErrorCode}: {Message}";
-        }
+        public static string Context = VocabularyBase + "context";
     }
 }

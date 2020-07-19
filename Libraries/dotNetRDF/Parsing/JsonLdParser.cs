@@ -34,6 +34,8 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using VDS.RDF.JsonLd.Processors;
+using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.Parsing
 {
@@ -113,7 +115,8 @@ namespace VDS.RDF.Parsing
                     element = JToken.ReadFrom(reader);
                 }
                 var expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
-                var nodeMap = JsonLdProcessor.GenerateNodeMap(expandedElement);
+                var nodeMapGenerator = new NodeMapGenerator();
+                var nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
                 foreach (var p in nodeMap.Properties())
                 {
                     var graphName = p.Name;
@@ -164,7 +167,7 @@ namespace VDS.RDF.Parsing
                                     }
                                 }
                             }
-                            else if (JsonLdProcessor.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf ||
+                            else if (JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf ||
                                      Uri.IsWellFormedUriString(property, UriKind.Absolute))
                             {
                                 foreach (var item in values)
@@ -200,7 +203,7 @@ namespace VDS.RDF.Parsing
             if (token is JValue)
             {
                 var stringValue = token.Value<string>();
-                if (JsonLdProcessor.IsBlankNodeIdentifier(stringValue))
+                if (JsonLdUtils.IsBlankNodeIdentifier(stringValue))
                 {
                     return handler.CreateBlankNode(stringValue.Substring(2));
                 }
@@ -212,7 +215,7 @@ namespace VDS.RDF.Parsing
                 return null;
             }
 
-            if (JsonLdProcessor.IsValueObject(token))
+            if (JsonLdUtils.IsValueObject(token))
             {
                 string literalValue = null;
                 var valueObject = token as JObject;
@@ -308,7 +311,7 @@ namespace VDS.RDF.Parsing
                 } 
                 return handler.CreateLiteralNode(literalValue, new Uri(datatype));
             }
-            if (JsonLdProcessor.IsListObject(token))
+            if (JsonLdUtils.IsListObject(token))
             {
                 var listArray = token["@list"] as JArray;
                 return MakeRdfList(handler, listArray, graphIri);

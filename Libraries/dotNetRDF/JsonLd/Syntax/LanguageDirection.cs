@@ -1,4 +1,4 @@
-﻿/*
+/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,21 +24,24 @@
 // </copyright>
 */
 
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Defines string constants for elements of the JSON-LD vocabulary that are required by the <see cref="JsonLdProcessor"/>.
+    /// An enumeration of the text flow directions supported by JSON-LD 1.1.
     /// </summary>
-    public static class JsonLdVocabulary
+    public enum LanguageDirection
     {
         /// <summary>
-        /// The prefix part of each JSON-LD vocabulary IRI up to and including the fragment separator.
+        /// Text direction is unspecified / null
         /// </summary>
-        public static string VocabularyBase = "http://www.w3.org/ns/json-ld#";
-
+        Unspecified = 0,
         /// <summary>
-        /// Identifier for the context term.
+        /// Text direction is left to right
         /// </summary>
-        public static string Context = VocabularyBase + "context";
+        LeftToRight = 1,
+        /// <summary>
+        /// Text direction is right to left
+        /// </summary>
+        RightToLeft = 2,
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -23,33 +23,21 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
+
 using System;
-using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    internal class JObjectConverter : JsonConverter<JObject>
+    /// <summary>
+    /// Interface to be implemented by classes responsible for retrieving remote JSON-LD context documents.
+    /// </summary>
+    public interface IRemoteContextProvider
     {
-        public override bool CanWrite => true;
-        public override bool CanRead => false;
-
-        public override void WriteJson(JsonWriter writer, JObject value, JsonSerializer serializer)
-        {
-            writer.WriteStartObject();
-            foreach (var p in value.Properties().OrderBy(p => p.Name))
-            {
-                serializer.Serialize(writer, p);
-            }
-            writer.WriteEndObject();
-        }
-
-        public override JObject ReadJson(JsonReader reader, Type objectType, JObject existingValue, bool hasExistingValue,
-            JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Retrieve a JSON-LD context document from the specified URL.
+        /// </summary>
+        /// <param name="reference">The location of the remote context to be retrieved.</param>
+        /// <returns></returns>
+        JsonLdRemoteContext GetRemoteContext(Uri reference);
     }
-
 }

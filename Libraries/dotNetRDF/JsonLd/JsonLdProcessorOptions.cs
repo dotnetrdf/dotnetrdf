@@ -28,6 +28,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd
 {

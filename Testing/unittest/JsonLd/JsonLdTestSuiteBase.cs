@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;

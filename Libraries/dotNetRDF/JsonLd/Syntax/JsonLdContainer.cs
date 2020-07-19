@@ -24,38 +24,44 @@
 // </copyright>
 */
 
-using System;
-
-namespace VDS.RDF.JsonLd
+namespace VDS.RDF.JsonLd.Syntax
 {
     /// <summary>
-    /// Enumeration of the allowed values for the object embed option for JSON-LD framing.
+    /// Enumeration of the supported container mappings.
     /// </summary>
-    public enum JsonLdEmbed
+    public enum JsonLdContainer
     {
         /// <summary>
-        /// @always
+        /// No container mapping
         /// </summary>
-        Always,
+        Null,
         /// <summary>
-        /// @first
+        /// @graph container mapping
         /// </summary>
-        First,
+        Graph,
         /// <summary>
-        /// @last
+        /// @list container mapping
         /// </summary>
-        Last,
+        List,
         /// <summary>
-        /// @link
+        /// @set container mapping
         /// </summary>
-        Link,
+        Set,
         /// <summary>
-        /// @once
+        /// @index container mapping
         /// </summary>
-        Once,
+        Index,
         /// <summary>
-        /// @never
+        /// @id container mapping
         /// </summary>
-        Never,
+        Id,
+        /// <summary>
+        /// @type container mapping
+        /// </summary>
+        Type,
+        /// <summary>
+        /// @language container mapping
+        /// </summary>
+        Language,
     }
 }
