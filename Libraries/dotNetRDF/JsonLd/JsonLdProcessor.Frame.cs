@@ -28,15 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    internal class FrameProcessor : JsonLdProcessorBase
+    public partial class JsonLdProcessor
     {
-
-        public static void ProcessFrame(FramingState state, List<string> subjects, JToken frameObjectOrArray,
+        private static void ProcessFrame(FramingState state, List<string> subjects, JToken frameObjectOrArray,
             JToken parent,
             string activeProperty, bool ordered = false, Stack<string> idStack = null, 
             JsonLdProcessingMode processingMode = JsonLdProcessingMode.JsonLd11)
@@ -733,7 +731,7 @@ namespace VDS.RDF.JsonLd
                     return (token as JArray).Any(IsWildcard);
                 case JTokenType.Object:
                     return (token as JObject).Properties()
-                        .All(p => JsonLdFramingKeywords.Contains(p.Name));
+                        .All(p => JsonLdKeywords.FramingKeywords.Contains(p.Name));
                 default:
                     return false;
             }

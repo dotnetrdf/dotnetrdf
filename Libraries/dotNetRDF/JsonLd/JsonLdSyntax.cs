@@ -32,14 +32,13 @@ namespace VDS.RDF.JsonLd
     public enum JsonLdSyntax
     {
         /// <summary>
-        /// The original 1.0 version of the JSON-LD syntax
+        /// The original 1.0 version of the JSON-LD syntax.
         /// </summary>
         JsonLd10,
 
         /// <summary>
-        /// The currently in-development 1.1 version of the JSON-LD syntax
+        /// The current 1.1 version of the JSON-LD syntax.
         /// </summary>
-        /// <remarks>PLEASE NOTE: the features supported by this version of the parser are subject to change as the specification is still in development.</remarks>
         JsonLd11,
     }
 }
