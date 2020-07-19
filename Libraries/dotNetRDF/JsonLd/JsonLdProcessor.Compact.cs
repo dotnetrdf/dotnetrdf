@@ -45,7 +45,7 @@ namespace VDS.RDF.JsonLd
             var typeScopedContext = activeContext;
 
             // 2 - If element is a scalar, it is already in its most compact form, so simply return element.
-            if (IsScalar(element)) return element;
+            if (JsonLdUtils.IsScalar(element)) return element;
 
             // 3 - If element is an array: 
             if (element is JArray elementArray)
@@ -108,7 +108,7 @@ namespace VDS.RDF.JsonLd
             if (elementObject.ContainsKey("@value") || elementObject.ContainsKey("@id"))
             {
                 var compactValue = CompactValue(activeContext, activeProperty, elementObject);
-                if (IsScalar(compactValue) ||
+                if (JsonLdUtils.IsScalar(compactValue) ||
                     (activeTermDefinition != null && "@json".Equals(activeTermDefinition.TypeMapping)))
                 {
                     return compactValue;
@@ -116,7 +116,7 @@ namespace VDS.RDF.JsonLd
             }
             // 8 - If element is a list object, and the container mapping for active property in active context includes @list, return the result of using this
             // algorithm recursively, passing active context, active property, value of @list in element for element, and the compactArrays and ordered flags.
-            if (IsListObject(elementObject) && activeTermDefinition != null && activeTermDefinition.ContainerMapping.Contains(JsonLdContainer.List))
+            if (JsonLdUtils.IsListObject(elementObject) && activeTermDefinition != null && activeTermDefinition.ContainerMapping.Contains(JsonLdContainer.List))
             {
                 return CompactAlgorithm(activeContext, activeProperty, elementObject["@list"], compactArrays, ordered);
             }
@@ -130,7 +130,7 @@ namespace VDS.RDF.JsonLd
                 // ...create a new array compacted types initialized by transforming each expanded type of that entry into its
                 // compacted form by IRI compacting expanded type. 
                 var compactedTypes = new JArray();
-                var expandedTypes = EnsureArray(elementObject["@type"]);
+                var expandedTypes = JsonLdUtils.EnsureArray(elementObject["@type"]);
                 foreach (var expandedType in expandedTypes)
                 {
                     var compactedType = CompactIri(activeContext, expandedType.Value<string>(), vocab: true);
@@ -203,7 +203,7 @@ namespace VDS.RDF.JsonLd
                         aliasTermDefinition != null &&
                         aliasTermDefinition.ContainerMapping.Contains(JsonLdContainer.Set) || !compactArrays;
                     // 12.2.5 - Use add value to add compacted value to the alias entry in result using as array.
-                    AddValue(result, alias, compactedValue, asArray);
+                    JsonLdUtils.AddValue(result, alias, compactedValue, asArray);
 
                     // 12.2.6 - Continue to the next expanded property.
                     continue;
@@ -226,7 +226,7 @@ namespace VDS.RDF.JsonLd
                                 // 12.3.2.1.1 - Initialize as array to true if the container mapping for property in the active context includes @set, otherwise the negation of compactArrays.
                                 var asArray = td.ContainerMapping.Contains(JsonLdContainer.Set) || !compactArrays;
                                 // 12.3.2.1.2 - Use add value to add value to the property entry in result using as array.
-                                AddValue(result, compactedObjectProperty.Name, compactedObjectProperty.Value, asArray);
+                                JsonLdUtils.AddValue(result, compactedObjectProperty.Name, compactedObjectProperty.Value, asArray);
                                 // 12.3.2.1.3 - Remove the property entry from compacted value.
                                 compactedObjectProperty.Remove();
                             }
@@ -244,7 +244,7 @@ namespace VDS.RDF.JsonLd
                 // 12.4 - If expanded property is @preserve then:
                 if ("@preserve".Equals(expandedProperty))
                 {
-                    if (!IsEmptyArray(expandedValue))
+                    if (!JsonLdUtils.IsEmptyArray(expandedValue))
                     {
                         // 12.4.1 - Initialize compacted value to the result of using this algorithm recursively, passing
                         // active context, active property, expanded value for element, and the compactArrays and ordered flags.
@@ -277,7 +277,7 @@ namespace VDS.RDF.JsonLd
                     continue;
                 }
                 // 12.7 - If expanded value is an empty array: 
-                if (IsEmptyArray(expandedValue))
+                if (JsonLdUtils.IsEmptyArray(expandedValue))
                 {
                     // 12.7.1 - Initialize item active property by IRI compacting expanded property using expanded value for value and inside reverse for reverse.
                     var itemActiveProperty =
@@ -309,7 +309,7 @@ namespace VDS.RDF.JsonLd
                         nestResult = result;
                     }
                     // 12.7.4 - Use add value to add an empty array to the item active property entry in nest result using true for as array.
-                    AddValue(nestResult, itemActiveProperty, new JArray(), true);
+                    JsonLdUtils.AddValue(nestResult, itemActiveProperty, new JArray(), true);
                 }
                 // 12.8 -  At this point, expanded value must be an array due to the Expansion algorithm. For each item expanded item in expanded value: 
                 foreach (var expandedItem in expandedValue.Children())
@@ -351,15 +351,15 @@ namespace VDS.RDF.JsonLd
                     // 12.8.6 - Initialize compacted item to the result of using this algorithm recursively, passing active context,
                     // item active property for active property, expanded item for element, along with the compactArrays and ordered flags.
                     // If expanded item is a list object or a graph object, use the value of the @list or @graph entries, respectively, for element instead of expanded item.
-                    var elementToCompact = IsListObject(expandedItem) ? expandedItem["@list"] :
-                        IsGraphObject(expandedItem) ? expandedItem["@graph"] : expandedItem;
+                    var elementToCompact = JsonLdUtils.IsListObject(expandedItem) ? expandedItem["@list"] :
+                        JsonLdUtils.IsGraphObject(expandedItem) ? expandedItem["@graph"] : expandedItem;
                     var compactedItem = CompactAlgorithm(activeContext, itemActiveProperty, elementToCompact,
                         compactArrays, ordered);
                     // 12.8.7 - If expanded item is a list object: 
-                    if (IsListObject(expandedItem))
+                    if (JsonLdUtils.IsListObject(expandedItem))
                     {
                         // 12.8.7.1 - If compacted item is not an array, then set compacted item to an array containing only compacted item.
-                        compactedItem = EnsureArray(compactedItem);
+                        compactedItem = JsonLdUtils.EnsureArray(compactedItem);
                         // 12.8.7.2 - If container does not include @list: 
                         if (!container.Contains(JsonLdContainer.List))
                         {
@@ -373,7 +373,7 @@ namespace VDS.RDF.JsonLd
                                 (compactedItem as JObject).Add(new JProperty(CompactIri(activeContext, "@index", vocab: true), expandedItemObject["@index"]));
                             }
                             // 12.8.7.2.3 - Use add value to add compacted item to the item active property entry in nest result using as array.
-                            AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
+                            JsonLdUtils.AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
                         }
                         // 12.8.7.3 - Otherwise, set the value of the item active property entry in nest result to compacted item.
                         else
@@ -383,7 +383,7 @@ namespace VDS.RDF.JsonLd
                     }
                     // 12.8.8 - If expanded item is a graph object: 
                     // KA: Although algorithm doesn't say "Otherwise", I think this is an else-if branch as nestResult gets updated in the preceding if branch.
-                    else if (IsGraphObject(expandedItem))
+                    else if (JsonLdUtils.IsGraphObject(expandedItem))
                     {
                         // 12.8.8.1 - If container includes @graph and @id: 
                         if (container.Contains(JsonLdContainer.Graph) && container.Contains(JsonLdContainer.Id))
@@ -398,10 +398,10 @@ namespace VDS.RDF.JsonLd
                                         vocab: false)
                                     : CompactIri(activeContext, "@none", vocab: true);
                             // 12.8.8.1.3 - Use add value to add compacted item to the map key entry in map object using as array.
-                            AddValue(mapObject, mapKey, compactedItem, asArray);
+                            JsonLdUtils.AddValue(mapObject, mapKey, compactedItem, asArray);
                         }
                         // 12.8.8.2 - Otherwise, if container includes @graph and @index and expanded item is a simple graph object: 
-                        else if (IsSimpleGraphObject(expandedItem) && container.Contains(JsonLdContainer.Graph) &&
+                        else if (JsonLdUtils.IsSimpleGraphObject(expandedItem) && container.Contains(JsonLdContainer.Graph) &&
                                  container.Contains(JsonLdContainer.Index))
                         {
                             // 12.8.8.2.1 - Initialize map object to the value of item active property in nest result, initializing it to a new empty map, if necessary.
@@ -412,10 +412,10 @@ namespace VDS.RDF.JsonLd
                                     ? expandedItemObject["@index"].Value<string>()
                                     : "@none";
                             // 12.8.8.2.3 - Use add value to add compacted item to the map key entry in map object using as array.
-                            AddValue(mapObject, mapKey, compactedItem, asArray);
+                            JsonLdUtils.AddValue(mapObject, mapKey, compactedItem, asArray);
                         }
                         // 12.8.8.3 - Otherwise, if container includes @graph and expanded item is a simple graph object the value cannot be represented as a map object. 
-                        else if (IsSimpleGraphObject(expandedItem) && container.Contains(JsonLdContainer.Graph))
+                        else if (JsonLdUtils.IsSimpleGraphObject(expandedItem) && container.Contains(JsonLdContainer.Graph))
                         {
                             // 12.8.8.3.1 - If compacted item is an array with more than one value, it cannot be directly represented, as multiple objects would be interpreted as different named graphs.
                             if ((compactedItem is JArray compactedItemArray) && compactedItemArray.Count > 1)
@@ -427,7 +427,7 @@ namespace VDS.RDF.JsonLd
                             }
 
                             // 12.8.8.3.2 - Use add value to add compacted item to the item active property entry in nest result using as array.
-                            AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
+                            JsonLdUtils.AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
                         }
                         // 12.8.8.4 - Otherwise, container does not include @graph or otherwise does not match one of the previous cases.
                         else
@@ -455,7 +455,7 @@ namespace VDS.RDF.JsonLd
                                 }
                             }
                             // 12.8.8.4.4 - Use add value to add compacted item to the item active property entry in nest result using as array.
-                            AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
+                            JsonLdUtils.AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
                         }
                     }
                     // 12.8.9 - Otherwise, if container includes @language, @index, @id, or @type and container does not include @graph: 
@@ -513,7 +513,7 @@ namespace VDS.RDF.JsonLd
                             // 12.8.9.6.2 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.6.3 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // Otherwise, remove that entry from compacted item.
-                            var array = EnsureArray(compactedItem[containerKey]);
+                            var array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
 
                             (compactedItem as JObject).Remove(containerKey);
                             foreach (var item in array)
@@ -524,7 +524,7 @@ namespace VDS.RDF.JsonLd
                                 }
                                 else
                                 {
-                                    AddValue(compactedItem as JObject, containerKey, item);
+                                    JsonLdUtils.AddValue(compactedItem as JObject, containerKey, item);
                                 }
                             }
                         }
@@ -544,7 +544,7 @@ namespace VDS.RDF.JsonLd
                             // 12.8.9.8.1 - Set map key to the first value of container key in compacted item, if any.
                             // 12.8.9.8.2 - If there are remaining values in compacted item for container key, use add value to add those remaining values to the container key in compacted item.
                             // 12.8.9.8.3 - Otherwise, remove that entry from compacted item.
-                            var array = EnsureArray(compactedItem[containerKey]);
+                            var array = JsonLdUtils.EnsureArray(compactedItem[containerKey]);
                             if (array.Count > 0)
                             {
                                 mapKey = array[0].Value<string>();
@@ -566,12 +566,12 @@ namespace VDS.RDF.JsonLd
                         // 12.8.9.9 - If map key is null, set it to the result of IRI compacting @none.
                         if (mapKey == null) mapKey = CompactIri(activeContext, "@none", vocab: true);
                         // 12.8.9.10 - Use add value to add compacted item to the map key entry in map object using as array.
-                        AddValue(mapObject, mapKey, compactedItem, asArray);
+                        JsonLdUtils.AddValue(mapObject, mapKey, compactedItem, asArray);
                     }
                     // 12.8.10 - Otherwise, use add value to add compacted item to the item active property entry in nest result using as array.
                     else
                     {
-                        AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
+                        JsonLdUtils.AddValue(nestResult, itemActiveProperty, compactedItem, asArray);
                     }
                 }
             }
@@ -606,7 +606,7 @@ namespace VDS.RDF.JsonLd
                     activeContext.BaseDirection != LanguageDirection.Unspecified)
                 {
                     defaultLanguage =
-                        (SerializeLanguageDirection(activeContext.BaseDirection.Value) + "_" + activeContext.Language)
+                        (JsonLdUtils.SerializeLanguageDirection(activeContext.BaseDirection.Value) + "_" + activeContext.Language)
                         .ToLowerInvariant();
                 }
                 else if (!string.IsNullOrEmpty(activeContext.Language))
@@ -630,7 +630,7 @@ namespace VDS.RDF.JsonLd
                 var typeLanguage = "@language";
                 var typeLanguageValue = "@null";
                 // 4.5 - If value is a map containing an @index entry, and value is not a graph object then append the values @index and @index@set to containers.
-                if (value is JObject && (value as JObject).ContainsKey("@index") && !IsGraphObject(value))
+                if (value is JObject && (value as JObject).ContainsKey("@index") && !JsonLdUtils.IsGraphObject(value))
                 {
                     containers.Add("@index");
                     containers.Add("@index@set");
@@ -643,14 +643,14 @@ namespace VDS.RDF.JsonLd
                     typeLanguageValue = "@reverse";
                     containers.Add("@set");
                 }
-                else if (IsListObject(value))
+                else if (JsonLdUtils.IsListObject(value))
                 {
                     // 4.7 - Otherwise, if value is a list object, then set type/language and type/language value to the most specific values that work for all items in the list as follows: 
                     var valueObject = value as JObject;
                     // 4.7.1 - If @index is not an entry in value, then append @list to containers.
                     if (!valueObject.ContainsKey("@index")) containers.Add("@list");
                     // 4.7.2 - Initialize list to the array associated with the @list entry in value.
-                    var list = EnsureArray(valueObject["@list"]);
+                    var list = JsonLdUtils.EnsureArray(valueObject["@list"]);
                     // 4.7.3 - Initialize common type and common language to null.If list is empty, set common language to default language.
                     string commonType = null;
                     string commonLanguage = null;
@@ -749,7 +749,7 @@ namespace VDS.RDF.JsonLd
                         typeLanguageValue = commonLanguage;
                     }
                 }
-                else if (IsGraphObject(value))
+                else if (JsonLdUtils.IsGraphObject(value))
                 {
                     // 4.8 - Otherwise, if value is a graph object, prefer a mapping most appropriate for the particular value. 
                     var valueObject = value as JObject;
@@ -797,7 +797,7 @@ namespace VDS.RDF.JsonLd
                 else
                 {
                     // 4.9.1 - If value is a value object: 
-                    if (IsValueObject(value))
+                    if (JsonLdUtils.IsValueObject(value))
                     {
                         var valueObject = value as JObject;
                         // 4.9.1.1 - If value contains an @direction entry and does not contain an @index entry, then set type/language value to the concatenation of the value's @language entry (if any) and the value's @direction entry, separated by an underscore ("_"), normalized to lower case. Append @language and @language@set to containers.
@@ -905,7 +905,7 @@ namespace VDS.RDF.JsonLd
                     // If value is a list object with an empty array as the value of @list, set type/language to @any.
                     preferredValues.Add(typeLanguageValue);
                     preferredValues.Add("@none");
-                    if (IsListObject(value) && (value["@list"] as JArray).Count == 0)
+                    if (JsonLdUtils.IsListObject(value) && (value["@list"] as JArray).Count == 0)
                     {
                         typeLanguage = "@any";
                     }
@@ -948,7 +948,7 @@ namespace VDS.RDF.JsonLd
                 var candidate = definitionKey + ":" + iri.Substring(termDefinition.IriMapping.Length);
                 // 7.1 - If either compact IRI is null, candidate is shorter or the same length but lexicographically less than compact IRI and candidate does not have a term definition in active context, or if that term definition has an IRI mapping that equals var and value is null, set compact IRI to candidate.
                 if (!activeContext.HasTerm(candidate) && (compactIri == null || candidate.Length < compactIri.Length ||
-                                                          candidate.CompareTo(compactIri) < 0))
+                                                          string.Compare(candidate, compactIri, StringComparison.Ordinal) < 0))
                 {
                     compactIri = candidate;
                 }
@@ -970,7 +970,7 @@ namespace VDS.RDF.JsonLd
 
             // 9 - To ensure that the IRI var is not confused with a compact IRI, if the IRI scheme of var matches any term in active context with prefix flag set to true, and var has no IRI authority (preceded by double-forward-slash (//), an IRI confused with prefix error has been detected, and processing is aborted.
             var ix = iri.IndexOf(':');
-            if (ix > 0 && iri.IndexOf("://") != ix)
+            if (ix > 0 && iri.IndexOf("://", StringComparison.Ordinal) != ix)
             {
                 var scheme = iri.Substring(0, ix);
                 if (activeContext.TryGetTerm(scheme, out var td) && td.Prefix)
@@ -1142,7 +1142,7 @@ namespace VDS.RDF.JsonLd
             }
             // 10 - Otherwise, if value has an @language entry whose value exactly matches language, using a case-insensitive comparison if it is not null, or is not present, if language is null, and the value has an @direction entry whose value exactly matches direction, if it is not null, or is not present, if direction is null:
             else if (SafeEquals(languageMapping, value.ContainsKey("@language") ? value["@language"] : null, StringComparison.OrdinalIgnoreCase) &&
-                     SafeEquals(direction.HasValue ? SerializeLanguageDirection(direction.Value) : null,
+                     SafeEquals(direction.HasValue ? JsonLdUtils.SerializeLanguageDirection(direction.Value) : null,
                          value.ContainsKey("@direction") ? value["@direction"] : null, StringComparison.OrdinalIgnoreCase))
             {
                 // 10.1 - If value has an @index entry, and the container mapping associated to active property includes @index, or value has no @index entry, set result to the value associated with the @value entry.

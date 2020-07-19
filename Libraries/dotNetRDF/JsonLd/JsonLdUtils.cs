@@ -31,7 +31,10 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    /// <summary>
+    /// Various utility methods used by the JSON-LD processor and algorithm implementations
+    /// </summary>
+    internal class JsonLdUtils
     {
         /// <summary>
         /// Ensure that <paramref name="token"/> is wrapped in an array unless it already is an array.
@@ -219,7 +222,7 @@ namespace VDS.RDF.JsonLd
             return value != null && value.StartsWith("_:");
         }
 
-        private static bool IsScalar(JToken token)
+        public static bool IsScalar(JToken token)
         {
             return !(token == null || token.Type == JTokenType.Array || token.Type == JTokenType.Object);
         }
@@ -229,12 +232,12 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="token">The token to test.</param>
         /// <returns>True if <paramref name="token"/> represents a string value, false otherwise.</returns>
-        private static bool IsString(JToken token)
+        public static bool IsString(JToken token)
         {
             return token.Type == JTokenType.String;
         }
 
-        private static bool IsValidBaseDirection(JToken token)
+        public static bool IsValidBaseDirection(JToken token)
         {
             if (token.Type != JTokenType.String) return false;
             return token.Value<string>() == "ltr" || token.Value<string>() == "rtl";
@@ -246,12 +249,12 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="token">The token to test.</param>
         /// <returns>True if the token represents JSON null, false otherwise.</returns>
-        private static bool IsNull(JToken token)
+        public static bool IsNull(JToken token)
         {
             return token.Type == JTokenType.Null;
         }
 
-        private static bool IsAbsoluteIri(JToken token)
+        public static bool IsAbsoluteIri(JToken token)
         {
             if (!(token is JValue value)) return false;
             return value.Type == JTokenType.String && IsAbsoluteIri(value.Value<string>());
@@ -262,12 +265,17 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="value">The string value to be validated.</param>
         /// <returns>True if <paramref name="value"/> can be parsed as an absolute IRI, false otherwise.</returns>
-        private static bool IsAbsoluteIri(string value)
+        public static bool IsAbsoluteIri(string value)
         {
             return Uri.TryCreate(value, UriKind.Absolute, out var _) && Uri.EscapeUriString(value).Equals(value);
         }
 
-        private static bool IsRelativeIri(JToken token)
+        /// <summary>
+        /// Determine if a JSON token is a string whose value can be parsed as a relative IRI.
+        /// </summary>
+        /// <param name="token">The token to check.</param>
+        /// <returns>True if <paramref name="token"/> is a string token and the value of the string can be parsed as a relative IRI.</returns>
+        public static bool IsRelativeIri(JToken token)
         {
             if (!(token is JValue value)) return false;
             return value.Type == JTokenType.String && IsRelativeIri(value.Value<string>());
@@ -277,7 +285,7 @@ namespace VDS.RDF.JsonLd
         /// Determine if the specified string is a relative IRI.
         /// </summary>
         /// <param name="value">The string value to be validated.</param>
-        /// <returns>True if <paramref name="value"/> can be parsed as an absolute IRI, false otherwise.</returns>
+        /// <returns>True if <paramref name="value"/> can be parsed as a relative IRI, false otherwise.</returns>
         public static bool IsRelativeIri(string value)
         {
             return Uri.TryCreate(value, UriKind.Relative, out _) && Uri.EscapeUriString(value).Equals(value);
@@ -288,7 +296,7 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="value">The value to be tested.</param>
         /// <returns>True if <paramref name="value"/> matches the pattern for a reserved term, false otherwise.</returns>
-        public bool MatchesKeywordProduction(string value)
+        public static bool MatchesKeywordProduction(string value)
         {
             return Regex.IsMatch(value, "^@[a-zA-Z]+$");
         }
@@ -299,7 +307,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="token"></param>
         /// <param name="isTopmostMap"></param>
         /// <returns></returns>
-        private static bool IsNodeObject(JToken token, bool isTopmostMap = false)
+        public static bool IsNodeObject(JToken token, bool isTopmostMap = false)
         {
             // A map is a node object if it exists outside of the JSON-LD context and:
             //   - it does not contain the @value, @list, or @set keywords, or
@@ -364,7 +372,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="entry">The name of the property to receive the value.</param>
         /// <param name="value">The value to be added.</param>
         /// <param name="asArray">If true, the property created on the subject is always an array. If false the property created on the subject will be an array only if required to hold mutiple values.</param>
-        private static void AddValue(JObject o, string entry, JToken value, bool asArray = false)
+        public static void AddValue(JObject o, string entry, JToken value, bool asArray = false)
         {
             if (asArray)
             {
@@ -449,7 +457,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="token2"></param>
         /// <remarks>This method flattens any input arrays.</remarks>
         /// <returns></returns>
-        private static JArray ConcatenateValues(JToken token1, JToken token2)
+        public static JArray ConcatenateValues(JToken token1, JToken token2)
         {
             var result = EnsureArray(token1);
             if (token2 is JArray)
@@ -472,7 +480,7 @@ namespace VDS.RDF.JsonLd
         /// <param name="parent">The subject node to retrieve a property from</param>
         /// <param name="propertyName">The name of the property whose value is to be retrieved.</param>
         /// <returns>The property value if found, null otherwise.</returns>
-        private static JToken GetPropertyValue(JsonLdContext activeContext, JObject parent, string propertyName)
+        public static JToken GetPropertyValue(JsonLdContext activeContext, JObject parent, string propertyName)
         {
             if (parent.TryGetValue(propertyName, out var ret)) return ret;
             foreach (var alias in activeContext.GetAliases(propertyName))
@@ -491,7 +499,7 @@ namespace VDS.RDF.JsonLd
         /// <paramref name="value"/> is a string token with the value 'ltr' or 'rtl' respectively.</returns>
         /// <exception cref="JsonLdProcessorException"> raised if <paramref name="value"/> is not a JSON string or null token,
         /// or if <paramref name="value"/> is a string but its value is neither 'ltr' nor 'rtl'.</exception>
-        private static LanguageDirection ParseLanguageDirection(JToken value)
+        public static LanguageDirection ParseLanguageDirection(JToken value)
         {
             switch (value.Type)
             {
@@ -517,7 +525,7 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private static string SerializeLanguageDirection(LanguageDirection dir)
+        public static string SerializeLanguageDirection(LanguageDirection dir)
         {
             switch (dir)
             {

@@ -88,7 +88,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // 4. If local context is not an array, set it to an array containing only local context.
-            localContext = EnsureArray(localContext);
+            localContext = JsonLdUtils.EnsureArray(localContext);
 
             // 5. For each item context in local context:
             foreach (var context in (JArray)localContext)
@@ -234,13 +234,13 @@ namespace VDS.RDF.JsonLd
                         result.RemoveBase();
                     }
                     // 5.7.3 - Otherwise, if value is an absolute IRI, the base IRI of result is set to value.
-                    else if (IsAbsoluteIri(value))
+                    else if (JsonLdUtils.IsAbsoluteIri(value))
                     {
                         result.Base = new Uri(value.Value<string>());
                     }
                     // 5.7.4 - Otherwise, if value is a relative IRI and the base IRI of result is not null, set the base IRI of result to the result of resolving
                     // value against the current base IRI of result.
-                    else if (IsRelativeIri(value))
+                    else if (JsonLdUtils.IsRelativeIri(value))
                     {
                         if (result.Base != null)
                         {
@@ -282,7 +282,7 @@ namespace VDS.RDF.JsonLd
                     else
                     {
                         var str = value.Value<string>();
-                        if (IsIri(str) || string.Empty.Equals(str) || IsBlankNodeIdentifier(str))
+                        if (JsonLdUtils.IsIri(str) || string.Empty.Equals(str) || JsonLdUtils.IsBlankNodeIdentifier(str))
                         {
                             // Expanding using result ensures that we expand relative to @base if it is specified
                             result.Vocab = ExpandIri(result, str, true, true);
@@ -332,7 +332,7 @@ namespace VDS.RDF.JsonLd
                     // 5.10.3 - If value is null, remove any base direction from result.
                     // 5.10.4 - Otherwise, if value is a string, the base direction of result is set to value.
                     // If it is not null, "ltr", or "rtl", an invalid base direction error has been detected and processing is aborted.
-                    result.BaseDirection = ParseLanguageDirection(directionProperty.Value);
+                    result.BaseDirection = JsonLdUtils.ParseLanguageDirection(directionProperty.Value);
                 }
 
                 // 5.11 - context has an @propagate entry:
@@ -430,13 +430,13 @@ namespace VDS.RDF.JsonLd
                 // Any other value means that a keyword redefinition error has been detected and processing is aborted.
                 ValidateTypeRedefinition(v);
             }
-            else if (IsKeyword(term))
+            else if (JsonLdUtils.IsKeyword(term))
             {
                 // 5 Otherwise, since keywords cannot be overridden, term MUST NOT be a keyword and a keyword redefinition error has been detected and processing is aborted.
                 throw new JsonLdProcessorException(JsonLdErrorCode.KeywordRedefinition,
                     $"Cannot redefine JSON-LD keyword {term}.");
             }
-            else if (MatchesKeywordProduction(term))
+            else if (JsonLdUtils.MatchesKeywordProduction(term))
             {
                 // 5 (cont.) If term has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
                 Warn(JsonLdErrorCode.InvalidTermDefinition,
@@ -477,7 +477,7 @@ namespace VDS.RDF.JsonLd
             definition.Protected = GetProtectedProperty(value, @protected);
 
             // 12 - If value contains the key @type:
-            var typeValue = GetPropertyValue(activeContext, value, "@type");
+            var typeValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@type");
             if (typeValue != null)
             {
                 // 12.1 Initialize type to the value associated with the @type key, which must be a string. Otherwise, an invalid type mapping error has been detected and processing is aborted.
@@ -494,7 +494,7 @@ namespace VDS.RDF.JsonLd
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTypeMapping,
                         $"Invalid type mapping for term {term}. Unexpanded value was {typeValue.Value<string>()}, and the expanded type IRI is '{type}', but the JSON-LD Processing mode is set to 1.0 which does not support @none or @json types.");
                 }
-                if (type == "@id" || type == "@vocab" || type == "@json" || type == "@none" || IsAbsoluteIri(type))
+                if (type == "@id" || type == "@vocab" || type == "@json" || type == "@none" || JsonLdUtils.IsAbsoluteIri(type))
                 {
                     // 10.3 - Set the type mapping for definition to type.
                     definition.TypeMapping = type;
@@ -506,14 +506,14 @@ namespace VDS.RDF.JsonLd
                 }
             }
 
-            var reverseValue = GetPropertyValue(activeContext, value, "@reverse");
-            var containerValue = GetPropertyValue(activeContext, value, "@container");
+            var reverseValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@reverse");
+            var containerValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@container");
             // 13 - If value contains the key @reverse:
             if (reverseValue != null)
             {
                 // 13.1 - If value contains @id or @nest, members, an invalid reverse property error has been detected and processing is aborted.
-                if (GetPropertyValue(activeContext, value, "@id") != null ||
-                    GetPropertyValue(activeContext, value, "@nest") != null)
+                if (JsonLdUtils.GetPropertyValue(activeContext, value, "@id") != null ||
+                    JsonLdUtils.GetPropertyValue(activeContext, value, "@nest") != null)
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidReverseProperty,
                         $"Invalid reverse property. The @reverse property cannot be combined with @id or @nest property on term {term}.");
@@ -527,7 +527,7 @@ namespace VDS.RDF.JsonLd
                 }
 
                 // 13.3 - If the value associated with the @reverse entry is a string having the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return; processors SHOULD generate a warning.
-                if (MatchesKeywordProduction(reverseValue.Value<string>()))
+                if (JsonLdUtils.MatchesKeywordProduction(reverseValue.Value<string>()))
                 {
                     Warn(JsonLdErrorCode.InvalidIriMapping,
                         "$@reverse property value on {term} matches the JSON-LD keyword production @[a-zA-Z]+.");
@@ -538,7 +538,7 @@ namespace VDS.RDF.JsonLd
                 // and defined. If the result does not have the form of an IRI or a blank node identifier, an invalid IRI mapping error has been detected and processing
                 // is aborted.
                 var iriMapping = ExpandIri(activeContext, reverseValue.Value<string>(), true, false, localContext, defined);
-                if (iriMapping == null || !(IsAbsoluteIri(iriMapping) || IsBlankNodeIdentifier(iriMapping)))
+                if (iriMapping == null || !(JsonLdUtils.IsAbsoluteIri(iriMapping) || JsonLdUtils.IsBlankNodeIdentifier(iriMapping)))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                         $"@reverse property value must expand to an absolute IRI or blank node identifier. The @reverse property on term {term} expands to {iriMapping}.");
@@ -588,7 +588,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // 14 - If value contains the key @id and its value does not equal term:
-            var idValue = GetPropertyValue(activeContext, value, "@id");
+            var idValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@id");
             if (idValue != null && !term.Equals(idValue.Value<string>()))
             {
                 // 14.1 - If the @id entry of value is null, the term is not used for IRI expansion, but is retained to be able to detect future redefinitions of this term.
@@ -604,7 +604,7 @@ namespace VDS.RDF.JsonLd
                     // 14.2.2 - If the value associated with the @id entry is not a keyword, but has the form of a keyword (i.e., it matches the ABNF rule "@"1*ALPHA from [RFC5234]), return;
                     // processors SHOULD generate a warning.
                     var idValueString = idValue.Value<string>();
-                    if (!IsKeyword(idValueString) && MatchesKeywordProduction(idValueString))
+                    if (!JsonLdUtils.IsKeyword(idValueString) && JsonLdUtils.MatchesKeywordProduction(idValueString))
                     {
                         Warn(JsonLdErrorCode.InvalidIdValue,
                             $"The value of the @id property of {term} matches the pattern @[a-zA-Z] which is reserved by the JSON-LD specification. This property will be ignored.");
@@ -614,7 +614,7 @@ namespace VDS.RDF.JsonLd
                     var iriMapping = ExpandIri(activeContext, idValue.Value<string>(), vocab: true, documentRelative: false, localContext: localContext, defined: defined);
 
                     // If the resulting IRI mapping is neither a keyword, nor an IRI, nor a blank node identifier, an invalid IRI mapping error has been detected and processing is aborted;
-                    if (!IsKeyword(iriMapping) && !IsAbsoluteIri(iriMapping) && !IsBlankNodeIdentifier(iriMapping))
+                    if (!JsonLdUtils.IsKeyword(iriMapping) && !JsonLdUtils.IsAbsoluteIri(iriMapping) && !JsonLdUtils.IsBlankNodeIdentifier(iriMapping))
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                             $"Invalid IRI Mapping. The value of the @id property of term '{term}' must be a keyword, an absolute IRI or a blank node identifier. Got value {iriMapping}.");
@@ -650,7 +650,7 @@ namespace VDS.RDF.JsonLd
                     // or a blank node identifier, set the prefix flag in definition to true.
                     if (!term.Contains(':') && !term.Contains('/') && simpleTerm &&
                         (GenDelimChars.Contains(definition.IriMapping.Last()) ||
-                         IsBlankNodeIdentifier(definition.IriMapping)))
+                         JsonLdUtils.IsBlankNodeIdentifier(definition.IriMapping)))
                     {
                         definition.Prefix = true;
                     }
@@ -687,7 +687,7 @@ namespace VDS.RDF.JsonLd
                 // 16.2 - Set the IRI mapping of definition to the result of IRI expanding term.
                 definition.IriMapping = ExpandIri(activeContext, term, vocab: true);
                 // If the resulting IRI mapping is not an IRI, an invalid IRI mapping error has been detected and processing is aborted.
-                if (!IsIri(definition.IriMapping))
+                if (!JsonLdUtils.IsIri(definition.IriMapping))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidIriMapping,
                         $"The expansion of the term {term} resulted in the value {definition.IriMapping} which is not an IRI.");
@@ -734,7 +734,7 @@ namespace VDS.RDF.JsonLd
                 }
             }
             // 20 - If value contains the entry @index: 
-            var indexValue = GetPropertyValue(activeContext, value, "@index");
+            var indexValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@index");
             if (indexValue != null)
             {
                 // 20.1 - If processing mode is json-ld-1.0 or container mapping does not include @index, an invalid term definition has been detected and processing is aborted.
@@ -757,7 +757,7 @@ namespace VDS.RDF.JsonLd
                 }
                 var index = indexValue.Value<string>();
                 index = ExpandIri(activeContext, index, vocab: true);
-                if (!IsAbsoluteIri(index))
+                if (!JsonLdUtils.IsAbsoluteIri(index))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition. The expansion of the @index property of '{term}' resulted in a value ({index}) which is not an IRI.");
@@ -767,7 +767,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // 21 - If value contains the entry @context: 
-            var contextValue = GetPropertyValue(activeContext, value, "@context");
+            var contextValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@context");
             if (contextValue != null)
             {
                 // 21.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
@@ -796,7 +796,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // 22 - if value contains the key @language and does not contain the key @type
-            var languageValue = GetPropertyValue(activeContext, value, "@language");
+            var languageValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@language");
             if (languageValue != null && typeValue == null)
             {
                 switch (languageValue.Type)
@@ -823,16 +823,16 @@ namespace VDS.RDF.JsonLd
             }
 
             // 23 - If value contains the entry @direction and does not contain the entry @type:
-            var directionValue = GetPropertyValue(activeContext, value, "@direction");
+            var directionValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@direction");
             if (directionValue != null && typeValue == null)
             {
                 // 23.1 - Initialize direction to the value associated with the @direction entry, which MUST be either null, "ltr", or "rtl".Otherwise, an invalid base direction error has been detected and processing is aborted.
                 // 23.2 - Set the direction mapping of definition to direction.
-                definition.DirectionMapping = ParseLanguageDirection(directionValue);
+                definition.DirectionMapping = JsonLdUtils.ParseLanguageDirection(directionValue);
             }
 
             // 24 - If value contains the key @nest:
-            var nestValue = GetPropertyValue(activeContext, value, "@nest");
+            var nestValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@nest");
             if (nestValue != null)
             {
                 // 24.1 - If processingMode is json-ld-1.0, an invalid term definition has been detected and processing is aborted.
@@ -850,7 +850,7 @@ namespace VDS.RDF.JsonLd
                         $"Invalid Nest Value for term '{term}'. The value of the @nest property must be a string.");
                 }
                 var nest = nestValue.Value<string>();
-                if (IsKeyword(nest) && !"@nest".Equals(nest))
+                if (JsonLdUtils.IsKeyword(nest) && !"@nest".Equals(nest))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidNestValue,
                         $"Invalid Nest Value for term '{term}'. The value of the @nest property cannot be a JSON-LD keyword other than '@nest'");
@@ -859,7 +859,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // 25 - If value contains the entry @prefix:
-            var prefixValue = GetPropertyValue(activeContext, value, "@prefix");
+            var prefixValue = JsonLdUtils.GetPropertyValue(activeContext, value, "@prefix");
             if (prefixValue != null)
             {
                 // 25.1 - If processing mode is json - ld - 1.0, or if term contains a colon(:) or slash(/), an invalid term definition has been detected and processing is aborted.
@@ -884,7 +884,7 @@ namespace VDS.RDF.JsonLd
                 definition.Prefix = prefixValue.Value<bool>();
 
                 // 25.3 - If the prefix flag of definition is set to true, and its IRI mapping is a keyword, an invalid term definition has been detected and processing is aborted.
-                if (definition.Prefix && IsKeyword(definition.IriMapping))
+                if (definition.Prefix && JsonLdUtils.IsKeyword(definition.IriMapping))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidTermDefinition,
                         $"Invalid Term Definition. The term '{term}' is defined as a prefix, but its IRI mapping is a JSON-LD keyword.");
@@ -1013,7 +1013,7 @@ namespace VDS.RDF.JsonLd
                         termDefinition.DirectionMapping != LanguageDirection.Unspecified)
                     {
                         langDir = termDefinition.LanguageMapping.ToLowerInvariant() + "_" +
-                                  SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
+                                  JsonLdUtils.SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
                     }
                     else if (termDefinition.LanguageMapping != null)
                     {
@@ -1021,7 +1021,7 @@ namespace VDS.RDF.JsonLd
                     }
                     else if (termDefinition.DirectionMapping != LanguageDirection.Unspecified)
                     {
-                        langDir = "_" + SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
+                        langDir = "_" + JsonLdUtils.SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
                     }
                     else
                     {
@@ -1050,7 +1050,7 @@ namespace VDS.RDF.JsonLd
                     // 3.15.1 If the direction mapping equals null, set direction to @none; otherwise to direction mapping preceded by an underscore ("_").
                     var direction = termDefinition.DirectionMapping.Value == LanguageDirection.Unspecified
                         ? "@none"
-                        : "_" + SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
+                        : "_" + JsonLdUtils.SerializeLanguageDirection(termDefinition.DirectionMapping.Value);
                     if (!languageMap.ContainsKey(direction))
                     {
                         languageMap.Add(new JProperty(direction, term));
@@ -1061,7 +1061,7 @@ namespace VDS.RDF.JsonLd
                 {
                     // 3.16.1 - Initialize a variable lang dir with the concatenation of default language and default base direction, separate by an underscore ("_"), normalized to lower case.
                     var langDir = (activeContext.Language?.ToLowerInvariant() ?? string.Empty) + "_" +
-                                  SerializeLanguageDirection(activeContext.BaseDirection.Value);
+                                  JsonLdUtils.SerializeLanguageDirection(activeContext.BaseDirection.Value);
                     // 3.16.2 - If language map does not have a lang dir entry, create one and set its value to the term being processed.
                     if (!languageMap.ContainsKey(langDir))
                     {

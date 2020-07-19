@@ -337,7 +337,7 @@ namespace VDS.RDF.Writing
                         property = nodeUsage.Property;
                         head = nodeUsage.Value as JObject;
                         // 6.4.3.5 - If the @id entry of node is an IRI instead of a blank node identifier, exit the while loop.
-                        if (!JsonLdProcessor.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
+                        if (!JsonLdUtils.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
                     }
 
                     // 6.4.4 - Remove the @id entry from head.
@@ -408,7 +408,7 @@ namespace VDS.RDF.Writing
             // node represents a well-formed list node. 
             if (!RdfSpecsHelper.RdfListRest.Equals(property)) return false;
             var nodeId = node["@id"].Value<string>();
-            if (nodeId == null || !JsonLdProcessor.IsBlankNodeIdentifier(nodeId)) return false;
+            if (nodeId == null || !JsonLdUtils.IsBlankNodeIdentifier(nodeId)) return false;
 
             var mapEntry = nodeUsagesMap[nodeId];
             if (mapEntry == null) return false;

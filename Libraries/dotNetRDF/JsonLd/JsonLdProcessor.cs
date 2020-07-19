@@ -120,7 +120,7 @@ namespace VDS.RDF.JsonLd
 
             var compactedOutput = processor.CompactAlgorithm(activeContext, null, expandedInput, options.CompactArrays,
                 options.Ordered);
-            if (IsEmptyArray(compactedOutput))
+            if (JsonLdUtils.IsEmptyArray(compactedOutput))
             {
                 compactedOutput = new JObject();
             }
@@ -130,7 +130,7 @@ namespace VDS.RDF.JsonLd
                     compactedOutput));
             }
 
-            if (context != null && !IsEmptyObject(context))
+            if (context != null && !JsonLdUtils.IsEmptyObject(context))
             {
                 (compactedOutput as JObject)["@context"] = context;
             }
@@ -225,7 +225,7 @@ namespace VDS.RDF.JsonLd
             }
 
             if (expandedOutput == null) expandedOutput = new JArray();
-            expandedOutput = EnsureArray(expandedOutput);
+            expandedOutput = JsonLdUtils.EnsureArray(expandedOutput);
             return expandedOutput as JArray;
         }
 
@@ -344,11 +344,11 @@ namespace VDS.RDF.JsonLd
                 processor.CompactAlgorithm(activeContext, null, results, options.CompactArrays, options.Ordered);
             var graphProperty = processor.CompactIri(activeContext, "@graph", vocab: true);
             // 19.1 - If compacted results is an empty array, replace it with a new map.
-            if (IsEmptyArray(compactedResults))
+            if (JsonLdUtils.IsEmptyArray(compactedResults))
             {
                 compactedResults = new JObject();
             }
-            else if (IsArray(compactedResults))
+            else if (JsonLdUtils.IsArray(compactedResults))
             {
                 // 19.2 - Otherwise, if compacted results is an array, replace it with a new map with a single entry whose key is the result of IRI compacting @graph and value is compacted results.
                 compactedResults = new JObject(new JProperty(graphProperty, compactedResults));
@@ -602,9 +602,9 @@ namespace VDS.RDF.JsonLd
             {
                 case JTokenType.String:
                     var str = token.Value<string>();
-                    if (IsBlankNodeIdentifier(str))
+                    if (JsonLdUtils.IsBlankNodeIdentifier(str))
                     {
-                        if (!objectMap.TryGetValue(str, out BlankNodeMapEntry mapEntry))
+                        if (!objectMap.TryGetValue(str, out var mapEntry))
                         {
                             mapEntry = new BlankNodeMapEntry();
                             objectMap[str] = mapEntry;

@@ -85,7 +85,7 @@ namespace VDS.RDF.JsonLd
                     for (var ix = 0; ix < typeArray.Count; ix++)
                     {
                         var typeId = typeArray[ix].Value<string>();
-                        if (JsonLdProcessor.IsBlankNodeIdentifier(typeId))
+                        if (JsonLdUtils.IsBlankNodeIdentifier(typeId))
                         {
                             typeArray[ix] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                         }
@@ -94,7 +94,7 @@ namespace VDS.RDF.JsonLd
                 else if (elementObject["@type"] is JValue)
                 {
                     var typeId = elementObject["@type"].Value<string>();
-                    if (JsonLdProcessor.IsBlankNodeIdentifier(typeId))
+                    if (JsonLdUtils.IsBlankNodeIdentifier(typeId))
                     {
                         elementObject["@type"] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                     }
@@ -158,7 +158,7 @@ namespace VDS.RDF.JsonLd
                     id = elementObject["@id"]?.Value<string>();
                     elementObject.Remove("@id");
                     if (id == null) return; // Required to pass W3C test e122
-                    if (JsonLdProcessor.IsBlankNodeIdentifier(id))
+                    if (JsonLdUtils.IsBlankNodeIdentifier(id))
                     {
                         id = _blankNodeGenerator.GenerateBlankNodeIdentifier(id);
                     }
@@ -222,7 +222,7 @@ namespace VDS.RDF.JsonLd
                     {
                         node["@type"] = new JArray();
                     }
-                    foreach (var item in JsonLdProcessor.EnsureArray(elementObject["@type"]))
+                    foreach (var item in JsonLdUtils.EnsureArray(elementObject["@type"]))
                     {
                         AppendUniqueElement(item, node["@type"] as JArray);
                     }
@@ -293,7 +293,7 @@ namespace VDS.RDF.JsonLd
                     var property = p.Name;
                     var value = p.Value;
                     // 6.12.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
-                    if (JsonLdProcessor.IsBlankNodeIdentifier(property))
+                    if (JsonLdUtils.IsBlankNodeIdentifier(property))
                     {
                         property = _blankNodeGenerator.GenerateBlankNodeIdentifier(property);
                     }
@@ -326,7 +326,7 @@ namespace VDS.RDF.JsonLd
                     }
                     foreach (var nodeProperty in node.Properties())
                     {
-                        if (!JsonLdProcessor.IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
+                        if (!JsonLdUtils.IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
                         {
                             MergeValues(mergedNode, nodeProperty.Name, nodeProperty.Value);
                         }

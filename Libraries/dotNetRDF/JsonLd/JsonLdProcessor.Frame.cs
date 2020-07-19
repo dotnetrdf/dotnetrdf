@@ -179,7 +179,7 @@ namespace VDS.RDF.JsonLd
                     var objects =p.Value as JArray;
 
                     // 4.7.1 - If property is a keyword, add property and objects to output.
-                    if (IsKeyword(property))
+                    if (JsonLdUtils.IsKeyword(property))
                     {
                         output[property] = p.Value;
                         continue;
@@ -197,7 +197,7 @@ namespace VDS.RDF.JsonLd
                         // 4.7.3.1 - If item is a dictionary with the property @list, 
                         // then each listitem in the list is processed in sequence and 
                         // added to a new list dictionary in output:
-                        if (IsListObject(item))
+                        if (JsonLdUtils.IsListObject(item))
                         {
                             var list = new JObject();
                             output[property] =
@@ -210,7 +210,7 @@ namespace VDS.RDF.JsonLd
                                 // and @list as active property. 
                                 // If frame does not exist, create a new frame using a new dictionary 
                                 // with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll. 
-                                if (IsNodeReference(listItem))
+                                if (JsonLdUtils.IsNodeReference(listItem))
                                 {
                                     JToken listFrame = null;
                                     if (frame.ContainsKey(property) && frame[property] is JArray fpArray &&
@@ -249,7 +249,7 @@ namespace VDS.RDF.JsonLd
                         // the first value from property in frame as frame,
                         // output as parent, and property as active property.
                         // If frame does not exist, create a new frame using a new map with properties for @embed, @explicit and @requireAll taken from embed, explicit and requireAll.
-                        else if (IsNodeReference(item))
+                        else if (JsonLdUtils.IsNodeReference(item))
                         {
                             var newFrame = ((frameObjectOrArray[property] as JArray)?[0]) as JObject ??
                                            MakeFrameObject(embed, explicitFlag, requireAll);
@@ -289,7 +289,7 @@ namespace VDS.RDF.JsonLd
                     }
                     else
                     {
-                        if (output.ContainsKey(property) || IsKeyword(property)) continue;
+                        if (output.ContainsKey(property) || JsonLdUtils.IsKeyword(property)) continue;
                     }
 
                     var objects = frameProperty.Value as JArray;
@@ -314,7 +314,7 @@ namespace VDS.RDF.JsonLd
                     }
 
                     // 4.7.4.4 - Add property to output with a new dictionary having a property @preserve and a value that is a copy of the value of @default in frame if it exists, or the string @null otherwise.
-                    var defaultValue = EnsureArray(propertyFrame["@default"]) ?? new JArray("@null");
+                    var defaultValue = JsonLdUtils.EnsureArray(propertyFrame["@default"]) ?? new JArray("@null");
                     output[property] = new JObject(new JProperty("@preserve", defaultValue));
                     //if (!(defaultValue is JArray)) defaultValue = new JArray(defaultValue);
                     //FramingAppend(output, new JObject(new JProperty("@preserve", defaultValue)), property);
@@ -450,13 +450,13 @@ namespace VDS.RDF.JsonLd
             JObject frame, bool requireAll)
         {
             var matches = new Dictionary<string, JObject>();
-            var idMatches = frame.ContainsKey("@id") ? EnsureArray(frame["@id"]) : null;
-            var typeMatches = frame.ContainsKey("@type") ? EnsureArray(frame["@type"]) : null;
+            var idMatches = frame.ContainsKey("@id") ? JsonLdUtils.EnsureArray(frame["@id"]) : null;
+            var typeMatches = frame.ContainsKey("@type") ? JsonLdUtils.EnsureArray(frame["@type"]) : null;
             var propertyMatches = new Dictionary<string, JArray>();
             foreach (var p in frame)
             {
-                if (IsKeyword(p.Key)) continue;
-                propertyMatches[p.Key] = EnsureArray(p.Value);
+                if (JsonLdUtils.IsKeyword(p.Key)) continue;
+                propertyMatches[p.Key] = JsonLdUtils.EnsureArray(p.Value);
             }
             foreach (var subject in subjects)
             {
@@ -478,7 +478,7 @@ namespace VDS.RDF.JsonLd
                 }
                 if (typeMatches != null)
                 {
-                    var nodeTypes = node.ContainsKey("@type") ? EnsureArray(node["@type"]) : null;
+                    var nodeTypes = node.ContainsKey("@type") ? JsonLdUtils.EnsureArray(node["@type"]) : null;
                     var hasTypeMatch =
                         IsMatchNone(typeMatches) && (nodeTypes == null || nodeTypes.Count == 0) ||
                         IsWildcard(typeMatches) && nodeTypes != null && nodeTypes.Count > 0 ||
@@ -565,7 +565,7 @@ namespace VDS.RDF.JsonLd
             {
                 isMatchNone = true;
             }
-            else if (frameArray.Count == 1 && IsDefaultObject(frameArray[0]))
+            else if (frameArray.Count == 1 && JsonLdUtils.IsDefaultObject(frameArray[0]))
             {
                 hasDefault = true;
             }
@@ -591,7 +591,7 @@ namespace VDS.RDF.JsonLd
             // Frame specifies match wildcard - nodeValues must be non-empty
             if (isWildcard && nodeValues.Count > 0) return MatchType.Match;
 
-            if (IsValueObject(frameArray[0]))
+            if (JsonLdUtils.IsValueObject(frameArray[0]))
             {
                 // frameArray is a value pattern array
                 foreach (var valuePattern in frameArray)
@@ -607,19 +607,19 @@ namespace VDS.RDF.JsonLd
                 return MatchType.NoMatch;
             }
 
-            if (IsListObject(frameArray[0]))
+            if (JsonLdUtils.IsListObject(frameArray[0]))
             {
                 var frameListValue = frameArray[0]["@list"][0];
-                if (IsListObject(nodeValues[0]))
+                if (JsonLdUtils.IsListObject(nodeValues[0]))
                 {
                     var nodeListValues = nodeValues[0]["@list"];
-                    if (IsValueObject(frameListValue))
+                    if (JsonLdUtils.IsValueObject(frameListValue))
                     {
                         if (nodeListValues.Any(v => ValuePatternMatch(frameListValue, v)))
                         {
                             return MatchType.Match;
                         }
-                    } else if (IsSubject(frameListValue) || IsSubjectReference(frameListValue))
+                    } else if (JsonLdUtils.IsSubject(frameListValue) || JsonLdUtils.IsSubjectReference(frameListValue))
                     {
                         if (nodeListValues.Any(v => NodePatternMatch(state, frameListValue as JObject, v, requireAll)))
                         {
@@ -739,12 +739,12 @@ namespace VDS.RDF.JsonLd
 
         private static bool IsMatchNone(JToken token)
         {
-            return IsEmptyArray(token);
+            return JsonLdUtils.IsEmptyArray(token);
         }
 
         private static bool IsEmptyMapArray(JToken token)
         {
-            return (token is JArray array) && array.Count == 1 && IsEmptyMap(array[0]);
+            return (token is JArray array) && array.Count == 1 && JsonLdUtils.IsEmptyMap(array[0]);
         }
 
         /// <summary>
@@ -767,7 +767,7 @@ namespace VDS.RDF.JsonLd
             if (obj.ContainsKey("@id"))
             {
                 var idValue = obj["@id"];
-                if (!(IsEmptyMapArray(idValue) || IsIri(idValue) || IsArray(idValue, IsIri)))
+                if (!(IsEmptyMapArray(idValue) || JsonLdUtils.IsIri(idValue) || JsonLdUtils.IsArray(idValue, JsonLdUtils.IsIri)))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidFrame,
                         "Invalid frame. The value of the @id property must be either " +
@@ -781,8 +781,8 @@ namespace VDS.RDF.JsonLd
             if (obj.ContainsKey("@type"))
             {
                 var typeValue = obj["@type"];
-                if (!(IsEmptyMapArray(typeValue) || IsDefaultObjectArray(typeValue) || IsIri(typeValue) ||
-                      IsArray(typeValue, IsIri)))
+                if (!(IsEmptyMapArray(typeValue) || IsDefaultObjectArray(typeValue) || JsonLdUtils.IsIri(typeValue) ||
+                      JsonLdUtils.IsArray(typeValue, JsonLdUtils.IsIri)))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidFrame,
                         "Invalid frame. The value of the @type property must be either " +
@@ -850,9 +850,9 @@ namespace VDS.RDF.JsonLd
             }
             else
             {
-                var useArray = IsArray(parent[property]);
-                RemoveValue(parent as JObject, property, subject, useArray);
-                AddValue(parent as JObject, property, subject, useArray);
+                var useArray = JsonLdUtils.IsArray(parent[property]);
+                JsonLdUtils.RemoveValue(parent as JObject, property, subject, useArray);
+                JsonLdUtils.AddValue(parent as JObject, property, subject, useArray);
             }
         }
     }
