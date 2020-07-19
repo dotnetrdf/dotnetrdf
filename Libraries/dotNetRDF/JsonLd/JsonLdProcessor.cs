@@ -38,7 +38,7 @@ namespace VDS.RDF.JsonLd
     {
         private Uri _base;
         private readonly JsonLdProcessorOptions _options;
-        private IBlankNodeGenerator _blankNodeGenerator;
+        private INodeMapGenerator _nodeMapGenerator;
         private readonly Dictionary<Uri, JsonLdRemoteContext> _remoteContextCache;
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.JsonLd
         {
             _options = options ?? new JsonLdProcessorOptions();
             ProcessingMode = _options.ProcessingMode;
-            _blankNodeGenerator = new BlankNodeGenerator();
+            _nodeMapGenerator = new NodeMapGenerator();
             _remoteContextCache = new Dictionary<Uri, JsonLdRemoteContext>();
         }
 
@@ -245,6 +245,7 @@ namespace VDS.RDF.JsonLd
             }
 
             var processor = new JsonLdProcessor(options);
+            var nodeMapGenerator = new NodeMapGenerator();
             Uri remoteDocumentUri = null, remoteFrameUri = null;
             RemoteDocument remoteDocument = null, remoteFrame = null;
             var loaderOptions = new JsonLdLoaderOptions {ExtractAllScripts = options.ExtractAllScripts};
@@ -313,11 +314,11 @@ namespace VDS.RDF.JsonLd
             }
 
             // 14 - Initialize a new framing state (state) to an empty map. 
-            var graphMap = GenerateNodeMap(expandedInput);
+            var graphMap = nodeMapGenerator.GenerateNodeMap(expandedInput);
             if (!options.FrameDefault)
             {
                 // Add an @merged entry to graphMap
-                var mergedNodeMap = MergeNodeMaps(graphMap);
+                var mergedNodeMap = nodeMapGenerator.GenerateMergedNodeMap(graphMap);
                 graphMap["@merged"] = mergedNodeMap;
             }
 

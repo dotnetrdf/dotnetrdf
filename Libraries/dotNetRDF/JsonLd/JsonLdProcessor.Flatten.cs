@@ -35,10 +35,8 @@ namespace VDS.RDF.JsonLd
         {
             // 1 = Initialize node map to a map consisting of a single member whose key is @default
             // and whose value is an empty map.
-            var nodeMap = new JObject(new JProperty("@default", new JObject()));
-
             // 2 - Perform the Node Map Generation algorithm, passing element and node map.
-            GenerateNodeMapAlgorithm(element, nodeMap);
+            var nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
 
             // 3 - Initialize default graph to the value of the @default member of node map,
             // which is a map representing the default graph.

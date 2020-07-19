@@ -113,7 +113,8 @@ namespace VDS.RDF.Parsing
                     element = JToken.ReadFrom(reader);
                 }
                 var expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
-                var nodeMap = JsonLdProcessor.GenerateNodeMap(expandedElement);
+                var nodeMapGenerator = new NodeMapGenerator();
+                var nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
                 foreach (var p in nodeMap.Properties())
                 {
                     var graphName = p.Name;

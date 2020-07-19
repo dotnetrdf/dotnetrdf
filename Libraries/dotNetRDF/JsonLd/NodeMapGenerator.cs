@@ -24,26 +24,29 @@
 // </copyright>
 */
 
-using System;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    /// <summary>
+    /// An implementation of the JSON-LD node map generation algorithm.
+    /// </summary>
+    public class NodeMapGenerator : INodeMapGenerator
     {
+        private IBlankNodeGenerator _blankNodeGenerator;
 
         /// <summary>
         /// Applies the Node Map Generation algorithm to the specified input.
         /// </summary>
         /// <param name="element">The element to be processed.</param>
-        /// <param name="options">JSON-LD processor options.</param>
+        /// <param name="identifierGenerator">The identifier generator instance to use when creating new blank node identifiers. Defaults to a new instance of <see cref="BlankNodeGenerator"/>.</param>
         /// <returns>The generated node map dictionary as a JObject instance.</returns>
-        public static JObject GenerateNodeMap(JToken element, JsonLdProcessorOptions options = null)
+        public JObject GenerateNodeMap(JToken element, IBlankNodeGenerator identifierGenerator = null)
         {
-            var processor = new JsonLdProcessor(options);
+            _blankNodeGenerator = identifierGenerator ?? new BlankNodeGenerator();
             var nodeMap = new JObject(new JProperty("@default", new JObject()));
-            processor.GenerateNodeMapAlgorithm(element, nodeMap);
+            GenerateNodeMapAlgorithm(element, nodeMap);
             return nodeMap;
         }
 
@@ -82,7 +85,7 @@ namespace VDS.RDF.JsonLd
                     for (var ix = 0; ix < typeArray.Count; ix++)
                     {
                         var typeId = typeArray[ix].Value<string>();
-                        if (IsBlankNodeIdentifier(typeId))
+                        if (JsonLdProcessor.IsBlankNodeIdentifier(typeId))
                         {
                             typeArray[ix] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                         }
@@ -91,7 +94,7 @@ namespace VDS.RDF.JsonLd
                 else if (elementObject["@type"] is JValue)
                 {
                     var typeId = elementObject["@type"].Value<string>();
-                    if (IsBlankNodeIdentifier(typeId))
+                    if (JsonLdProcessor.IsBlankNodeIdentifier(typeId))
                     {
                         elementObject["@type"] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                     }
@@ -155,7 +158,7 @@ namespace VDS.RDF.JsonLd
                     id = elementObject["@id"]?.Value<string>();
                     elementObject.Remove("@id");
                     if (id == null) return; // Required to pass W3C test e122
-                    if (IsBlankNodeIdentifier(id))
+                    if (JsonLdProcessor.IsBlankNodeIdentifier(id))
                     {
                         id = _blankNodeGenerator.GenerateBlankNodeIdentifier(id);
                     }
@@ -219,7 +222,7 @@ namespace VDS.RDF.JsonLd
                     {
                         node["@type"] = new JArray();
                     }
-                    foreach (var item in EnsureArray(elementObject["@type"]))
+                    foreach (var item in JsonLdProcessor.EnsureArray(elementObject["@type"]))
                     {
                         AppendUniqueElement(item, node["@type"] as JArray);
                     }
@@ -290,7 +293,7 @@ namespace VDS.RDF.JsonLd
                     var property = p.Name;
                     var value = p.Value;
                     // 6.12.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
-                    if (IsBlankNodeIdentifier(property))
+                    if (JsonLdProcessor.IsBlankNodeIdentifier(property))
                     {
                         property = _blankNodeGenerator.GenerateBlankNodeIdentifier(property);
                     }
@@ -305,7 +308,8 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private static JObject MergeNodeMaps(JObject graphMap)
+        /// <inheritdoc />
+        public JObject GenerateMergedNodeMap(JObject graphMap)
         {
             var result = new JObject();
             foreach (var p in graphMap.Properties())
@@ -322,7 +326,7 @@ namespace VDS.RDF.JsonLd
                     }
                     foreach (var nodeProperty in node.Properties())
                     {
-                        if (!IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
+                        if (!JsonLdProcessor.IsKeyword(nodeProperty.Name) || nodeProperty.Name.Equals("@type"))
                         {
                             MergeValues(mergedNode, nodeProperty.Name, nodeProperty.Value);
                         }
