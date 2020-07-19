@@ -29,9 +29,30 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    /// <summary>
+    /// Implements the JSON-LD Flatten algorithm.
+    /// </summary>
+    public class Flatten
     {
-        private JToken FlattenAlgorithm(JToken element, bool ordered = false)
+        private readonly INodeMapGenerator _nodeMapGenerator;
+
+        /// <summary>
+        /// Create a new flatten processor instance.
+        /// </summary>
+        /// <param name="nodeMapGenerator">The node map generator to use for the initial node mapping step of the algorithm. Defaults to a new instance of <see cref="NodeMapGenerator"/>.</param>
+        public Flatten(INodeMapGenerator nodeMapGenerator = null)
+        {
+            _nodeMapGenerator = nodeMapGenerator ?? new NodeMapGenerator();
+        }
+
+        /// <summary>
+        /// Create a new flattened representation of the input element.
+        /// </summary>
+        /// <param name="element">The element to be processed.</param>
+        /// <param name="ordered">True to process the properties of the element in lexicographical order.</param>
+        /// <returns>A new token representing the flattened element.</returns>
+        /// <remarks>This operation does not modify the input element.</remarks>
+        public JToken FlattenElement(JToken element, bool ordered = false)
         {
             // 1 = Initialize node map to a map consisting of a single member whose key is @default
             // and whose value is an empty map.

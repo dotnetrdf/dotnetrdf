@@ -410,10 +410,11 @@ namespace VDS.RDF.JsonLd
         /// <returns></returns>
         public static JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
         {
-            var processor = new JsonLdProcessor(options);
             // Set expanded input to the result of using the expand method using input and options.
+            var ordered = options?.Ordered ?? false;
             var expandedInput = Expand(input, options);
-            var flattenedOutput = processor.FlattenAlgorithm(expandedInput, options.Ordered);
+            var flattenProcessor = new Flatten();
+            var flattenedOutput = flattenProcessor.FlattenElement(expandedInput, ordered);
             if (context != null)
             {
                 flattenedOutput = Compact(flattenedOutput, context, options);
