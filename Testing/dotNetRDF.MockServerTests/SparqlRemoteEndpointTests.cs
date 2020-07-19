@@ -45,11 +45,11 @@ namespace dotNetRDF.MockServerTests
 {
     public class SparqlRemoteEndpointTests : IDisposable
     {
-        private readonly FluentMockServer _server;
+        private readonly WireMockServer _server;
 
         public SparqlRemoteEndpointTests()
         {
-            _server = FluentMockServer.Start();
+            _server = WireMockServer.Start();
         }
 
         public void Dispose()
