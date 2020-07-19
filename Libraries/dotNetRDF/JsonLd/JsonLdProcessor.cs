@@ -38,8 +38,7 @@ namespace VDS.RDF.JsonLd
     {
         private Uri _base;
         private readonly JsonLdProcessorOptions _options;
-        private readonly Dictionary<string, string> _identifierMap;
-        private int _counter;
+        private IBlankNodeGenerator _blankNodeGenerator;
         private readonly Dictionary<Uri, JsonLdRemoteContext> _remoteContextCache;
 
         /// <summary>
@@ -71,9 +70,8 @@ namespace VDS.RDF.JsonLd
         {
             _options = options ?? new JsonLdProcessorOptions();
             ProcessingMode = _options.ProcessingMode;
-            _identifierMap = new Dictionary<string, string>();
+            _blankNodeGenerator = new BlankNodeGenerator();
             _remoteContextCache = new Dictionary<Uri, JsonLdRemoteContext>();
-            _counter = 0;
         }
 
         /// <summary>

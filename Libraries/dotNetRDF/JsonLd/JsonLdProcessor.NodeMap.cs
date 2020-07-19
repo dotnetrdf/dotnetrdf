@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -83,7 +84,7 @@ namespace VDS.RDF.JsonLd
                         var typeId = typeArray[ix].Value<string>();
                         if (IsBlankNodeIdentifier(typeId))
                         {
-                            typeArray[ix] = GenerateBlankNodeIdentifier(typeId);
+                            typeArray[ix] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                         }
                     }
                 }
@@ -92,7 +93,7 @@ namespace VDS.RDF.JsonLd
                     var typeId = elementObject["@type"].Value<string>();
                     if (IsBlankNodeIdentifier(typeId))
                     {
-                        elementObject["@type"] = GenerateBlankNodeIdentifier(typeId);
+                        elementObject["@type"] = _blankNodeGenerator.GenerateBlankNodeIdentifier(typeId);
                     }
                 }
             }
@@ -156,13 +157,13 @@ namespace VDS.RDF.JsonLd
                     if (id == null) return; // Required to pass W3C test e122
                     if (IsBlankNodeIdentifier(id))
                     {
-                        id = GenerateBlankNodeIdentifier(id);
+                        id = _blankNodeGenerator.GenerateBlankNodeIdentifier(id);
                     }
                 }
                 // 6.2 - Otherwise, set id to the result of the Generate Blank Node Identifier algorithm passing null for identifier.
                 else
                 {
-                    id = GenerateBlankNodeIdentifier(null);
+                    id = _blankNodeGenerator.GenerateBlankNodeIdentifier(null);
                 }
                 // 6.3 - If graph does not contain a member id, create one and initialize its value to a dictionary consisting of a single member @id whose value is id.
                 if (!graph.ContainsKey(id))
@@ -291,7 +292,7 @@ namespace VDS.RDF.JsonLd
                     // 6.12.1 - If property is a blank node identifier, replace it with a newly generated blank node identifier passing property for identifier.
                     if (IsBlankNodeIdentifier(property))
                     {
-                        property = GenerateBlankNodeIdentifier(property);
+                        property = _blankNodeGenerator.GenerateBlankNodeIdentifier(property);
                     }
                     // 6.12.2 - If node does not have a property entry, create one and initialize its value to an empty array.
                     if (!node.ContainsKey(property))
@@ -363,24 +364,5 @@ namespace VDS.RDF.JsonLd
                 toArray.Add(element);
             }
         }
-
-        private string GenerateBlankNodeIdentifier(string identifier)
-        {
-            // 1 - If identifier is not null and has an entry in the identifier map, return the mapped identifier.
-            if (identifier != null && _identifierMap.TryGetValue(identifier, out var mappedIdentifier))
-            {
-                return mappedIdentifier;
-            }
-            // 2 - Otherwise, generate a new blank node identifier
-            mappedIdentifier = "_:b" + _counter++;
-            // 3 - If identifier is not null, create a new entry for identifier in identifier map and set its value to the new blank node identifier.
-            if (identifier != null)
-            {
-                _identifierMap[identifier] = mappedIdentifier;
-            }
-            // 4 - Return the new blank node identifier.
-            return mappedIdentifier;
-        }
-
     }
 }
