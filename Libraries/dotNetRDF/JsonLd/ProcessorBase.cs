@@ -31,7 +31,7 @@ namespace VDS.RDF.JsonLd
     /// <summary>
     /// Base class for processors that make use of <see cref="JsonLdProcessorOptions"/>.
     /// </summary>
-    public class ProcessorBase
+    internal class ProcessorBase
     {
         /// <summary>
         /// Get the options passed to this processor in the constructor.
@@ -47,10 +47,11 @@ namespace VDS.RDF.JsonLd
         /// Create a new processor instance that uses the specified processor options.
         /// </summary>
         /// <param name="options"></param>
-        public ProcessorBase(JsonLdProcessorOptions options)
+        /// <param name="warnings">The list to add any generated warnings to</param>
+        public ProcessorBase(JsonLdProcessorOptions options, IList<JsonLdProcessorWarning> warnings)
         {
             Options = options;
-            Warnings = new List<JsonLdProcessorWarning>();
+            Warnings = warnings;
         }
 
         /// <summary>

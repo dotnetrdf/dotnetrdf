@@ -37,7 +37,9 @@ namespace VDS.RDF.JsonLd
     {
         private readonly ContextProcessor _contextProcessor;
 
-        public ExpandProcessor(JsonLdProcessorOptions options, ContextProcessor contextProcessor) : base(options)
+        public ExpandProcessor(JsonLdProcessorOptions options, 
+            ContextProcessor contextProcessor,
+            List<JsonLdProcessorWarning> warnings) : base(options, warnings)
         {
             _contextProcessor = contextProcessor;
         }

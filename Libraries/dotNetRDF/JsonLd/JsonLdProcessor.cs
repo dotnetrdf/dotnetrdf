@@ -34,11 +34,10 @@ namespace VDS.RDF.JsonLd
     /// <summary>
     /// Implements the core JSON-LD processing. 
     /// </summary>
-    public partial class JsonLdProcessor
+    public class JsonLdProcessor
     {
         private Uri _base;
         private readonly JsonLdProcessorOptions _options;
-        private INodeMapGenerator _nodeMapGenerator;
 
         /// <summary>
         /// Get or set the base IRI for processing.
@@ -69,7 +68,6 @@ namespace VDS.RDF.JsonLd
         {
             _options = options ?? new JsonLdProcessorOptions();
             ProcessingMode = _options.ProcessingMode;
-            _nodeMapGenerator = new NodeMapGenerator();
         }
 
         /// <summary>
@@ -82,7 +80,17 @@ namespace VDS.RDF.JsonLd
         public static JObject Compact(JToken input, JToken context, JsonLdProcessorOptions options)
         {
             var processor = new JsonLdProcessor(options);
+            return processor.Compact(input, context);
+        }
 
+        /// <summary>
+        /// Run the Compaction algorithm.
+        /// </summary>
+        /// <param name="input">The JSON-LD data to be compacted. Expected to be a JObject or JArray of JObject or a JString whose value is the IRI reference to a JSON-LD document to be retrieved.</param>
+        /// <param name="context">The context to use for the compaction process. May be a JObject, JArray of JObject, JString or JArray of JString. String values are treated as IRI references to context documents to be retrieved.</param>
+        /// <returns></returns>
+        public JObject Compact(JToken input, JToken context) 
+        { 
             // Set expanded input to the result of using the expand method using input and options.
             JArray expandedInput;
             Uri remoteDocumentUrl = null;
@@ -90,19 +98,19 @@ namespace VDS.RDF.JsonLd
             if (input.Type == JTokenType.String)
             {
                 var remoteDocument = LoadJson(new Uri(input.Value<string>()),
-                    new JsonLdLoaderOptions {ExtractAllScripts = options.ExtractAllScripts}, options);
+                    new JsonLdLoaderOptions {ExtractAllScripts = _options.ExtractAllScripts}, _options);
                 expandedInput = Expand(remoteDocument, remoteDocument.DocumentUrl,
-                    new JsonLdLoaderOptions {ExtractAllScripts = false}, options);
+                    new JsonLdLoaderOptions {ExtractAllScripts = false}, _options);
                 remoteDocumentUrl = contextBase = remoteDocument.DocumentUrl;
             }
             else
             {
-                expandedInput = Expand(input, options);
+                expandedInput = Expand(input, _options);
             }
 
             if (contextBase == null)
             {
-                contextBase = options.Base;
+                contextBase = _options.Base;
             }
 
             if (context is JObject contextObject && contextObject.ContainsKey("@context"))
@@ -110,17 +118,17 @@ namespace VDS.RDF.JsonLd
                 context = contextObject["@context"];
             }
 
-            var contextProcessor = new ContextProcessor(options);
+            var contextProcessor = new ContextProcessor(_options, Warnings);
 
             var activeContext = contextProcessor.ProcessContext(new JsonLdContext(), context, contextBase);
             if (activeContext.Base == null)
             {
-                activeContext.Base = options?.Base ?? (options.CompactToRelative ? remoteDocumentUrl : null);
+                activeContext.Base = _options?.Base ?? (_options.CompactToRelative ? remoteDocumentUrl : null);
             }
 
-            var compactor = new CompactProcessor(options, contextProcessor);
-            var compactedOutput = compactor.CompactElement(activeContext, null, expandedInput, options.CompactArrays,
-                options.Ordered);
+            var compactor = new CompactProcessor(_options, contextProcessor, Warnings);
+            var compactedOutput = compactor.CompactElement(activeContext, null, expandedInput, _options.CompactArrays,
+                _options.Ordered);
             if (JsonLdUtils.IsEmptyArray(compactedOutput))
             {
                 compactedOutput = new JObject();
@@ -149,7 +157,8 @@ namespace VDS.RDF.JsonLd
         public static JArray Expand(Uri contextUrl, JsonLdProcessorOptions options = null)
         {
             var parsedJson = LoadJson(contextUrl, null, options);
-            return Expand(parsedJson, contextUrl, null, options);
+            var processor = new JsonLdProcessor(options);
+            return processor.Expand(parsedJson, contextUrl, null, options);
         }
 
         /// <summary>
@@ -164,10 +173,11 @@ namespace VDS.RDF.JsonLd
             {
                 Document = input is JValue v && v.Type == JTokenType.String ? v.Value<string>() : input,
             };
-            return Expand(remoteDoc, null, null, options);
+            var processor = new JsonLdProcessor(options);
+            return processor.Expand(remoteDoc, null, null, options);
         }
 
-        private static JArray Expand(RemoteDocument doc, Uri documentLocation,
+        private JArray Expand(RemoteDocument doc, Uri documentLocation,
             JsonLdLoaderOptions loaderOptions = null,
             JsonLdProcessorOptions options = null)
         {
@@ -187,8 +197,7 @@ namespace VDS.RDF.JsonLd
             if (documentLocation == null) documentLocation = doc.DocumentUrl;
             var contextBase = options?.Base ?? documentLocation;
             var activeContext = contextBase != null ? new JsonLdContext(contextBase) : new JsonLdContext();
-            var processor = new JsonLdProcessor(options);
-            var contextProcessor = new ContextProcessor(options);
+            var contextProcessor = new ContextProcessor(options, Warnings);
             if (options?.ExpandContext != null)
             {
                 if (options.ExpandContext is JObject expandObject)
@@ -216,7 +225,7 @@ namespace VDS.RDF.JsonLd
                 activeContext = contextProcessor.ProcessContext(activeContext, contextDoc.Document as JToken, doc.ContextUrl);
             }
             
-            var expander = new ExpandProcessor(options, contextProcessor);
+            var expander = new ExpandProcessor(options, contextProcessor, Warnings);
             var expandedOutput = expander.ExpandElement(activeContext, null, doc.Document as JToken,
                 doc.DocumentUrl ?? options?.Base,
                 options?.FrameExpansion ?? false,
@@ -241,24 +250,29 @@ namespace VDS.RDF.JsonLd
         /// <returns></returns>
         public static JObject Frame(JToken input, JToken frame, JsonLdProcessorOptions options)
         {
+            var processor = new JsonLdProcessor(options);
+            return processor.Frame(input, frame);
+        }
+
+        private JObject Frame(JToken input, JToken frame) 
+        {
             // JSON-LD 1.0 compatible framing requires ordered processing
-            if (options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
+            if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
             {
-                options.Ordered = true;
+                _options.Ordered = true;
             }
 
-            var processor = new JsonLdProcessor(options);
             var nodeMapGenerator = new NodeMapGenerator();
             Uri remoteDocumentUri = null, remoteFrameUri = null;
             RemoteDocument remoteDocument = null, remoteFrame = null;
-            var loaderOptions = new JsonLdLoaderOptions {ExtractAllScripts = options.ExtractAllScripts};
+            var loaderOptions = new JsonLdLoaderOptions {ExtractAllScripts = _options.ExtractAllScripts};
             if (input.Type == JTokenType.String)
             {
                 remoteDocumentUri = new Uri(input.Value<string>());
-                remoteDocument = LoadJson(remoteDocumentUri, loaderOptions, options);
+                remoteDocument = LoadJson(remoteDocumentUri, loaderOptions, _options);
             }
 
-            var expandOptions = options.Clone();
+            var expandOptions = _options.Clone();
             expandOptions.Ordered = false;
 
             var expandedInput = remoteDocument != null
@@ -268,10 +282,10 @@ namespace VDS.RDF.JsonLd
             if (frame.Type == JTokenType.String)
             {
                 remoteFrameUri = new Uri(frame.Value<string>());
-                remoteFrame = LoadJson(remoteFrameUri, loaderOptions, options);
+                remoteFrame = LoadJson(remoteFrameUri, loaderOptions, _options);
             }
 
-            var frameExpansionOptions = options.Clone();
+            var frameExpansionOptions = _options.Clone();
             frameExpansionOptions.Ordered = false;
             frameExpansionOptions.FrameExpansion = true;
             var expandedFrame = remoteFrame != null
@@ -292,18 +306,18 @@ namespace VDS.RDF.JsonLd
                 haveContext = true;
             }
 
-            Uri contextBase = options.Base;
+            var contextBase = _options.Base;
             if (remoteFrame?.DocumentUrl != null) contextBase = remoteFrame.DocumentUrl;
 
-            var contextProcessor = new ContextProcessor(options);
+            var contextProcessor = new ContextProcessor(_options, Warnings);
 
             // 10 - Initialize active context to the result of the Context Processing algorithm passing a new empty context as active context context as local context, and context base as base URL.
             var activeContext = contextProcessor.ProcessContext(new JsonLdContext(), context, contextBase);
 
             // 11 - Initialize an active context using context; the base IRI is set to the base option from options, if set; otherwise, if the compactToRelative option is true, to the IRI of the currently being processed document, if available; otherwise to null.
             // KA - Spec is a bit unclear here. I assume that it means that this step creates a separate active context potentially with a different base IRI for the reverse context creation in step 12
-            var reverseContextBase = options.Base ??
-                                     (options.CompactToRelative && remoteDocument != null
+            var reverseContextBase = _options.Base ??
+                                     (_options.CompactToRelative && remoteDocument != null
                                          ? remoteDocument.DocumentUrl
                                          : null);
             var toReverse = contextProcessor.ProcessContext(new JsonLdContext(), context, reverseContextBase);
@@ -315,28 +329,28 @@ namespace VDS.RDF.JsonLd
             if (frame is JObject frameObject && frameObject.Properties()
                 .Any(p => contextProcessor.ExpandIri(activeContext, p.Name, true).Equals("@graph")))
             {
-                options.FrameDefault = true;
+                _options.FrameDefault = true;
             }
 
             // 14 - Initialize a new framing state (state) to an empty map. 
             var graphMap = nodeMapGenerator.GenerateNodeMap(expandedInput);
-            if (!options.FrameDefault)
+            if (!_options.FrameDefault)
             {
                 // Add an @merged entry to graphMap
                 var mergedNodeMap = nodeMapGenerator.GenerateMergedNodeMap(graphMap);
                 graphMap["@merged"] = mergedNodeMap;
             }
 
-            var state = new FramingState(options, graphMap, options.FrameDefault ? "@default" : "@merged");
+            var state = new FramingState(_options, graphMap, _options.FrameDefault ? "@default" : "@merged");
 
             // 15 - Initialize results as an empty array.
             var results = new JArray();
             // 16 - Invoke the Framing algorithm, passing state, the keys from subject map in state for subjects, expanded frame, results for parent, and null as active property.
-            ProcessFrame(state, state.Subjects.Properties().Select(p => p.Name).ToList(), expandedFrame, results, null,
-                processingMode: options.ProcessingMode ?? JsonLdProcessingMode.JsonLd11);
+            FramingProcessor.ProcessFrame(state, state.Subjects.Properties().Select(p => p.Name).ToList(), expandedFrame, results, null,
+                processingMode: _options.ProcessingMode ?? JsonLdProcessingMode.JsonLd11);
 
             // 17 - If the processing mode is not json-ld-1.0, remove the @id entry of each node object in results where the entry value is a blank node identifier which appears only once in any property value within results.
-            if (options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
+            if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10)
             {
                 PruneBlankNodeIdentifiers(results);
             }
@@ -345,9 +359,9 @@ namespace VDS.RDF.JsonLd
             ReplacePreservedValues(results, activeContext, false);
 
             // 19 - Set compacted results to the result of using the compact method using active context, inverse context, null for active property, results as element,, and the compactArrays and ordered flags from options.
-            var compactor = new CompactProcessor(options, contextProcessor);
+            var compactor = new CompactProcessor(_options, contextProcessor, Warnings);
             var compactedResults =
-                compactor.CompactElement(activeContext, null, results, options.CompactArrays, options.Ordered);
+                compactor.CompactElement(activeContext, null, results, _options.CompactArrays, _options.Ordered);
             var graphProperty = compactor.CompactIri(activeContext, "@graph", vocab: true);
             // 19.1 - If compacted results is an empty array, replace it with a new map.
             if (JsonLdUtils.IsEmptyArray(compactedResults))
@@ -374,7 +388,7 @@ namespace VDS.RDF.JsonLd
             // 21 - If omitGraph is false and compacted results does not have a top-level @graph entry, or its value is not an array,
             // modify compacted results to place the non @context entry of compacted results into a map contained within the array value of @graph.
             // If omitGraph is true, a top-level @graph entry is used only to contain multiple node objects.
-            if (!options.OmitGraph && (!compactedResultsObject.ContainsKey(graphProperty) ||
+            if (!_options.OmitGraph && (!compactedResultsObject.ContainsKey(graphProperty) ||
                                        compactedResultsObject[graphProperty].Type != JTokenType.Array))
             {
                 var g = new JObject();
@@ -414,13 +428,12 @@ namespace VDS.RDF.JsonLd
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public static JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options = null)
+        public static JToken Flatten(JToken input, JToken context, JsonLdProcessorOptions options)
         {
             // Set expanded input to the result of using the expand method using input and options.
-            var ordered = options?.Ordered ?? false;
             var expandedInput = Expand(input, options);
             var flattenProcessor = new FlattenProcessor();
-            var flattenedOutput = flattenProcessor.FlattenElement(expandedInput, ordered);
+            var flattenedOutput = flattenProcessor.FlattenElement(expandedInput, options.Ordered);
             if (context != null)
             {
                 flattenedOutput = Compact(flattenedOutput, context, options);
@@ -429,26 +442,15 @@ namespace VDS.RDF.JsonLd
             return flattenedOutput;
         }
 
-
         /// <summary>
-        /// If the processing mode is <see cref="JsonLdProcessingMode.JsonLd10"/>, throw a <see cref="JsonLdProcessorException"/> with error code
-        /// <see cref="JsonLdErrorCode.ProcessingModeConflict"/>.
+        /// Flattens the given input and compacts it using the passed context according to the steps in the JSON-LD Flattening algorithm.
         /// </summary>
-        /// <param name="keyword">The keyword that caused the check.</param>
-        /// <param name="errorCode">The error code to use when raising a JsonLdProcessorException if the processing mode is <see cref="JsonLdProcessingMode.JsonLd10"/>.</param>
-        private void CheckProcessingMode(string keyword,
-            JsonLdErrorCode errorCode = JsonLdErrorCode.ProcessingModeConflict)
+        /// <param name="input"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public JToken Flatten(JToken input, JToken context)
         {
-            if (_options.ProcessingMode == JsonLdProcessingMode.JsonLd10)
-            {
-                throw new JsonLdProcessorException(errorCode,
-                    $"Processing mode conflict. Processor options specify JSON-LD 1.0 processing mode, but encountered {keyword} that requires JSON-LD 1.1 processing features");
-            }
-        }
-
-        private void Warn(JsonLdErrorCode errorCode, string message)
-        {
-            Warnings.Add(new JsonLdProcessorWarning(errorCode, message));
+            return Flatten(input, context, _options);
         }
 
         private static void ReplaceNulls(JToken token)
@@ -651,93 +653,6 @@ namespace VDS.RDF.JsonLd
             return options.DocumentLoader != null
                 ? options.DocumentLoader(remoteRef, loaderOptions)
                 : DefaultDocumentLoader.LoadJson(remoteRef, loaderOptions);
-        }
-    }
-
-    public interface IRemoteContextProvider
-    {
-        JsonLdRemoteContext GetRemoteContext(Uri reference);
-    }
-
-    public class RemoteContextProvider: IRemoteContextProvider
-    {
-        private readonly JsonLdProcessorOptions _options;
-        private readonly Dictionary<Uri, JsonLdRemoteContext> _remoteContextCache;
-
-        public RemoteContextProvider(JsonLdProcessorOptions options)
-        {
-            _options = options;
-            _remoteContextCache = new Dictionary<Uri, JsonLdRemoteContext>();
-        }
-
-        public JsonLdRemoteContext GetRemoteContext(Uri reference)
-        {
-            if (_remoteContextCache.TryGetValue(reference, out var cachedContext)) return cachedContext;
-            try
-            {
-                var remoteDoc = LoadJson(reference,
-                    new JsonLdLoaderOptions
-                        { Profile = JsonLdVocabulary.Context, RequestProfile = JsonLdVocabulary.Context }, _options);
-                var jsonRepresentation = GetJsonRepresentation(remoteDoc);
-                if (!(jsonRepresentation is JObject remoteJsonObject))
-                {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
-                        $"Remote document at {reference} could not be parsed as a JSON object.");
-                }
-
-                if (!remoteJsonObject.ContainsKey("@context"))
-                {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
-                        $"Remote document at {reference} does not have an @context property");
-                }
-
-                var remoteContext = new JsonLdRemoteContext(remoteDoc.DocumentUrl, remoteJsonObject["@context"]);
-                _remoteContextCache[reference] = remoteContext;
-                return remoteContext;
-
-            }
-            catch (JsonLdProcessorException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingRemoteContextFailed,
-                    $"Failed to load remote context from {reference}.", ex);
-            }
-        }
-
-        private static RemoteDocument LoadJson(Uri remoteRef, JsonLdLoaderOptions loaderOptions,
-            JsonLdProcessorOptions options)
-        {
-            return options.DocumentLoader != null
-                ? options.DocumentLoader(remoteRef, loaderOptions)
-                : DefaultDocumentLoader.LoadJson(remoteRef, loaderOptions);
-        }
-
-        private static JToken GetJsonRepresentation(RemoteDocument remoteDoc)
-        {
-            switch (remoteDoc.Document)
-            {
-                case JToken representation:
-                    return representation;
-                case string docStr:
-                {
-                    try
-                    {
-
-                        return JToken.Parse(docStr);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
-                            "Could not parse remote content as a JSON document. ", ex);
-                    }
-                }
-                default:
-                    throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
-                        "Could not parse remote content as a JSON document.");
-            }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace VDS.RDF.JsonLd
     /// <summary>
     /// Implements the JSON-LD context processing, term definition creation and IRI expansion algorithms
     /// </summary>
-    public class ContextProcessor : ProcessorBase
+    internal class ContextProcessor : ProcessorBase
     {
         private static readonly char[] GenDelimChars =
         {
@@ -55,7 +55,9 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="options">The processing options to use.</param>
         /// <param name="contextProvider">The provider for retrieving remote context documents.</param>
-        public ContextProcessor(JsonLdProcessorOptions options, IRemoteContextProvider contextProvider = null) : base(options)
+        public ContextProcessor(JsonLdProcessorOptions options, 
+            List<JsonLdProcessorWarning> warnings, 
+            IRemoteContextProvider contextProvider = null) : base(options, warnings)
         {
             _contextProvider = contextProvider ?? new RemoteContextProvider(options);
         }

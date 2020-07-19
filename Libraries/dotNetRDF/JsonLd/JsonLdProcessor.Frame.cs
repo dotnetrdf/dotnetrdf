@@ -32,9 +32,20 @@ using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.JsonLd
 {
-    public partial class JsonLdProcessor
+    internal static class FramingProcessor
     {
-        private static void ProcessFrame(FramingState state, List<string> subjects, JToken frameObjectOrArray,
+        /// <summary>
+        /// Implements the JSON-LD Framing Algorithm
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="subjects"></param>
+        /// <param name="frameObjectOrArray"></param>
+        /// <param name="parent"></param>
+        /// <param name="activeProperty"></param>
+        /// <param name="ordered"></param>
+        /// <param name="idStack"></param>
+        /// <param name="processingMode"></param>
+        public static void ProcessFrame(FramingState state, List<string> subjects, JToken frameObjectOrArray,
             JToken parent,
             string activeProperty, bool ordered = false, Stack<string> idStack = null, 
             JsonLdProcessingMode processingMode = JsonLdProcessingMode.JsonLd11)
