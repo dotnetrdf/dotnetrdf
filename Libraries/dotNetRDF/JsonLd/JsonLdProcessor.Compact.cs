@@ -908,13 +908,20 @@ namespace VDS.RDF.JsonLd
 
                 // 4.18 - Append @any to preferred values.
                 preferredValues.Add("@any");
+                
                 // 4.19 - If preferred values contains any entry having an underscore ("_"), append the substring of that entry from the underscore to the end of the string to preferred values.
-                var toAppend = preferredValues.Where(pv => pv.Contains("_"))
-                    .Select(pv => pv.Substring(pv.IndexOf("_"))).ToList();
+                var toAppend = preferredValues
+                    .Where(pv => pv.Contains("_"))
+                    .Select(pv => pv.Substring(pv.IndexOf("_", StringComparison.Ordinal)))
+                    .ToList();
                 preferredValues.AddRange(toAppend);
+
                 // 4.20 - Initialize term to the result of the Term Selection algorithm, passing var, containers, type/language, and preferred values.
-                var term = SelectTerm(activeContext, iri, containers, typeLanguage, preferredValues);
-                if (term != null) return term;
+                var term = activeContext.SelectTerm(iri, containers, typeLanguage, preferredValues);
+                if (term != null)
+                {
+                    return term;
+                }
             }
 
             // 5 - At this point, there is no simple term that var can be compacted to. If vocab is true and active context has a vocabulary mapping: 
@@ -999,48 +1006,7 @@ namespace VDS.RDF.JsonLd
         }
 
 
-        /// <summary>
-        /// Implementation of the Term Selection algorithm.
-        /// </summary>
-        /// <param name="activeContext"></param>
-        /// <param name="iri"></param>
-        /// <param name="containers"></param>
-        /// <param name="typeLanguage"></param>
-        /// <param name="preferredValues"></param>
-        /// <returns></returns>
-        private static string SelectTerm(JsonLdContext activeContext, string iri, List<string> containers, string typeLanguage, List<string> preferredValues)
-        {
-            // 1 - If the active context has a null inverse context, set inverse context in active context to the result of calling the Inverse Context Creation algorithm using active context.
-            // 2 - Initialize inverse context to the value of inverse context in active context.
-            var inverseContext = activeContext.InverseContext;
-
-            // 3 - Initialize container map to the value associated with iri in the inverse context.
-            var containerMap = inverseContext[iri] as JObject;
-
-            // 4 - For each item container in containers:
-            foreach (var container in containers)
-            {
-                // 4.1 - If container is not an entry of container map, then there is no term with a matching container mapping for it, so continue to the next container.
-                if (!containerMap.ContainsKey(container)) continue;
-
-                // 4.2 - Initialize type/language map to the value associated with the container entry in container map.
-                var typeLanguageMap = containerMap[container];
-
-                // 4.3 - Initialize value map to the value associated with type/language entry in type/language map.
-                var valueMap = typeLanguageMap[typeLanguage] as JObject;
-
-                // 4.4 - For each item in preferred values:
-                foreach (var item in preferredValues)
-                {
-                    // 4.4.1 - If item is not an entry of value map, then there is no term with a matching type mapping or language mapping, so continue to the next item.
-                    if (!valueMap.ContainsKey(item)) continue;
-                    // 4.4.2 - Otherwise, a matching term has been found, return the value associated with the item member in value map.
-                    return valueMap[item].Value<string>();
-                }
-            }
-            // 5 - No matching term has been found. Return null.
-            return null;
-        }
+        
 
         private JToken CompactValue(JsonLdContext activeContext, string activeProperty, JObject value)
         {

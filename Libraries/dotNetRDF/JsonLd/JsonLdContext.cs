@@ -248,6 +248,46 @@ namespace VDS.RDF.JsonLd
             return _termDefinitions.ContainsKey(term);
         }
 
+        /// <summary>
+        /// Implementation of the Term Selection algorithm using this instance as the active context.
+        /// </summary>
+        /// <param name="iri"></param>
+        /// <param name="containers"></param>
+        /// <param name="typeLanguage"></param>
+        /// <param name="preferredValues"></param>
+        /// <returns></returns>
+        public string SelectTerm(string iri, IEnumerable<string> containers, string typeLanguage, List<string> preferredValues)
+        {
+            // 1 - If the active context has a null inverse context, set inverse context in active context to the result of calling the Inverse Context Creation algorithm using active context.
+            // 2 - Initialize inverse context to the value of inverse context in active context.
+            // 3 - Initialize container map to the value associated with iri in the inverse context.
+            var containerMap = InverseContext[iri] as JObject;
+
+            // 4 - For each item container in containers:
+            foreach (var container in containers)
+            {
+                // 4.1 - If container is not an entry of container map, then there is no term with a matching container mapping for it, so continue to the next container.
+                if (!containerMap.ContainsKey(container)) continue;
+
+                // 4.2 - Initialize type/language map to the value associated with the container entry in container map.
+                var typeLanguageMap = containerMap[container];
+
+                // 4.3 - Initialize value map to the value associated with type/language entry in type/language map.
+                var valueMap = typeLanguageMap[typeLanguage] as JObject;
+
+                // 4.4 - For each item in preferred values:
+                foreach (var item in preferredValues)
+                {
+                    // 4.4.1 - If item is not an entry of value map, then there is no term with a matching type mapping or language mapping, so continue to the next item.
+                    if (!valueMap.ContainsKey(item)) continue;
+                    // 4.4.2 - Otherwise, a matching term has been found, return the value associated with the item member in value map.
+                    return valueMap[item].Value<string>();
+                }
+            }
+            // 5 - No matching term has been found. Return null.
+            return null;
+        }
+
         private JObject CreateInverseContext()
         {
             // 1. Initialize result to an empty map.
