@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "dotnetrdf", "dotnetrdf.shfbproj", "{463DD389-7FB4-4EE8-8221-A279D8F821EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{463DD389-7FB4-4EE8-8221-A279D8F821EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{463DD389-7FB4-4EE8-8221-A279D8F821EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{463DD389-7FB4-4EE8-8221-A279D8F821EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{463DD389-7FB4-4EE8-8221-A279D8F821EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3791882C-DB1F-4DC0-8EE4-C24C6AD9ACC2}
+	EndGlobalSection
+EndGlobal
