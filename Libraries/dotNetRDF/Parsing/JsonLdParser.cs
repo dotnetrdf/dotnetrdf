@@ -32,7 +32,10 @@ using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using VDS.RDF.JsonLd.Processors;
+using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.Parsing
 {
@@ -43,6 +46,8 @@ namespace VDS.RDF.Parsing
     {
         /// <inheritdoc/>
         public event StoreReaderWarning Warning;
+
+        private readonly JsonSerializer _jsonSerializer;
 
         /// <summary>
         /// Get the current parser options.
@@ -55,7 +60,7 @@ namespace VDS.RDF.Parsing
         public JsonLdParser() : this(new JsonLdProcessorOptions { ProcessingMode = JsonLdProcessingMode.JsonLd11}) { }
 
         /// <summary>
-        /// Create an instace of the parser configured with the provided parser options.
+        /// Create an instance of the parser configured with the provided parser options.
         /// </summary>
         /// <param name="parserOptions"></param>
         public JsonLdParser(JsonLdProcessorOptions parserOptions)
@@ -110,7 +115,8 @@ namespace VDS.RDF.Parsing
                     element = JToken.ReadFrom(reader);
                 }
                 var expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
-                var nodeMap = JsonLdProcessor.GenerateNodeMap(expandedElement);
+                var nodeMapGenerator = new NodeMapGenerator();
+                var nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
                 foreach (var p in nodeMap.Properties())
                 {
                     var graphName = p.Name;
@@ -123,7 +129,14 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        if (!Uri.TryCreate(graphName, UriKind.Absolute, out graphIri)) continue;
+                        if (IsBlankNodeIdentifier(graphName))
+                        {
+                            graphIri = new Uri("nquads:bnode:" + graphName.Substring(2));
+                        } 
+                        else if (!(Uri.TryCreate(graphName, UriKind.Absolute, out graphIri) && graphIri.IsWellFormedOriginalString()))
+                        {
+                            continue;
+                        }
                     }
                     foreach (var gp in graph.Properties())
                     {
@@ -136,7 +149,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            if (!Uri.TryCreate(subject, UriKind.Absolute, out var subjectIri)) continue;
+                            if (!(Uri.TryCreate(subject, UriKind.Absolute, out var subjectIri) && subjectIri.IsWellFormedOriginalString())) continue;
                             subjectNode = handler.CreateUriNode(subjectIri);
                         }
                         foreach (var np in node.Properties())
@@ -148,28 +161,20 @@ namespace VDS.RDF.Parsing
                                 foreach (var type in values)
                                 {
                                     var typeNode = MakeNode(handler, type, graphIri);
-                                    handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphIri));
+                                    if (typeNode != null)
+                                    {
+                                        handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphIri));
+                                    }
                                 }
                             }
-                            else if (JsonLdProcessor.IsKeyword(property))
-                            {
-                                continue;
-                            }
-                            else if (JsonLdProcessor.IsBlankNodeIdentifier(property) && !ParserOptions.ProduceGeneralizedRdf)
-                            {
-                                continue;
-                            }
-                            else if (JsonLdProcessor.IsRelativeIri(property))
-                            {
-                                continue;
-                            }
-                            else
+                            else if (JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf ||
+                                     Uri.IsWellFormedUriString(property, UriKind.Absolute))
                             {
                                 foreach (var item in values)
                                 {
                                     var predicateNode = MakeNode(handler, property, graphIri);
                                     var objectNode = MakeNode(handler, item, graphIri);
-                                    if (objectNode != null)
+                                    if (predicateNode != null && objectNode != null)
                                     {
                                         handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode,
                                             graphIri));
@@ -190,48 +195,106 @@ namespace VDS.RDF.Parsing
 
         private const string XsdNs = "http://www.w3.org/2001/XMLSchema#";
         private const string RdfNs = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+        private const string RdfValue = RdfNs + "value";
         private static readonly Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
 
-        private static INode MakeNode(IRdfHandler handler, JToken token, Uri graphIri, bool allowRelativeIri = false)
+        private INode MakeNode(IRdfHandler handler, JToken token, Uri graphIri, bool allowRelativeIri = false)
         {
             if (token is JValue)
             {
                 var stringValue = token.Value<string>();
-                if (JsonLdProcessor.IsBlankNodeIdentifier(stringValue))
+                if (JsonLdUtils.IsBlankNodeIdentifier(stringValue))
                 {
                     return handler.CreateBlankNode(stringValue.Substring(2));
                 }
                 if (Uri.TryCreate(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute, out Uri iri))
                 {
+                    if (!Uri.IsWellFormedUriString(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute)) return null;
                     return handler.CreateUriNode(iri);
                 }
                 return null;
             }
-            else if (JsonLdProcessor.IsValueObject(token))
+
+            if (JsonLdUtils.IsValueObject(token))
             {
                 string literalValue = null;
                 var valueObject = token as JObject;
                 var value = valueObject["@value"];
                 var datatype = valueObject.Property("@type")?.Value.Value<string>();
                 var language = valueObject.Property("@language")?.Value.Value<string>();
-                if (value.Type == JTokenType.Boolean)
+                if (datatype == "@json")
+                {
+                    datatype = RdfNs + "JSON";
+                    var serializer = new JsonLiteralSerializer();
+                    literalValue = serializer.Serialize(value);
+                }
+                else if (value.Type == JTokenType.Boolean)
                 {
                     literalValue = value.Value<bool>() ? "true" : "false";
                     if (datatype == null) datatype = XsdNs + "boolean";
                 }
                 else if (value.Type == JTokenType.Float ||
-                    value.Type == JTokenType.Integer && datatype != null && datatype.Equals(XsdNs + "double"))
+                         value.Type == JTokenType.Integer && datatype != null && datatype.Equals(XsdNs + "double"))
                 {
-                    literalValue = value.Value<double>().ToString("E15", CultureInfo.InvariantCulture);
-                    literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
-                    if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
-                    if (datatype == null) datatype = XsdNs + "double";
+                    var doubleValue = value.Value<double>();
+                    var roundedValue = Math.Round(doubleValue);
+                    if (doubleValue.Equals(roundedValue) && doubleValue < 1000000000000000000000.0 && datatype == null)
+                    {
+                        // Integer values up to 10^21 should be rendered as a fixed-point integer
+                        literalValue = roundedValue.ToString("F0");
+                        datatype = XsdNs + "integer";
+                    }
+                    else
+                    {
+                        literalValue = value.Value<double>().ToString("E15", CultureInfo.InvariantCulture);
+                        literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
+                        if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
+                        if (datatype == null) datatype = XsdNs + "double";
+                    }
                 }
                 else if (value.Type == JTokenType.Integer ||
-                    value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
+                         value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
                 {
                     literalValue = value.Value<long>().ToString("D", CultureInfo.InvariantCulture);
                     if (datatype == null) datatype = XsdNs + "integer";
+                }
+                else if (valueObject.ContainsKey("@direction") && ParserOptions.RdfDirection.HasValue)
+                {
+                    literalValue = value.Value<string>();
+                    var direction = valueObject["@direction"].Value<string>();
+                    language = valueObject.ContainsKey("@language")
+                        ? valueObject["@language"].Value<string>().ToLowerInvariant()
+                        : string.Empty;
+                    if (ParserOptions.RdfDirection == JsonLdRdfDirectionMode.I18NDatatype)
+                    {
+                        datatype = "https://www.w3.org/ns/i18n#" + language + "_" + direction;
+                        return handler.CreateLiteralNode(literalValue, new Uri(datatype));
+                    }
+                    // Otherwise direction mode is CompoundLiteral
+                    var literalNode = handler.CreateBlankNode();
+                    var xsdString =
+                        UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+                    handler.HandleTriple(new Triple(
+                        literalNode,
+                        handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfValue)),
+                        handler.CreateLiteralNode(literalValue, xsdString),
+                        graphIri));
+                    if (!string.IsNullOrEmpty(language))
+                    {
+                        handler.HandleTriple(new Triple(
+                            literalNode,
+                            handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfLanguage)),
+                            handler.CreateLiteralNode(language, xsdString),
+                            graphIri));
+                    }
+
+                    handler.HandleTriple(new Triple(
+                        literalNode,
+                        handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfDirection)),
+                        handler.CreateLiteralNode(direction, xsdString),
+                        graphIri));
+
+                    return literalNode;
                 }
                 else
                 {
@@ -241,23 +304,30 @@ namespace VDS.RDF.Parsing
                         datatype = XsdNs + "string";
                     }
                 }
-                return language == null ? handler.CreateLiteralNode(literalValue, new Uri(datatype)) : handler.CreateLiteralNode(literalValue, language);
+
+                if (language != null)
+                {
+                    return LanguageTag.IsWellFormed(language) ? handler.CreateLiteralNode(literalValue, language) : null;
+                } 
+                return handler.CreateLiteralNode(literalValue, new Uri(datatype));
             }
-            else if (JsonLdProcessor.IsListObject(token))
+            if (JsonLdUtils.IsListObject(token))
             {
                 var listArray = token["@list"] as JArray;
                 return MakeRdfList(handler, listArray, graphIri);
             }
-            else if((token as JObject)?.Property("@id")!=null)
+
+            if((token as JObject)?.Property("@id")!=null)
             {
                 // Must be a node object
                 var nodeObject = (JObject) token;
                 return MakeNode(handler, nodeObject["@id"], graphIri);
             }
+
             return null;
         }
 
-        private static INode MakeRdfList(IRdfHandler handler, JArray list, Uri graphIri)
+        private INode MakeRdfList(IRdfHandler handler, JArray list, Uri graphIri)
         {
             var rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
             var rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));

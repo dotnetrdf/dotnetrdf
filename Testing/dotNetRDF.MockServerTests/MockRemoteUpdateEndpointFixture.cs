@@ -9,11 +9,11 @@ namespace dotNetRDF.MockServerTests
 {
     public class MockRemoteUpdateEndpointFixture : IDisposable
     {
-        public readonly FluentMockServer Server;
+        public readonly WireMockServer Server;
 
         public MockRemoteUpdateEndpointFixture()
         {
-            Server = FluentMockServer.Start();
+            Server = WireMockServer.Start();
             Server.Given(Request.Create()
                     .WithPath("/update")
                     .UsingPost()

@@ -63,35 +63,16 @@ namespace VDS.RDF
     /// </para>
     /// <h3>Configuration API</h3>
     /// <para>
-    /// We provide a <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system is used extensively as part of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.  This is primarily intended as an easy way to help deploy configurations for ASP.Net applications though you can make use of the API to describe the configuration of various types of objects in other applications, for example we use it in our Store Manager utility to store connection details.
+    /// We provide a <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system is used extensively as part of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="https://github.com/dotnetrdf/dotnetrdf/wiki">documentation</a> on our GitHub wiki for many detailed examples.  This is primarily intended as an easy way to help deploy configurations for ASP.Net applications though you can make use of the API to describe the configuration of various types of objects in other applications, for example we use it in our Store Manager utility to store connection details.
     /// </para>
     /// <h3>Notes</h3>
     /// <para>
-    /// dotNetRDF 1.0.0 is now considered a stable release, this means it should be stable for production scenarios.  However it is open source software and despite our best efforts there may still be bugs.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
-    /// </para>
-    /// <h4>Alternative Builds</h4>
-    /// <h5>Mono Build</h5>
-    /// <para>
-    /// There is no separate build for Mono since dotNetRDF can run directly under Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
+    /// dotNetRDF is now considered a stable release, this means it should be stable for production scenarios.  However it is open source software and despite our best efforts there may still be bugs.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="https://github.com/dotnetrdf/dotnetrdf/issues">GitHub Issues list</a> to report bugs or request new features. You can ask questions on StackOverflow using the tag <a href="https://stackoverflow.com/questions/tagged/dotnetrdf">dotnetrdf</a>.
     /// </para>
     /// <h5>Client Profile Build</h5>
     /// <para>
     /// The Client Profile build omits the reference to <see cref="System.Web">System.Web</see> so lacks the ASP.Net integration and some other features that rely on this dependency but is otherwise a fairly complete build of the library.
     /// </para>
-    /// <h5>Silverlight/Windows Phone 7 Build</h5>
-    /// <para>
-    /// The Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) are experimental builds that receive limited internal testing so please be aware that these are not as stable as the standard .Net builds.  These build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:.
-    /// </para>
-    /// <ul>
-    ///     <li>Most of the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
-    ///     <li>Does not include parts of the <see cref="VDS.RDF.Storage">Storage</see> namespace that would require synchronous HTTP</li>
-    ///     <li>No String normalization support</li>
-    ///     <li>No <see cref="VDS.RDF.Parsing.UriLoader">UriLoader</see> caching support</li>
-    ///     <li>No multi-threaded support where System.Threading.ReaderWriteLockSlim is used</li>
-    ///     <li>Various writers and parsers use streaming rather than DOM based XML parsing</li>
-    ///     <li>No support for XSL in TriX files</li>
-    ///     <li>Synchronous HTTP Request Features - For most of these there are asynchronous callback driven versions of these features available from the 0.5.0 release onwards</li>
-    /// </ul>
     /// </summary>
     class NamespaceDoc
     {
@@ -106,7 +87,7 @@ namespace VDS.RDF.Configuration
     /// Namespace for Configuration Classes which are used for dynamic loading of Configuration serialized as RDF Graphs.
     /// </para>
     /// <para>
-    /// This API which provides for encoding dotNetRDF centric configuration in RDF Graphs though it can be extended to serialize and deserialize arbitrary objects if desired.  This configuration API is used extensively with our ASP.Net support as it allows for highly expressive and flexible configurations.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.
+    /// This API which provides for encoding dotNetRDF centric configuration in RDF Graphs though it can be extended to serialize and deserialize arbitrary objects if desired.  This configuration API is used extensively with our ASP.Net support as it allows for highly expressive and flexible configurations.  See the <a href="https://github.com/dotnetrdf/dotnetrdf/wiki">documentation</a> on the GitHub wiki for many detailed examples.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -821,7 +802,7 @@ namespace VDS.RDF.Storage
     /// Namespace for storage classes which provide support for using arbitrary backing Stores.
     /// </para>
     /// <para>
-    /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
+    /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide-Triple-Store-Integration">Triple Store Integration</a> documentation on the main website for more detail.
     /// </para>
     /// <h3>Data Provider Libraries</h3>
     /// <para>
@@ -948,7 +929,7 @@ namespace VDS.RDF.Web
     /// <code>
     /// &lt;add key="dotNetRDFConfig" value="~/App_Data/config.ttl" /&gt;
     /// </code>
-    /// This setting provides a pointer to an RDF configuration graph that uses the <a href="http://www.dotnetrdf.org/configuration#">Configuration Vocabulary</a> to express the configuration of HTTP Handlers for your ASP.Net application.  We also now provide a command line tool <a href="http://www.dotnetrdf.org/content.asp?pageID=rdfWedDeploy">rdfWebDeploy</a> which can be used to automate the testing and deployment of this configuration.  See documentation on the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">Configuration API</a> for more detail.  Individual handler documentation gives basic examples of Handler configurations.
+    /// This setting provides a pointer to an RDF configuration graph that uses the <a href="http://www.dotnetrdf.org/configuration#">Configuration Vocabulary</a> to express the configuration of HTTP Handlers for your ASP.Net application.
     /// </para>
     /// </summary>
     class NamespaceDoc

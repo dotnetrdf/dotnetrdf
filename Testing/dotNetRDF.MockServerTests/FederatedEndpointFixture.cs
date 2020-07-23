@@ -11,8 +11,8 @@ namespace dotNetRDF.MockServerTests
 {
     public class FederatedEndpointFixture : IDisposable
     {
-        public FluentMockServer Server1 { get; }
-        public FluentMockServer Server2 { get; }
+        public WireMockServer Server1 { get; }
+        public WireMockServer Server2 { get; }
 
         private const string Server1ResultsXml = @"<?xml version=""1.0""?>
 <sparql xmlns='http://www.w3.org/2005/sparql-results#'>

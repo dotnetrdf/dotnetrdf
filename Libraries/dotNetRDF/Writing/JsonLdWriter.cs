@@ -32,6 +32,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
+using VDS.RDF.JsonLd.Processors;
+using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing
@@ -83,24 +85,33 @@ namespace VDS.RDF.Writing
         public JArray SerializeStore(ITripleStore store)
         {
             // 1 - Initialize default graph to an empty dictionary.
-            var defaultGraph = new Dictionary<string, JObjectWithUsages>();
+            var defaultGraph = new JObject();
             // 2 - Initialize graph map to a dictionary consisting of a single member @default whose value references default graph.
-            var graphMap = new Dictionary<string, Dictionary<string, JObjectWithUsages>>{{"@default", defaultGraph}};
-            // 3 - Initialize node usages map to an empty dictionary.
-            var nodeUsagesMap = new Dictionary<string, JArray>();
-            // 4 - For each graph in RDF dataset:
+            var graphMap = new JObject(new JProperty("@default", defaultGraph));
+            // 3 - Initialize referenced once to an empty map.
+            var referencedOnce =new Dictionary<string, Usage>();
+            // 4 - Initialize compound literal subjects to an empty map.
+            var compoundLiteralSubjects = new JObject();
+            // 5 - For each graph in RDF dataset:
             foreach (var graph in store.Graphs)
             {
-                // 4.1 - If graph is the default graph, set name to @default, otherwise to the graph name associated with graph.
+                // 5.1 - If graph is the default graph, set name to @default, otherwise to the graph name associated with graph.
                 string name = graph.BaseUri == null ? "@default" : graph.BaseUri.ToString();
 
-                // 4.2 - If graph map has no name member, create one and set its value to an empty dictionary.
+                // 5.2 - If graph map has no name entry, create one and set its value to an empty map.
                 if (!graphMap.ContainsKey(name))
                 {
-                    graphMap.Add(name, new Dictionary<string, JObjectWithUsages>());
+                    graphMap.Add(name, new JObject());
                 }
 
-                // 4.3 - If graph is not the default graph and default graph does not have a name member, create such a member and initialize its value to a new dictionary with a single member @id whose value is name.
+                // 5.3 - If compound literal subjects has no name entry, create one and set its value to an empty map.
+                if (!compoundLiteralSubjects.ContainsKey(name))
+                {
+                    compoundLiteralSubjects[name] = new JObject();
+                }
+
+                // 5.4 - If graph is not the default graph and default graph does not have a name entry,
+                // create such an entry and initialize its value to a new map with a single entry @id whose value is name.
                 if (name != "@default")
                 {
                     if (!defaultGraph.ContainsKey(name))
@@ -109,183 +120,254 @@ namespace VDS.RDF.Writing
                     }
                 }
 
-                // 4.4 - Reference the value of the name member in graph map using the variable node map.
-                var nodeMap = graphMap[name];
+                // 5.5 - Reference the value of the name entry in graph map using the variable node map.
+                var nodeMap = graphMap[name] as JObject;
 
-                // 4.5 - For each RDF triple in graph consisting of subject, predicate, and object:
+                // 5.6 - Reference the value of the name entry in compound literal subjects using the variable compound map.
+                var compoundMap = compoundLiteralSubjects[name];
+
+                // 5.7 - For each triple in graph consisting of subject, predicate, and object:
                 foreach (var triple in graph.Triples)
                 {
                     var subject = MakeNodeString(triple.Subject);
                     var predicate = MakeNodeString(triple.Predicate);
+                    var @object = triple.Object is IUriNode || triple.Object is IBlankNode ? MakeNodeString(triple.Object) : null;
 
-                    // 4.5.1 - If node map does not have a subject member, create one and initialize its value to a new dictionary consisting of a single member @id whose value is set to subject.
+                    // 5.7.1 - If node map does not have a subject entry, create one and initialize its value to a new map consisting of a single entry @id whose value is set to subject.
                     if (!nodeMap.ContainsKey(subject))
                     {
                         nodeMap.Add(subject, new JObjectWithUsages(new JProperty("@id", subject)));
                     }
 
-                    // 4.5.2 - Reference the value of the subject member in node map using the variable node.
-                    var node = nodeMap[subject];
+                    // 5.7.2 - Reference the value of the subject entry in node map using the variable node.
+                    var node = nodeMap[subject] as JObjectWithUsages;
 
-                    // 4.5.3 - If object is an IRI or blank node identifier, and node map does not have an object member, 
-                    // create one and initialize its value to a new dictionary consisting of a single member @id whose value is set to object.
+                    // 5.7.3 - If the rdfDirection option is compound-literal and predicate is rdf:direction, add an entry in compound map for subject with the value true.
+                    if (_options.RdfDirection.HasValue && _options.RdfDirection == JsonLdRdfDirectionMode.CompoundLiteral && RdfSpecsHelper.RdfDirection.Equals(predicate))
+                    {
+                        compoundMap[subject] = true;
+                    }
+
+                    // 5.7.4 - If object is an IRI or blank node identifier, and node map does not have an object entry,
+                    // create one and initialize its value to a new map consisting of a single entry @id whose value is set
+                    // to object.
                     if (triple.Object is IUriNode || triple.Object is IBlankNode)
                     {
-                        var obj = MakeNodeString(triple.Object);
-                        if (!nodeMap.ContainsKey(obj))
+                        if (!nodeMap.ContainsKey(@object))
                         {
-                            nodeMap.Add(obj, new JObjectWithUsages(new JProperty("@id", obj)));
+                            nodeMap.Add(@object, new JObjectWithUsages(new JProperty("@id", @object)));
                         }
                     }
 
-                    // 4.5.4 - If predicate equals rdf:type, the use rdf:type flag is not true, and object is an IRI or blank node identifier,
-                    // append object to the value of the @type member of node; unless such an item already exists. 
-                    // If no such member exists, create one and initialize it to an array whose only item is object. 
-                    // Finally, continue to the next RDF triple.
+                    // 5.7.5 - If predicate equals rdf:type, the useRdfType flag is not true, and object is an IRI or blank node identifier
                     if (predicate.Equals(RdfSpecsHelper.RdfType) && !_options.UseRdfType &&
                         (triple.Object is IUriNode || triple.Object is IBlankNode))
                     {
-                        if (node.Property("@type") == null)
+                        // Append object to the value of the @type entry of node; unless such an item already exists. 
+                        if (node.ContainsKey("@type"))
                         {
-                            node.Add("@type", new JArray(MakeNodeString(triple.Object)));
+                            AppendUniqueElement(@object, node["@type"] as JArray);
                         }
                         else
                         {
-                            (node["@type"] as JArray).Add(MakeNodeString(triple.Object));
+                            // If no such entry exists, create one and initialize it to an array whose only item is object.
+                            node.Add("@type", new JArray(@object));
                         }
+
+                        // Finally, continue to the next triple.
                         continue;
                     }
 
-                    // 4.5.5 - Set value to the result of using the RDF to Object Conversion algorithm, passing object and use native types.
+                    // 5.7.6 - Initialize value to the result of using the RDF to Object Conversion algorithm, passing object, rdfDirection, and useNativeTypes.
                     var value = RdfToObject(triple.Object);
 
-                    // 4.5.6 - If node does not have an predicate member, create one and initialize its value to an empty array.
-                    if (node.Property(predicate) == null)
+                    // 5.7.7 -If node does not have a predicate entry, create one and initialize its value to an empty array.
+                    if (!node.ContainsKey(predicate))
                     {
-                        node.Add(predicate, new JArray());
+                        node[predicate] = new JArray();
                     }
 
-                    // 4.5.7 - If there is no item equivalent to value in the array associated with the predicate member of node, append a reference to value to the array. Two JSON objects are considered equal if they have equivalent key-value pairs.
+                    // 5.7.8 - If there is no item equivalent to value in the array associated with the predicate entry of node, append a reference to value to the array. Two maps are considered equal if they have equivalent map entries.
                     AppendUniqueElement(value, node[predicate] as JArray);
 
-                    // 4.5.8 - If object is a blank node identifier or IRI, it might represent the list node:
-                    if (triple.Object is IBlankNode || triple.Object is IUriNode)
+                    // 5.7.9 - If object is rdf:nil, it represents the termination of an RDF collection:
+                    if (triple.Object is IUriNode u && u.Uri.ToString().Equals(RdfSpecsHelper.RdfListNil))
                     {
-                        // 4.5.8.1
-                        var obj = MakeNodeString(triple.Object);
-                        if (!nodeUsagesMap.ContainsKey(obj))
-                        {
-                            nodeUsagesMap.Add(obj, new JArray());
-                        }
-                        // 4.5.8.2
-                        // AppendUniqueElement(node["@id"], nodeUsagesMap[obj] as JArray);
-                        // KA - looks like a bug in the spec, if we don't add duplicate entries then this map does not correctly detect when a list node is referred to by the same subject in different statements
-                        (nodeUsagesMap[obj]).Add(node["@id"]);
-                        // 4.8.5.4
-                        nodeMap[obj].Usages.Add(new Usage(node, predicate, value));
+                        // 5.7.9.1 - Reference the usages entry of the object entry of node map using the variable usages.
+                        // 5.7.9.2 - Append a new map consisting of three entries, node, property, and value to the usages array. The node entry is set to a reference to node, property to predicate, and value to a reference to value.
+                        var objectMap = nodeMap[@object] as JObjectWithUsages;
+                        objectMap.Usages.Add(new Usage(node, predicate, value));
+                    }
+                    else if (@object != null && referencedOnce.ContainsKey(@object))
+                    {
+                        // 5.7.10 - Otherwise, if referenced once has an entry for object, set the object entry of referenced once to false.
+                        referencedOnce[@object] = null;
+                    }
+                    else if (triple.Object is IBlankNode)
+                    {
+                        // 5.7.11 - Otherwise, if object is a blank node identifier, it might represent a list node:
+                        // 5.7.11.1 - Set the object entry of referenced once to a new map consisting of three entries, node, property, and value to the usages array.
+                        // The node entry is set to a reference to node, property to predicate, and value to a reference to value.
+                        referencedOnce[@object] = new Usage(node, predicate, value);
                     }
                 }
             }
 
-            // 5 - For each name and graph object in graph map:
+            // 6 - For each name and graph object in graph map:
             foreach (var gp in graphMap)
             {
-                var graphObject = gp.Value;
+                var name = gp.Key;
+                var graphObject = gp.Value as JObject;
 
-                // 5.1 - If graph object has no rdf:nil member, continue with the next name-graph object pair as the graph does not contain any lists that need to be converted.
+                // 6.1 - If compound literal subjects has an entry for name, then for each cl which is a key in that entry:
+                if (compoundLiteralSubjects.ContainsKey(name))
+                {
+                    if (compoundLiteralSubjects[name] is JObject compoundMap)
+                    {
+                        foreach (var clProp in compoundMap.Properties())
+                        {
+                            var cl = clProp.Name;
+                            // 6.1.1 - Initialize cl entry to the value of cl in referenced once, continuing to the next cl if cl entry is not a map.
+                            var clEntry = referencedOnce[cl];
+                            if (clEntry == null) continue;
+                            // 6.1.2 - Initialize node to the value of node in cl entry.
+                            // 6.1.3 - Initialize property to value of property in cl entry.
+                            // 6.1.4 - Initialize value to value of value in cl entry.
+                            var node = clEntry.Node;
+                            var property = clEntry.Property;
+                            var value = clEntry.Value;
+                            // 6.1.5 - Initialize cl node to the value of cl in graph object, and remove that entry from graph object, continuing to the next cl if cl node is not a map.
+                            var clNode = graphObject[cl] as JObject;
+                            graphObject.Remove(cl);
+                            if (clNode == null) continue;
+                            // 6.1.6 - For each cl reference in the value of property in node where the value of @id in cl reference is cl:
+                            foreach (var clReference in node[property].OfType<JObject>()
+                                .Where(n => cl.Equals(n["@id"].Value<string>())))
+                            {
+                                // 6.1.6.1 - Delete the @id entry in cl reference.
+                                clReference.Remove("@id");
+                                // 6.1.6.2 - Add an entry to cl reference for @value with the value taken from the rdf:value entry in cl node.
+                                clReference["@value"] = clNode[RdfSpecsHelper.RdfValue][0]["@value"];
+                                // 6.1.6.3 - Add an entry to cl reference for @language with the value taken from the rdf:language entry in cl node, if any.
+                                // If that value is not well-formed according to section 2.2.9 of [BCP47], an invalid language-tagged string error has been detected and processing is aborted.
+                                if (clNode.ContainsKey(RdfSpecsHelper.RdfLanguage))
+                                {
+                                    var language = clNode[RdfSpecsHelper.RdfLanguage][0]["@value"].Value<string>();
+                                    if (!LanguageTag.IsWellFormed(language))
+                                    {
+                                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidLanguageTaggedString,
+                                            $"Invalid Language-tagged string. Encountered a language tag ({language}) that is not well-formed according to BCP-47.");
+                                    }
+
+                                    clReference["@language"] = language;
+                                }
+
+                                // 6.1.6.4 - Add an entry to cl reference for @direction with the value taken from the rdf:direction entry in cl node, if any.
+                                // If that value is not "ltr" or "rtl", an invalid base direction error has been detected and processing is aborted.
+                                if (clNode.ContainsKey(RdfSpecsHelper.RdfDirection))
+                                {
+                                    var direction = clNode[RdfSpecsHelper.RdfDirection][0]["@value"].Value<string>();
+                                    if (!("ltr".Equals(direction) || "rtl".Equals(direction)))
+                                    {
+                                        throw new JsonLdProcessorException(JsonLdErrorCode.InvalidBaseDirection,
+                                            $"Invalid base direction. Encountered a value for rdf:direction ({direction}) that is not allowed. Allowed values are 'rtl' or 'ltr'.");
+                                    }
+
+                                    clReference["@direction"] = direction;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 6.2 - If graph object has no rdf:nil entry, continue with the next name-graph object pair as the graph does not contain any lists that need to be converted.
                 if (!graphObject.ContainsKey(RdfSpecsHelper.RdfListNil))
                 {
                     continue;
                 }
 
-                // 5.2 - Initialize nil to the value of the rdf:nil member of graph object.
-                var nil = graphObject[RdfSpecsHelper.RdfListNil];
+                // 6.3 - Initialize nil to the value of the rdf:nil member of graph object.
+                var nil = graphObject[RdfSpecsHelper.RdfListNil] as JObjectWithUsages;
 
-                // 5.3 - For each item usage in the usages member of nil, perform the following steps:
-                var nilUsages = nil.Usages;
-                if (nilUsages != null)
+                // 6.4 - For each item usage in the usages member of nil, perform the following steps:
+
+                foreach (var usage in nil.Usages)
                 {
-                    foreach (var usage in nilUsages)
+                    // 6.4.1 - Initialize node to the value of the value of the node entry of usage,
+                    // property to the value of the property entry of usage,
+                    // and head to the value of the value entry of usage.
+                    var node = usage.Node;
+                    var property = usage.Property;
+                    var head = usage.Value as JObject;
+                    // 6.4.2 - Initialize two empty arrays list and list nodes.
+                    var list = new JArray();
+                    var listNodes = new JArray();
+                    // 6.4.3 - While property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
+                    // the value of the entry of referenced once associated with the @id entry of node is a map,
+                    // node has rdf:first and rdf:rest entries, both of which have as value an array consisting of a single element,
+                    // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf:List,
+                    // node represents a well-formed list node.
+                    // Perform the following steps to traverse the list backwards towards its head:
+                    while (IsWellFormedListNode(node, property, referencedOnce))
                     {
-                        // 5.3.1 - Initialize node to the value of the value of the node member of usage, 
-                        // property to the value of the property member of usage, and head to the value of the value member of usage.
-                        var node = usage.Node;
-                        var property = usage.Property;
-                        var head = usage.Value as JObject;
-                        // 5.3.2 - Initialize two empty arrays list and list nodes.
-                        var list = new JArray();
-                        var listNodes = new JArray();
-                        // 5.3.3 - While property equals rdf:rest, the array value of the member of node usages map associated with the 
-                        // @id member of node has only one member, the value associated to the usages member of node has exactly 1 entry, 
-                        // node has a rdf:first and rdf:rest property, both of which have as value an array consisting of a single element, 
-                        // and node has no other members apart from an optional @type member whose value is an array with a single item equal 
-                        // to rdf:List, node represents a well-formed list node. 
-                        // Perform the following steps to traverse the list backwards towards its head:
-                        while (IsWellFormedListNode(node, property, nodeUsagesMap))
-                        {
-                            // 5.3.3.1 - Append the only item of rdf:first member of node to the list array.
-                            list.Add((node[RdfSpecsHelper.RdfListFirst] as JArray)[0]);
-                            // 5.3.3.2 - Append the value of the @id member of node to the list nodes array.
-                            listNodes.Add(node["@id"]);
-                            // 5.3.3.3 - Initialize node usage to the only item of the usages member of node.
-                            var nodeUsage = node.Usages[0];
-                            // 5.3.3.4 - Set node to the value of the node member of node usage, property to the value of the property member of node usage, and head to the value of the value member of node usage.
-                            node = nodeUsage.Node;
-                            property = nodeUsage.Property;
-                            head = nodeUsage.Value as JObject;
-                            // 5.3.3.5 - If the @id member of node is an IRI instead of a blank node identifier, exit the while loop.
-                            if (!JsonLdProcessor.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
-                        }
-                        // 5.3.4 - If property equals rdf:first, i.e., the detected list is nested inside another list
-                        if (property.Equals(RdfSpecsHelper.RdfListFirst))
-                        {
-                            // 5.3.4.1 - and the value of the @id of node equals rdf:nil, i.e., the detected list is empty, continue with the next usage item. The rdf:nil node cannot be converted to a list object as it would result in a list of lists, which isn't supported.
-                            if (RdfSpecsHelper.RdfListNil.Equals(node["@id"].Value<string>()))
-                            {
-                                continue;
-                            }
-                            // 5.3.4.2 - Otherwise, the list consists of at least one item. We preserve the head node and transform the rest of the linked list to a list object.
-                            // 5.3.4.3 - Set head id to the value of the @id member of head.
-                            var headId = head["@id"].Value<string>();
-                            // 5.3.4.4 - Set head to the value of the head id member of graph object so that all it's properties can be accessed.
-                            head = graphObject[headId];
-                            // 5.3.4.5 - Then, set head to the only item in the value of the rdf:rest member of head.
-                            head = (head[RdfSpecsHelper.RdfListRest] as JArray)[0] as JObject;
-                            // 5.3.4.6 - Finally, remove the last item of the list array and the last item of the list nodes array.
-                            list.RemoveAt(list.Count - 1);
-                            listNodes.RemoveAt(listNodes.Count - 1);
-                        }
-                        // 5.3.5 - Remove the @id member from head.
-                        head.Remove("@id");
-                        // 5.3.6 - Reverse the order of the list array.
-                        list = new JArray(list.Reverse());
-                        // 5.3.7 - Add an @list member to head and initialize its value to the list array.
-                        head["@list"] = list;
-                        // 5.3.8 - For each item node id in list nodes, remove the node id member from graph object.
-                        foreach (var nodeId in listNodes)
-                        {
-                            graphObject.Remove(nodeId.Value<string>());
-                        }
+                        // 6.4.3.1 - Append the only item of rdf:first member of node to the list array.
+                        list.Add((node[RdfSpecsHelper.RdfListFirst] as JArray)[0]);
+                        // 6.4.3.2 - Append the value of the @id member of node to the list nodes array.
+                        listNodes.Add(node["@id"]);
+                        // 6.4.3.3 - Initialize node usage to the value of the entry of referenced once associated with the @id entry of node.
+                        var nodeUsage = referencedOnce[node["@id"].Value<string>()];
+
+                        // 6.4.3.4 - Set node to the value of the node entry of node usage,
+                        // property to the value of the property entry of node usage,
+                        // and head to the value of the value entry of node usage.
+                        node = nodeUsage.Node;
+                        property = nodeUsage.Property;
+                        head = nodeUsage.Value as JObject;
+                        // 6.4.3.5 - If the @id entry of node is an IRI instead of a blank node identifier, exit the while loop.
+                        if (!JsonLdUtils.IsBlankNodeIdentifier(node["@id"].Value<string>())) break;
+                    }
+
+                    // 6.4.4 - Remove the @id entry from head.
+                    head.Remove("@id");
+                    // 6.4.5 - Reverse the order of the list array.
+                    list = new JArray(list.Reverse());
+                    // 6.4.6 - Add an @list entry to head and initialize its value to the list array.
+                    head["@list"] = list;
+                    // 6.5.7 - For each item node id in list nodes, remove the node id entry from graph object.
+                    foreach (var nodeId in listNodes.Select(item => item.Value<string>()))
+                    {
+                        graphObject.Remove(nodeId);
                     }
                 }
+
             }
-            // 6 - Initialize an empty array result.
+
+            // 7 - Initialize an empty array result.
             var result = new JArray();
-            // 7 - For each subject and node in default graph ordered by subject:
-            foreach (var dgp in defaultGraph.OrderBy(p => p.Key))
+            // 8 - For each subject and node in default graph ordered lexicographically by subject if ordered is true:
+            var defaultGraphProperties = defaultGraph.Properties();
+            if (_options.Ordered) defaultGraphProperties = defaultGraphProperties.OrderBy(x => x.Name, StringComparer.Ordinal);
+            foreach (var defaultGraphProperty in defaultGraphProperties)
             {
-                var subject = dgp.Key;
-                var node = dgp.Value as JObject;
-                // 7.1 - If graph map has a subject member:
+                var subject = defaultGraphProperty.Name;
+                var node = defaultGraphProperty.Value as JObject;
+                // 8.1 - If graph map has a subject member:
                 if (graphMap.ContainsKey(subject))
                 {
-                    // 7.1.1 - Add an @graph member to node and initialize its value to an empty array.
+                    // 8.1.1 - Add an @graph member to node and initialize its value to an empty array.
                     var graphArray = new JArray();
                     node["@graph"] = graphArray;
-                    // 7.2.2 - For each key-value pair s-n in the subject member of graph map ordered by s, append n to the @graph member of node after removing its usages member, unless the only remaining member of n is @id.
-                    foreach (var sp in graphMap[subject].OrderBy(sp => sp.Key))
+                    // 8.1.2 - For each key-value pair s-n in the subject entry of graph map ordered lexicographically by s if ordered is true,
+                    // append n to the @graph entry of node after removing its usages entry, unless the only remaining entry of n is @id.
+                    var subjectMapProperties = (graphMap[subject] as JObject).Properties();
+                    if (_options.Ordered)
                     {
-                        var n = sp.Value as JObject;
+                        subjectMapProperties = subjectMapProperties.OrderBy(x => x.Name, StringComparer.Ordinal);
+                    }
+                    foreach (var subjectMapProperty in subjectMapProperties)
+                    {
+                        var s = subjectMapProperty.Name;
+                        var n = subjectMapProperty.Value as JObject;
                         n.Remove("usages");
                         if (n.Properties().Any(np => !np.Name.Equals("@id")))
                         {
@@ -293,41 +375,36 @@ namespace VDS.RDF.Writing
                         }
                     }
                 }
-                // 7.2 - Append node to result after removing its usages member, unless the only remaining member of node is @id.
+                // 8.2 - Append node to result after removing its usages member, unless the only remaining member of node is @id.
                 node.Remove("usages");
                 if (node.Properties().Any(p => !p.Name.Equals("@id")))
                 {
                     result.Add(node);
                 }
             }
-            // 8 - Return result.
+            // 9 - Return result.
             return result;
         }
 
-        private static bool IsWellFormedListNode(JObjectWithUsages node, string property, Dictionary<string, JArray> nodeUsagesMap)
+        private static bool IsWellFormedListNode(JObject node, string property, Dictionary<string, Usage> nodeUsagesMap)
         {
-            // While property equals rdf:rest, the array value of the member of node usages map associated with the 
-            // @id member of node has only one member, the value associated to the usages member of node has exactly 1 entry, 
-            // node has a rdf:first and rdf:rest property, both of which have as value an array consisting of a single element, 
-            // and node has no other members apart from an optional @type member whose value is an array with a single item equal 
-            // to rdf:List, node represents a well-formed list node. 
-
+            // If property equals rdf:rest, the value of the @id entry of node is a blank node identifier,
+            // the value of the entry of referenced once associated with the @id entry of node is a map,
+            // node has rdf: first and rdf: rest entries, both of which have as value an array consisting of a single element,
+            // and node has no other entries apart from an optional @type entry whose value is an array with a single item equal to rdf: List,
+            // node represents a well-formed list node. 
             if (!RdfSpecsHelper.RdfListRest.Equals(property)) return false;
             var nodeId = node["@id"].Value<string>();
-            if (nodeId == null) return false;
+            if (nodeId == null || !JsonLdUtils.IsBlankNodeIdentifier(nodeId)) return false;
 
-            // Not mentioned in spec, but if node is not a blank node we should not merge it into a list array
-            if (!JsonLdProcessor.IsBlankNodeIdentifier(nodeId)) return false;
-
-            var mapEntry = nodeUsagesMap[nodeId] as JArray;
-            if (mapEntry == null || mapEntry.Count != 1) return false;
-
-            if (node.Usages.Count != 1) return false;
+            var mapEntry = nodeUsagesMap[nodeId];
+            if (mapEntry == null) return false;
 
             var first = node[RdfSpecsHelper.RdfListFirst] as JArray;
             var rest = node[RdfSpecsHelper.RdfListRest] as JArray;
             if (first == null || rest == null) return false;
             if (first.Count != 1 || rest.Count != 1) return false;
+
             var type = node["@type"] as JArray;
             if (type != null && (type.Count != 1 ||
                                  type.Count == 1 && !type[0].Value<string>().Equals(RdfSpecsHelper.RdfList)))
@@ -335,93 +412,126 @@ namespace VDS.RDF.Writing
             var propCount = node.Properties().Count();
             if (type == null && propCount != 3 || type != null && propCount != 4) return false;
             return true;
-
         }
 
         private JToken RdfToObject(INode value)
         {
-            // 1 - If value is an IRI or a blank node identifier, return a new dictionary consisting of a single member @id whose value is set to value.
-            if (value is IUriNode uriNode)
+            switch (value)
             {
-                return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
-            }
-            if (value is IBlankNode bNode)
-            {
-                return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
-            }
-            // 2 - Otherwise value is an RDF literal:
-            var literal = value as ILiteralNode;
-            // 2.1 - Initialize a new empty dictionary result.
-            var result = new JObject();
-            // 2.2 - Initialize converted value to value.
-            JToken convertedValue = new JValue(literal.Value);
-            // 2.3 - Initialize type to null
-            string type = null;
-            // 2.4 - If use native types is true
-            if (_options.UseNativeTypes && literal.DataType != null)
-            {
-                // 2.4.1 - If the datatype IRI of value equals xsd:string, set converted value to the lexical form of value.
-                if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                {
-                    convertedValue = new JValue(literal.Value);
-                }
-                // 2.4.2 - Otherwise, if the datatype IRI of value equals xsd:boolean, set converted value to true if the lexical form of value matches true, or false if it matches false. If it matches neither, set type to xsd:boolean.
-                else if (literal.DataType.ToString()
-                             .Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
-                {
-                    if (literal.Value.Equals("true"))
+                // 1 - If value is an IRI or a blank node identifier, return a new dictionary consisting of a single member @id whose value is set to value.
+                case IUriNode uriNode:
+                    return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
+                case IBlankNode bNode:
+                    return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
+                case ILiteralNode literal:
+                    // 2 - Otherwise value is an RDF literal:
+                    // 2.1 - Initialize a new empty dictionary result.
+                    var result = new JObject();
+                    // 2.2 - Initialize converted value to value.
+                    JToken convertedValue = new JValue(literal.Value);
+                    // 2.3 - Initialize type to null
+                    string type = null;
+                    // 2.4 - If use native types is true
+                    if (_options.UseNativeTypes && literal.DataType != null)
                     {
-                        convertedValue = new JValue(true);
-                    } else if (literal.Value.Equals("false"))
-                    {
-                        convertedValue = new JValue(false);
+                        // 2.4.1 - If the datatype IRI of value equals xsd:string, set converted value to the lexical form of value.
+                        if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        {
+                            convertedValue = new JValue(literal.Value);
+                        }
+                        // 2.4.2 - Otherwise, if the datatype IRI of value equals xsd:boolean, set converted value to true if the lexical form of value matches true, or false if it matches false. If it matches neither, set type to xsd:boolean.
+                        else if (literal.DataType.ToString()
+                                     .Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                        {
+                            if (literal.Value.Equals("true"))
+                            {
+                                convertedValue = new JValue(true);
+                            }
+                            else if (literal.Value.Equals("false"))
+                            {
+                                convertedValue = new JValue(false);
+                            }
+                            else
+                            {
+                                type = XmlSpecsHelper.XmlSchemaDataTypeBoolean;
+                            }
+                        }
+                        // 2.4.3 - Otherwise, if the datatype IRI of value equals xsd:integer or xsd:double and its lexical form is a valid xsd:integer or xsd:double according [XMLSCHEMA11-2], set converted value to the result of converting the lexical form to a JSON number.
+                        else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
+                        {
+                            if (IsWellFormedInteger(literal.Value))
+                            {
+                                convertedValue = new JValue(long.Parse(literal.Value));
+                            }
+                        }
+                        else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
+                        {
+                            if (IsWellFormedDouble(literal.Value))
+                            {
+                                convertedValue = new JValue(double.Parse(literal.Value));
+                            }
+                        }
+                        // KA: Step missing from spec - otherwise set type to the datatype IRI
+                        else
+                        {
+                            type = literal.DataType.ToString();
+                        }
                     }
+                    // 2.5 - Otherwise, if processing mode is not json-ld-1.0, and value is a JSON literal, set converted value to the result of turning the lexical value of value into the JSON-LD internal representation, and set type to @json. If the lexical value of value is not valid JSON according to the JSON Grammar [RFC8259], an invalid JSON literal error has been detected and processing is aborted.
+                    else if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10 &&
+                             RdfSpecsHelper.RdfJson.Equals(literal.DataType?.ToString()))
+                    {
+                        try
+                        {
+                            convertedValue = JToken.Parse(literal.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidJsonLiteral,
+                                "Invalid JSON literal. " + ex.Message);
+                        }
+
+                        type = "@json";
+                    }
+                    // 2.6 - Otherwise, if the datatype IRI of value starts with https://www.w3.org/ns/i18n#, and rdfDirection is i18n-datatype:
+                    else if (_options.RdfDirection == JsonLdRdfDirectionMode.I18NDatatype && literal.DataType != null &&
+                             literal.DataType.ToString().StartsWith("https://www.w3.org/ns/i18n#"))
+                    {
+                        var fragment = literal.DataType.Fragment.TrimStart('#');
+                        if (!string.IsNullOrEmpty(literal.DataType.Fragment) && fragment.Contains("_"))
+                        {
+                            convertedValue = literal.Value;
+                            var sepIx = fragment.IndexOf("_", StringComparison.Ordinal);
+                            if (sepIx > 0)
+                            {
+                                result["@language"] = fragment.Substring(0, sepIx);
+                            }
+                            result["@direction"] = fragment.Substring(sepIx + 1);
+                        }
+                    }
+                    // 2.7 - Otherwise, if value is a language-tagged string add a member @language to result and set its value to the language tag of value.
+                    else if (!string.IsNullOrEmpty(literal.Language))
+                    {
+                        result["@language"] = literal.Language;
+                    }
+                    // 2.8 - Otherwise, set type to the datatype IRI of value, unless it equals xsd:string which is ignored.
                     else
                     {
-                        type = XmlSpecsHelper.XmlSchemaDataTypeBoolean;
+                        if (literal.DataType != null && !literal.DataType.ToString()
+                                .Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        {
+                            type = literal.DataType.ToString();
+                        }
                     }
-                }
-                // 2.4.3 - Otherwise, if the datatype IRI of value equals xsd:integer or xsd:double and its lexical form is a valid xsd:integer or xsd:double according [XMLSCHEMA11-2], set converted value to the result of converting the lexical form to a JSON number.
-                else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
-                {
-                    if (IsWellFormedInteger(literal.Value))
-                    {
-                        convertedValue = new JValue(long.Parse(literal.Value));
-                    }
-                }
-                else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
-                {
-                    if (IsWellFormedDouble(literal.Value))
-                    {
-                        convertedValue = new JValue(double.Parse(literal.Value));
-                    }
-                }
-                // KA: Step missing from spec - otherwise set type to the datatype IRI
-                else
-                {
-                    type = literal.DataType.ToString();
-                }
+                    // 2.9 - Add a member @value to result whose value is set to converted value.
+                    result["@value"] = convertedValue;
+                    // 2.10 - If type is not null, add a member @type to result whose value is set to type.
+                    if (type != null) result["@type"] = type;
+                    // 2.11 - Return result.
+                    return result;
             }
-            // 2.5 - Otherwise, if value is a language-tagged string add a member @language to result and set its value to the language tag of value.
-            else if (!String.IsNullOrEmpty(literal.Language))
-            {
-                result["@language"] = literal.Language;
-            }
-            // 2.6 - Otherwise, set type to the datatype IRI of value, unless it equals xsd:string which is ignored.
-            else
-            {
-                if (literal.DataType != null && !literal.DataType.ToString()
-                        .Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                {
-                    type = literal.DataType.ToString();
-                }
-            }
-            // 2.7 - Add a member @value to result whose value is set to converted value.
-            result["@value"] = convertedValue;
-            // 2.8 - If type is not null, add a member @type to result whose value is set to type.
-            if (type != null) result["@type"] = type;
-            // 2.9 - Return result.
-            return result;
+
+            return null;
         }
 
         private static readonly Regex IntegerLexicalRepresentation = new Regex(@"^(\+|\-)?\d+$");

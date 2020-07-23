@@ -27,10 +27,10 @@
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Enumeration of the error code defined in the JSON-LD specification.
+    /// Enumeration of the error code defined in the JSON-LD processing and framing specifications.
     /// </summary>
     /// <remarks>
-    /// The error codes are converted to C# canel-case as follows:
+    /// The error codes are converted to C# camel-case as follows:
     /// (1) Replace IRI by Iri
     /// (2) Remove @ character
     /// (3) Replace "language-tagged" by "Language Tagged"
@@ -52,6 +52,10 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         ConflictingIndexes,
         /// <summary>
+        /// Maximum number of @context URLs exceeded.
+        /// </summary>
+        ContextOverflow,
+        /// <summary>
         /// A cycle in IRI mappings has been detected.
         /// </summary>
         CyclicIriMapping,
@@ -59,6 +63,14 @@ namespace VDS.RDF.JsonLd
         /// An @id member was encountered whose value was not a string.
         /// </summary>
         InvalidIdValue,
+        /// <summary>
+        /// An invalid value for @import has been found.
+        /// </summary>
+        InvalidImportValue,
+        /// <summary>
+        /// An included block contains an invalid value.
+        /// </summary>
+        InvalidIncludedValue,
         /// <summary>
         /// An @index member was encountered whose value was not a string.
         /// </summary>
@@ -72,6 +84,14 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         InvalidPrefixValue,
         /// <summary>
+        /// An invalid value for @propagate has been found.
+        /// </summary>
+        InvalidPropagateValue,
+        /// <summary>
+        /// An invalid value for @protected has been found.
+        /// </summary>
+        InvalidProtectedValue,
+        /// <summary>
         /// An invalid value for an @reverse member has been detected, i.e., the value was not a dictionary.
         /// </summary>
         InvalidReverseValue,
@@ -79,6 +99,10 @@ namespace VDS.RDF.JsonLd
         /// The @version key was used in a context with an out of range value.
         /// </summary>
         InvalidVersionValue,
+        /// <summary>
+        /// The value of @direction is not "ltr", "rtl", or null and thus invalid.
+        /// </summary>
+        InvalidBaseDirection,
         /// <summary>
         /// An invalid base IRI has been detected, i.e., it is neither an absolute IRI nor null.
         /// </summary>
@@ -88,6 +112,14 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         InvalidContainerMapping,
         /// <summary>
+        /// An entry in a context is invalid due to processing mode incompatibility.
+        /// </summary>
+        InvalidContextEntry,
+        /// <summary>
+        /// An attempt was made to nullify a context containing protected term definitions.
+        /// </summary>
+        InvalidContextNullification,
+        /// <summary>
         /// The value of the default language is not a string or null and thus invalid.
         /// </summary>
         InvalidDefaultLanguage,
@@ -95,6 +127,10 @@ namespace VDS.RDF.JsonLd
         /// A local context contains a term that has an invalid or missing IRI mapping.
         /// </summary>
         InvalidIriMapping,
+        /// <summary>
+        /// An invalid JSON literal was detected.
+        /// </summary>
+        InvalidJsonLiteral,
         /// <summary>
         /// An invalid keyword alias definition has been encountered.
         /// </summary>
@@ -140,6 +176,10 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         InvalidScopedContext,
         /// <summary>
+        /// A script element in HTML input which is the target of a fragment identifier does not have an appropriate type attribute.
+        /// </summary>
+        InvalidScriptElement,
+        /// <summary>
         /// A set object or list object with disallowed members has been detected.
         /// </summary>
         InvalidSetOrListObject,
@@ -172,6 +212,10 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         InvalidVocabMapping,
         /// <summary>
+        /// When compacting an IRI would result in an IRI which could be confused with a compact IRI (because its IRI scheme matches a term definition and it has no IRI authority).
+        /// </summary>
+        IriConfusedWithPrefix,
+        /// <summary>
         /// A keyword redefinition has been detected.
         /// </summary>
         KeywordRedefinition,
@@ -196,8 +240,30 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         ProcessingModeConflict,
         /// <summary>
+        /// An attempt was made to redefine a protected term.
+        /// </summary>
+        ProtectedTermRedefinition,
+        /// <summary>
         /// A cycle in remote context inclusions has been detected.
         /// </summary>
         RecursiveContextInclusion,
+
+        // The following codes are defined in the JSON-LD Framing specification
+
+        /// <summary>
+        /// invalid frame
+        /// </summary>
+        InvalidFrame,
+
+        /// <summary>
+        /// invalid @embed value
+        /// </summary>
+        InvalidEmbedValue,
+
+        // The following error codes are specific to DNR and are used to report warnings
+        /// <summary>
+        /// A language tag value was encountered that was not well-formed
+        /// </summary>
+        MalformedLanguageTag,
     };
 }
