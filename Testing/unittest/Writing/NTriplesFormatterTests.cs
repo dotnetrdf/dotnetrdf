@@ -40,6 +40,14 @@ namespace VDS.RDF.Writing
             formatOutput.Should().Be("http://example.org/渋谷駅");
         }
 
+        [Fact]
+        public void EscapeSequenceInOriginalStringMustNotBeDoubleEscaped()
+        {
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            var formatOutput = formatter.FormatUri(new Uri("http://example.org/September%2C 2020"));
+            formatOutput.Should().Be("http://example.org/September%2C%202020");
+        }
+
         [Fact(Skip="Fails because the .NET URI constructor always unescapes %66 to f")]
         public void PercentCharactersArePreservedInUriFormatting()
         {
