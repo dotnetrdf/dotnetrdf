@@ -6,7 +6,8 @@
 
 This release updates the JSON-LD implementation to conform to the final published version of the specification.
 
-NEW: Updated the JSON-LD implementation to conform to the newly published JSON-LD 1.1 specifications (https://www.w3.org/TR/json-ld11/). The interfaces to the JSON-LD reader and writer and the JSON-LD processor are unchanged, but the internal implementation now conforms to the published W3C specification rather than the draft specification from jsonld.org.
+NEW: Updated the JSON-LD implementation to conform to the newly published JSON-LD 1.1 specifications (https://www.w3.org/TR/json-ld11/). The interfaces to the JSON-LD reader and writer and the JSON-LD processor are unchanged, but the internal implementation now conforms to the published W3C specification rather than the draft specification from jsonld.org. (#315)
+FIX: Fix for double-encoding of URIs in RDF serializers. Thanks to @tpluscode for the report and fix. (#328)
 
 
 2.5.1
