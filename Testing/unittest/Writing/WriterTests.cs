@@ -15,8 +15,8 @@ to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
         : CompressionTests
     {
         public WriterTests(ITestOutputHelper output): base(output) { }
-        
+
         [Fact]
         public void WritingBlankNodeOutput()
         {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Writing
             {
                 Console.WriteLine(t.ToString());
             }
-            Console.WriteLine();               
+            Console.WriteLine();
 
             TurtleWriter ttlwriter = new TurtleWriter();
             String serialized = VDS.RDF.Writing.StringWriter.Write(g, ttlwriter);
@@ -175,8 +175,25 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [Fact]
-        public void WritingUriEscaping()
+        [Theory]
+        [MemberData(nameof(RoundTripTestData), Formats.All ^ Formats.RdfXml)]
+        public void WritingI18NCharacters(IRdfWriter writer, IRdfReader parser)
+        {
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/植物");
+            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/植物"));
+            IUriNode subj = g.CreateUriNode(new Uri("http://example.org/植物/名=しそ;使用部=葉"));
+            IUriNode pred = g.CreateUriNode(new Uri("http://example.org/植物#使用部"));
+            IUriNode obj = g.CreateUriNode(new Uri("http://example.org/葉"));
+
+            g.Assert(subj, pred, obj);
+
+            RoundTripTest(g, writer, parser);
+        }
+
+        [Theory]
+        [MemberData(nameof(RoundTripTestData))]
+        public void WritingUriEscaping(IRdfWriter writer, IRdfReader parser)
         {
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/space in/base");
@@ -189,75 +206,47 @@ namespace VDS.RDF.Writing
             g.Assert(subj, pred, obj);
             g.Assert(subj, pred, obj2);
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
-            List<IRdfWriter> writers = new List<IRdfWriter>()
-            {
-                new CompressingTurtleWriter(TurtleSyntax.Original),
-                new CompressingTurtleWriter(TurtleSyntax.W3C),
-                new PrettyRdfXmlWriter(),
-                new HtmlWriter(),
-                new Notation3Writer(),
-                new NTriplesWriter(NTriplesSyntax.Original),
-                new NTriplesWriter(NTriplesSyntax.Rdf11),
-                new PrettyRdfXmlWriter(),
-                new RdfJsonWriter(),
-                new RdfXmlWriter(),
-                new TurtleWriter()
-            };
-            List<IRdfReader> parsers = new List<IRdfReader>()
-            {
-                new TurtleParser(TurtleSyntax.Original),
-                new TurtleParser(TurtleSyntax.W3C),
-                new RdfXmlParser(),
-                new RdfAParser(),
-                new Notation3Parser(),
-                new NTriplesParser(NTriplesSyntax.Original),
-                new NTriplesParser(NTriplesSyntax.Rdf11),
-                new RdfXmlParser(),
-                new RdfJsonParser(),
-                new RdfXmlParser(),
-                new TurtleParser()
-            };
+            RoundTripTest(g, writer, parser);
+        }
 
-            Assert.Equal(parsers.Count, writers.Count);
+        private void RoundTripTest(Graph original, IRdfWriter writer, IRdfReader parser)
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
 
-            Console.WriteLine("Input Data:");
-            foreach (Triple t in g.Triples)
+            _output.WriteLine("Input Data:");
+            foreach (Triple t in original.Triples)
             {
-                Console.WriteLine(t.ToString(formatter));
+                _output.WriteLine(t.ToString(formatter));
             }
-            Console.WriteLine();
+            _output.WriteLine("");
 
-            for (int i = 0; i < writers.Count; i++)
+            _output.WriteLine("Serialized Data:");
+            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            writer.Save(original, strWriter);
+            _output.WriteLine(strWriter.ToString());
+            _output.WriteLine("");
+            Console.Out.Flush();
+
+            Graph parsed = new Graph(true);
+            parser.Load(parsed, new StringReader(strWriter.ToString()));
+            _output.WriteLine("Parsed Data:");
+            foreach (Triple t in parsed.Triples)
             {
-                IRdfWriter writer = writers[i];
-                Console.WriteLine("Using " + writer.ToString());
-                System.IO.StringWriter strWriter = new System.IO.StringWriter();
-                writer.Save(g, strWriter);
-                Console.WriteLine(strWriter.ToString());
-                Console.WriteLine();
-                Console.Out.Flush();
-
-                IRdfReader parser = parsers[i];
-                Graph h = new Graph(true);
-                parser.Load(h, new StringReader(strWriter.ToString()));
-                Console.WriteLine("Parsed Data:");
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(formatter));
-                }
-                Console.WriteLine();
-
-                Assert.Equal(g, h);
-                if (h.NamespaceMap.HasNamespace("ex"))
-                {
-                    Assert.Equal(g.NamespaceMap.GetNamespaceUri("ex"), h.NamespaceMap.GetNamespaceUri("ex"));
-                }
-                if (h.BaseUri != null)
-                {
-                    Assert.Equal(g.BaseUri, h.BaseUri);
-                }
+                _output.WriteLine(t.ToString(formatter));
             }
+            _output.WriteLine("");
+
+            Assert.Equal(original, parsed);
+            if (parsed.NamespaceMap.HasNamespace("ex"))
+            {
+                Assert.Equal(original.NamespaceMap.GetNamespaceUri("ex"), parsed.NamespaceMap.GetNamespaceUri("ex"));
+            }
+            if (parsed.BaseUri != null)
+            {
+                Assert.Equal(original.BaseUri, parsed.BaseUri);
+            }
+
+            Assert.True(original.Difference(parsed).AreEqual);
         }
 
         [Fact]
@@ -303,6 +292,57 @@ namespace VDS.RDF.Writing
             writer.Write("\n"); // This should not throw because the writer is still open
             rdfWriter.Save(g, writer);
             Assert.Throws<ObjectDisposedException>(() => writer.Write("\n"));
+        }
+
+        public static IEnumerable<object[]> RoundTripTestData()
+        {
+            return RoundTripTestData(Formats.All);
+        }
+
+        public static IEnumerable<object[]> RoundTripTestData(Formats formats)
+        {
+            if (formats.HasFlag(Formats.Turtle))
+            {
+                yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original) };
+                yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C) };
+                yield return new object[] { new TurtleWriter(),new TurtleParser() };
+                yield return new object[] { new Notation3Writer(),new Notation3Parser() };
+            }
+
+            if (formats.HasFlag(Formats.RdfXml))
+            {
+                yield return new object[] { new PrettyRdfXmlWriter(), new RdfXmlParser() };
+                yield return new object[] { new RdfXmlWriter(),new RdfXmlParser() };
+                yield return new object[] { new PrettyRdfXmlWriter(),new RdfXmlParser() };
+            }
+
+            if (formats.HasFlag(Formats.NTriples))
+            {
+                yield return new object[] { new NTriplesWriter(NTriplesSyntax.Original),new NTriplesParser(NTriplesSyntax.Original) };
+                yield return new object[] { new NTriplesWriter(NTriplesSyntax.Rdf11),new NTriplesParser(NTriplesSyntax.Rdf11) };
+            }
+
+            if (formats.HasFlag(Formats.RdfA))
+            {
+                yield return new object[] { new HtmlWriter(),new RdfAParser() };
+            }
+
+
+            if (formats.HasFlag(Formats.RdfJson))
+            {
+                yield return new object[] { new RdfJsonWriter(), new RdfJsonParser() };
+            }
+        }
+
+        [Flags]
+        public enum Formats
+        {
+            Turtle,
+            RdfXml,
+            RdfA,
+            RdfJson,
+            NTriples,
+            All = ~0,
         }
     }
 }
