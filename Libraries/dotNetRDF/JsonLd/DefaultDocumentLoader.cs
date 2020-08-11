@@ -60,7 +60,7 @@ namespace VDS.RDF.JsonLd
             {
                 var contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"));
                 var alternateLink = contextLinks.FirstOrDefault(link =>
-                    link.RelationTypes.Contains("alternate") && link.MediaTypes.Contains("application/ld+json", new MediaTypeComparer()));
+                    link.RelationTypes.Contains("alternate") && link.MediaTypes.Contains("application/ld+json"));
                 if (alternateLink != null)
                 {
                     return LoadJson(new Uri(remoteRef, alternateLink.LinkValue), loaderOptions);
@@ -116,6 +116,7 @@ namespace VDS.RDF.JsonLd
                         }
                         else if (key.Equals("type"))
                         {
+                            value = value.Trim('"');
                             mediaTypes.Add(value);
                         }
                     }
@@ -141,19 +142,6 @@ namespace VDS.RDF.JsonLd
                 var webResponse = base.GetWebResponse(request);
                 ResponseUri = webResponse?.ResponseUri;
                 return webResponse;
-            }
-        }
-
-        internal class MediaTypeComparer : IEqualityComparer<string>
-        {
-            public bool Equals(string x, string y)
-            {
-                return x.IndexOf(y) > -1;
-            }
-
-            public int GetHashCode(string obj)
-            {
-                return obj.GetHashCode();
             }
         }
     }
