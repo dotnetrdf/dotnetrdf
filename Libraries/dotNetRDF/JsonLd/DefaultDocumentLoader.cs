@@ -98,39 +98,8 @@ namespace VDS.RDF.JsonLd
         {
             foreach (var linkHeaderValue in linkHeaderValues)
             {
-                var fields = linkHeaderValue.Split(';').Select(x => x.Trim());
-                var linkValue = fields.First().TrimStart('<').TrimEnd('>');
-                var relTypes = new List<string>();
-                var mediaTypes = new List<string>();
-                foreach (var field in fields)
-                {
-                    var split = field.Split(new char[] { '=' }, 2);
-                    if (split.Length == 2)
-                    {
-                        var key = split[0].Trim();
-                        var value = split[1].Trim();
-                        if (key.Equals("rel"))
-                        {
-                            value = value.Trim('"');
-                            relTypes.AddRange(value.Split(' '));
-                        }
-                        else if (key.Equals("type"))
-                        {
-                            value = value.Trim('"');
-                            mediaTypes.Add(value);
-                        }
-                    }
-                }
-
-                yield return new WebLink { LinkValue = linkValue, RelationTypes = relTypes, MediaTypes = mediaTypes };
+                if (WebLink.TryParse(linkHeaderValue, out var link)) yield return link;
             }
-        }
-
-        internal class WebLink
-        {
-            public string LinkValue { get; set; }
-            public List<string> RelationTypes { get; set; }
-            public List<string> MediaTypes { get; set; }
         }
 
         private class RedirectingWebClient : WebClient
