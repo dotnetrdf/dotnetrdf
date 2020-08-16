@@ -71,7 +71,7 @@ namespace VDS.RDF.JsonLd
         /// <remarks>The value may be a relative or an absolute IRI or null.</remarks>
         public Uri Base { 
             get => _base;
-            set { _base = value; HasBase = true; }
+            set { _base = value; HasBase = value != null; }
         }
 
         /// <summary>
