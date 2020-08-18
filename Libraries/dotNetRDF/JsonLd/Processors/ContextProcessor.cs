@@ -1024,7 +1024,7 @@ namespace VDS.RDF.JsonLd.Processors
 
             // 8 Otherwise, if document relative is true, set value to the result of resolving value against the base IRI. 
             // TODO: Only the basic algorithm in section 5.2 of [RFC3986] is used; neither Syntax-Based Normalization nor Scheme-Based Normalization are performed. Characters additionally allowed in IRI references are treated in the same way that unreserved characters are treated in URI references, per section 6.5 of [RFC3987].
-            if (documentRelative && activeContext.HasBase)
+            if (documentRelative && activeContext.Base != null)
             {
                 var iri = new Uri(activeContext.Base, value);
                 return iri.ToString();

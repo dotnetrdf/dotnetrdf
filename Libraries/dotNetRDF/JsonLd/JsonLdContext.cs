@@ -71,13 +71,8 @@ namespace VDS.RDF.JsonLd
         /// <remarks>The value may be a relative or an absolute IRI or null.</remarks>
         public Uri Base { 
             get => _base;
-            set { _base = value; HasBase = true; }
+            set { _base = value; }
         }
-
-        /// <summary>
-        /// Returns true if the Base property of this context has been explicitly set.
-        /// </summary>
-        public bool HasBase { get; private set; }
 
         /// <summary>
         /// Get the base IRI that this context was originally created with.
@@ -140,7 +135,6 @@ namespace VDS.RDF.JsonLd
         public void RemoveBase()
         {
             Base = null;
-            HasBase = false;
         }
 
         /// <summary>
@@ -152,7 +146,6 @@ namespace VDS.RDF.JsonLd
             var clone = new JsonLdContext(OriginalBase)
             {
                 Base = Base,
-                HasBase = HasBase,
                 Language = Language,
                 BaseDirection = BaseDirection,
                 Version = Version,
