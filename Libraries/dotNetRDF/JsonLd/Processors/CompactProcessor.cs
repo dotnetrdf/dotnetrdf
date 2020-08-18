@@ -1002,7 +1002,7 @@ namespace VDS.RDF.JsonLd.Processors
             }
 
             // 10 - If vocab is false, transform var to a relative IRI reference using the base IRI from active context, if it exists.
-            if (!vocab && activeContext.HasBase)
+            if (!vocab && activeContext.Base != null)
             {
                 if (iri.StartsWith("_:"))
                 {
