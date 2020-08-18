@@ -294,7 +294,7 @@ namespace VDS.RDF.JsonLd
                 ? Expand(remoteFrame, remoteFrameUri, loaderOptions, frameExpansionOptions)
                 : Expand(frame, frameExpansionOptions);
 
-            var context = new JObject();
+            JToken context = new JObject();
             var haveContext = false;
             if (remoteFrame != null && remoteFrame.Document is JObject remoteFrameObject &&
                 remoteFrameObject.ContainsKey("@context"))
@@ -304,7 +304,7 @@ namespace VDS.RDF.JsonLd
             }
             else if (frame is JObject fo && fo.ContainsKey("@context"))
             {
-                context = fo["@context"] as JObject;
+                context = fo["@context"];
                 haveContext = true;
             }
 
