@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -171,6 +172,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             s.Add("o1", o2);
             d.Add(s);
 
+            var comparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+
             //Show the Sets
             Console.WriteLine("LHS");
             foreach (ISet set in m.Sets)
@@ -229,7 +232,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin NULL-LHS");
-            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(null, true)));
+            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(null, true)), comparer);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -238,7 +241,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin LHS-NULL");
-            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(null, true)));
+            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(null, true)), comparer);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -256,7 +259,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
            
             //Try a LeftOuterJoin
             Console.WriteLine("LeftJoin LHS-RHS");
-            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(null, true)));
+            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(null, true)), comparer);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());

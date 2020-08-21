@@ -28,7 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF
 {
@@ -302,59 +305,51 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Compares two Literal Nodes using global default comparison options where applicable.
-        /// </summary>
-        /// <param name="a">First Literal Node.</param>
-        /// <param name="b">Second Literal Node.</param>
-        /// <returns></returns>
-        public static int CompareLiterals(ILiteralNode a, ILiteralNode b)
-        {
-            return CompareLiterals(a, b, Options.DefaultCulture, Options.DefaultComparisonOptions);
-        }
-
-        /// <summary>
         /// Compares two Literal Nodes.
         /// </summary>
         /// <param name="a">First Literal Node.</param>
         /// <param name="b">Second Literal Node.</param>
-        /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable.</param>
-        /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable.</param>
+        /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable. If not specified (or specified as null), defaults to <see cref="CultureInfo.InvariantCulture"/>.</param>
+        /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable. Defaults to <see cref="CompareOptions.Ordinal"/> if not specified.</param>
         /// <returns></returns>
-        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture, CompareOptions comparisonOptions)
+        public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture = null,
+            CompareOptions comparisonOptions = CompareOptions.Ordinal)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
             {
-                if (b == null) return 0;
                 return -1;
             }
-            else if (b == null)
+
+            if (b == null)
             {
                 return 1;
             }
 
             // initialize required culture and comparison options
-            if (culture == null) culture = Options.DefaultCulture;
-            if (comparisonOptions == CompareOptions.None) comparisonOptions = Options.DefaultComparisonOptions;
+            culture ??= CultureInfo.InvariantCulture;
 
             // Literal Nodes are ordered based on Type and lexical form
-            if (a.DataType == null && b.DataType != null)
+            var atype = a.DataType.AbsoluteUri;
+            var btype = b.DataType.AbsoluteUri;
+            if (IsStringLiteralType(atype))
             {
-                // Untyped Literals are less than Typed Literals
-                // Return a -1 to indicate this
+                if (IsStringLiteralType(btype))
+                {
+                    return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
+                }
+
+                // string literals are lower than other literals
                 return -1;
             }
-            else if (a.DataType != null && b.DataType == null)
+
+            if (IsStringLiteralType(btype))
             {
-                // Typed Literals are greater than Untyped Literals
-                // Return a 1 to indicate this
+                // other literals are greater than string literals
                 return 1;
             }
-            else if (a.DataType == null && b.DataType == null)
-            {
-                return culture.CompareInfo.Compare(a.Value, b.Value, comparisonOptions);
-            }
-            else if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
+
+            if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
             {
                 // Are we using a known and orderable DataType?
                 String type = a.DataType.AbsoluteUri;
@@ -389,6 +384,7 @@ namespace VDS.RDF
                                     {
                                         return 1;
                                     }
+
                                     goto default;
                                 }
 
@@ -413,6 +409,7 @@ namespace VDS.RDF
                                     {
                                         return 1;
                                     }
+
                                     goto default;
                                 }
 
@@ -564,9 +561,11 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                 // Extract the Double Values and compare
                                 double aDouble, bDouble;
-                                if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDouble))
+                                if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    out aDouble))
                                 {
-                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDouble))
+                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out bDouble))
                                     {
                                         return aDouble.CompareTo(bDouble);
                                     }
@@ -577,7 +576,8 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDouble))
+                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out bDouble))
                                     {
                                         return 1;
                                     }
@@ -590,9 +590,11 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
                                 // Extract the Decimal Values and compare
                                 decimal aDecimal, bDecimal;
-                                if (decimal.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aDecimal))
+                                if (decimal.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    out aDecimal))
                                 {
-                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDecimal))
+                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out bDecimal))
                                     {
                                         return aDecimal.CompareTo(bDecimal);
                                     }
@@ -603,7 +605,8 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bDecimal))
+                                    if (decimal.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out bDecimal))
                                     {
                                         return 1;
                                     }
@@ -616,9 +619,11 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                                 // Extract the Float Values and compare
                                 float aFloat, bFloat;
-                                if (Single.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out aFloat))
+                                if (Single.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    out aFloat))
                                 {
-                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
+                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out bFloat))
                                     {
                                         return aFloat.CompareTo(bFloat);
                                     }
@@ -629,7 +634,8 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out bFloat))
+                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out bFloat))
                                     {
                                         return 1;
                                     }
@@ -692,6 +698,7 @@ namespace VDS.RDF
                                                     return aBin[i].CompareTo(bBin[i]);
                                                 }
                                             }
+
                                             return 0;
                                         }
                                     }
@@ -714,7 +721,7 @@ namespace VDS.RDF
                                 }
 
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                // String Type
+                            // String Type
                             // Can use Lexical Ordering for thisgoto default;
 
                             case XmlSpecsHelper.XmlSchemaDataTypeAnyUri:
@@ -820,12 +827,68 @@ namespace VDS.RDF
                     }
                 }
             }
-            else
+
+            // No way of ordering by value if the Data Types are different
+            // Order by Data Type Uri
+            // This is required or the Value ordering between types won't occur correctly
+            return CompareUris(a.DataType, b.DataType);
+        }
+
+
+        private static bool IsStringLiteralType(string datatype)
+        {
+            return RdfSpecsHelper.RdfLangString.Equals(datatype) ||
+                   XmlSpecsHelper.XmlSchemaDataTypeString.Equals(datatype);
+        }
+
+
+        private static bool IsNumericType(string datatype)
+        {
+            return SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(datatype) != SparqlNumericType.NaN;
+        }
+
+        private static bool IsDateTimeType(string datatype)
+        {
+            return XmlSpecsHelper.XmlSchemaDataTypeDate.Equals(datatype) ||
+                   XmlSpecsHelper.XmlSchemaDataTypeDateTime.Equals(datatype);
+        }
+
+        private static int DateTimeCompare(ILiteralNode a, ILiteralNode b)
+        {
+            DateTimeOffset aDateTimeOffset, bDateTimeOffset;
+            if (DateTimeOffset.TryParse(a.Value, out aDateTimeOffset))
             {
-                // No way of ordering by value if the Data Types are different
-                // Order by Data Type Uri
-                // This is required or the Value ordering between types won't occur correctly
-                return CompareUris(a.DataType, b.DataType);
+                if (DateTimeOffset.TryParse(b.Value, out bDateTimeOffset))
+                {
+                    return aDateTimeOffset.CompareTo(bDateTimeOffset);
+                }
+
+                return -1;
+            }
+
+            if (DateTimeOffset.TryParse(b.Value, out bDateTimeOffset))
+            {
+                return 1;
+            }
+
+            throw new RdfException(
+                "Unable to compare date/time literals as one or both of the literal values could not be parsed.");
+        }
+
+        private static int CompareNumeric(IValuedNode a, IValuedNode b, string comparisonDataType)
+        {
+            switch (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(comparisonDataType))
+            {
+                case SparqlNumericType.Decimal:
+                    return a.AsDecimal().CompareTo(b.AsDecimal());
+                case SparqlNumericType.Double:
+                    return a.AsDouble().CompareTo(b.AsDouble());
+                case SparqlNumericType.Float:
+                    return a.AsFloat().CompareTo(b.AsFloat());
+                case SparqlNumericType.Integer:
+                    return a.AsInteger().CompareTo(b.AsInteger());
+                default:
+                    throw new RdfException($"Unable to compare unknown numeric data type {comparisonDataType}");
             }
         }
 

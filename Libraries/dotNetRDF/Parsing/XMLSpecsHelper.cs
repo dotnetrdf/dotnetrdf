@@ -26,6 +26,8 @@
 
 using System;
 using System.Linq;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Parsing
 {
@@ -159,6 +161,7 @@ namespace VDS.RDF.Parsing
             XmlSchemaDataTypeUnsignedInt,
             XmlSchemaDataTypeUnsignedLong,
             XmlSchemaDataTypeUnsignedShort,
+            RdfSpecsHelper.RdfLangString,
             /*XmlSchemaDataTypeXmlLiteral*/
         };
 
@@ -447,51 +450,84 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfException("Unknown Types are not compatible");
             }
-            else if (type1.Equals(type2))
+
+            if (type1.Equals(type2))
             {
                 return type1;
             }
-            else
-            {
-                switch (type1)
-                {
-                    // TODO: Implement type compatability detection for numeric types
 
-                    case XmlSchemaDataTypeDate:
-                        if (type2.Equals(XmlSchemaDataTypeDateTime))
-                        {
-                            if (widen)
-                            {
-                                return XmlSchemaDataTypeDateTime;
-                            }
-                            else
-                            {
-                                return XmlSchemaDataTypeDate;
-                            }
-                        }
-                        else
-                        {
-                            return String.Empty;
-                        }
-                    case XmlSchemaDataTypeDateTime:
-                        if (type2.Equals(XmlSchemaDataTypeDate))
-                        {
-                            if (widen)
-                            {
-                                return XmlSchemaDataTypeDateTime;
-                            }
-                            else
-                            {
-                                return XmlSchemaDataTypeDate;
-                            }
-                        }
-                        else
-                        {
-                            return String.Empty;
-                        }
-                    default:
-                        return String.Empty;
+            // TODO: This is enough for our specific ordering needs, but could maybe be broken down further for more general usage?
+            var numericType1 = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(type1);
+            if (numericType1 != SparqlNumericType.NaN)
+            {
+                var numericType2 = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(type2);
+                if (numericType2 != SparqlNumericType.NaN)
+                {
+                    var compatibleType = (SparqlNumericType)Math.Max((int)numericType1, (int)numericType2);
+                    switch (compatibleType)
+                    {
+                        case SparqlNumericType.Integer:
+                            return XmlSchemaDataTypeInteger;
+                        case SparqlNumericType.Decimal:
+                            return XmlSchemaDataTypeDecimal;
+                        case SparqlNumericType.Float:
+                            return XmlSchemaDataTypeFloat;
+                        case SparqlNumericType.Double:
+                            return XmlSchemaDataTypeDouble;
+                    }
                 }
+            }
+
+            switch (type1)
+            {
+                case XmlSchemaDataTypeDate when type2.Equals(XmlSchemaDataTypeDateTime):
+                    return widen ? XmlSchemaDataTypeDateTime : XmlSchemaDataTypeDate;
+
+                case XmlSchemaDataTypeDateTime when type2.Equals(XmlSchemaDataTypeDate):
+                    return widen ? XmlSchemaDataTypeDateTime : XmlSchemaDataTypeDate;
+                
+                case RdfSpecsHelper.RdfLangString when type2.Equals(XmlSchemaDataTypeString):
+                case XmlSchemaDataTypeString when type2.Equals(RdfSpecsHelper.RdfLangString):
+                    return XmlSchemaDataTypeString;
+
+                default:
+                    return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to get the compatible datatype for the two specified data types.
+        /// </summary>
+        /// <param name="type1">A data type IRI string.</param>
+        /// <param name="type2">A data type IRI string.</param>
+        /// <param name="compatibleDataType">Receives the IRI of the compatible data type, if any.</param>
+        /// <returns>True if a compatible datatype could be found for the two data types, false otherwise.</returns>
+        public static bool TryGetCompatibleSupportedDataType(string type1, string type2, out string compatibleDataType)
+        {
+            return TryGetCompatibleSupportedDataType(type1, type2, false, out compatibleDataType);
+        }
+
+
+        /// <summary>
+        /// Attempts to get the compatible datatype for the two specified data types.
+        /// </summary>
+        /// <param name="type1">A data type IRI string.</param>
+        /// <param name="type2">A data type IRI string.</param>
+        /// <param name="widen">Whether the compatible data type should be the wider type.</param>
+        /// <param name="compatibleDataType">Receives the IRI of the compatible data type, if any.</param>
+        /// <returns>True if a compatible datatype could be found for the two data types, false otherwise.</returns>
+        public static bool TryGetCompatibleSupportedDataType(string type1, string type2, bool widen,
+            out string compatibleDataType)
+        {
+            try
+            {
+                compatibleDataType = GetCompatibleSupportedDataType(type1, type2, widen);
+                return !string.Empty.Equals(compatibleDataType);
+            }
+            catch (RdfException)
+            {
+                compatibleDataType = string.Empty;
+                return false;
             }
         }
     }

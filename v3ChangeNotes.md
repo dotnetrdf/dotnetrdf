@@ -26,7 +26,10 @@ This option should be set explicitly when creating a writer. All writer instance
 The compression level desited for a writer should be set explicitly when creating a writer. All writer instances that support compression also provide a CompressionLevel property (through the ICompressingWriter interface) which may be used to change the compression level after the writer is created. The MimeTypesHelper methods for creating writers also provide an optional parameter for setting this option.
 
 ### DefaultTokenQueueMode
-The token queue mode for tokenizing parsers should be set explicitly when creating a parser. All parsers that implement the ITokenisingParser interface provide a TokenQueueMode property which may be used to change the mode after the parser is created. The MimeTypesHelper methods for creating parsers also provides an optional parameter for setting this option.
+The token queue mode for tokenizing parsers should be set explicitly when creating a parser. All parsers that implement the `ITokenisingParser` interface provide a `TokenQueueMode` property which may be used to change the mode after the parser is created. The MimeTypesHelper methods for creating parsers also provides an optional parameter for setting this option.
 
 ### HttpDebugging, HttpFullDebugging
 Console logging of HTTP requests and responses has been removed. Please use the standard .NET HttpClient logging facility instead.
+
+### DefaultCulture, DefaultComparison
+The desired culture and comparison options for node collation should be set explicitly when creating an `INodeComparer` instance. These options can also be set when creating a `LeviathanQueryProcessor` using the new optional `options` callback parameter on the `LeviathanQueryProcessor` constructor. The default settings result in ordering that conforms to the SPARQL 1.1 specification. NOTE: The default comparison option is `Ordinal`, so to get culture-specific ordering you must both specify the desired culture *and* set the `CompareOptions` property to a value such as `CompareOptions.None` or `CompareOptions.IgnoreCase` depending on how you want strings to be compared.

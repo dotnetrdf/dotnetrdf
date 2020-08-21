@@ -180,8 +180,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression.</param>
+        /// <param name="nodeComparer">The comparer to use.</param>
         /// <returns></returns>
-        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
+        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, ISparqlNodeComparer nodeComparer)
         {
             // If the Other is the Identity/Null Multiset the result is this Multiset
             if (other is IdentityMultiset) return this;
@@ -190,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
 
             Multiset joinedSet = new Multiset();
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(joinedSet);
-            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
+            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder, nodeComparer);
 
             // Find the First Variable from this Multiset which is in both Multisets
             // If there is no Variable from this Multiset in the other Multiset then this
@@ -201,7 +202,7 @@ namespace VDS.RDF.Query.Algebra
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     PartitionedMultiset partitionedSet = new PartitionedMultiset(this.Count, other.Count + 1);
-                    this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr));
+                    this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, nodeComparer));
                     return partitionedSet;
                 }
                 // Do a serial Left Join Product
@@ -292,10 +293,10 @@ namespace VDS.RDF.Query.Algebra
             return joinedSet;
         }
 
-        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr)
+        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr, ISparqlNodeComparer nodeComparer)
         {
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(partitionedSet);
-            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
+            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder, nodeComparer);
             bool standalone = false, matched = false;
 
             int id = partitionedSet.GetNextBaseID();

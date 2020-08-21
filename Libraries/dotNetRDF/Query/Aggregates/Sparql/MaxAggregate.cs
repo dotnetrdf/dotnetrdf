@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
             }
 
-            values.Sort(new SparqlOrderingComparer());
+            values.Sort(new SparqlOrderingComparer(context.NodeComparer.Culture, context.NodeComparer.Options));
             values.Reverse();
             return values.FirstOrDefault();
         }

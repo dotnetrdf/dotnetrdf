@@ -194,6 +194,7 @@ WHERE {
                 item => Assert.IsAssignableFrom<IBlankNode>(item["o"]),
                 item => Assert.IsType<Uri>(item["o"]),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]),
+                item => Assert.IsType<string>(item["o"]),
                 item => Assert.IsType<double>(item["o"]),
                 item => Assert.IsType<float>(item["o"]),
                 item => Assert.IsType<long>(item["o"]),
@@ -201,7 +202,6 @@ WHERE {
                 item => Assert.IsType<bool>(item["o"]),
                 item => Assert.IsType<DateTimeOffset>(item["o"]),
                 item => Assert.IsType<TimeSpan>(item["o"]),
-                item => Assert.IsType<string>(item["o"]),
                 item => Assert.IsAssignableFrom<ILiteralNode>(item["o"]));
         }
 

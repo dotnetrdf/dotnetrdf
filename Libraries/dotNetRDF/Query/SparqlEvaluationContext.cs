@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 
@@ -52,13 +53,16 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="q">Query.</param>
         /// <param name="data">Dataset.</param>
-        public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data)
+        /// <param name="nodeComparer">The comparer to use when sorting nodes during query.</param>
+        /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
+        public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlNodeComparer nodeComparer = null)
         {
             _query = q;
             _data = data;
             _inputSet = new IdentityMultiset();
             _binder = new LeviathanResultBinder(this);
-
+            NodeComparer = nodeComparer ?? new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+            OrderingComparer = new SparqlOrderingComparer(NodeComparer);
             CalculateTimeout();
         }
 
@@ -68,8 +72,10 @@ namespace VDS.RDF.Query
         /// <param name="q">Query.</param>
         /// <param name="data">Dataset.</param>
         /// <param name="processor">Query Processor.</param>
-        public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
-            : this(q, data)
+        /// <param name="nodeComparer">The comparer to use when sorting nodes during query.</param>
+        /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
+        public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor, ISparqlNodeComparer nodeComparer = null)
+            : this(q, data, nodeComparer)
         {
             _processor = processor;
         }
@@ -77,10 +83,14 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new Evaluation Context which is a Container for the given Result Binder.
         /// </summary>
+        /// <param name="nodeComparer">The comparer to use when sorting nodes during query.</param>
         /// <param name="binder"></param>
-        public SparqlEvaluationContext(SparqlResultBinder binder)
+        /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
+        public SparqlEvaluationContext(SparqlResultBinder binder, ISparqlNodeComparer nodeComparer)
         {
             _binder = binder;
+            NodeComparer = nodeComparer;
+            OrderingComparer = new SparqlOrderingComparer(nodeComparer);
         }
 
         private void CalculateTimeout()
@@ -205,6 +215,16 @@ namespace VDS.RDF.Query
                 _trimTemporaries = value;
             }
         }
+
+        /// <summary>
+        /// Get the comparer to use when ordering nodes during query processing.
+        /// </summary>
+        public ISparqlNodeComparer NodeComparer { get; }
+
+        /// <summary>
+        /// Get the comparer to use when sorting query results
+        /// </summary>
+        public SparqlOrderingComparer OrderingComparer { get; }
 
         ///// <summary>
         ///// Gets/Sets whether additional checks should be made during evaluation

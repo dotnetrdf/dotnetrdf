@@ -23,45 +23,35 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
+using System;
 using System.Globalization;
 
-namespace VDS.RDF.Shacl.Constraints
+namespace VDS.RDF.Query
 {
-    using System.Diagnostics;
-    using VDS.RDF.Query;
-
-    internal abstract class Compare : Constraint
+    /// <summary>
+    /// A class encapsulating run-time options that can be configured for a <see cref="LeviathanQueryProcessor"/>.
+    /// </summary>
+    public class LeviathanQueryOptions
     {
+        private CultureInfo _culture = CultureInfo.InvariantCulture;
+
         /// <summary>
-        /// The internal comparer to use. This instance is not actually used for comparison, just for checking if nodes are comparable,
-        /// so it uses default settings for culture and sort options.
+        /// Get or set the culture to use for string comparisons in the query processor.
         /// </summary>
-        private readonly SparqlNodeComparer _comparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
-
-        [DebuggerStepThrough]
-        protected Compare(Shape shape, INode node)
-            : base(shape, node)
+        /// <remarks>
+        /// By default the value of this option is <see cref="CultureInfo.InvariantCulture"/> which when combined with the default value of <see cref="CompareOptions"/> will result in
+        /// sorting that conforms to the SPARQL 1.1 specification. Using a different culture or comparison option for sorting may produce non-standard results.
+        /// </remarks>
+        public CultureInfo Culture
         {
+            get => _culture;
+            set => _culture = value ?? throw new ArgumentNullException(nameof(value), "A non-null CultureInfo value must be provided.");
         }
 
-        protected abstract bool IsValidInternal(int v);
-
-        protected bool IsValid(INode first, INode second)
-        {
-            if (first.NodeType != NodeType.Literal)
-            {
-                return false;
-            }
-
-            try
-            {
-                return IsValidInternal(_comparer.Compare(first, second));
-            }
-            catch (RdfQueryException)
-            {
-                return false;
-            }
-        }
+        /// <summary>
+        /// Get or set the method to use for string comparisons in the query processor.
+        /// </summary>
+        /// <remarks>The SPARQL specification requires that string comparisons should be ordinal (<see cref="System.Globalization.CompareOptions.Ordinal"/>). This is the default value.</remarks>
+        public CompareOptions CompareOptions { get; set; } = CompareOptions.Ordinal;
     }
 }

@@ -215,10 +215,9 @@ namespace VDS.RDF.Parsing
                 return null;
             }
 
-            if (JsonLdUtils.IsValueObject(token))
+            if (JsonLdUtils.IsValueObject(token) && token is JObject valueObject)
             {
-                string literalValue = null;
-                var valueObject = token as JObject;
+                string literalValue;
                 var value = valueObject["@value"];
                 var datatype = valueObject.Property("@type")?.Value.Value<string>();
                 var language = valueObject.Property("@language")?.Value.Value<string>();
@@ -231,17 +230,18 @@ namespace VDS.RDF.Parsing
                 else if (value.Type == JTokenType.Boolean)
                 {
                     literalValue = value.Value<bool>() ? "true" : "false";
-                    if (datatype == null) datatype = XsdNs + "boolean";
+                    datatype ??= XsdNs + "boolean";
                 }
                 else if (value.Type == JTokenType.Float ||
                          value.Type == JTokenType.Integer && datatype != null && datatype.Equals(XsdNs + "double"))
                 {
                     var doubleValue = value.Value<double>();
                     var roundedValue = Math.Round(doubleValue);
-                    if (doubleValue.Equals(roundedValue) && doubleValue < 1000000000000000000000.0 && datatype == null)
+                    if (doubleValue.Equals(roundedValue) && doubleValue < 1e21 && datatype == null)
                     {
                         // Integer values up to 10^21 should be rendered as a fixed-point integer
                         literalValue = roundedValue.ToString("F0");
+                        if (literalValue.Equals("-0")) literalValue = "0"; // Special corner-case when the input is -0e0
                         datatype = XsdNs + "integer";
                     }
                     else
@@ -249,14 +249,14 @@ namespace VDS.RDF.Parsing
                         literalValue = value.Value<double>().ToString("E15", CultureInfo.InvariantCulture);
                         literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
                         if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
-                        if (datatype == null) datatype = XsdNs + "double";
+                        datatype ??= XsdNs + "double";
                     }
                 }
                 else if (value.Type == JTokenType.Integer ||
                          value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
                 {
                     literalValue = value.Value<long>().ToString("D", CultureInfo.InvariantCulture);
-                    if (datatype == null) datatype = XsdNs + "integer";
+                    datatype ??= XsdNs + "integer";
                 }
                 else if (valueObject.ContainsKey("@direction") && ParserOptions.RdfDirection.HasValue)
                 {

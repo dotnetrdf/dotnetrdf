@@ -42,10 +42,6 @@ namespace VDS.RDF.Query.Ordering
         : ISparqlOrderBy
     {
         /// <summary>
-        /// Holds the Child Order By (if any).
-        /// </summary>
-        protected ISparqlOrderBy _child = null;
-        /// <summary>
         /// Stores the Evaluation Context.
         /// </summary>
         protected SparqlEvaluationContext _context = null;
@@ -58,17 +54,7 @@ namespace VDS.RDF.Query.Ordering
         /// <summary>
         /// Gets/Sets the Child Order By.
         /// </summary>
-        public ISparqlOrderBy Child
-        {
-            get
-            {
-                return _child;
-            }
-            set
-            {
-                _child = value;
-            }
-        }
+        public ISparqlOrderBy Child { get; set; } = null;
 
         /// <summary>
         /// Sets the Evaluation Context for the Ordering.
@@ -78,9 +64,9 @@ namespace VDS.RDF.Query.Ordering
             set
             {
                 _context = value;
-                if (_child != null)
+                if (Child != null)
                 {
-                    _child.Context = value;
+                    Child.Context = value;
                 }
             }
         }
@@ -143,8 +129,9 @@ namespace VDS.RDF.Query.Ordering
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
+        /// <param name="nodeComparer">The node comparer to use</param>
         /// <returns></returns>
-        public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern);
+        public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer);
 
         /// <summary>
         /// Gets the String representation of the Order By.
@@ -159,7 +146,6 @@ namespace VDS.RDF.Query.Ordering
     public class OrderByVariable
         : BaseOrderBy
     {
-        private SparqlOrderingComparer _comparer = new SparqlOrderingComparer();
         private String _varname = String.Empty;
 
         /// <summary>
@@ -172,7 +158,7 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Compares Sets on the basis of their values for the Variable the class was instaniated with.
+        /// Compares Sets on the basis of their values for the Variable the class was instantiated with.
         /// </summary>
         /// <param name="x">A Set.</param>
         /// <param name="y">A Set.</param>
@@ -185,9 +171,9 @@ namespace VDS.RDF.Query.Ordering
             {
                 if (y[_varname] == null)
                 {
-                    if (_child != null)
+                    if (Child != null)
                     {
-                        return _child.Compare(x, y);
+                        return Child.Compare(x, y);
                     }
                     else
                     {
@@ -201,11 +187,11 @@ namespace VDS.RDF.Query.Ordering
             }
             else
             {
-                int c = _comparer.Compare(xval, y[_varname]);
+                int c = _context.OrderingComparer.Compare(xval, y[_varname]);
 
-                if (c == 0 && _child != null)
+                if (c == 0 && Child != null)
                 {
-                    return _child.Compare(x, y);
+                    return Child.Compare(x, y);
                 }
                 else
                 {
@@ -219,21 +205,22 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
         /// <returns></returns>
-        public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
+        public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer)
         {
-            IComparer<Triple> child = (_child == null) ? null : _child.GetComparer(pattern);
+            var comparer = new SparqlOrderingComparer(nodeComparer);
+            IComparer<Triple> child = (Child == null) ? null : Child.GetComparer(pattern, nodeComparer);
             Func<Triple, Triple, int> compareFunc = null;
             if (_varname.Equals(pattern.Subject.VariableName))
             {
-                compareFunc = (x, y) => _comparer.Compare(x.Subject, y.Subject);
+                compareFunc = (x, y) => comparer.Compare(x.Subject, y.Subject);
             }
             else if (_varname.Equals(pattern.Predicate.VariableName))
             {
-                compareFunc = (x, y) => _comparer.Compare(x.Predicate, y.Predicate);
+                compareFunc = (x, y) => comparer.Compare(x.Predicate, y.Predicate);
             }
             else if (_varname.Equals(pattern.Object.VariableName))
             {
-                compareFunc = (x, y) => _comparer.Compare(x.Object, y.Object);
+                compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
             }
 
             if (compareFunc == null) return null;
@@ -247,11 +234,11 @@ namespace VDS.RDF.Query.Ordering
         {
             get 
             {
-                if (_child != null)
+                if (Child != null)
                 {
                     // An ordering on a Variable is always simple so whether the Ordering is simple
                     // depends on whether the Child Ordering is simple
-                    return _child.IsSimple;
+                    return Child.IsSimple;
                 }
                 else
                 {
@@ -268,9 +255,9 @@ namespace VDS.RDF.Query.Ordering
         {
             get 
             {
-                if (_child != null)
+                if (Child != null)
                 {
-                    return _varname.AsEnumerable<String>().Concat(_child.Variables).Distinct();
+                    return _varname.AsEnumerable<String>().Concat(Child.Variables).Distinct();
                 }
                 else
                 {
@@ -309,10 +296,10 @@ namespace VDS.RDF.Query.Ordering
             output.Append(_varname);
             output.Append(")");
 
-            if (_child != null)
+            if (Child != null)
             {
                 output.Append(" ");
-                output.Append(_child.ToString());
+                output.Append(Child.ToString());
             }
             else
             {
@@ -329,8 +316,7 @@ namespace VDS.RDF.Query.Ordering
     public class OrderByExpression
         : BaseOrderBy
     {
-        private SparqlOrderingComparer _comparer = new SparqlOrderingComparer();
-        private ISparqlExpression _expr;
+        private readonly ISparqlExpression _expr;
 
         /// <summary>
         /// Creates a new Order By using the given Expression.
@@ -377,10 +363,10 @@ namespace VDS.RDF.Query.Ordering
                     // If both give a value then compare
                     if (a != null)
                     {
-                        int c = _comparer.Compare(a, b);
-                        if (c == 0 && _child != null)
+                        int c = _context.OrderingComparer.Compare(a, b);
+                        if (c == 0 && Child != null)
                         {
-                            return _child.Compare(x, y);
+                            return Child.Compare(x, y);
                         }
                         else
                         {
@@ -405,9 +391,9 @@ namespace VDS.RDF.Query.Ordering
                     catch
                     {
                         // If both error then use child if any to evaluate, otherwise consider a = b
-                        if (_child != null)
+                        if (Child != null)
                         {
-                            return _child.Compare(x, y);
+                            return Child.Compare(x, y);
                         }
                         else
                         {
@@ -424,24 +410,25 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
         /// <returns></returns>
-        public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
+        public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer)
         {
             if (_expr is VariableTerm)
             {
-                IComparer<Triple> child = (_child == null) ? null : _child.GetComparer(pattern);
+                IComparer<Triple> child = (Child == null) ? null : Child.GetComparer(pattern, nodeComparer);
                 Func<Triple, Triple, int> compareFunc = null;
-                String var = _expr.Variables.First();
+                string var = _expr.Variables.First();
+                var comparer = new SparqlOrderingComparer(nodeComparer);
                 if (var.Equals(pattern.Subject.VariableName))
                 {
-                    compareFunc = (x, y) => _comparer.Compare(x.Subject, y.Subject);
+                    compareFunc = (x, y) => comparer.Compare(x.Subject, y.Subject);
                 }
                 else if (var.Equals(pattern.Predicate.VariableName))
                 {
-                    compareFunc = (x, y) => _comparer.Compare(x.Predicate, y.Predicate);
+                    compareFunc = (x, y) => comparer.Compare(x.Predicate, y.Predicate);
                 }
                 else if (var.Equals(pattern.Object.VariableName))
                 {
-                    compareFunc = (x, y) => _comparer.Compare(x.Object, y.Object);
+                    compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
                 }
 
                 if (compareFunc == null) return null;
@@ -464,9 +451,9 @@ namespace VDS.RDF.Query.Ordering
                 {
                     // An Expression Ordering can be simple if that expression is a Variable Term
                     // and the Child Ordering (if any) is simple
-                    if (_child != null)
+                    if (Child != null)
                     {
-                        return _child.IsSimple;
+                        return Child.IsSimple;
                     }
                     else
                     {
@@ -487,9 +474,9 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                if (_child != null)
+                if (Child != null)
                 {
-                    return _expr.Variables.Concat(_child.Variables).Distinct();
+                    return _expr.Variables.Concat(Child.Variables).Distinct();
                 }
                 else
                 {
@@ -527,10 +514,10 @@ namespace VDS.RDF.Query.Ordering
             output.Append(_expr.ToString());
             output.Append(")");
 
-            if (_child != null)
+            if (Child != null)
             {
                 output.Append(" ");
-                output.Append(_child.ToString());
+                output.Append(Child.ToString());
             }
             else
             {

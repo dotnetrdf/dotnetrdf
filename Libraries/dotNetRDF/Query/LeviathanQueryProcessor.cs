@@ -54,19 +54,22 @@ namespace VDS.RDF.Query
     {
         private readonly ISparqlDataset _dataset;
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private LeviathanQueryOptions _options = new LeviathanQueryOptions();
 
         /// <summary>
         /// Creates a new Leviathan Query Processor.
         /// </summary>
         /// <param name="store">Triple Store.</param>
-        public LeviathanQueryProcessor(IInMemoryQueryableStore store)
-            : this(new InMemoryDataset(store)) { }
+        /// <param name="options">Set the processor options</param>
+        public LeviathanQueryProcessor(IInMemoryQueryableStore store, Action<LeviathanQueryOptions> options = null)
+            : this(new InMemoryDataset(store), options) { }
 
         /// <summary>
         /// Creates a new Leviathan Query Processor.
         /// </summary>
         /// <param name="data">SPARQL Dataset.</param>
-        public LeviathanQueryProcessor(ISparqlDataset data)
+        /// <param name="options">Set the processor options</param>
+        public LeviathanQueryProcessor(ISparqlDataset data, Action<LeviathanQueryOptions> options = null)
         {
             _dataset = data;
 
@@ -79,6 +82,8 @@ namespace VDS.RDF.Query
                     _dataset.Flush();
                 }
             }
+
+            options?.Invoke(_options);
         }
 
         /// <summary>
@@ -361,7 +366,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         private SparqlEvaluationContext GetContext(SparqlQuery q)
         {
-            return new SparqlEvaluationContext(q, _dataset, GetProcessorForContext());
+            return new SparqlEvaluationContext(q, _dataset, GetProcessorForContext(), GetNodeComparer());
         }
 
         /// <summary>
@@ -378,6 +383,11 @@ namespace VDS.RDF.Query
             {
                 return this;
             }
+        }
+
+        private ISparqlNodeComparer GetNodeComparer()
+        {
+            return new SparqlNodeComparer(this._options.Culture, this._options.CompareOptions);
         }
 
         #region Algebra Processor Implementation

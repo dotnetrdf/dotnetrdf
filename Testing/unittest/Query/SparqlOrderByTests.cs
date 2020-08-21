@@ -25,10 +25,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Writing.Formatting;
 
@@ -229,6 +232,32 @@ namespace VDS.RDF.Query
                 int expected = (i % 3) + 1;
                 Assert.Equal(expected, results[i]["b"].AsValuedNode().AsInteger());
             }
+        }
+
+        [Fact]
+        public void SparqlOrderByNonDefaultCulture()
+        {
+            const string query = @"SELECT * WHERE { 
+  VALUES (?a) {
+    ('cote')
+    ('coté')
+    ('côte')
+    ('côté')
+  }
+} ORDER BY ?a";
+            var q = new SparqlQueryParser().ParseFromString(query);
+            var leviathan = new LeviathanQueryProcessor(new InMemoryDataset(),
+                options =>
+                {
+                    options.Culture = CultureInfo.GetCultureInfo("fr-FR");
+                    options.CompareOptions = CompareOptions.None;
+                });
+            var results = leviathan.ProcessQuery(q) as SparqlResultSet;
+            var resultValues = results.Select(r => r["a"]).OfType<ILiteralNode>().Select(n => n.Value).ToList();
+            resultValues[0].Should().Be("cote");
+            resultValues[1].Should().Be("côte");
+            resultValues[2].Should().Be("coté");
+            resultValues[3].Should().Be("côté");
         }
     }
 }

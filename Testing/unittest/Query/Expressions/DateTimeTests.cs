@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -212,7 +213,7 @@ namespace VDS.RDF.Query.Expressions
             INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
-            SparqlOrderingComparer comparer = new SparqlOrderingComparer();
+            SparqlOrderingComparer comparer = new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
 
             // Expected result is that x < y so return should be -1
             Assert.Equal(-1, comparer.Compare(dateTime1, dateTime2));
@@ -234,7 +235,7 @@ namespace VDS.RDF.Query.Expressions
                 input.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
                      .OfType<INode>().ToList();
             List<INode> sorted = new List<INode>(orig);
-            sorted.Sort(new SparqlOrderingComparer());
+            sorted.Sort(new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal));
 
             List<INode> expected =
                 output.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))

@@ -33,27 +33,34 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
 
     public class CompareToTests
     {
+        private readonly ITestOutputHelper _output;
+        public CompareToTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         private void CheckCombinations(List<INode> nodes)
         {
-            this.CheckCombinations(nodes, new SparqlOrderingComparer());
+            CheckCombinations(nodes, new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal));
         }
 
         private void CheckCombinations<T>(List<T> nodes) where T : IComparable<T>
         {
-            this.CheckCombinations<T>(nodes, Comparer<T>.Default);
+            CheckCombinations<T>(nodes, Comparer<T>.Default);
         }
 
         private void CheckCombinations(List<INode> nodes, IComparer<INode> comparer)
         {
             if (nodes.Count == 0) Assert.True(false, "No Input");
 
-            Console.WriteLine("INode Typed Tests");
+            _output.WriteLine("INode Typed Tests");
             for (int i = 0; i < nodes.Count; i++)
             {
                 for (int j = 0; j < nodes.Count; j++)
@@ -64,7 +71,7 @@ namespace VDS.RDF
                     {
                         Assert.Equal(0, a.CompareTo(b));
                         Assert.Equal(0, b.CompareTo(a));
-                        Console.WriteLine(i + " compareTo " + j + " => i == j");
+                        _output.WriteLine(i + " compareTo " + j + " => i == j");
 
                         Assert.Equal(0, comparer.Compare(a, b));
                         Assert.Equal(0, comparer.Compare(b, a));
@@ -78,30 +85,30 @@ namespace VDS.RDF
 
                         if (c > 0)
                         {
-                            Console.WriteLine(i + " compareTo " + j + " => i > j");
+                            _output.WriteLine(i + " compareTo " + j + " => i > j");
                         }
                         else if (c == 0)
                         {
-                            Console.WriteLine(i + " compareTo " + j + " => i == j");
+                            _output.WriteLine(i + " compareTo " + j + " => i == j");
                         }
                         else
                         {
-                            Console.WriteLine(i + " compareTo " + j + " => i < j");
+                            _output.WriteLine(i + " compareTo " + j + " => i < j");
                         }
                     }
                 }
 
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
             }
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
         }
 
         private void CheckCombinations<T>(List<T> nodes, IComparer<T> comparer)
         {
             if (nodes.Count == 0) Assert.True(false, "No Input");
 
-            Console.WriteLine("Strongly Typed Tests - " + nodes.GetType().ToString());
+            _output.WriteLine("Strongly Typed Tests - " + nodes.GetType().ToString());
             for (int i = 0; i < nodes.Count; i++)
             {
                 for (int j = 0; j < nodes.Count; j++)
@@ -112,7 +119,7 @@ namespace VDS.RDF
                     {
                         Assert.Equal(0, comparer.Compare(a, b));
                         Assert.Equal(0, comparer.Compare(b, a));
-                        Console.WriteLine(i + " compareTo " + j + " => i == j");
+                        _output.WriteLine(i + " compareTo " + j + " => i == j");
                     }
                     else
                     {
@@ -121,63 +128,63 @@ namespace VDS.RDF
 
                         if (c > 0)
                         {
-                            Console.WriteLine(i + " compareTo " + j + " => i > j");
+                            _output.WriteLine(i + " compareTo " + j + " => i > j");
                         }
                         else if (c == 0)
                         {
-                            Console.WriteLine(i + " compareTo " + j + " => i == j");
+                            _output.WriteLine(i + " compareTo " + j + " => i == j");
                         }
                         else
                         {
-                            Console.WriteLine(i + " compareTo " + j + " => i < j");
+                            _output.WriteLine(i + " compareTo " + j + " => i < j");
                         }
                     }
                 }
 
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
             }
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
         }
 
-        private void ShowOrdering(IEnumerable<INode> nodes)
+        private void ShowOrdering(IEnumerable<INode> nodes, CompareOptions compareOptions = CompareOptions.Ordinal)
         {
-            Console.WriteLine("Standard Ordering");
+            _output.WriteLine("Standard Ordering");
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (INode n in nodes.OrderBy(x => x))
             {
-                Console.WriteLine(n.ToString(formatter));
+                _output.WriteLine(n.ToString(formatter));
             }
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
-            Console.WriteLine("SPARQL Ordering");
-            foreach (INode n in nodes.OrderBy(x => x, (IComparer<INode>) new SparqlOrderingComparer()))
+            _output.WriteLine("SPARQL Ordering");
+            foreach (INode n in nodes.OrderBy(x => x, new SparqlOrderingComparer(CultureInfo.InvariantCulture, compareOptions)))
             {
-                Console.WriteLine(n.ToString(formatter));
+                _output.WriteLine(n.ToString(formatter));
             }
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
         }
 
         private void ShowOrdering(IEnumerable<INode> nodes, IComparer<INode> comparer)
         {
-            Console.WriteLine("Standard Ordering");
+            _output.WriteLine("Standard Ordering");
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (INode n in nodes.OrderBy(x => x))
             {
-                Console.WriteLine(n.ToString(formatter));
+                _output.WriteLine(n.ToString(formatter));
             }
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
-            Console.WriteLine(comparer.GetType().Name + " Ordering");
+            _output.WriteLine(comparer.GetType().Name + " Ordering");
             foreach (INode n in nodes.OrderBy(x => x, comparer))
             {
-                Console.WriteLine(n.ToString(formatter));
+                _output.WriteLine(n.ToString(formatter));
             }
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
         }
 
         [Fact]
@@ -197,11 +204,11 @@ namespace VDS.RDF
                 b
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<IBlankNode>(nodes.OfType<IBlankNode>().ToList());
-            this.CheckCombinations<BlankNode>(nodes.OfType<BlankNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<IBlankNode>(nodes.OfType<IBlankNode>().ToList());
+            CheckCombinations<BlankNode>(nodes.OfType<BlankNode>().ToList());
         }
 
         [Fact]
@@ -224,11 +231,11 @@ namespace VDS.RDF
                 plain
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -245,11 +252,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -264,24 +271,13 @@ namespace VDS.RDF
                 g.CreateLiteralNode("thing")
             };
 
-            CompareOptions current = Options.DefaultComparisonOptions;
-
-            try
+            // Test each comparison mode
+            foreach (CompareOptions comparison in Enum.GetValues(typeof(StringComparison)))
             {
-                // Test each comparison mode
-                foreach (CompareOptions comparison in Enum.GetValues(typeof(StringComparison)))
-                {
-                    Options.DefaultComparisonOptions = comparison;
-                    this.ShowOrdering(nodes);
-
-                    this.CheckCombinations(nodes);
-                    this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-                    this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
-                }
-            }
-            finally
-            {
-                Options.DefaultComparisonOptions = current;
+                ShowOrdering(nodes, comparison);
+                CheckCombinations(nodes);
+                CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+                CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
             }
         }
 
@@ -299,11 +295,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -320,11 +316,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -341,11 +337,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -362,11 +358,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeShort)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -383,11 +379,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeLong)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -404,11 +400,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -425,11 +421,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -446,11 +442,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -467,11 +463,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -488,11 +484,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -509,11 +505,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -530,11 +526,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypePositiveInteger)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -551,11 +547,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-03", new Uri(XmlSpecsHelper.XmlSchemaDataTypeHexBinary)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -579,11 +575,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -607,11 +603,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -634,11 +630,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -660,11 +656,11 @@ namespace VDS.RDF
                 g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<ILiteralNode>(nodes.OfType<ILiteralNode>().ToList());
+            CheckCombinations<LiteralNode>(nodes.OfType<LiteralNode>().ToList());
         }
 
         [Fact]
@@ -689,11 +685,11 @@ namespace VDS.RDF
                 g.CreateUriNode(new Uri("ftp://user:password@ftp.example.org"))
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
-            this.CheckCombinations<IUriNode>(nodes.OfType<IUriNode>().ToList());
-            this.CheckCombinations<UriNode>(nodes.OfType<UriNode>().ToList());
+            CheckCombinations(nodes);
+            CheckCombinations<IUriNode>(nodes.OfType<IUriNode>().ToList());
+            CheckCombinations<UriNode>(nodes.OfType<UriNode>().ToList());
         }
 
         [Fact]
@@ -733,9 +729,9 @@ namespace VDS.RDF
                 u
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
+            CheckCombinations(nodes);
         }
 
         [Fact]
@@ -798,9 +794,9 @@ namespace VDS.RDF
                 u
             };
 
-            this.ShowOrdering(nodes);
+            ShowOrdering(nodes);
 
-            this.CheckCombinations(nodes);
+            CheckCombinations(nodes);
         }
 
         [Fact]
@@ -856,19 +852,19 @@ namespace VDS.RDF
 
         //    NTriplesFormatter formatter = new NTriplesFormatter();
 
-        //    Console.WriteLine("Normal Sort Order:");
+        //    _output.WriteLine("Normal Sort Order:");
         //    nodes.Sort();
         //    foreach (INode n in nodes)
         //    {
-        //        Console.WriteLine(n.ToString(formatter));
+        //        _output.WriteLine(n.ToString(formatter));
         //    }
 
-        //    Console.WriteLine();
-        //    Console.WriteLine("RDF/XML Sort Order:");
+        //    _output.WriteLine();
+        //    _output.WriteLine("RDF/XML Sort Order:");
         //    nodes.Sort(new RdfXmlTripleComparer());
         //    foreach (INode n in nodes)
         //    {
-        //        Console.WriteLine(n.ToString(formatter));
+        //        _output.WriteLine(n.ToString(formatter));
         //    }
         //}
 
@@ -889,10 +885,10 @@ namespace VDS.RDF
             Assert.NotEqual(canonical, alternate);
             Assert.Equal(0, canonical.CompareTo(alternate));
 
-            this.ShowOrdering(ns);
-            this.CheckCombinations(ns);
-            this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations(ns, new FastNodeComparer());
+            ShowOrdering(ns);
+            CheckCombinations(ns);
+            CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
+            CheckCombinations(ns, new FastNodeComparer());
         }
 
         [Fact]
@@ -912,10 +908,10 @@ namespace VDS.RDF
             Assert.NotEqual(canonical, alternate);
             Assert.Equal(0, canonical.CompareTo(alternate));
 
-            this.ShowOrdering(ns);
-            this.CheckCombinations(ns);
-            this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations(ns, new FastNodeComparer());
+            ShowOrdering(ns);
+            CheckCombinations(ns);
+            CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
+            CheckCombinations(ns, new FastNodeComparer());
         }
 
         [Fact]
@@ -935,10 +931,10 @@ namespace VDS.RDF
             Assert.NotEqual(canonical, alternate);
             Assert.Equal(0, canonical.CompareTo(alternate));
 
-            this.ShowOrdering(ns);
-            this.CheckCombinations(ns);
-            this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
-            this.CheckCombinations(ns, new FastNodeComparer());
+            ShowOrdering(ns);
+            CheckCombinations(ns);
+            CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
+            CheckCombinations(ns, new FastNodeComparer());
         }
     }
 }

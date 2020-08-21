@@ -35,8 +35,6 @@ namespace VDS.RDF.Query.Expressions.Comparison
     public class LessThanOrEqualToExpression
         : BaseBinaryExpression
     {
-        private SparqlNodeComparer _comparer = new SparqlNodeComparer();
-
         /// <summary>
         /// Creates a new Less Than or Equal To Relational Expression.
         /// </summary>
@@ -69,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
                 }
             }
 
-            int compare = _comparer.Compare(a, b);
+            int compare = context.NodeComparer.Compare(a, b);
             return new BooleanNode(null, compare <= 0);
         }
 

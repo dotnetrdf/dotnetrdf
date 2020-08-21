@@ -1271,7 +1271,7 @@ namespace VDS.RDF.Query
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                         {
                             // Boolean Typed Literal
-                            if (bool.TryParse(lit.Value, out var b))
+                            if (Boolean.TryParse(lit.Value, out var b))
                             {
                                 // Valid Booleans have EBV of their value
                                 return b;
@@ -1327,7 +1327,7 @@ namespace VDS.RDF.Query
                                     Double dbl;
                                     if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
-                                        if (dbl == 0.0d || double.IsNaN(dbl))
+                                        if (dbl == 0.0d || Double.IsNaN(dbl))
                                         {
                                             // Zero/NaN gives EBV of false
                                             return false;
@@ -1938,5 +1938,11 @@ namespace VDS.RDF.Query
         }
 
         #endregion
+
+        public static bool IsStringDatatype(string datatype)
+        {
+            return !String.IsNullOrEmpty(datatype) && (RdfSpecsHelper.RdfLangString.Equals(datatype) ||
+                                                       XmlSpecsHelper.XmlSchemaDataTypeString.Equals(datatype));
+        }
     }
 }

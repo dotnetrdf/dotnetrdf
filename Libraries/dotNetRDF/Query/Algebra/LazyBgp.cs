@@ -261,7 +261,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (context.Query.OrderBy != null && context.Query.IsOptimisableOrderBy)
                         {
-                            IComparer<Triple> comparer = context.Query.OrderBy.GetComparer(tp);
+                            IComparer<Triple> comparer = context.Query.OrderBy.GetComparer(tp, context.OrderingComparer);
                             if (comparer != null)
                             {
                                 ts = ts.OrderBy(t => t, comparer);

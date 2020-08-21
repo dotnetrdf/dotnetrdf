@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             _result = null;
 
             // We must take a copy of the original context as otherwise we can have strange results
-            SparqlEvaluationContext context = new SparqlEvaluationContext(origContext.Query, origContext.Data);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(origContext.Query, origContext.Data, origContext.NodeComparer);
             context.InputMultiset = origContext.InputMultiset;
             context.OutputMultiset = new Multiset();
             _lastInput = context.InputMultiset.GetHashCode();

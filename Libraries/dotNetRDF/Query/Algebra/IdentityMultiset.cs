@@ -57,8 +57,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression which the Join is predicated on.</param>
+        /// <param name="nodeComparer">The comparer to use.</param>
         /// <returns>The other Multiset.</returns>
-        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
+        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, ISparqlNodeComparer nodeComparer)
         {
             // If Other is Null/Empty then the Join still results in Identity
             if (other is NullMultiset) return this;
@@ -70,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
         /// Exists Joins the Multiset to another Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
-        /// <param name="mustExist">Whether solutions must exist in the Other Multiset for the Join to suceed.</param>
+        /// <param name="mustExist">Whether solutions must exist in the Other Multiset for the Join to succeed.</param>
         /// <returns></returns>
         public override BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
         {

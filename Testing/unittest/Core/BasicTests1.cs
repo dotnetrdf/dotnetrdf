@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -652,7 +653,7 @@ namespace VDS.RDF
         [Fact]
         public void NodesSortingSparqlOrder()
         {
-            SparqlOrderingComparer comparer = new SparqlOrderingComparer();
+            var comparer = new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
 
             //Stream for Output
             Console.WriteLine("## Sorting Test");
