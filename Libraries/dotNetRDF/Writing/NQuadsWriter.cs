@@ -57,7 +57,6 @@ namespace VDS.RDF.Writing
         public NQuadsWriter(NQuadsSyntax syntax)
         {
             PrettyPrintMode = true;
-            UseMultiThreadedWriting = Options.AllowMultiThreadedWriting;
             Syntax = syntax;
         }
 
@@ -72,7 +71,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether Multi-Threaded Writing.
         /// </summary>
-        public bool UseMultiThreadedWriting { get; set; }
+        public bool UseMultiThreadedWriting { get; set; } = false;
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer.

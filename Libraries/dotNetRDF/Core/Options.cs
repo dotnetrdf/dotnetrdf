@@ -256,7 +256,7 @@ namespace VDS.RDF
         /// <remarks>
         /// In some contexts multi-threaded writing may not even work due to restrictions on thread types since we use the System.Threading.WaitAll method which is only valid in <strong>MTA</strong> contexts.
         /// </remarks>
-        public static bool AllowMultiThreadedWriting { get; set; } = false;
+        // public static bool AllowMultiThreadedWriting { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage.

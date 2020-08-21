@@ -1080,7 +1080,8 @@ namespace VDS.RDF
         /// <param name="writer">Writer.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
-        private static void ApplyWriterOptions(object writer, int compressionLevel, bool useDtd)
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
+        private static void ApplyWriterOptions(object writer, int compressionLevel, bool useDtd, bool useMultipleThreads)
         {
             if (writer is ICompressingWriter compressingWriter)
             {
@@ -1089,6 +1090,11 @@ namespace VDS.RDF
             if (writer is IDtdWriter dtdWriter)
             {
                 dtdWriter.UseDtd = useDtd;
+            }
+
+            if (writer is IMultiThreadedWriter multiThreadedWriter)
+            {
+                multiThreadedWriter.UseMultiThreadedWriting = useMultipleThreads;
             }
         }
 
@@ -1131,13 +1137,14 @@ namespace VDS.RDF
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <remarks>
         /// <para>
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// </remarks>
         /// <returns></returns>
-        public static IRdfWriter GetWriter(IEnumerable<string> ctypes, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IRdfWriter GetWriter(IEnumerable<string> ctypes, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             if (ctypes != null)
             {
@@ -1148,7 +1155,7 @@ namespace VDS.RDF
                     if (definition.CanWriteRdf)
                     {
                         var writer = definition.GetRdfWriter();
-                        ApplyWriterOptions(writer, compressionLevel, useDtd);
+                        ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                         contentType = definition.CanonicalMimeType;
                         return writer;
                     }
@@ -1158,7 +1165,7 @@ namespace VDS.RDF
             // Default to Turtle
             contentType = Turtle[0];
             IRdfWriter defaultWriter = new CompressingTurtleWriter();
-            ApplyWriterOptions(defaultWriter, compressionLevel, useDtd);
+            ApplyWriterOptions(defaultWriter, compressionLevel, useDtd, useMultipleThreads);
             return defaultWriter;
         }
 
@@ -1169,13 +1176,14 @@ namespace VDS.RDF
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client.</returns>
         /// <remarks>
         /// <para>
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// </remarks>
-        public static IRdfWriter GetWriter(string acceptHeader, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IRdfWriter GetWriter(string acceptHeader, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             string[] ctypes;
 
@@ -1197,7 +1205,7 @@ namespace VDS.RDF
                 ctypes = new string[] { };
             }
 
-            return GetWriter(ctypes, out contentType, compressionLevel, useDtd);
+            return GetWriter(ctypes, out contentType, compressionLevel, useDtd, useMultipleThreads);
         }
 
         /// <summary>
@@ -1206,16 +1214,17 @@ namespace VDS.RDF
         /// <param name="acceptHeader">Value of the HTTP Accept Header.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <returns>A Writer for a Content Type the client accepts.</returns>
         /// <remarks>
         /// <para>
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
         /// </remarks>
-        public static IRdfWriter GetWriter(string acceptHeader, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IRdfWriter GetWriter(string acceptHeader, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             string temp;
-            return GetWriter(acceptHeader, out temp, compressionLevel, useDtd);
+            return GetWriter(acceptHeader, out temp, compressionLevel, useDtd, useMultipleThreads);
         }
 
         /// <summary>
@@ -1224,12 +1233,13 @@ namespace VDS.RDF
         /// <param name="fileExt">File Extension.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension.</exception>
         /// <returns></returns>
-        public static IRdfWriter GetWriterByFileExtension(string fileExt, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IRdfWriter GetWriterByFileExtension(string fileExt, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             string temp;
-            return GetWriterByFileExtension(fileExt, out temp, compressionLevel, useDtd);
+            return GetWriterByFileExtension(fileExt, out temp, compressionLevel, useDtd, useMultipleThreads);
         }
 
         /// <summary>
@@ -1239,6 +1249,7 @@ namespace VDS.RDF
         /// <param name="contentType">Content Type of the chosen writer.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension.</exception>
         /// <remarks>
         /// <para>
@@ -1246,9 +1257,9 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         /// <returns></returns>
-        public static IRdfWriter GetWriterByFileExtension(string fileExt, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IRdfWriter GetWriterByFileExtension(string fileExt, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
-            if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File extension cannot be null");
 
             // See if there are any MIME Type Definition for the file extension
             foreach (var definition in GetDefinitionsByFileExtension(fileExt))
@@ -1257,7 +1268,7 @@ namespace VDS.RDF
                 if (definition.CanWriteRdf)
                 {
                     var writer = definition.GetRdfWriter();
-                    ApplyWriterOptions(writer, compressionLevel, useDtd);
+                    ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     contentType = definition.CanonicalMimeType;
                     return writer;
                 }
@@ -1612,16 +1623,14 @@ namespace VDS.RDF
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header.
         /// </para>
-        /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>.
-        /// </para>
         /// </remarks>
-        public static IStoreWriter GetStoreWriter(IEnumerable<string> ctypes, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IStoreWriter GetStoreWriter(IEnumerable<string> ctypes, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             foreach (var definition in GetDefinitions(ctypes))
             {
@@ -1629,14 +1638,14 @@ namespace VDS.RDF
                 {
                     contentType = definition.CanonicalMimeType;
                     var writer = definition.GetRdfDatasetWriter();
-                    ApplyWriterOptions(writer, compressionLevel, useDtd);
+                    ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     return writer;
                 }
             }
 
             contentType = NQuads[0];
             IStoreWriter defaultWriter = new NQuadsWriter();
-            ApplyWriterOptions(defaultWriter, compressionLevel, useDtd);
+            ApplyWriterOptions(defaultWriter, compressionLevel, useDtd, useMultipleThreads);
             return defaultWriter;
         }
 
@@ -1687,10 +1696,10 @@ namespace VDS.RDF
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
         /// <returns></returns>
-        public static IStoreWriter GetStoreWriterByFileExtension(string fileExt, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IStoreWriter GetStoreWriterByFileExtension(string fileExt, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             string temp;
-            return GetStoreWriterByFileExtension(fileExt, out temp, compressionLevel, useDtd);
+            return GetStoreWriterByFileExtension(fileExt, out temp, compressionLevel, useDtd, useMultipleThreads);
         }
 
         /// <summary>
@@ -1700,8 +1709,9 @@ namespace VDS.RDF
         /// <param name="contentType">Content Type of the selected writer.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads to create the output. Applies only to writers that implement the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <returns></returns>
-        public static IStoreWriter GetStoreWriterByFileExtension(string fileExt, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true)
+        public static IStoreWriter GetStoreWriterByFileExtension(string fileExt, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
             if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
 
@@ -1710,7 +1720,7 @@ namespace VDS.RDF
                 if (def.CanWriteRdfDatasets)
                 {
                     var writer = def.GetRdfDatasetWriter();
-                    ApplyWriterOptions(writer, compressionLevel, useDtd);
+                    ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     contentType = def.CanonicalMimeType;
                     return writer;
                 }

@@ -78,7 +78,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether multi-threaded writing will be used to generate output faster.
         /// </summary>
-        public bool UseMultiThreadedWriting { get; set; } = Options.AllowMultiThreadedWriting;
+        public bool UseMultiThreadedWriting { get; set; } = false;
 
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format.
