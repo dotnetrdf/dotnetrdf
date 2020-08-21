@@ -142,7 +142,7 @@ namespace VDS.RDF.Configuration
             {
                 Assert.Equal(current, UriLoader.Timeout);
 
-                Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UriLoaderTimeout");
+                Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Parsing.UriLoader#Timeout");
                 Graph g = new Graph();
                 this.ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
 
