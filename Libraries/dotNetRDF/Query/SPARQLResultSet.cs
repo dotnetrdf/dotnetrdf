@@ -452,13 +452,14 @@ namespace VDS.RDF.Query
         /// <param name="subjVar">Variable whose value should be used for Subjects of Triples.</param>
         /// <param name="predVar">Variable whose value should be used for Predicates of Triples.</param>
         /// <param name="objVar">Variable whose value should be used for Object of Triples.</param>
+        /// <param name="fullTripleIndex">Indicates if the returned triple collection should include all indexes (true) or only the basic indexes (false).</param>
         /// <returns></returns>
         /// <remarks>
         /// Only Results for which all three variables have bound values will generate Triples.
         /// </remarks>
-        public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
+        public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar, bool fullTripleIndex = true)
         {
-            BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection();
+            BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection(fullTripleIndex);
 
             foreach (SparqlResult r in Results)
             {

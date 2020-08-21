@@ -189,7 +189,7 @@ namespace VDS.RDF
         /// Default setting for Full Indexing is enabled, enabling/disabling it only has an effect on indexed triple collection instances instantiated after full indexing was enabled/disabled i.e. existing Graphs in memory using the indexed triple collections continue to use the full indexing setting that was present when they were instantiated.
         /// </para>
         /// </remarks>
-        public static bool FullTripleIndexing { get; set; } = true;
+        // public static bool FullTripleIndexing { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching.

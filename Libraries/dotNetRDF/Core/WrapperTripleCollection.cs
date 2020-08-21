@@ -44,7 +44,7 @@ namespace VDS.RDF
         /// Creates a new decorator over the default <see cref="TreeIndexedTripleCollection"/>.
         /// </summary>
         public WrapperTripleCollection()
-            : this(new TreeIndexedTripleCollection()) { }
+            : this(new TreeIndexedTripleCollection(true)) { }
 
         /// <summary>
         /// Creates a new decorator around the given triple collection.
@@ -52,8 +52,7 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection.</param>
         public WrapperTripleCollection(BaseTripleCollection tripleCollection)
         {
-            if (tripleCollection == null) throw new ArgumentNullException("tripleCollection");
-            _triples = tripleCollection;
+            _triples = tripleCollection ?? throw new ArgumentNullException(nameof(tripleCollection));
             _triples.TripleAdded += HandleTripleAdded;
             _triples.TripleRemoved += HandleTripleRemoved;
         }

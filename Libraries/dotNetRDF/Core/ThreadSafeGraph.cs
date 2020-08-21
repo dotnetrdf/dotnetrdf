@@ -48,7 +48,7 @@ namespace VDS.RDF
         /// Creates a new Thread Safe Graph.
         /// </summary>
         public ThreadSafeGraph()
-            : this(new ThreadSafeTripleCollection(new TreeIndexedTripleCollection())) { }
+            : this(new ThreadSafeTripleCollection(new TreeIndexedTripleCollection(true))) { }
 
         /// <summary>
         /// Creates a new Thread Safe graph using the given Triple Collection.

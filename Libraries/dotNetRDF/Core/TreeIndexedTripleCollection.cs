@@ -57,15 +57,24 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
         /// </summary>
-        public TreeIndexedTripleCollection()
-             : this(MultiDictionaryMode.AVL) { }
+        public TreeIndexedTripleCollection() : this(true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new Tree Indexed triple collection.
+        /// </summary>
+        /// <param name="fullTripleIndexing">Whether to create subject-predicate, subject-object and subject-predicate indexes in addition to the basic subject, predicate and object indexes. Defaults to true.</param>
+        public TreeIndexedTripleCollection(bool fullTripleIndexing)
+             : this(MultiDictionaryMode.AVL, fullTripleIndexing) { }
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
         /// </summary>
         /// <param name="compoundIndexMode">Mode to use for compound indexes.</param>
-        public TreeIndexedTripleCollection(MultiDictionaryMode compoundIndexMode)
-            : this(true, true, true, Options.FullTripleIndexing, Options.FullTripleIndexing, Options.FullTripleIndexing, compoundIndexMode) { }
+        /// <param name="fullTripleIndexing">Whether to create subject-predicate, subject-object and subject-predicate indexes in addition to the basic subject, predicate and object indexes. Defaults to true.</param>
+        public TreeIndexedTripleCollection(MultiDictionaryMode compoundIndexMode, bool fullTripleIndexing = true)
+            : this(true, true, true, fullTripleIndexing, fullTripleIndexing, fullTripleIndexing, compoundIndexMode) { }
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection with the given Indexing options.
