@@ -179,7 +179,7 @@ namespace VDS.RDF.Parsing
 
         private void SetUriLoaderCaching(bool cachingEnabled)
         {
-            Options.UriLoaderCaching = cachingEnabled;
+            UriLoader.CacheEnabled = cachingEnabled;
         }
 
         [SkippableFact]

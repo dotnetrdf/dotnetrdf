@@ -131,7 +131,7 @@ namespace VDS.RDF
 
             try
             {
-                Options.UriLoaderCaching = false;
+                UriLoader.CacheEnabled = false;
                 Console.WriteLine("Going to get two copies of a Graph from DBPedia and compare");
                 Console.WriteLine("Using the DBPedia Graph for Barack Obama");
 
@@ -187,7 +187,7 @@ namespace VDS.RDF
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                UriLoader.CacheEnabled = true;
             }
         }
 
@@ -283,7 +283,7 @@ namespace VDS.RDF
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
-                Options.UriLoaderCaching = false;
+                UriLoader.CacheEnabled = false;
                 Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
@@ -322,7 +322,7 @@ namespace VDS.RDF
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                UriLoader.CacheEnabled = true;
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }

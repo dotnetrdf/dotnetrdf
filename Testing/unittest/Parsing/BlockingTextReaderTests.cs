@@ -380,7 +380,7 @@ namespace VDS.RDF.Parsing
 
         private void SetUriLoaderCaching(bool cachingEnabled)
         {
-            Options.UriLoaderCaching = cachingEnabled;
+            UriLoader.CacheEnabled = cachingEnabled;
         }
 
         [Fact(Skip="Remote configuration is not currently available")]

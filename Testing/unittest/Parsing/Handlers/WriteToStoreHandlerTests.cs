@@ -252,13 +252,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                UriLoader.CacheEnabled = false;
                 FusekiConnector fuseki = FusekiTest.GetConnection();
                 this.TestWriteToStoreHandler(fuseki);
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                UriLoader.CacheEnabled = true;
             }
         }
 

@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                UriLoader.CacheEnabled = false;
                 List<String> tests = new List<string>()
                 {
                     "gr1",
@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                UriLoader.CacheEnabled = true;
             }
         }
 

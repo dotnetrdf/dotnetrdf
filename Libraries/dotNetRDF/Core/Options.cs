@@ -194,7 +194,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching.
         /// </summary>
-        public static bool UriLoaderCaching { get; set; } = true;
+        //public static bool UriLoaderCaching { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds).

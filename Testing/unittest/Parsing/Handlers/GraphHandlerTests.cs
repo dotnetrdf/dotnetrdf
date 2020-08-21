@@ -199,7 +199,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                UriLoader.CacheEnabled = false;
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
@@ -211,7 +211,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                UriLoader.CacheEnabled = true;
             }
         }
 
@@ -220,7 +220,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                UriLoader.CacheEnabled = false;
 
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -233,7 +233,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                UriLoader.CacheEnabled = true;
             }
         }
 

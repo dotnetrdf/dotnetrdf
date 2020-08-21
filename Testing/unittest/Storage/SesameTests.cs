@@ -44,12 +44,12 @@ namespace VDS.RDF.Storage
 
         public SesameTests()
         {
-            Options.UriLoaderCaching = false;
+            UriLoader.CacheEnabled = false;
         }
 
         public void Dispose()
         {
-            Options.UriLoaderCaching = true;
+            UriLoader.CacheEnabled = true;
         }
 
         [SkippableFact]

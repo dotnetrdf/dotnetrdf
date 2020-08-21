@@ -426,14 +426,14 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Provides a wrapper around the Options.UriLoaderCaching option
+        /// Provides a wrapper around the UriLoader.CacheEnabled option
         /// that allows it to be conditionally excluded when building
         /// tests for platforms that don't support it.
         /// </summary>
         /// <param name="cacheEnabled"></param>
         private void SetUriLoaderCaching(bool cacheEnabled)
         {
-            Options.UriLoaderCaching = cacheEnabled;
+            UriLoader.CacheEnabled = cacheEnabled;
         }
     }
 }

@@ -105,6 +105,11 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Get or set the flag that controls whether or not the cache is enabled.
+        /// </summary>
+        public static bool CacheEnabled { get; set; } = true;
+
+        /// <summary>
         /// Determines whether the RDF behind the given URI is cached.
         /// </summary>
         /// <param name="u">URI.</param>
@@ -281,7 +286,7 @@ namespace VDS.RDF.Parsing
                 // Use Cache if possible
                 String etag = String.Empty;
                 String local = null;
-                if (Options.UriLoaderCaching)
+                if (CacheEnabled)
                 {
                     if (_cache.HasETag(u))
                     {
@@ -325,7 +330,7 @@ namespace VDS.RDF.Parsing
                     httpRequest.Accept = MimeTypesHelper.HttpAcceptHeader;
                 }
 
-                if (Options.UriLoaderCaching)
+                if (CacheEnabled)
                 {
                     if (!etag.Equals(String.Empty))
                     {
@@ -349,7 +354,7 @@ namespace VDS.RDF.Parsing
 
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
-                    if (Options.UriLoaderCaching)
+                    if (CacheEnabled)
                     {
                         // Are we using ETag based caching?
                         if (!etag.Equals(String.Empty))
@@ -395,7 +400,7 @@ namespace VDS.RDF.Parsing
                     }
                     parser.Warning += RaiseWarning;
                     // To do caching we ask the cache to give us a handler and then we tie it to
-                    if (Options.UriLoaderCaching)
+                    if (CacheEnabled)
                     {
                         IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
                         if (cacheHandler != null)
@@ -422,7 +427,7 @@ namespace VDS.RDF.Parsing
                     catch
                     {
                         // If we were trying to cache the response and something went wrong discard the cached copy
-                        if (Options.UriLoaderCaching)
+                        if (CacheEnabled)
                         {
                             _cache.RemoveETag(u);
                             _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
@@ -444,7 +449,7 @@ namespace VDS.RDF.Parsing
                 {
                 }
 
-                if (Options.UriLoaderCaching)
+                if (CacheEnabled)
                 {
                     if (webEx.Response != null)
                     {
