@@ -97,10 +97,10 @@ namespace VDS.RDF.Parsing
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = Options.UriLoaderTimeout;
+            int defaultTimeout = UriLoader.Timeout;
             try
             {
-                Options.UriLoaderTimeout = 45000;
+                UriLoader.Timeout = 45000;
                 Uri soton = new Uri("http://dbpedia.org/resource/Southampton");
                 Uri sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");
                 Uri sotonData = new Uri("http://dbpedia.org/data/Southampton.xml");
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.UriLoaderTimeout = defaultTimeout;
+                UriLoader.Timeout = defaultTimeout;
             }
         }
     }

@@ -30,6 +30,7 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
 using VDS.RDF.Query.Operators.DateTime;
 
@@ -136,20 +137,20 @@ namespace VDS.RDF.Configuration
         [Fact]
         public void ConfigurationStaticOptionsInt32Property()
         {
-            int current = Options.UriLoaderTimeout;
+            int current = UriLoader.Timeout;
             try
             {
-                Assert.Equal(current, Options.UriLoaderTimeout);
+                Assert.Equal(current, UriLoader.Timeout);
 
                 Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#UriLoaderTimeout");
                 Graph g = new Graph();
                 this.ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
 
-                Assert.Equal(99, Options.UriLoaderTimeout);
+                Assert.Equal(99, UriLoader.Timeout);
             }
             finally
             {
-                Options.UriLoaderTimeout = current;
+                UriLoader.Timeout = current;
             }
         }
 
