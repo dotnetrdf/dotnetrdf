@@ -187,11 +187,11 @@ namespace VDS.RDF.Parsing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = Options.UriLoaderTimeout;
+            int defaultTimeout = UriLoader.Timeout;
             try
             {
                 SetUriLoaderCaching(false);
-                Options.UriLoaderTimeout = 45000;
+                UriLoader.Timeout = 45000;
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Barack_Obama"));
@@ -205,7 +205,7 @@ namespace VDS.RDF.Parsing
             finally
             {
                 SetUriLoaderCaching(true);
-                Options.UriLoaderTimeout = defaultTimeout;
+                UriLoader.Timeout = defaultTimeout;
             }
         }
 
@@ -231,11 +231,11 @@ namespace VDS.RDF.Parsing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = Options.UriLoaderTimeout;
+            int defaultTimeout = UriLoader.Timeout;
             try
             {
                 SetUriLoaderCaching(false);
-                Options.UriLoaderTimeout = 45000;
+                UriLoader.Timeout = 45000;
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
@@ -245,7 +245,7 @@ namespace VDS.RDF.Parsing
             finally
             {
                 SetUriLoaderCaching(true);
-                Options.UriLoaderTimeout = defaultTimeout;
+                UriLoader.Timeout = defaultTimeout;
             }
         }
 

@@ -110,6 +110,11 @@ namespace VDS.RDF.Parsing
         public static bool CacheEnabled { get; set; } = true;
 
         /// <summary>
+        /// Get or set the timeout (in milliseconds) for reading content from a URL.
+        /// </summary>
+        public static int Timeout { get; set; } = 15000;
+
+        /// <summary>
         /// Determines whether the RDF behind the given URI is cached.
         /// </summary>
         /// <param name="u">URI.</param>
@@ -341,7 +346,7 @@ namespace VDS.RDF.Parsing
                 // Use HTTP GET
                 httpRequest.Method = "GET";
 #if !NETCORE
-                httpRequest.Timeout = Options.UriLoaderTimeout;
+                httpRequest.Timeout = Timeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
@@ -582,7 +587,7 @@ namespace VDS.RDF.Parsing
                 // Use HTTP GET
                 httpRequest.Method = "GET";
 #if !NETCORE
-                httpRequest.Timeout = Options.UriLoaderTimeout;
+                httpRequest.Timeout = Timeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {

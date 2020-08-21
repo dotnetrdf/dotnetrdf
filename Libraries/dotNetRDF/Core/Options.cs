@@ -69,7 +69,7 @@ namespace VDS.RDF
     public static class Options
     {
         private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
-        private static int _uriLoaderTimeout = 15000;
+        //private static int _uriLoaderTimeout = 15000;
 
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
@@ -199,17 +199,17 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds).
         /// </summary>
-        public static int UriLoaderTimeout
-        {
-            get => _uriLoaderTimeout;
-            set
-            {
-                if (value > 0)
-                {
-                    _uriLoaderTimeout = value;
-                }
-            }
-        }
+        //public static int UriLoaderTimeout
+        //{
+        //    get => _uriLoaderTimeout;
+        //    set
+        //    {
+        //        if (value > 0)
+        //        {
+        //            _uriLoaderTimeout = value;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Gets/Sets whether a UTF-8 BOM is used for UTF-8 Streams created by dotNetRDF (this does not affect Streams passed directly to methods as open streams cannot have their encoding changed).

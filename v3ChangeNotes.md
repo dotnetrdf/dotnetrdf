@@ -39,3 +39,6 @@ The desired level of indexing can be specified when creating a new `TreeIndexedT
 
 ### UriLoaderCaching
 This option is moved to UriLoader.CacheEnabled. This is still a static property at present as the UriLoader is currently implemented as a static class.
+
+### UriLoaderTimeout
+This option is moved to UriLoader.Timeout. This is still a static property at present as the UriLoader is currently implemented as a static class.

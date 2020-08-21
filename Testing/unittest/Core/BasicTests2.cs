@@ -280,11 +280,11 @@ namespace VDS.RDF
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = Options.UriLoaderTimeout;
+            int defaultTimeout = UriLoader.Timeout;
             try
             {
                 UriLoader.CacheEnabled = false;
-                Options.UriLoaderTimeout = 45000;
+                UriLoader.Timeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
@@ -323,7 +323,7 @@ namespace VDS.RDF
             finally
             {
                 UriLoader.CacheEnabled = true;
-                Options.UriLoaderTimeout = defaultTimeout;
+                UriLoader.Timeout = defaultTimeout;
             }
         }
 

@@ -194,7 +194,7 @@ namespace VDS.RDF.Parsing
                 // Use HTTP GET
                 request.Method = "GET";
 #if !NETCORE
-                request.Timeout = Options.UriLoaderTimeout;
+                request.Timeout = Timeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {
@@ -399,7 +399,7 @@ namespace VDS.RDF.Parsing
                 // Use HTTP GET
                 request.Method = "GET";
 #if !NETCORE
-                request.Timeout = Options.UriLoaderTimeout;
+                request.Timeout = Timeout;
 #endif
                 if (_userAgent != null && !_userAgent.Equals(String.Empty))
                 {

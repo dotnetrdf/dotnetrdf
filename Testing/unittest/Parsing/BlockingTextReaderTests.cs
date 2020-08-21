@@ -386,11 +386,11 @@ namespace VDS.RDF.Parsing
         [Fact(Skip="Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
-            int defaultTimeout = Options.UriLoaderTimeout;
+            int defaultTimeout = UriLoader.Timeout;
             try
             {
                 SetUriLoaderCaching(false);
-                Options.UriLoaderTimeout = 45000;
+                UriLoader.Timeout = 45000;
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new Notation3Parser());
@@ -400,7 +400,7 @@ namespace VDS.RDF.Parsing
             finally
             {
                 SetUriLoaderCaching(true);
-                Options.UriLoaderTimeout = defaultTimeout;
+                UriLoader.Timeout = defaultTimeout;
             }
         }
 
