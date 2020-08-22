@@ -58,15 +58,20 @@ namespace VDS.RDF.Query
     {
         private NamespaceMapper _nsmapper;
         private Uri _baseUri;
-        private bool _allowAggregates = false;
-        private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
         private SparqlQueryParser _parser;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
         /// Creates a new SPARQL Expression Parser.
         /// </summary>
-        public SparqlExpressionParser() { }
+        public SparqlExpressionParser() : this(SparqlQuerySyntax.Sparql_1_1)
+        {
+        }
+
+        public SparqlExpressionParser(SparqlQuerySyntax syntax)
+        {
+            SyntaxMode = syntax;
+        }
 
         /// <summary>
         /// Creates a new SPARQL Expression Parser which has a reference back to a Query Parser.
@@ -90,7 +95,8 @@ namespace VDS.RDF.Query
         public SparqlExpressionParser(SparqlQueryParser parser, bool allowAggregates)
         {
             _parser = parser;
-            _allowAggregates = allowAggregates;
+            AllowAggregates = allowAggregates;
+            SyntaxMode = parser.SyntaxMode;
         }
 
         /// <summary>
@@ -98,10 +104,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public Uri BaseUri
         {
-            set
-            {
-                _baseUri = value;
-            }
+            set => _baseUri = value;
         }
 
         /// <summary>
@@ -109,51 +112,25 @@ namespace VDS.RDF.Query
         /// </summary>
         public NamespaceMapper NamespaceMap
         {
-            set
-            {
-                _nsmapper = value;
-            }
+            set => _nsmapper = value;
         }
 
         /// <summary>
         /// Gets/Sets whether Aggregates are permitted in Expressions.
         /// </summary>
-        public bool AllowAggregates
-        {
-            get
-            {
-                return _allowAggregates;
-            }
-            set
-            {
-                _allowAggregates = value;
-            }
-        }
+        public bool AllowAggregates { get; set; }
 
         /// <summary>
         /// Gets/Sets the Syntax that should be supported.
         /// </summary>
-        public SparqlQuerySyntax SyntaxMode
-        {
-            get
-            {
-                return _syntax;
-            }
-            set
-            {
-                _syntax = value;
-            }
-        }
+        public SparqlQuerySyntax SyntaxMode { get; set; }
 
         /// <summary>
         /// Sets the Query Parser that the Expression Parser can call back into when needed.
         /// </summary>
         public SparqlQueryParser QueryParser
         {
-            set
-            {
-                _parser = value;
-            }
+            set => _parser = value;
         }
 
         /// <summary>
@@ -161,10 +138,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
-            get
-            {
-                return _factories;
-            }
+            get => _factories;
             set
             {
                 if (value != null)
@@ -460,7 +434,7 @@ namespace VDS.RDF.Query
                 case Token.URIFUNC:
                 case Token.UUID:
                 case Token.YEAR:
-                    if (_syntax == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
+                    if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
                     return TryParseBuiltInCall(tokens);
 
                 case Token.AVG:
@@ -474,7 +448,7 @@ namespace VDS.RDF.Query
                 case Token.NMIN:
                 case Token.SAMPLE:
                 case Token.SUM:
-                    if (_allowAggregates)
+                    if (AllowAggregates)
                     {
                         return TryParseAggregateExpression(tokens);
                     }
@@ -641,7 +615,7 @@ namespace VDS.RDF.Query
                     }
 
                 case Token.CALL:
-                    if (_syntax != SparqlQuerySyntax.Extended) throw Error("The CALL keyword is only valid when using SPARQL 1.1 Extended syntax", next);
+                    if (SyntaxMode != SparqlQuerySyntax.Extended) throw Error("The CALL keyword is only valid when using SPARQL 1.1 Extended syntax", next);
                     args = new List<ISparqlExpression>();
                     do
                     {
@@ -679,7 +653,7 @@ namespace VDS.RDF.Query
                 case Token.CONTAINS:
                     return new ContainsFunction(TryParseBrackettedExpression(tokens), TryParseBrackettedExpression(tokens, false));
                 case Token.DATATYPEFUNC:
-                    if (_syntax == SparqlQuerySyntax.Sparql_1_0)
+                    if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0)
                     {
                         return new DataTypeFunction(TryParseBrackettedExpression(tokens));
                     }
@@ -811,7 +785,7 @@ namespace VDS.RDF.Query
 
                 case Token.EXISTS:
                 case Token.NOTEXISTS:
-                    if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS clauses are not supported in SPARQL 1.0");
+                    if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS clauses are not supported in SPARQL 1.0");
                     if (_parser == null) throw new RdfParseException("Unable to parse an EXISTS/NOT EXISTS as there is no Query Parser to call into");
 
                     // Gather Tokens for the Pattern
@@ -912,7 +886,7 @@ namespace VDS.RDF.Query
                     Dictionary<String, ISparqlExpression> scalarArgs = null;
                     if (semicolon)
                     {
-                        if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arguments List terminated by a Semicolon - Arbitrary Scalar Arguments for Extension Functions/Aggregates are not permitted in SPARQL 1.1");
+                        if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("Arguments List terminated by a Semicolon - Arbitrary Scalar Arguments for Extension Functions/Aggregates are not permitted in SPARQL 1.1");
                         scalarArgs = TryParseScalarArguments(first, tokens);
                     }
 
@@ -920,7 +894,7 @@ namespace VDS.RDF.Query
                     ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, _factories);
                     if (expr is AggregateTerm)
                     {
-                        if (!_allowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");
+                        if (!AllowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");
                     }
                     return expr;
                 }
@@ -1116,7 +1090,7 @@ namespace VDS.RDF.Query
 
         private ISparqlExpression TryParseAggregateExpression(Queue<IToken> tokens)
         {
-            if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
+            if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
 
             IToken agg = tokens.Dequeue();
             ISparqlExpression aggExpr = null;
@@ -1124,8 +1098,8 @@ namespace VDS.RDF.Query
             bool scalarArgs = false;
 
             // Turn off aggregate allowance since aggregates may not be nested
-            bool aggsAllowed = _allowAggregates;
-            _allowAggregates = false;
+            bool aggsAllowed = AllowAggregates;
+            AllowAggregates = false;
 
             // Expect a Left Bracket next
             IToken next = tokens.Dequeue();
@@ -1233,7 +1207,7 @@ namespace VDS.RDF.Query
             }
 
             // Reset Aggregate Allowance
-            _allowAggregates = aggsAllowed;
+            AllowAggregates = aggsAllowed;
 
             // Now we need to generate the actual expression
             switch (agg.TokenType)
@@ -1308,7 +1282,7 @@ namespace VDS.RDF.Query
 
                 case Token.MEDIAN:
                     // MEDIAN Aggregate
-                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
+                    if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new MedianAggregate((VariableTerm)aggExpr, distinct));
@@ -1331,7 +1305,7 @@ namespace VDS.RDF.Query
 
                 case Token.MODE:
                     // MODE Aggregate
-                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
+                    if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new ModeAggregate((VariableTerm)aggExpr, distinct));
@@ -1343,7 +1317,7 @@ namespace VDS.RDF.Query
 
                 case Token.NMAX:
                     // NMAX Aggregate
-                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
+                    if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new NumericMaxAggregate((VariableTerm)aggExpr, distinct));
@@ -1355,7 +1329,7 @@ namespace VDS.RDF.Query
 
                 case Token.NMIN:
                     // NMIN Aggregate
-                    if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
+                    if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
                     if (aggExpr is VariableTerm)
                     {
                         return new AggregateTerm(new NumericMinAggregate((VariableTerm)aggExpr, distinct));
@@ -1416,7 +1390,7 @@ namespace VDS.RDF.Query
 
                     case Token.QNAME:
                     case Token.URI:
-                        if (_syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arbitrary Scalar Arguments for Aggregates are not permitted in SPARQL 1.1");
+                        if (SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("Arbitrary Scalar Arguments for Aggregates are not permitted in SPARQL 1.1");
 
                         // Resolve QName/URI
                         if (next.TokenType == Token.QNAME)

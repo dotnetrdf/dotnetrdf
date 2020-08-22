@@ -51,3 +51,7 @@ By default queries and SPARQL update commands will be optimised by the query par
 
 ### UnsafeOptimisation
 This property only applies to the `VDS.RDF.Query.Optimisation.ImplictJoinOptimiser` and can now be set as a constructor parameter for that class. The constructor parameter defaults to `false`, matching the previous default behaviour or dotNetRDF.
+
+### QueryDefaultSyntax
+The desired SPARQL syntax can be set directly on all relevant classes - the most commonly used one being `SparqlQueryParser`, either by a constructor parameter or a property setting or in most cases both. 
+The default syntax library-wide is SPARQL 1.1 (`SparqlQuerySyntax.SPARQL_1_1`).

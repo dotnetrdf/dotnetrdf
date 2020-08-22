@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Contexts
         private int _graphPatternID = 0;
         private Uri _defaultBaseUri = null;
         private bool _subqueryMode = false;
-        private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
+        private SparqlQuerySyntax _syntax = SparqlQuerySyntax.Sparql_1_1;
         private int _nextAliasID = 0;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
         private bool _checkBNodeScope = true;

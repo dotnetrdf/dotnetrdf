@@ -66,7 +66,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Default Graph Uri for queries
         /// </summary>
-        protected String _defaultGraph = String.Empty;
+        protected string _defaultGraph = string.Empty;
         /// <summary>
         /// Default Timeout for Queries
         /// </summary>
@@ -86,11 +86,11 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Querystring Field name for the Timeout setting
         /// </summary>
-        protected String _timeoutField = "timeout";
+        protected string _timeoutField = "timeout";
         /// <summary>
         /// Querystring Field name for the Partial Results setting
         /// </summary>
-        protected String _partialResultsField = "partialResults";
+        protected string _partialResultsField = "partialResults";
 
         /// <summary>
         /// Whether a Query Form should be shown to the User
@@ -99,7 +99,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Default Sparql Query
         /// </summary>
-        protected String _defaultQuery = String.Empty;
+        protected string _defaultQuery = string.Empty;
 
         /// <summary>
         /// SPARQL Describe Algorithm to use (null indicates default is used)
@@ -108,12 +108,13 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// SPARQL Syntax to use (defaults to library default which is SPARQL 1.1 unless changed)
         /// </summary>
-        protected SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
+        protected SparqlQuerySyntax _syntax = SparqlQuerySyntax.Sparql_1_1;
 
         /// <summary>
         /// Query Optimiser to use (null indicates default is used)
         /// </summary>
         protected IQueryOptimiser _queryOptimiser = null;
+
         /// <summary>
         /// Algebra Optimisers to use (empty list means only standard optimisers apply)
         /// </summary>
@@ -122,145 +123,67 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Gets the Default Graph Uri
         /// </summary>
-        public String DefaultGraphURI
-        {
-            get
-            {
-                return this._defaultGraph;
-            }
-        }
+        public string DefaultGraphURI => _defaultGraph;
 
         /// <summary>
         /// Whether the Remote Endpoint supports specifying Query Timeout as a querystring parameter
         /// </summary>
-        public bool SupportsTimeout
-        {
-            get
-            {
-                return this._supportsTimeout;
-            }
-        }
+        public bool SupportsTimeout => _supportsTimeout;
 
         /// <summary>
         /// Gets the Default Query Execution Timeout
         /// </summary>
-        public long DefaultTimeout
-        {
-            get
-            {
-                return this._defaultTimeout;
-            }
-        }
+        public long DefaultTimeout => _defaultTimeout;
 
         /// <summary>
         /// Querystring field name for the Query Timeout for Remote Endpoints which support it
         /// </summary>
-        public String TimeoutField
-        {
-            get
-            {
-                return this._timeoutField;
-            }
-        }
+        public string TimeoutField => _timeoutField;
 
         /// <summary>
         /// Whether the Remote Endpoint supports specifying Partial Results on Timeout behaviour as a querystring parameter
         /// </summary>
-        public bool SupportsPartialResults
-        {
-            get
-            {
-                return this._supportsPartialResults;
-            }
-        }
+        public bool SupportsPartialResults => _supportsPartialResults;
 
         /// <summary>
         /// Gets the Default Partial Results on Timeout behaviour
         /// </summary>
-        public bool DefaultPartialResults
-        {
-            get
-            {
-                return this._defaultPartialResults;
-            }
-        }
+        public bool DefaultPartialResults => _defaultPartialResults;
 
         /// <summary>
         /// Querystring field name for the Partial Results on Timeout setting for Remote Endpoints which support it
         /// </summary>
-        public String PartialResultsField
-        {
-            get
-            {
-                return this._partialResultsField;
-            }
-        }
+        public string PartialResultsField => _partialResultsField;
 
         /// <summary>
         /// Gets whether the Query Form should be shown to users
         /// </summary>
-        public bool ShowQueryForm
-        {
-            get
-            {
-                return this._showQueryForm;
-            }
-        }
+        public bool ShowQueryForm => _showQueryForm;
 
         /// <summary>
         /// Gets the Default Query for the Query Form
         /// </summary>
-        public String DefaultQuery
-        {
-            get
-            {
-                return this._defaultQuery;
-            }
-        }
+        public string DefaultQuery => _defaultQuery;
 
         /// <summary>
         /// Gets the SPARQL Describe Algorithm to be used
         /// </summary>
-        public ISparqlDescribe DescribeAlgorithm
-        {
-            get
-            {
-                return this._describer;
-            }
-        }
+        public ISparqlDescribe DescribeAlgorithm => _describer;
 
         /// <summary>
         /// Gets the SPARQL Query Syntax to use
         /// </summary>
-        public SparqlQuerySyntax QuerySyntax
-        {
-            get
-            {
-                return this._syntax;
-            }
-        }
+        public SparqlQuerySyntax QuerySyntax => _syntax;
 
         /// <summary>
         /// Gets the Query Optimiser associated with the Configuration
         /// </summary>
-        public IQueryOptimiser QueryOptimiser
-        {
-            get
-            {
-                return this._queryOptimiser;
-            }
-        }
+        public IQueryOptimiser QueryOptimiser => _queryOptimiser;
 
         /// <summary>
         /// Gets the Algebra Optimisers associated with the Configuration
         /// </summary>
-        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
-        {
-            get
-            {
-                return this._algebraOptimisers;
-            }
-        }
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers => _algebraOptimisers;
 
         #endregion
 
@@ -273,29 +196,17 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Default Update Text for the Update Form
         /// </summary>
-        protected String _defaultUpdate = String.Empty;
+        protected string _defaultUpdate = string.Empty;
 
         /// <summary>
         /// Gets whether to show the Update Form if no update is specified
         /// </summary>
-        public bool ShowUpdateForm
-        {
-            get
-            {
-                return this._showUpdateForm;
-            }
-        }
+        public bool ShowUpdateForm => _showUpdateForm;
 
         /// <summary>
         /// Gets the Default Update for the Update Form
         /// </summary>
-        public String DefaultUpdate
-        {
-            get
-            {
-                return this._defaultUpdate;
-            }
-        }
+        public string DefaultUpdate => _defaultUpdate;
 
         #endregion
 
@@ -306,13 +217,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Gets the Service Description Graph
         /// </summary>
-        public IGraph ServiceDescription
-        {
-            get
-            {
-                return this._serviceDescription;
-            }
-        }
+        public IGraph ServiceDescription => _serviceDescription;
 
         /// <summary>
         /// Creates a new Base SPARQL Server Configuration based on information from a Configuration Graph
@@ -327,10 +232,10 @@ namespace VDS.RDF.Web.Configuration.Server
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryProcessor)));
             if (procNode != null)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, procNode);
+                object temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlQueryProcessor)
                 {
-                    this._queryProcessor = (ISparqlQueryProcessor)temp;
+                    _queryProcessor = (ISparqlQueryProcessor)temp;
                 }
                 else
                 {
@@ -339,13 +244,13 @@ namespace VDS.RDF.Web.Configuration.Server
             }
 
             // SPARQL Query Default Config
-            this._defaultGraph = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))?.ToString() ?? string.Empty;
-            this._defaultTimeout = ConfigurationLoader.GetConfigurationInt64(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), this._defaultTimeout);
-            this._defaultPartialResults = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPartialResults)), this._defaultPartialResults);
+            _defaultGraph = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))?.ToString() ?? string.Empty;
+            _defaultTimeout = ConfigurationLoader.GetConfigurationInt64(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), _defaultTimeout);
+            _defaultPartialResults = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPartialResults)), _defaultPartialResults);
 
             // Handler Configuration
-            this._showQueryForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowQueryForm)), this._showQueryForm);
-            String defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
+            _showQueryForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowQueryForm)), _showQueryForm);
+            string defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
             if (defQueryFile != null)
             {
                 defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
@@ -353,7 +258,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 {
                     using (StreamReader reader = new StreamReader(defQueryFile))
                     {
-                        this._defaultQuery = reader.ReadToEnd();
+                        _defaultQuery = reader.ReadToEnd();
                         reader.Close();
                     }
                 }
@@ -362,10 +267,10 @@ namespace VDS.RDF.Web.Configuration.Server
             // Get Query Syntax to use
             try
             {
-                String syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
+                string syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
                 if (syntaxSetting != null)
                 {
-                    this._syntax = (SparqlQuerySyntax)Enum.Parse(typeof(SparqlQuerySyntax), syntaxSetting);
+                    _syntax = (SparqlQuerySyntax)Enum.Parse(typeof(SparqlQuerySyntax), syntaxSetting);
                 }
             }
             catch (Exception ex)
@@ -379,13 +284,13 @@ namespace VDS.RDF.Web.Configuration.Server
             {
                 if (describeNode.NodeType == NodeType.Literal)
                 {
-                    String algoClass = ((ILiteralNode)describeNode).Value;
+                    string algoClass = ((ILiteralNode)describeNode).Value;
                     try
                     {
-                        Object desc = Activator.CreateInstance(Type.GetType(algoClass));
+                        object desc = Activator.CreateInstance(Type.GetType(algoClass));
                         if (desc is ISparqlDescribe)
                         {
-                            this._describer = (ISparqlDescribe)desc;
+                            _describer = (ISparqlDescribe)desc;
                         }
                         else
                         {
@@ -407,10 +312,10 @@ namespace VDS.RDF.Web.Configuration.Server
             INode queryOptNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryOptimiser)));
             if (queryOptNode != null)
             {
-                Object queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
+                object queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
                 if (queryOpt is IQueryOptimiser)
                 {
-                    this._queryOptimiser = (IQueryOptimiser)queryOpt;
+                    _queryOptimiser = (IQueryOptimiser)queryOpt;
                 }
                 else
                 {
@@ -421,10 +326,10 @@ namespace VDS.RDF.Web.Configuration.Server
             // Get the Algebra Optimisers
             foreach (INode algOptNode in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAlgebraOptimiser))))
             {
-                Object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
+                object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
                 if (algOpt is IAlgebraOptimiser)
                 {
-                    this._algebraOptimisers.Add((IAlgebraOptimiser)algOpt);
+                    _algebraOptimisers.Add((IAlgebraOptimiser)algOpt);
                 }
                 else
                 {
@@ -436,10 +341,10 @@ namespace VDS.RDF.Web.Configuration.Server
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode != null)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, procNode);
+                object temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlUpdateProcessor)
                 {
-                    this._updateProcessor = (ISparqlUpdateProcessor)temp;
+                    _updateProcessor = (ISparqlUpdateProcessor)temp;
                 }
                 else
                 {
@@ -448,8 +353,8 @@ namespace VDS.RDF.Web.Configuration.Server
             }
 
             // Handler Settings
-            this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), this._showUpdateForm);
-            String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
+            _showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), _showUpdateForm);
+            string defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
             if (defUpdateFile != null)
             {
                 defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
@@ -457,7 +362,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 {
                     using (StreamReader reader = new StreamReader(defUpdateFile))
                     {
-                        this._defaultUpdate = reader.ReadToEnd();
+                        _defaultUpdate = reader.ReadToEnd();
                         reader.Close();
                     }
                 }
@@ -467,10 +372,10 @@ namespace VDS.RDF.Web.Configuration.Server
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProtocolProcessor)));
             if (procNode != null)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, procNode);
+                object temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlHttpProtocolProcessor)
                 {
-                    this._protocolProcessor = (ISparqlHttpProtocolProcessor)temp;
+                    _protocolProcessor = (ISparqlHttpProtocolProcessor)temp;
                 }
                 else
                 {
@@ -478,7 +383,7 @@ namespace VDS.RDF.Web.Configuration.Server
                 }
             }
 
-            if (this._queryProcessor == null && this._updateProcessor == null && this._protocolProcessor == null)
+            if (_queryProcessor == null && _updateProcessor == null && _protocolProcessor == null)
             {
                 throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
             }
@@ -487,10 +392,10 @@ namespace VDS.RDF.Web.Configuration.Server
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
-                Object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                object descrip = ConfigurationLoader.LoadObject(g, descripNode);
                 if (descrip is IGraph)
                 {
-                    this._serviceDescription = (IGraph)descrip;
+                    _serviceDescription = (IGraph)descrip;
                 }
                 else
                 {
@@ -510,35 +415,17 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Gets the SPARQL Query Processor
         /// </summary>
-        public ISparqlQueryProcessor QueryProcessor
-        {
-            get
-            {
-                return this._queryProcessor;
-            }
-        }
+        public ISparqlQueryProcessor QueryProcessor => _queryProcessor;
 
         /// <summary>
         /// Gets the SPARQL Update Processor
         /// </summary>
-        public ISparqlUpdateProcessor UpdateProcessor
-        {
-            get
-            {
-                return this._updateProcessor;
-            }
-        }
+        public ISparqlUpdateProcessor UpdateProcessor => _updateProcessor;
 
         /// <summary>
         /// Gets the SPARQL Graph Store HTTP Protocol Processor
         /// </summary>
-        public ISparqlHttpProtocolProcessor ProtocolProcessor
-        {
-            get
-            {
-                return this._protocolProcessor;
-            }
-        }
+        public ISparqlHttpProtocolProcessor ProtocolProcessor => _protocolProcessor;
 
         /// <summary>
         /// Adds Description of Features for the given Handler Configuration
@@ -555,7 +442,7 @@ namespace VDS.RDF.Web.Configuration.Server
             if (queryNode != null)
             {
                 // Add Local Extension Function definitions
-                foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
+                foreach (ISparqlCustomExpressionFactory factory in _expressionFactories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)
                     {
@@ -571,7 +458,7 @@ namespace VDS.RDF.Web.Configuration.Server
             if (updateNode != null)
             {
                 // Add Local Extension Function definitions
-                foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
+                foreach (ISparqlCustomExpressionFactory factory in _expressionFactories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)
                     {

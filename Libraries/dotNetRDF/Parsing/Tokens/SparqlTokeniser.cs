@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Tokens
         private ParsingTextReader _in;
         private bool _queryKeywordSeen = false;
         private bool _baseDeclared = false;
-        private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
+        private SparqlQuerySyntax _syntax = SparqlQuerySyntax.Sparql_1_1;
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser.

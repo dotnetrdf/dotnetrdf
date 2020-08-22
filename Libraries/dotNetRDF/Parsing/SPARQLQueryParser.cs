@@ -81,12 +81,8 @@ namespace VDS.RDF.Parsing
     public class SparqlQueryParser
         : ITraceableTokeniser, IObjectParser<SparqlQuery>
     {
-        private readonly TokenQueueMode _queuemode = TokenQueueMode.QueueAllBeforeParsing;
-        private bool _tracetokeniser = false;
-        private Uri _defaultBaseUri = null;
-        private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
+        private readonly TokenQueueMode _queuemode;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
-        private IQueryOptimiser _optimiser = null;
 
         #region Constructors and Properties
 
@@ -108,7 +104,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Token Queue Mode.</param>
         public SparqlQueryParser(TokenQueueMode queueMode)
-            : this(queueMode, Options.QueryDefaultSyntax) { }
+            : this(queueMode, SparqlQuerySyntax.Sparql_1_1) { }
 
         /// <summary>
         /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser which supports the given SPARQL Syntax.
@@ -118,74 +114,31 @@ namespace VDS.RDF.Parsing
         public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax)
         {
             _queuemode = queueMode;
-            _syntax = syntax;
+            SyntaxMode = syntax;
         }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser progress is Traced to the Console.
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return _tracetokeniser;
-            }
-            set
-            {
-                _tracetokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets the Default Base URI for Queries parsed by this Parser instance.
         /// </summary>
-        public Uri DefaultBaseUri
-        {
-            get
-            {
-                return _defaultBaseUri;
-            }
-            set
-            {
-                _defaultBaseUri = value;
-            }
-        }
+        public Uri DefaultBaseUri { get; set; } = null;
 
         /// <summary>
         /// Gets/Sets the Syntax that should be supported.
         /// </summary>
-        public SparqlQuerySyntax SyntaxMode
-        {
-            get
-            {
-                return _syntax;
-            }
-            set
-            {
-                _syntax = value;
-            }
-        }
+        public SparqlQuerySyntax SyntaxMode { get; set; }
 
         /// <summary>
         /// Gets/Sets the locally scoped custom expression factories.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
-            get
-            {
-                return _factories;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    _factories = value;
-                }
-                else
-                {
-                    _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
-                }
-            }
+            get => _factories;
+            set => _factories = value ?? Enumerable.Empty<ISparqlCustomExpressionFactory>();
         }
 
         /// <summary>
@@ -196,17 +149,7 @@ namespace VDS.RDF.Parsing
         /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used.
         /// </para>
         /// </remarks>
-        public IQueryOptimiser QueryOptimiser
-        {
-            get
-            {
-                return _optimiser;
-            }
-            set
-            {
-                _optimiser = value;
-            }
-        }
+        public IQueryOptimiser QueryOptimiser { get; set; } = null;
 
         /// <summary>
         /// Get/set whether query optimization should be used.
@@ -315,8 +258,8 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Create the Parser Context
-                SparqlQueryParserContext context = new SparqlQueryParserContext(new SparqlTokeniser(input, _syntax), _queuemode, false, _tracetokeniser);
-                context.SyntaxMode = _syntax;
+                SparqlQueryParserContext context = new SparqlQueryParserContext(new SparqlTokeniser(input, SyntaxMode), _queuemode, false, TraceTokeniser);
+                context.SyntaxMode = SyntaxMode;
                 context.ExpressionParser.SyntaxMode = context.SyntaxMode;
                 context.ExpressionFactories = _factories;
 
@@ -344,12 +287,12 @@ namespace VDS.RDF.Parsing
             IToken temp = null;
 
             // Initialise Context with relevant data
-            context.DefaultBaseUri = _defaultBaseUri;
+            context.DefaultBaseUri = DefaultBaseUri;
             context.ExpressionParser.NamespaceMap = context.Query.NamespaceMap;
             context.ExpressionParser.QueryParser = this;
             context.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             context.Tokens.InitialiseBuffer();
-            context.SyntaxMode = _syntax;
+            context.SyntaxMode = SyntaxMode;
             context.Query.ExpressionFactories = context.ExpressionFactories.ToList();
 
             do
@@ -545,7 +488,7 @@ namespace VDS.RDF.Parsing
             } while (temp.TokenType != Token.EOF);
 
             // If not SPARQL 1.0 then do additional post parsing checks
-            if (_syntax != SparqlQuerySyntax.Sparql_1_0)
+            if (SyntaxMode != SparqlQuerySyntax.Sparql_1_0)
             {
                 switch (context.Query.QueryType)
                 {
@@ -618,9 +561,9 @@ namespace VDS.RDF.Parsing
             if (QueryOptimisation)
             {
                 // If a locally scoped optimiser is available use that
-                if (_optimiser != null)
+                if (QueryOptimiser != null)
                 {
-                    context.Query.Optimise(_optimiser);
+                    context.Query.Optimise(QueryOptimiser);
                 }
                 else
                 {
@@ -2445,7 +2388,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseFilterExists(SparqlQueryParserContext context, GraphPattern p, bool exists)
         {
-            if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS is not supported in SPARQL 1.0");
+            if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS/NOT EXISTS is not supported in SPARQL 1.0");
 
             // EXISTS/NOT EXISTS generate a new Graph Pattern
             GraphPattern existsClause = TryParseGraphPattern(context);
@@ -2850,7 +2793,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseGroupByClause(SparqlQueryParserContext context)
         {
-            if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("GROUP BY clauses are not supported in SPARQL 1.0");
+            if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("GROUP BY clauses are not supported in SPARQL 1.0");
 
             // GROUP BY has already been discarded
             IToken next = context.Tokens.Peek();
@@ -3043,7 +2986,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseHavingClause(SparqlQueryParserContext context)
         {
-            if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("HAVING clauses are not supported in SPARQL 1.0");
+            if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("HAVING clauses are not supported in SPARQL 1.0");
             // HAVING Keyword has already been discarded
             IToken next = context.Tokens.Peek();
             ISparqlExpression havingExpr;
