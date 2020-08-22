@@ -157,6 +157,11 @@ namespace VDS.RDF.Parsing
         /// <remarks>Defaults to true.</remarks>
         public bool QueryOptimisation { get; set; } = true;
 
+        /// <summary>
+        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
+        /// </summary>
+        public bool AllowUnknownFunctions { get; set; } = true;
+
         #endregion
 
         #region Events
@@ -258,16 +263,13 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Create the Parser Context
-                SparqlQueryParserContext context = new SparqlQueryParserContext(new SparqlTokeniser(input, SyntaxMode), _queuemode, false, TraceTokeniser);
-                context.SyntaxMode = SyntaxMode;
+                var context = new SparqlQueryParserContext(new SparqlTokeniser(input, SyntaxMode),
+                    _queuemode, false, TraceTokeniser) {SyntaxMode = SyntaxMode};
                 context.ExpressionParser.SyntaxMode = context.SyntaxMode;
                 context.ExpressionFactories = _factories;
+                context.ExpressionParser.AllowUnknownFunctions = AllowUnknownFunctions;
 
                 return ParseInternal(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -834,7 +836,7 @@ namespace VDS.RDF.Parsing
                         if (args.Count == 1 && args.First() == null) args.Clear();
 
                         // Then try and create an Expression
-                        expr = SparqlExpressionFactory.CreateExpression(u, args, _factories);
+                        expr = SparqlExpressionFactory.CreateExpression(u, args, _factories, AllowUnknownFunctions);
 
                         // Need to see the Alias
                         next = context.Tokens.Dequeue();

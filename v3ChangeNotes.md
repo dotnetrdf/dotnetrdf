@@ -55,3 +55,6 @@ This property only applies to the `VDS.RDF.Query.Optimisation.ImplictJoinOptimis
 ### QueryDefaultSyntax
 The desired SPARQL syntax can be set directly on all relevant classes - the most commonly used one being `SparqlQueryParser`, either by a constructor parameter or a property setting or in most cases both. 
 The default syntax library-wide is SPARQL 1.1 (`SparqlQuerySyntax.SPARQL_1_1`).
+
+### QueryAllowUnknownFunctions
+This option can now be set through the `AllowUnknownFunctions` property of `SparqlQueryParser` and `SparqlUpdateParser`.

@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
                     try
                     {
                         // Try to create the function and cache it - remember to respect the queries Expression Factories if present
-                        func = SparqlExpressionFactory.CreateExpression(funcUri, _args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()));
+                        func = SparqlExpressionFactory.CreateExpression(funcUri, _args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()), false);
                         _functionCache.Add(funcUri.AbsoluteUri, func);
                     }
                     catch

@@ -128,7 +128,7 @@ namespace VDS.RDF
         /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
         /// </summary>
         /// <remarks>When set to false a Parser Error will be thrown if the Function cannot be parsed into an Expression.</remarks>
-        public static bool QueryAllowUnknownFunctions { get; set; } = true;
+        //public static bool QueryAllowUnknownFunctions { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether to use rigorous query evaluation.

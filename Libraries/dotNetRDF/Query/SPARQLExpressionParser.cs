@@ -121,6 +121,11 @@ namespace VDS.RDF.Query
         public bool AllowAggregates { get; set; }
 
         /// <summary>
+        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
+        /// </summary>
+        public bool AllowUnknownFunctions { get; set; } = true;
+
+        /// <summary>
         /// Gets/Sets the Syntax that should be supported.
         /// </summary>
         public SparqlQuerySyntax SyntaxMode { get; set; }
@@ -891,7 +896,7 @@ namespace VDS.RDF.Query
                     }
 
                     // Return an Extension Function expression
-                    ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, _factories);
+                    ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, _factories, AllowUnknownFunctions);
                     if (expr is AggregateTerm)
                     {
                         if (!AllowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");

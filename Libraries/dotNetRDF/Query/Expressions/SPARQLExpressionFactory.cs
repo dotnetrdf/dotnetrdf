@@ -62,15 +62,16 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         /// <param name="u">Function Uri.</param>
         /// <param name="args">List of Argument Expressions.</param>
+        /// <param name="allowUnknownFunctions">Specifies whether functions that cannot be parsed into expressions should be represented by the <see cref="UnknownFunction"/>.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
         /// Uses only the globally scoped custom expression factories.
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args)
+        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, bool allowUnknownFunctions)
         {
-            return CreateExpression(u, args, Enumerable.Empty<ISparqlCustomExpressionFactory>());
+            return CreateExpression(u, args, Enumerable.Empty<ISparqlCustomExpressionFactory>(), allowUnknownFunctions);
         }
 
         /// <summary>
@@ -79,15 +80,16 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="u">Function Uri.</param>
         /// <param name="args">List of Argument Expressions.</param>
         /// <param name="factories">Enumeration of locally scoped expression factories to use.</param>
+        /// <param name="allowUnknownFunctions">Specifies whether functions that cannot be parsed into expressions should be represented by the <see cref="UnknownFunction"/>.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
         /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used.
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories)
+        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories, bool allowUnknownFunctions)
         {
-            return CreateExpression(u, args, new Dictionary<String, ISparqlExpression>(), factories);
+            return CreateExpression(u, args, new Dictionary<String, ISparqlExpression>(), factories, allowUnknownFunctions);
         }
 
         /// <summary>
@@ -97,13 +99,14 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="args">List of Argument Expressions.</param>
         /// <param name="scalarArgs">Scalar Arguments.</param>
         /// <param name="factories">Enumeration of locally scoped expression factories to use.</param>
+        /// <param name="allowUnknownFunctions">Specifies whether functions that cannot be parsed into expressions should be represented by the <see cref="UnknownFunction"/>.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
         /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used.
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories)
+        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories, bool allowUnknownFunctions)
         {
             if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.AbsoluteUri))
             {
@@ -173,7 +176,7 @@ namespace VDS.RDF.Query.Expressions
                 }
 
                 // If we're allowing Unknown functions return an UnknownFunction
-                if (Options.QueryAllowUnknownFunctions)
+                if (allowUnknownFunctions)
                 {
                     if (args.Count == 0)
                     {

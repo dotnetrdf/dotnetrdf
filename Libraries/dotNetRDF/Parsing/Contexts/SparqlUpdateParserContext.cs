@@ -42,10 +42,6 @@ namespace VDS.RDF.Parsing.Contexts
         : TokenisingParserContext
     {
         private SparqlUpdateCommandSet _commandSet = new SparqlUpdateCommandSet();
-        private SparqlQueryParser _queryParser = new SparqlQueryParser();
-        private SparqlExpressionParser _exprParser = new SparqlExpressionParser();
-        private SparqlPathParser _pathParser = new SparqlPathParser();
-        private HashSet<String> _dataBNodes = new HashSet<string>();
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
@@ -96,56 +92,29 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Expression Parser.
         /// </summary>
-        internal SparqlExpressionParser ExpressionParser
-        {
-            get
-            {
-                return _exprParser;
-            }
-        }
+        internal SparqlExpressionParser ExpressionParser { get; } = new SparqlExpressionParser();
 
         /// <summary>
         /// Gets the Path Parser.
         /// </summary>
-        internal SparqlPathParser PathParser
-        {
-            get
-            {
-                return _pathParser;
-            }
-        }
+        internal SparqlPathParser PathParser { get; } = new SparqlPathParser();
 
         /// <summary>
         /// Gets the Query Parser.
         /// </summary>
-        internal SparqlQueryParser QueryParser
-        {
-            get
-            {
-                return _queryParser;
-            }
-        }
+        internal SparqlQueryParser QueryParser { get; } = new SparqlQueryParser();
 
         /// <summary>
         /// Gets the Namespace Map.
         /// </summary>
-        public NamespaceMapper NamespaceMap
-        {
-            get
-            {
-                return _commandSet.NamespaceMap;
-            }
-        }
+        public NamespaceMapper NamespaceMap => _commandSet.NamespaceMap;
 
         /// <summary>
         /// Gets/Sets the locally scoped custom expression factories.
         /// </summary>
         public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
         {
-            get
-            {
-                return _factories;
-            }
+            get => _factories;
             set
             {
                 if (value != null)
@@ -156,14 +125,13 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
+        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
+        /// </summary>
+        public bool AllowUnknownFunctions { get; set; } = true;
+
+        /// <summary>
         /// Gets the set of BNodes used in INSERT DATA commands so far.
         /// </summary>
-        public HashSet<String> DataBNodes
-        {
-            get
-            {
-                return _dataBNodes;
-            }
-        }
+        public HashSet<String> DataBNodes { get; } = new HashSet<string>();
     }
 }

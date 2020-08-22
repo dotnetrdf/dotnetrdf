@@ -247,6 +247,7 @@ namespace VDS.RDF.Parsing
             context.ExpressionParser.NamespaceMap = context.NamespaceMap;
             context.ExpressionParser.QueryParser = context.QueryParser;
             context.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
+            context.ExpressionParser.AllowUnknownFunctions = context.AllowUnknownFunctions;
             context.Tokens.InitialiseBuffer();
 
             IToken next;
