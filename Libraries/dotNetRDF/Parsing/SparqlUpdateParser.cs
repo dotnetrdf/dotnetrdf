@@ -121,6 +121,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Get / set whether the update commands should be optimized at the end of the parsing process.
+        /// </summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool QueryOptimisation { get; set; } = true;
+
         #region Events
 
         /// <summary>
@@ -337,7 +343,7 @@ namespace VDS.RDF.Parsing
             } while (next.TokenType != Token.EOF);
 
             // Optimise the Command Set before returning it
-            if (Options.QueryOptimisation) context.CommandSet.Optimise();
+            if (QueryOptimisation) context.CommandSet.Optimise();
             return context.CommandSet;
         }
 

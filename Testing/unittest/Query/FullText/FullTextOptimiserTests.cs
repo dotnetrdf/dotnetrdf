@@ -50,8 +50,8 @@ namespace VDS.RDF.Query.FullText
 
         public FullTextOptimiserTests()
         {
+            _parser.QueryOptimisation = true;
             Options.AlgebraOptimisation = true;
-            Options.QueryOptimisation = true;
         }
 
         private SparqlQuery TestOptimisation(String query)

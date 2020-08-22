@@ -208,6 +208,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Get/set whether query optimization should be used.
+        /// </summary>
+        /// <remarks>Defaults to true.</remarks>
+        public bool QueryOptimisation { get; set; } = true;
+
         #endregion
 
         #region Events
@@ -609,7 +615,7 @@ namespace VDS.RDF.Parsing
             }
 
             // Optimise the Query if the global option is enabled
-            if (Options.QueryOptimisation)
+            if (QueryOptimisation)
             {
                 // If a locally scoped optimiser is available use that
                 if (_optimiser != null)
@@ -3382,7 +3388,7 @@ namespace VDS.RDF.Parsing
                         
                         // Create a Let Pattern and add to the Query appropriately
                         LetPattern let = new LetPattern(variable.Value.Substring(1), expr);
-                        if (Options.QueryOptimisation)
+                        if (QueryOptimisation)
                         {
                             p.AddAssignment(let);
                         }
@@ -3440,7 +3446,7 @@ namespace VDS.RDF.Parsing
                     throw ParserHelper.Error("A BIND assignment is attempting to bind to the variable ?" + bind.VariableName + " but this variable is already in use earlier in the Graph pattern", next);
                 }
 
-                if (Options.QueryOptimisation)
+                if (QueryOptimisation)
                 {
                     p.AddAssignment(bind);
                 }

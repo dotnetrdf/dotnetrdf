@@ -39,12 +39,19 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 
 namespace VDS.RDF.Query
 {
     public class SparqlTests2
     {
+        private ITestOutputHelper _output;
+        public SparqlTests2(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         private ISparqlDataset AsDataset(IInMemoryQueryableStore store)
         {
             if (store.Graphs.Count == 1)
@@ -102,7 +109,7 @@ namespace VDS.RDF.Query
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count > 0, "Expected 1 or more results");
             }
@@ -125,9 +132,9 @@ namespace VDS.RDF.Query
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -137,7 +144,7 @@ namespace VDS.RDF.Query
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 1, "Expected exactly 1 results");
                     Assert.True(rset.All(r => r.HasValue("triple")), "All Results should have had a value for ?triple");
@@ -166,9 +173,9 @@ namespace VDS.RDF.Query
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -178,7 +185,7 @@ namespace VDS.RDF.Query
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 10, "Expected exactly 10 results");
                     Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o") && r.HasValue("triple")), "Expected ?s, ?p, ?o and ?triple values for every result");
@@ -206,9 +213,9 @@ namespace VDS.RDF.Query
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -218,7 +225,7 @@ namespace VDS.RDF.Query
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 10, "Expected exactly 10 results");
                     Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o") && r.HasValue("triple")), "Expected ?s, ?p, ?o and ?triple values for every result");
@@ -249,7 +256,7 @@ namespace VDS.RDF.Query
         //        SparqlResultSet rset = (SparqlResultSet)results;
         //        foreach (SparqlResult r in rset)
         //        {
-        //            Console.WriteLine(r.ToString());
+        //            _output.WriteLine(r.ToString());
         //        }
         //        Assert.True(rset.Count == 0, "Expected no results");
         //    }
@@ -391,10 +398,10 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToString());
+            _output.WriteLine(q.ToString());
 
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Console.WriteLine(algebra.ToString());
+            _output.WriteLine(algebra.ToString());
             Assert.IsAssignableFrom<Select>(algebra);
 
             algebra = ((IUnaryOperator)algebra).InnerAlgebra;
@@ -422,10 +429,10 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToString());
+            _output.WriteLine(q.ToString());
 
             ISparqlAlgebra algebra = q.ToAlgebra();
-            Console.WriteLine(algebra.ToString());
+            _output.WriteLine(algebra.ToString());
             Assert.IsAssignableFrom<Select>(algebra);
 
             algebra = ((IUnaryOperator)algebra).InnerAlgebra;
@@ -460,7 +467,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count > 0, "Expected 1 or more results");
             }
@@ -496,9 +503,9 @@ WHERE
         //    SparqlQueryParser parser = new SparqlQueryParser();
         //    SparqlQuery q = parser.ParseFromString(query);
 
-        //    Console.WriteLine(q.ToAlgebra().ToString());
+        //    _output.WriteLine(q.ToAlgebra().ToString());
         //    Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-        //    Console.WriteLine();
+        //    _output.WriteLine(string.Empty);
 
         //    Object results = q.Evaluate(store);
         //    if (results is SparqlResultSet)
@@ -506,7 +513,7 @@ WHERE
         //        SparqlResultSet rset = (SparqlResultSet)results;
         //        foreach (SparqlResult r in rset)
         //        {
-        //            Console.WriteLine(r.ToString());
+        //            _output.WriteLine(r.ToString());
         //        }
         //        Assert.True(rset.Count == 1, "Expected exactly 1 results");
         //    }
@@ -529,9 +536,9 @@ WHERE
         //    SparqlQueryParser parser = new SparqlQueryParser();
         //    SparqlQuery q = parser.ParseFromString(query);
 
-        //    Console.WriteLine(q.ToAlgebra().ToString());
+        //    _output.WriteLine(q.ToAlgebra().ToString());
         //    Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-        //    Console.WriteLine();
+        //    _output.WriteLine(string.Empty);
 
         //    Object results = q.Evaluate(store);
         //    if (results is SparqlResultSet)
@@ -539,7 +546,7 @@ WHERE
         //        SparqlResultSet rset = (SparqlResultSet)results;
         //        foreach (SparqlResult r in rset)
         //        {
-        //            Console.WriteLine(r.ToString());
+        //            _output.WriteLine(r.ToString());
         //        }
         //        Assert.True(rset.Count == 10, "Expected exactly 10 results");
         //    }
@@ -562,9 +569,9 @@ WHERE
         //    SparqlQueryParser parser = new SparqlQueryParser();
         //    SparqlQuery q = parser.ParseFromString(query);
 
-        //    Console.WriteLine(q.ToAlgebra().ToString());
+        //    _output.WriteLine(q.ToAlgebra().ToString());
         //    Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-        //    Console.WriteLine();
+        //    _output.WriteLine(string.Empty);
 
         //    Object results = q.Evaluate(store);
         //    if (results is SparqlResultSet)
@@ -572,7 +579,7 @@ WHERE
         //        SparqlResultSet rset = (SparqlResultSet)results;
         //        foreach (SparqlResult r in rset)
         //        {
-        //            Console.WriteLine(r.ToString());
+        //            _output.WriteLine(r.ToString());
         //        }
         //        Assert.True(rset.Count == 10, "Expected exactly 10 results");
         //    }
@@ -595,9 +602,9 @@ WHERE
         //    SparqlQueryParser parser = new SparqlQueryParser();
         //    SparqlQuery q = parser.ParseFromString(query);
 
-        //    Console.WriteLine(q.ToAlgebra().ToString());
+        //    _output.WriteLine(q.ToAlgebra().ToString());
         //    Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-        //    Console.WriteLine();
+        //    _output.WriteLine(string.Empty);
 
         //    Object results = q.Evaluate(store);
         //    if (results is SparqlResultSet)
@@ -605,7 +612,7 @@ WHERE
         //        SparqlResultSet rset = (SparqlResultSet)results;
         //        foreach (SparqlResult r in rset)
         //        {
-        //            Console.WriteLine(r.ToString());
+        //            _output.WriteLine(r.ToString());
         //        }
         //        Assert.True(rset.Count == 1, "Expected exactly 1 results");
         //    }
@@ -628,9 +635,9 @@ WHERE
         //    SparqlQueryParser parser = new SparqlQueryParser();
         //    SparqlQuery q = parser.ParseFromString(query);
 
-        //    Console.WriteLine(q.ToAlgebra().ToString());
+        //    _output.WriteLine(q.ToAlgebra().ToString());
         //    Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-        //    Console.WriteLine();
+        //    _output.WriteLine(string.Empty);
 
         //    Object results = q.Evaluate(store);
         //    if (results is SparqlResultSet)
@@ -638,7 +645,7 @@ WHERE
         //        SparqlResultSet rset = (SparqlResultSet)results;
         //        foreach (SparqlResult r in rset)
         //        {
-        //            Console.WriteLine(r.ToString());
+        //            _output.WriteLine(r.ToString());
         //        }
         //        Assert.True(rset.Count <= 5, "Expected at most 5 results");
         //    }
@@ -661,9 +668,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -673,7 +680,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 1, "Expected exactly 1 results");
             }
@@ -692,9 +699,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -704,7 +711,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 1, "Expected exactly 1 results");
             }
@@ -723,9 +730,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -735,7 +742,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 1, "Expected exactly 1 results");
             }
@@ -754,9 +761,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -766,7 +773,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 1, "Expected exactly 1 results");
             }
@@ -785,9 +792,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -797,7 +804,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 1, "Expected exactly 1 results");
             }
@@ -816,9 +823,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -828,7 +835,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 1, "Expected exactly 1 results");
             }
@@ -847,9 +854,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -859,7 +866,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 5, "Expected exactly 5 results");
             }
@@ -882,15 +889,15 @@ WHERE
             Stopwatch timer = new Stopwatch();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             timer.Start();
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
             timer.Stop();
-            Console.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
+            _output.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
             timer.Reset();
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
@@ -898,7 +905,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 5, "Expected exactly 5 results");
             }
@@ -908,14 +915,14 @@ WHERE
             timer.Start();
             results = processor.ProcessQuery(q);
             timer.Stop();
-            Console.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
+            _output.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.True(rset.Count == 5, "Expected exactly 5 results");
             }
@@ -935,9 +942,9 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
@@ -947,7 +954,7 @@ WHERE
                 SparqlResultSet rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
-                    Console.WriteLine(r.ToString());
+                    _output.WriteLine(r.ToString());
                 }
                 Assert.Equal(3, rset.Count);
             }
@@ -970,9 +977,9 @@ WHERE
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -982,7 +989,7 @@ WHERE
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 3, "Expected exactly 3 results");
                 }
@@ -1009,10 +1016,10 @@ WHERE
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine("NOTE: The URI for Car is purposefully wrong in this case so no results should be returned");
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine("NOTE: The URI for Car is purposefully wrong in this case so no results should be returned");
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -1022,7 +1029,7 @@ WHERE
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 0, "Expected no results");
                 }
@@ -1036,37 +1043,45 @@ WHERE
         [Fact]
         public void SparqlFilterLazy3()
         {
-            this.UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-            String query =
-                "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) . ?s <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
-
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            store.Add(g);
-
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
-            q.Timeout = 0;
-
-            Console.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            Console.WriteLine();
-
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store),
-                options => { options.QueryExecutionTimeout = 0; });
-            Object results = processor.ProcessQuery(q);
-            Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            try
             {
-                SparqlResultSet rset = (SparqlResultSet) results;
-                foreach (SparqlResult r in rset)
-                {
-                    Console.WriteLine(r.ToString());
-                }
+                this.UseSpecificOptimiserOnly(new LazyBgpOptimiser());
 
-                Assert.True(rset.Count == 3, "Expected exactly 3 results");
+                String query =
+                    "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) . ?s <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
+
+                TripleStore store = new TripleStore();
+                Graph g = new Graph();
+                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                store.Add(g);
+
+                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQuery q = parser.ParseFromString(query);
+                q.Timeout = 0;
+
+                _output.WriteLine(q.ToAlgebra().ToString());
+                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"),
+                    "Should have been optimised to use a Lazy BGP");
+                _output.WriteLine(string.Empty);
+
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store),
+                    options => { options.QueryExecutionTimeout = 0; });
+                Object results = processor.ProcessQuery(q);
+                Assert.IsAssignableFrom<SparqlResultSet>(results);
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rset = (SparqlResultSet) results;
+                    foreach (SparqlResult r in rset)
+                    {
+                        _output.WriteLine(r.ToString());
+                    }
+
+                    Assert.True(rset.Count == 3, "Expected exactly 3 results");
+                }
+            }
+            finally
+            {
+                this.ResetOptimiser();
             }
         }
 
@@ -1086,9 +1101,9 @@ WHERE
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -1098,7 +1113,7 @@ WHERE
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 3, "Expected exactly 3 results");
                 }
@@ -1131,9 +1146,9 @@ WHERE
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -1143,7 +1158,7 @@ WHERE
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 5, "Expected exactly 5 results");
                 }
@@ -1173,13 +1188,13 @@ WHERE
                 SparqlQuery q = parser.ParseFromString(query);
                 SparqlQuery q2 = parser.ParseFromString(query2);
 
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
-                Console.WriteLine(q2.ToAlgebra().ToString());
+                _output.WriteLine(q2.ToAlgebra().ToString());
                 Assert.True(q2.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                Console.WriteLine();
+                _output.WriteLine(string.Empty);
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
@@ -1189,7 +1204,7 @@ WHERE
                     SparqlResultSet rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 3, "Expected exactly 3 results");
 
@@ -1200,7 +1215,7 @@ WHERE
                         SparqlResultSet rset2 = (SparqlResultSet)results2;
                         foreach (SparqlResult r in rset2)
                         {
-                            Console.WriteLine(r.ToString());
+                            _output.WriteLine(r.ToString());
                         }
                         Assert.True(rset2.Count == 1, "Expected exactly 1 results");
                     }
@@ -1234,7 +1249,7 @@ WHERE
                 var rset = results as SparqlResultSet;
                 foreach (var r in rset)
                 {
-                    Console.WriteLine(r);
+                    _output.WriteLine(r.ToString());
                     Assert.Equal(2, r.Count);
                 }
             }
@@ -1266,7 +1281,7 @@ WHERE
                 var rset = results as SparqlResultSet;
                 foreach (var r in rset)
                 {
-                    Console.WriteLine(r);
+                    _output.WriteLine(r.ToString());
                     Assert.Equal(2, r.Count);
                 }
             }
@@ -1309,7 +1324,7 @@ WHERE
 
                 SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
                 //SparqlFormatter formatter = new SparqlFormatter();
-                //Console.WriteLine(formatter.Format(q));
+                //_output.WriteLine(formatter.Format(q));
 
                 ISparqlDataset dataset = AsDataset(store);
 
@@ -1319,20 +1334,20 @@ WHERE
                 const int totalRuns = 1000;
                 for (int i = 0; i < totalRuns; i++)
                 {
-                    Console.WriteLine("Starting query run " + i + " of " + totalRuns);
+                    _output.WriteLine("Starting query run " + i + " of " + totalRuns);
                     SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
                     Assert.NotNull(results);
 
                     if (q.QueryExecutionTime != null)
                     {
-                        Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                        _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
                         total = total + q.QueryExecutionTime.Value;
                     }
                     if (results.Count != 4) TestTools.ShowResults(results);
                     Assert.Equal(4, results.Count);
                 }
 
-                Console.WriteLine("Total Execution Time: " + total);
+                _output.WriteLine("Total Execution Time: " + total);
                 Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
             }
             finally
@@ -1353,9 +1368,9 @@ WHERE
                 store.LoadFromFile(@"resources\core-416.trig");
 
                 SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
-                Console.WriteLine(q.ToAlgebra().ToString());
+                _output.WriteLine(q.ToAlgebra().ToString());
                 //SparqlFormatter formatter = new SparqlFormatter();
-                //Console.WriteLine(formatter.Format(q));
+                //_output.WriteLine(formatter.Format(q));
 
                 ISparqlDataset dataset = AsDataset(store);
 
@@ -1365,20 +1380,20 @@ WHERE
                 const int totalRuns = 1000;
                 for (int i = 0; i < totalRuns; i++)
                 {
-                    Console.WriteLine("Starting query run " + i + " of " + totalRuns);
+                    _output.WriteLine("Starting query run " + i + " of " + totalRuns);
                     SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
                     Assert.NotNull(results);
 
                     if (q.QueryExecutionTime != null)
                     {
-                        Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                        _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
                         total = total + q.QueryExecutionTime.Value;
                     }
                     if (results.Count != 4) TestTools.ShowResults(results);
                     Assert.Equal(4, results.Count);
                 }
 
-                Console.WriteLine("Total Execution Time: " + total);
+                _output.WriteLine("Total Execution Time: " + total);
                 Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
             }
             finally
@@ -1395,7 +1410,7 @@ WHERE
 
             SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\bad-query.rq");
             //q.Timeout = 10000;
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
 
             ISparqlDataset dataset = AsDataset(store);
 
@@ -1415,7 +1430,7 @@ WHERE
 
             SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\good-query.rq");
             //q.Timeout = 3000;
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
 
             ISparqlDataset dataset = AsDataset(store);
 
@@ -1434,7 +1449,7 @@ WHERE
 
             SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\from-query.rq");
             //q.Timeout = 3000;
-            Console.WriteLine(q.ToAlgebra().ToString());
+            _output.WriteLine(q.ToAlgebra().ToString());
 
             ISparqlDataset dataset = AsDataset(store);
 
@@ -1472,7 +1487,7 @@ WHERE
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.True(q.QueryExecutionTime.HasValue);
-            Console.WriteLine(q.QueryExecutionTime.Value);
+            _output.WriteLine(q.QueryExecutionTime.Value.ToString());
 
             //TestTools.ShowResults(results);
         }

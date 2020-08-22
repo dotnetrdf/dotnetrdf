@@ -1063,15 +1063,16 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Converts the Query into it's SPARQL Algebra representation (as represented in the Leviathan API).
         /// </summary>
+        /// <param name="optimiseQuery">Boolean flag indicating whether to optimize the query before generating the query algebra.</param>
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
         {
             // Depending on how the query gets built we may not have had graph pattern optimization applied
             // which we should do here if query optimization is enabled
-            if (!IsOptimised && Options.QueryOptimisation)
-            {
-                Optimise();
-            }
+            //if (!IsOptimised && optimiseQuery)
+            //{
+            //    Optimise();
+            //}
 
             // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;

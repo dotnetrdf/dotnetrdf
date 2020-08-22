@@ -45,3 +45,6 @@ This option is moved to UriLoader.Timeout. This is still a static property at pr
 
 ### QueryExecutionTimeout
 This option can be set when creating a new `LeviathanQueryProcessor` using the new optional `options` callback parameter on the `LeviathanQueryProcessor` constructor.
+
+### QueryOptimisation
+By default queries and SPARQL update commands will be optimised by the query parser. To disable this behaviour, use the `QueryOptimisation` property on the `SparqlQueryParser` class (or the same property on the `SparqlUpdateParser` class for SPARQL update commands). NOTE: The default behaviour of optimising queries matches the previous default behaviour of dotNetRDF.

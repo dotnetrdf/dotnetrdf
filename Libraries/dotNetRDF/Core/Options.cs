@@ -96,7 +96,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether Query Optimisation should be used.
         /// </summary>
-        public static bool QueryOptimisation { get; set; } = true;
+        // public static bool QueryOptimisation { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether Algebra Optimisation should be used.
