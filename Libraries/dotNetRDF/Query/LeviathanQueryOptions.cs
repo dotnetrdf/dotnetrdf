@@ -34,6 +34,8 @@ namespace VDS.RDF.Query
     public class LeviathanQueryOptions
     {
         private CultureInfo _culture = CultureInfo.InvariantCulture;
+        private long _queryExecutionTimeout = 180000;
+
 
         /// <summary>
         /// Get or set the culture to use for string comparisons in the query processor.
@@ -53,5 +55,18 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <remarks>The SPARQL specification requires that string comparisons should be ordinal (<see cref="System.Globalization.CompareOptions.Ordinal"/>). This is the default value.</remarks>
         public CompareOptions CompareOptions { get; set; } = CompareOptions.Ordinal;
+
+        /// <summary>
+        /// Gets/Sets the Hard Timeout limit for SPARQL Query Execution (in milliseconds).
+        /// </summary>
+        /// <remarks>
+        /// This is used to stop SPARQL queries running away and never completing execution, it defaults to 3 mins (180,000 milliseconds).
+        /// </remarks>
+        public long QueryExecutionTimeout
+        {
+            get => _queryExecutionTimeout;
+            set => _queryExecutionTimeout = Math.Max(value, 0);
+        }
+
     }
 }

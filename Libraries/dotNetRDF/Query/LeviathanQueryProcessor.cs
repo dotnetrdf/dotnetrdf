@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
                     BaseMultiset result;
                     try
                     {
-                        context.StartExecution();
+                        context.StartExecution(_options.QueryExecutionTimeout);
                         ISparqlAlgebra algebra = query.ToAlgebra();
                         result = context.Evaluate(algebra);
 

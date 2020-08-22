@@ -38,15 +38,8 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SparqlEvaluationContext
     {
-        private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> _processor;
-        private BaseMultiset _inputSet, _outputSet;
-        private bool _trimTemporaries = true;//, _rigorous = Options.RigorousQueryEvaluation;
-        private ISparqlDataset _data;
-        private SparqlQuery _query;
-        private SparqlResultBinder _binder;
         private Stopwatch _timer = new Stopwatch();
-        private Dictionary<String, Object> _functionContexts = new Dictionary<string, object>();
-        private long _timeout;
+        private Dictionary<string, object> _functionContexts = new Dictionary<string, object>();
 
         /// <summary>
         /// Creates a new Evaluation Context for the given Query over the given Dataset.
@@ -57,13 +50,12 @@ namespace VDS.RDF.Query
         /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlNodeComparer nodeComparer = null)
         {
-            _query = q;
-            _data = data;
-            _inputSet = new IdentityMultiset();
-            _binder = new LeviathanResultBinder(this);
+            Query = q;
+            Data = data;
+            InputMultiset = new IdentityMultiset();
+            Binder = new LeviathanResultBinder(this);
             NodeComparer = nodeComparer ?? new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
             OrderingComparer = new SparqlOrderingComparer(NodeComparer);
-            CalculateTimeout();
         }
 
         /// <summary>
@@ -77,7 +69,7 @@ namespace VDS.RDF.Query
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor, ISparqlNodeComparer nodeComparer = null)
             : this(q, data, nodeComparer)
         {
-            _processor = processor;
+            Processor = processor;
         }
 
         /// <summary>
@@ -88,133 +80,61 @@ namespace VDS.RDF.Query
         /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
         public SparqlEvaluationContext(SparqlResultBinder binder, ISparqlNodeComparer nodeComparer)
         {
-            _binder = binder;
+            Binder = binder;
             NodeComparer = nodeComparer;
             OrderingComparer = new SparqlOrderingComparer(nodeComparer);
         }
 
-        private void CalculateTimeout()
+        /// <summary>
+        /// Return the execution timeout to be applied to this evaluation context given the specified processor-defined maximum execution timeout.
+        /// </summary>
+        /// <param name="maxTimeout"></param>
+        /// <returns>The execution timeout for the query in this context (if any)</returns>
+        public long CalculateTimeout(long maxTimeout)
         {
-            if (_query != null)
+            if (Query != null && Query.Timeout > 0 &&
+                (maxTimeout <= 0 || Query.Timeout <= maxTimeout))
             {
-                if (_query.Timeout > 0)
-                {
-                    if (Options.QueryExecutionTimeout == 0 || (_query.Timeout <= Options.QueryExecutionTimeout && Options.QueryExecutionTimeout > 0))
-                    {
-                        // Query Timeout is used provided it is less than global timeout unless global timeout is zero
-                        _timeout = _query.Timeout;
-                    }
-                    else
-                    {
-                        // Query Timeout cannot be set higher than global timeout
-                        _timeout = Options.QueryExecutionTimeout;
-                    }
-                }
-                else
-                {
-                    // If Query Timeout set to zero (i.e. no timeout) then global timeout is used
-                    _timeout = Options.QueryExecutionTimeout;
-                }
+                return Query.Timeout;
             }
-            else
-            {
-                // If no query then global timeout is used
-                _timeout = Options.QueryExecutionTimeout;
-            }
+
+            return maxTimeout;
         }
 
         /// <summary>
         /// Gets the Query that is being evaluated.
         /// </summary>
-        public SparqlQuery Query
-        {
-            get
-            {
-                return _query;
-            }
-        }
+        public SparqlQuery Query { get; }
 
         /// <summary>
         /// Gets the Dataset the query is over.
         /// </summary>
-        public ISparqlDataset Data
-        {
-            get
-            {
-                return _data;
-            }
-        }
+        public ISparqlDataset Data { get; }
 
         /// <summary>
         /// Gets the custom query processor that is in use (if any).
         /// </summary>
-        public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> Processor
-        {
-            get
-            {
-                return _processor;
-            }
-        }
+        public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> Processor { get; }
 
         /// <summary>
         /// Gets/Sets the Input Multiset.
         /// </summary>
-        public BaseMultiset InputMultiset
-        {
-            get
-            {
-                return _inputSet;
-            }
-            set
-            {
-                _inputSet = value;
-            }
-        }
+        public BaseMultiset InputMultiset { get; set; }
 
         /// <summary>
         /// Gets/Sets the Output Multiset.
         /// </summary>
-        public BaseMultiset OutputMultiset
-        {
-            get
-            {
-                return _outputSet;
-            }
-            set
-            {
-                _outputSet = value;
-            }
-        }
+        public BaseMultiset OutputMultiset { get; set; }
 
         /// <summary>
         /// Gets/Sets the Results Binder.
         /// </summary>
-        public SparqlResultBinder Binder
-        {
-            get
-            {
-                return _binder;
-            }
-            set
-            {
-                _binder = value;
-            }
-        }
+        public SparqlResultBinder Binder { get; set; }
 
         /// <summary>
         /// Gets/Sets whether BGPs should trim temporary variables.
         /// </summary>
-        public bool TrimTemporaryVariables
-        {
-            get
-            {
-                return _trimTemporaries;
-            }
-            set
-            {
-                _trimTemporaries = value;
-            }
-        }
+        public bool TrimTemporaryVariables { get; set; } = true;
 
         /// <summary>
         /// Get the comparer to use when ordering nodes during query processing.
@@ -222,31 +142,20 @@ namespace VDS.RDF.Query
         public ISparqlNodeComparer NodeComparer { get; }
 
         /// <summary>
-        /// Get the comparer to use when sorting query results
+        /// Get the comparer to use when sorting query results.
         /// </summary>
         public SparqlOrderingComparer OrderingComparer { get; }
-
-        ///// <summary>
-        ///// Gets/Sets whether additional checks should be made during evaluation
-        ///// </summary>
-        // public bool RigorousEvaluation
-        // {
-        //    get
-        //    {
-        //        return this._rigorous;
-        //    }
-        //    set
-        //    {
-        //        this._rigorous = value;
-        //    }
-        // }
 
         /// <summary>
         /// Starts the Execution Timer.
         /// </summary>
-        public void StartExecution()
+        /// <param name="maxTimeout">The maximum time (in milliseconds) to allow the query to run for. This may be overridden by the timeout specified in the query itself.</param>
+        /// <remarks>
+        /// A value of zero or less for <paramref name="maxTimeout"/> indicates no timeout. If a finite timeout is specified both by <paramref name="maxTimeout"/> and in the query, then the shorter of these two timeout values will be used.
+        /// </remarks>
+        public void StartExecution(long maxTimeout)
         {
-            CalculateTimeout();
+            QueryTimeout = CalculateTimeout(maxTimeout);
             _timer.Start();
         }
 
@@ -264,13 +173,11 @@ namespace VDS.RDF.Query
         /// <exception cref="RdfQueryTimeoutException">Thrown if the Query has exceeded the Execution Timeout.</exception>
         public void CheckTimeout()
         {
-            if (_timeout > 0)
+            if (QueryTimeout > 0 && _timer.ElapsedMilliseconds > QueryTimeout)
             {
-                if (_timer.ElapsedMilliseconds > _timeout)
-                {
-                    _timer.Stop();
-                    throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " + _timeout + "ms, query aborted after " + _timer.ElapsedMilliseconds + "ms");
-                }
+                _timer.Stop();
+                throw new RdfQueryTimeoutException(
+                    $"Query Execution Time exceeded the Timeout of {QueryTimeout}ms, query aborted after {_timer.ElapsedMilliseconds}ms");
             }
         }
 
@@ -284,22 +191,13 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (_timeout <= 0)
+                if (QueryTimeout <= 0)
                 {
                     return 0;
                 }
-                else
-                {
-                    long timeout = _timeout - QueryTime;
-                    if (timeout <= 0)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return timeout;
-                    }
-                }
+
+                var timeout = QueryTimeout - QueryTime;
+                return timeout <= 0 ? 1 : timeout;
             }
         }
 
@@ -308,38 +206,22 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This is taken either from the <see cref="SparqlQuery.Timeout">Timeout</see> property of the <see cref="SparqlQuery">SparqlQuery</see> to which this evaluation context pertains (if any) or from the global option <see cref="Options.QueryExecutionTimeout">Options.QueryExecutionTimeout</see>.  To set the Timeout to be used set whichever of those is appropriate prior to evaluating the query.  If there is a Query present then it's timeout takes precedence unless it is set to zero (no timeout) in which case the global timeout setting is applied.  You cannot set the Query Timeout to be higher than the global timeout unless the global timeout is set to zero (i.e. no global timeout).
+        /// This is taken either from the <see cref="SparqlQuery.Timeout">Timeout</see> property of the <see cref="SparqlQuery">SparqlQuery</see> to which this
+        /// evaluation context pertains (if any) or from the the processor-defined timeout value passed as a parameter to <see cref="StartExecution"/> method.
+        /// You cannot set the Query Timeout to be higher than the processor-defined timeout unless the processor-defined timeout is set to zero (i.e. no processor-defined timeout).
         /// </para>
         /// </remarks>
-        public long QueryTimeout
-        {
-            get
-            {
-                return _timeout;
-            }
-        }
+        public long QueryTimeout { get; private set; }
 
         /// <summary>
         /// Retrieves the Time in milliseconds the query took to evaluate.
         /// </summary>
-        public long QueryTime
-        {
-            get
-            {
-                return _timer.ElapsedMilliseconds;
-            }
-        }
+        public long QueryTime => _timer.ElapsedMilliseconds;
 
         /// <summary>
         /// Retrieves the Time in ticks the query took to evaluate.
         /// </summary>
-        public long QueryTimeTicks
-        {
-            get
-            {
-                return _timer.ElapsedTicks;
-            }
-        }
+        public long QueryTimeTicks => _timer.ElapsedTicks;
 
         /// <summary>
         /// Gets/Sets a Object that should be persisted over the entire Evaluation Context.
@@ -349,19 +231,9 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// May be used by parts of the Evaluation Process that need to ensure a persistent state across the entire Evaluation Query (e.g. the implementation of the BNODE() function).
         /// </remarks>
-        public Object this[String key]
+        public object this[string key]
         {
-            get
-            {
-                if (_functionContexts.ContainsKey(key))
-                {
-                    return _functionContexts[key];
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => _functionContexts.ContainsKey(key) ? _functionContexts[key] : null;
             set
             {
                 if (_functionContexts.ContainsKey(key))
@@ -376,20 +248,13 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Evalutes an Algebra Operator in this Context using the current Query Processor (if any) or the default <see cref="ISparqlAlgebra.Evaluate">Evaluate()</see> method.
+        /// Evaluates an Algebra Operator in this Context using the current Query Processor (if any) or the default <see cref="ISparqlAlgebra.Evaluate">Evaluate()</see> method.
         /// </summary>
         /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(ISparqlAlgebra algebra)
         {
-            if (_processor == null)
-            {
-                return algebra.Evaluate(this);
-            }
-            else
-            {
-                return _processor.ProcessAlgebra(algebra, this);
-            }
+            return Processor == null ? algebra.Evaluate(this) : Processor.ProcessAlgebra(algebra, this);
         }
     }
 }

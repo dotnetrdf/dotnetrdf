@@ -150,7 +150,7 @@ namespace VDS.RDF.Query
         private BindingsPattern _bindings = null;
         private int _limit = -1;
         private int _offset = 0;
-        private long _timeout = Options.QueryExecutionTimeout;
+        private long _timeout = 0;
         private TimeSpan? _executionTime = null;
         private bool _partialResultsOnTimeout = false;
         private bool _optimised = false;

@@ -87,11 +87,11 @@ namespace VDS.RDF
         /// <remarks>
         /// This is used to stop SPARQL queries running away and never completing execution, it defaults to 3 mins (180,000 milliseconds).
         /// </remarks>
-        public static long QueryExecutionTimeout
-        {
-            get => _queryExecutionTimeout;
-            set => _queryExecutionTimeout = Math.Max(value, 0);
-        }
+        //public static long QueryExecutionTimeout
+        //{
+        //    get => _queryExecutionTimeout;
+        //    set => _queryExecutionTimeout = Math.Max(value, 0);
+        //}
 
         /// <summary>
         /// Gets/Sets whether Query Optimisation should be used.

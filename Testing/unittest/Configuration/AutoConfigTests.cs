@@ -154,25 +154,6 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        [Fact]
-        public void ConfigurationStaticOptionsInt64Property()
-        {
-            long current = Options.QueryExecutionTimeout;
-            try
-            {
-                Assert.Equal(current, Options.QueryExecutionTimeout);
-
-                Uri optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#QueryExecutionTimeout");
-                Graph g = new Graph();
-                this.ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
-
-                Assert.Equal(99, Options.QueryExecutionTimeout);
-            }
-            finally
-            {
-                Options.QueryExecutionTimeout = current;
-            }
-        }
 
 #if NET40
         [Fact]
