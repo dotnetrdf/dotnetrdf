@@ -167,7 +167,7 @@ namespace VDS.RDF.Query
                     try
                     {
                         context.StartExecution(_options.QueryExecutionTimeout);
-                        ISparqlAlgebra algebra = query.ToAlgebra();
+                        ISparqlAlgebra algebra = query.ToAlgebra(_options.AlgebraOptimisation);
                         result = context.Evaluate(algebra);
 
                         context.EndExecution();

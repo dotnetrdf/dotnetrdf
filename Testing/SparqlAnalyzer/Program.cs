@@ -25,12 +25,11 @@ namespace SparqlAnalyzer
 
         private static void RunSparqlAnalyzer(Options opts)
         {
-            VDS.RDF.Options.AlgebraOptimisation = false;
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
             var query = opts.Query != null ? 
                 parser.ParseFromString(opts.Query) : 
                 parser.ParseFromFile(opts.File);
-            var algebra = query.ToAlgebra();
+            var algebra = query.ToAlgebra(false);
             Console.WriteLine(query.ToString());
             Console.WriteLine(algebra.ToString());
         }

@@ -43,8 +43,11 @@ This option is moved to UriLoader.CacheEnabled. This is still a static property 
 ### UriLoaderTimeout
 This option is moved to UriLoader.Timeout. This is still a static property at present as the UriLoader is currently implemented as a static class.
 
-### QueryExecutionTimeout
-This option can be set when creating a new `LeviathanQueryProcessor` using the new optional `options` callback parameter on the `LeviathanQueryProcessor` constructor.
+### QueryExecutionTimeout, AlgebraOptimisation
+These options can be set when creating a new `LeviathanQueryProcessor` using the new optional `options` callback parameter on the `LeviathanQueryProcessor` constructor.
 
 ### QueryOptimisation
 By default queries and SPARQL update commands will be optimised by the query parser. To disable this behaviour, use the `QueryOptimisation` property on the `SparqlQueryParser` class (or the same property on the `SparqlUpdateParser` class for SPARQL update commands). NOTE: The default behaviour of optimising queries matches the previous default behaviour of dotNetRDF.
+
+### UnsafeOptimisation
+This property only applies to the `VDS.RDF.Query.Optimisation.ImplictJoinOptimiser` and can now be set as a constructor parameter for that class. The constructor parameter defaults to `false`, matching the previous default behaviour or dotNetRDF.

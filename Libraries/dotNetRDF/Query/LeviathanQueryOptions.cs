@@ -68,5 +68,10 @@ namespace VDS.RDF.Query
             set => _queryExecutionTimeout = Math.Max(value, 0);
         }
 
+        /// <summary>
+        /// Gets/Sets whether Algebra Optimization should be used.
+        /// </summary>
+        public bool AlgebraOptimisation { get; set; } = true;
+
     }
 }

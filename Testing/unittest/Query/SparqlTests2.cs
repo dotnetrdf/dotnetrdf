@@ -893,8 +893,9 @@ WHERE
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             _output.WriteLine(string.Empty);
 
+            var dataset = AsDataset(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             timer.Start();
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
             timer.Stop();
             _output.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
@@ -911,7 +912,7 @@ WHERE
             }
 
             //Then do without optimisation
-            Options.AlgebraOptimisation = false;
+            processor = new LeviathanQueryProcessor(dataset, options => { options.AlgebraOptimisation = false;});
             timer.Start();
             results = processor.ProcessQuery(q);
             timer.Stop();
@@ -926,7 +927,6 @@ WHERE
                 }
                 Assert.True(rset.Count == 5, "Expected exactly 5 results");
             }
-            Options.AlgebraOptimisation = true;
         }
 
         [Fact]

@@ -24,34 +24,30 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Filters;
-using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
 
     public class OptimiserTests
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlFormatter _formatter = new SparqlFormatter();
-
-        public OptimiserTests()
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly ITestOutputHelper _output;
+        public OptimiserTests(ITestOutputHelper output)
         {
-            VDS.RDF.Options.AlgebraOptimisation = true;
+            _output = output;
         }
+
         [Fact]
         public void SparqlOptimiserQuerySimple()
         {
@@ -64,7 +60,7 @@ SELECT * WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0].IsAcceptAll, "First Triple Pattern should not be the ?s ?p ?o Pattern");
             Assert.True(q.RootGraphPattern.TriplePatterns[1].IsAcceptAll, "Second Triple Pattern should be the ?s ?p ?o pattern");
@@ -83,7 +79,7 @@ SELECT * WHERE
 }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(new String[] { "value", "label" }).Count() == 2, "Both ?label and ?value should be in the first triple pattern");
             Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(new String[] { "s", "value" }).Count() == 2, "Both ?s and ?value should be in the second triple pattern");
@@ -106,7 +102,7 @@ SELECT * WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].Variables.Intersect(new String[] { "s", "type" }).Count() == 2, "Both ?s and ?type should be in the first triple pattern of the child graph pattern");
             Assert.False(q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[1].Variables.Contains("s"), "Second triple pattern of the child graph pattern should not contain ?s");
@@ -126,7 +122,7 @@ SELECT * WHERE
 ";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Filter, "First Triple Pattern should not be the FilterPattern");
             Assert.True(q.RootGraphPattern.TriplePatterns[1].PatternType == TriplePatternType.Filter, "Second Triple Pattern should be the FilterPattern");
@@ -148,7 +144,7 @@ SELECT * WHERE
 ";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
             Assert.True(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should be a FilterPattern");
@@ -176,7 +172,7 @@ SELECT * WHERE
 ";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
             Assert.False(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should not be a FilterPattern");
@@ -184,7 +180,7 @@ SELECT * WHERE
             Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].IsFiltered, "Child Graph Pattern should be filtered");
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Filter("), "Algebra should have a Filter() operator in it");
         }
 
@@ -205,7 +201,7 @@ SELECT * WHERE
 ";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             Assert.False(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
             Assert.False(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should not be a FilterPattern");
@@ -213,7 +209,7 @@ SELECT * WHERE
             Assert.True(q.RootGraphPattern.ChildGraphPatterns[0].IsFiltered, "Child Graph Pattern should be filtered");
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("LeftJoin("), "Algebra should have a LeftJoin() operator in it");
         }
 
@@ -256,10 +252,10 @@ ASK WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
             
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("AskBgp("), "Algebra should be optimised to use AskBgp()'s");
         }
 
@@ -276,10 +272,10 @@ ASK WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("AskBgp("), "Algebra should be optimised to use AskBgp()'s");
             Assert.True(algebra.Contains("AskUnion("), "Algebra should be optimised to use AskUnion()'s");
         }
@@ -296,10 +292,10 @@ SELECT * WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("LazyBgp("), "Algebra should be optimised to use LazyBgp()'s");
         }
 
@@ -316,10 +312,10 @@ SELECT * WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("LazyBgp("), "Algebra should be optimised to use LazyBgp()'s");
             Assert.True(algebra.Contains("LazyUnion("), "Algebra should be optimised to use LazyUnion()'s");
         }
@@ -330,10 +326,10 @@ SELECT * WHERE
             String query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(?x = ?y) }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
@@ -344,10 +340,10 @@ SELECT * WHERE
             String query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(SAMETERM(?x, ?y)) }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
@@ -358,10 +354,10 @@ SELECT * WHERE
             String query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(?a = ?b) }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
             Assert.True(algebra.Contains("Filter"), "Algebra should be optimised to use Filter");
         }
@@ -372,10 +368,10 @@ SELECT * WHERE
             String query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(SAMETERM(?a, ?b)) }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should not be optimised to not use Filter");
         }
@@ -386,10 +382,10 @@ SELECT * WHERE
             String query = "SELECT * WHERE { ?x a ?type . { SELECT ?y WHERE { ?y a ?type } }. FILTER(?x = ?y) }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
         }
 
@@ -399,10 +395,10 @@ SELECT * WHERE
             String query = "SELECT * WHERE { ?x a ?type . OPTIONAL { ?y a ?type } . FILTER(?x = ?y) }";
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
@@ -422,10 +418,10 @@ WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
             Assert.True(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
@@ -443,10 +439,10 @@ WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
@@ -464,10 +460,10 @@ WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
@@ -485,10 +481,10 @@ WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
@@ -506,10 +502,10 @@ WHERE
 
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            Console.WriteLine(this._formatter.Format(q));
+            _output.WriteLine(this._formatter.Format(q));
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
@@ -521,7 +517,7 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
@@ -532,7 +528,7 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
@@ -543,7 +539,7 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
 
             //Should not apply since it does not have a fixed project list
             Assert.False(algebra.StartsWith("OrderBy("), "Algebra should not be optimised to start with OrderBy");
@@ -556,7 +552,7 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
@@ -567,7 +563,7 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
             Assert.True(algebra.StartsWith("OrderBy("), "Algebra should be optimised to start with OrderBy");
         }
 
@@ -578,7 +574,7 @@ WHERE
             SparqlQuery q = this._parser.ParseFromString(query);
 
             String algebra = q.ToAlgebra().ToString();
-            Console.WriteLine(algebra);
+            _output.WriteLine(algebra);
 
             //Should not apply since it does not have a fixed project list
             Assert.False(algebra.StartsWith("OrderBy("), "Algebra should not be optimised to start with OrderBy");

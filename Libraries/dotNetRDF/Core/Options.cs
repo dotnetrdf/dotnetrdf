@@ -101,7 +101,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether Algebra Optimisation should be used.
         /// </summary>
-        public static bool AlgebraOptimisation { get; set; } = true;
+        //public static bool AlgebraOptimisation { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether some Optimisations considered unsafe can be used.
@@ -114,7 +114,7 @@ namespace VDS.RDF
         /// One example of such an optimisation is an implicit join where the optimiser cannot be sure that the variables involved don't represent literals.
         /// </para>
         /// </remarks>
-        public static bool UnsafeOptimisation { get; set; } = false;
+        //public static bool UnsafeOptimisation { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets the default syntax used for parsing SPARQL queries.

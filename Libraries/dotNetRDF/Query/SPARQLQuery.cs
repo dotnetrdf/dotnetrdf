@@ -1063,9 +1063,9 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Converts the Query into it's SPARQL Algebra representation (as represented in the Leviathan API).
         /// </summary>
-        /// <param name="optimiseQuery">Boolean flag indicating whether to optimize the query before generating the query algebra.</param>
+        /// <param name="optimise">Boolean flag indicating whether to apply algebra optimisation.</param>
         /// <returns></returns>
-        public ISparqlAlgebra ToAlgebra()
+        public ISparqlAlgebra ToAlgebra(bool optimise = true)
         {
             // Depending on how the query gets built we may not have had graph pattern optimization applied
             // which we should do here if query optimization is enabled
@@ -1078,7 +1078,7 @@ namespace VDS.RDF.Query
             ISparqlAlgebra algebra;
             if (_rootGraphPattern != null)
             {
-                if (Options.AlgebraOptimisation)
+                if (optimise)
                 {
                     // If using Algebra Optimisation may use a special algebra in some cases
                     switch (SpecialType)
@@ -1119,7 +1119,7 @@ namespace VDS.RDF.Query
             {
                 case SparqlQueryType.Ask:
                     // Apply Algebra Optimisation is enabled
-                    if (Options.AlgebraOptimisation)
+                    if (optimise)
                     {
                         algebra = ApplyAlgebraOptimisations(algebra);
                     }
@@ -1198,7 +1198,7 @@ namespace VDS.RDF.Query
                     }
 
                     // Apply Algebra Optimisation if enabled
-                    if (Options.AlgebraOptimisation)
+                    if (optimise)
                     {
                         algebra = ApplyAlgebraOptimisations(algebra);
                     }
