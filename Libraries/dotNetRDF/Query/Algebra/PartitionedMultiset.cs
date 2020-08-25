@@ -354,7 +354,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            if (Options.UsePLinqEvaluation)
+            if (UsePLinqEvaluation)
             {
                 this.Sets.AsParallel().ForAll(s =>
                     {
@@ -387,7 +387,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 vs.Remove(variable);
             }
-            if (Options.UsePLinqEvaluation)
+            if (UsePLinqEvaluation)
             {
                 this.Sets.AsParallel().ForAll(s => s.Remove(variable));
             }

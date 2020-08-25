@@ -533,7 +533,7 @@ namespace VDS.RDF
         /// <param name="update">SPARQL Update Command.</param>
         public void ExecuteUpdate(SparqlUpdateCommand update)
         {
-            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this));
+            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
             update.Evaluate(context);
         }
 
@@ -543,7 +543,7 @@ namespace VDS.RDF
         /// <param name="updates">SPARQL Update Command Set.</param>
         public void ExecuteUpdate(SparqlUpdateCommandSet updates)
         {
-            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this));
+            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
 
             for (int i = 0; i < updates.CommandCount; i++)
             {

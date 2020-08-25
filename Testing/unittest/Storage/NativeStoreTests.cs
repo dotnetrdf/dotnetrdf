@@ -30,6 +30,7 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
@@ -37,6 +38,10 @@ namespace VDS.RDF
     public class NativeStoreTests
         : BaseTest
     {
+        public NativeStoreTests(ITestOutputHelper output) : base(output)
+        {
+        }
+
         [SkippableFact]
         public void StorageNativeGraph()
         {
@@ -45,16 +50,7 @@ namespace VDS.RDF
             Graph g = new Graph();
             ttlparser.Load(g, "resources\\Turtle.ttl");
 
-            Console.WriteLine("Loaded Test Graph OK");
-            Console.WriteLine("Test Graph contains:");
-
             Assert.False(g.IsEmpty, "Test Graph should be non-empty");
-
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-            Console.WriteLine();
 
             //Create our Native Managers
             List<IStorageProvider> managers = new List<IStorageProvider>() {
@@ -67,29 +63,15 @@ namespace VDS.RDF
             //Save the Graph to each Manager
             foreach (IStorageProvider manager in managers)
             {
-                Console.WriteLine("Saving using '" + manager.GetType().ToString() + "'");
                 manager.SaveGraph(g);
-                Console.WriteLine("Saved OK");
-                Console.WriteLine();
             }
 
             //Load Back from each Manager
             foreach (IStorageProvider manager in managers)
             {
-                Console.WriteLine("Loading using '" + manager.GetType().ToString() + "' with a NativeGraph");
                 StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
-                Console.WriteLine("Loaded OK");
-
                 Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");
                 Assert.Equal(g.Triples.Count, native.Triples.Count);
-
-                Console.WriteLine("Loaded Graph contains:");
-                foreach (Triple t in native.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-
                 native.Dispose();
             }
         }

@@ -33,6 +33,7 @@ using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
@@ -41,7 +42,7 @@ namespace VDS.RDF
     {
         private Graph _graph;
 
-        public ValuedNodeTests()
+        public ValuedNodeTests(ITestOutputHelper output) : base(output)
         {
             _graph = new Graph();
         }

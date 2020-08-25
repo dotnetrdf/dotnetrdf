@@ -28,12 +28,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
 
     public class NamespaceMapperTest : BaseTest
     {
+        public NamespaceMapperTest(ITestOutputHelper output) : base(output)
+        {
+        }
+
         [Fact]
         public void NamespaceMapperEvent()
         {

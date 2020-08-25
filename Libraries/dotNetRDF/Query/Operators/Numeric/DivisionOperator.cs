@@ -41,13 +41,10 @@ namespace VDS.RDF.Query.Operators.Numeric
         /// <summary>
         /// Gets the operator type.
         /// </summary>
-        public override SparqlOperatorType Operator
-        {
-            get
-            {
-                return SparqlOperatorType.Divide;
-            }
-        }
+        public override SparqlOperatorType Operator => SparqlOperatorType.Divide;
+
+        /// <inheritdoc />
+        public override bool IsExtension => false;
 
         /// <summary>
         /// Applies the operator.

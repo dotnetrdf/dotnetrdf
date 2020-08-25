@@ -249,8 +249,7 @@ namespace VDS.RDF.Query
             var leviathan = new LeviathanQueryProcessor(new InMemoryDataset(),
                 options =>
                 {
-                    options.Culture = CultureInfo.GetCultureInfo("fr-FR");
-                    options.CompareOptions = CompareOptions.None;
+                    options.NodeComparer = new SparqlNodeComparer(CultureInfo.GetCultureInfo("fr-FR"), CompareOptions.None);
                 });
             var results = leviathan.ProcessQuery(q) as SparqlResultSet;
             var resultValues = results.Select(r => r["a"]).OfType<ILiteralNode>().Select(n => n.Value).ToList();

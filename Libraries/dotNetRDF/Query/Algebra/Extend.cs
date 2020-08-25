@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
 
                 context.InputMultiset = results;
                 context.OutputMultiset.AddVariable(_var);
-                if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
+                if (context.Options.UsePLinqEvaluation && this._expr.CanParallelise)
                 {
                     results.SetIDs.AsParallel().ForAll(id => EvalExtend(context, results, id));
                 }

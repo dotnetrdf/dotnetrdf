@@ -44,6 +44,9 @@ namespace VDS.RDF.Query.Operators
             get;
         }
 
+        /// <inheritdoc />
+        public abstract bool IsExtension { get; }
+
         /// <summary>
         /// Gets whether the operator can be applied to the given inputs.
         /// </summary>

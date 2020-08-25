@@ -236,7 +236,7 @@ namespace VDS.RDF.Update.Commands
                 {
                     query.AddNamedGraph(u);
                 }
-                SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor);
+                SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
                 if (UsingUris.Any())
                 {
                     // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs

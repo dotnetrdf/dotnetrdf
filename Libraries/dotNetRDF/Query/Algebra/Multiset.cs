@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
         public override void Add(ISet s)
         {
             int id;
-            if (Options.UsePLinqEvaluation)
+            if (UsePLinqEvaluation)
             {
                 lock (this._sets)
                 {

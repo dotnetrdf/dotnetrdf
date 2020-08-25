@@ -33,28 +33,17 @@ namespace VDS.RDF.Query
     /// </summary>
     public class LeviathanQueryOptions
     {
-        private CultureInfo _culture = CultureInfo.InvariantCulture;
         private long _queryExecutionTimeout = 180000;
-
+        private ISparqlNodeComparer _nodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
 
         /// <summary>
-        /// Get or set the culture to use for string comparisons in the query processor.
+        /// Get or set the node comparer to use in evaluation.
         /// </summary>
-        /// <remarks>
-        /// By default the value of this option is <see cref="CultureInfo.InvariantCulture"/> which when combined with the default value of <see cref="CompareOptions"/> will result in
-        /// sorting that conforms to the SPARQL 1.1 specification. Using a different culture or comparison option for sorting may produce non-standard results.
-        /// </remarks>
-        public CultureInfo Culture
-        {
-            get => _culture;
-            set => _culture = value ?? throw new ArgumentNullException(nameof(value), "A non-null CultureInfo value must be provided.");
+        /// <remarks>You may want to provide a <see cref="SparqlNodeComparer"/> instance to specify a different culture or compare options for string comparison.</remarks>
+        public ISparqlNodeComparer NodeComparer { 
+            get => _nodeComparer; 
+            set => _nodeComparer = value ?? throw new ArgumentNullException(nameof(value));
         }
-
-        /// <summary>
-        /// Get or set the method to use for string comparisons in the query processor.
-        /// </summary>
-        /// <remarks>The SPARQL specification requires that string comparisons should be ordinal (<see cref="System.Globalization.CompareOptions.Ordinal"/>). This is the default value.</remarks>
-        public CompareOptions CompareOptions { get; set; } = CompareOptions.Ordinal;
 
         /// <summary>
         /// Gets/Sets the Hard Timeout limit for SPARQL Query Execution (in milliseconds).
@@ -73,5 +62,37 @@ namespace VDS.RDF.Query
         /// </summary>
         public bool AlgebraOptimisation { get; set; } = true;
 
+        /// <summary>
+        /// Gets/Sets whether to use strict operators.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Strict Operators refers to the interpretation of certain operators like + and - in SPARQL expression evaluation.
+        /// If enabled then the operators will function only as specified in the SPARQL specification.
+        /// If disabled (which is the default) then certain extensions (which the SPARQL specification allows an implementation to provide) will be allowed e.g. date time arithmetic.
+        /// </para>
+        /// <para>
+        /// The only time you may want to disable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
+        /// </para>
+        /// </remarks>
+        public bool StrictOperators { get; set; }
+
+        /// <summary>
+        /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to true.
+        /// </remarks>
+        public bool UsePLinqEvaluation { get; set; } = true;
+
+        /// <summary>
+        /// Gets/Sets whether to use rigorous query evaluation.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.  If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
+        /// </para>
+        /// </remarks>
+        public bool RigorousEvaluation { get; set; } = false;
     }
 }

@@ -75,8 +75,6 @@ namespace VDS.RDF.Query
             var q = _parser.ParseFromString(query);
 
             var formatter = new SparqlFormatter();
-            Console.WriteLine("Query:");
-            Console.WriteLine(formatter.Format(q));
 
 
             //Evaluate for each Timeout
@@ -93,7 +91,7 @@ namespace VDS.RDF.Query
                 q.PartialResultsOnTimeout = true;
 
                 //Check that the reported Timeout matches the expected
-                var context = new SparqlEvaluationContext(q, null);
+                var context = new SparqlEvaluationContext(q, null, new LeviathanQueryOptions());
                 long expected;
                 if (useProcessorTimeout)
                 {
@@ -261,7 +259,6 @@ namespace VDS.RDF.Query
             const string query = "ASK WHERE { ?s ?p ?o . ?x ?y ?z }";
             var q = _parser.ParseFromString(query);
             q.Timeout = 1;
-            _output.WriteLine(q.ToAlgebra().ToString());
 
             var store = new TripleStore();
             var g = new Graph();

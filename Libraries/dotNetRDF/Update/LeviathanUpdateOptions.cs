@@ -24,41 +24,26 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
+using System;
+using VDS.RDF.Query;
 
-namespace VDS.RDF.Query.Operators
+namespace VDS.RDF.Update
 {
-    /// <summary>
-    /// Interface which represents an operator in SPARQL e.g. +.
-    /// </summary>
-    public interface ISparqlOperator
+    public class LeviathanUpdateOptions : LeviathanQueryOptions
     {
+        private long _updateExecutionTimeout = 180000;
+        public bool AutoCommit { get; set; } = true;
+
         /// <summary>
-        /// Gets the Operator this is an implementation of.
+        /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds).
         /// </summary>
-        SparqlOperatorType Operator
+        /// <remarks>
+        /// This is used to stop SPARQL Updates running away and never completing execution, it defaults to 3 mins (180,000 milliseconds).
+        /// </remarks>
+        public long UpdateExecutionTimeout
         {
-            get;
+            get => _updateExecutionTimeout;
+            set => _updateExecutionTimeout = Math.Max(0, value);
         }
-
-        /// <summary>
-        /// Get the flag that indicates if this operator is an extension to the set of operators defined in the SPARQL specification.
-        /// </summary>
-        bool IsExtension { get; }
-
-        /// <summary>
-        /// Gets whether the operator can be applied to the given inputs.
-        /// </summary>
-        /// <param name="ns">Inputs.</param>
-        /// <returns>True if applicable to the given inputs.</returns>
-        bool IsApplicable(params IValuedNode[] ns);
-
-        /// <summary>
-        /// Applies the operator to the given inputs.
-        /// </summary>
-        /// <param name="ns">Inputs.</param>
-        /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if an error occurs in applying the operator.</exception>
-        IValuedNode Apply(params IValuedNode[] ns);
     }
 }

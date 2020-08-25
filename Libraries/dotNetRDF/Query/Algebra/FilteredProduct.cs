@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Calculate the product applying the filter as we go
-                    if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
+                    if (context.Options.UsePLinqEvaluation && this._expr.CanParallelise)
                     {
                         PartitionedMultiset partitionedSet;
                         SparqlResultBinder binder = context.Binder;

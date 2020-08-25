@@ -30,11 +30,12 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {
 
-    public class SesameTests : IDisposable
+    public class SesameTests : BaseTest, IDisposable
     {
         public static SesameHttpProtocolConnector GetConnection()
         {
@@ -42,7 +43,7 @@ namespace VDS.RDF.Storage
             return new SesameHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.SesameServer), TestConfigManager.GetSetting(TestConfigManager.SesameRepository));
         }
 
-        public SesameTests()
+        public SesameTests(ITestOutputHelper output):base(output)
         {
             UriLoader.CacheEnabled = false;
         }
@@ -243,7 +244,7 @@ namespace VDS.RDF.Storage
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                TestTools.ShowResults(results);
+                ShowResults(results);
                 Assert.True(((SparqlResultSet) results).Result);
             }
 
@@ -255,7 +256,7 @@ namespace VDS.RDF.Storage
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                TestTools.ShowResults(results);
+                ShowResults(results);
                 Assert.False(((SparqlResultSet) results).Result);
             }
         }

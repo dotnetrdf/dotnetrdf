@@ -44,11 +44,11 @@ namespace VDS.RDF.Query
 
         public OperatorTests()
         {
-            this._numArgs = new List<IValuedNode>() 
-            { 
-                new LongNode(null, 12345), 
-                new DecimalNode(null, 123.45m), 
-                new FloatNode(null, 123.45f), 
+            this._numArgs = new List<IValuedNode>()
+            {
+                new LongNode(null, 12345),
+                new DecimalNode(null, 123.45m),
+                new FloatNode(null, 123.45f),
                 new DoubleNode(null, 123.45d)
             };
             this._someNullArgs = new List<IValuedNode>()
@@ -71,10 +71,11 @@ namespace VDS.RDF.Query
             };
         }
 
-        private void TestLookup(SparqlOperatorType opType, Type returnedOpInstanceType, IEnumerable<IValuedNode> ns, bool opExists)
+        private void TestLookup(SparqlOperatorType opType, bool strict, Type returnedOpInstanceType,
+            IEnumerable<IValuedNode> ns, bool opExists)
         {
             ISparqlOperator op = null;
-            if (SparqlOperators.TryGetOperator(opType, out op, ns.ToArray()))
+            if (SparqlOperators.TryGetOperator(opType, strict, out op, ns.ToArray()))
             {
                 Assert.True(opExists, "Operator returned when no operator was expected for the given inputs");
                 Assert.Equal(returnedOpInstanceType, op.GetType());
@@ -85,23 +86,17 @@ namespace VDS.RDF.Query
             }
         }
 
-        private void TestStrictLookup(SparqlOperatorType opType, Type returnedOpInstanceType, IEnumerable<IValuedNode> ns, bool opExists)
+        private void TestStrictLookup(SparqlOperatorType opType, Type returnedOpInstanceType,
+            IEnumerable<IValuedNode> ns, bool opExists)
         {
-            try
-            {
-                Options.StrictOperators = true;
-                this.TestLookup(opType, returnedOpInstanceType, ns, opExists);
-            }
-            finally
-            {
-                Options.StrictOperators = false;
-            }
+            this.TestLookup(opType, true, returnedOpInstanceType, ns, opExists);
         }
 
-        private void TestApplication(SparqlOperatorType opType, IEnumerable<IValuedNode> ns, IValuedNode expected, bool shouldFail)
+        private void TestApplication(SparqlOperatorType opType, bool strict, IEnumerable<IValuedNode> ns,
+            IValuedNode expected, bool shouldFail)
         {
             ISparqlOperator op = null;
-            if (SparqlOperators.TryGetOperator(opType, out op, ns.ToArray()))
+            if (SparqlOperators.TryGetOperator(opType, strict, out op, ns.ToArray()))
             {
                 IValuedNode actual;
                 try
@@ -118,80 +113,73 @@ namespace VDS.RDF.Query
             }
             else
             {
-                Assert.True(shouldFail,"Expected to be able to select an operator to apply to the inputs");
+                Assert.True(shouldFail, "Expected to be able to select an operator to apply to the inputs");
             }
         }
 
-        private void TestStrictApplication(SparqlOperatorType opType, IEnumerable<IValuedNode> ns, IValuedNode expected, bool shouldFail)
+        private void TestStrictApplication(SparqlOperatorType opType, IEnumerable<IValuedNode> ns, IValuedNode expected,
+            bool shouldFail)
         {
-            try
-            {
-                Options.StrictOperators = true;
-                this.TestApplication(opType, ns, expected, shouldFail);
-            }
-            finally
-            {
-                Options.StrictOperators = false;
-            }
+            this.TestApplication(opType, true, ns, expected, shouldFail);
         }
 
         [Fact]
         public void SparqlOperatorLookup1()
         {
-            this.TestLookup(SparqlOperatorType.Add, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Add, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Add, typeof(AdditionOperator), this._numArgs, true);
+            this.TestLookup(SparqlOperatorType.Add, false, null, Enumerable.Empty<IValuedNode>(), false);
+            this.TestLookup(SparqlOperatorType.Add, false, null, this._someNullArgs, false);
+            this.TestLookup(SparqlOperatorType.Add, false, typeof(AdditionOperator), this._numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup2()
         {
-            this.TestLookup(SparqlOperatorType.Subtract, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Subtract, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Subtract, typeof(SubtractionOperator), this._numArgs, true);
+            this.TestLookup(SparqlOperatorType.Subtract, false, null, Enumerable.Empty<IValuedNode>(), false);
+            this.TestLookup(SparqlOperatorType.Subtract, false, null, this._someNullArgs, false);
+            this.TestLookup(SparqlOperatorType.Subtract, false, typeof(SubtractionOperator), this._numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup3()
         {
-            this.TestLookup(SparqlOperatorType.Divide, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Divide, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Divide, typeof(DivisionOperator), this._numArgs, true);
+            this.TestLookup(SparqlOperatorType.Divide, false, null, Enumerable.Empty<IValuedNode>(), false);
+            this.TestLookup(SparqlOperatorType.Divide, false, null, this._someNullArgs, false);
+            this.TestLookup(SparqlOperatorType.Divide, false, typeof(DivisionOperator), this._numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup4()
         {
-            this.TestLookup(SparqlOperatorType.Multiply, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Multiply, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Multiply, typeof(MultiplicationOperator), this._numArgs, true);
+            this.TestLookup(SparqlOperatorType.Multiply, false, null, Enumerable.Empty<IValuedNode>(), false);
+            this.TestLookup(SparqlOperatorType.Multiply, false, null, this._someNullArgs, false);
+            this.TestLookup(SparqlOperatorType.Multiply, false, typeof(MultiplicationOperator), this._numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup5()
         {
-            this.TestLookup(SparqlOperatorType.Add, typeof(DateTimeAddition), this._dtArgs, true);
+            this.TestLookup(SparqlOperatorType.Add, false, typeof(DateTimeAddition), this._dtArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Add, null, this._dtArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorLookup6()
         {
-            this.TestLookup(SparqlOperatorType.Subtract, typeof(DateTimeSubtraction), this._dtArgs, true);
+            this.TestLookup(SparqlOperatorType.Subtract, false, typeof(DateTimeSubtraction), this._dtArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._dtArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorLookup7()
         {
-            this.TestLookup(SparqlOperatorType.Add, typeof(TimeSpanAddition), this._tsArgs, true);
+            this.TestLookup(SparqlOperatorType.Add, false, typeof(TimeSpanAddition), this._tsArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Add, null, this._tsArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorLookup8()
         {
-            this.TestLookup(SparqlOperatorType.Subtract, typeof(TimeSpanSubtraction), this._tsArgs, true);
+            this.TestLookup(SparqlOperatorType.Subtract, false, typeof(TimeSpanSubtraction), this._tsArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._tsArgs, false);
         }
 
@@ -204,7 +192,7 @@ namespace VDS.RDF.Query
                 new LongNode(null, 2)
             };
             IValuedNode expected = new LongNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -216,7 +204,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -228,7 +216,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -240,7 +228,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -252,7 +240,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -264,7 +252,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -276,7 +264,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -288,7 +276,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -300,7 +288,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -312,7 +300,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
@@ -324,7 +312,7 @@ namespace VDS.RDF.Query
                 new LongNode(null, 2)
             };
             IValuedNode expected = new LongNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -336,7 +324,7 @@ namespace VDS.RDF.Query
                 new LongNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -348,7 +336,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -360,7 +348,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -372,7 +360,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -384,7 +372,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -396,7 +384,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -408,7 +396,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -420,7 +408,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -432,7 +420,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
@@ -444,7 +432,7 @@ namespace VDS.RDF.Query
                 new LongNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 0.5m);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -456,7 +444,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 0.5m);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -468,7 +456,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 0.5f);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -480,7 +468,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -492,7 +480,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 0.5m);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -504,7 +492,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 0.5f);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -516,7 +504,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -528,7 +516,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 0.5f);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -540,7 +528,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -552,7 +540,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
@@ -564,7 +552,7 @@ namespace VDS.RDF.Query
                 new LongNode(null, 6)
             };
             IValuedNode expected = new LongNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -576,7 +564,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 6)
             };
             IValuedNode expected = new DecimalNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -588,7 +576,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 6)
             };
             IValuedNode expected = new FloatNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -600,7 +588,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -612,7 +600,7 @@ namespace VDS.RDF.Query
                 new DecimalNode(null, 6)
             };
             IValuedNode expected = new DecimalNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -624,7 +612,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 6)
             };
             IValuedNode expected = new FloatNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -636,7 +624,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -648,7 +636,7 @@ namespace VDS.RDF.Query
                 new FloatNode(null, 6)
             };
             IValuedNode expected = new FloatNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -660,7 +648,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -672,7 +660,7 @@ namespace VDS.RDF.Query
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
@@ -685,7 +673,7 @@ namespace VDS.RDF.Query
                 new TimeSpanNode(null, new TimeSpan(1, 0, 0))
             };
             IValuedNode expected = new DateTimeNode(null, now.AddHours(1));
-            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
             this.TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
         }
 
@@ -699,7 +687,7 @@ namespace VDS.RDF.Query
                 new TimeSpanNode(null, new TimeSpan(1, 0, 0))
             };
             IValuedNode expected = new DateTimeNode(null, now.AddHours(-1));
-            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
             this.TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
         }
 
@@ -719,6 +707,7 @@ namespace VDS.RDF.Query
                 SparqlOperators.Reset();
             }
         }
+
         [Fact]
         public void SparqlOperatorRegistration2()
         {

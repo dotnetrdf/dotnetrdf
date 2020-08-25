@@ -36,12 +36,17 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {
 
     public class VirtuosoTest : BaseTest
     {
+        public VirtuosoTest(ITestOutputHelper output) : base(output)
+        {
+        }
+
         public static VirtuosoManager GetConnection()
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso), "Test Config marks Virtuoso as unavailable, test cannot be run");

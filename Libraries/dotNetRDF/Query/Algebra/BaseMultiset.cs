@@ -50,14 +50,22 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public int VirtualCount
         {
-            get
-            {
-                return (_virtualCount==-1 ? Count : _virtualCount);
-            }
-            internal set
-            {
-                _virtualCount = value;
-            }
+            get => (_virtualCount==-1 ? Count : _virtualCount);
+            internal set => _virtualCount = value;
+        }
+
+        /// <summary>
+        /// Get whether this multiset will use LINQ parallel operators for evaluating set operations.
+        /// </summary>
+        public bool UsePLinqEvaluation { get; } = true;
+
+        /// <summary>
+        /// Create a new multiset.
+        /// </summary>
+        /// <param name="usePLinqEvaluation">If true, then LINQ parallel operators will be used when evaluating set operations using this multiset.</param>
+        public BaseMultiset(bool usePLinqEvaluation = true)
+        {
+            UsePLinqEvaluation = usePLinqEvaluation;
         }
 
         /// <summary>
@@ -120,7 +128,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            if (Options.UsePLinqEvaluation)
+            if (UsePLinqEvaluation)
             {
                 // Use a parallel join
                 other.Sets.AsParallel().ForAll(y => EvalJoin(y, joinVars, values, nulls, joinedSet));
@@ -180,9 +188,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression.</param>
-        /// <param name="nodeComparer">The comparer to use.</param>
+        /// <param name="baseContext">The base evaluation context providing access to the query evaluation options to use when evaluating the join</param>
         /// <returns></returns>
-        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, ISparqlNodeComparer nodeComparer)
+        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
         {
             // If the Other is the Identity/Null Multiset the result is this Multiset
             if (other is IdentityMultiset) return this;
@@ -191,7 +199,7 @@ namespace VDS.RDF.Query.Algebra
 
             Multiset joinedSet = new Multiset();
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(joinedSet);
-            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder, nodeComparer);
+            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder, baseContext.Options);
 
             // Find the First Variable from this Multiset which is in both Multisets
             // If there is no Variable from this Multiset in the other Multiset then this
@@ -199,10 +207,10 @@ namespace VDS.RDF.Query.Algebra
             List<String> joinVars = Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
-                if (Options.UsePLinqEvaluation && expr.CanParallelise)
+                if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     PartitionedMultiset partitionedSet = new PartitionedMultiset(this.Count, other.Count + 1);
-                    this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, nodeComparer));
+                    this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, baseContext));
                     return partitionedSet;
                 }
                 // Do a serial Left Join Product
@@ -277,7 +285,7 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 // Then do a pass over the LHS and work out the intersections
-                if (Options.UsePLinqEvaluation && expr.CanParallelise)
+                if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     this.Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr));
                 }
@@ -293,10 +301,10 @@ namespace VDS.RDF.Query.Algebra
             return joinedSet;
         }
 
-        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr, ISparqlNodeComparer nodeComparer)
+        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr, SparqlEvaluationContext baseContext)
         {
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(partitionedSet);
-            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder, nodeComparer);
+            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder, baseContext.Options);
             bool standalone = false, matched = false;
 
             int id = partitionedSet.GetNextBaseID();
@@ -687,7 +695,7 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return other;
             if (other.IsEmpty) return new NullMultiset();
 
-            if (Options.UsePLinqEvaluation)
+            if (UsePLinqEvaluation)
             {
                 // Determine partition sizes so we can do a parallel product
                 // Want to parallelize over whichever side is larger

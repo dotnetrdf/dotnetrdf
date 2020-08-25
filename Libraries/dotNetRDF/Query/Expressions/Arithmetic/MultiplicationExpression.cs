@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
 
             IValuedNode[] inputs = new IValuedNode[] { a, b };
             ISparqlOperator op = null;
-            if (SparqlOperators.TryGetOperator(SparqlOperatorType.Multiply, out op, inputs))
+            if (SparqlOperators.TryGetOperator(SparqlOperatorType.Multiply, context.Options.StrictOperators, out op, inputs))
             {
                 return op.Apply(inputs);
             }

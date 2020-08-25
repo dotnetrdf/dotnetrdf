@@ -37,8 +37,6 @@ namespace VDS.RDF.Update
     /// </summary>
     public class SparqlUpdateEvaluationContext
     {
-        private ISparqlDataset _data;
-        private SparqlUpdateCommandSet _commands;
         private Stopwatch _timer = new Stopwatch();
         private long _timeout;
 
@@ -48,8 +46,9 @@ namespace VDS.RDF.Update
         /// <param name="commands">Command Set.</param>
         /// <param name="data">SPARQL Dataset.</param>
         /// <param name="processor">Query Processor for WHERE clauses.</param>
-        public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
-            : this(commands, data)
+        /// <param name="options">Update (and query) processor options.</param>
+        public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor, LeviathanUpdateOptions options)
+            : this(commands, data, options)
         {
             QueryProcessor = processor;
         }
@@ -59,10 +58,11 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="commands">Command Set.</param>
         /// <param name="data">SPARQL Dataset.</param>
-        public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data)
-            : this(data)
+        /// <param name="options">Update (and query) processor options.</param>
+        public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data, LeviathanUpdateOptions options)
+            : this(data, options)
         {
-            _commands = commands;
+            Commands = commands;
         }
 
         /// <summary>
@@ -70,8 +70,9 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="data">SPARQL Dataset.</param>
         /// <param name="processor">Query Processor for WHERE clauses.</param>
-        public SparqlUpdateEvaluationContext(ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
-            : this(data)
+        /// <param name="options">Update (and query) processor options.</param>
+        public SparqlUpdateEvaluationContext(ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor, LeviathanUpdateOptions options)
+            : this(data, options)
         {
             QueryProcessor = processor;
         }
@@ -80,32 +81,27 @@ namespace VDS.RDF.Update
         /// Creates a new SPARQL Update Evaluation Context.
         /// </summary>
         /// <param name="data">SPARQL Dataset.</param>
-        public SparqlUpdateEvaluationContext(ISparqlDataset data)
+        /// <param name="options">Update (and query) processor options.</param>
+        public SparqlUpdateEvaluationContext(ISparqlDataset data, LeviathanUpdateOptions options)
         {
-            _data = data;
+            Data = data;
+            Options = options;
         }
 
         /// <summary>
         /// Gets the Command Set (if any) that this context pertains to.
         /// </summary>
-        public SparqlUpdateCommandSet Commands
-        {
-            get
-            {
-                return _commands;
-            }
-        }
+        public SparqlUpdateCommandSet Commands { get; }
 
         /// <summary>
         /// Dataset upon which the Updates are applied.
         /// </summary>
-        public ISparqlDataset Data
-        {
-            get
-            {
-                return _data;
-            }
-        }
+        public ISparqlDataset Data { get; }
+
+        /// <summary>
+        /// Get the processor options for this context.
+        /// </summary>
+        public LeviathanUpdateOptions Options { get; }
 
         /// <summary>
         /// Gets the Query Processor used to process the WHERE clauses of DELETE or INSERT commands.
@@ -113,41 +109,28 @@ namespace VDS.RDF.Update
         public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> QueryProcessor
         {
             get;
-            private set;
         }
 
         /// <summary>
         /// Retrieves the Time in milliseconds the update took to evaluate.
         /// </summary>
-        public long UpdateTime
-        {
-            get
-            {
-               return _timer.ElapsedMilliseconds;
-            }
-        }
+        public long UpdateTime => _timer.ElapsedMilliseconds;
 
         /// <summary>
         /// Retrieves the Time in ticks the updates took to evaluate.
         /// </summary>
-        public long UpdateTimeTicks
-        {
-            get
-            {
-                return _timer.ElapsedTicks;
-            }
-        }
+        public long UpdateTimeTicks => _timer.ElapsedTicks;
 
         private void CalculateTimeout()
         {
-            if (_commands != null)
+            if (Commands != null)
             {
-                if (_commands.Timeout > 0)
+                if (Commands.Timeout > 0)
                 {
-                    if (Options.UpdateExecutionTimeout == 0 || (_commands.Timeout <= Options.UpdateExecutionTimeout && Options.UpdateExecutionTimeout > 0))
+                    if (Options.UpdateExecutionTimeout == 0 || (Commands.Timeout <= Options.UpdateExecutionTimeout && Options.UpdateExecutionTimeout > 0))
                     {
                         // Update Timeout is used provided it is less than global timeout unless global timeout is zero
-                        _timeout = _commands.Timeout;
+                        _timeout = Commands.Timeout;
                     }
                     else
                     {

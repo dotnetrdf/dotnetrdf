@@ -57,9 +57,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression which the Join is predicated on.</param>
-        /// <param name="nodeComparer">The comparer to use.</param>
+        /// <param name="baseContext">The parent context for the evaluation of the join.</param>
         /// <returns>The other Multiset.</returns>
-        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, ISparqlNodeComparer nodeComparer)
+        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
         {
             // If Other is Null/Empty then the Join still results in Identity
             if (other is NullMultiset) return this;

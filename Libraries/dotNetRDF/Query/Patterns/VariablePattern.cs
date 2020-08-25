@@ -35,13 +35,13 @@ namespace VDS.RDF.Query.Patterns
     public class VariablePattern 
         : PatternItem
     {
-        private String _varname;
+        private readonly string _varname;
 
         /// <summary>
         /// Creates a new Variable Pattern.
         /// </summary>
         /// <param name="name">Variable name.</param>
-        public VariablePattern(String name)
+        public VariablePattern(string name)
         {
             _varname = name;
 
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="name">Variable name.</param>
         /// <param name="rigorousEvaluation">Whether to force rigorous evaluation.</param>
-        public VariablePattern(String name, bool rigorousEvaluation)
+        public VariablePattern(string name, bool rigorousEvaluation)
             : this(name)
         {
             RigorousEvaluation = rigorousEvaluation;
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation || RigorousEvaluation)
+            if (context.Options.RigorousEvaluation || RigorousEvaluation)
             {
                 if (context.InputMultiset.ContainsVariable(_varname))
                 {
@@ -140,12 +140,6 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Name of the Variable this Pattern matches.
         /// </summary>
-        public override string VariableName
-        {
-            get
-            {
-                return _varname;
-            }
-        }
+        public override string VariableName => _varname;
     }
 }

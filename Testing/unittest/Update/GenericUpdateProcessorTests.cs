@@ -31,13 +31,19 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Update
 {
 
-    public abstract class GenericUpdateProcessorTests
+    public abstract class GenericUpdateProcessorTests : BaseTest
     {
         private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
+
+        protected GenericUpdateProcessorTests(ITestOutputHelper output) : base(output)
+        {
+
+        }
 
         protected abstract IStorageProvider GetManager();
 

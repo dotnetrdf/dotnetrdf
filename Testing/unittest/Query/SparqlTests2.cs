@@ -1315,91 +1315,74 @@ WHERE
         [Trait("Coverage", "Skip")]
         public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
-            try
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-416.trig");
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+            //SparqlFormatter formatter = new SparqlFormatter();
+            //_output.WriteLine(formatter.Format(q));
+
+            ISparqlDataset dataset = AsDataset(store);
+
+            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset,
+                options => { options.UsePLinqEvaluation = false;});
+            TimeSpan total = new TimeSpan();
+            const int totalRuns = 1000;
+            for (int i = 0; i < totalRuns; i++)
             {
-                Options.UsePLinqEvaluation = false;
+                _output.WriteLine("Starting query run " + i + " of " + totalRuns);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.NotNull(results);
 
-                TripleStore store = new TripleStore();
-                store.LoadFromFile(@"resources\core-416.trig");
-
-                SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
-                //SparqlFormatter formatter = new SparqlFormatter();
-                //_output.WriteLine(formatter.Format(q));
-
-                ISparqlDataset dataset = AsDataset(store);
-
-                //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-                TimeSpan total = new TimeSpan();
-                const int totalRuns = 1000;
-                for (int i = 0; i < totalRuns; i++)
+                if (q.QueryExecutionTime != null)
                 {
-                    _output.WriteLine("Starting query run " + i + " of " + totalRuns);
-                    SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                    Assert.NotNull(results);
-
-                    if (q.QueryExecutionTime != null)
-                    {
-                        _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
-                        total = total + q.QueryExecutionTime.Value;
-                    }
-                    if (results.Count != 4) TestTools.ShowResults(results);
-                    Assert.Equal(4, results.Count);
+                    _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                    total = total + q.QueryExecutionTime.Value;
                 }
+                if (results.Count != 4) TestTools.ShowResults(results);
+                Assert.Equal(4, results.Count);
+            }
 
-                _output.WriteLine("Total Execution Time: " + total);
-                Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
-            }
-            finally
-            {
-                Options.UsePLinqEvaluation = true;
-            }
+            _output.WriteLine("Total Execution Time: " + total);
+            Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
         }
 
         [Fact]
         [Trait("Coverage", "Skip")]
         public void SparqlSubQueryGraphInteractionCore416_Parallel()
         {
-            try
+            TripleStore store = new TripleStore();
+            store.LoadFromFile(@"resources\core-416.trig");
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+            _output.WriteLine(q.ToAlgebra().ToString());
+            //SparqlFormatter formatter = new SparqlFormatter();
+            //_output.WriteLine(formatter.Format(q));
+
+            ISparqlDataset dataset = AsDataset(store);
+
+            //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            TimeSpan total = new TimeSpan();
+            const int totalRuns = 1000;
+            for (int i = 0; i < totalRuns; i++)
             {
-                Options.UsePLinqEvaluation = true;
+                _output.WriteLine("Starting query run " + i + " of " + totalRuns);
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.NotNull(results);
 
-                TripleStore store = new TripleStore();
-                store.LoadFromFile(@"resources\core-416.trig");
-
-                SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
-                _output.WriteLine(q.ToAlgebra().ToString());
-                //SparqlFormatter formatter = new SparqlFormatter();
-                //_output.WriteLine(formatter.Format(q));
-
-                ISparqlDataset dataset = AsDataset(store);
-
-                //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-                TimeSpan total = new TimeSpan();
-                const int totalRuns = 1000;
-                for (int i = 0; i < totalRuns; i++)
+                if (q.QueryExecutionTime != null)
                 {
-                    _output.WriteLine("Starting query run " + i + " of " + totalRuns);
-                    SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                    Assert.NotNull(results);
-
-                    if (q.QueryExecutionTime != null)
-                    {
-                        _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
-                        total = total + q.QueryExecutionTime.Value;
-                    }
-                    if (results.Count != 4) TestTools.ShowResults(results);
-                    Assert.Equal(4, results.Count);
+                    _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
+                    total = total + q.QueryExecutionTime.Value;
                 }
+                if (results.Count != 4) TestTools.ShowResults(results);
+                Assert.Equal(4, results.Count);
+            }
 
-                _output.WriteLine("Total Execution Time: " + total);
-                Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
-            }
-            finally
-            {
-                Options.UsePLinqEvaluation = true;
-            }
+            _output.WriteLine("Total Execution Time: " + total);
+            Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
         }
 
         [Fact]
@@ -1475,7 +1458,7 @@ WHERE
             TestTools.ShowResults(results);
         }
 
-        private void RunCore457(String query)
+        private void RunCore457(String query, bool usePLinq)
         {
             TripleStore store = new TripleStore();
             store.LoadFromFile(@"resources\core-457\data.nq");
@@ -1483,7 +1466,8 @@ WHERE
 
             SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\" + query);
             q.Timeout = 15000;
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset,
+                options => { options.UsePLinqEvaluation = usePLinq;});
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.True(q.QueryExecutionTime.HasValue);
@@ -1495,66 +1479,50 @@ WHERE
         [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphOptionalInteractionCore457_1()
         {
-            RunCore457("optional.rq");
+            RunCore457("optional.rq", true);
         }
 
 
         [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphOptionalInteractionCore457_2()
         {
-            try
-            {
-                Options.UsePLinqEvaluation = false;
-                RunCore457("optional.rq");
-            }
-            finally
-            {
-                Options.UsePLinqEvaluation = true;
-            }
+            RunCore457("optional.rq", false);
         }
 
         [Fact]
         public void SparqlGraphOptionalInteractionCore457_3()
         {
-            RunCore457("optional2.rq");
+            RunCore457("optional2.rq", true);
         }
 
         [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphExistsInteractionCore457_1()
         {
-            RunCore457("exists.rq");
+            RunCore457("exists.rq", true);
         }
 
         [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphExistsInteractionCore457_2()
         {
-            try
-            {
-                Options.UsePLinqEvaluation = false;
-                RunCore457("exists.rq");
-            }
-            finally
-            {
-                Options.UsePLinqEvaluation = true;
-            }
+            RunCore457("exists.rq", false);
         }
 
         [Fact]
         public void SparqlGraphExistsInteractionCore457_3()
         {
-            RunCore457("exists2.rq");
+            RunCore457("exists2.rq", true);
         }
 
         [Fact]
         public void SparqlGraphExistsInteractionCore457_4()
         {
-            RunCore457("exists3.rq");
+            RunCore457("exists3.rq", true);
         }
 
         [Fact(Skip = "the query requires generating ~4.7 million solutions so is fundamentally unsolvable")]
         public void SparqlGraphExistsInteractionCore457_5()
         {
-            RunCore457("exists-limit.rq");
+            RunCore457("exists-limit.rq", true);
         }
     }
 }

@@ -32,6 +32,7 @@ using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
@@ -102,8 +103,9 @@ namespace VDS.RDF
             }
         }
 
-        public static void ShowResults(Object results)
+        public static void ShowResults(Object results, ITestOutputHelper output = null)
         {
+            if (output == null) return;
             if (results is IGraph)
             {
                 ShowGraph((IGraph) results);
@@ -111,11 +113,11 @@ namespace VDS.RDF
             else if (results is SparqlResultSet)
             {
                 SparqlResultSet resultSet = (SparqlResultSet) results;
-                Console.WriteLine("Result: " + resultSet.Result);
-                Console.WriteLine(resultSet.Results.Count + " Results");
+                output.WriteLine("Result: " + resultSet.Result);
+                output.WriteLine(resultSet.Results.Count + " Results");
                 foreach (SparqlResult r in resultSet.Results)
                 {
-                    Console.WriteLine(r.ToString());
+                    output.WriteLine(r.ToString());
                 }
             }
             else

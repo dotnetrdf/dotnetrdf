@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Algebra
 
             // Otherwise Invoke using an Async call
             BaseMultiset productSet;
-            if (Options.UsePLinqEvaluation)
+            if (multiset.UsePLinqEvaluation)
             {
                 if (multiset.Count >= other.Count)
                 {
@@ -89,11 +89,11 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="multiset">Multiset.</param>
         /// <param name="other">Other Multiset.</param>
-        /// <param name="target">Mutliset to generate the product in.</param>
+        /// <param name="target">Multiset to generate the product in.</param>
         /// <param name="stop">Stop Token.</param>
         private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
         {
-            if (Options.UsePLinqEvaluation)
+            if (multiset.UsePLinqEvaluation)
             {
                 // Determine partition sizes so we can do a parallel product
                 // Want to parallelize over whichever side is larger

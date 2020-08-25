@@ -39,9 +39,6 @@ namespace VDS.RDF.Query.Patterns
     public class PropertyPathPattern
         : BaseTriplePattern, IPropertyPathPattern, IComparable<PropertyPathPattern>
     {
-        private readonly PatternItem _subj, _obj;
-        private readonly ISparqlPath _path;
-
         /// <summary>
         /// Creates a new Property Path Pattern.
         /// </summary>
@@ -50,20 +47,20 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="obj">Object.</param>
         public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
         {
-            _subj = subj;
-            _path = path;
-            _obj = obj;
-            _subj.RigorousEvaluation = true;
-            _obj.RigorousEvaluation = true;
+            Subject = subj;
+            Path = path;
+            Object = obj;
+            Subject.RigorousEvaluation = true;
+            Object.RigorousEvaluation = true;
 
             // Build our list of Variables
-            if (_subj.VariableName != null)
+            if (Subject.VariableName != null)
             {
-                _vars.Add(_subj.VariableName);
+                _vars.Add(Subject.VariableName);
             }
-            if (_obj.VariableName != null)
+            if (Object.VariableName != null)
             {
-                if (!_vars.Contains(_obj.VariableName)) _vars.Add(_obj.VariableName);
+                if (!_vars.Contains(Object.VariableName)) _vars.Add(Object.VariableName);
             }
             _vars.Sort();
         }
@@ -71,40 +68,22 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the pattern type.
         /// </summary>
-        public override TriplePatternType PatternType
-        {
-            get
-            {
-                return TriplePatternType.Path;
-            }
-        }
+        public override TriplePatternType PatternType => TriplePatternType.Path;
 
         /// <summary>
         /// Gets the Subject of the Property Path.
         /// </summary>
-        public PatternItem Subject
-        {
-            get
-            {
-                return _subj;
-            }
-        }
+        public PatternItem Subject { get; }
 
         /// <summary>
         /// Gets the Property Path.
         /// </summary>
-        public ISparqlPath Path
-        {
-            get
-            {
-                return _path;
-            }
-        }
+        public ISparqlPath Path { get; }
 
         /// <summary>
         /// Gets the Object of the Property Path.
         /// </summary>
-        public PatternItem Object => _obj;
+        public PatternItem Object { get; }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
@@ -125,41 +104,34 @@ namespace VDS.RDF.Query.Patterns
             // Try and generate an Algebra expression
             // Make sure we don't generate clashing temporary variable IDs over the life of the
             // Evaluation
-            PathTransformContext transformContext = new PathTransformContext(_subj, _obj);
+            PathTransformContext transformContext = new PathTransformContext(Subject, Object);
             if (context["PathTransformID"] != null)
             {
                 transformContext.NextID = (int)context["PathTransformID"];
             }
-            ISparqlAlgebra algebra = _path.ToAlgebra(transformContext);
+            ISparqlAlgebra algebra = Path.ToAlgebra(transformContext);
             context["PathTransformID"] = transformContext.NextID + 1;
 
             // Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
-            bool rigMode = Options.RigorousEvaluation;
+            bool rigMode = context.Options.RigorousEvaluation;
             try
             {
                 // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
-                Options.RigorousEvaluation = true;
+                context.Options.RigorousEvaluation = true;
 
                 // Note: We may need to preserve Blank Node variables across evaluations
                 // which we usually don't do BUT because of the way we translate only part of the path
                 // into an algebra at a time and may need to do further nested translate calls we do
                 // need to do this here
                 context.TrimTemporaryVariables = false;
-                BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
+                var result = context.Evaluate(algebra);//algebra.Evaluate(context);
                 // Also note that we don't trim temporary variables here even if we've set the setting back
                 // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
                 // Once we have our results can join then into our input
-                if (result is NullMultiset)
-                {
-                    context.OutputMultiset = new NullMultiset();
-                }
-                else
-                {
-                    context.OutputMultiset = initialInput.Join(result);
-                }
+                context.OutputMultiset = result is NullMultiset ? new NullMultiset() : initialInput.Join(result);
 
                 // If we reach here we've successfully evaluated the simple pattern and can return
                 return;
@@ -167,31 +139,19 @@ namespace VDS.RDF.Query.Patterns
             finally
             {
                 context.TrimTemporaryVariables = trimMode;
-                Options.RigorousEvaluation = rigMode;
+                context.Options.RigorousEvaluation = rigMode;
             }
         }
 
         /// <summary>
         /// Gets whether the Pattern accepts all Triple Patterns.
         /// </summary>
-        public override bool IsAcceptAll
-        {
-            get 
-            {
-                return false; 
-            }
-        }
+        public override bool IsAcceptAll => false;
 
         /// <summary>
         /// Returns false a property path may always contain implicit blank variables.
         /// </summary>
-        public override bool HasNoBlankVariables
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool HasNoBlankVariables => false;
 
         /// <summary>
         /// Compares a property path pattern to another.
@@ -220,11 +180,11 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(_subj.ToString());
+            output.Append(Subject.ToString());
             output.Append(' ');
-            output.Append(_path.ToString());
+            output.Append(Path.ToString());
             output.Append(' ');
-            output.Append(_obj.ToString());
+            output.Append(Object.ToString());
             return output.ToString();
         }
     }

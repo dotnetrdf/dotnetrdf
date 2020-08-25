@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Query;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing
 {
@@ -10,7 +11,12 @@ namespace VDS.RDF.Parsing
     public class SparqlCsvTests
     {
         private readonly SparqlCsvParser _parser = new SparqlCsvParser();
+        private readonly ITestOutputHelper _output;
 
+        public SparqlCsvTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
         private void CheckVariables(SparqlResultSet results, params String[] vars)
         {
             foreach (String var in vars)

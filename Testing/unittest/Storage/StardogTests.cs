@@ -36,6 +36,7 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {
@@ -43,6 +44,10 @@ namespace VDS.RDF.Storage
     public class StardogTests
         : GenericUpdateProcessorTests
     {
+        public StardogTests(ITestOutputHelper output) : base(output)
+        {
+        }
+
         public static StardogConnector GetConnection()
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog), "Test Config marks Stardog as unavailable, test cannot be run");
@@ -81,7 +86,7 @@ namespace VDS.RDF.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
             {
-                Console.WriteLine(t.ToString(formatter));
+                _output.WriteLine(t.ToString(formatter));
             }
 
             Assert.False(h.IsEmpty);
@@ -105,7 +110,7 @@ namespace VDS.RDF.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
             {
-                Console.WriteLine(t.ToString(formatter));
+                _output.WriteLine(t.ToString(formatter));
             }
 
             Assert.False(h.IsEmpty);
@@ -124,7 +129,7 @@ namespace VDS.RDF.Storage
 
             Graph h = new Graph();
             stardog.LoadGraph(h, (Uri) null);
-            Console.WriteLine("Retrieved " + h.Triples.Count + " Triple(s) from Stardog");
+            _output.WriteLine("Retrieved " + h.Triples.Count + " Triple(s) from Stardog");
 
             if (g.Triples.Count == h.Triples.Count)
             {
@@ -348,23 +353,23 @@ namespace VDS.RDF.Storage
 
             String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS +
                            "> SELECT * WHERE { { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } UNION { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } } }";
-            Console.WriteLine(query);
-            Console.WriteLine();
+            _output.WriteLine(query);
+            _output.WriteLine();
 
             SparqlResultSet resultsNoReasoning = stardog.Query(query) as SparqlResultSet;
             Assert.NotNull(resultsNoReasoning);
             if (resultsNoReasoning != null)
             {
-                Console.WriteLine("Results without Reasoning");
-                TestTools.ShowResults(resultsNoReasoning);
+                _output.WriteLine("Results without Reasoning");
+                ShowResults(resultsNoReasoning);
             }
 
             stardog.Reasoning = StardogReasoningMode.QL;
             SparqlResultSet resultsWithReasoning = stardog.Query(query) as SparqlResultSet;
             if (resultsWithReasoning != null)
             {
-                Console.WriteLine("Results with Reasoning");
-                TestTools.ShowResults(resultsWithReasoning);
+                _output.WriteLine("Results with Reasoning");
+                ShowResults(resultsWithReasoning);
             }
             else
             {
@@ -390,15 +395,15 @@ namespace VDS.RDF.Storage
 
             String query = "Select ?building where { ?building <http://www.reasoningtest.com#hasLocation> ?room.}";
 
-            Console.WriteLine(query);
-            Console.WriteLine();
+            _output.WriteLine(query);
+            _output.WriteLine();
 
             SparqlResultSet resultsWithReasoning = stardog.Query(query, true) as SparqlResultSet;
             Assert.NotNull(resultsWithReasoning);
             if (resultsWithReasoning != null)
             {
-                Console.WriteLine("Results With Reasoning");
-                TestTools.ShowResults(resultsWithReasoning);
+                _output.WriteLine("Results With Reasoning");
+                ShowResults(resultsWithReasoning);
                 Assert.True(true , "Reasoning By Query OK !");
             }
             else
@@ -422,14 +427,14 @@ namespace VDS.RDF.Storage
             stardog.SaveGraph(g);
 
             String query = "Select ?building where { ?building <http://www.reasoningtest.com#hasLocation> ?room.}"; 
-            Console.WriteLine(query);
-            Console.WriteLine();
+            _output.WriteLine(query);
+            _output.WriteLine();
 
             SparqlResultSet resultsWithNoReasoning = stardog.Query(query, false) as SparqlResultSet;
             Assert.Null(resultsWithNoReasoning);
             if (resultsWithNoReasoning != null )
             {
-                Console.WriteLine("Results With No Reasoning");
+                _output.WriteLine("Results With No Reasoning");
                 Assert.True(false, "There should not be any reasoning results !");
             }
             else
@@ -478,7 +483,7 @@ namespace VDS.RDF.Storage
             g.LoadFromString(fragment);
             g.BaseUri = new Uri("http://example.org/ampersandGraph");
 
-            Console.WriteLine("Original Graph:");
+            _output.WriteLine("Original Graph:");
             TestTools.ShowGraph(g);
 
             stardog.SaveGraph(g);
@@ -487,7 +492,7 @@ namespace VDS.RDF.Storage
             Graph h = new Graph();
             stardog.LoadGraph(h, g.BaseUri);
 
-            Console.WriteLine("Graph as retrieved from Stardog:");
+            _output.WriteLine("Graph as retrieved from Stardog:");
             TestTools.ShowGraph(h);
 
             Assert.Equal(g, h);
@@ -501,7 +506,7 @@ namespace VDS.RDF.Storage
             Graph i = new Graph();
             stardog.LoadGraph(i, g.BaseUri);
 
-            Console.WriteLine("Graph as retrieved after the DELETE WHERE:");
+            _output.WriteLine("Graph as retrieved after the DELETE WHERE:");
             TestTools.ShowGraph(i);
 
             Assert.NotEqual(g, i);
@@ -519,7 +524,7 @@ namespace VDS.RDF.Storage
 
             StardogServer stardog = StardogTests.GetServer();
             IStoreTemplate template = stardog.GetDefaultTemplate(guid.ToString());
-            Console.WriteLine("Template ID " + template.ID);
+            _output.WriteLine("Template ID " + template.ID);
 
             stardog.CreateStore(template);
 
@@ -536,19 +541,19 @@ namespace VDS.RDF.Storage
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
             if (!g.IsEmpty)
             {
-                Console.WriteLine("Dropping graph");
+                _output.WriteLine("Dropping graph");
                 stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/1>");
-                Console.WriteLine("Dropped graph");
+                _output.WriteLine("Dropped graph");
                 Thread.Sleep(2500);
                 g = new Graph();
                 stardog.LoadGraph(g, "http://example.org/stardog/update/1");
                 Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
             }
 
-            Console.WriteLine("Inserting data");
+            _output.WriteLine("Inserting data");
             stardog.Update(
                 "INSERT DATA { GRAPH <http://example.org/stardog/update/1> { <http://x> <http://y> <http://z> } }");
-            Console.WriteLine("Inserted data");
+            _output.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/1");
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -561,18 +566,18 @@ namespace VDS.RDF.Storage
             StardogConnector stardog = StardogTests.GetConnection();
             IGraph g;
 
-            Console.WriteLine("Dropping graph");
+            _output.WriteLine("Dropping graph");
             stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/2>");
-            Console.WriteLine("Dropped graph");
+            _output.WriteLine("Dropped graph");
             Thread.Sleep(2500);
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/2");
             Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
 
-            Console.WriteLine("Inserting data");
+            _output.WriteLine("Inserting data");
             stardog.Update(
                 "INSERT DATA { GRAPH <http://example.org/stardog/update/2> { <http://x> <http://y> <http://z> } }");
-            Console.WriteLine("Inserted data");
+            _output.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/2");
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -585,21 +590,21 @@ namespace VDS.RDF.Storage
             StardogConnector stardog = StardogTests.GetConnection();
             IGraph g;
 
-            Console.WriteLine("Dropping graph");
+            _output.WriteLine("Dropping graph");
             stardog.Update("DROP SILENT GRAPH <http://example.org/stardog/update/3>");
-            Console.WriteLine("Dropped graph");
+            _output.WriteLine("Dropped graph");
             Thread.Sleep(2500);
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/3");
             Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
 
-            Console.WriteLine("Inserting data");
+            _output.WriteLine("Inserting data");
             IGraph newData = new Graph();
             newData.BaseUri = new Uri("http://example.org/stardog/update/3");
             newData.Assert(newData.CreateUriNode(new Uri("http://x")), newData.CreateUriNode(new Uri("http://y")),
                 newData.CreateUriNode(new Uri("http://z")));
             stardog.SaveGraph(newData);
-            Console.WriteLine("Inserted data");
+            _output.WriteLine("Inserted data");
             g = new Graph();
             stardog.LoadGraph(g, "http://example.org/stardog/update/3");
             Assert.False(g.IsEmpty, "Graph should not be empty");

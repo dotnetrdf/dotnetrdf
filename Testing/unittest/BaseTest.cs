@@ -29,24 +29,45 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF
 {
 
-    public abstract class BaseTest
+    public class BaseTest
     {
+        protected ITestOutputHelper _output;
+
+        public BaseTest(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
+        protected void ShowResults(object results)
+        {
+            TestTools.ShowResults(results, _output);
+        }
+
         protected static readonly IEnumerable<CultureInfo> TestedCultureInfos = new[]
-            {
-                new CultureInfo("en-US"), 
-                new CultureInfo("pl-PL"), 
-                new CultureInfo("ja-JP"), 
-                new CultureInfo("ru-RU"), 
-                new CultureInfo("pt-BR")
-            };
+        {
+            new CultureInfo("en-US"),
+            new CultureInfo("pl-PL"),
+            new CultureInfo("ja-JP"),
+            new CultureInfo("ru-RU"),
+            new CultureInfo("pt-BR")
+        };
 
         public static IEnumerable<object[]> GetTestCultures()
         {
-            return TestedCultureInfos.Select(ci => new object[]{ci});
+            return TestedCultureInfos.Select(ci => new object[] { ci });
+        }
+    }
+
+    public static class TestOutputHelperExtensions
+    {
+        public static void WriteLine(this ITestOutputHelper output)
+        {
+            output.WriteLine(string.Empty);
         }
     }
 }

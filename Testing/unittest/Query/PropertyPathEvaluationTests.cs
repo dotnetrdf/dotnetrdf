@@ -24,27 +24,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
 
     public class PropertyPathEvaluationTests
     {
-        private NodeFactory _factory = new NodeFactory();
+        private readonly NodeFactory _factory = new NodeFactory();
         private ISparqlDataset _data;
-
+        private readonly ITestOutputHelper _output;
+        public PropertyPathEvaluationTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
         private ISparqlAlgebra GetAlgebra(ISparqlPath path)
         {
             return GetAlgebra(path, null, null);
@@ -69,7 +71,7 @@ namespace VDS.RDF.Query
             {
                 y = new NodeMatchPattern(end);
             }
-            PathTransformContext context = new PathTransformContext(x, y);
+            var context = new PathTransformContext(x, y);
             return path.ToAlgebra(context);
         }
 
@@ -104,8 +106,8 @@ namespace VDS.RDF.Query
         {
             if (this._data == null)
             {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
+                var store = new TripleStore();
+                var g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
                 this._data = new InMemoryDataset(store, g.BaseUri);
@@ -117,11 +119,11 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            FixedCardinality path =
+            var path =
                 new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path);
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var algebra = this.GetAlgebra(path);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -133,12 +135,12 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            FixedCardinality path =
+            var path =
                 new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
             INode rdfsClass = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
-            ISparqlAlgebra algebra = this.GetAlgebra(path, null, rdfsClass);
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var algebra = this.GetAlgebra(path, null, rdfsClass);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -152,13 +154,13 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            FixedCardinality path =
+            var path =
                 new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path,
+            var algebra = this.GetAlgebra(path,
                                                      new Graph().CreateUriNode(
                                                          UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -170,14 +172,14 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            FixedCardinality path =
+            var path =
                 new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path,
+            var algebra = this.GetAlgebra(path,
                                                      new Graph().CreateUriNode(
                                                          UriFactory.Create(ConfigurationLoader.ClassHttpHandler)),
                                                      this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -190,13 +192,13 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            NegatedSet path =
+            var path =
                 new NegatedSet(
                     new Property[] {new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
                     Enumerable.Empty<Property>());
-            ISparqlAlgebra algebra = this.GetAlgebra(path);
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var algebra = this.GetAlgebra(path);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -208,15 +210,15 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(),
+            var path = new NegatedSet(Enumerable.Empty<Property>(),
                                              new Property[]
                                                  {
                                                      new Property(
                                                  this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))
                                                  });
-            ISparqlAlgebra algebra = this.GetAlgebra(path);
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var algebra = this.GetAlgebra(path);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -230,11 +232,11 @@ namespace VDS.RDF.Query
 
             INode a = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode b = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
-            SequencePath path = new SequencePath(new AlternativePath(new Property(a), new Property(b)),
+            var path = new SequencePath(new AlternativePath(new Property(a), new Property(b)),
                                                  new AlternativePath(new Property(a), new Property(a)));
-            ISparqlAlgebra algebra = this.GetAlgebraUntransformed(path);
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
-            BaseMultiset results = algebra.Evaluate(context);
+            var algebra = this.GetAlgebraUntransformed(path);
+            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
@@ -244,16 +246,16 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationOneOrMorePath()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.BaseUri);
 
-            OneOrMore path =
+            var path =
                 new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            ISparqlAlgebra algebra = this.GetAlgebra(path);
-            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+            var algebra = this.GetAlgebra(path);
+            var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
 
@@ -263,17 +265,17 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationOneOrMorePathForward()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.BaseUri);
 
-            OneOrMore path =
+            var path =
                 new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
-            ISparqlAlgebra algebra = this.GetAlgebra(path, sportsCar, null);
-            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+            var algebra = this.GetAlgebra(path, sportsCar, null);
+            var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
 
@@ -283,17 +285,17 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationOneOrMorePathReverse()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.BaseUri);
 
-            OneOrMore path =
+            var path =
                 new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
-            ISparqlAlgebra algebra = this.GetAlgebra(path, null, airVehicle);
-            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+            var algebra = this.GetAlgebra(path, null, airVehicle);
+            var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
 
@@ -303,16 +305,16 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationZeroOrMorePath()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.BaseUri);
 
-            ZeroOrMore path =
+            var path =
                 new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            ISparqlAlgebra algebra = this.GetAlgebra(path);
-            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+            var algebra = this.GetAlgebra(path);
+            var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
 
@@ -322,17 +324,17 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationZeroOrMorePathForward()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            var dataset = new InMemoryDataset(store);
 
-            ZeroOrMore path =
+            var path =
                 new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
-            ISparqlAlgebra algebra = this.GetAlgebra(path, sportsCar, null);
-            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+            var algebra = this.GetAlgebra(path, sportsCar, null);
+            var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
 
@@ -342,17 +344,17 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationZeroOrMorePathReverse()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            var dataset = new InMemoryDataset(store);
 
-            ZeroOrMore path =
+            var path =
                 new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
-            ISparqlAlgebra algebra = this.GetAlgebra(path, null, airVehicle);
-            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+            var algebra = this.GetAlgebra(path, null, airVehicle);
+            var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
 
@@ -362,7 +364,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlPropertyPathEvaluationGraphInteraction()
         {
-            String query = @"PREFIX ex: <http://www.example.org/schema#>
+            var query = @"PREFIX ex: <http://www.example.org/schema#>
 PREFIX in: <http://www.example.org/instance#>
 
 SELECT ?x
@@ -373,17 +375,17 @@ WHERE
   GRAPH ?g { in:a ex:p1 / ex:p2 ?x . }
 }";
 
-            String data =
+            var data =
                 @"<http://www.example.org/instance#a> <http://www.example.org/schema#p1> <http://www.example.org/instance#b> <http://example/1> .
 <http://www.example.org/instance#b> <http://www.example.org/schema#p2> <http://www.example.org/instance#c> <http://example/2> .";
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.LoadFromString(data, new NQuadsParser());
             var queryParser = new SparqlQueryParser();
             var q = queryParser.ParseFromString(query);
             var processor = new LeviathanQueryProcessor(store);
 
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Empty(results.Results);
@@ -396,18 +398,18 @@ WHERE
             IGraph g = new Graph();
             g.LoadFromFile("resources\\schema-org.ttl");
 
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile("resources\\schema-org.rq");
-            SparqlQuery qDistinct = parser.ParseFromFile("resources\\schema-org.rq");
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromFile("resources\\schema-org.rq");
+            var qDistinct = parser.ParseFromFile("resources\\schema-org.rq");
             qDistinct.QueryType = SparqlQueryType.SelectDistinct;
 
-            InMemoryDataset dataset = new InMemoryDataset(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            var dataset = new InMemoryDataset(g);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.False(results.IsEmpty);
-            SparqlResultSet resultsDistinct = processor.ProcessQuery(qDistinct) as SparqlResultSet;
+            var resultsDistinct = processor.ProcessQuery(qDistinct) as SparqlResultSet;
             Assert.NotNull(resultsDistinct);
             Assert.False(resultsDistinct.IsEmpty);
 
@@ -417,102 +419,69 @@ WHERE
         [Fact]
         public void SparqlPropertyPathEvaluationCore349RigorousEvaluation()
         {
-            try
-            {
-                Options.RigorousEvaluation = true;
+            //Test case from CORE-349
+            var g = new Graph();
+            g.LoadFromFile(@"resources\core-349.ttl");
+            var dataset = new InMemoryDataset(g);
 
-                //Test case from CORE-349
-                Graph g = new Graph();
-                g.LoadFromFile(@"resources\core-349.ttl");
-                InMemoryDataset dataset = new InMemoryDataset(g);
-
-                String query = @"SELECT * WHERE 
+            var query = @"SELECT * WHERE 
 { 
   ?subject <http://www.w3.org/2000/01/rdf-schema#label> ?name .
   ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/<http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://example.org/unnamed#Level1_1> . 
 ?subject a ?type . } ";
 
-                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-                Console.WriteLine(new SparqlFormatter().Format(q));
-                Console.WriteLine(q.ToAlgebra().ToString());
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.NotNull(results);
+            var q = new SparqlQueryParser().ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset,
+                options => { options.RigorousEvaluation = true;});
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.NotNull(results);
 
-                Console.WriteLine();
-                TestTools.ShowResults(results);
+            TestTools.ShowResults(results, _output);
 
-                Assert.Equal(2, results.Count);
-            }
-            finally
-            {
-                Options.RigorousEvaluation = false;
-            }
+            Assert.Equal(2, results.Count);
         }
 
         [Fact]
         public void SparqlPropertyPathEvaluationCore349NonRigorousEvaluation()
         {
-            try
-            {
-                Options.RigorousEvaluation = false;
+            //Test case from CORE-349
+            var g = new Graph();
+            g.LoadFromFile(@"resources\core-349.ttl");
+            var dataset = new InMemoryDataset(g);
 
-                //Test case from CORE-349
-                Graph g = new Graph();
-                g.LoadFromFile(@"resources\core-349.ttl");
-                InMemoryDataset dataset = new InMemoryDataset(g);
-
-                String query = @"SELECT * WHERE 
+            var query = @"SELECT * WHERE 
 { 
   ?subject <http://www.w3.org/2000/01/rdf-schema#label> ?name .
   ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/<http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://example.org/unnamed#Level1_1> . 
 ?subject a ?type . } ";
 
-                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-                Console.WriteLine(new SparqlFormatter().Format(q));
-                Console.WriteLine(q.ToAlgebra().ToString());
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.NotNull(results);
+            var q = new SparqlQueryParser().ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset,
+                options => { options.RigorousEvaluation = false; }
+            );
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.NotNull(results);
+            TestTools.ShowResults(results, _output);
 
-                Console.WriteLine();
-                TestTools.ShowResults(results);
-
-                Assert.Equal(2, results.Count);
-            }
-            finally
-            {
-                Options.RigorousEvaluation = false;
-            }
+            Assert.Equal(2, results.Count);
         }
 
         [Fact]
         public void SparqlPropertyPathEvaluationNonRigorous()
         {
-            try
-            {
-                Graph g = new Graph();
-                g.LoadFromFile(@"resources\InferenceTest.ttl");
-                InMemoryDataset dataset = new InMemoryDataset(g);
+            var g = new Graph();
+            g.LoadFromFile(@"resources\InferenceTest.ttl");
+            var dataset = new InMemoryDataset(g);
 
-                String query = "SELECT * WHERE { ?subClass <http://www.w3.org/2000/01/rdf-schema#subClassOf>* ?class }";
+            var query = "SELECT * WHERE { ?subClass <http://www.w3.org/2000/01/rdf-schema#subClassOf>* ?class }";
 
-                SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-                Console.WriteLine(new SparqlFormatter().Format(q));
-                Console.WriteLine(q.ToAlgebra().ToString());
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
-                Assert.NotNull(results);
+            var q = new SparqlQueryParser().ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset, options=>options.RigorousEvaluation=true);
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.NotNull(results);
+            TestTools.ShowResults(results, _output);
 
-                Console.WriteLine();
-                TestTools.ShowResults(results);
-
-                Assert.Equal(73, results.Count);
-            }
-            finally
-            {
-                Options.RigorousEvaluation = false;
-            }
+            Assert.Equal(73, results.Count);
         }
 
         [Fact]
@@ -521,15 +490,15 @@ WHERE
             IGraph g = new Graph();
             g.LoadFromFile(@"resources/pp.rdf");
 
-            InMemoryDataset dataset = new InMemoryDataset(g);
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources/pp.rq");
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(query);
+            var dataset = new InMemoryDataset(g);
+            var query = new SparqlQueryParser().ParseFromFile(@"resources/pp.rq");
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
+            TestTools.ShowResults(results, _output);
 
             Assert.IsType<SparqlResultSet>(results);
-            SparqlResultSet rset = (SparqlResultSet) results;
+            var rset = (SparqlResultSet) results;
             Assert.Equal(3, rset.Count);
         }
 
@@ -539,8 +508,8 @@ WHERE
             IGraph g = new Graph();
             g.LoadFromFile(@"resources/pp.rdf");
 
-            InMemoryDataset dataset = new InMemoryDataset(g);
-            SparqlQuery query = new SparqlQueryParser().ParseFromString(@"
+            var dataset = new InMemoryDataset(g);
+            var query = new SparqlQueryParser().ParseFromString(@"
 prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> 
 prefix owl:   <http://www.w3.org/2002/07/owl#> 
 prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
@@ -550,13 +519,13 @@ select ?superclass where {
   filter(!isBlank(?superclass))
 }
 ");
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(query);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
+            TestTools.ShowResults(results, _output);
 
             Assert.IsType<SparqlResultSet>(results);
-            SparqlResultSet rset = (SparqlResultSet)results;
+            var rset = (SparqlResultSet)results;
             Assert.Equal(2, rset.Count);
         }
 
@@ -566,17 +535,16 @@ select ?superclass where {
             IGraph g = new Graph();
             g.LoadFromFile(@"resources\core-441\data.ttl");
 
-            InMemoryDataset dataset = new InMemoryDataset(g);
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\star-path.rq");
-            Console.WriteLine(query.ToAlgebra().ToString());
+            var dataset = new InMemoryDataset(g);
+            var query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\star-path.rq");
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(query);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
+            TestTools.ShowResults(results, _output);
 
             Assert.IsType<SparqlResultSet>(results);
-            SparqlResultSet rset = (SparqlResultSet)results;
+            var rset = (SparqlResultSet)results;
             Assert.Equal(1, rset.Count);
             Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
         }
@@ -587,17 +555,16 @@ select ?superclass where {
             IGraph g = new Graph();
             g.LoadFromFile(@"resources\core-441\data.ttl");
 
-            InMemoryDataset dataset = new InMemoryDataset(g);
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\plus-path.rq");
-            Console.WriteLine(query.ToAlgebra().ToString());
+            var dataset = new InMemoryDataset(g);
+            var query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\plus-path.rq");
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(query);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
+            TestTools.ShowResults(results, _output);
 
             Assert.IsType<SparqlResultSet>(results);
-            SparqlResultSet rset = (SparqlResultSet)results;
+            var rset = (SparqlResultSet)results;
             Assert.Equal(0, rset.Count);
         }
 
@@ -607,16 +574,16 @@ select ?superclass where {
             IGraph g = new Graph();
             g.LoadFromFile(@"resources\core-441\data.ttl");
 
-            InMemoryDataset dataset = new InMemoryDataset(g);
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\no-path.rq");
+            var dataset = new InMemoryDataset(g);
+            var query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\no-path.rq");
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(query);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
+            TestTools.ShowResults(results, _output);
 
             Assert.IsType<SparqlResultSet>(results);
-            SparqlResultSet rset = (SparqlResultSet)results;
+            var rset = (SparqlResultSet)results;
             Assert.Equal(1, rset.Count);
             Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
         }

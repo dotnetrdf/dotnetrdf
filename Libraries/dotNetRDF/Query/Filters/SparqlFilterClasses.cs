@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Filters
             }
 
             // BOUND is always safe to parallelise
-            if (Options.UsePLinqEvaluation)
+            if (context.Options.UsePLinqEvaluation)
             {
                 context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
             }
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query.Filters
             else
             {
                 // Remember that not all expressions are safe to parallelise
-                if (Options.UsePLinqEvaluation && this._arg.CanParallelise)
+                if (context.Options.UsePLinqEvaluation && this._arg.CanParallelise)
                 {
                     context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
                 }

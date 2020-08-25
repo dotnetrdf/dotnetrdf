@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -366,7 +367,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         private SparqlEvaluationContext GetContext(SparqlQuery q)
         {
-            return new SparqlEvaluationContext(q, _dataset, GetProcessorForContext(), GetNodeComparer());
+            return new SparqlEvaluationContext(q, _dataset, GetProcessorForContext(), _options);
         }
 
         /// <summary>
@@ -385,10 +386,6 @@ namespace VDS.RDF.Query
             }
         }
 
-        private ISparqlNodeComparer GetNodeComparer()
-        {
-            return new SparqlNodeComparer(this._options.Culture, this._options.CompareOptions);
-        }
 
         #region Algebra Processor Implementation
 

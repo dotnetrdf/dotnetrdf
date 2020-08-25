@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.NodeComparer);
+                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.Options);
 
                 // Add any Named Graphs to the subquery
                 if (context.Query != null)

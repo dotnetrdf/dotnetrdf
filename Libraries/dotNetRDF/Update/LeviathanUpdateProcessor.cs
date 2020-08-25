@@ -48,23 +48,25 @@ namespace VDS.RDF.Update
         /// Dataset over which updates are applied.
         /// </summary>
         protected ISparqlDataset _dataset;
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-        private bool _autoCommit = true, _canCommit = true;
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private bool _canCommit = true;
+        private readonly LeviathanUpdateOptions _options = new LeviathanUpdateOptions();
 
         /// <summary>
         /// Creates a new Leviathan Update Processor.
         /// </summary>
         /// <param name="store">Triple Store.</param>
-        public LeviathanUpdateProcessor(IInMemoryQueryableStore store)
-            : this(new InMemoryDataset(store)) { }
+        public LeviathanUpdateProcessor(IInMemoryQueryableStore store, Action<LeviathanUpdateOptions> options = null)
+            : this(new InMemoryDataset(store), options) { }
 
         /// <summary>
         /// Creates a new Leviathan Update Processor.
         /// </summary>
         /// <param name="data">SPARQL Dataset.</param>
-        public LeviathanUpdateProcessor(ISparqlDataset data)
+        public LeviathanUpdateProcessor(ISparqlDataset data, Action<LeviathanUpdateOptions> options = null)
         {
             _dataset = data;
+            options?.Invoke(_options);
             if (!_dataset.HasGraph(null))
             {
                 // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
@@ -76,17 +78,7 @@ namespace VDS.RDF.Update
         /// <summary>
         /// Gets/Sets whether Updates are automatically committed.
         /// </summary>
-        public bool AutoCommit
-        {
-            get
-            {
-                return _autoCommit;
-            }
-            set
-            {
-                _autoCommit = value;
-            }
-        }
+        public bool AutoCommit => _options.AutoCommit;
 
         /// <summary>
         /// Flushes any outstanding changes to the underlying dataset.
@@ -113,7 +105,7 @@ namespace VDS.RDF.Update
         /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext(SparqlUpdateCommandSet cmds)
         {
-            return new SparqlUpdateEvaluationContext(cmds, _dataset, GetQueryProcessor());
+            return new SparqlUpdateEvaluationContext(cmds, _dataset, GetQueryProcessor(), _options);
         }
 
         /// <summary>
@@ -122,7 +114,7 @@ namespace VDS.RDF.Update
         /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext()
         {
-            return new SparqlUpdateEvaluationContext(_dataset, GetQueryProcessor());
+            return new SparqlUpdateEvaluationContext(_dataset, GetQueryProcessor(), _options);
         }
 
         /// <summary>
@@ -219,7 +211,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command.</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            ProcessCommandInternal(cmd, GetContext());
+            ProcessCommandInternal(cmd, GetContext(), _options.AutoCommit);
         }
 
         /// <summary>
@@ -230,13 +222,15 @@ namespace VDS.RDF.Update
         /// <remarks>
         /// Invokes the type specific method for the command type.
         /// </remarks>
-        private void ProcessCommandInternal(SparqlUpdateCommand cmd, SparqlUpdateEvaluationContext context)
+        private void ProcessCommandInternal(SparqlUpdateCommand cmd, SparqlUpdateEvaluationContext context,
+            bool autoCommit)
         {
             // If auto-committing then Flush() any existing Transaction first
-            if (_autoCommit) Flush();
+            if (autoCommit) Flush();
 
             // Then if possible attempt to get the lock and determine whether it needs releasing
-            ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
+            ReaderWriterLockSlim currLock =
+                (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset) _dataset).Lock : _lock;
             bool mustRelease = false;
             try
             {
@@ -250,52 +244,53 @@ namespace VDS.RDF.Update
                 switch (cmd.CommandType)
                 {
                     case SparqlUpdateCommandType.Add:
-                        ProcessAddCommandInternal((AddCommand)cmd, context);
+                        ProcessAddCommandInternal((AddCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Clear:
-                        ProcessClearCommandInternal((ClearCommand)cmd, context);
+                        ProcessClearCommandInternal((ClearCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Copy:
-                        ProcessCopyCommandInternal((CopyCommand)cmd, context);
+                        ProcessCopyCommandInternal((CopyCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Create:
-                        ProcessCreateCommandInternal((CreateCommand)cmd, context);
+                        ProcessCreateCommandInternal((CreateCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Delete:
-                        ProcessDeleteCommandInternal((DeleteCommand)cmd, context);
+                        ProcessDeleteCommandInternal((DeleteCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.DeleteData:
-                        ProcessDeleteDataCommandInternal((DeleteDataCommand)cmd, context);
+                        ProcessDeleteDataCommandInternal((DeleteDataCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Drop:
-                        ProcessDropCommandInternal((DropCommand)cmd, context);
+                        ProcessDropCommandInternal((DropCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Insert:
-                        ProcessInsertCommandInternal((InsertCommand)cmd, context);
+                        ProcessInsertCommandInternal((InsertCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.InsertData:
-                        ProcessInsertDataCommandInternal((InsertDataCommand)cmd, context);
+                        ProcessInsertDataCommandInternal((InsertDataCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Load:
-                        ProcessLoadCommandInternal((LoadCommand)cmd, context);
+                        ProcessLoadCommandInternal((LoadCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Modify:
-                        ProcessModifyCommandInternal((ModifyCommand)cmd, context);
+                        ProcessModifyCommandInternal((ModifyCommand) cmd, context);
                         break;
                     case SparqlUpdateCommandType.Move:
-                        ProcessMoveCommandInternal((MoveCommand)cmd, context);
+                        ProcessMoveCommandInternal((MoveCommand) cmd, context);
                         break;
                     default:
-                        throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
+                        throw new SparqlUpdateException(
+                            "Unknown Update Commands cannot be processed by the Leviathan Update Processor");
                 }
 
                 // If auto-committing flush after every command
-                if (_autoCommit) Flush();
+                if (autoCommit) Flush();
             }
             catch
             {
                 // If auto-committing discard if an error occurs, if not then mark the transaction as uncomittable
-                if (_autoCommit)
+                if (autoCommit)
                 {
                     Discard();
                 }
@@ -303,6 +298,7 @@ namespace VDS.RDF.Update
                 {
                     _canCommit = false;
                 }
+
                 throw;
             }
             finally
@@ -313,7 +309,7 @@ namespace VDS.RDF.Update
                     currLock.ExitWriteLock();
                 }
             }
-         }
+        }
 
         /// <summary>
         /// Processes a command set.
@@ -326,9 +322,6 @@ namespace VDS.RDF.Update
         {
             commands.UpdateExecutionTime = null;
 
-            // Firstly check what Transaction mode we are running in
-            bool autoCommit = _autoCommit;
-
             // Then create an Evaluation Context
             SparqlUpdateEvaluationContext context = GetContext(commands);
 
@@ -339,13 +332,7 @@ namespace VDS.RDF.Update
             {
                 currLock.EnterWriteLock();
 
-                // Regardless of the Transaction Mode we turn auto-commit off for a command set so that individual commands
-                // don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
-                // commands must be evaluated before flushing/discarding the changes OR we are not in auto-commit mode
-                // so turning it off doesn't matter as it is already turned off
-                _autoCommit = false;
-
-                if (autoCommit)
+                if (_options.AutoCommit)
                 {
                     // Do a Flush() before we start to ensure changes from any previous commands are persisted
                     _dataset.Flush();
@@ -355,13 +342,16 @@ namespace VDS.RDF.Update
                 context.StartExecution();
                 for (int i = 0; i < commands.CommandCount; i++)
                 {
-                    ProcessCommandInternal(commands[i], context);
+                    // Process each individual command with auto-commit disabled so that individual commands
+                    // don't try and commit after each one is applied. When the processor is in auto-commit
+                    // mode, all of the commands must be evaluated before flushing/discarding the changes.
+                    ProcessCommandInternal(commands[i], context, false);
 
                     // Check for Timeout
                     context.CheckTimeout();
                 }
 
-                if (autoCommit)
+                if (_options.AutoCommit)
                 {
                     // Do a Flush() when command set completed successfully to persist the changes
                     _dataset.Flush();
@@ -373,7 +363,7 @@ namespace VDS.RDF.Update
             }
             catch
             {
-                if (autoCommit)
+                if (_options.AutoCommit)
                 {
                     // Do a Discard() when a command set fails to discard the changes
                     _dataset.Discard();
@@ -390,8 +380,6 @@ namespace VDS.RDF.Update
             }
             finally
             {
-                // Reset auto-commit setting and release our write lock
-                _autoCommit = autoCommit;
                 currLock.ExitWriteLock();
             }
         }
@@ -547,5 +535,6 @@ namespace VDS.RDF.Update
         {
             cmd.Evaluate(context);
         }
+
     }
 }

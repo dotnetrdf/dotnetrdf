@@ -24,13 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
@@ -110,7 +105,7 @@ namespace VDS.RDF.Query
 
             //Distinct should yield a single result since temporary variables
             //are stripped
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, null);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
             BaseMultiset results = distinct.Evaluate(context);
             Assert.Equal(1, results.Count);
             Assert.False(results.ContainsVariable("_:b"));
@@ -143,7 +138,7 @@ namespace VDS.RDF.Query
 
             //Distinct should yield two result and temporary variables should still
             //be present
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, null);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
             BaseMultiset results = distinct.Evaluate(context);
             Assert.Equal(2, results.Count);
             Assert.True(results.ContainsVariable("_:b"));

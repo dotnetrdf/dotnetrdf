@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Moq;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -112,13 +113,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //this.ShowMultiset(selectOptionalNamed.Evaluate(new SparqlEvaluationContext(null, store)));
 
             Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o}}");
-            this.ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
+            this.ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
 
             Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o} UNION {?s ?p ?o}}");
-            this.ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
+            this.ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
 
             Console.WriteLine("{?s ?p ?o FILTER (ISURI(?o))}");
-            this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
+            this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
         }
 
         [Fact]
@@ -172,7 +173,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             s.Add("o1", o2);
             d.Add(s);
 
-            var comparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+            var mockContext = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
 
             //Show the Sets
             Console.WriteLine("LHS");
@@ -232,7 +233,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin NULL-LHS");
-            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(null, true)), comparer);
+            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(null, true)), mockContext);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -241,7 +242,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin LHS-NULL");
-            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(null, true)), comparer);
+            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(null, true)), mockContext);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -259,7 +260,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
            
             //Try a LeftOuterJoin
             Console.WriteLine("LeftJoin LHS-RHS");
-            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(null, true)), comparer);
+            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(null, true)), mockContext);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -421,12 +422,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 Stopwatch timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
-                BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
+                BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 unopt = timer.Elapsed;
                 timer.Reset();
                 timer.Start();
-                BaseMultiset results2 = askOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
+                BaseMultiset results2 = askOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 opt = timer.Elapsed;
 
@@ -532,12 +533,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 Stopwatch timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
-                BaseMultiset results1 = select.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
+                BaseMultiset results1 = select.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 unopt = timer.Elapsed;
                 timer.Reset();
                 timer.Start();
-                BaseMultiset results2 = selectOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
+                BaseMultiset results2 = selectOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 opt = timer.Elapsed;
 

@@ -65,18 +65,18 @@ namespace VDS.RDF.Query.Algebra
             // Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
-            bool rigMode = Options.RigorousEvaluation;
+            bool rigMode = context.Options.RigorousEvaluation;
             try
             {
                 // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
-                Options.RigorousEvaluation = true;
+                context.Options.RigorousEvaluation = true;
 
                 // Note: We may need to preserve Blank Node variables across evaluations
                 // which we usually don't do BUT because of the way we translate only part of the path
                 // into an algebra at a time and may need to do further nested translate calls we do
                 // need to do this here
                 context.TrimTemporaryVariables = false;
-                BaseMultiset result = context.Evaluate(algebra);
+                var result = context.Evaluate(algebra);
 
                 // Also note that we don't trim temporary variables here even if we've set the setting back
                 // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
             finally
             {
                 context.TrimTemporaryVariables = trimMode;
-                Options.RigorousEvaluation = rigMode;
+                context.Options.RigorousEvaluation = rigMode;
             }
 
             return context.OutputMultiset;

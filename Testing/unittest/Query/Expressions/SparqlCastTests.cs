@@ -28,6 +28,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Primary;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -35,7 +36,7 @@ namespace VDS.RDF.Query.Expressions
     {
         private INodeFactory _graph;
 
-        public SparqlCastTests()
+        public SparqlCastTests(ITestOutputHelper output):base(output)
         {
             _graph = new Graph();
         }
@@ -51,7 +52,7 @@ namespace VDS.RDF.Query.Expressions
                     var cast = new DecimalCast(new ConstantTerm(3.4m.ToLiteral(_graph)));
 
                     // when
-                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset()), 0);
+                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                     // then
                     Assert.Equal(3.4m, valuedNode.AsDecimal());
@@ -70,7 +71,7 @@ namespace VDS.RDF.Query.Expressions
                     var cast = new DoubleCast(new ConstantTerm(3.4d.ToLiteral(_graph)));
 
                     // when
-                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset()), 0);
+                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                     // then
                     Assert.Equal(3.4d, valuedNode.AsDouble());
@@ -89,7 +90,7 @@ namespace VDS.RDF.Query.Expressions
                     var cast = new FloatCast(new ConstantTerm(3.4f.ToLiteral(_graph)));
 
                     // when
-                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset()), 0);
+                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                     // then
                     Assert.Equal(3.4f, valuedNode.AsFloat());

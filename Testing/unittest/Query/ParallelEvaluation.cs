@@ -161,8 +161,7 @@ namespace VDS.RDF.Query
 
             for (int i = 1; i <= 10000; i++)
             {
-                Console.WriteLine("Iteration #" + i);
-                SparqlEvaluationContext context = new SparqlEvaluationContext(null, null);
+                SparqlEvaluationContext context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
                 context.InputMultiset = multiset;
                 context.OutputMultiset = new Multiset();
 
@@ -172,7 +171,6 @@ namespace VDS.RDF.Query
                 {
                     Assert.Equal(s["expected"], s["actual"]);
                 }
-                Console.WriteLine("Iteration #" + i + " Completed OK");
             }
         }
 

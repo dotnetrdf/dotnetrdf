@@ -39,13 +39,10 @@ namespace VDS.RDF.Query.Operators.Numeric
         /// <summary>
         /// Gets the operator type.
         /// </summary>
-        public override SparqlOperatorType Operator
-        {
-            get
-            {
-                return SparqlOperatorType.Add;
-            }
-        }
+        public override SparqlOperatorType Operator => SparqlOperatorType.Add;
+
+        /// <inheritdoc />
+        public override bool IsExtension => false;
 
         /// <summary>
         /// Applies the operator.

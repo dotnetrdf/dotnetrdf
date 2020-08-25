@@ -109,8 +109,8 @@ namespace VDS.RDF.Update
 
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            processor.AutoCommit = false;
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset,
+                options => { options.AutoCommit = false;});
             try
             {
                 processor.ProcessCommandSet(cmds);

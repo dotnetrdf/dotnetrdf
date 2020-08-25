@@ -34,6 +34,7 @@ using VDS.RDF;
 using VDS.RDF.Data.DataTables;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 #pragma warning disable CS1718 // Comparison made to same variable
 
@@ -41,6 +42,10 @@ namespace VDS.RDF
 {
     public class BasicTests2 : BaseTest
     {
+        public BasicTests2(ITestOutputHelper output) : base(output)
+        {
+        }
+
         [Fact]
         public void GraphWithBNodeEquality()
         {

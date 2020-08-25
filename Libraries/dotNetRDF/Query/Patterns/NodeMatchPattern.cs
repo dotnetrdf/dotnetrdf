@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (Options.RigorousEvaluation || RigorousEvaluation)
+            if (context.Options.RigorousEvaluation || RigorousEvaluation)
             {
                 return _node.Equals(obj);
             }

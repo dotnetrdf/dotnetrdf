@@ -287,7 +287,7 @@ namespace VDS.RDF.Query.Algebra
                 BaseMultiset rhsResult = context.Evaluate(_rhs);
                 context.CheckTimeout();
 
-                context.OutputMultiset = lhsResult.LeftJoin(rhsResult, _filter.Expression, context.NodeComparer);
+                context.OutputMultiset = lhsResult.LeftJoin(rhsResult, _filter.Expression, context);
                 context.CheckTimeout();
             }
 

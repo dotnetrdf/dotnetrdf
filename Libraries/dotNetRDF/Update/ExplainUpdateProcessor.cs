@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
@@ -36,7 +37,7 @@ namespace VDS.RDF.Update
     public class ExplainUpdateProcessor
         : LeviathanUpdateProcessor
     {
-        private ExplanationLevel _level = ExplanationLevel.Default;
+        private readonly ExplanationLevel _level;
 
         /// <summary>
         /// Creates a new Explain Update Processor.
@@ -50,8 +51,9 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="data">Dataset.</param>
         /// <param name="level">Explanation Level.</param>
-        public ExplainUpdateProcessor(ISparqlDataset data, ExplanationLevel level)
-            : base(data)
+        /// <param name="options">Update processor options callback</param>
+        public ExplainUpdateProcessor(ISparqlDataset data, ExplanationLevel level, Action<LeviathanUpdateOptions> options = null)
+            : base(data, options)
         {
             _level = level;
         }
@@ -61,15 +63,9 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="store">Triple Store.</param>
         /// <param name="level">Explanation Level.</param>
-        public ExplainUpdateProcessor(IInMemoryQueryableStore store, ExplanationLevel level)
-            : this(new InMemoryDataset(store), level) { }
-
-        /// <summary>
-        /// Creates a new Explain Update Processor.
-        /// </summary>
-        /// <param name="store">Triple Store.</param>
-        public ExplainUpdateProcessor(IInMemoryQueryableStore store)
-            : this(store, ExplanationLevel.Default) { }
+        /// <param name="options">Update processor options callback</param>
+        public ExplainUpdateProcessor(IInMemoryQueryableStore store, ExplanationLevel level = ExplanationLevel.Default, Action<LeviathanUpdateOptions> options=null)
+            : this(new InMemoryDataset(store), level, options) { }
 
         /// <summary>
         /// Gets the Query Processor to be used.

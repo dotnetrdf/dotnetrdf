@@ -31,6 +31,7 @@ using Xunit;
 using VDS.RDF.Ontology;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
+using Xunit.Abstractions;
 
 
 namespace VDS.RDF.Ontology
@@ -38,41 +39,47 @@ namespace VDS.RDF.Ontology
 
     public class OntologyTests
     {
+        private readonly ITestOutputHelper _output;
+        public OntologyTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void OntologyClassBasic()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
             //Get the class of Ground Vehicles
             OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
-            Console.WriteLine("Got the class of Ground Vehicles");
+            _output.WriteLine("Got the class of Ground Vehicles");
             foreach (OntologyClass c in groundVehicle.SuperClasses)
             {
-                Console.WriteLine("Super Class: " + c.Resource.ToString());
+                _output.WriteLine("Super Class: " + c.Resource.ToString());
             }
             foreach (OntologyClass c in groundVehicle.SubClasses)
             {
-                Console.WriteLine("Sub Class: " + c.Resource.ToString());
+                _output.WriteLine("Sub Class: " + c.Resource.ToString());
             }
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             //Get the class of Cars
             OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
-            Console.WriteLine("Got the class of Cars");
+            _output.WriteLine("Got the class of Cars");
             foreach (OntologyClass c in car.SuperClasses)
             {
-                Console.WriteLine("Super Class: " + c.Resource.ToString());
+                _output.WriteLine("Super Class: " + c.Resource.ToString());
             }
             foreach (OntologyClass c in car.SubClasses)
             {
-                Console.WriteLine("Sub Class: " + c.Resource.ToString());
+                _output.WriteLine("Sub Class: " + c.Resource.ToString());
             }
             foreach (OntologyResource r in car.Instances)
             {
-                Console.WriteLine("Instance: " + r.Resource.ToString());
+                _output.WriteLine("Instance: " + r.Resource.ToString());
             }
         }
 
@@ -80,7 +87,7 @@ namespace VDS.RDF.Ontology
         public void OntologyIndividualCreation()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -93,35 +100,35 @@ namespace VDS.RDF.Ontology
             catch (RdfOntologyException)
             {
                 //This is what should happen
-                Console.WriteLine("Errored when trying to get non-existent Individual - OK");
+                _output.WriteLine("Errored when trying to get non-existent Individual - OK");
             }
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             //Try and get an actual individual
             try
             {
                 Individual i = g.CreateIndividual(new Uri("http://example.org/vehicles/FordFiesta"));
-                Console.WriteLine("Got an existing individual OK");
+                _output.WriteLine("Got an existing individual OK");
                 foreach (Triple t in i.Triples)
                 {
-                    Console.WriteLine(t.ToString());
+                    _output.WriteLine(t.ToString());
                 }
             }
             catch (RdfOntologyException)
             {
                 Assert.True(false, "Should be able to get an existing Individual");
             }
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             //Try and create a new individual
             try
             {
                 Individual i = g.CreateIndividual(new Uri("http://example.org/vehicles/MazdaMX5"), new Uri("http://example.org/vehicles/Car"));
-                Console.WriteLine("Created a new individual OK");
-                Console.WriteLine("Graph now contains the following");
+                _output.WriteLine("Created a new individual OK");
+                _output.WriteLine("Graph now contains the following");
                 foreach (Triple t in g.Triples)
                 {
-                    Console.WriteLine(t.ToString());
+                    _output.WriteLine(t.ToString());
                 }
             }
             catch (RdfOntologyException)
@@ -134,36 +141,36 @@ namespace VDS.RDF.Ontology
         public void OntologyPropertyBasic()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
-            Console.WriteLine("Ranges");
+            _output.WriteLine("Ranges");
             foreach (OntologyClass c in speed.Ranges)
             {
-                Console.WriteLine(c.Resource.ToString());
+                _output.WriteLine(c.Resource.ToString());
             }
-            Console.WriteLine("Domains");
+            _output.WriteLine("Domains");
             foreach (OntologyClass c in speed.Domains)
             {
-                Console.WriteLine(c.Resource.ToString());
+                _output.WriteLine(c.Resource.ToString());
             }
-            Console.WriteLine("Sub-properties");
+            _output.WriteLine("Sub-properties");
             foreach (OntologyProperty p in speed.SubProperties)
             {
-                Console.WriteLine(p.Resource.ToString());
+                _output.WriteLine(p.Resource.ToString());
             }
-            Console.WriteLine("Super-properties");
+            _output.WriteLine("Super-properties");
             foreach (OntologyProperty p in speed.SuperProperties)
             {
-                Console.WriteLine(p.Resource.ToString());
+                _output.WriteLine(p.Resource.ToString());
             }
-            Console.WriteLine();
-            Console.WriteLine("Used By");
+            _output.WriteLine(string.Empty);
+            _output.WriteLine("Used By");
             foreach (OntologyResource r in speed.UsedBy)
             {
-                Console.WriteLine(r.Resource.ToString());
+                _output.WriteLine(r.Resource.ToString());
             }
         }
 
@@ -171,46 +178,46 @@ namespace VDS.RDF.Ontology
         public void OntologyReasonerGraph()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             OntologyClass c = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
-            Console.WriteLine("Things which are cars in an Ontology Graph");
+            _output.WriteLine("Things which are cars in an Ontology Graph");
             foreach (OntologyResource r in c.Instances)
             {
-                Console.WriteLine(r.Resource.ToString());
+                _output.WriteLine(r.Resource.ToString());
             }
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
             ReasonerGraph g2 = new ReasonerGraph(g, new RdfsReasoner());
             OntologyClass c2 = g2.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
-            Console.WriteLine("Things which are cars in a Reasoner Graph using an RDFS Reasoner");
+            _output.WriteLine("Things which are cars in a Reasoner Graph using an RDFS Reasoner");
             foreach (OntologyResource r in c2.Instances)
             {
-                Console.WriteLine(r.Resource.ToString());
+                _output.WriteLine(r.Resource.ToString());
             }
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
-            Console.WriteLine("Original Graph has " + g.Triples.Count + " Triples");
-            Console.WriteLine("Reasoner Graph has " + g2.Triples.Count + " Triples");
+            _output.WriteLine("Original Graph has " + g.Triples.Count + " Triples");
+            _output.WriteLine("Reasoner Graph has " + g2.Triples.Count + " Triples");
             Assert.True(g2.Triples.Count > g.Triples.Count, "Reasoner Graph should have more Triples");
             Assert.Equal(g, g2.BaseGraph);
 
-            Console.WriteLine();
+            _output.WriteLine(string.Empty);
 
-            Console.WriteLine("Going to do a GetTriplesWithSubject() call on both Graphs to see if ReasonerGraph behaves as expected");
+            _output.WriteLine("Going to do a GetTriplesWithSubject() call on both Graphs to see if ReasonerGraph behaves as expected");
             IUriNode fiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
-            Console.WriteLine("Original Graph:");
+            _output.WriteLine("Original Graph:");
             foreach (Triple t in g.GetTriplesWithSubject(fiesta))
             {
-                Console.WriteLine(t.ToString());
+                _output.WriteLine(t.ToString());
             }
-            Console.WriteLine();
-            Console.WriteLine("Reasoner Graph:");
+            _output.WriteLine(string.Empty);
+            _output.WriteLine("Reasoner Graph:");
             foreach (Triple t in g2.GetTriplesWithSubject(fiesta))
             {
-                Console.WriteLine(t.ToString());
+                _output.WriteLine(t.ToString());
             }
         }
 
@@ -218,7 +225,7 @@ namespace VDS.RDF.Ontology
         public void OntologyResourceCasting()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -227,7 +234,7 @@ namespace VDS.RDF.Ontology
             IGraph h = (Graph)resource;
             foreach (Triple t in h.Triples)
             {
-                Console.WriteLine(t.ToString());
+                _output.WriteLine(t.ToString());
             }
         }
 
@@ -246,16 +253,16 @@ namespace VDS.RDF.Ontology
 
             //Do whatever you want with the Ranges and Domains...
 
-            Console.WriteLine("Ranges");
+            _output.WriteLine("Ranges");
             foreach (OntologyProperty range in ranges)
             {
-                Console.WriteLine(range.ToString());
+                _output.WriteLine(range.ToString());
             }
-            Console.WriteLine();
-            Console.WriteLine("Domains");
+            _output.WriteLine(string.Empty);
+            _output.WriteLine("Domains");
             foreach (OntologyProperty domain in domains)
             {
-                Console.WriteLine(domain.ToString());
+                _output.WriteLine(domain.ToString());
             }
         }
 
@@ -287,16 +294,16 @@ namespace VDS.RDF.Ontology
 
             //Do whatever you want with the Ranges and Domains...
 
-            Console.WriteLine("Ranges");
+            _output.WriteLine("Ranges");
             foreach (OntologyProperty range in ranges)
             {
-                Console.WriteLine(range.ToString());
+                _output.WriteLine(range.ToString());
             }
-            Console.WriteLine();
-            Console.WriteLine("Domains");
+            _output.WriteLine(string.Empty);
+            _output.WriteLine("Domains");
             foreach (OntologyProperty domain in domains)
             {
-                Console.WriteLine(domain.ToString());
+                _output.WriteLine(domain.ToString());
             }
         }
 
@@ -304,13 +311,13 @@ namespace VDS.RDF.Ontology
         public void OntologyClassSubClasses()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
             //Get the class of Ground Vehicles
             OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
-            Console.WriteLine("Got the class of Ground Vehicles");
+            _output.WriteLine("Got the class of Ground Vehicles");
 
             //Check counts of super classes
             Assert.Single(groundVehicle.SuperClasses);
@@ -327,7 +334,7 @@ namespace VDS.RDF.Ontology
         public void OntologyClassSiblings()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -344,7 +351,7 @@ namespace VDS.RDF.Ontology
         public void OntologyClassTopAndBottom()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -368,7 +375,7 @@ namespace VDS.RDF.Ontology
         public void OntologyPropertySubProperties()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -391,7 +398,7 @@ namespace VDS.RDF.Ontology
         public void OntologyPropertyTopAndBottom()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -410,7 +417,7 @@ namespace VDS.RDF.Ontology
         public void OntologyPropertySiblings()
         {
             //Load Test Data
-            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             OntologyGraph g = new OntologyGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
@@ -461,8 +468,8 @@ namespace VDS.RDF.Ontology
             int count = g.OwlClasses.Count();
             int distinctCount = g.OwlClasses.Select(c => c.Resource).Distinct().Count();
 
-            Console.WriteLine("Count = " + count);
-            Console.WriteLine("Distinct Count = " + distinctCount);
+            _output.WriteLine("Count = " + count);
+            _output.WriteLine("Distinct Count = " + distinctCount);
 
             Assert.True(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
         }
@@ -485,8 +492,8 @@ namespace VDS.RDF.Ontology
                 resources.Add(c.Resource);
             }
 
-            Console.WriteLine("Count = " + count);
-            Console.WriteLine("Distinct Count = " + resources.Count);
+            _output.WriteLine("Count = " + count);
+            _output.WriteLine("Distinct Count = " + resources.Count);
 
             Assert.Equal(resources.Count, count);
         }

@@ -36,6 +36,9 @@ namespace VDS.RDF.Query.Operators.DateTime
     public abstract class BaseTimeSpanOperator
         : BaseOperator
     {
+        /// <inheritdoc />
+        public override bool IsExtension => true;
+
         /// <summary>
         /// Gets whether the operator is applicable for the arguments.
         /// </summary>
@@ -43,8 +46,7 @@ namespace VDS.RDF.Query.Operators.DateTime
         /// <returns></returns>
         public override bool IsApplicable(params IValuedNode[] ns)
         {
-            return !Options.StrictOperators
-                   && ns != null
+            return ns != null
                    && ns.Length > 0
                    && ns.All(n => n != null && (n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
         }

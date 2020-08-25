@@ -179,10 +179,11 @@ namespace VDS.RDF.Query.Operators
         /// Tries to return the operator which applies for the given inputs.
         /// </summary>
         /// <param name="type">Operator Type.</param>
+        /// <param name="strict">If true, return only operators specified by the SPARQL specification. If false, also return operators that extend the SPARQL specification.</param>
         /// <param name="op">Operator.</param>
         /// <param name="ns">Inputs.</param>
         /// <returns></returns>
-        public static bool TryGetOperator(SparqlOperatorType type, out ISparqlOperator op, params IValuedNode[] ns)
+        public static bool TryGetOperator(SparqlOperatorType type, bool strict, out ISparqlOperator op, params IValuedNode[] ns)
         {
             if (!_init) Init();
 
@@ -194,7 +195,7 @@ namespace VDS.RDF.Query.Operators
                 {
                     foreach (ISparqlOperator possOp in ops)
                     {
-                        if (possOp.IsApplicable(ns))
+                        if (!(possOp.IsExtension && strict) && possOp.IsApplicable(ns))
                         {
                             op = possOp;
                             return true;

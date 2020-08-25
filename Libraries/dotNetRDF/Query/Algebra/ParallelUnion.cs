@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             // Create a copy of the evaluation context for the RHS
-            var context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.NodeComparer);
+            var context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
             if (!(context.InputMultiset is IdentityMultiset))
             {
                 context2.InputMultiset = new Multiset();

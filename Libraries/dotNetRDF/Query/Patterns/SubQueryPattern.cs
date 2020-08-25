@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor);
+                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.Options);
                 subcontext.InputMultiset = context.InputMultiset;
 
                 // Add any Named Graphs to the subquery

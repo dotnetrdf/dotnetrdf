@@ -34,6 +34,8 @@ using Xunit;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using Xunit.Abstractions;
+
 #pragma warning disable 252,253
 
 #pragma warning disable xUnit2000 // Expected value should be first
@@ -46,6 +48,10 @@ namespace VDS.RDF
 
     public class BasicTests1 : BaseTest
     {
+        public BasicTests1(ITestOutputHelper output) : base(output)
+        {
+        }
+
         [Fact]
         public void NodesDistinct()
         {
