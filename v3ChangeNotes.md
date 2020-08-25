@@ -43,7 +43,7 @@ This option is moved to UriLoader.CacheEnabled. This is still a static property 
 ### UriLoaderTimeout
 This option is moved to UriLoader.Timeout. This is still a static property at present as the UriLoader is currently implemented as a static class.
 
-### QueryExecutionTimeout, AlgebraOptimisation
+### QueryExecutionTimeout, AlgebraOptimisation. StrictOperators, RigorousEvaluation, UsePLinqEvaluation
 These options can be set when creating a new `LeviathanQueryProcessor` using the new optional `options` callback parameter on the `LeviathanQueryProcessor` constructor.
 
 ### QueryOptimisation
@@ -61,7 +61,4 @@ This option can now be set through the `AllowUnknownFunctions` property of `Spar
 
 ### UpdateExecutionTimeout
 This option can be set when creating a new `LeviathanUpdateProcessor` using the new optional `options` callback parameter on the `LeviathanUpdateProcessor` constructor.
-
-### StrictOperators
-This option can be set when creating a new `LeviathanQueryProcessor` using the new optional `options` constructor parameter. The default value is `false` to match previous dotNetRDF behaviour.
 
