@@ -101,5 +101,10 @@ namespace VDS.RDF
         /// </summary>
         /// <returns></returns>
         String GetNextBlankNodeID();
+
+        /// <summary>
+        /// Get or set the flag that controls whether the value strings of literal nodes should be normalized on creation.
+        /// </summary>
+        bool NormalizeLiteralValues { get; set; }
     }
 }

@@ -68,7 +68,10 @@ namespace VDS.RDF.Query.Optimisation
         /// Unlike previous releases a Query may be reoptimised using a different optimiser if desired by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method again and providing a different Optimiser.  This may not always fully reoptimise the query since the first optimisation will have caused any Filters and Assignments to be placed in the Triple Pattern.
         /// </para>
         /// <para>
-        /// <em>Warning:</em> Setting this to null has no effect, to disable automatic optimisation use the global property <see cref="Options.QueryOptimisation">Options.QueryOptimisation</see>.  Even with this option disabled a Query can still be optimised manually by calling its <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
+        /// <em>Warning:</em> Setting this to null has no effect, to disable automatic optimisation use the
+        /// <see cref="Parsing.SparqlQueryParser.QueryOptimisation"/> property for query parsing or
+        /// <see cref="Parsing.SparqlUpdateParser.QueryOptimisation"/> property for SPARQL update parsing.
+        /// Even with this option disabled a Query can still be optimised manually by calling its <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </para>
         /// </remarks>
         public static IQueryOptimiser QueryOptimiser

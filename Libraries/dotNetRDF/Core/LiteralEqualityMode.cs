@@ -24,12 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Globalization;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Writing;
-
 namespace VDS.RDF
 {
     /// <summary>
@@ -58,25 +52,5 @@ namespace VDS.RDF
         /// Literals without Datatypes and those whose Datatypes are unknown or not handled by the Library will be compared using lexical equivalence as with <see cref="LiteralEqualityMode.Strict">Strict</see> mode.
         /// </remarks>
         Loose,
-    }
-
-    /// <summary>
-    /// Configures Global Static Options for the Library.
-    /// </summary>
-    /// <remarks>
-    /// Some of these are Debug Build only, please see the Remarks on individual members for more detail.
-    /// </remarks>
-    public static class Options
-    {
-        /// <summary>
-        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
-        /// </summary>
-        public static LiteralEqualityMode LiteralEqualityMode { get; set; } = LiteralEqualityMode.Strict;
-
-        /// <summary>
-        /// Gets/Sets whether Literal Values should be normalized.
-        /// </summary>
-        public static bool LiteralValueNormalization { get; set; } = false;
-
     }
 }

@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 case sbyte s:
                     return s.ToLiteral(NodeFactory);
                 case string s:
-                    return new LiteralNode(null, s);
+                    return NodeFactory.CreateLiteralNode(s);
                 case DateTime d:
                     return d.ToLiteral(NodeFactory);
                 case TimeSpan t:
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Builder.Expressions
                 case bool b:
                     return b.ToLiteral(NodeFactory);
                 default:
-                    throw new ArgumentException(string.Format("Unsupported type for literal node: {0}", value.GetType()));
+                    throw new ArgumentException($"Unsupported type for literal node: {value.GetType()}");
             }
         }
 
@@ -77,9 +77,9 @@ namespace VDS.RDF.Query.Builder.Expressions
         /// <summary>
         /// Creates an untyped literal term (simple literal).
         /// </summary>
-        internal static ConstantTerm ToSimpleLiteral(this string value)
+        internal static ConstantTerm ToSimpleLiteral(this string value, bool normalizeLiteralValue)
         {
-            return new ConstantTerm(new LiteralNode(null, value));
+            return new ConstantTerm(new LiteralNode(null, value, normalizeLiteralValue));
         }
     }
 }

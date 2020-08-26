@@ -118,19 +118,19 @@ namespace VDS.RDF.Configuration
         [Fact]
         public void ConfigurationStaticOptionsEnumProperty()
         {
-            var current = Options.LiteralEqualityMode;
+            var current = EqualityHelper.LiteralEqualityMode;
             try
             {
-                Assert.Equal(current, Options.LiteralEqualityMode);
+                Assert.Equal(current, EqualityHelper.LiteralEqualityMode);
 
-                var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Options#LiteralEqualityMode");
+                var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.EqualityHelper#LiteralEqualityMode");
                 this.ApplyStaticOptionsConfigure(optionUri, "Loose");
 
-                Assert.Equal(LiteralEqualityMode.Loose, Options.LiteralEqualityMode);
+                Assert.Equal(LiteralEqualityMode.Loose, EqualityHelper.LiteralEqualityMode);
             }
             finally
             {
-                Options.LiteralEqualityMode = current;
+                EqualityHelper.LiteralEqualityMode = current;
             }
         }
 

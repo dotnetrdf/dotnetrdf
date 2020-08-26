@@ -169,7 +169,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">The QName of the Node to select.</param>
         /// <returns></returns>
-        public override IUriNode GetUriNode(String qname)
+        public override IUriNode GetUriNode(string qname)
         {
             return GetNode<IUriNode>(new UriNode(this, qname));
         }
@@ -180,9 +180,9 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select.</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value exists.</returns>
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set.</remarks>
-        public override ILiteralNode GetLiteralNode(String literal)
+        public override ILiteralNode GetLiteralNode(string literal)
         {
-            return GetNode<ILiteralNode>(new LiteralNode(this, literal));
+            return GetNode<ILiteralNode>(new LiteralNode(this, literal, NormalizeLiteralValues));
         }
 
         /// <summary>
@@ -191,9 +191,9 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select.</param>
         /// <param name="langspec">The Language Specifier for the Node to select.</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists.</returns>
-        public override ILiteralNode GetLiteralNode(String literal, String langspec)
+        public override ILiteralNode GetLiteralNode(string literal, string langspec)
         {
-            return GetNode<ILiteralNode>(new LiteralNode(this, literal, langspec));
+            return GetNode<ILiteralNode>(new LiteralNode(this, literal, langspec, NormalizeLiteralValues));
         }
 
         /// <summary>
@@ -202,9 +202,9 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select.</param>
         /// <param name="datatype">The Uri for the Data Type of the Literal to select.</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists.</returns>
-        public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
+        public override ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            return GetNode<ILiteralNode>(new LiteralNode(this, literal, datatype));
+            return GetNode<ILiteralNode>(new LiteralNode(this, literal, datatype, NormalizeLiteralValues));
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">The Identifier of the Blank Node to select.</param>
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists.</returns>
-        public override IBlankNode GetBlankNode(String nodeId)
+        public override IBlankNode GetBlankNode(string nodeId)
         {
             return GetNode<IBlankNode>(new BlankNode(this, nodeId));
         }

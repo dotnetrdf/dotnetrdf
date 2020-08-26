@@ -336,16 +336,16 @@ namespace VDS.RDF
                 {
                     if (!(l.DataType == null))
                     {
-                        l2 = new LiteralNode(target, l.Value, l.DataType);
+                        l2 = new LiteralNode(target, l.Value, l.DataType, false);
                     }
                     else
                     {
-                        l2 = new LiteralNode(target, l.Value);
+                        l2 = new LiteralNode(target, l.Value, false);
                     }
                 }
                 else
                 {
-                    l2 = new LiteralNode(target, l.Value, l.Language);
+                    l2 = new LiteralNode(target, l.Value, l.Language, false);
                 }
 
                 return l2;

@@ -244,6 +244,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Get or set whether to normalize literal values.
+        /// </summary>
+        public bool NormalizeLiteralValues
+        {
+            get => _g.NormalizeLiteralValues;
+            set => _g.NormalizeLiteralValues = value;
+        }
+
+        /// <summary>
         /// Creates a new Blank Node with the given Node ID.
         /// </summary>
         /// <param name="nodeId">Node ID.</param>

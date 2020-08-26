@@ -62,3 +62,8 @@ This option can now be set through the `AllowUnknownFunctions` property of `Spar
 ### UpdateExecutionTimeout
 This option can be set when creating a new `LeviathanUpdateProcessor` using the new optional `options` callback parameter on the `LeviathanUpdateProcessor` constructor.
 
+### NormalizeLiteralValues
+This option can now be set on any implementation of `INodeFactory`. This includes `Graph` and other related classes and will affect calls made to `CreateLiteralNode` on those classes.
+
+### LiteralEqualityMode
+This option has moved to the `EqualityHelper` static class. 

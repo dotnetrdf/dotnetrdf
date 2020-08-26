@@ -45,8 +45,9 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belong to.</param>
         /// <param name="value">Boolean Value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public BooleanNode(IGraph g, bool value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+        /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>
+        public BooleanNode(IGraph g, bool value, String lexicalValue, bool normalizeValue = false)
+            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
         {
             _value = value;
         }

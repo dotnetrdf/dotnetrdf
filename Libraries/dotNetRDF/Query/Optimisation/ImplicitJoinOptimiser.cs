@@ -66,7 +66,8 @@ namespace VDS.RDF.Query.Optimisation
     /// }
     /// </pre>
     /// <para>
-    /// Under normal circumstances this optimisation is only used when the implict join is denoted by a SAMETERM expression or the optimiser is sure the variables don't represent literals (they never occur in the Object position) since when value equality is involved substituing one variable for another changes the semantics of the query and may lead to unexpected results.  Since this optimisation may offer big performance benefits for some queries (at the cost of potentially incorrect results) this form of the optimisation is allowed when you set <see cref="Options.UnsafeOptimisation"/> to true.
+    /// Under normal circumstances this optimisation is only used when the implict join is denoted by a SAMETERM expression or the optimiser is sure the variables don't represent literals (they never occur in the Object position) since when value equality is involved substituing one variable for another changes the semantics of the query and may lead to unexpected results.
+    /// Since this optimisation may offer big performance benefits for some queries (at the cost of potentially incorrect results) this form of the optimisation is allowed when you explicitly request it in the constructor of this class.
     /// </para>
     /// <para>
     /// This optimiser is also capable of generating special algebra to deal with the case where there is an implicit join but the substitution based optimisation does not apply because variables cannot be substituted into the inner algebra, in this case a <see cref="FilteredProduct"/> is generated instead.

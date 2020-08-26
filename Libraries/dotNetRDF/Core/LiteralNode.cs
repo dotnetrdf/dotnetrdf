@@ -45,14 +45,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
-        protected internal BaseLiteralNode(IGraph g, string literal)
-            : this(g, literal, Options.LiteralValueNormalization) { }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="literal">String value of the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal BaseLiteralNode(IGraph g, string literal, bool normalize)
             : base(g, NodeType.Literal)
@@ -61,15 +53,6 @@ namespace VDS.RDF
             DataType = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
             _hashcode = ComputeHashCode();
         }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
-        protected internal BaseLiteralNode(IGraph g, string literal, string langspec)
-            : this(g, literal, langspec, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
@@ -104,15 +87,6 @@ namespace VDS.RDF
                 _hashcode = ComputeHashCode();
             }
         }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="datatype">Uri for the Literals Data Type.</param>
-        protected internal BaseLiteralNode(IGraph g, string literal, Uri datatype)
-            : this(g, literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
@@ -179,7 +153,7 @@ namespace VDS.RDF
         /// <li>Their Data Types are identical (or neither has a Data Type)</li>
         /// <li>Their String values are identical</li>
         /// </ol>
-        /// This behaviour can be overridden to use value equality by setting the <see cref="Options.LiteralEqualityMode">LiteralEqualityMode</see> option to be <see cref="LiteralEqualityMode.Loose">Loose</see> if this is more suited to your application.
+        /// This behaviour can be overridden to use value equality by setting the <see cref="EqualityHelper.LiteralEqualityMode">LiteralEqualityMode</see> option to be <see cref="LiteralEqualityMode.Loose">Loose</see> if this is more suited to your application.
         /// </remarks>
         public override bool Equals(object obj)
         {
@@ -213,7 +187,7 @@ namespace VDS.RDF
         /// <li>Their Data Types are identical (or neither has a Data Type)</li>
         /// <li>Their String values are identical</li>
         /// </ol>
-        /// This behaviour can be overridden to use value equality by setting the <see cref="Options.LiteralEqualityMode">LiteralEqualityMode</see> option to be <see cref="LiteralEqualityMode.Loose">Loose</see> if this is more suited to your application.
+        /// This behaviour can be overridden to use value equality by setting the <see cref="EqualityHelper.LiteralEqualityMode">LiteralEqualityMode</see> option to be <see cref="LiteralEqualityMode.Loose">Loose</see> if this is more suited to your application.
         /// </remarks>
         public override bool Equals(INode other)
         {
@@ -508,14 +482,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
-        protected internal LiteralNode(IGraph g, string literal)
-            : this(g, literal, Options.LiteralValueNormalization) { }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="literal">String value of the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal LiteralNode(IGraph g, string literal, bool normalize)
             : base(g, literal, normalize) { }
@@ -526,27 +492,9 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
-        protected internal LiteralNode(IGraph g, string literal, string langspec)
-            : this(g, literal, langspec, Options.LiteralValueNormalization) { }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
         protected internal LiteralNode(IGraph g, string literal, string langspec, bool normalize)
             : base(g, literal, langspec, normalize) { }
-
-        /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="datatype">Uri for the Literals Data Type.</param>
-        protected internal LiteralNode(IGraph g, string literal, Uri datatype)
-            : this(g, literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.

@@ -40,8 +40,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Creates a new Handler.
         /// </summary>
-        public BaseHandler()
-            : this(new NodeFactory()) { }
+        /// <param name="normalizeLiteralValues">Whether the string values of literal nodes should be normalized on creation.</param>
+        protected BaseHandler(bool normalizeLiteralValues = false)
+            : this(new NodeFactory(normalizeLiteralValues)) { }
 
         /// <summary>
         /// Creates a new Handler using the given Node Factory.
@@ -49,8 +50,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="factory">Node Factory.</param>
         public BaseHandler(INodeFactory factory)
         {
-            if (factory == null) throw new ArgumentNullException("factory");
-            _factory = factory;
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <summary>
@@ -58,18 +58,20 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected INodeFactory NodeFactory
         {
-            get
-            {
-                return _factory;
-            }
-            set
-            {
-                if (value == null) throw new InvalidOperationException("Cannot set the NodeFactory of a Handler to be null");
-                _factory = value;
-            }
+            get => _factory;
+            set => _factory = value ?? throw new InvalidOperationException("Cannot set the NodeFactory of a Handler to be null");
         }
 
         #region INodeFactory Members
+
+        /// <summary>
+        /// Get or set whether to normalize the string values of literal nodes on creation.
+        /// </summary>
+        public virtual bool NormalizeLiteralValues
+        {
+            get => _factory.NormalizeLiteralValues;
+            set => _factory.NormalizeLiteralValues = value;
+        }
 
         /// <summary>
         /// Creates a Blank Node.

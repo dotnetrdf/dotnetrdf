@@ -131,6 +131,11 @@ namespace VDS.RDF.Query
         public SparqlQuerySyntax SyntaxMode { get; set; }
 
         /// <summary>
+        /// Get/Sets whether the values strings of literal nodes should be normalized.
+        /// </summary>
+        public bool NormalizeLiteralValues { get; set; }
+
+        /// <summary>
         /// Sets the Query Parser that the Expression Parser can call back into when needed.
         /// </summary>
         public SparqlQueryParser QueryParser
@@ -928,7 +933,7 @@ namespace VDS.RDF.Query
                 if (next.TokenType == Token.LANGSPEC)
                 {
                     tokens.Dequeue();
-                    return new ConstantTerm(new LiteralNode(null, str.Value, next.Value));
+                    return new ConstantTerm(new LiteralNode(null, str.Value, next.Value, NormalizeLiteralValues));
                 }
                 else if (next.TokenType == Token.HATHAT)
                 {
@@ -970,17 +975,17 @@ namespace VDS.RDF.Query
                     else
                     {
                         // Just a datatyped Literal Node
-                        return new ConstantTerm(new LiteralNode(null, str.Value, u));
+                        return new ConstantTerm(new LiteralNode(null, str.Value, u, NormalizeLiteralValues));
                     }
                 }
                 else
                 {
-                    return new ConstantTerm(new LiteralNode(null, str.Value));
+                    return new ConstantTerm(new LiteralNode(null, str.Value, NormalizeLiteralValues));
                 }
             }
             else
             {
-                return new ConstantTerm(new LiteralNode(null, str.Value));
+                return new ConstantTerm(new LiteralNode(null, str.Value, NormalizeLiteralValues));
             }
 
         }
@@ -1042,7 +1047,7 @@ namespace VDS.RDF.Query
                     }
 
                     // Try to return a numeric expression, enforce the need for a valid numeric value where relevant
-                    LiteralNode lit = new LiteralNode(null, literal.Value, UriFactory.Create(dtUri));
+                    LiteralNode lit = new LiteralNode(null, literal.Value, UriFactory.Create(dtUri), NormalizeLiteralValues);
                     IValuedNode value = lit.AsValuedNode();
                     if (requireValidLexicalForm && value.NumericType == SparqlNumericType.NaN)
                     {

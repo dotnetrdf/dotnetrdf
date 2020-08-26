@@ -54,7 +54,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph.</param>
         /// <param name="value">Time Span.</param>
         /// <param name="lexicalValue">Lexical value.</param>
-        public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue)
+        public TimeSpanNode(IGraph g, TimeSpan value, string lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
@@ -64,8 +64,9 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Time Span.</param>
         /// <param name="lexicalValue">Lexical value.</param>
         /// <param name="dtUri">Data type URI.</param>
-        public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue, Uri dtUri)
-            : base(g, lexicalValue, dtUri)
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        public TimeSpanNode(IGraph g, TimeSpan value, string lexicalValue, Uri dtUri, bool normalizeLiteralValue = false)
+            : base(g, lexicalValue, dtUri, normalizeLiteralValue)
         {
             _value = value;
         }
@@ -154,7 +155,7 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
-        public String EffectiveType
+        public string EffectiveType
         {
             get
             {

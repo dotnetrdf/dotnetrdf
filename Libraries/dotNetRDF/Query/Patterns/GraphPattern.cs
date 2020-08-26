@@ -601,7 +601,8 @@ namespace VDS.RDF.Query.Patterns
         /// <strong>Important:</strong> If a Pattern has already been optimized then calling this again is a no-op.
         /// </para>
         /// <para>
-        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary.
+        /// For finer grained control of what gets optimized you can use <see cref="Parsing.SparqlQueryParser.QueryOptimisation"/>
+        /// or <see cref="Parsing.SparqlUpdateParser.QueryOptimisation"/>  to disable automatic optimisation and then manually call this method as necessary.
         /// </para>
         /// </remarks>
         public void Optimise(IQueryOptimiser optimiser)
@@ -620,7 +621,8 @@ namespace VDS.RDF.Query.Patterns
         /// <strong>Important:</strong> If a Pattern has already been optimized then calling this again is a no-op.
         /// </para>
         /// <para>
-        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary.
+        /// For finer grained control of what gets optimized you can use <see cref="Parsing.SparqlQueryParser.QueryOptimisation"/>
+        /// or <see cref="Parsing.SparqlUpdateParser.QueryOptimisation"/>  to disable automatic optimisation and then manually call this method as necessary.
         /// </para>
         /// <para>
         /// The <paramref name="vars">vars</paramref> parameter contains Variables mentioned in the parent Graph Pattern (if any) that can be used to guide optimisation of child graph patterns.

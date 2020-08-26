@@ -40,6 +40,12 @@ namespace VDS.RDF
     /// </summary>
     public static class EqualityHelper
     {
+
+        /// <summary>
+        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
+        /// </summary>
+        public static LiteralEqualityMode LiteralEqualityMode { get; set; } = LiteralEqualityMode.Strict;
+
         /// <summary>
         /// Determines whether two URIs are equal.
         /// </summary>
@@ -139,7 +145,7 @@ namespace VDS.RDF
                 else if (AreUrisEqual(a.DataType, b.DataType))
                 {
                     // We have equal DataTypes so use String Equality to evaluate
-                    if (Options.LiteralEqualityMode == LiteralEqualityMode.Strict)
+                    if (LiteralEqualityMode == LiteralEqualityMode.Strict)
                     {
                         // Strict Equality Mode uses Ordinal Lexical Comparison for Equality as per W3C RDF Spec
                         return a.Value.Equals(b.Value, StringComparison.Ordinal);

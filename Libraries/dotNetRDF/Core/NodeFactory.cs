@@ -39,10 +39,16 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Node Factory.
         /// </summary>
-        public NodeFactory()
-        { }
+        /// <param name="normalizeLiteralValues">Whether or not to normalize the value strings of literal nodes.</param>
+        public NodeFactory(bool normalizeLiteralValues = false)
+        {
+            NormalizeLiteralValues = normalizeLiteralValues;
+        }
 
         #region INodeFactory Members
+
+        /// <inheritdoc />
+        public bool NormalizeLiteralValues { get; set; }
 
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID.
@@ -91,7 +97,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return new LiteralNode(null, literal, datatype);
+            return new LiteralNode(null, literal, datatype, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal)
         {
-            return new LiteralNode(null, literal);
+            return new LiteralNode(null, literal, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -112,7 +118,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
-            return new LiteralNode(null, literal, langspec);
+            return new LiteralNode(null, literal, langspec, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -246,7 +252,7 @@ namespace VDS.RDF
     {
         private IBlankNode _bnode = new BlankNode(null, "mock");
         private IGraphLiteralNode _glit = new GraphLiteralNode(null);
-        private ILiteralNode _lit = new LiteralNode(null, "mock");
+        private ILiteralNode _lit = new LiteralNode(null, "mock", false);
         private IUriNode _uri = new UriNode(null, UriFactory.Create("dotnetrdf:mock"));
         private IVariableNode _var = new VariableNode(null, "mock");
 
@@ -302,6 +308,11 @@ namespace VDS.RDF
             throw new NotImplementedException("Not needed by the MockNodeFactory");
         }
 
+        public bool NormalizeLiteralValues
+        {
+            get => false;
+            set => throw new NotImplementedException("Not needed by the MockNodeFactory");
+        }
         #endregion
     }
 }

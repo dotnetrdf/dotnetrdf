@@ -382,7 +382,7 @@ namespace VDS.RDF
         private class DifferentLiteralNode : BaseLiteralNode
         {
             internal DifferentLiteralNode(IGraph g, string literal)
-                : base(g, literal)
+                : base(g, literal, false)
             {
             }
         }

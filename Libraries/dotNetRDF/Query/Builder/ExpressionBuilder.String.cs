@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Builder
         /// <inheritdoc />
         public BooleanExpression Regex(VariableExpression text, string pattern)
         {
-            return Regex(text.Expression, pattern.ToSimpleLiteral(), null);
+            return Regex(text.Expression, pattern.ToSimpleLiteral(false), null);
         }
 
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Builder
         /// <inheritdoc />
         public BooleanExpression Regex(LiteralExpression text, string pattern)
         {
-            return Regex(text.Expression, pattern.ToSimpleLiteral(), null);
+            return Regex(text.Expression, pattern.ToSimpleLiteral(false), null);
         }
 
         /// <inheritdoc />
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Builder
         /// <inheritdoc />
         public BooleanExpression Regex(LiteralExpression text, string pattern, string flags)
         {
-            return Regex(text.Expression, pattern.ToSimpleLiteral(), flags.ToConstantTerm());
+            return Regex(text.Expression, pattern.ToSimpleLiteral(false), flags.ToConstantTerm());
         }
 
         /// <inheritdoc />

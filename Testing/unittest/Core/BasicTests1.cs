@@ -476,7 +476,7 @@ namespace VDS.RDF
 
                 //Strict Mode Tests
                 Console.WriteLine("Doing a load of Strict Literal Equality Tests");
-                Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
+                EqualityHelper.LiteralEqualityMode = LiteralEqualityMode.Strict;
 
                 //Test Literals with Language Tags
                 ILiteralNode hello, helloEn, helloEnUS, helloAgain;
@@ -542,24 +542,17 @@ namespace VDS.RDF
 
                 //Loose Mode Tests
                 Console.WriteLine("Doing a load of Loose Equality Tests");
-                Options.LiteralEqualityMode = LiteralEqualityMode.Loose;
+                EqualityHelper.LiteralEqualityMode = LiteralEqualityMode.Loose;
 
                 Assert.Equal(one2, one3);
                 Assert.Equal(one3, one4);
                 Assert.NotEqual(t, one5);
 
             }
-            catch (Exception)
-            {
-                //Reset Literal Equality Mode
-                Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
-
-                throw;
-            }
             finally
             {
                 //Reset Literal Equality Mode
-                Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
+                EqualityHelper.LiteralEqualityMode = LiteralEqualityMode.Strict;
             }
         }
 

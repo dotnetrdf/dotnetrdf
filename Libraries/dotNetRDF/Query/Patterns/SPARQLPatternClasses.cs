@@ -39,9 +39,6 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         protected SparqlResultBinder _context = null;
 
-        private bool _repeated = false;
-        private bool _rigorousEvaluation = false;
-
         /// <summary>
         /// Checks whether the Pattern Item accepts the given Node in the given Context.
         /// </summary>
@@ -62,21 +59,14 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public SparqlResultBinder BindingContext
         {
-            set
-            {
-                _context = value;
-            }
+            set => _context = value;
         }
 
         /// <summary>
-        /// Gets/Sets whether rigorous evaluation is used, note that this setting may be overridden by the global <see cref="Options.RigorousEvaluation" /> option.
+        /// Gets/Sets whether rigorous evaluation is used, note that this setting may be overridden by the <see cref="LeviathanQueryOptions.RigorousEvaluation" /> option
+        /// passed to the query processor when it is initialized.
         /// </summary>
-        public bool RigorousEvaluation
-        {
-            get { return _rigorousEvaluation; }
-            set { _rigorousEvaluation = value; }
-
-        }
+        public bool RigorousEvaluation { get; set; } = false;
 
         /// <summary>
         /// Gets the String representation of the Pattern.
@@ -87,28 +77,11 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Variable Name if this is a Variable Pattern or null otherwise.
         /// </summary>
-        public virtual String VariableName
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual string VariableName => null;
 
         /// <summary>
         /// Gets/Sets whether the Variable is repeated in the Pattern.
         /// </summary>
-        public virtual bool Repeated
-        {
-            get
-            {
-                return _repeated;
-            }
-            set
-            {
-                _repeated = value;
-            }
-        }
-
+        public virtual bool Repeated { get; set; } = false;
     }
 }

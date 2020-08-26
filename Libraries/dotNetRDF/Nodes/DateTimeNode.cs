@@ -48,8 +48,9 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        protected DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue, Uri datatype)
-            : base(g, lexicalValue, datatype)
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        protected DateTimeNode(IGraph g, DateTimeOffset value, string lexicalValue, Uri datatype, bool normalizeLiteralValue = false)
+            : base(g, lexicalValue, datatype, normalizeLiteralValue)
         {
             _value = value.UtcDateTime;
             _offsetValue = value;
@@ -62,8 +63,9 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        protected DateTimeNode(IGraph g, DateTime value, String lexicalValue, Uri datatype)
-            : base(g, lexicalValue, datatype)
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        protected DateTimeNode(IGraph g, DateTime value, string lexicalValue, Uri datatype, bool normalizeLiteralValue = false)
+            : base(g, lexicalValue, datatype, normalizeLiteralValue)
         {
             _value = value;
             _offsetValue = null;
@@ -109,8 +111,9 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue)
-            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        public DateTimeNode(IGraph g, DateTimeOffset value, string lexicalValue, bool normalizeLiteralValue = false)
+            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -118,8 +121,9 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public DateTimeNode(IGraph g, DateTime value, String lexicalValue)
-            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        public DateTimeNode(IGraph g, DateTime value, string lexicalValue, bool normalizeLiteralValue = false)
+            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -128,8 +132,9 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Date Time value.</param>
         /// <param name="offsetValue">Date Time offset value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, String lexicalValue)
-            : this(g, value, offsetValue, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, string lexicalValue, bool normalizeLiteralValue = false)
+            : this(g, value, offsetValue, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -139,8 +144,9 @@ namespace VDS.RDF.Nodes
         /// <param name="offsetValue">Date Time offset value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Data Type URI.</param>
-        public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, String lexicalValue, Uri datatype)
-            : base(g, lexicalValue, datatype)
+        /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
+        public DateTimeNode(IGraph g, DateTime value, DateTimeOffset offsetValue, string lexicalValue, Uri datatype, bool normalizeLiteralValue = false)
+            : base(g, lexicalValue, datatype, normalizeLiteralValue)
         {
             _value = value;
             _offsetValue = offsetValue;
@@ -152,7 +158,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Value.</param>
         /// <param name="datatype">Datatype URI.</param>
         /// <returns></returns>
-        private static String GetStringForm(DateTimeOffset value, Uri datatype)
+        private static string GetStringForm(DateTimeOffset value, Uri datatype)
         {
             switch (datatype.ToString())
             {
@@ -171,7 +177,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Value.</param>
         /// <param name="datatype">Datatype URI.</param>
         /// <returns></returns>
-        private static String GetStringForm(DateTime value, Uri datatype)
+        private static string GetStringForm(DateTime value, Uri datatype)
         {
             switch (datatype.ToString())
             {
@@ -280,7 +286,7 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
-        public String EffectiveType
+        public string EffectiveType
         {
             get
             {
@@ -320,7 +326,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public DateNode(IGraph g, DateTimeOffset value, String lexicalValue)
+        public DateNode(IGraph g, DateTimeOffset value, string lexicalValue)
             : base(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
@@ -337,7 +343,7 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public DateNode(IGraph g, DateTime value, String lexicalValue)
+        public DateNode(IGraph g, DateTime value, string lexicalValue)
             : base(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
     }
 }

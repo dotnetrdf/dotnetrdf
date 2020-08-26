@@ -62,7 +62,7 @@ namespace dotNetRDF.MockServerTests
                 signal.Close();
             }, null);
 
-            signal.WaitOne(TimeSpan.FromSeconds(10.0));
+            signal.WaitOne(TimeSpan.FromSeconds(15.0));
             Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
         }
 

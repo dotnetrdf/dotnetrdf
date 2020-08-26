@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// </summary>
         /// <param name="expr">Expression.</param>
         public StringJoinAggregate(ISparqlExpression expr)
-            : this(expr, new ConstantTerm(new LiteralNode(null, String.Empty)))
+            : this(expr, new ConstantTerm(new LiteralNode(null, string.Empty, false)))
         {
             _customSep = false;
         }

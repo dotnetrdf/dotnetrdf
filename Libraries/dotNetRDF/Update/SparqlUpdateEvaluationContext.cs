@@ -38,7 +38,6 @@ namespace VDS.RDF.Update
     public class SparqlUpdateEvaluationContext
     {
         private Stopwatch _timer = new Stopwatch();
-        private long _timeout;
 
         /// <summary>
         /// Creates a new SPARQL Update Evaluation Context.
@@ -130,24 +129,24 @@ namespace VDS.RDF.Update
                     if (Options.UpdateExecutionTimeout == 0 || (Commands.Timeout <= Options.UpdateExecutionTimeout && Options.UpdateExecutionTimeout > 0))
                     {
                         // Update Timeout is used provided it is less than global timeout unless global timeout is zero
-                        _timeout = Commands.Timeout;
+                        UpdateTimeout = Commands.Timeout;
                     }
                     else
                     {
                         // Update Timeout cannot be set higher than global timeout
-                        _timeout = Options.UpdateExecutionTimeout;
+                        UpdateTimeout = Options.UpdateExecutionTimeout;
                     }
                 }
                 else
                 {
                     // If Update Timeout set to zero (i.e. no timeout) then global timeout is used
-                    _timeout = Options.UpdateExecutionTimeout;
+                    UpdateTimeout = Options.UpdateExecutionTimeout;
                 }
             }
             else
             {
                 // If no updates then global timeout is used
-                _timeout = Options.UpdateExecutionTimeout;
+                UpdateTimeout = Options.UpdateExecutionTimeout;
             }
         }
 
@@ -161,13 +160,13 @@ namespace VDS.RDF.Update
         {
             get
             {
-                if (_timeout <= 0)
+                if (UpdateTimeout <= 0)
                 {
                     return 0;
                 }
                 else
                 {
-                    long timeout = _timeout - UpdateTime;
+                    long timeout = UpdateTimeout - UpdateTime;
                     if (timeout <= 0)
                     {
                         return 1;
@@ -185,16 +184,17 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This is taken either from the <see cref="SparqlUpdateCommandSet.Timeout">Timeout</see> property of the <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> to which this evaluation context pertains or from the global option <see cref="Options.UpdateExecutionTimeout">Options.UpdateExecutionTimeout</see>.  To set the Timeout to be used set whichever of those is appropriate prior to evaluating the updates.  If there is a Command Set present then it's timeout takes precedence unless it is set to zero (no timeout) in which case the global timeout setting is applied.  You cannot set the Update Timeout to be higher than the global timeout unless the global timeout is set to zero (i.e. no global timeout).
+        /// This is taken either from the <see cref="SparqlUpdateCommandSet.Timeout">Timeout</see> property of the
+        /// <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> to which this evaluation context pertains,
+        /// or from the processor-defined option <see cref="LeviathanUpdateOptions.UpdateExecutionTimeout"/>.
+        /// To set the Timeout to be used set whichever of those is appropriate prior to evaluating the updates.
+        /// If there is a Command Set present then it's timeout takes precedence unless it is set to zero (no timeout)
+        /// in which case the processor-defined timeout setting is applied.
+        /// You cannot set the Update Timeout to be higher than the processor-defined timeout unless the
+        /// processor-defined timeout is set to zero (i.e. no global timeout).
         /// </para>
         /// </remarks>
-        public long UpdateTimeout
-        {
-            get
-            {
-                return _timeout;
-            }
-        }
+        public long UpdateTimeout { get; private set; }
 
         /// <summary>
         /// Checks whether Execution should Time out.
@@ -202,12 +202,12 @@ namespace VDS.RDF.Update
         /// <exception cref="SparqlUpdateTimeoutException">Thrown if the Update has exceeded the Execution Timeout.</exception>
         public void CheckTimeout()
         {
-            if (_timeout > 0)
+            if (UpdateTimeout > 0)
             {
-                if (_timer.ElapsedMilliseconds > _timeout)
+                if (_timer.ElapsedMilliseconds > UpdateTimeout)
                 {
                     _timer.Stop();
-                    throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + _timeout + "ms, updates aborted after " + _timer.ElapsedMilliseconds + "ms");
+                    throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + UpdateTimeout + "ms, updates aborted after " + _timer.ElapsedMilliseconds + "ms");
                 }
             }
         }

@@ -3674,22 +3674,22 @@ namespace VDS.RDF.Parsing
                     {
                         // Double - Check first since to be considered a double must contain an exponent so is unique compared to 
                         // the other two numeric types
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), false));
                     }
                     else if (TurtleSpecsHelper.IsValidInteger(t.Value))
                     {
                         // Integer - Check before decimal as any valid integer is a valid decimal
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger), false));
                     }
                     else if (TurtleSpecsHelper.IsValidDecimal(t.Value))
                     {
                         // Decimal - Check last since any valid integer is also a valid decimal
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), false));
                     }
                     else
                     {
                         // Boolean
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), false));
                     }
 
 

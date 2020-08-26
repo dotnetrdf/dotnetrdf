@@ -73,28 +73,19 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static TimeSpan CacheDuration
         {
-            get
-            {
-                return _cache.CacheDuration;
-            }
-            set
-            {
-                _cache.CacheDuration = value;
-            }
+            get => _cache.CacheDuration;
+            set => _cache.CacheDuration = value;
         }
 
         /// <summary>
         /// Gets/Sets the Cache that is in use.
         /// </summary>
         /// <remarks>
-        /// Setting the Cache to null does not disable it, to disable caching use the <see cref="Options.UriLoaderCaching">Options.UriLoaderCaching</see> property.
+        /// Setting the Cache to null does not disable it, to disable caching use the <see cref="CacheEnabled"/> property.
         /// </remarks>
         public static IUriLoaderCache Cache
         {
-            get
-            {
-                return _cache;
-            }
+            get => _cache;
             set
             {
                 if (value != null)

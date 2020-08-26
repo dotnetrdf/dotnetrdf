@@ -436,36 +436,39 @@ namespace VDS.RDF.Query
         /// Sets the Parameter to an Untyped Literal.
         /// </summary>
         /// <param name="name">Parameter.</param>
-        /// <param name="value">Integer.</param>
-        public void SetLiteral(string name, string value)
+        /// <param name="value">The literal value</param>
+        /// <param name="normalizeValue">Whether to normalize the string value of <paramref name="value"/>.</param>
+        public void SetLiteral(string name, string value, bool normalizeValue)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");
-            SetParameter(name, new LiteralNode(_g, value));
+            SetParameter(name, new LiteralNode(_g, value, normalizeValue));
         }
 
         /// <summary>
         /// Sets the Parameter to a Typed Literal.
         /// </summary>
         /// <param name="name">Parameter.</param>
-        /// <param name="value">Integer.</param>
+        /// <param name="value">The literal value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        public void SetLiteral(string name, string value, Uri datatype)
+        /// <param name="normalizeLiteralValue">Whether to normalize the string value of <paramref name="value"/>.</param>
+        public void SetLiteral(string name, string value, Uri datatype, bool normalizeLiteralValue)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");
-            SetParameter(name, datatype == null ? new LiteralNode(_g, value) : new LiteralNode(_g, value, datatype));
+            SetParameter(name, datatype == null ? new LiteralNode(_g, value, normalizeLiteralValue) : new LiteralNode(_g, value, datatype, normalizeLiteralValue));
         }
 
         /// <summary>
         /// Sets the Parameter to a Literal with a Language Specifier.
         /// </summary>
         /// <param name="name">Parameter.</param>
-        /// <param name="value">Integer.</param>
-        /// <param name="lang">Language Specifier.</param>
-        public void SetLiteral(string name, string value, string lang)
+        /// <param name="value">The Literal value.</param>
+        /// <param name="lang">The language specifier.</param>
+        /// <param name="normalizeLiteralValue">Whether to normalize the </param>
+        public void SetLiteral(string name, string value, string lang, bool normalizeLiteralValue)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");
             if (lang == null) throw new ArgumentNullException(nameof(lang), "Cannot set a Literal to have a null Language");
-            SetParameter(name, new LiteralNode(_g, value, lang));
+            SetParameter(name, new LiteralNode(_g, value, lang, normalizeLiteralValue));
         }
 
         /// <summary>

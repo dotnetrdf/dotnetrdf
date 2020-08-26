@@ -395,8 +395,8 @@ SELECT * WHERE {
 
             foreach (String value in injections)
             {
-                query.SetLiteral("type", value);
-                query.SetLiteral("@type", value);
+                query.SetLiteral("type", value, false);
+                query.SetLiteral("@type", value, false);
                 Console.WriteLine(query.ToString());
                 Console.WriteLine();
 

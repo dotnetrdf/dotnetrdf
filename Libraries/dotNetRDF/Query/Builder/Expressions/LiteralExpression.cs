@@ -69,11 +69,11 @@ namespace VDS.RDF.Query.Builder.Expressions
         /// <summary>
         /// Returns the constant value of this expression formatted as a simple literal expression.
         /// </summary>
-        /// <returns>A new LiteralExpression whose value is the constant value of this epression.</returns>
+        /// <returns>A new LiteralExpression whose value is the constant value of this expression.</returns>
         public LiteralExpression ToSimpleLiteral()
         {
             ConstantTerm constant = (ConstantTerm) Expression;
-            return new LiteralExpression(constant.Node.AsString().ToSimpleLiteral());
+            return new LiteralExpression(constant.Node.AsString().ToSimpleLiteral(false));
         }
     }
 }

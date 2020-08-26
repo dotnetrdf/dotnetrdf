@@ -42,8 +42,8 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the Node belongs to.</param>
         /// <param name="value">String value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        public StringNode(IGraph g, String value, Uri datatype)
-            : base(g, value, datatype) { }
+        public StringNode(IGraph g, string value, Uri datatype)
+            : base(g, value, datatype, false) { }
 
         /// <summary>
         /// Creates a new String Node.
@@ -51,16 +51,16 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the Node belongs to.</param>
         /// <param name="value">String value.</param>
         /// <param name="lang">Language Specifier.</param>
-        public StringNode(IGraph g, String value, String lang)
-            : base(g, value, lang) { }
+        public StringNode(IGraph g, string value, string lang)
+            : base(g, value, lang, false) { }
 
         /// <summary>
         /// Creates a new String Node.
         /// </summary>
         /// <param name="g">Graph the Node belongs to.</param>
         /// <param name="value">String value.</param>
-        public StringNode(IGraph g, String value)
-            : base(g, value) { }
+        public StringNode(IGraph g, string value)
+            : base(g, value, false) { }
 
         #region IValuedNode Members
 
@@ -148,11 +148,11 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
-        public String EffectiveType
+        public string EffectiveType
         {
             get
             {
-                return (DataType != null ? DataType.AbsoluteUri : String.Empty);
+                return (DataType != null ? DataType.AbsoluteUri : string.Empty);
             }
         }
 

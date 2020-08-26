@@ -155,6 +155,11 @@ namespace VDS.RDF
         /// </summary>
         public virtual bool IsEmpty => (_triples.Count == 0);
 
+        /// <summary>
+        /// Get or set whether to normalize the value strings of literal nodes on creation.
+        /// </summary>
+        public virtual bool NormalizeLiteralValues { get; set; }
+
         #endregion
 
         #region Triple Assertion & Retraction
@@ -240,7 +245,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(String literal)
         {
-            return new LiteralNode(this, literal);
+            return new LiteralNode(this, literal, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -251,7 +256,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(String literal, String langspec)
         {
-            return new LiteralNode(this, literal, langspec);
+            return new LiteralNode(this, literal, langspec, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -262,7 +267,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(String literal, Uri datatype)
         {
-            return new LiteralNode(this, literal, datatype);
+            return new LiteralNode(this, literal, datatype, NormalizeLiteralValues);
         }
 
         /// <summary>
