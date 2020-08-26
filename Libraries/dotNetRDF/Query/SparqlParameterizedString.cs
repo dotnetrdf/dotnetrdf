@@ -436,7 +436,7 @@ namespace VDS.RDF.Query
         /// Sets the Parameter to an Untyped Literal.
         /// </summary>
         /// <param name="name">Parameter.</param>
-        /// <param name="value">The literal value</param>
+        /// <param name="value">The literal value.</param>
         /// <param name="normalizeValue">Whether to normalize the string value of <paramref name="value"/>.</param>
         public void SetLiteral(string name, string value, bool normalizeValue)
         {
@@ -463,7 +463,7 @@ namespace VDS.RDF.Query
         /// <param name="name">Parameter.</param>
         /// <param name="value">The Literal value.</param>
         /// <param name="lang">The language specifier.</param>
-        /// <param name="normalizeLiteralValue">Whether to normalize the </param>
+        /// <param name="normalizeLiteralValue">Whether to normalize the string value of <paramref name="value"/>.</param>
         public void SetLiteral(string name, string value, string lang, bool normalizeLiteralValue)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");

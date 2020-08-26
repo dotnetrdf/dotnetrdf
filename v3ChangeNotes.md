@@ -67,3 +67,8 @@ This option can now be set on any implementation of `INodeFactory`. This include
 
 ### LiteralEqualityMode
 This option has moved to the `EqualityHelper` static class. 
+
+
+## .NET serialization support has been removed
+
+We recommend instead using one of the supported RDF/SPARQL syntaxes to serialize/deserialize triples, graphs, stores or SPARQL results.

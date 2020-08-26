@@ -27,32 +27,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using VDS.Common.Collections;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF.Query
 {
     /// <summary>
     /// Class for representing a Row of a Sparql Result Set.
     /// </summary>
-#if !NETCORE
-    [Serializable,XmlRoot(ElementName="result")]
-#endif
     public sealed class SparqlResult 
-        : IEnumerable<KeyValuePair<String, INode>>
-#if !NETCORE
-        , ISerializable, IXmlSerializable
-#endif
+        : IEnumerable<KeyValuePair<string, INode>>
     {
-        private List<String> _variables = new List<string>();
-        private Dictionary<String, INode> _resultValues = new Dictionary<string, INode>();
+        private List<string> _variables = new List<string>();
+        private Dictionary<string, INode> _resultValues = new Dictionary<string, INode>();
 
         /// <summary>
         /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library.
@@ -78,7 +67,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="s">Set.</param>
         /// <param name="variables">Variables.</param>
-        public SparqlResult(ISet s, IEnumerable<String> variables)
+        public SparqlResult(ISet s, IEnumerable<string> variables)
         {
             _variables.AddRange(variables);
             foreach (var var in _variables)
@@ -86,19 +75,6 @@ namespace VDS.RDF.Query
                 _resultValues.Add(var, s[var]);
             }
         }
-
-#if !NETCORE
-        /// <summary>
-        /// Deserialization only constructor.
-        /// </summary>
-        /// <param name="info">Serialization Info.</param>
-        /// <param name="context">Streaming Context.</param>
-        private SparqlResult(SerializationInfo info, StreamingContext context)
-        {
-            _resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
-            _variables = new List<string>(_resultValues.Keys);
-        }
-#endif
 
         /// <summary>
         /// Gets the Value that is bound to the given Variable.
@@ -124,13 +100,7 @@ namespace VDS.RDF.Query
         /// <param name="variable">Variable whose Value you wish to retrieve.</param>
         /// <returns></returns>
         /// <exception cref="RdfException">Thrown if there is nothing bound to the given Variable Name for this Result.</exception>
-        public INode this[string variable]
-        {
-            get
-            {
-                return Value(variable);
-            }
-        }
+        public INode this[string variable] => Value(variable);
 
         /// <summary>
         /// Gets the Value that is bound at the given Index.
@@ -162,7 +132,7 @@ namespace VDS.RDF.Query
         /// <param name="variable">Variable.</param>
         /// <param name="value">Value.</param>
         /// <returns>True if the variable was present (even it was unbound) and false otherwise.</returns>
-        public bool TryGetValue(String variable, out INode value)
+        public bool TryGetValue(string variable, out INode value)
         {
             if (HasValue(variable))
             {
@@ -182,7 +152,7 @@ namespace VDS.RDF.Query
         /// <param name="variable">Variable.</param>
         /// <param name="value">Value.</param>
         /// <returns>True if the variable was present and bound, false otherwise.</returns>
-        public bool TryGetBoundValue(String variable, out INode value)
+        public bool TryGetBoundValue(string variable, out INode value)
         {
             if (HasValue(variable))
             {
@@ -199,13 +169,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the number of Variables for which this Result contains Bindings.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return _resultValues.Count;
-            }
-        }
+        public int Count => _resultValues.Count;
 
         /// <summary>
         /// Internal Only Method for setting the Value of a Result.
@@ -229,7 +193,7 @@ namespace VDS.RDF.Query
         /// Sets the variable ordering for the result.
         /// </summary>
         /// <param name="variables"></param>
-        internal void SetVariableOrdering(IEnumerable<String> variables)
+        internal void SetVariableOrdering(IEnumerable<string> variables)
         {
             // Validate that the ordering is applicable
             if (variables.Count() < _variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
@@ -257,7 +221,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="variable">Variable Name.</param>
         /// <returns>True if the variable is present and has a non-null value, false otherwise.</returns>
-        public bool HasBoundValue(String variable)
+        public bool HasBoundValue(string variable)
         {
             return _resultValues.ContainsKey(variable) && _resultValues[variable] != null;
         }
@@ -265,13 +229,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the set of Variables that are bound in this Result.
         /// </summary>
-        public IEnumerable<String> Variables
-        {
-            get
-            {
-                return new ImmutableView<String>(_variables);
-            }
-        }
+        public IEnumerable<string> Variables => new ImmutableView<string>(_variables);
 
         /// <summary>
         /// Gets whether a Result is a Ground Result.
@@ -331,7 +289,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -340,7 +298,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="formatter">Node Formatter.</param>
         /// <returns></returns>
-        public String ToString(INodeFormatter formatter)
+        public string ToString(INodeFormatter formatter)
         {
             var output = new StringBuilder();
 
@@ -365,7 +323,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -473,82 +431,5 @@ namespace VDS.RDF.Query
 
         #endregion
 
-#if !NETCORE
-        #region Serialization
-
-        /// <summary>
-        /// Gets the data for serialization.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("bindings", _resultValues);
-        }
-
-        /// <summary>
-        /// Gets the schema for XML serialization.
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization).
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            // writer.WriteStartElement("bindings");
-            foreach (KeyValuePair<String, INode> binding in _resultValues)
-            {
-                writer.WriteStartElement("binding");
-                writer.WriteAttributeString("name", binding.Key);
-                binding.Value.SerializeNode(writer);
-                writer.WriteEndElement();
-            }
-            // writer.WriteEndElement();
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization).
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            // <result> may be empty
-            if (reader.IsEmptyElement) return;
-
-            // Otherwise expect some values
-            reader.Read();
-            while (reader.Name.Equals("binding"))
-            {
-                // Get the attribute name
-                reader.MoveToAttribute("name");
-                String var = reader.Value;
-                reader.MoveToElement();
-
-                if (reader.IsEmptyElement)
-                {
-                    // May be empty indicating a null
-                    _resultValues.Add(var, null);
-                }
-                else
-                {
-                    // Otherwise expect a deserializable node
-                    reader.Read();
-                    INode value = reader.DeserializeNode();
-                    _resultValues.Add(var, value);
-                }
-                // Read to the next binding
-                reader.Read();
-            }
-            reader.Read();
-        }
-
-        #endregion
-#endif
     }
 }

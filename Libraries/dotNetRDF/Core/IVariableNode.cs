@@ -23,43 +23,20 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
-using System;
-
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Interface for Variable Nodes.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    public interface IVariableNode
+        : INode
     {
         /// <summary>
-        /// Creates a new Variable Node.
+        /// Gets the Variable Name.
         /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="varname">Variable Name.</param>
-        protected internal VariableNode(IGraph g, string varname)
-            : base(g, varname) { }
-
-        /// <summary>
-        /// Compares this Node to another Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
+        string VariableName
         {
-            return base.CompareTo((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
-        {
-            return base.Equals((IVariableNode)other);
+            get;
         }
     }
 }

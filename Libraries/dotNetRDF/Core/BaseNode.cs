@@ -323,45 +323,5 @@ namespace VDS.RDF
         /// </remarks>
         public abstract bool Equals(IVariableNode other);
 
-#if !NETCORE
-
-        /// <summary>
-        /// Gets the information for serialization.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException("This INode implementation does not support Serialization");
-        }
-
-        /// <summary>
-        /// Gets the schema for XML serialization.
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public virtual void ReadXml(XmlReader reader)
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization.
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public virtual void WriteXml(XmlWriter writer)
-        {
-            throw new NotImplementedException("This INode implementation does not support XML Serialization");
-        }
-
-#endif
     }
 }

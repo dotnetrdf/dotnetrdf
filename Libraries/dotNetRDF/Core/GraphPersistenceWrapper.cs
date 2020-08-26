@@ -33,7 +33,6 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF
 {
@@ -52,7 +51,6 @@ namespace VDS.RDF
     /// Note that the wrapper does not automatically dispose of the wrapped graph when the wrapper is Dispose, this is by design since disposing of the wrapped Graph can have unintended consequences.
     /// </para>
     /// </remarks>
-    [Serializable,XmlRoot(ElementName="graph")]
     public class GraphPersistenceWrapper 
         : IGraph, ITransactionalGraph
     {
@@ -107,29 +105,6 @@ namespace VDS.RDF
             : this(g)
         {
             _alwaysQueueActions = alwaysQueueActions;
-        }
-
-        private List<Triple> _temp;
-
-        /// <summary>
-        /// Deserialization Constructor.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        protected GraphPersistenceWrapper(SerializationInfo info, StreamingContext context)
-            : this()
-        {
-            _temp = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));   
-        }
-
-        [OnDeserialized]
-        private void OnDeserialized(StreamingContext context)
-        {
-            if (_temp != null)
-            {
-                Assert(_temp);
-                _temp = null;
-            }
         }
 
         /// <summary>
@@ -194,8 +169,8 @@ namespace VDS.RDF
         /// <param name="ts">Triples.</param>
         public bool Assert(IEnumerable<Triple> ts)
         {
-            bool asserted = false;
-            foreach (Triple t in ts)
+            var asserted = false;
+            foreach (var t in ts)
             {
                 asserted = Assert(t) || asserted;
             }
@@ -223,8 +198,8 @@ namespace VDS.RDF
         /// <param name="ts">Triples.</param>
         public bool Retract(IEnumerable<Triple> ts)
         {
-            bool retracted = false;
-            foreach (Triple t in ts)
+            var retracted = false;
+            foreach (var t in ts)
             {
                 retracted = Retract(t) || retracted;
             }
@@ -236,7 +211,7 @@ namespace VDS.RDF
         /// </summary>
         public void Clear()
         {
-            foreach (Triple t in _g.Triples)
+            foreach (var t in _g.Triples)
             {
                 _actions.Add(new TriplePersistenceAction(t, true));
             }
@@ -586,23 +561,23 @@ namespace VDS.RDF
             if (IsEmpty)
             {
                 // Empty Graph so do a quick copy
-                foreach (Triple t in g.Triples)
+                foreach (var t in g.Triples)
                 {
                     Assert(new Triple(Tools.CopyNode(t.Subject, _g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, _g, keepOriginalGraphUri), Tools.CopyNode(t.Object, _g, keepOriginalGraphUri)));
                 }
             }
             else
             {   //Prepare a mapping of Blank Nodes to Blank Nodes
-                Dictionary<INode, IBlankNode> mapping = new Dictionary<INode, IBlankNode>();
+                var mapping = new Dictionary<INode, IBlankNode>();
 
-                foreach (Triple t in g.Triples)
+                foreach (var t in g.Triples)
                 {
                     INode s, p, o;
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
                         if (!mapping.ContainsKey(t.Subject))
                         {
-                            IBlankNode temp = CreateBlankNode();
+                            var temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
                             mapping.Add(t.Subject, temp);
                         }
@@ -617,7 +592,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Predicate))
                         {
-                            IBlankNode temp = CreateBlankNode();
+                            var temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
                             mapping.Add(t.Predicate, temp);
                         }
@@ -632,7 +607,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Object))
                         {
-                            IBlankNode temp = CreateBlankNode();
+                            var temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
                             mapping.Add(t.Object, temp);
                         }
@@ -663,15 +638,11 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(object obj)
         {
-            if (obj is IGraph)
+            if (obj is IGraph graph)
             {
-                Dictionary<INode, INode> temp;
-                return Equals((IGraph)obj, out temp);
+                return Equals(graph, out _);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -847,7 +818,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments.</param>
         protected void RaiseTripleAsserted(TripleEventArgs args)
         {
-            TripleEventHandler d = TripleAsserted;
+            var d = TripleAsserted;
             args.Graph = this;
             if (d != null)
             {
@@ -862,11 +833,11 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         protected void RaiseTripleAsserted(Triple t)
         {
-            TripleEventHandler d = TripleAsserted;
-            GraphEventHandler e = Changed;
+            var d = TripleAsserted;
+            var e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this);
+                var args = new TripleEventArgs(t, this);
                 if (d != null) d(this, args);
                 if (e != null) e(this, new GraphEventArgs(this, args));
             }
@@ -888,7 +859,7 @@ namespace VDS.RDF
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
         {
-            TripleEventHandler d = TripleRetracted;
+            var d = TripleRetracted;
             args.Graph = this;
             if (d != null)
             {
@@ -903,11 +874,11 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         protected void RaiseTripleRetracted(Triple t)
         {
-            TripleEventHandler d = TripleRetracted;
-            GraphEventHandler e = Changed;
+            var d = TripleRetracted;
+            var e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this, false);
+                var args = new TripleEventArgs(t, this, false);
                 if (d != null) d(this, args);
                 if (e != null) e(this, new GraphEventArgs(this, args));
             }
@@ -919,7 +890,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments.</param>
         protected void RaiseGraphChanged(TripleEventArgs args)
         {
-            GraphEventHandler d = Changed;
+            var d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this, args));
@@ -931,7 +902,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseGraphChanged()
         {
-            GraphEventHandler d = Changed;
+            var d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -944,10 +915,10 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted.</returns>
         protected bool RaiseClearRequested()
         {
-            CancellableGraphEventHandler d = ClearRequested;
+            var d = ClearRequested;
             if (d != null)
             {
-                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
+                var args = new CancellableGraphEventArgs(this);
                 d(this, args);
                 return !args.Cancel;
             }
@@ -962,7 +933,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseCleared()
         {
-            GraphEventHandler d = Cleared;
+            var d = Cleared;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -975,10 +946,10 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted.</returns>
         protected bool RaiseMergeRequested()
         {
-            CancellableGraphEventHandler d = MergeRequested;
+            var d = MergeRequested;
             if (d != null)
             {
-                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
+                var args = new CancellableGraphEventArgs(this);
                 d(this, args);
                 return !args.Cancel;
             }
@@ -993,7 +964,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseMerged()
         {
-            GraphEventHandler d = Merged;
+            var d = Merged;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -1039,12 +1010,12 @@ namespace VDS.RDF
             {
                 if (SupportsTriplePersistence)
                 {
-                    TriplePersistenceAction action = _actions[0];
-                    bool isDelete = action.IsDelete;
-                    List<Triple> ts = new List<Triple>();
+                    var action = _actions[0];
+                    var isDelete = action.IsDelete;
+                    var ts = new List<Triple>();
                     ts.Add(action.Triple);
 
-                    int i = 1;
+                    var i = 1;
                     while (i < _actions.Count)
                     {
                         action = _actions[i];
@@ -1092,11 +1063,11 @@ namespace VDS.RDF
         /// </summary>
         public void Discard()
         {
-            int total = _actions.Count;
-            int i = _actions.Count - 1;
+            var total = _actions.Count;
+            var i = _actions.Count - 1;
             while (i >= 0)
             {
-                TriplePersistenceAction action = _actions[i];
+                var action = _actions[i];
                 if (action.IsDelete)
                 {
                     _g.Assert(action.Triple);
@@ -1174,224 +1145,6 @@ namespace VDS.RDF
             Flush();
         }
 
-#if !NETCORE
-
-        #region ISerializable Members
-
-        /// <summary>
-        /// Gets the Serialization Information.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("triples", Triples.ToList(), typeof(List<Triple>));
-        }
-
-        #endregion
-
-        #region IXmlSerializable Members
-
-        /// <summary>
-        /// Gets the Schema for XML serialization.
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
-            reader.Read();
-            if (reader.Name.Equals("triples"))
-            {
-                if (!reader.IsEmptyElement)
-                {
-                    reader.Read();
-                    while (reader.Name.Equals("triple"))
-                    {
-                        try
-                        {
-                            Object temp = tripleDeserializer.Deserialize(reader);
-                            Assert((Triple)temp);
-                            reader.Read();
-                        }
-                        catch
-                        {
-                            throw;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                throw new RdfParseException("Expected a <triples> element inside a <graph> element");
-            }
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization.
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
-            writer.WriteStartElement("triples");
-            foreach (Triple t in Triples)
-            {
-                tripleSerializer.Serialize(writer, t);
-            }
-            writer.WriteEndElement();
-        }
-
-        #endregion
-
-#endif
-    }
-
-    /// <summary>
-    /// The Store Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to an underlying store via a provided <see cref="IStorageProvider">IStorageProvider</see> implementation.
-    /// </summary>
-    public class StoreGraphPersistenceWrapper
-        : GraphPersistenceWrapper
-    {
-        private IStorageProvider _manager;
-
-        /// <summary>
-        /// Creates a new Store Graph Persistence Wrapper.
-        /// </summary>
-        /// <param name="manager">Generic IO Manager.</param>
-        /// <param name="g">Graph to wrap.</param>
-        /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as).</param>
-        /// <param name="writeOnly">Whether to operate in write-only mode.</param>
-        /// <remarks>
-        /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph.
-        /// </para>
-        /// </remarks>
-        public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, Uri graphUri, bool writeOnly)
-            : base(g, writeOnly)
-        {
-            if (manager == null) throw new ArgumentNullException("manager","Cannot persist to a null Generic IO Manager");
-            if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", "manager");
-            if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", "writeOnly");
-            if (writeOnly && !g.IsEmpty) throw new ArgumentException("If writeOnly is set to true then the input graph must be empty", "writeOnly");
-
-            _manager = manager;
-            BaseUri = graphUri;
-        }
-
-        /// <summary>
-        /// Creates a new Store Graph Persistence Wrapper.
-        /// </summary>
-        /// <param name="manager">Generic IO Manager.</param>
-        /// <param name="g">Graph to wrap.</param>
-        /// <param name="writeOnly">Whether to operate in write-only mode.</param>
-        /// <remarks>
-        /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph.
-        /// </para>
-        /// </remarks>
-        public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, bool writeOnly)
-            : this(manager, g, g.BaseUri, writeOnly) { }
-
-        /// <summary>
-        /// Creates a new Store Graph Persistence Wrapper.
-        /// </summary>
-        /// <param name="manager">Generic IO Manager.</param>
-        /// <param name="g">Graph to wrap.</param>
-        public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g)
-            : this(manager, g, g.BaseUri, false) { }
-
-        /// <summary>
-        /// Creates a new Store Graph Persistence Wrapper around a new empty Graph.
-        /// </summary>
-        /// <param name="manager">Generic IO Manager.</param>
-        /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as).</param>
-        /// <param name="writeOnly">Whether to operate in write-only mode.</param>
-        /// <remarks>
-        /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property.
-        /// </para>
-        /// <para>
-        /// When not operating in write-only mode the existing Graph will be loaded from the underlying store.
-        /// </para>
-        /// </remarks>
-        public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri, bool writeOnly)
-            : base(writeOnly)
-        {
-            if (manager == null) throw new ArgumentNullException("manager", "Cannot persist to a null Generic IO Manager");
-            if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", "manager");
-            if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", "writeOnly");
-
-            _manager = manager;
-            BaseUri = graphUri;
-
-            if (!writeOnly)
-            {
-                // Load in the existing data
-                _manager.LoadGraph(_g, graphUri);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new Store Graph Persistence Wrapper around a new empty Graph.
-        /// </summary>
-        /// <param name="manager">Generic IO Manager.</param>
-        /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as).</param>
-        public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri)
-            : this(manager, graphUri, false) { }
-
-        /// <summary>
-        /// Gets whether the in-use <see cref="IStorageProvider">IStorageProvider</see> supports triple level updates.
-        /// </summary>
-        protected override bool SupportsTriplePersistence => _manager.UpdateSupported;
-
-        /// <summary>
-        /// Persists the deleted Triples to the in-use <see cref="IStorageProvider">IStorageProvider</see>.
-        /// </summary>
-        /// <param name="ts">Triples.</param>
-        protected override void PersistDeletedTriples(IEnumerable<Triple> ts)
-        {
-            if (_manager.UpdateSupported)
-            {
-                _manager.UpdateGraph(BaseUri, null, ts);
-            }
-            else
-            {
-                throw new NotSupportedException("The underlying Generic IO Manager does not support Triple Level persistence");
-            }
-        }
-
-        /// <summary>
-        /// Persists the inserted Triples to the in-use <see cref="IStorageProvider">IStorageProvider</see>.
-        /// </summary>
-        /// <param name="ts">Triples.</param>
-        protected override void PersistInsertedTriples(IEnumerable<Triple> ts)
-        {
-            if (_manager.UpdateSupported)
-            {
-                _manager.UpdateGraph(BaseUri, ts, null);
-            }
-            else
-            {
-                throw new NotSupportedException("The underlying Generic IO Manager does not support Triple Level persistence");
-            }
-        }
-
-        /// <summary>
-        /// Persists the entire Graph to the in-use <see cref="IStorageProvider">IStorageProvider</see>.
-        /// </summary>
-        protected override void PersistGraph()
-        {
-            _manager.SaveGraph(this);
-        }
     }
 
     /// <summary>

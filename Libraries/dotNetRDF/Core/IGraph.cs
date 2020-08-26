@@ -39,9 +39,6 @@ namespace VDS.RDF
     /// </para>
     /// </remarks>
     public interface IGraph : INodeFactory, IDisposable
-#if !NETCORE
-        , IXmlSerializable
-#endif
     {
         #region Properties
 

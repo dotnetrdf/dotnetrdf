@@ -38,14 +38,8 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract decorator for Graphs to make it easier to layer functionality on top of existing implementations.
     /// </summary>
-#if !NETCORE
-    [Serializable, XmlRoot(ElementName="graph")]
-#endif
     public abstract class WrapperGraph 
         : IGraph
-#if !NETCORE
-        , ISerializable
-#endif
     {
         /// <summary>
         /// Underlying Graph this is a wrapper around.
@@ -76,32 +70,12 @@ namespace VDS.RDF
         /// Creates a new wrapper around the given Graph.
         /// </summary>
         /// <param name="g">Graph.</param>
-        public WrapperGraph(IGraph g)
+        protected WrapperGraph(IGraph g)
             : this()
         {
-            if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
-            _g = g;
-            AttachEventHandlers();
-        }      
-
-#if !NETCORE
-
-        /// <summary>
-        /// Deserialization Constructor.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        protected WrapperGraph(SerializationInfo info, StreamingContext context)
-            : this() 
-        {
-            String graphType = info.GetString("graphType");
-            Type t = Type.GetType(graphType);
-            if (t == null) throw new ArgumentException("Invalid serialization information, graph type '" + graphType + "' is not available in your environment");
-            _g = (IGraph)info.GetValue("innerGraph", t);
+            _g = g ?? throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
             AttachEventHandlers();
         }
-
-#endif
 
         #region Wrappers around all the standard IGraph stuff
 
@@ -932,84 +906,6 @@ namespace VDS.RDF
             _g.Dispose();
         }
 
-#if !NETCORE
-
-        #region ISerializable Members
-
-        /// <summary>
-        /// Gets the Serialization Information.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("graphType", _g.GetType().AssemblyQualifiedName);
-            info.AddValue("innerGraph", _g, typeof(IGraph));
-        }
-
-        #endregion
-
-        #region IXmlSerializable Members
-
-        /// <summary>
-        /// Gets the Schema for XML serialization.
-        /// </summary>
-        /// <returns></returns>
-        public virtual XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public virtual void ReadXml(XmlReader reader)
-        {
-            if (reader.MoveToAttribute("graphType"))
-            {
-                String graphType = reader.Value;
-                Type t = Type.GetType(graphType);
-                if (t == null) throw new RdfParseException("Invalid graphType attribute, the type '" + graphType + "' is not available in your environment");
-                reader.MoveToElement();
-
-                XmlSerializer graphDeserializer = new XmlSerializer(t);
-                reader.Read();
-                if (reader.Name.Equals("innerGraph"))
-                {
-                    reader.Read();
-                    Object temp = graphDeserializer.Deserialize(reader);
-                    _g.Merge((IGraph)temp);
-                    AttachEventHandlers();
-                    reader.Read();
-                }
-                else
-                {
-                    throw new RdfParseException("Expected a <graph> element inside a <graph> element");
-                }
-            }
-            else
-            {
-                throw new RdfParseException("Missing graphType attribute on the <graph> element");
-            }
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization.
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public virtual void WriteXml(XmlWriter writer)
-        {
-            XmlSerializer graphSerializer = new XmlSerializer(_g.GetType());
-            writer.WriteAttributeString("graphType", _g.GetType().AssemblyQualifiedName);
-            writer.WriteStartElement("innerGraph");
-            graphSerializer.Serialize(writer, _g);
-            writer.WriteEndElement();
-        }
-
-        #endregion
-
-#endif
     }
 }
 

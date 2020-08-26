@@ -39,8 +39,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface.
     /// </summary>
-    [Serializable,XmlRoot(ElementName="graph")]
-    public abstract class BaseGraph : IGraph, ISerializable
+    public abstract class BaseGraph : IGraph
     {
         #region Variables
 
@@ -48,23 +47,23 @@ namespace VDS.RDF
         /// Collection of Triples in the Graph.
         /// </summary>
         protected BaseTripleCollection _triples;
+
         /// <summary>
         /// Namespace Mapper.
         /// </summary>
         protected NamespaceMapper _nsmapper;
+
         /// <summary>
         /// Base Uri of the Graph.
         /// </summary>
         protected Uri _baseuri = null;
+
         /// <summary>
         /// Blank Node ID Mapper.
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
 
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-#if !NETCORE
-        private GraphDeserializationInfo _dsInfo;
-#endif
 
         #endregion
 
@@ -90,26 +89,9 @@ namespace VDS.RDF
         /// Creates a new Base Graph which uses the default <see cref="TreeIndexedTripleCollection" /> as the Triple Collection.
         /// </summary>
         protected BaseGraph()
-            : this(new TreeIndexedTripleCollection()) { }
-
-#if !NETCORE
-        /// <summary>
-        /// Creates a Graph from the given Serialization Information.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        protected BaseGraph(SerializationInfo info, StreamingContext context)
-            : this()
+            : this(new TreeIndexedTripleCollection())
         {
-            _dsInfo = new GraphDeserializationInfo(info, context);   
         }
-
-        [OnDeserialized]
-        private void OnDeserialized(StreamingContext context)
-        {
-            if (_dsInfo != null) _dsInfo.Apply(this);
-        }
-#endif
 
         #endregion
 
@@ -126,10 +108,7 @@ namespace VDS.RDF
         /// <inheritdoc />
         public virtual IEnumerable<INode> AllNodes
         {
-            get
-            {
-                return _triples.SelectMany(t => t.Nodes).Distinct();
-            }
+            get { return _triples.SelectMany(t => t.Nodes).Distinct(); }
         }
 
         /// <summary>
@@ -224,18 +203,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">Node ID to use.</param>
         /// <returns></returns>
-        public virtual IBlankNode CreateBlankNode(String nodeId)
+        public virtual IBlankNode CreateBlankNode(string nodeId)
         {
-            // try
-            // {
-            //    Monitor.Enter(this._bnodemapper);
-                _bnodemapper.CheckID(ref nodeId);
-                return new BlankNode(this, nodeId);
-            // }
-            // finally
-            // {
-            //    Monitor.Exit(this._bnodemapper);
-            // }
+            _bnodemapper.CheckID(ref nodeId);
+            return new BlankNode(this, nodeId);
         }
 
         /// <summary>
@@ -243,7 +214,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">String value of the Literal.</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(String literal)
+        public virtual ILiteralNode CreateLiteralNode(string literal)
         {
             return new LiteralNode(this, literal, NormalizeLiteralValues);
         }
@@ -254,7 +225,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="langspec">Language Specifier of the Literal.</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(String literal, String langspec)
+        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
             return new LiteralNode(this, literal, langspec, NormalizeLiteralValues);
         }
@@ -265,7 +236,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">URI of the Data Type.</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(String literal, Uri datatype)
+        public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
             return new LiteralNode(this, literal, datatype, NormalizeLiteralValues);
         }
@@ -276,7 +247,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode()
         {
-            return new UriNode(this, UriFactory.Create(Tools.ResolveUri(String.Empty, _baseuri.ToSafeString())));
+            return new UriNode(this, UriFactory.Create(Tools.ResolveUri(string.Empty, _baseuri.ToSafeString())));
         }
 
         /// <summary>
@@ -299,7 +270,7 @@ namespace VDS.RDF
         /// <param name="qname">QName for the Node.</param>
         /// <returns></returns>
         /// <remarks>Internally the Graph will resolve the QName to a full URI, throws an RDF Exception when this is not possible.</remarks>
-        public virtual IUriNode CreateUriNode(String qname)
+        public virtual IUriNode CreateUriNode(string qname)
         {
             return new UriNode(this, qname);
         }
@@ -309,7 +280,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name.</param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(String varname)
+        public virtual IVariableNode CreateVariableNode(string varname)
         {
             return new VariableNode(this, varname);
         }
@@ -518,11 +489,13 @@ namespace VDS.RDF
                 // Empty Graph so do a quick copy
                 foreach (Triple t in g.Triples)
                 {
-                    Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri), t.Context));
+                    Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri),
+                        Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri),
+                        Tools.CopyNode(t.Object, this, keepOriginalGraphUri), t.Context));
                 }
             }
             else
-            {   
+            {
                 // Prepare a mapping of Blank Nodes to Blank Nodes
                 Dictionary<INode, IBlankNode> mapping = new Dictionary<INode, IBlankNode>();
 
@@ -537,6 +510,7 @@ namespace VDS.RDF
                             if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
                             mapping.Add(t.Subject, temp);
                         }
+
                         s = mapping[t.Subject];
                     }
                     else
@@ -552,6 +526,7 @@ namespace VDS.RDF
                             if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
                             mapping.Add(t.Predicate, temp);
                         }
+
                         p = mapping[t.Predicate];
                     }
                     else
@@ -567,6 +542,7 @@ namespace VDS.RDF
                             if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
                             mapping.Add(t.Object, temp);
                         }
+
                         o = mapping[t.Object];
                     }
                     else
@@ -607,6 +583,7 @@ namespace VDS.RDF
             {
                 return Equals(g, out var temp);
             }
+
             // Graphs can only be equal to other Graphs
             return false;
         }
@@ -724,7 +701,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">QName to resolve to a Uri.</param>
         /// <returns></returns>
-        public virtual Uri ResolveQName(String qname)
+        public virtual Uri ResolveQName(string qname)
         {
             return UriFactory.Create(Tools.ResolveQName(qname, _nsmapper, _baseuri));
         }
@@ -733,12 +710,12 @@ namespace VDS.RDF
         /// Creates a new unused Blank Node ID and returns it.
         /// </summary>
         /// <returns></returns>
-        public virtual String GetNextBlankNodeID()
+        public virtual string GetNextBlankNodeID()
         {
             // try
             // {
             //    Monitor.Enter(this._bnodemapper);
-                return _bnodemapper.GetNextID();
+            return _bnodemapper.GetNextID();
             // }
             // finally
             // {
@@ -790,7 +767,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleAsserted(object sender, TripleEventArgs args)
         {
             RaiseTripleAsserted(args);
         }
@@ -827,7 +804,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleRetracted(object sender, TripleEventArgs args)
         {
             RaiseTripleRetracted(args);
         }
@@ -966,133 +943,6 @@ namespace VDS.RDF
         {
             DetachEventHandlers(_triples);
         }
-
-        #region ISerializable Members
-
-        /// <summary>
-        /// Gets the Serialization Information for serializing a Graph.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("base", BaseUri.ToSafeString());
-            info.AddValue("triples", Triples.ToList(), typeof(List<Triple>));
-            IEnumerable<KeyValuePair<String,String>> ns = from p in NamespaceMap.Prefixes
-                                                          select new KeyValuePair<String,String>(p, NamespaceMap.GetNamespaceUri(p).AbsoluteUri);
-            info.AddValue("namespaces", ns.ToList(), typeof(List<KeyValuePair<String, String>>));
-        }
-
-        #endregion
-
-        #region IXmlSerializable Members
-
-        /// <summary>
-        /// Gets the Schema for XML Serialization.
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
-            reader.Read();
-            if (reader.Name.Equals("namespaces"))
-            {
-                if (!reader.IsEmptyElement)
-                {
-                    reader.Read();
-                    while (reader.Name.Equals("namespace"))
-                    {
-                        if (reader.MoveToAttribute("prefix"))
-                        {
-                            String prefix = reader.Value;
-                            if (reader.MoveToAttribute("uri"))
-                            {
-                                Uri u = UriFactory.Create(reader.Value);
-                                NamespaceMap.AddNamespace(prefix, u);
-                                reader.Read();
-                            }
-                            else
-                            {
-                                throw new RdfParseException("Expected a uri attribute on a <namespace> element");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Expected a prefix attribute on a <namespace> element");
-                        }
-                    }
-                }
-            }
-            reader.Read();
-            if (reader.Name.Equals("triples"))
-            {
-                if (!reader.IsEmptyElement)
-                {
-                    reader.Read();
-                    while (reader.Name.Equals("triple"))
-                    {
-                        try
-                        {
-                            Object temp = tripleDeserializer.Deserialize(reader);
-                            Assert((Triple)temp);
-                            reader.Read();
-                        }
-                        catch
-                        {
-                            throw;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                throw new RdfParseException("Expected a <triples> element inside a <graph> element but got a <" + reader.Name + "> element instead");
-            }
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization.
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
-
-            // Serialize Base Uri
-            if (BaseUri != null)
-            {
-                writer.WriteAttributeString("base", BaseUri.AbsoluteUri);
-            }
-
-            // Serialize Namespace Map
-            writer.WriteStartElement("namespaces");
-            foreach (String prefix in NamespaceMap.Prefixes)
-            {
-                writer.WriteStartElement("namespace");
-                writer.WriteAttributeString("prefix", prefix);
-                writer.WriteAttributeString("uri", NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-
-            // Serialize Triples
-            writer.WriteStartElement("triples");
-            foreach (Triple t in Triples)
-            {
-                tripleSerializer.Serialize(writer, t);
-            }
-            writer.WriteEndElement();
-        }
-
-        #endregion
     }
+
 }

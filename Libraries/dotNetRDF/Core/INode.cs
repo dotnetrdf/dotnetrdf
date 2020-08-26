@@ -25,41 +25,11 @@
 */
 
 using System;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Serialization;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    /// <summary>
-    /// Node Type Values.
-    /// </summary>
-    public enum NodeType
-    {
-        /// <summary>
-        /// A Blank Node
-        /// </summary>
-        Blank = 0, 
-        /// <summary>
-        /// A Uri Node
-        /// </summary>
-        Uri = 1, 
-        /// <summary>
-        /// A Literal Node
-        /// </summary>
-        Literal = 2,
-        /// <summary>
-        /// A Graph Literal Node
-        /// </summary>
-        GraphLiteral = 3,
-        /// <summary>
-        /// A Variable Node (currently only used in N3)
-        /// </summary>
-        Variable = 4,
-    }
-
     /// <summary>
     /// Interface for Nodes.
     /// </summary>
@@ -68,9 +38,6 @@ namespace VDS.RDF
           IComparable<IUriNode>, IComparable<IVariableNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
           IEquatable<IUriNode>, IEquatable<IVariableNode>
-#if !NETCORE
-          ,ISerializable, IXmlSerializable
-#endif
     {
         /// <summary>
         /// Nodes have a Type.
@@ -102,14 +69,14 @@ namespace VDS.RDF
         /// Gets the String representation of the Node.
         /// </summary>
         /// <returns></returns>
-        String ToString();
+        string ToString();
 
         /// <summary>
         /// Gets the String representation of the Node formatted with the given Node formatter.
         /// </summary>
         /// <param name="formatter">Formatter.</param>
         /// <returns></returns>
-        String ToString(INodeFormatter formatter);
+        string ToString(INodeFormatter formatter);
 
         /// <summary>
         /// Gets the String representation of the Node formatted with the given Node formatter.
@@ -117,97 +84,6 @@ namespace VDS.RDF
         /// <param name="formatter">Formatter.</param>
         /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
-        String ToString(INodeFormatter formatter, TripleSegment segment);
-    }
-
-    /// <summary>
-    /// Interface for URI Nodes.
-    /// </summary>
-    public interface IUriNode
-        : INode
-    {
-        /// <summary>
-        /// Gets the URI the Node represents.
-        /// </summary>
-        Uri Uri
-        {
-            get;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Blank Nodes.
-    /// </summary>
-    public interface IBlankNode 
-        : INode
-    {
-        /// <summary>
-        /// Gets the Internal ID of the Blank Node.
-        /// </summary>
-        String InternalID
-        {
-            get;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Literal Nodes.
-    /// </summary>
-    public interface ILiteralNode
-        : INode
-    {
-        /// <summary>
-        /// Gets the Lexical Value of the Literal.
-        /// </summary>
-        String Value
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Language specifier (if any) of the Literal or the Empty String.
-        /// </summary>
-        String Language
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the DataType URI (if any) of the Literal or null.
-        /// </summary>
-        Uri DataType
-        {
-            get;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Graph Literal Nodes.
-    /// </summary>
-    public interface IGraphLiteralNode
-        : INode
-    {
-        /// <summary>
-        /// Gets the Sub-graph the Graph Literal represents.
-        /// </summary>
-        IGraph SubGraph
-        {
-            get;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Variable Nodes.
-    /// </summary>
-    public interface IVariableNode
-        : INode
-    {
-        /// <summary>
-        /// Gets the Variable Name.
-        /// </summary>
-        String VariableName
-        {
-            get;
-        }
+        string ToString(INodeFormatter formatter, TripleSegment segment);
     }
 }

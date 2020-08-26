@@ -39,19 +39,10 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing RDF Triples in memory.
     /// </summary>
-#if !NETCORE
-    [Serializable,XmlRoot(ElementName="triple")]
-#endif
     public sealed class Triple
         : IComparable<Triple>
-#if !NETCORE
-        , ISerializable, IXmlSerializable
-#endif
     {
-        private INode _subject, _predicate, _object;
-        private ITripleContext _context = null;
         private Uri _u = null;
-        private IGraph _g = null;
         private int _hashcode;
 
         /// <summary>
@@ -72,15 +63,15 @@ namespace VDS.RDF
             else
             {
                 // Set the Graph property from the Subject
-                _g = subj.Graph;
+                Graph = subj.Graph;
 
                 // Store the Three Nodes of the Triple
-                _subject = subj;
-                _predicate = pred;
-                _object = obj;
+                Subject = subj;
+                Predicate = pred;
+                Object = obj;
 
                 // Compute Hash Code
-                _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
+                _hashcode = (Subject.GetHashCode().ToString() + Predicate.GetHashCode().ToString() + Object.GetHashCode().ToString()).GetHashCode();
             }
         }
 
@@ -96,7 +87,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, IGraph g)
             : this(subj, pred, obj)
         {
-            _g = g;
+            Graph = g;
         }
 
         /// <summary>
@@ -111,7 +102,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, ITripleContext context)
             : this(subj, pred, obj)
         {
-            _context = context;
+            Context = context;
         }
 
         /// <summary>
@@ -142,68 +133,29 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
             : this(subj, pred, obj, graphUri)
         {
-            _context = context;
+            Context = context;
         }
-
-        private Triple()
-        { }
-
-#if !NETCORE
-        private Triple(SerializationInfo info, StreamingContext context)
-        {
-            _subject = (INode)info.GetValue("s", typeof(INode));
-            _predicate = (INode)info.GetValue("p", typeof(INode));
-            _object = (INode)info.GetValue("o", typeof(INode));
-
-            // Compute Hash Code
-            _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
-        }
-#endif
 
         /// <summary>
         /// Gets the Subject of the Triple.
         /// </summary>
-        public INode Subject
-        {
-            get
-            {
-                return _subject;
-            }
-        }
+        public INode Subject { get; private set; }
 
         /// <summary>
         /// Gets the Predicate of the Triple.
         /// </summary>
-        public INode Predicate
-        {
-            get
-            {
-                return _predicate;
-            }
-        }
+        public INode Predicate { get; private set; }
 
         /// <summary>
         /// Gets the Object of the Triple.
         /// </summary>
-        public INode Object
-        {
-            get
-            {
-                return _object;
-            }
-        }
+        public INode Object { get; private set; }
 
         /// <summary>
         /// Gets the Graph this Triple was created for.
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
-        public IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
+        public IGraph Graph { get; } = null;
 
         /// <summary>
         /// Gets the Uri of the Graph this Triple was created for.
@@ -217,13 +169,13 @@ namespace VDS.RDF
                 {
                     return _u;
                 }
-                else if (_g == null)
+                else if (Graph == null)
                 {
                     return null;
                 }
                 else
                 {
-                    return _g.BaseUri;
+                    return Graph.BaseUri;
                 }
             }
         }
@@ -234,17 +186,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Context may be null where no Context for the Triple has been defined.
         /// </remarks>
-        public ITripleContext Context
-        {
-            get
-            {
-                return _context;
-            }
-            set
-            {
-                _context = value;
-            }
-        }
+        public ITripleContext Context { get; set; } = null;
 
         /// <summary>
         /// Gets an enumeration of the Nodes in the Triple.
@@ -252,13 +194,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Returned as subject, predicate, object.
         /// </remarks>
-        public IEnumerable<INode> Nodes
-        {
-            get
-            {
-                return new List<INode> { _subject, _predicate, _object };
-            }
-        }
+        public IEnumerable<INode> Nodes => new List<INode> { Subject, Predicate, Object };
 
         /// <summary>
         /// Gets whether the Triple is a Ground Triple.
@@ -268,13 +204,7 @@ namespace VDS.RDF
         /// A <strong>Ground Triple</strong> is any Triple considered to state a single fixed fact.  In practise this means that the Triple does not contain any Blank Nodes.
         /// </para>
         /// </remarks>
-        public bool IsGroundTriple
-        {
-            get
-            {
-                return (_subject.NodeType != NodeType.Blank && _predicate.NodeType != NodeType.Blank && _object.NodeType != NodeType.Blank);
-            }
-        }
+        public bool IsGroundTriple => (Subject.NodeType != NodeType.Blank && Predicate.NodeType != NodeType.Blank && Object.NodeType != NodeType.Blank);
 
         /// <summary>
         /// Checks whether the Triple involves a given Node.
@@ -283,7 +213,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple contains the given Node.</returns>
         public bool Involves(INode n)
         {
-            return (_subject.Equals(n) || _predicate.Equals(n) || _object.Equals(n));
+            return (Subject.Equals(n) || Predicate.Equals(n) || Object.Equals(n));
         }
 
         /// <summary>
@@ -296,11 +226,11 @@ namespace VDS.RDF
             IUriNode temp = new UriNode(null, uri);
 
             // Does the Subject involve this Uri?
-            if (_subject.Equals(temp)) return true;
+            if (Subject.Equals(temp)) return true;
             // Does the Predicate involve this Uri?
-            if (_predicate.Equals(temp)) return true;
+            if (Predicate.Equals(temp)) return true;
             // Does the Object involve this Uri?
-            if (_object.Equals(temp)) return true;
+            if (Object.Equals(temp)) return true;
             // Not Involved!
             return false;
         }
@@ -313,7 +243,7 @@ namespace VDS.RDF
         public bool HasSubject(INode n)
         {
             // return this._subject.GetHashCode().Equals(n.GetHashCode());
-            return _subject.Equals(n);
+            return Subject.Equals(n);
         }
 
         /// <summary>
@@ -324,7 +254,7 @@ namespace VDS.RDF
         public bool HasPredicate(INode n)
         {
             // return this._predicate.GetHashCode().Equals(n.GetHashCode());
-            return _predicate.Equals(n);
+            return Predicate.Equals(n);
         }
 
         /// <summary>
@@ -335,7 +265,7 @@ namespace VDS.RDF
         public bool HasObject(INode n)
         {
             // return this._object.GetHashCode().Equals(n.GetHashCode());
-            return _object.Equals(n);
+            return Object.Equals(n);
         }
 
         /// <summary>
@@ -352,23 +282,25 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(object obj)
         {
-            if (obj is Triple)
+            if (obj is Triple other)
             {
-                Triple temp = (Triple)obj;
-
                 // Subject, Predicate and Object must all be equal
                 // Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
                 // Use lazy evaluation as far as possible
-                return (_subject.Equals(temp.Subject) || (_subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && _subject.ToString().Equals(temp.Subject.ToString())))
-                       && (_predicate.Equals(temp.Predicate) || (_predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && _predicate.ToString().Equals(temp.Predicate.ToString())))
-                       && (_object.Equals(temp.Object) || (_object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && _object.ToString().Equals(temp.Object.ToString())));
+                return (Subject.Equals(other.Subject) || (Subject.NodeType == NodeType.Blank &&
+                                                         other.Subject.NodeType == NodeType.Blank &&
+                                                         Subject.ToString().Equals(other.Subject.ToString())))
+                       && (Predicate.Equals(other.Predicate) || (Predicate.NodeType == NodeType.Blank &&
+                                                                other.Predicate.NodeType == NodeType.Blank &&
+                                                                Predicate.ToString().Equals(other.Predicate.ToString())))
+                       && (Object.Equals(other.Object) || (Object.NodeType == NodeType.Blank &&
+                                                          other.Object.NodeType == NodeType.Blank &&
+                                                          Object.ToString().Equals(other.Object.ToString())));
 
-             }
-            else
-            {
-                // Can only be equal to other Triples
-                return false;
             }
+
+            // Can only be equal to other Triples
+            return false;
         }
 
         /// <summary>
@@ -395,11 +327,11 @@ namespace VDS.RDF
         public override string ToString()
         {
             StringBuilder outString = new StringBuilder();
-            outString.Append(_subject.ToString());
+            outString.Append(Subject.ToString());
             outString.Append(" , ");
-            outString.Append(_predicate.ToString());
+            outString.Append(Predicate.ToString());
             outString.Append(" , ");
-            outString.Append(_object.ToString());
+            outString.Append(Object.ToString());
 
             return outString.ToString();
         }
@@ -411,13 +343,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public string ToString(bool compress)
         {
-            if (!compress || _g == null)
+            if (!compress || Graph == null)
             {
                 return ToString();
             }
             else
             {
-                TurtleFormatter formatter = new TurtleFormatter(_g.NamespaceMap);
+                TurtleFormatter formatter = new TurtleFormatter(Graph.NamespaceMap);
                 return formatter.Format(this);
             }
         }
@@ -472,64 +404,5 @@ namespace VDS.RDF
                 }
             }
         }
-
-#if !NETCORE
-
-        #region ISerializable Members
-
-        /// <summary>
-        /// Gets the data for serialization.
-        /// </summary>
-        /// <param name="info">Serilization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("s", _subject);
-            info.AddValue("p", _predicate);
-            info.AddValue("o", _object);
-        }
-
-        #endregion
-
-        #region IXmlSerializable Members
-
-        /// <summary>
-        /// Gets the schema for XML serialization.
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Reads the data for XML deserialization.
-        /// </summary>
-        /// <param name="reader">XML Reader.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            reader.Read();
-            _subject = reader.DeserializeNode();
-            _predicate = reader.DeserializeNode();
-            _object = reader.DeserializeNode();
-
-            // Compute Hash Code
-            _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
-        }
-
-        /// <summary>
-        /// Writes the data for XML serialization.
-        /// </summary>
-        /// <param name="writer">XML Writer.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            _subject.SerializeNode(writer);
-            _predicate.SerializeNode(writer);
-            _object.SerializeNode(writer);
-        }
-
-        #endregion
-
-#endif
     }
 }

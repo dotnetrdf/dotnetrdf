@@ -29,37 +29,17 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Interface for URI Nodes.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    public interface IUriNode
+        : INode
     {
         /// <summary>
-        /// Creates a new Variable Node.
+        /// Gets the URI the Node represents.
         /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="varname">Variable Name.</param>
-        protected internal VariableNode(IGraph g, string varname)
-            : base(g, varname) { }
-
-        /// <summary>
-        /// Compares this Node to another Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
+        Uri Uri
         {
-            return base.CompareTo((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
-        {
-            return base.Equals((IVariableNode)other);
+            get;
         }
     }
 }

@@ -24,10 +24,7 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Spin.Progress;
 using VDS.RDF.Query.Spin.Statistics;
 

@@ -24,44 +24,24 @@
 // </copyright>
 */
 
-#if !NETCORE
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-
-namespace VDS.RDF.Writing.Serialization
+namespace VDS.RDF.Query
 {
-    class GraphDeserializationInfo
+    /// <summary>
+    /// Represents the type of the SPARQL Results Set.
+    /// </summary>
+    public enum SparqlResultsType
     {
-        private List<Triple> _triples;
-        private List<KeyValuePair<String, String>> _namespaces;
-        private Uri _baseUri;
-
-        public GraphDeserializationInfo(SerializationInfo info, StreamingContext context)
-        {
-            _triples = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));
-            _namespaces = (List<KeyValuePair<String, String>>)info.GetValue("namespaces", typeof(List<KeyValuePair<String, String>>));
-            String baseUri = info.GetString("base");
-            if (!baseUri.Equals(String.Empty))
-            {
-                _baseUri = UriFactory.Create(baseUri);
-            }
-        }
-
-        public void Apply(IGraph g)
-        {
-            g.BaseUri = _baseUri;
-            g.Assert(_triples);
-            foreach (KeyValuePair<String, String> ns in _namespaces)
-            {
-                g.NamespaceMap.AddNamespace(ns.Key, UriFactory.Create(ns.Value));
-            }
-        }
+        /// <summary>
+        /// The Result Set represents a Boolean Result
+        /// </summary>
+        Boolean,
+        /// <summary>
+        /// The Result Set represents a set of Variable Bindings
+        /// </summary>
+        VariableBindings,
+        /// <summary>
+        /// The Result Set represents an unknown result i.e. it has yet to be filled with Results
+        /// </summary>
+        Unknown,
     }
 }
-
-
-#endif

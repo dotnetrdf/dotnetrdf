@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
@@ -36,9 +34,6 @@ namespace VDS.RDF
     /// Class for representing RDF Graphs.
     /// </summary>
     /// <threadsafety instance="false">Safe for multi-threaded read-only access but unsafe if one/more threads may modify the Graph by using the <see cref="Graph.Assert(Triple)">Assert</see>, <see cref="Graph.Retract(Triple)">Retract</see> or <see cref="BaseGraph.Merge(IGraph)">Merge</see> methods.</threadsafety>
-#if !NETCORE
-    [Serializable,XmlRoot(ElementName="graph")]
-#endif
     public class Graph
         : BaseGraph
     {
@@ -47,8 +42,7 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new instance of a Graph.
         /// </summary>
-        public Graph()
-            : base() { }
+        public Graph() { }
 
         /// <summary>
         /// Creates a new instance of a Graph with an optionally empty Namespace Map.
@@ -77,16 +71,6 @@ namespace VDS.RDF
         {
             if (emptyNamespaceMap) _nsmapper.Clear();
         }
-
-#if !NETCORE
-        /// <summary>
-        /// Deserialization Constructor.
-        /// </summary>
-        /// <param name="info">Serialization Information.</param>
-        /// <param name="context">Streaming Context.</param>
-        protected Graph(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
-#endif
 
         #endregion
 
@@ -348,20 +332,5 @@ namespace VDS.RDF
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// Class for representing RDF Graphs when you don't want Indexing.
-    /// </summary>
-    /// <remarks>
-    /// Gives better load performance but poorer lookup performance.
-    /// </remarks>
-    public class NonIndexedGraph : Graph
-    {
-        /// <summary>
-        /// Creates a new Graph which is not indexed.
-        /// </summary>
-        public NonIndexedGraph()
-            : base(new TripleCollection()) { }
     }
 }

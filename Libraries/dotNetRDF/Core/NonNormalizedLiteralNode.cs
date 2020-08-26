@@ -29,29 +29,27 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class for representing Literal Nodes.
+    /// Class for representing Literal Nodes where the Literal values are not normalized.
     /// </summary>
-    public class LiteralNode
-        : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
+    internal class NonNormalizedLiteralNode 
+        : LiteralNode, IComparable<NonNormalizedLiteralNode>
     {
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(IGraph g, string literal, bool normalize)
-            : base(g, literal, normalize) { }
+        protected internal NonNormalizedLiteralNode(IGraph g, string literal)
+            : base(g, literal, false) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(IGraph g, string literal, string langspec, bool normalize)
-            : base(g, literal, langspec, normalize) { }
+        /// <param name="langspec">Language Specifier for the Literal.</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, string literal, string langspec)
+            : base(g, literal, langspec, false) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
@@ -59,9 +57,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">Uri for the Literals Data Type.</param>
-        /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(IGraph g, string literal, Uri datatype, bool normalize)
-            : base(g, literal, datatype, normalize) { }
+        protected internal NonNormalizedLiteralNode(IGraph g, string literal, Uri datatype)
+            : base(g, literal, datatype, false) { }
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes.
@@ -71,19 +68,9 @@ namespace VDS.RDF
         /// <remarks>
         /// Simply invokes the more general implementation of this method.
         /// </remarks>
-        public int CompareTo(LiteralNode other)
+        public int CompareTo(NonNormalizedLiteralNode other)
         {
             return CompareTo((ILiteralNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Literal Node.
-        /// </summary>
-        /// <param name="other">Literal Node.</param>
-        /// <returns></returns>
-        public bool Equals(LiteralNode other)
-        {
-            return base.Equals((ILiteralNode)other);
         }
     }
 }

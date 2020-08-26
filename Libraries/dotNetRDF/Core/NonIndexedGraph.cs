@@ -24,42 +24,20 @@
 // </copyright>
 */
 
-using System;
-
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Class for representing RDF Graphs when you don't want Indexing.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    /// <remarks>
+    /// Gives better load performance but poorer lookup performance.
+    /// </remarks>
+    public class NonIndexedGraph : Graph
     {
         /// <summary>
-        /// Creates a new Variable Node.
+        /// Creates a new Graph which is not indexed.
         /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="varname">Variable Name.</param>
-        protected internal VariableNode(IGraph g, string varname)
-            : base(g, varname) { }
-
-        /// <summary>
-        /// Compares this Node to another Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
-        {
-            return base.CompareTo((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
-        {
-            return base.Equals((IVariableNode)other);
-        }
+        public NonIndexedGraph()
+            : base(new TripleCollection()) { }
     }
 }

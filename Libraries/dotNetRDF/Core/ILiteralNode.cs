@@ -29,37 +29,33 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Interface for Literal Nodes.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    public interface ILiteralNode
+        : INode
     {
         /// <summary>
-        /// Creates a new Variable Node.
+        /// Gets the Lexical Value of the Literal.
         /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="varname">Variable Name.</param>
-        protected internal VariableNode(IGraph g, string varname)
-            : base(g, varname) { }
-
-        /// <summary>
-        /// Compares this Node to another Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
+        string Value
         {
-            return base.CompareTo((IVariableNode)other);
+            get;
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
+        /// Gets the Language specifier (if any) of the Literal or the Empty String.
         /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
+        string Language
         {
-            return base.Equals((IVariableNode)other);
+            get;
+        }
+
+        /// <summary>
+        /// Gets the DataType URI (if any) of the Literal or null.
+        /// </summary>
+        Uri DataType
+        {
+            get;
         }
     }
 }
