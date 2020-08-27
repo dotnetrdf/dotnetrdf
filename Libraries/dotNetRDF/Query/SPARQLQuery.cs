@@ -603,7 +603,7 @@ namespace VDS.RDF.Query
         /// Adds a Variable to the Query.
         /// </summary>
         /// <param name="name">Variable Name.</param>
-        internal void AddVariable(String name)
+        internal void AddVariable(string name)
         {
             AddVariable(name, false);
         }
@@ -613,9 +613,9 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="name">Variable Name.</param>
         /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph.</param>
-        internal void AddVariable(String name, bool isResultVar)
+        internal void AddVariable(string name, bool isResultVar)
         {
-            String var = name.Substring(1);
+            string var = name.Substring(1);
             if ((int)_type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
             if (!_vars.Any(v => v.Name.Equals(var)))
@@ -691,64 +691,13 @@ namespace VDS.RDF.Query
 
         #endregion
 
-        /// <summary>
-        /// Evaluates the SPARQL Query against the given Triple Store.
-        /// </summary>
-        /// <param name="data">Triple Store.</param>
-        /// <returns>
-        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed.
-        /// </returns>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
-        public Object Evaluate(IInMemoryQueryableStore data)
-        {
-            return Evaluate(new InMemoryDataset(data));
-        }
-
-        /// <summary>
-        /// Evaluates the SPARQL Query against the given Triple Store processing the results with the appropriate handler from those provided.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="data">Triple Store.</param>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
-        public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, IInMemoryQueryableStore data)
-        {
-            Evaluate(rdfHandler, resultsHandler, new InMemoryDataset(data));
-        }
-
-        /// <summary>
-        /// Evaluates the SPARQL Query against the given Dataset.
-        /// </summary>
-        /// <param name="dataset">Dataset.</param>
-        /// <returns>
-        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="IGraph">IGraph</see> depending on the type of query executed.
-        /// </returns>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
-        public Object Evaluate(ISparqlDataset dataset)
-        {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            return processor.ProcessQuery(this);
-        }
-
-        /// <summary>
-        /// Evaluates the SPARQL Query against the given Dataset processing the results with an appropriate handler form those provided.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="dataset">Dataset.</param>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
-        public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, ISparqlDataset dataset)
-        {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            processor.ProcessQuery(rdfHandler, resultsHandler, this);
-        }
 
         /// <summary>
         /// Processes the Query using the given Query Processor.
         /// </summary>
         /// <param name="processor">SPARQL Query Processor.</param>
         /// <returns></returns>
-        public Object Process(ISparqlQueryProcessor processor)
+        public object Process(ISparqlQueryProcessor processor)
         {
             return processor.ProcessQuery(this);
         }
@@ -767,83 +716,15 @@ namespace VDS.RDF.Query
         /// <param name="optimiser">Query Optimiser.</param>
         public void Optimise(IQueryOptimiser optimiser)
         {
-            if (optimiser == null) throw new ArgumentNullException("Cannot optimise a Query using a null optimiser");
+            if (optimiser == null) throw new ArgumentNullException(nameof(optimiser), "Cannot optimise a Query using a null optimiser");
             if (_rootGraphPattern != null)
             {
-                optimiser.Optimise(_rootGraphPattern, Enumerable.Empty<String>());
+                optimiser.Optimise(_rootGraphPattern, Enumerable.Empty<string>());
             }
 
             _optimised = true;
         }
 
-        /// <summary>
-        /// Helper method which rewrites Blank Node IDs for Describe Queries.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <param name="mapping">Mapping of IDs to new Blank Nodes.</param>
-        /// <param name="g">Graph of the Description.</param>
-        /// <returns></returns>
-        private Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, IGraph g)
-        {
-            INode s, p, o;
-            String id;
-
-            if (t.Subject.NodeType == NodeType.Blank)
-            {
-                id = t.Subject.GetHashCode() + "-" + t.Graph.GetHashCode();
-                if (mapping.ContainsKey(id))
-                {
-                    s = mapping[id];
-                }
-                else
-                {
-                    s = g.CreateBlankNode(id);
-                    mapping.Add(id, s);
-                }
-            }
-            else
-            {
-                s = Tools.CopyNode(t.Subject, g);
-            }
-
-            if (t.Predicate.NodeType == NodeType.Blank)
-            {
-                id = t.Predicate.GetHashCode() + "-" + t.Graph.GetHashCode();
-                if (mapping.ContainsKey(id))
-                {
-                    p = mapping[id];
-                }
-                else
-                {
-                    p = g.CreateBlankNode(id);
-                    mapping.Add(id, p);
-                }
-            }
-            else
-            {
-                p = Tools.CopyNode(t.Predicate, g);
-            }
-
-            if (t.Object.NodeType == NodeType.Blank)
-            {
-                id = t.Object.GetHashCode() + "-" + t.Graph.GetHashCode();
-                if (mapping.ContainsKey(id))
-                {
-                    o = mapping[id];
-                }
-                else
-                {
-                    o = g.CreateBlankNode(id);
-                    mapping.Add(id, o);
-                }
-            }
-            else
-            {
-                o = Tools.CopyNode(t.Object, g);
-            }
-
-            return new Triple(s, p, o);
-        }
 
         /// <summary>
         /// Generates a String representation of the Query.
@@ -862,7 +743,7 @@ namespace VDS.RDF.Query
                 {
                     output.AppendLine("BASE <" + _baseUri.AbsoluteUri + ">");
                 }
-                foreach (String prefix in _nsmapper.Prefixes)
+                foreach (string prefix in _nsmapper.Prefixes)
                 {
                     output.AppendLine("PREFIX " + prefix + ": <" + _nsmapper.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
@@ -1018,7 +899,7 @@ namespace VDS.RDF.Query
             if (_having != null)
             {
                 output.Append("HAVING ");
-                String having = _having.ToString();
+                string having = _having.ToString();
                 output.Append(having.Substring(7, having.Length - 8));
                 output.Append(' ');
             }
@@ -1043,12 +924,12 @@ namespace VDS.RDF.Query
                 output.AppendLine(_bindings.ToString());
             }
 
-            String preOutput = output.ToString();
+            string preOutput = output.ToString();
             if (_nsmapper.Prefixes.Any())
             {
-                foreach (String prefix in _nsmapper.Prefixes)
+                foreach (string prefix in _nsmapper.Prefixes)
                 {
-                    String uri = _nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
+                    string uri = _nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
                     if (preOutput.Contains("<" + uri))
                     {
                         preOutput = Regex.Replace(preOutput, "<" + uri + "([^/#>]+)>\\.", prefix + ":$1 .");

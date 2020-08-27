@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing
         /// <param name="uriref">Uri Reference to Test.</param>
         /// <returns></returns>
         /// <remarks>Implemented by seeing if the Uri Reference starts with a Uri scheme specifier.</remarks>
-        public static bool IsAbsoluteURI(String uriref)
+        public static bool IsAbsoluteURI(string uriref)
         {
             return _isabsoluteuri.IsMatch(uriref);
         }
@@ -94,8 +94,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName to Test.</param>
         /// <returns>True if the QName is a Core Syntax Term.</returns>
-        [Obsolete("Use IsCoreSyntaxTerm(Uri, string) instead")]
-        public static bool IsCoreSyntaxTerm(String qname)
+        [Obsolete("Use IsCoreSyntaxTerm(Uri, string) instead", true)]
+        public static bool IsCoreSyntaxTerm(string qname)
         {
             // Does the QName occur in the array of Core Syntax Terms?
             return coreSyntaxTerms.Contains(qname);
@@ -117,8 +117,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName to Test.</param>
         /// <returns>True if the QName is a Syntax Term.</returns>
-        [Obsolete("Use IsSyntaxTerm(Uri, string) instead")]
-        public static bool IsSyntaxTerm(String qname)
+        [Obsolete("Use IsSyntaxTerm(Uri, string) instead", true)]
+        public static bool IsSyntaxTerm(string qname)
         {
             // Does the QName occur as a Core Syntax Term or in the Array of Syntax Terms?
             return (IsCoreSyntaxTerm(qname) || syntaxTerms.Contains(qname));
@@ -140,8 +140,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName to Test.</param>
         /// <returns>True if the QName is a Old Syntax Term.</returns>
-        [Obsolete("Use IsOldTerm(Uri, string) instead")]
-        public static bool IsOldTerm(String qname)
+        [Obsolete("Use IsOldTerm(Uri, string) instead", true)]
+        public static bool IsOldTerm(string qname)
         {
             // Does the QName occur in the array of Old Syntax Terms?
             return oldTerms.Contains(qname);
@@ -164,8 +164,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName to Test.</param>
         /// <returns>True if the QName is valid.</returns>
-        [Obsolete("Use IsNodeElementUri(Uri, localName) instead")]
-        public static bool IsNodeElementUri(String qname)
+        [Obsolete("Use IsNodeElementUri(Uri, localName) instead", true)]
+        public static bool IsNodeElementUri(string qname)
         {
             // Not allowed to be a Core Syntax Term, rdf:li or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:li") || IsOldTerm(qname))
@@ -206,7 +206,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName to Test.</param>
         /// <returns>True if the QName is valid.</returns>
-        [Obsolete("Use IsPropertyElement(ElementEvent, INamespaceMapper) instead")]
+        [Obsolete("Use IsPropertyElement(ElementEvent, INamespaceMapper) instead", true)]
         public static bool IsPropertyElementURI(string qname)
         {
             // Not allowed to be a Core Syntax Term, rdf:Description or an Old Syntax Term
@@ -262,7 +262,8 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName to Test.</param>
         /// <returns>True if the QName is valid.</returns>
-        public static bool IsPropertyAttributeURI(String qname)
+        [Obsolete("Use IsPropertyAttributeURI(Uri, string) instead." ,true)]
+        public static bool IsPropertyAttributeURI(string qname)
         {
             // Not allowed to be a Core Syntax Term, rdf:li, rdf:Description or an Old Syntax Term
             if (IsCoreSyntaxTerm(qname) || qname.Equals("rdf:li") || qname.Equals("rdf:Description") || IsOldTerm(qname))
@@ -302,7 +303,7 @@ namespace VDS.RDF.Parsing
         /// <param name="name">Local Name to Test.</param>
         /// <returns>True if the Local Name is ambiguous.</returns>
         /// <remarks>This embodies Local Names which must have an rdf prefix.</remarks>
-        public static bool IsAmbigiousAttributeName(String name)
+        public static bool IsAmbigiousAttributeName(string name)
         {
             return requiresRdfPrefix.Contains(name);
         }
@@ -313,7 +314,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="uriref">URIRef to Test.</param>
         /// <returns>True if the URIRef is encoded correctly.</returns>
-        public static bool IsValidUriRefEncoding(String uriref)
+        public static bool IsValidUriRefEncoding(string uriref)
         {
             return uriref.IsNormalized();
         }
@@ -323,7 +324,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="baseUri">Base Uri to Test.</param>
         /// <returns>True if the Base Uri can be used for relative Uri resolution.</returns>
-        public static bool IsValidBaseUri(String baseUri)
+        public static bool IsValidBaseUri(string baseUri)
         {
             if (baseUri.StartsWith("mailto:"))
             {
@@ -340,11 +341,11 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="qname">QName.</param>
         /// <returns></returns>
-        public static bool IsValidQName(String qname)
+        public static bool IsValidQName(string qname)
         {
             if (qname.Contains(":"))
             {
-                String[] parts = qname.Split(':');
+                string[] parts = qname.Split(':');
                 if (parts[0].Length == 0)
                 {
                     // Empty Prefix is permitted
@@ -372,7 +373,7 @@ namespace VDS.RDF.Parsing
         /// <param name="attr">Attribute to Test.</param>
         /// <returns>True if is an rdf:ID attribute.</returns>
         /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing.</remarks>
-        [Obsolete("Use IsIDAttribute(AttributeEvent, INamespaceMapper) instead")]
+        [Obsolete("Use IsIDAttribute(AttributeEvent, INamespaceMapper) instead", true)]
         public static bool IsIDAttribute(AttributeEvent attr)
         {
             // QName must be rdf:id
@@ -447,7 +448,7 @@ namespace VDS.RDF.Parsing
         /// <param name="attr">Attribute to Test.</param>
         /// <returns>True if is an rdf:nodeID attribute.</returns>
         /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing.</remarks>
-        [Obsolete("Use IsNodeIDAttribute(AttributeEvent, INamespaceMapper) instead")]
+        [Obsolete("Use IsNodeIDAttribute(AttributeEvent, INamespaceMapper) instead", true)]
         public static bool IsNodeIDAttribute(AttributeEvent attr)
         {
             // QName must be rdf:nodeID
@@ -506,7 +507,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="attr">Attribute to Test.</param>
         /// <returns>True if is an rdf:about attribute.</returns>
-        [Obsolete("Use IsAboutAttribute(AttributeEvent, INamespaceMapper)")]
+        [Obsolete("Use IsAboutAttribute(AttributeEvent, INamespaceMapper)", true)]
         public static bool IsAboutAttribute(AttributeEvent attr)
         {
             // QName must be rdf:id
@@ -561,7 +562,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="attr">Attribute to Test.</param>
         /// <returns>True if is an property attribute.</returns>
-        [Obsolete("Use IsPropertyAttribute(AttributeEvent, INamespaceMapper)")]
+        [Obsolete("Use IsPropertyAttribute(AttributeEvent, INamespaceMapper)", true)]
         public static bool IsPropertyAttribute(AttributeEvent attr)
         {
             // QName must be a valid Property Attribute Uri
@@ -588,7 +589,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="attr">Attribute to Test.</param>
         /// <returns>True if is an rdf:resource attribute.</returns>
-        [Obsolete("Use IsResourceAttribute(AttributeEvent, INamespaceMapper)")]
+        [Obsolete("Use IsResourceAttribute(AttributeEvent, INamespaceMapper)", true)]
         public static bool IsResourceAttribute(AttributeEvent attr)
         {
             // QName must be rdf:resource
@@ -630,7 +631,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="attr">Attribute to Test.</param>
         /// <returns>True if is an rdf:datatype attribute.</returns>
-        [Obsolete("Use IsDataTypeAttribute(AttributeEvent, INestedNamespaceMapper) instead.")]
+        [Obsolete("Use IsDataTypeAttribute(AttributeEvent, INestedNamespaceMapper) instead.", true)]
         public static bool IsDataTypeAttribute(AttributeEvent attr)
         {
             // QName must be rdf:datatype
@@ -670,7 +671,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">ID Value to Test.</param>
         /// <returns>True if the ID is valid.</returns>
-        public static bool IsRdfID(String value)
+        public static bool IsRdfID(string value)
         {
             // Must be a valid NCName as defined in the XML Namespace Specification
             // Which is itself defined in terms of the XML Specification
@@ -685,7 +686,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Currently partially implemented, some invalid Uri References may be considered valid.
         /// </remarks>
-        public static bool IsRdfUriReference(String value)
+        public static bool IsRdfUriReference(string value)
         {
             // OPT: Add Some more validation of Uri References here?
             char[] cs = value.ToCharArray();

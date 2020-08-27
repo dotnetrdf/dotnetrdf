@@ -51,7 +51,7 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="data">Dataset.</param>
         /// <param name="level">Explanation Level.</param>
-        /// <param name="options">Update processor options callback</param>
+        /// <param name="options">Update processor options callback.</param>
         public ExplainUpdateProcessor(ISparqlDataset data, ExplanationLevel level, Action<LeviathanUpdateOptions> options = null)
             : base(data, options)
         {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="store">Triple Store.</param>
         /// <param name="level">Explanation Level.</param>
-        /// <param name="options">Update processor options callback</param>
+        /// <param name="options">Update processor options callback.</param>
         public ExplainUpdateProcessor(IInMemoryQueryableStore store, ExplanationLevel level = ExplanationLevel.Default, Action<LeviathanUpdateOptions> options=null)
             : this(new InMemoryDataset(store), level, options) { }
 

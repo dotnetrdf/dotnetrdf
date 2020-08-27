@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Gets the builder associated with the root graph pattern.
         /// </summary>
-        [Obsolete("Please use Root property")]
+        [Obsolete("Please use Root property", true)]
         GraphPatternBuilder RootGraphPatternBuilder { get; }
         /// <summary>
         /// Gets the builder associated with the root graph pattern.

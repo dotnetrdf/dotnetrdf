@@ -36,7 +36,7 @@ namespace VDS.RDF.JsonLd.Processors
     internal static class FramingProcessor
     {
         /// <summary>
-        /// Implements the JSON-LD Framing Algorithm
+        /// Implements the JSON-LD Framing Algorithm.
         /// </summary>
         /// <param name="state"></param>
         /// <param name="subjects"></param>
@@ -763,7 +763,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// Determine if the specified token is a valid frame object.
         /// </summary>
         /// <param name="value">The token to validate.</param>
-        /// <exception cref="JsonLdFramingException">Raised if <paramref name="value"/> is not a valid frame object.</exception>
+        /// <exception cref="JsonLdProcessorException">Raised if <paramref name="value"/> is not a valid frame object.</exception>
         private static void ValidateFrame(JToken value)
         {
             // 1.1 - Frame MUST be a map.

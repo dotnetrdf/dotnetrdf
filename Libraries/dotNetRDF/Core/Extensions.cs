@@ -247,18 +247,18 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="u">URI to get Hash Code for.</param>
         /// <returns></returns>
-        public static String GetSha256Hash(this Uri u)
+        public static string GetSha256Hash(this Uri u)
         {
             if (u == null) throw new ArgumentNullException("u");
 
             // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
-            Byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
-            Byte[] output = _sha256.ComputeHash(input);
+            byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
+            byte[] output = _sha256.ComputeHash(input);
 
             StringBuilder hash = new StringBuilder();
-            foreach (Byte b in output)
+            foreach (byte b in output)
             {
                 hash.Append(b.ToString("x2"));
             }
@@ -272,18 +272,18 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="s">String to hash.</param>
         /// <returns></returns>
-        internal static String GetSha256Hash(this String s)
+        internal static string GetSha256Hash(this string s)
         {
             if (s == null) throw new ArgumentNullException("s");
 
             // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
-            Byte[] input = Encoding.UTF8.GetBytes(s);
-            Byte[] output = _sha256.ComputeHash(input);
+            byte[] input = Encoding.UTF8.GetBytes(s);
+            byte[] output = _sha256.ComputeHash(input);
 
             StringBuilder hash = new StringBuilder();
-            foreach (Byte b in output)
+            foreach (byte b in output)
             {
                 hash.Append(b.ToString("x2"));
             }
@@ -690,9 +690,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        internal static String ToSafeString(this Object obj)
+        internal static string ToSafeString(this object obj)
         {
-            return (obj == null) ? String.Empty : obj.ToString();
+            return (obj == null) ? string.Empty : obj.ToString();
         }
 
         /// <summary>
@@ -700,9 +700,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        internal static String ToSafeString(this Uri u)
+        internal static string ToSafeString(this Uri u)
         {
-            return (u == null) ? String.Empty : u.AbsoluteUri;
+            return (u == null) ? string.Empty : u.AbsoluteUri;
         }
 
         /// <summary>
@@ -710,9 +710,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="str">String.</param>
         /// <returns>Either null if the string is null/empty or a URI otherwise.</returns>
-        internal static Uri ToSafeUri(this String str)
+        internal static Uri ToSafeUri(this string str)
         {
-            return (String.IsNullOrEmpty(str) ? null : UriFactory.Create(str));
+            return (string.IsNullOrEmpty(str) ? null : UriFactory.Create(str));
         }
 
         /// <summary>
@@ -721,7 +721,7 @@ namespace VDS.RDF
         /// <param name="u">URI.</param>
         /// <param name="formatter">URI Formatter.</param>
         /// <returns></returns>
-        public static String ToString(this Uri u, IUriFormatter formatter)
+        public static string ToString(this Uri u, IUriFormatter formatter)
         {
             return formatter.FormatUri(u);
         }
@@ -732,9 +732,9 @@ namespace VDS.RDF
         /// <param name="builder">String Builder.</param>
         /// <param name="line">String to append.</param>
         /// <param name="indent">Indent.</param>
-        internal static void AppendIndented(this StringBuilder builder, String line, int indent)
+        internal static void AppendIndented(this StringBuilder builder, string line, int indent)
         {
-            builder.Append(new String(' ', indent) + line);
+            builder.Append(new string(' ', indent) + line);
         }
 
         /// <summary>
@@ -746,246 +746,33 @@ namespace VDS.RDF
         /// <remarks>
         /// Strings containing new lines are split over multiple lines.
         /// </remarks>
-        internal static void AppendLineIndented(this StringBuilder builder, String line, int indent)
+        internal static void AppendLineIndented(this StringBuilder builder, string line, int indent)
         {
             if (line.Contains('\n'))
             {
-                String[] lines = line.Split('\n');
-                foreach (String l in lines)
+                string[] lines = line.Split('\n');
+                foreach (string l in lines)
                 {
-                    if (String.IsNullOrEmpty(l) || l.ToCharArray().All(c => Char.IsWhiteSpace(c))) continue;
-                    builder.AppendLine(new String(' ', indent) + l);
+                    if (string.IsNullOrEmpty(l) || l.ToCharArray().All(c => char.IsWhiteSpace(c))) continue;
+                    builder.AppendLine(new string(' ', indent) + l);
                 }
             }
             else
             {
-                builder.AppendLine(new String(' ', indent) + line);
+                builder.AppendLine(new string(' ', indent) + line);
             }
         }
 
-        /// <summary>
-        /// Takes a String and escapes any backslashes in it which are not followed by a valid escape character.
-        /// </summary>
-        /// <param name="value">String value.</param>
-        /// <param name="cs">Valid Escape Characters i.e. characters which may follow a backslash.</param>
-        /// <returns></returns>
-        [Obsolete("No longer necessary, do not use", true)]
-        public static String EscapeBackslashes(this String value, char[] cs)
-        {
-            if (value.Length == 0) return value;
-            if (value.Length == 1)
-            {
-                if (value.Equals(@"\"))
-                {
-                    return @"\\";
-                }
-                else
-                {
-                    return value;
-                }
-            }
-            else
-            {
-                StringBuilder output = new StringBuilder();
-                for (int i = 0; i < value.Length; i++)
-                {
-                    if (value[i] == '\\')
-                    {
-                        if (i < value.Length - 1)
-                        {
-                            // Not at end of the input so check whether the next character is a valid escape
-                            char next = value[i + 1];
-                            if (cs.Contains(next))
-                            {
-                                // Valid Escape
-                                output.Append(value[i]);
-                                output.Append(next);
-                                i++;
-                            }
-                            else
-                            {
-                                // Not a Valid Escape so escape the backslash
-                                output.Append(@"\\");
-                            }
-                        }
-                        else
-                        {
-                            // At the end of the input and found a trailing backslash
-                            output.Append(@"\\");
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        output.Append(value[i]);
-                    }
-                }
-                return output.ToString();
-            }
-        }
 
         /// <summary>
         /// Determines whether a string is ASCII.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsAscii(this String value)
+        public static bool IsAscii(this string value)
         {
             if (value.Length == 0) return true;
             return value.ToCharArray().All(c => c <= 127);
-        }
-
-        /// <summary>
-        /// Determines whether a String is fully escaped.
-        /// </summary>
-        /// <param name="value">String value.</param>
-        /// <param name="cs">Valid Escape Characters i.e. characters which may follow a backslash.</param>
-        /// <param name="ds">Characters which must be escaped i.e. must be preceded by a backslash.</param>
-        /// <returns></returns>
-        [Obsolete("No longer necessary, do not use", true)]
-        public static bool IsFullyEscaped(this String value, char[] cs, char[] ds)
-        {
-            if (value.Length == 0) return true;
-            if (value.Length == 1)
-            {
-                if (value[0] == '\\') return false;
-                if (cs.Contains(value[0])) return false;
-            }
-            else
-            {
-                // Work through the characters in pairs
-                for (int i = 0; i < value.Length; i += 2)
-                {
-                    char c = value[i];
-                    if (i < value.Length - 1)
-                    {
-                        char d = value[i + 1];
-                        if (c == '\\')
-                        {
-                            // Only fully escaped if followed by an escape character
-                            if (!cs.Contains(d)) return false;
-                        }
-                        else if (ds.Contains(c))
-                        {
-                            // If c is a character that must be escaped then not fully escaped
-                            return false;
-                        }
-                        else if (d == '\\')
-                        {
-                            // If d is a backslash shift the index back by 1 so that this will be the first
-                            // character of the next character pair we assess
-                            i--;
-                        }
-                        else if (ds.Contains(d))
-                        {
-                            // If d is a character that must be escaped we know that the preceding character
-                            // was not a backslash so the string is not fully escaped
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        // If trailing character is a backslash or a character that must be escaped then not fully escaped
-                        if (c == '\\' || ds.Contains(c)) return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Escapes all occurrences of a given character in a String.
-        /// </summary>
-        /// <param name="value">String.</param>
-        /// <param name="toEscape">Character to escape.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Ignores all existing escapes (indicated by a \) and so avoids double escaping as far as possible.
-        /// </remarks>
-        [Obsolete("No longer necessary, do not use", true)]
-        public static String Escape(this String value, char toEscape)
-        {
-            return value.Escape(toEscape, toEscape);
-        }
-
-        /// <summary>
-        /// Escapes all occurrences of a given character in a String using the given escape character.
-        /// </summary>
-        /// <param name="value">String.</param>
-        /// <param name="toEscape">Character to escape.</param>
-        /// <param name="escapeAs">Character to escape as.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Ignores all existing escapes (indicated by a \) and so avoids double escaping as far as possible.
-        /// </remarks>
-        [Obsolete("No longer necessary, do not use", true)]
-        public static String Escape(this String value, char toEscape, char escapeAs)
-        {
-            if (value.Length == 0) return value;
-            if (value.Length == 1)
-            {
-                if (value[0] == toEscape) return new String(new char[] { '\\', toEscape });
-                return value;
-            }
-            else
-            {
-                // Work through the characters in pairs
-                StringBuilder output = new StringBuilder();
-                for (int i = 0; i < value.Length; i += 2)
-                {
-                    char c = value[i];
-                    if (i < value.Length - 1)
-                    {
-                        char d = value[i + 1];
-                        if (c == toEscape)
-                        {
-                            // Must escape this
-                            output.Append('\\');
-                            output.Append(escapeAs);
-                            // Reduce index by 1 as next character is now start of next pair
-                            i--;
-                        }
-                        else if (c == '\\')
-                        {
-                            // Regardless of the next character we append this to the output since it is an escape
-                            // of some kind - whether it relates to the character we want to escape or not is
-                            // irrelevant in this case
-                            output.Append(c);
-                            output.Append(d);
-                        }
-                        else if (d == toEscape)
-                        {
-                            // If d is the character to be escaped and we get to this case then it isn't escaped
-                            // currently so we must escape it
-                            output.Append(c);
-                            output.Append('\\');
-                            output.Append(escapeAs);
-                        }
-                        else if (d == '\\')
-                        {
-                            // If d is a backslash shift the index back by 1 so that this will be the first
-                            // character of the next character pair we assess
-                            output.Append(c);
-                            i--;
-                        }
-                        else
-                        {
-                            output.Append(c);
-                            output.Append(d);
-                        }
-                    }
-                    else
-                    {
-                        // If trailing character is character to escape then do so
-                        if (c == toEscape)
-                        {
-                            output.Append('\\');
-                        }
-                        output.Append(c);
-                    }
-                }
-                return output.ToString();
-            }
         }
 
 #endregion
@@ -1015,7 +802,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to query.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public static Object ExecuteQuery(this IGraph g, String sparqlQuery)
+        public static object ExecuteQuery(this IGraph g, string sparqlQuery)
         {
             // Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
             InMemoryDataset ds = new InMemoryDataset(g);
@@ -1032,7 +819,7 @@ namespace VDS.RDF
         /// <param name="rdfHandler">RDF Handler.</param>
         /// <param name="resultsHandler">SPARQL Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
-        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
@@ -1047,7 +834,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to query.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public static Object ExecuteQuery(this IGraph g, SparqlParameterizedString sparqlQuery)
+        public static object ExecuteQuery(this IGraph g, SparqlParameterizedString sparqlQuery)
         {
             return g.ExecuteQuery(sparqlQuery.ToString());
         }
@@ -1070,7 +857,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to query.</param>
         /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
-        public static Object ExecuteQuery(this IGraph g, SparqlQuery query)
+        public static object ExecuteQuery(this IGraph g, SparqlQuery query)
         {
             InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
@@ -1108,7 +895,7 @@ namespace VDS.RDF
         /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
-        public static void LoadFromFile(this IGraph g, String file, IRdfReader parser)
+        public static void LoadFromFile(this IGraph g, string file, IRdfReader parser)
         {
             FileLoader.Load(g, file, parser);
         }
@@ -1129,7 +916,7 @@ namespace VDS.RDF
         /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
-        public static void LoadFromFile(this IGraph g, String file)
+        public static void LoadFromFile(this IGraph g, string file)
         {
             FileLoader.Load(g, file);
         }
@@ -1182,7 +969,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Parse()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromString(this IGraph g, String data, IRdfReader parser)
+        public static void LoadFromString(this IGraph g, string data, IRdfReader parser)
         {
             StringParser.Parse(g, data, parser);
         }
@@ -1195,7 +982,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Parse()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromString(this IGraph g, String data)
+        public static void LoadFromString(this IGraph g, string data)
         {
             StringParser.Parse(g, data);
         }
@@ -1208,7 +995,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromEmbeddedResource(this IGraph g, String resource)
+        public static void LoadFromEmbeddedResource(this IGraph g, string resource)
         {
             EmbeddedResourceLoader.Load(g, resource);
         }
@@ -1222,7 +1009,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromEmbeddedResource(this IGraph g, String resource, IRdfReader parser)
+        public static void LoadFromEmbeddedResource(this IGraph g, string resource, IRdfReader parser)
         {
             EmbeddedResourceLoader.Load(g, resource, parser);
         }
@@ -1233,7 +1020,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to save.</param>
         /// <param name="file">File to save to.</param>
         /// <param name="writer">Writer to use.</param>
-        public static void SaveToFile(this IGraph g, String file, IRdfWriter writer)
+        public static void SaveToFile(this IGraph g, string file, IRdfWriter writer)
         {
             if (writer == null)
             {
@@ -1269,7 +1056,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to save.</param>
         /// <param name="file">File to save to.</param>
-        public static void SaveToFile(this IGraph g, String file)
+        public static void SaveToFile(this IGraph g, string file)
         {
             IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(g, file);
@@ -1333,7 +1120,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromFile(this ITripleStore store, String file, IStoreReader parser)
+        public static void LoadFromFile(this ITripleStore store, string file, IStoreReader parser)
         {
             FileLoader.Load(store, file, parser);
         }
@@ -1346,7 +1133,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromFile(this ITripleStore store, String file)
+        public static void LoadFromFile(this ITripleStore store, string file)
         {
             FileLoader.Load(store, file);
         }
@@ -1387,7 +1174,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromString(this ITripleStore store, String data, IStoreReader parser)
+        public static void LoadFromString(this ITripleStore store, string data, IStoreReader parser)
         {
             StringParser.ParseDataset(store, data, parser);
         }
@@ -1400,7 +1187,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromString(this ITripleStore store, String data)
+        public static void LoadFromString(this ITripleStore store, string data)
         {
             StringParser.ParseDataset(store, data);
         }
@@ -1414,7 +1201,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromEmbeddedResource(this ITripleStore store, String resource, IStoreReader parser)
+        public static void LoadFromEmbeddedResource(this ITripleStore store, string resource, IStoreReader parser)
         {
             EmbeddedResourceLoader.Load(store, resource, parser);
         }
@@ -1427,7 +1214,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
-        public static void LoadFromEmbeddedResource(this ITripleStore store, String resource)
+        public static void LoadFromEmbeddedResource(this ITripleStore store, string resource)
         {
             EmbeddedResourceLoader.Load(store, resource);
         }
@@ -1438,7 +1225,7 @@ namespace VDS.RDF
         /// <param name="store">Triple Store to save.</param>
         /// <param name="file">File to save to.</param>
         /// <param name="writer">Writer to use.</param>
-        public static void SaveToFile(this ITripleStore store, String file, IStoreWriter writer)
+        public static void SaveToFile(this ITripleStore store, string file, IStoreWriter writer)
         {
             if (writer == null)
             {
@@ -1455,7 +1242,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="store">Triple Store to save.</param>
         /// <param name="file">File to save to.</param>
-        public static void SaveToFile(this ITripleStore store, String file)
+        public static void SaveToFile(this ITripleStore store, string file)
         {
             IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(store, file);
@@ -1763,7 +1550,7 @@ namespace VDS.RDF
         /// <param name="factory">Node Factory to use for Node creation.</param>
         /// <returns>Literal representing the string.</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph/String argument is null.</exception>
-        public static ILiteralNode ToLiteral(this String s, INodeFactory factory)
+        public static ILiteralNode ToLiteral(this string s, INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
             if (s == null) throw new ArgumentNullException("s", "Cannot create a Literal Node for a null String");

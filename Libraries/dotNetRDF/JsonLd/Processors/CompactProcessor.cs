@@ -44,7 +44,7 @@ namespace VDS.RDF.JsonLd.Processors
         }
 
         /// <summary>
-        /// Implementation of the JSON-LD Compact Algorithm
+        /// Implementation of the JSON-LD Compact Algorithm.
         /// </summary>
         /// <param name="activeContext"></param>
         /// <param name="activeProperty"></param>

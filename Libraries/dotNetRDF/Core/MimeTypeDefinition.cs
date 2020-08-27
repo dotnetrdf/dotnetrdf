@@ -246,7 +246,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="mimeType">MIME Type.</param>
         /// <returns></returns>
-        [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", false)]
+        [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", true)]
         public bool SupportsMimeType(String mimeType)
         {
             String type = mimeType.ToLowerInvariant();

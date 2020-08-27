@@ -55,7 +55,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="c">Character.</param>
         /// <returns></returns>
-        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", false)]
+        [Obsolete("This form of the FormatChar() method is considered obsolete as it is inefficient", true)]
         public override string FormatChar(char c)
         {
             return c.ToString();

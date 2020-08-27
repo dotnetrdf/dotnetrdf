@@ -39,6 +39,6 @@ namespace VDS.RDF.JsonLd.Syntax
         /// <summary>
         /// Specifies the use of a blank node and rdf:direction property when serializing literals containing a base direction.
         /// </summary>
-        CompoundLiteral
+        CompoundLiteral,
     }
 }

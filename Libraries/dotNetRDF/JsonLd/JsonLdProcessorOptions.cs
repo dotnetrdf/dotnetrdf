@@ -70,7 +70,7 @@ namespace VDS.RDF.JsonLd
         /// The callback of the loader to be used to retrieve remote documents and contexts.
         /// </summary>
         /// <remarks>This property has been replaced by the <see cref="DocumentLoader"/> property whose name matches that defined by the JSON-LD 1.1 API specification.</remarks>
-        [Obsolete("The Loader property has been deprecated in favor of the DocumentLoader property.")]
+        [Obsolete("The Loader property has been deprecated in favor of the DocumentLoader property.", true)]
         public Func<Uri, JsonLdLoaderOptions, RemoteDocument> Loader { get => DocumentLoader; set => DocumentLoader = value; }
 
         /// <summary>
@@ -189,7 +189,6 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Removes @id from node objects where the value is a blank node identifier used only once within the document.
         /// </summary>
-        [Obsolete("This property is no longer part of the JSON-LD specification")]
         public bool PruneBlankNodeIdentifiers { get; set; }
 
         /// <summary>

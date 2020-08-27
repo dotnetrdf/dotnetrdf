@@ -209,7 +209,7 @@ namespace VDS.RDF
         {
             get
             {
-                if (_triples.TryGetKey(t, out Triple actual))
+                if (_triples.TryGetKey(t, out var actual))
                 {
                     return actual;
                 }

@@ -349,7 +349,6 @@ namespace VDS.RDF.Parsing
 
             List<IRdfWriter> writers = new List<IRdfWriter>() {
                 new NTriplesWriter(),
-                new TurtleWriter(),
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
                 new RdfXmlWriter(),
@@ -359,7 +358,6 @@ namespace VDS.RDF.Parsing
 
             List<IRdfReader> readers = new List<IRdfReader>() {
                 new NTriplesParser(),
-                new TurtleParser(),
                 new TurtleParser(),
                 new Notation3Parser(),
                 new RdfXmlParser(),
@@ -474,7 +472,6 @@ namespace VDS.RDF.Parsing
 
             List<IRdfWriter> writers = new List<IRdfWriter>() {
                 new NTriplesWriter(),
-                new TurtleWriter(),
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
                 new RdfXmlWriter(),
@@ -484,7 +481,6 @@ namespace VDS.RDF.Parsing
 
             List<IRdfReader> readers = new List<IRdfReader>() {
                 new NTriplesParser(),
-                new TurtleParser(),
                 new TurtleParser(),
                 new Notation3Parser(),
                 new RdfXmlParser(),

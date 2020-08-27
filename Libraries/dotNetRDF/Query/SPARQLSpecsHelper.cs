@@ -1842,7 +1842,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDecimal() instead")]
+        [Obsolete("Use AsValuedNode().AsDecimal() instead", true)]
         public static Decimal ToDecimal(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Decimal");
@@ -1854,7 +1854,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDouble() instead")]
+        [Obsolete("Use AsValuedNode().AsDouble() instead", true)]
         public static Double ToDouble(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Double");
@@ -1866,7 +1866,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsFloat() instead")]
+        [Obsolete("Use AsValuedNode().AsFloat() instead", true)]
         public static Single ToFloat(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Float");
@@ -1878,7 +1878,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsInteger() instead")]
+        [Obsolete("Use AsValuedNode().AsInteger() instead", true)]
         public static Int64 ToInteger(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to an Integer");
@@ -1890,7 +1890,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDateTime() instead")]
+        [Obsolete("Use AsValuedNode().AsDateTime() instead", true)]
         public static DateTime ToDateTime(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
@@ -1902,7 +1902,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead")]
+        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead", true)]
         public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
@@ -1914,7 +1914,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsTimeSpan() instead")]
+        [Obsolete("Use AsValuedNode().AsTimeSpan() instead", true)]
         public static TimeSpan ToTimeSpan(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Time Span");
@@ -1939,10 +1939,15 @@ namespace VDS.RDF.Query
 
         #endregion
 
+        /// <summary>
+        /// Determine if the specified datatype IRI is one of the recognized IRIs for string literal data types.
+        /// </summary>
+        /// <param name="datatype">The datatype IRI.</param>
+        /// <returns>True if <paramref name="datatype"/> is either of the XML Schema string datatype IRI, or the RDF langString datatype IRI.</returns>
         public static bool IsStringDatatype(string datatype)
         {
-            return !String.IsNullOrEmpty(datatype) && (RdfSpecsHelper.RdfLangString.Equals(datatype) ||
-                                                       XmlSpecsHelper.XmlSchemaDataTypeString.Equals(datatype));
+            return RdfSpecsHelper.RdfLangString.Equals(datatype) ||
+                   XmlSpecsHelper.XmlSchemaDataTypeString.Equals(datatype);
         }
     }
 }

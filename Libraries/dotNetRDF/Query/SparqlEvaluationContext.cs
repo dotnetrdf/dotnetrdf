@@ -46,9 +46,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="q">Query.</param>
         /// <param name="data">Dataset.</param>
-        /// <param name="nodeComparer">The comparer to use when sorting nodes during query.</param>
-        /// <param name="strictOperators">Whether to only allow SPARQL-defined operators in expression evaluation.</param>
-        /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
+        /// <param name="options">The query processor options to use.</param>
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, LeviathanQueryOptions options)
         {
             Query = q;
@@ -66,9 +64,7 @@ namespace VDS.RDF.Query
         /// <param name="q">Query.</param>
         /// <param name="data">Dataset.</param>
         /// <param name="processor">Query Processor.</param>
-        /// <param name="nodeComparer">The comparer to use when sorting nodes during query.</param>
-        /// <param name="strictOperators">Whether to only allow SPARQL-defined operators in expression evaluation.</param>
-        /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
+        /// <param name="options">The query processor options to use.</param>
         public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor, LeviathanQueryOptions options)
             : this(q, data, options)
         {
@@ -78,10 +74,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new Evaluation Context which is a Container for the given Result Binder.
         /// </summary>
-        /// <param name="nodeComparer">The comparer to use when sorting nodes during query.</param>
         /// <param name="binder"></param>
-        /// <param name="strictOperators">Whether to only allow SPARQL-defined operators in expression evaluation.</param>
-        /// <remarks>If the <paramref name="nodeComparer"/> argument is not specified or is null, a default comparer will be used that sorts string literals using the invariant culture and ordinal sort order.</remarks>
+        /// <param name="options">The query processor options to use.</param>
         public SparqlEvaluationContext(SparqlResultBinder binder, LeviathanQueryOptions options)
         {
             Binder = binder;
@@ -93,7 +87,7 @@ namespace VDS.RDF.Query
         /// Return the execution timeout to be applied to this evaluation context given the specified processor-defined maximum execution timeout.
         /// </summary>
         /// <param name="maxTimeout"></param>
-        /// <returns>The execution timeout for the query in this context (if any)</returns>
+        /// <returns>The execution timeout for the query in this context (if any).</returns>
         public long CalculateTimeout(long maxTimeout)
         {
             if (Query != null && Query.Timeout > 0 &&

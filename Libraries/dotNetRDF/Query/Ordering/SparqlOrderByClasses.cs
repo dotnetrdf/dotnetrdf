@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Ordering
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
-        /// <param name="nodeComparer">The node comparer to use</param>
+        /// <param name="nodeComparer">The node comparer to use.</param>
         /// <returns></returns>
         public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer);
 

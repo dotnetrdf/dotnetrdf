@@ -776,7 +776,7 @@ namespace VDS.RDF.Configuration
         /// This function uses caching to ensure that URI Nodes aren't needlessly recreated in order to save memory.
         /// </para>
         /// </remarks>
-        [Obsolete("This method is obsolete and should no longer be used, constants are now URIs so you should just create URI Nodes directly on your Configuration Graph", false)]
+        [Obsolete("This method is obsolete and should no longer be used, constants are now URIs so you should just create URI Nodes directly on your Configuration Graph", true)]
         public static INode CreateConfigurationNode(IGraph g, String qname)
         {
             return g.CreateUriNode(UriFactory.Create(qname));

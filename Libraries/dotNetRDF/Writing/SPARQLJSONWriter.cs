@@ -43,7 +43,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="results">Result Set to save.</param>
         /// <param name="filename">File to save to.</param>
-        /// <remarks>The output file will be written using UTF-8 text encoding with no byte-order mark</remarks>
+        /// <remarks>The output file will be written using UTF-8 text encoding with no byte-order mark.</remarks>
         public void Save(SparqlResultSet results, string filename)
         {
             Save(results, filename, new UTF8Encoding(false));

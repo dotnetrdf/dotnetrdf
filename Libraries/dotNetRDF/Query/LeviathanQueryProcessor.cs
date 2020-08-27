@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
         /// Creates a new Leviathan Query Processor.
         /// </summary>
         /// <param name="store">Triple Store.</param>
-        /// <param name="options">Set the processor options</param>
+        /// <param name="options">Set the processor options.</param>
         public LeviathanQueryProcessor(IInMemoryQueryableStore store, Action<LeviathanQueryOptions> options = null)
             : this(new InMemoryDataset(store), options) { }
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query
         /// Creates a new Leviathan Query Processor.
         /// </summary>
         /// <param name="data">SPARQL Dataset.</param>
-        /// <param name="options">Set the processor options</param>
+        /// <param name="options">Set the processor options.</param>
         public LeviathanQueryProcessor(ISparqlDataset data, Action<LeviathanQueryOptions> options = null)
         {
             _dataset = data;

@@ -83,7 +83,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Whether queries should always be posted.
         /// </summary>
-        [Obsolete("This parameter is no longer used internally and will be removed in the future, all queries are now POSTed regardless of this setting")]
+        [Obsolete("This parameter is no longer used internally and will be removed in the future, all queries are now POSTed regardless of this setting", true)]
         protected bool _postAllQueries = false;
 
         /// <summary>

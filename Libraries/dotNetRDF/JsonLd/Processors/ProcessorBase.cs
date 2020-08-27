@@ -48,7 +48,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// Create a new processor instance that uses the specified processor options.
         /// </summary>
         /// <param name="options"></param>
-        /// <param name="warnings">The list to add any generated warnings to</param>
+        /// <param name="warnings">The list to add any generated warnings to.</param>
         public ProcessorBase(JsonLdProcessorOptions options, IList<JsonLdProcessorWarning> warnings)
         {
             Options = options;

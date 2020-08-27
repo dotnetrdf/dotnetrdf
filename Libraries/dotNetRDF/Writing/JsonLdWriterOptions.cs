@@ -35,7 +35,7 @@ namespace VDS.RDF.Writing
     public class JsonLdWriterOptions
     {
         /// <summary>
-        /// Order dictionary keys lexicographically in the JSON output
+        /// Order dictionary keys lexicographically in the JSON output.
         /// </summary>
         public bool Ordered { get; set; }
 

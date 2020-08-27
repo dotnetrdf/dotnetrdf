@@ -31,7 +31,7 @@ using System.Text.RegularExpressions;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Provides methods for working with BCP 47 language tags
+    /// Provides methods for working with BCP 47 language tags.
     /// </summary>
     public class LanguageTag
     {

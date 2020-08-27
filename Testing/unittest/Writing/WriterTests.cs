@@ -60,19 +60,14 @@ namespace VDS.RDF.Writing
             g.Assert(subj, pred, b2);
             g.Assert(b2, name, g.CreateLiteralNode("Second Triple"));
 
-            TurtleWriter ttlwriter = new TurtleWriter();
+            var ttlwriter = new CompressingTurtleWriter();
             ttlwriter.Save(g, "bnode-output-test.ttl");
-
-            TestTools.ShowGraph(g);
 
             TurtleParser ttlparser = new TurtleParser();
             Graph h = new Graph();
             ttlparser.Load(h, "bnode-output-test.ttl");
 
-            TestTools.ShowGraph(h);
-
             Assert.Equal(g.Triples.Count, h.Triples.Count);
-
         }
 
         [Fact]
@@ -81,25 +76,11 @@ namespace VDS.RDF.Writing
             Graph g = new Graph();
             FileLoader.Load(g, "resources\\charescaping.owl");
 
-            Console.WriteLine("Original Triples");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-            Console.WriteLine();
-
-            TurtleWriter ttlwriter = new TurtleWriter();
+            var ttlwriter = new CompressingTurtleWriter();
             String serialized = VDS.RDF.Writing.StringWriter.Write(g, ttlwriter);
 
             Graph h = new Graph();
             StringParser.Parse(h, serialized);
-
-            Console.WriteLine("Serialized Triples");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-            Console.WriteLine();
 
             Assert.Equal(g, h);
         }
@@ -305,7 +286,6 @@ namespace VDS.RDF.Writing
             {
                 yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original) };
                 yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C) };
-                yield return new object[] { new TurtleWriter(),new TurtleParser() };
                 yield return new object[] { new Notation3Writer(),new Notation3Parser() };
             }
 

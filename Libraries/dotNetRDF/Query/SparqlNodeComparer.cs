@@ -34,7 +34,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Interface for a comparer that can compare INode and IValuedNode instances
+    /// Interface for a comparer that can compare INode and IValuedNode instances.
     /// </summary>
     public interface ISparqlNodeComparer : IComparer<INode>, IComparer<IValuedNode>
     {

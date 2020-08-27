@@ -33,7 +33,7 @@ using VDS.RDF.JsonLd.Syntax;
 namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
-    /// Various utility methods used by the JSON-LD processor and algorithm implementations
+    /// Various utility methods used by the JSON-LD processor and algorithm implementations.
     /// </summary>
     internal class JsonLdUtils
     {
@@ -72,7 +72,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// <summary>
         /// Determine if the token is an object with no properties.
         /// </summary>
-        /// <param name="token">The token to check</param>
+        /// <param name="token">The token to check.</param>
         /// <returns>True if the token represents a JSON object with no properties, false otherwise.</returns>
         public static bool IsEmptyObject(JToken token)
         {
@@ -478,7 +478,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// Gets the value of a property from a subject node, taking ito account possibly aliases defined in the active context.
         /// </summary>
         /// <param name="activeContext">The context to use.</param>
-        /// <param name="parent">The subject node to retrieve a property from</param>
+        /// <param name="parent">The subject node to retrieve a property from.</param>
         /// <param name="propertyName">The name of the property whose value is to be retrieved.</param>
         /// <returns>The property value if found, null otherwise.</returns>
         public static JToken GetPropertyValue(JsonLdContext activeContext, JObject parent, string propertyName)

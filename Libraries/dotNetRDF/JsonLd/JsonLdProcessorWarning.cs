@@ -29,7 +29,7 @@ using VDS.RDF.JsonLd.Syntax;
 namespace VDS.RDF.JsonLd
 {
     /// <summary>
-    /// Represents a warning message raised during JSON-LD processing
+    /// Represents a warning message raised during JSON-LD processing.
     /// </summary>
     public class JsonLdProcessorWarning
     {

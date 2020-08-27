@@ -34,7 +34,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.JsonLd.Processors
 {
     /// <summary>
-    /// Implements the JSON-LD context processing, term definition creation and IRI expansion algorithms
+    /// Implements the JSON-LD context processing, term definition creation and IRI expansion algorithms.
     /// </summary>
     internal class ContextProcessor : ProcessorBase
     {

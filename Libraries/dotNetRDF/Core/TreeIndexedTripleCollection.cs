@@ -290,7 +290,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override Triple this[Triple t]
         {
-            get 
+            get
             {
                 Triple actual;
                 if (_triples.TryGetKey(t, out actual))

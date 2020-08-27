@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression.</param>
-        /// <param name="baseContext">The base evaluation context providing access to the query evaluation options to use when evaluating the join</param>
+        /// <param name="baseContext">The base evaluation context providing access to the query evaluation options to use when evaluating the join.</param>
         /// <returns></returns>
         public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
         {

@@ -31,7 +31,7 @@ using System.Text;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Abstract base class for store writers that provides the default logic for implementing the Save method overrides
+    /// Abstract base class for store writers that provides the default logic for implementing the Save method overrides.
     /// </summary>
     public abstract class BaseStoreWriter : IStoreWriter
     {

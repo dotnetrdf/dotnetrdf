@@ -42,7 +42,7 @@ namespace VDS.RDF.Writing
     /// Similar in speed to the <see cref="CompressingTurtleWriter">CompressingTurtleWriter</see> but doesn't use the full Blank Node and Collection syntax compressions.
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
-    [Obsolete("Deprecated in favour of the CompressingTurtleWriter which uses a much fuller range of syntax compressions", false)]
+    [Obsolete("Deprecated in favour of the CompressingTurtleWriter which uses a much fuller range of syntax compressions", true)]
     public class TurtleWriter
         : BaseRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
     {

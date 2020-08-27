@@ -344,7 +344,7 @@ namespace VDS.RDF
         /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
         /// </para>
         /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
+        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
         Object ExecuteQuery(String query);
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace VDS.RDF
         /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
         /// </para>
         /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
+        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
         Object ExecuteQuery(SparqlQuery query);
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace VDS.RDF
         /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
         /// </para>
         /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
+        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace VDS.RDF
         /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
         /// </para>
         /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion")]
+        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
 
         #endregion

@@ -52,7 +52,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Saves the Result Set to the given File in the Sparql Results XML Format using UTF-8 text encoding with no byte-order mark (BOM)
+        /// Saves the Result Set to the given File in the Sparql Results XML Format using UTF-8 text encoding with no byte-order mark (BOM).
         /// </summary>
         /// <param name="results">Result Set to save.</param>
         /// <param name="filename">File to save to.</param>

@@ -1734,7 +1734,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
-        [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
+        [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", true)]
         public static string GetMimeType(string fileExt)
         {
             if (!_init) Init();
@@ -1755,7 +1755,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="fileExt">File Extension.</param>
         /// <returns></returns>
-        [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
+        [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", true)]
         public static IEnumerable<string> GetMimeTypes(string fileExt)
         {
             if (!_init) Init();
