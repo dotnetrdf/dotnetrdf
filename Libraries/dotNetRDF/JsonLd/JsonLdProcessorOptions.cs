@@ -26,8 +26,6 @@
 
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd
@@ -51,13 +49,13 @@ namespace VDS.RDF.JsonLd
         /// If set to false, all arrays will remain arrays even if they have just one element. </para>
         /// <para>Defaults to true.</para>
         /// </remarks>
-        public bool CompactArrays = true;
+        public bool CompactArrays { get; set; } = true;
 
         /// <summary>
         /// Determines if IRIs are compacted relative to the base option or document location when compacting.
         /// </summary>
         /// <remarks>Defaults to true.</remarks>
-        public bool CompactToRelative = true;
+        public bool CompactToRelative { get; set; } = true;
 
         /// <summary>
         /// The callback of the loader to be used to retrieve remote documents and contexts.
@@ -78,14 +76,14 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// A context that is used to initialize the active context when expanding a document.
         /// </summary>
-        public JToken ExpandContext;
+        public JToken ExpandContext { get; set; }
 
         /// <summary>
         /// Specifies whether HTML document processing should target all of the JSON-LD script elements in the document or not.
         /// </summary>
         /// <remarks>If set to true, when extracting JSON-LD script elements from HTML, unless a specific fragment identifier is targeted,
         /// extracts all encountered JSON-LD script elements using an array form, if necessary. Defaults to false.</remarks>
-        public bool ExtractAllScripts;
+        public bool ExtractAllScripts { get; set; }
 
         /// <summary>
         /// Specifies whether special frame expansion rules should be applied during expansion and/or RDF serialization.
@@ -95,7 +93,7 @@ namespace VDS.RDF.JsonLd
         /// <para>Enables special rules for the Serialize RDF as JSON-LD Algorithm to use JSON-LD native types as values, where possible.</para>
         /// <para>Defaults to false.</para>
         /// </remarks>
-        public bool FrameExpansion;
+        public bool FrameExpansion { get; set; }
 
         /// <summary>
         /// Specifies whether the processor should operate on properties in lexicographical order or not.
@@ -104,7 +102,7 @@ namespace VDS.RDF.JsonLd
         /// <para>If set to true, certain algorithm processing steps where indicated are ordered lexicographically. If false, order is not considered in processing.</para>
         /// <para>Defaults to false.</para>
         /// </remarks>
-        public bool Ordered;
+        public bool Ordered { get; set; }
 
         /// <summary>
         /// Get or set the processing model that the processor will use.
@@ -114,7 +112,7 @@ namespace VDS.RDF.JsonLd
         /// processing modes as defined in the JSON-LD 1.1 specification.</para>
         /// <para>Defaults to <see cref="JsonLdProcessingMode.JsonLd11"/>.</para>
         /// </remarks>
-        public JsonLdProcessingMode? ProcessingMode = JsonLdProcessingMode.JsonLd11;
+        public JsonLdProcessingMode? ProcessingMode { get; set; } = JsonLdProcessingMode.JsonLd11;
 
         /// <summary>
         /// If set to true, the JSON-LD processor may emit blank nodes for triple predicates, otherwise they will be omitted.
@@ -123,7 +121,7 @@ namespace VDS.RDF.JsonLd
         /// <para>This feature of JSON-LD is deprecated in JSON-LD 1.1 and may be removed in future versions of the specification.</para>
         /// <para>Default to false.</para>
         /// </remarks>
-        public bool ProduceGeneralizedRdf = false;
+        public bool ProduceGeneralizedRdf { get; set; }
 
         /// <summary>
         /// Get or set the method by which literal values containing a base direction are transformed to and from RDF.
@@ -131,8 +129,9 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// <para>If set to <see cref="JsonLdRdfDirectionMode.I18NDatatype"/>, an RDF literal is generated using a datatype IRI based on https://www.w3.org/ns/i18n# with both the language tag (if present) and base direction encoded. When transforming from RDF, this datatype is decoded to create a value object containing @language (if present) and @direction.</para>
         /// <para>If set to <see cref="JsonLdRdfDirectionMode.CompoundLiteral"/>, a blank node is emitted instead of a literal, where the blank node is the subject of rdf:value, rdf:direction, and rdf:language (if present) properties. When transforming from RDF, this object is decoded to create a value object containing @language (if present) and @direction.</para>
+        /// <para>If set to null, base direction is ignored in the transformations to/from RDF.</para>
         /// </summary>
-        public JsonLdRdfDirectionMode? RdfDirection;
+        public JsonLdRdfDirectionMode? RdfDirection { get; set; }
 
         /// <summary>
         /// Get or set the flag that determines whether or not JSON native values should be used in literals.
@@ -141,7 +140,7 @@ namespace VDS.RDF.JsonLd
         /// <para>If enabled, causes the Serialize RDF as JSON-LD Algorithm to use native JSON values in value objects avoiding the need for an explicitly @type.</para>
         /// <para>Defaults to false.</para>
         /// </remarks>
-        public bool UseNativeTypes;
+        public bool UseNativeTypes { get; set; }
 
         /// <summary>
         /// Get or set the flag that controls the serialization of rdf:type properties when serializing RDF as JSON-LD.
@@ -149,26 +148,26 @@ namespace VDS.RDF.JsonLd
         /// <remarks>
         /// Enables special rules for the Serialize RDF as JSON-LD Algorithm causing rdf:type properties to be kept as IRIs in the output, rather than use @type. Defaults to false.
         /// </remarks>
-        public bool UseRdfType;
+        public bool UseRdfType { get; set; }
 
         /// <summary>
-        /// Sets the value object embed flag used in the Framing Algorithm.
+        /// Get/set the value of the object embed flag used in the Framing Algorithm.
         /// </summary>
-        public JsonLdEmbed Embed = JsonLdEmbed.Once;
+        public JsonLdEmbed Embed { get; set; } = JsonLdEmbed.Once;
 
         /// <summary>
-        /// Sets the value explicit inclusion flag used in the Framing Algorithm.
+        /// Get/Set the value of the explicit inclusion flag used in the Framing Algorithm.
         /// </summary>
-        public bool Explicit = false;
+        public bool Explicit { get; set; }
 
         /// <summary>
-        /// Sets the value omit default flag used in the Framing Algorithm.
+        /// Get/Set the value of the omit default flag used in the Framing Algorithm.
         /// </summary>
-        public bool OmitDefault = false;
+        public bool OmitDefault { get; set; }
 
         private bool? _omitGraph;
         /// <summary>
-        /// GEt or set the value of the omit graph flag used in the Framing Algorithm.
+        /// Get or set the value of the omit graph flag used in the Framing Algorithm.
         /// </summary>
         /// <remarks>Defaults to false if <see cref="ProcessingMode"/> is <see cref="JsonLdProcessingMode.JsonLd10"/>, true otherwise.</remarks>
         public bool OmitGraph
@@ -178,20 +177,20 @@ namespace VDS.RDF.JsonLd
         }
 
         /// <summary>
-        /// Sets the value require all flag used in the Framing Algorithm.
+        /// Get or set the value of the require all flag used in the Framing Algorithm.
         /// </summary>
-        public bool RequireAll = false;
+        public bool RequireAll { get; set; }
 
         /// <summary>
         /// Instead of framing a merged graph, frame only the default graph.
         /// </summary>
-        public bool FrameDefault = false;
+        public bool FrameDefault { get; set; }
 
         /// <summary>
         /// Removes @id from node objects where the value is a blank node identifier used only once within the document.
         /// </summary>
         [Obsolete("This property is no longer part of the JSON-LD specification")]
-        public bool PruneBlankNodeIdentifiers = true;
+        public bool PruneBlankNodeIdentifiers { get; set; }
 
         /// <summary>
         /// The maximum number of remote context references to load during processing.
@@ -205,7 +204,7 @@ namespace VDS.RDF.JsonLd
         /// developers to ensure that there is a limit to remote context processing (or that remote context processing
         /// is completely disabled by setting this property to 0).</para>
         /// </remarks>
-        public int RemoteContextLimit = -1;
+        public int RemoteContextLimit { get; set; } = -1;
 
         /// <summary>
         /// Create a copy of this instance, cloning all of its values.
