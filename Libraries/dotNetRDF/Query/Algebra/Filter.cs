@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             String filter = _filter.ToString();
-            filter = filter.Substring(7, filter.Length - 8);
+            filter = filter.Substring(7, filter.Length - 9); // Trim off leading "FILTER(" and trailing ") "
             return "Filter(" + _pattern.ToString() + ", " + filter + ")";
         }
 
