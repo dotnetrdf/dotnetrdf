@@ -15,6 +15,9 @@ namespace SparqlAnalyzer
 
         [Option('f', "file")]
         public string File { get; set; }
+
+        [Option("no-optimization")]
+        public bool NoOptimization { get; set; }
     }
     class Program
     {
@@ -25,7 +28,11 @@ namespace SparqlAnalyzer
 
         private static void RunSparqlAnalyzer(Options opts)
         {
-            VDS.RDF.Options.AlgebraOptimisation = false;
+            if (opts.NoOptimization)
+            {
+                VDS.RDF.Options.AlgebraOptimisation = false;
+                VDS.RDF.Options.QueryOptimisation = false;
+            }
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
             var query = opts.Query != null ? 
                 parser.ParseFromString(opts.Query) : 
