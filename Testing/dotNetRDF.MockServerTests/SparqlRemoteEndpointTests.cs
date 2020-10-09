@@ -222,11 +222,10 @@ namespace dotNetRDF.MockServerTests
             endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, s) =>
             {
                 signal.Set();
-                signal.Close();
             }, null);
 
-            signal.WaitOne(10000);
-            signal.SafeWaitHandle.IsClosed.Should().BeTrue();
+            bool wasSet = signal.WaitOne(10000);
+            wasSet.Should().BeTrue();
         }
 
 
@@ -239,11 +238,10 @@ namespace dotNetRDF.MockServerTests
             endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
             {
                 signal.Set();
-                signal.Close();
             }, null);
 
-            signal.WaitOne(10000);
-            signal.SafeWaitHandle.IsClosed.Should().BeTrue();
+            bool wasSet = signal.WaitOne(10000);
+            wasSet.Should().BeTrue();
         }
 
 

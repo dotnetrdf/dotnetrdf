@@ -59,11 +59,10 @@ namespace dotNetRDF.MockServerTests
             endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
             {
                 signal.Set();
-                signal.Close();
             }, null);
 
-            signal.WaitOne(TimeSpan.FromSeconds(15.0));
-            Assert.True(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+            bool wasSet = signal.WaitOne(TimeSpan.FromSeconds(15.0));
+            Assert.True(wasSet);
         }
 
     }
