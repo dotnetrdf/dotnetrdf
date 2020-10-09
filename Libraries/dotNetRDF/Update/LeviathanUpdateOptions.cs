@@ -28,10 +28,20 @@ using System;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Update
-{
+{    
+    /// <summary>
+    /// A class encapsulating run-time options that can be configured for a <see cref="LeviathanUpdateProcessor"/>.
+    /// </summary>
     public class LeviathanUpdateOptions : LeviathanQueryOptions
     {
-        private long _updateExecutionTimeout = 180000;
+#pragma warning disable CS0618 // Type or member is obsolete
+        private long _updateExecutionTimeout = Options.UpdateExecutionTimeout; // = 180000;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+        /// <summary>
+        /// Get or set whether to automatically flush dataset changes after an update changeset is processed.
+        /// </summary>
+        /// <remarks>Defaults to true.</remarks>
         public bool AutoCommit { get; set; } = true;
 
         /// <summary>

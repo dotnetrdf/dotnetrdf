@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TurtleMemberSubmission(ITestOutputHelper testOutputHelper)
-            : base(new TurtleParser(TurtleSyntax.Original), 
+            : base(new TurtleParser(TurtleSyntax.Original, false), 
                 new NTriplesParser(NTriplesSyntax.Original), //KA: test-29 will be indeterminate if using NTriples 1.1 syntax due to \t escape in the expected output result file
                 "turtle\\")
         {

@@ -42,8 +42,10 @@ namespace VDS.RDF.Parsing
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
-        private readonly bool _validateIris = false;
-        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
+#pragma warning disable CS0618 // Type or member is obsolete
+        private readonly bool _validateIris = Options.ValidateIris; // = false;
+#pragma warning restore CS0618 // Type or member is obsolete
+        //private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
         private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
@@ -55,9 +57,20 @@ namespace VDS.RDF.Parsing
         /// Creates a new Turtle Parser.
         /// </summary>
         /// <param name="syntax">Turtle Syntax.</param>
+        /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is <see cref="TurtleSyntax.W3C"/> and <see cref="Options.ValidateIris"/> is true.</remarks>
+        [Obsolete("The Options.ValidateIris API has been deprecated. Please use the constructor that allows IRI validation to be set directly.")]
+        public TurtleParser(TurtleSyntax syntax)
+        {
+            _syntax = syntax;
+        }
+
+        /// <summary>
+        /// Creates a new Turtle Parser.
+        /// </summary>
+        /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether or not to validate IRIs during tokenization.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleParser(TurtleSyntax syntax, bool validateIris = false) 
+        public TurtleParser(TurtleSyntax syntax, bool validateIris) 
         {
             _syntax = syntax;
             _validateIris = validateIris;
@@ -69,7 +82,7 @@ namespace VDS.RDF.Parsing
         /// <param name="queueMode">Queue Mode for Turtle.</param>
         public TurtleParser(TokenQueueMode queueMode)
         {
-            _queueMode = queueMode;
+            TokenQueueMode = queueMode;
         }
 
         /// <summary>
@@ -82,7 +95,7 @@ namespace VDS.RDF.Parsing
         public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax, bool validateIris = false)
             : this(syntax, validateIris)
         {
-            _queueMode = queueMode;
+            TokenQueueMode = queueMode;
         }
 
         /// <summary>
@@ -118,17 +131,9 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the token queue mode used.
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return _queueMode;
-            }
-            set
-            {
-                _queueMode = value;
-            }
-        }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Loads a Graph by reading Turtle syntax from the given input.
@@ -195,7 +200,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                var context = new TurtleParserContext(handler, new TurtleTokeniser(input, _syntax, _validateIris), _syntax, _queueMode, _traceParsing, _traceTokeniser);
+                var context = new TurtleParserContext(handler, new TurtleTokeniser(input, _syntax, _validateIris), _syntax, TokenQueueMode, _traceParsing, _traceTokeniser);
                 Parse(context);
             }
             catch

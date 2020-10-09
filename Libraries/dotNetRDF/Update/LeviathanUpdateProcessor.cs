@@ -56,6 +56,7 @@ namespace VDS.RDF.Update
         /// Creates a new Leviathan Update Processor.
         /// </summary>
         /// <param name="store">Triple Store.</param>
+        /// <param name="options">An optional callback invoked to set the options to be used by the update processor.</param>
         public LeviathanUpdateProcessor(IInMemoryQueryableStore store, Action<LeviathanUpdateOptions> options = null)
             : this(new InMemoryDataset(store), options) { }
 
@@ -63,6 +64,7 @@ namespace VDS.RDF.Update
         /// Creates a new Leviathan Update Processor.
         /// </summary>
         /// <param name="data">SPARQL Dataset.</param>
+        /// <param name="options">An optional callback invoked to set the options to be used by the update processor.</param>
         public LeviathanUpdateProcessor(ISparqlDataset data, Action<LeviathanUpdateOptions> options = null)
         {
             _dataset = data;
@@ -219,6 +221,7 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="cmd">Command.</param>
         /// <param name="context">SPARQL Update Evaluation Context.</param>
+        /// <param name="autoCommit">Whether to flush dataset changes after update.</param>
         /// <remarks>
         /// Invokes the type specific method for the command type.
         /// </remarks>

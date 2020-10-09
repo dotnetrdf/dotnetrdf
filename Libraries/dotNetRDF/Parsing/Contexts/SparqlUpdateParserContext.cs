@@ -127,7 +127,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
         /// </summary>
-        public bool AllowUnknownFunctions { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool AllowUnknownFunctions { get; set; } = Options.QueryAllowUnknownFunctions; //= true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets the set of BNodes used in INSERT DATA commands so far.

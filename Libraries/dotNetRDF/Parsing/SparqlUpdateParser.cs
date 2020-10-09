@@ -122,10 +122,20 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
+        /// </summary>
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool AllowUnknownFunctions { get; set; } = Options.QueryAllowUnknownFunctions; //= true;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+
+        /// <summary>
         /// Get / set whether the update commands should be optimized at the end of the parsing process.
         /// </summary>
         /// <remarks>Defaults to true.</remarks>
-        public bool QueryOptimisation { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool QueryOptimisation { get; set; } = Options.QueryOptimisation; //= true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         #region Events
 
@@ -181,6 +191,7 @@ namespace VDS.RDF.Parsing
             {
                 // Start the actual parsing
                 SparqlUpdateParserContext context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
+                context.AllowUnknownFunctions = AllowUnknownFunctions;
                 return ParseInternal(context);
             }
             catch

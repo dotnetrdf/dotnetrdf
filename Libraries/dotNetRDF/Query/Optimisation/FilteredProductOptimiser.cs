@@ -44,6 +44,9 @@ namespace VDS.RDF.Query.Optimisation
     public class FilteredProductOptimiser
         : IAlgebraOptimiser
     {
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Optimises the Algebra to use implict joins where applicable.
         /// </summary>

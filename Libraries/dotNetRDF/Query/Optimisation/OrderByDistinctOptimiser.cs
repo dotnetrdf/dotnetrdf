@@ -46,6 +46,9 @@ namespace VDS.RDF.Query.Optimisation
     public class OrderByDistinctOptimiser
         : IAlgebraOptimiser
     {
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Optimizes the given algebra.
         /// </summary>

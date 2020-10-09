@@ -46,6 +46,9 @@ namespace VDS.RDF.Query.Optimisation
     public class ParallelEvaluationOptimiser 
         : IAlgebraOptimiser
     {
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Optimises the algebra to use parallelised variants of <see cref="Join">Join</see> and <see cref="Union">Union</see> where possible.
         /// </summary>

@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Suites
         : BaseRdfParserSuite
     {
         public Turtle11Unofficial()
-            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11-unofficial\\") { }
+            : base(new TurtleParser(TurtleSyntax.W3C, false), new NTriplesParser(), "turtle11-unofficial\\") { }
 
         [SkippableFact]
         public void ParsingSuiteTurtleW3CUnofficialTests()
@@ -197,7 +197,7 @@ namespace VDS.RDF.Parsing.Suites
             String input = @"@prefix : <http://example.org/> .
 :subject :predicate 123.E+1.";
             Graph g = new Graph();
-            g.LoadFromString(input, new TurtleParser(TurtleSyntax.W3C));
+            g.LoadFromString(input, new TurtleParser(TurtleSyntax.W3C, false));
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
         }
@@ -396,7 +396,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
             Graph g = new Graph();
-            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original)));
+            Assert.Throws<RdfParseException>(() => g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original, false)));
         }
 
         [Fact]
@@ -405,7 +405,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
 
             Graph g = new Graph();
-            g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original));
+            g.LoadFromString(data, new TurtleParser(TurtleSyntax.Original, false));
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);

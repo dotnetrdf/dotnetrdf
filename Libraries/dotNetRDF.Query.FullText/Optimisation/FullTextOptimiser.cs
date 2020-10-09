@@ -30,7 +30,6 @@ using System.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.PropertyFunctions;
@@ -45,6 +44,9 @@ namespace VDS.RDF.Query.Optimisation
     {
         private IFullTextSearchProvider _provider;
         private IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
+
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
 
         /// <summary>
         /// Creates a Full Text Optimiser.

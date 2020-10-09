@@ -38,7 +38,11 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(ITripleStore store, string filename)
         {
-            Save(store, filename, new UTF8Encoding(false));
+            Save(store, filename,
+#pragma warning disable CS0618 // Type or member is obsolete
+                    new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
+#pragma warning restore CS0618 // Type or member is obsolete
+                );
         }
 
         /// <inheritdoc />

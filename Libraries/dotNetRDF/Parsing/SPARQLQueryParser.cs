@@ -104,7 +104,11 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Token Queue Mode.</param>
         public SparqlQueryParser(TokenQueueMode queueMode)
-            : this(queueMode, SparqlQuerySyntax.Sparql_1_1) { }
+            : this(queueMode,
+#pragma warning disable CS0618 // Type or member is obsolete
+                  Options.QueryDefaultSyntax //SparqlQuerySyntax.Sparql_1_1
+#pragma warning restore CS0618 // Type or member is obsolete
+                  ) { }
 
         /// <summary>
         /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser which supports the given SPARQL Syntax.
@@ -155,12 +159,16 @@ namespace VDS.RDF.Parsing
         /// Get/set whether query optimization should be used.
         /// </summary>
         /// <remarks>Defaults to true.</remarks>
-        public bool QueryOptimisation { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool QueryOptimisation { get; set; } = Options.QueryOptimisation; // = true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
         /// </summary>
-        public bool AllowUnknownFunctions { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool AllowUnknownFunctions { get; set; } = Options.QueryAllowUnknownFunctions; //= true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         #endregion
 

@@ -110,7 +110,9 @@ namespace VDS.RDF.Writing
         /// <para>
         /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
         /// </remarks>
-        public int CompressionLevel { get; set; } = WriterCompressionLevel.More;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel; // = WriterCompressionLevel.More;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets the Default Namespaces that are always available.

@@ -57,7 +57,9 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
         /// </summary>
-        public TreeIndexedTripleCollection() : this(true)
+#pragma warning disable CS0618 // Type or member is obsolete
+        public TreeIndexedTripleCollection() : this(Options.FullTripleIndexing /* true */)
+#pragma warning restore CS0618 // Type or member is obsolete
         {
         }
 

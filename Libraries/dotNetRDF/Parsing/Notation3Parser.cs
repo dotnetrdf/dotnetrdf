@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
-        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
+        //private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
         /// <summary>
         /// The Uri for log:implies.
@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing
         public Notation3Parser(TokenQueueMode queueMode)
             : this()
         {
-            _queueMode = queueMode;
+            TokenQueueMode = queueMode;
         }
 
         /// <summary>
@@ -103,17 +103,9 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the token queue mode used.
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return _queueMode;
-            }
-            set
-            {
-                _queueMode = value;
-            }
-        }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Loads a Graph by reading Notation 3 syntax from the given input.
@@ -183,7 +175,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), _queueMode, _traceParsing, _traceTokeniser);
+                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), TokenQueueMode, _traceParsing, _traceTokeniser);
                 Parse(context);
 
                 input.Close();

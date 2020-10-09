@@ -48,7 +48,9 @@ namespace VDS.RDF
         #region INodeFactory Members
 
         /// <inheritdoc />
-        public bool NormalizeLiteralValues { get; set; }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool NormalizeLiteralValues { get; set; } = Options.LiteralValueNormalization;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID.

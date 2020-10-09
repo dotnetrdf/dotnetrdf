@@ -57,5 +57,10 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="cmds">Update Command Set.</param>
         /// <returns></returns>
         bool IsApplicable(SparqlUpdateCommandSet cmds);
+
+        /// <summary>
+        /// Determines whether an Optimiser will perform algebra optimizations that are potentially unsafe at execution time.
+        /// </summary>
+        bool UnsafeOptimisation { get; set; }
     }
 }

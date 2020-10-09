@@ -71,7 +71,9 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether Multi-Threaded Writing.
         /// </summary>
-        public bool UseMultiThreadedWriting { get; set; } = false;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool UseMultiThreadedWriting { get; set; } = Options.AllowMultiThreadedWriting; // = false;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets the type of the Triple Formatter used by this writer.

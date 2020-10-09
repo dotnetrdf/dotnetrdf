@@ -137,7 +137,9 @@ namespace VDS.RDF
         /// <summary>
         /// Get or set whether to normalize the value strings of literal nodes on creation.
         /// </summary>
-        public virtual bool NormalizeLiteralValues { get; set; }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public virtual bool NormalizeLiteralValues { get; set; } = Options.LiteralValueNormalization;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         #endregion
 

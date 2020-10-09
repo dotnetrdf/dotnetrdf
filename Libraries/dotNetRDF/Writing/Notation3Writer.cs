@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
-        private int _compressionLevel = WriterCompressionLevel.Default;
+        //private int _compressionLevel = WriterCompressionLevel.Default;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Writing
         /// <remarks>See Remarks for this classes <see cref="Notation3Writer.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have.</remarks>
         public Notation3Writer(int compressionLevel)
         {
-            _compressionLevel = compressionLevel;
+            CompressionLevel = compressionLevel;
         }
 
         /// <summary>
@@ -108,17 +108,9 @@ namespace VDS.RDF.Writing
         /// <para>
         /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
         /// </remarks>
-        public int CompressionLevel
-        {
-            get
-            {
-                return _compressionLevel;
-            }
-            set
-            {
-                _compressionLevel = value;
-            }
-        }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets the Default Namespaces that are always available.
@@ -154,7 +146,7 @@ namespace VDS.RDF.Writing
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             g.NamespaceMap.Import(_defaultNamespaces);
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, _compressionLevel, _prettyprint, _allowHiSpeed);
+            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, CompressionLevel, _prettyprint, _allowHiSpeed);
             context.NodeFormatter = new Notation3Formatter(g);
             GenerateOutput(context);
         }

@@ -72,7 +72,6 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">NTriples syntax to parse.</param>
         public NTriplesParser(NTriplesSyntax syntax)
         {
-            TokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
             TraceParsing = false;
             TraceTokeniser = false;
             Syntax = syntax;
@@ -113,7 +112,9 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the token queue mode used.
         /// </summary>
-        public TokenQueueMode TokenQueueMode { get; set; }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets the desired NTriples syntax.

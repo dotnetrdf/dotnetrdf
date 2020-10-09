@@ -46,7 +46,11 @@ namespace VDS.RDF.Writing
         /// <remarks>The output file will be written using UTF-8 text encoding with no byte-order mark.</remarks>
         public void Save(SparqlResultSet results, string filename)
         {
-            Save(results, filename, new UTF8Encoding(false));
+            Save(results, filename,
+#pragma warning disable CS0618 // Type or member is obsolete
+                    new UTF8Encoding(Options.UseBomForUtf8) //new UTF8Encoding(false)
+#pragma warning restore CS0618 // Type or member is obsolete
+                );
         }
 
         /// <summary>

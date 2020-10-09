@@ -38,6 +38,9 @@ namespace VDS.RDF.Query.Optimisation
     public class StrictAlgebraOptimiser 
         : IAlgebraOptimiser
     {
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Optimises BGPs in the Algebra to use Filter() and Extend() rather than the embedded FILTER and BIND.
         /// </summary>

@@ -66,5 +66,8 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="cmds">Command Set.</param>
         /// <returns></returns>
         public abstract bool IsApplicable(SparqlUpdateCommandSet cmds);
+
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; } = false;
     }
 }

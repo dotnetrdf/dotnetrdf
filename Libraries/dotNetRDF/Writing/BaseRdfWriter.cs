@@ -42,7 +42,9 @@ namespace VDS.RDF.Writing
         /// <inheritdoc/>
         public virtual void Save(IGraph g, string filename)
         {
-            Save(g, filename, new UTF8Encoding(false));
+#pragma warning disable CS0618 // Type or member is obsolete
+            Save(g, filename, new UTF8Encoding(Options.UseBomForUtf8 /* false */));
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <inheritdoc/>

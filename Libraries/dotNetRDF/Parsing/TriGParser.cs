@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _tracetokeniser = false;
         private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
-        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
+        // private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
         /// <summary>
         /// Creates a TriG Parser than uses the default syntax.
@@ -94,17 +94,9 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the token queue mode used.
         /// </summary>
-        public TokenQueueMode TokenQueueMode
-        {
-            get
-            {
-                return _queueMode;
-            }
-            set
-            {
-                _queueMode = value;
-            }
-        }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public TokenQueueMode TokenQueueMode { get; set; } = Options.DefaultTokenQueueMode; // TokenQueueMode.SynchronousBufferDuringParsing
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Loads the named Graphs from the TriG input into the given Triple Store.
@@ -153,7 +145,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Create the Parser Context and Invoke the Parser
-                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), _queueMode, false, _tracetokeniser);
+                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false, _tracetokeniser);
                 context.Syntax = _syntax;
                 Parse(context);
             }

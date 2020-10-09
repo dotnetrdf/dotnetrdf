@@ -43,6 +43,9 @@ namespace VDS.RDF.Query.Optimisation
     {
         private Type _exprType = typeof(ConstantTerm);
 
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Optimises the Algebra to use Identity Filters where applicable.
         /// </summary>

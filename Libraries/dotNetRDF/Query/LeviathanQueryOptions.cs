@@ -33,8 +33,13 @@ namespace VDS.RDF.Query
     /// </summary>
     public class LeviathanQueryOptions
     {
-        private long _queryExecutionTimeout = 180000;
-        private ISparqlNodeComparer _nodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+#pragma warning disable CS0618 // Type or member is obsolete
+        private long _queryExecutionTimeout = Options.QueryExecutionTimeout; //= 180000;
+        private ISparqlNodeComparer _nodeComparer = new SparqlNodeComparer(
+            Options.DefaultCulture, //CultureInfo.InvariantCulture, 
+            Options.DefaultComparisonOptions // CompareOptions.Ordinal
+            );
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Get or set the node comparer to use in evaluation.
@@ -60,7 +65,9 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets/Sets whether Algebra Optimization should be used.
         /// </summary>
-        public bool AlgebraOptimisation { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool AlgebraOptimisation { get; set; } = Options.AlgebraOptimisation; // = true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets whether to use strict operators.
@@ -75,7 +82,9 @@ namespace VDS.RDF.Query
         /// The only time you may want to disable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
         /// </para>
         /// </remarks>
-        public bool StrictOperators { get; set; }
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool StrictOperators { get; set; } = Options.StrictOperators;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel.
@@ -83,7 +92,9 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// Defaults to true.
         /// </remarks>
-        public bool UsePLinqEvaluation { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool UsePLinqEvaluation { get; set; } = Options.UsePLinqEvaluation; //= true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets whether to use rigorous query evaluation.
@@ -93,6 +104,8 @@ namespace VDS.RDF.Query
         /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.  If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
         /// </para>
         /// </remarks>
-        public bool RigorousEvaluation { get; set; } = false;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool RigorousEvaluation { get; set; } = Options.RigorousEvaluation; // = false;
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }

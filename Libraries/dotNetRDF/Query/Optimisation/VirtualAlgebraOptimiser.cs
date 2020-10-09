@@ -51,6 +51,9 @@ namespace VDS.RDF.Query.Optimisation
         protected IVirtualRdfProvider<TNodeID, TGraphID> _provider;
         private Type _exprType = typeof(ConstantTerm);
 
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Creates a new Virtual Algebra Optimiser.
         /// </summary>

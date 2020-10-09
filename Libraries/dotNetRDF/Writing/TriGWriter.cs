@@ -45,7 +45,7 @@ namespace VDS.RDF.Writing
     /// For efficiency the TriG Writer splits it's writing over several threads (currently 4), these threads share a reference to a Context object which gives Global writing context eg. the target <see cref="TextWriter">TextWriter</see> being written to.  Each thread generates temporary local writing contexts as it goes along, each of these is scoped to writing a specific Graph.  Graphs are written to a <see cref="StringWriter">StringWriter</see> so the output for each Graph is built completely and then written in one go to the <see cref="TextWriter">TextWriter</see> specified as the target of the writing in the global context.
     /// </para>
     /// </remarks>
-    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call <see cref="TriGWriter.Save(ITripleStore,TextWriter)">Save()</see> from several threads with no issue.  See Remarks for potential performance impact of this.</threadsafety>
+    /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call <see cref="TriGWriter.Save(ITripleStore,TextWriter, bool)">Save()</see> from several threads with no issue.  See Remarks for potential performance impact of this.</threadsafety>
     public class TriGWriter 
         : BaseStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter, IMultiThreadedWriter
     {
@@ -65,7 +65,9 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the Compression Level for the writer.
         /// </summary>
-        public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel; //= WriterCompressionLevel.Default;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets whether N3 Compatibility Mode is used, in this mode an = is written after Graph Names so an N3 parser can read the TriG file correctly.
@@ -78,7 +80,9 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether multi-threaded writing will be used to generate output faster.
         /// </summary>
-        public bool UseMultiThreadedWriting { get; set; } = false;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool UseMultiThreadedWriting { get; set; } = Options.AllowMultiThreadedWriting; // = false;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format.

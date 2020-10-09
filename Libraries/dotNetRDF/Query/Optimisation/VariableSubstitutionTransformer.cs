@@ -50,6 +50,9 @@ namespace VDS.RDF.Query.Optimisation
         private bool _canReplaceObjects;
         private bool _canReplaceCustom = false;
 
+        /// <inheritdoc/>
+        public bool UnsafeOptimisation { get; set; }
+
         /// <summary>
         /// Create a transform that replaces one variable with another.
         /// </summary>

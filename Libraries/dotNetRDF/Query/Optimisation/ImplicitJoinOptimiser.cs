@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,16 +77,17 @@ namespace VDS.RDF.Query.Optimisation
     public class ImplicitJoinOptimiser
         : IAlgebraOptimiser
     {
-        private readonly bool _unsafeOptimization;
-
         /// <summary>
         /// Create a new ImplicitJoinOptimiser instance.
         /// </summary>
-        /// <param name="unsafeOptimization">Whether or not to allow optimization to be applied when there is a possibility that the join terms are literals.</param>
-        public ImplicitJoinOptimiser(bool unsafeOptimization = false)
+        public ImplicitJoinOptimiser()
         {
-            _unsafeOptimization = unsafeOptimization;
         }
+
+        /// <summary>
+        /// Get or set the flag that controls whether this class will allow the optimization to be applied when there is a possibility that the join terms are literals.
+        /// </summary>
+        public bool UnsafeOptimisation { get; set; } = false;
 
         /// <summary>
         /// Optimises the Algebra to use implicit joins where applicable.
@@ -111,7 +113,7 @@ namespace VDS.RDF.Query.Optimisation
                             {
                                 // Try to use the extend style optimization
                                 VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(rhsVar, lhsVar);
-                                if (!equals || _unsafeOptimization) transformer.CanReplaceObjects = true;
+                                if (!equals || UnsafeOptimisation) transformer.CanReplaceObjects = true;
                                 ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
                                 return new Extend(extAlgebra, new VariableTerm(lhsVar), rhsVar);
                             }

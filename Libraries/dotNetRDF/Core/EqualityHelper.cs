@@ -42,9 +42,11 @@ namespace VDS.RDF
     {
 
         /// <summary>
-        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
+        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification).
         /// </summary>
-        public static LiteralEqualityMode LiteralEqualityMode { get; set; } = LiteralEqualityMode.Strict;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public static LiteralEqualityMode LiteralEqualityMode { get; set; } = Options.LiteralEqualityMode; //LiteralEqualityMode.Strict;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Determines whether two URIs are equal.

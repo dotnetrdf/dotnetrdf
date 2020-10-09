@@ -98,7 +98,9 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets whether DTDs are used in the output.
         /// </summary>
-        public bool UseDtd { get; set; } = true;
+#pragma warning disable CS0618 // Type or member is obsolete
+        public bool UseDtd { get; set; } = Options.UseDtd; //= true;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Gets/Sets the Default Namespaces that are always available.

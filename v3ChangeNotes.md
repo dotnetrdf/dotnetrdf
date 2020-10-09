@@ -7,10 +7,14 @@ The global Options class has been removed and options are now specified closer t
 This option has been replaced with a constructor-injected option to specify the precise text encoding to be used in all writers. For backwards compatibility, the default text encoding used is UTF-8 with **no BOM** (as the default value for this option was `false`)
 
 ### ForceHttpBasicAuth
-This option has been removed completely and not implemented as a constructor-injected option. This will be reviewed once the codebase is moved over to the .NET HttpClient APIs
+This option has been removed completely and not implemented as a constructor-injected option. This will be reviewed once the codebase is moved over to the .NET HttpClient APIs.
+
+**WARNING:** Changing this property has no effect on HTTP requests made by the library at this point in time, and so the use of this obsolete API will result in a compiler error. This will be reviewed once the HTTP client part of the codebase is moved over to the .NET HttpClient APIs.
 
 ### ForceBlockingIO
 This option has been removed. To force use of blocking IO you must now explicitly wrap the source stream/text reader by calling ParsingTextReader.CreateBlocking(TextReader) / ParsingTextReader.CreateBlocking(TextReader, int). By default all parsers will wrap streams other than memory or file streams in a blocking text reader, so this step should only be necessary in rare circumstances of unexpected latency in file or memory IO. 
+
+**WARNING:** Setting this property to `true` will not change the use of blocking IO by the parsers. You must wrap the stream you wish to use blocking IO on as described above. As this is a breaking change, the use of these obsolete API will result in a compiler error.
 
 ### ValidateIris
 
@@ -31,6 +35,8 @@ The token queue mode for tokenizing parsers should be set explicitly when creati
 ### HttpDebugging, HttpFullDebugging
 Console logging of HTTP requests and responses has been removed. Please use the standard .NET HttpClient logging facility instead.
 
+**WARNING:** As these APIs do not have a direct replacement in the library, the use of these APIs will result in a compile-time error.
+
 ### DefaultCulture, DefaultComparison
 The desired culture and comparison options for node collation should be set explicitly when creating an `INodeComparer` instance. The node comparer to be used in SPARQL queries can be specified as an option when creating a `LeviathanQueryProcessor` using the new optional `options` callback parameter on the `LeviathanQueryProcessor` constructor. The default settings result in ordering that conforms to the SPARQL 1.1 specification. NOTE: The default comparison option for a `SparqlNodeComparere` is `Ordinal`, so to get culture-specific ordering you must both specify the desired culture *and* set the `CompareOptions` property to a value such as `CompareOptions.None` or `CompareOptions.IgnoreCase` depending on how you want strings to be compared.
 
@@ -50,7 +56,9 @@ These options can be set when creating a new `LeviathanQueryProcessor` using the
 By default queries and SPARQL update commands will be optimised by the query parser. To disable this behaviour, use the `QueryOptimisation` property on the `SparqlQueryParser` class (or the same property on the `SparqlUpdateParser` class for SPARQL update commands). NOTE: The default behaviour of optimising queries matches the previous default behaviour of dotNetRDF.
 
 ### UnsafeOptimisation
-This property only applies to the `VDS.RDF.Query.Optimisation.ImplictJoinOptimiser` and can now be set as a constructor parameter for that class. The constructor parameter defaults to `false`, matching the previous default behaviour or dotNetRDF.
+To use the unsafe optimisation option in the `ImplictJoinOptimiser` retrieve the instance of the optimiser from `SparqlOptimisers.AlgebraOptimisers` and set its UnsafeOptimisation property to true. The `IAlgebraOptimiser` interface has been extended to add this property for all optimisers although currently only the `ImplictJoinOptimiser` operates on it.
+
+**WARNING:** Changing the static `Options.UnsafeOptimisation` property at runtime will not change the behaviour of the optimiser as it has already been instantiated. For this reason, the Obsolete warning for this property has been set to generate a compile-time error rather than a warning.
 
 ### QueryDefaultSyntax
 The desired SPARQL syntax can be set directly on all relevant classes - the most commonly used one being `SparqlQueryParser`, either by a constructor parameter or a property setting or in most cases both. 
