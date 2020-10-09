@@ -43,9 +43,9 @@ namespace VDS.RDF
         // Main Storage
         private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Simple Indexes
-        private MultiDictionary<INode, List<Triple>> _s, _p, _o;
+        private MultiDictionary<INode, HashSet<Triple>> _s, _p, _o;
         // Compound Indexes
-        private MultiDictionary<Triple, List<Triple>> _sp, _so, _po;
+        private MultiDictionary<Triple, HashSet<Triple>> _sp, _so, _po;
 
         // Placeholder Variables for compound lookups
         private VariableNode _subjVar = new VariableNode(null, "s"),
@@ -79,12 +79,12 @@ namespace VDS.RDF
         /// <param name="compoundIndexMode">Mode to use for compound indexes.</param>
         public TreeIndexedTripleCollection(bool subjIndex, bool predIndex, bool objIndex, bool subjPredIndex, bool subjObjIndex, bool predObjIndex, MultiDictionaryMode compoundIndexMode)
         {
-            if (subjIndex) _s = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
-            if (predIndex) _p = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
-            if (objIndex) _o = new MultiDictionary<INode, List<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
-            if (subjPredIndex) _sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastVirtualNodeComparer()), compoundIndexMode);
-            if (subjObjIndex) _so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
-            if (predObjIndex) _po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+            if (subjIndex) _s = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+            if (predIndex) _p = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+            if (objIndex) _o = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+            if (subjPredIndex) _sp = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+            if (subjObjIndex) _so = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+            if (predObjIndex) _po = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
         }
 
         /// <summary>
@@ -107,16 +107,16 @@ namespace VDS.RDF
         /// <param name="n">Node to index by.</param>
         /// <param name="t">Triple.</param>
         /// <param name="index">Index to insert into.</param>
-        private void IndexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
+        private void IndexSimple(INode n, Triple t, MultiDictionary<INode, HashSet<Triple>> index)
         {
             if (index == null) return;
 
-            List<Triple> ts;
+            HashSet<Triple> ts;
             if (index.TryGetValue(n, out ts))
             {
                 if (ts == null)
                 {
-                    index[n] = new List<Triple> { t };
+                    index[n] = new HashSet<Triple> { t };
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace VDS.RDF
             }
             else
             {
-                index.Add(n, new List<Triple> { t });
+                index.Add(n, new HashSet<Triple> { t });
             }
         }
 
@@ -134,16 +134,16 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to index by.</param>
         /// <param name="index">Index to insert into.</param>
-        private void IndexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
+        private void IndexCompound(Triple t, MultiDictionary<Triple, HashSet<Triple>> index)
         {
             if (index == null) return;
 
-            List<Triple> ts;
+            HashSet<Triple> ts;
             if (index.TryGetValue(t, out ts))
             {
                 if (ts == null)
                 {
-                    index[t] = new List<Triple> { t };
+                    index[t] = new HashSet<Triple> { t };
                 }
                 else
                 {
@@ -152,7 +152,7 @@ namespace VDS.RDF
             }
             else
             {
-                index.Add(t, new List<Triple> { t });
+                index.Add(t, new HashSet<Triple> { t });
             }
         }
 
@@ -176,11 +176,11 @@ namespace VDS.RDF
         /// <param name="n">Node to index by.</param>
         /// <param name="t">Triple.</param>
         /// <param name="index">Index to remove from.</param>
-        private void UnindexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
+        private void UnindexSimple(INode n, Triple t, MultiDictionary<INode, HashSet<Triple>> index)
         {
             if (index == null) return;
 
-            List<Triple> ts;
+            HashSet<Triple> ts;
             if (index.TryGetValue(n, out ts))
             {
                 if (ts != null)
@@ -188,7 +188,7 @@ namespace VDS.RDF
                     ts.Remove(t);
                     if (ts.Count == 0)
                     {
-                        index.Remove(new KeyValuePair<INode, List<Triple>>(n, ts));
+                        index.Remove(new KeyValuePair<INode, HashSet<Triple>>(n, ts));
                     }
                 }
             }
@@ -199,11 +199,11 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple.</param>
         /// <param name="index">Index to remove from.</param>
-        private void UnindexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
+        private void UnindexCompound(Triple t, MultiDictionary<Triple, HashSet<Triple>> index)
         {
             if (index == null) return;
 
-            List<Triple> ts;
+            HashSet<Triple> ts;
             if (index.TryGetValue(t, out ts))
             {
                 if (ts != null)
@@ -211,7 +211,7 @@ namespace VDS.RDF
                     ts.Remove(t);
                     if (ts.Count == 0)
                     {
-                        index.Remove(new KeyValuePair<Triple, List<Triple>>(t, ts));
+                        index.Remove(new KeyValuePair<Triple, HashSet<Triple>>(t, ts));
                     }
                 }
             }
@@ -304,7 +304,7 @@ namespace VDS.RDF
         {
             if (_o != null)
             {
-                List<Triple> ts;
+                HashSet<Triple> ts;
                 if (_o.TryGetValue(obj, out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
@@ -329,7 +329,7 @@ namespace VDS.RDF
         {
             if (_p != null)
             {
-                List<Triple> ts;
+                HashSet<Triple> ts;
                 if (_p.TryGetValue(pred, out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
@@ -354,7 +354,7 @@ namespace VDS.RDF
         {
             if (_s != null)
             {
-                List<Triple> ts;
+                HashSet<Triple> ts;
                 if (_s.TryGetValue(subj, out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
@@ -380,7 +380,7 @@ namespace VDS.RDF
         {
             if (_po != null)
             {
-                List<Triple> ts;
+                HashSet<Triple> ts;
                 if (_po.TryGetValue(new Triple(_subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
@@ -406,7 +406,7 @@ namespace VDS.RDF
         {
             if (_so != null)
             {
-                List<Triple> ts;
+                HashSet<Triple> ts;
                 if (_so.TryGetValue(new Triple(subj, _predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
@@ -432,7 +432,7 @@ namespace VDS.RDF
         {
             if (_sp != null)
             {
-                List<Triple> ts;
+                HashSet<Triple> ts;
                 if (_sp.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), _objVar.CopyNode(subj.Graph)), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
