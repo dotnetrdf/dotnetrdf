@@ -74,6 +74,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />

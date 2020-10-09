@@ -25,10 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
-using System.Web;
 using FluentAssertions;
 using Moq;
 using VDS.RDF;
@@ -36,84 +35,13 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public class SparqlRemoteEndpointTests : IDisposable
+    public class SparqlRemoteEndpointTests : SparqlRemoteTestsBase
     {
-        private readonly WireMockServer _server;
 
-        public SparqlRemoteEndpointTests()
-        {
-            _server = WireMockServer.Start();
-        }
-
-        public void Dispose()
-        {
-            _server.Stop();
-        }
-
-        private const string SparqlResultsXml = @"<?xml version=""1.0""?>
-<sparql xmlns='http://www.w3.org/2005/sparql-results#'>
-    <head>
-        <variable name='s'/>
-        <variable name='p'/>
-        <variable name='o'/>
-    </head>
-    <results>
-        <result>
-            <binding name='s'><uri>http://example.org/s</uri></binding>
-            <binding name='p'><uri>http://example.org/s</uri></binding>
-            <binding name='o'><literal>o</literal></binding>
-        </result>
-    </results>
-</sparql>";
-
-        private const string ConstructResults = "<http://example.org/s> <http://example.org/p> \"o\" .";
-
-        private void RegisterSelectQueryGetHandler(string query = "SELECT * WHERE {?s ?p ?o}")
-        {
-            _server.Given(Request.Create()
-                                 .WithPath("/sparql")
-                                 .UsingGet()
-                                 .WithParam(queryParams=>
-                                                queryParams.ContainsKey("query") && 
-                                                queryParams["query"].Any(q => HttpUtility.UrlDecode(q).StartsWith(query))))
-                   .RespondWith(Response.Create()
-                                        .WithBody(SparqlResultsXml, encoding:Encoding.UTF8)
-                                        .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
-                                        .WithStatusCode(HttpStatusCode.OK));
-        }
-
-        private void RegisterConstructQueryGetHandler()
-        {
-            _server.Given(Request.Create()
-                    .WithPath("/sparql")
-                    .UsingGet()
-                    .WithParam(queryParams =>
-                        queryParams.ContainsKey("query") &&
-                        queryParams["query"].Any(q => HttpUtility.UrlDecode(q).Equals("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}"))))
-                .RespondWith(Response.Create()
-                    .WithBody(ConstructResults, encoding: Encoding.UTF8)
-                    .WithHeader("Content-Type", "application/n-triples")
-                    .WithStatusCode(HttpStatusCode.OK));
-        }
-
-        private void RegisterSelectQueryPostHandler()
-        {
-            _server.Given(Request.Create()
-                    .WithPath("/sparql")
-                    .UsingPost()
-                    .WithBody(x=>x.Contains("query=" + HttpUtility.UrlEncode("SELECT * WHERE {?s ?p ?o}"))))
-                .RespondWith(Response.Create()
-                    .WithBody(SparqlResultsXml, encoding: Encoding.UTF8)
-                    .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
-                    .WithStatusCode(HttpStatusCode.OK));
-        }
         private SparqlRemoteEndpoint GetQueryEndpoint()
         {
             return new SparqlRemoteEndpoint(new Uri(_server.Urls[0] + "/sparql"));
@@ -216,32 +144,38 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
-            RegisterSelectQueryGetHandler();
+            RegisterSelectQueryPostHandler(); // Async methods always use POST
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
+            int resultsCount = -1;
             endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, s) =>
             {
+                resultsCount = r.Count;
                 signal.Set();
             }, null);
 
             bool wasSet = signal.WaitOne(10000);
             wasSet.Should().BeTrue();
+            resultsCount.Should().Be(1);
         }
 
 
         [Fact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
-            RegisterConstructQueryGetHandler();
+            RegisterConstructQueryPostHandler(); // Async methods always use POST
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
-            endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
+            var resultsCount = -1;
+            endpoint.QueryWithResultGraph(ConstructQuery, (r, s) =>
             {
+                if (r != null) resultsCount = r.Triples.Count;
                 signal.Set();
             }, null);
 
             bool wasSet = signal.WaitOne(10000);
             wasSet.Should().BeTrue();
+            resultsCount.Should().Be(1);
         }
 
 
