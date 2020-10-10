@@ -135,7 +135,7 @@ namespace VDS.RDF.Query
             using var response = await QueryInternal(sparqlQuery, ResultsAcceptHeader, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                throw new RdfQueryException($"Server reports {response.StatusCode}: {response.ReasonPhrase}.");
+                throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
             }
             var ctype = response.Content.Headers.ContentType;
             var resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query
             using var response = await QueryInternal(sparqlQuery, RdfAcceptHeader, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                throw new RdfQueryException($"Server reports {response.StatusCode}: {response.ReasonPhrase}.");
+                throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
             }
             var ctype = response.Content.Headers.ContentType;
             var rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);

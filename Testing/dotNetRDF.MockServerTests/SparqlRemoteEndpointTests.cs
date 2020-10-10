@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
@@ -39,22 +38,28 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public class SparqlRemoteEndpointTests : SparqlRemoteTestsBase
+    public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
+        private readonly MockRemoteSparqlEndpointFixture _fixture;
+
+        public SparqlRemoteEndpointTests(MockRemoteSparqlEndpointFixture fixture)
+        {
+            _fixture = fixture;
+            _fixture.Server.ResetLogEntries();
+        }
 
         private SparqlRemoteEndpoint GetQueryEndpoint()
         {
-            return new SparqlRemoteEndpoint(new Uri(_server.Urls[0] + "/sparql"));
+            return new SparqlRemoteEndpoint(new Uri(_fixture.Server.Urls[0] + "/sparql"));
         }
 
         [Fact]
         public void ItDefaultsToGetForShortQueries()
         {
-            RegisterSelectQueryGetHandler();
             var endpoint = GetQueryEndpoint();
             var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -62,8 +67,6 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void ItDefaultsToPostForLongQueries()
         {
-            RegisterSelectQueryPostHandler();
-
             var input = new StringBuilder();
             input.AppendLine("SELECT * WHERE {?s ?p ?o}");
             input.AppendLine(new string('#', 2048));
@@ -71,7 +74,7 @@ namespace dotNetRDF.MockServerTests
             var endpoint = GetQueryEndpoint();
             var results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
@@ -79,7 +82,6 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void ItAllowsLongQueriesToBeForcedToUseGet()
         {
-            RegisterSelectQueryGetHandler();
             var endpoint = GetQueryEndpoint();
             endpoint.HttpMode = "GET";
 
@@ -89,15 +91,15 @@ namespace dotNetRDF.MockServerTests
 
             var results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
 
         [Fact]
-        public void ItAllowsNonAsciCharactersToBeForcedToUseGet()
+        public void ItAllowsNonAsciiCharactersToBeForcedToUseGet()
         {
-            RegisterSelectQueryGetHandler("SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}");
+            _fixture.RegisterSelectQueryGetHandler("SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}");
             var endpoint = GetQueryEndpoint();
             endpoint.HttpMode = "GET";
 
@@ -106,7 +108,7 @@ namespace dotNetRDF.MockServerTests
 
             var results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -114,7 +116,6 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void ItInvokesAnIRdfHandler()
         {
-            RegisterConstructQueryGetHandler();
             var endpoint = GetQueryEndpoint();
             var handler= new CountHandler();
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}");
@@ -128,7 +129,6 @@ namespace dotNetRDF.MockServerTests
             var resultsHandler = new Mock<ISparqlResultsHandler>();
             resultsHandler.Setup(x => x.HandleResult(It.IsAny<SparqlResult>())).Returns(true);
             resultsHandler.Setup(x => x.HandleVariable(It.IsAny<string>())).Returns(true);
-            RegisterSelectQueryGetHandler();
 
             var endpoint = GetQueryEndpoint();
             endpoint.QueryWithResultSet(resultsHandler.Object, "SELECT * WHERE {?s ?p ?o}");
@@ -144,7 +144,6 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
-            RegisterSelectQueryPostHandler(); // Async methods always use POST
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
             int resultsCount = -1;
@@ -163,11 +162,10 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
-            RegisterConstructQueryPostHandler(); // Async methods always use POST
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
             var resultsCount = -1;
-            endpoint.QueryWithResultGraph(ConstructQuery, (r, s) =>
+            endpoint.QueryWithResultGraph(_fixture.ConstructQuery, (r, s) =>
             {
                 if (r != null) resultsCount = r.Triples.Count;
                 signal.Set();

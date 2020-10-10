@@ -9,7 +9,7 @@ namespace dotNetRDF.MockServerTests
 {
     public class MockRemoteUpdateEndpointFixture : IDisposable
     {
-        public readonly WireMockServer Server;
+        public WireMockServer Server { get; }
 
         public MockRemoteUpdateEndpointFixture()
         {
@@ -17,9 +17,16 @@ namespace dotNetRDF.MockServerTests
             Server.Given(Request.Create()
                     .WithPath("/update")
                     .UsingPost()
-                    .WithBody(body=>HttpUtility.UrlDecode(body).StartsWith("update=LOAD <http://dbpedia.org/resource/Ilkeston>")))
+                    .WithBody(body => HttpUtility.UrlDecode(body).StartsWith("update=LOAD <http://dbpedia.org/resource/Ilkeston>")))
                 .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.OK));
+            Server.Given(Request.Create()
+                    .WithPath("/update")
+                    .UsingPost()
+                    .WithBody(body =>
+                        HttpUtility.UrlDecode(body).StartsWith("update=DELETE <http://dbpedia.org/resource/Ilkeston>")))
+                .RespondWith(Response.Create().WithStatusCode(HttpStatusCode.Forbidden));
         }
+
 
         public void Dispose()
         {

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using FluentAssertions;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -9,84 +7,70 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public class SparqlRemoteClientTests : SparqlRemoteTestsBase
+    public class SparqlRemoteClientTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient HttpClient = new HttpClient();
+        private readonly MockRemoteSparqlEndpointFixture _fixture;
+
+        public SparqlRemoteClientTests(MockRemoteSparqlEndpointFixture fixture)
+        {
+            _fixture = fixture;
+        }
 
         private SparqlRemoteClient GetQueryClient()
         {
-            return new SparqlRemoteClient(_httpClient, new Uri(_server.Urls[0] + "/sparql"));
+            return new SparqlRemoteClient(HttpClient, new Uri(_fixture.Server.Urls[0] + "/sparql"));
         }
 
 
         [Fact]
         public async void SelectWithResultSet()
         {
-            RegisterSelectQueryGetHandler();
             var client = GetQueryClient();
-            var resultSet = await client.QueryWithResultSetAsync(SelectQuery);
+            var resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery);
             resultSet.Count.Should().Be(1);
         }
 
         [Fact]
         public async void SelectWithCountHandler()
         {
-            RegisterSelectQueryGetHandler();
             var client = GetQueryClient();
             var handler = new ResultCountHandler();
-            await client.QueryWithResultSetAsync(SelectQuery, handler);
+            await client.QueryWithResultSetAsync(_fixture.SelectQuery, handler);
             handler.Count.Should().Be(1);
         }
 
         [Fact]
         public async void SelectRaisesExceptionOnServerError()
         {
-            RegisterErrorHandler();
             var client = GetQueryClient();
-            try
-            {
-                var resultSet = await client.QueryWithResultSetAsync(SelectQuery);
-                Assert.True(false, "Expected an exception to be raised");
-            }
-            catch (RdfQueryException)
-            {
-                // Expected
-            }
+            var ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery));
+            ex.Message.Should().Contain("400");
         }
 
         [Fact]
         public async void ConstructWithResultGraph()
         {
-            RegisterConstructQueryGetHandler();
             var client = GetQueryClient();
-            var resultGraph = await client.QueryWithResultGraphAsync(ConstructQuery);
+            var resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery);
             resultGraph.Triples.Count.Should().Be(1);
         }
 
         [Fact]
         public async void ConstructWithCountHandler()
         {
-            RegisterConstructQueryGetHandler();
             var client = GetQueryClient();
             var handler = new CountHandler();
-            await client.QueryWithResultGraphAsync(ConstructQuery, handler);
+            await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, handler);
             handler.Count.Should().Be(1);
         }
 
         [Fact]
         public async void ConstructRaisesExceptionOnServerError()
         {
-            RegisterErrorHandler();
             var client = GetQueryClient();
-            try
-            {
-                var resultSet = await client.QueryWithResultGraphAsync(ConstructQuery);
-                Assert.True(false, "Expected an exception to be raised");
-            }
-            catch (RdfQueryException)
-            {
-                // Expected
-            }
+            var ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery));
+            ex.Message.Should().Contain("400");
         }
     }
 }
