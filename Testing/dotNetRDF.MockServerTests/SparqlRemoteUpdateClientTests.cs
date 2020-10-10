@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using FluentAssertions;
-using VDS.RDF.Query;
 using VDS.RDF.Update;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
@@ -14,7 +12,8 @@ namespace dotNetRDF.MockServerTests
 {
     public class SparqlRemoteUpdateClientTests : IClassFixture<MockRemoteUpdateEndpointFixture>
     {
-        private MockRemoteUpdateEndpointFixture _fixture;
+        private static readonly HttpClient HttpClient = new HttpClient();
+        private readonly MockRemoteUpdateEndpointFixture _fixture;
 
         public SparqlRemoteUpdateClientTests(MockRemoteUpdateEndpointFixture fixture)
         {
@@ -24,7 +23,7 @@ namespace dotNetRDF.MockServerTests
 
         private SparqlRemoteUpdateClient GetUpdateClient()
         {
-            return new SparqlRemoteUpdateClient(new HttpClient(), new Uri(_fixture.Server.Urls[0] + "/update"));
+            return new SparqlRemoteUpdateClient(HttpClient, new Uri(_fixture.Server.Urls[0] + "/update"));
         }
 
         [Fact]

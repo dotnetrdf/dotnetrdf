@@ -105,7 +105,21 @@ namespace VDS.RDF.Query
         public async Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery)
         {
             var results = new SparqlResultSet();
-            await QueryWithResultSetAsync(sparqlQuery, new ResultSetHandler(results));
+            await QueryWithResultSetAsync(sparqlQuery, new ResultSetHandler(results), CancellationToken.None);
+            return results;
+        }
+
+        /// <summary>
+        /// Execute a SPARQL query that is intended to return a SPARQL results set.
+        /// </summary>
+        /// <param name="sparqlQuery">The query to be executed.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The query results.</returns>
+        /// <remarks>This method should be  used when processing SPARQL SELECT or ASK queries.</remarks>
+        public async Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery, CancellationToken cancellationToken)
+        {
+            var results = new SparqlResultSet();
+            await QueryWithResultSetAsync(sparqlQuery, new ResultSetHandler(results), cancellationToken);
             return results;
         }
 
@@ -156,6 +170,20 @@ namespace VDS.RDF.Query
         {
             var g = new Graph {BaseUri = EndpointUri};
             await QueryWithResultGraphAsync(sparqlQuery, new GraphHandler(g), CancellationToken.None);
+            return g;
+        }
+
+        /// <summary>
+        /// Execute a SPARQL query that is intended to return an RDF Graph.
+        /// </summary>
+        /// <param name="sparqlQuery">The query to be executed.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>An RDF Graph.</returns>
+        /// <remarks>This method should be used when processing SPARQL CONSTRUCT or DESCRIBE queries.</remarks>
+        public async Task<IGraph> QueryWithResultGraphAsync(string sparqlQuery, CancellationToken cancellationToken)
+        {
+            var g = new Graph {BaseUri = EndpointUri};
+            await QueryWithResultGraphAsync(sparqlQuery, new GraphHandler(g), cancellationToken);
             return g;
         }
 
