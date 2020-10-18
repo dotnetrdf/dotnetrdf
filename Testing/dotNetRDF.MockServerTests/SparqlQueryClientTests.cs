@@ -7,19 +7,19 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public class SparqlRemoteClientTests : IClassFixture<MockRemoteSparqlEndpointFixture>
+    public class SparqlQueryClientTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         private readonly MockRemoteSparqlEndpointFixture _fixture;
 
-        public SparqlRemoteClientTests(MockRemoteSparqlEndpointFixture fixture)
+        public SparqlQueryClientTests(MockRemoteSparqlEndpointFixture fixture)
         {
             _fixture = fixture;
         }
 
-        private SparqlRemoteClient GetQueryClient()
+        private SparqlQueryClient GetQueryClient()
         {
-            return new SparqlRemoteClient(HttpClient, new Uri(_fixture.Server.Urls[0] + "/sparql"));
+            return new SparqlQueryClient(HttpClient, new Uri(_fixture.Server.Urls[0] + "/sparql"));
         }
 
 

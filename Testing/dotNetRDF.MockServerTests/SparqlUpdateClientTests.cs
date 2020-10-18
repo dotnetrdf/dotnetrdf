@@ -10,20 +10,20 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public class SparqlRemoteUpdateClientTests : IClassFixture<MockRemoteUpdateEndpointFixture>
+    public class SparqlUpdateClientTests : IClassFixture<MockRemoteUpdateEndpointFixture>
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         private readonly MockRemoteUpdateEndpointFixture _fixture;
 
-        public SparqlRemoteUpdateClientTests(MockRemoteUpdateEndpointFixture fixture)
+        public SparqlUpdateClientTests(MockRemoteUpdateEndpointFixture fixture)
         {
             _fixture = fixture;
             _fixture.Server.ResetLogEntries();
         }
 
-        private SparqlRemoteUpdateClient GetUpdateClient()
+        private SparqlUpdateClient GetUpdateClient()
         {
-            return new SparqlRemoteUpdateClient(HttpClient, new Uri(_fixture.Server.Urls[0] + "/update"));
+            return new SparqlUpdateClient(HttpClient, new Uri(_fixture.Server.Urls[0] + "/update"));
         }
 
         [Fact]

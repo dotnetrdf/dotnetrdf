@@ -46,10 +46,10 @@ namespace VDS.RDF.Query
     /// it just naively merges the data.
     /// </para>
     /// </remarks>
-    public class FederatedSparqlRemoteClient
+    public class FederatedSparqlQueryClient
     {
         private readonly HttpClient _httpClient;
-        private readonly List<SparqlRemoteClient> _endpoints = new List<SparqlRemoteClient>();
+        private readonly List<SparqlQueryClient> _endpoints = new List<SparqlQueryClient>();
 
         /// <summary>
         /// Get or set whether a failed request on one endpoint should cause the entire request to fail.
@@ -75,10 +75,10 @@ namespace VDS.RDF.Query
         /// <remarks>The HttpClient instance specified in the <paramref name="httpClient"/> parameter
         /// will be used as the default client for all endpoints subsequently added using the <see cref="AddEndpoint(Uri)"/> method.
         /// </remarks>
-        public FederatedSparqlRemoteClient(HttpClient httpClient, params Uri[] endpointUris)
+        public FederatedSparqlQueryClient(HttpClient httpClient, params Uri[] endpointUris)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _endpoints.AddRange(endpointUris.Select(x=>new SparqlRemoteClient(httpClient, x)));
+            _endpoints.AddRange(endpointUris.Select(x=>new SparqlQueryClient(httpClient, x)));
         }
 
         /// <summary>
@@ -89,15 +89,15 @@ namespace VDS.RDF.Query
         /// in the constructor of this class.</remarks>
         public void AddEndpoint(Uri endpointUri)
         {
-            _endpoints.Add(new SparqlRemoteClient(_httpClient, endpointUri));
+            _endpoints.Add(new SparqlQueryClient(_httpClient, endpointUri));
         }
 
         /// <summary>
         /// Add a remote endpoint using the specified client instance.
         /// </summary>
         /// <param name="endpointClient">The client to use to connect to the remote endpoint.</param>
-        /// <remarks>This method allows callers to use a specific HttpClient for certain remote endpoints by first constructing a <see cref="SparqlRemoteClient"/> instance and then passing it to this method.</remarks>
-        public void AddEndpoint(SparqlRemoteClient endpointClient)
+        /// <remarks>This method allows callers to use a specific HttpClient for certain remote endpoints by first constructing a <see cref="SparqlQueryClient"/> instance and then passing it to this method.</remarks>
+        public void AddEndpoint(SparqlQueryClient endpointClient)
         {
             _endpoints.Add(endpointClient);
         }

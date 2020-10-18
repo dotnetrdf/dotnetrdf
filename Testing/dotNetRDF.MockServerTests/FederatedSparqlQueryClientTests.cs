@@ -8,12 +8,12 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
-    public class FederatedSparqlRemoteClientTests : IClassFixture<FederatedEndpointFixture>
+    public class FederatedSparqlQueryClientTests : IClassFixture<FederatedEndpointFixture>
     {
         private readonly FederatedEndpointFixture _fixture;
         private static readonly HttpClient HttpClient = new HttpClient();
 
-        public FederatedSparqlRemoteClientTests(FederatedEndpointFixture fixture)
+        public FederatedSparqlQueryClientTests(FederatedEndpointFixture fixture)
         {
             _fixture = fixture;
             _fixture.Server1.ResetLogEntries();
@@ -23,7 +23,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultSetCombinesResultsFromFederatedEndpoints()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                 HttpClient,
                 new[]
                 {
@@ -37,7 +37,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultGraphCombinesGraphsFromFederatedEndpoints()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                 HttpClient,
                 new[]
                 {
@@ -52,7 +52,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public void QueryWithResultSetThrowsAnExceptionIfOneEndpointFails()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                 HttpClient,
                 new[]
             {
@@ -65,7 +65,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultGraphThrowsAnExceptionIfOneEndpointFails()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                 HttpClient,
                 new[]
                 {
@@ -78,7 +78,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultSetAllowsEndpointErrorsToBeIgnored()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                     HttpClient,
                     new[]
                 {
@@ -96,7 +96,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultGraphAllowsEndpointErrorsToBeIgnored()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                     HttpClient,
                     new[]
                     {
@@ -115,7 +115,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultSetThrowsAnExceptionIfOneEndpointTimesOut()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                     HttpClient,
                     new[]
                 {
@@ -129,7 +129,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultGraphThrowsAnExceptionIfOneEndpointTimesOut()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                     HttpClient,
                     new[]
                     {
@@ -145,7 +145,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultSetAllowsTimeoutsToBeIgnored()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                     HttpClient,
                     new[]
                 {
@@ -163,7 +163,7 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void QueryWithResultGraphAllowsTimeoutsToBeIgnored()
         {
-            var endpoint = new FederatedSparqlRemoteClient(
+            var endpoint = new FederatedSparqlQueryClient(
                     HttpClient,
                     new[]
                     {

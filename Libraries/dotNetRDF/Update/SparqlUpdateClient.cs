@@ -35,7 +35,7 @@ namespace VDS.RDF.Update
     /// <summary>
     /// A class for connecting to a remote SPARQL update endpoint and executing updates against it using the System.Net.Http library.
     /// </summary>
-    public class SparqlRemoteUpdateClient
+    public class SparqlUpdateClient
     {
         private readonly HttpClient _httpClient;
 
@@ -44,7 +44,7 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="httpClient">The underlying HTTP client to use for all connections to the remote endpoint.</param>
         /// <param name="endpointUri">The URI of the remote endpoint to connect to.</param>
-        public SparqlRemoteUpdateClient(HttpClient httpClient, Uri endpointUri)
+        public SparqlUpdateClient(HttpClient httpClient, Uri endpointUri)
         {
             _httpClient = httpClient;
             EndpointUri = endpointUri;
