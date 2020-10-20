@@ -440,6 +440,14 @@ namespace VDS.RDF.Parsing
                     return;
                 }
 
+                if (uri.Scheme.Equals("data"))
+                {
+                    // Invoke DataUriLoader instead
+                    RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
+                    DataUriLoader.Load(handler, uri);
+                    return;
+                }
+
                 // Sanitize request URI by removing any fragment ID
                 uri = Tools.StripUriFragment(uri);
 

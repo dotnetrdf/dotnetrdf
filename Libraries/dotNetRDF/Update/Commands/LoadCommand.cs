@@ -36,6 +36,7 @@ namespace VDS.RDF.Update.Commands
     {
         private readonly Uri _sourceUri, _graphUri;
         private readonly bool _silent = false;
+        private readonly Loader _loader;
 
         /// <summary>
         /// Creates a new LOAD command.
@@ -43,13 +44,14 @@ namespace VDS.RDF.Update.Commands
         /// <param name="sourceUri">Source URI to load data from.</param>
         /// <param name="graphUri">Target URI for the Graph to store data in.</param>
         /// <param name="silent">Whether errors loading should be suppressed.</param>
-        public LoadCommand(Uri sourceUri, Uri graphUri, bool silent)
+        public LoadCommand(Uri sourceUri, Uri graphUri, bool silent, Loader loader = null)
             : base(SparqlUpdateCommandType.Load) 
         {
             if (sourceUri == null) throw new ArgumentNullException("sourceUri");
             _sourceUri = sourceUri;
             _graphUri = graphUri;
             _silent = silent;
+            _loader = loader ?? new Loader();
         }
 
         /// <summary>
@@ -78,13 +80,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets whether the Command affects a specific Graph.
         /// </summary>
-        public override bool AffectsSingleGraph
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool AffectsSingleGraph => true;
 
         /// <summary>
         /// Gets whether the Command affects a given Graph.
@@ -103,35 +99,17 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the URI that data is loaded from.
         /// </summary>
-        public Uri SourceUri
-        {
-            get
-            {
-                return _sourceUri;
-            }
-        }
+        public Uri SourceUri => _sourceUri;
 
         /// <summary>
         /// Gets the URI of the Graph to load data into.
         /// </summary>
-        public Uri TargetUri
-        {
-            get
-            {
-                return _graphUri;
-            }
-        }
+        public Uri TargetUri => _graphUri;
 
         /// <summary>
         /// Gets whether errors loading the data are suppressed.
         /// </summary>
-        public bool Silent
-        {
-            get
-            {
-                return _silent;
-            }
-        }
+        public bool Silent => _silent;
 
         /// <summary>
         /// Evaluates the Command in the given Context.
@@ -154,7 +132,7 @@ namespace VDS.RDF.Update.Commands
             {
                 // Load from the URI
                 Graph g = new Graph();
-                UriLoader.Load(g, _sourceUri);
+                _loader.LoadGraph(g, _sourceUri);
 
                 if (context.Data.HasGraph(_graphUri))
                 {

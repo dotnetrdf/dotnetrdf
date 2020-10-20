@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -80,8 +81,8 @@ namespace VDS.RDF.Parsing
             if (!u.Scheme.Equals("data"))
             {
                 // Invoke the normal URI Loader if not a data: URI
-                UriLoader.Load(handler, u);
-                return;
+                // UriLoader.Load(handler, u);
+                throw new RdfParseException("DataUriLoader cannot load data from a URI that does not use the data: scheme.");
             }
 
             String mimetype = "text/plain";
@@ -176,9 +177,19 @@ namespace VDS.RDF.Parsing
             }
             catch (RdfParserSelectionException)
             {
-                // If we fail to get a parser then we'll let the StringParser guess the format
-                IRdfReader reader = StringParser.GetParser(data);
-                reader.Load(handler, new StringReader(data));
+                try
+                {
+                    // See if the mime type specifies a dataset parser
+                    var reader = MimeTypesHelper.GetStoreParser(mimetype);
+                    reader.Load(handler, new StringReader(data));
+                }
+                catch (RdfParserSelectionException)
+                {
+
+                    // If we still fail to get a parser then we'll let the StringParser guess the format
+                    IRdfReader reader = StringParser.GetParser(data);
+                    reader.Load(handler, new StringReader(data));
+                }
             }
         }
     }

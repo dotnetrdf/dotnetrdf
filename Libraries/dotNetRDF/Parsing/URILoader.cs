@@ -42,7 +42,9 @@ namespace VDS.RDF.Parsing
     /// <para>
     /// If you wish to completely control the Cache you can implement your own <see cref="IUriLoaderCache">IUriLoaderCache</see> implementation and use it by setting the <see cref="UriLoader.Cache">Cache</see> property.
     /// </para>
+    /// <para>As of the 3.0 release, this class is now deprecated and will be removed in a future version. The replacement for this class is the <see cref="Loader"/> class.</para>
     /// </remarks>
+    [Obsolete("The UriLoader class has been deprecated and will be removed in a future release. Please use the Loader class as a replacement.")]
     public static partial class UriLoader
     {
         private static String _userAgent;

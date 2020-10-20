@@ -25,6 +25,7 @@
 */
 
 using System;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -117,8 +118,8 @@ namespace VDS.RDF
             {
                 try
                 {
-                    Graph g = new Graph();
-                    UriLoader.Load(g, graphUri);
+                    var g = new Graph();
+                    ConfigurationLoader.Loader.LoadGraph(g, graphUri);
                     return g;
                 }
                 catch

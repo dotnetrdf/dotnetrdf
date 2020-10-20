@@ -137,21 +137,11 @@ namespace VDS.RDF.Configuration
         [Fact]
         public void ConfigurationStaticOptionsInt32Property()
         {
-            var current = UriLoader.Timeout;
-            try
-            {
-                Assert.Equal(current, UriLoader.Timeout);
-
-                var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Parsing.UriLoader#Timeout");
-                var g = new Graph();
-                this.ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
-
-                Assert.Equal(99, UriLoader.Timeout);
-            }
-            finally
-            {
-                UriLoader.Timeout = current;
-            }
+            MockConfigurationTarget.StaticIntOption = 0;
+            var optionUri = new Uri($"dotnetrdf-configure:VDS.RDF.Configuration.MockConfigurationTarget,dotNetRDF.Test#StaticIntOption");
+            var g = new Graph();
+            ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
+            Assert.Equal(99, MockConfigurationTarget.StaticIntOption);
         }
 
 
@@ -225,5 +215,10 @@ dnr:enabled false .";
         }
 
         #endregion
+    }
+
+    public static class MockConfigurationTarget
+    {
+        public static int StaticIntOption { get; set; }
     }
 }

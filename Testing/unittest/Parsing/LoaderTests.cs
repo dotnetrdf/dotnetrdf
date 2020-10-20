@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing
                 "data:text/turtle;base64," + rdfBase64,
                 "data:;base64," + rdfBase64,
                 "data:text/turtle;charset=UTF-8," + rdfAscii,
-                "data:text/tutle," + rdfAscii,
+                "data:text/turtle," + rdfAscii,
                 "data:," + rdfAscii
             };
 
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing
                 "data:text/turtle;base64," + rdfBase64,
                 "data:;base64," + rdfBase64,
                 "data:text/turtle;charset=UTF-8," + rdfAscii,
-                "data:text/tutle," + rdfAscii,
+                "data:text/turtle," + rdfAscii,
                 "data:," + rdfAscii
             };
 

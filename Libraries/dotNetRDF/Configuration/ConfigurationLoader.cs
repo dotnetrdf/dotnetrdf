@@ -270,6 +270,11 @@ namespace VDS.RDF.Configuration
         /// <remarks>On .NET Framework defaults to a reader of &lt;appSettings&gt; configuration section.</remarks>
         public static ISettingsProvider SettingsProvider { get; set; }
 
+        /// <summary>
+        /// Get the loader used to retrieve data from URIs.
+        /// </summary>
+        public static Loader Loader { get; } = new Loader();
+
         #endregion
 
         static ConfigurationLoader()
@@ -299,8 +304,8 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public static IGraph LoadConfiguration(Uri u, bool autoConfigure)
         {
-            Graph g = new Graph();
-            UriLoader.Load(g, u);
+            var g = new Graph();
+            Loader.LoadGraph(g, u);
             return LoadCommon(g, g.CreateUriNode(u), autoConfigure);
         }
 
@@ -397,7 +402,7 @@ namespace VDS.RDF.Configuration
                         importData = ResolveAppSetting(g, importData);
                         if (!imported.Contains(importData))
                         {
-                            UriLoader.Load(data, ((IUriNode)importData).Uri);
+                            Loader.LoadGraph(data, ((IUriNode)importData).Uri);
                             imported.Add(importData);
                         }
                         break;

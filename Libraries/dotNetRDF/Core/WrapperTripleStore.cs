@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
@@ -134,7 +135,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool AddFromUri(Uri graphUri)
         {
-            return AddFromUri(graphUri, false);
+            return AddFromUri(graphUri, false, new Loader());
         }
 
         /// <summary>
@@ -145,7 +146,19 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists)
         {
-            return _store.AddFromUri(graphUri, mergeIfExists);
+            return AddFromUri(graphUri, mergeIfExists, new Loader());
+        }
+
+        /// <summary>
+        /// Adds a Graph to the store from a URI.
+        /// </summary>
+        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="mergeIfExists">Whether to merge with an existing graph with the same URI.</param>
+        /// <param name="loader">The loader to use for retrieving and parsing the RDF data.</param>
+        /// <returns></returns>
+        public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists, Loader loader)
+        {
+            return _store.AddFromUri(graphUri, mergeIfExists, loader);
         }
 
         /// <summary>

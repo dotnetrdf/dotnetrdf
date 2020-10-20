@@ -226,11 +226,11 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Uri)
                 {
-                    UriLoader.Load(output, ((IUriNode)source).Uri);
+                    ConfigurationLoader.Loader.LoadGraph(output, ((IUriNode)source).Uri);
                 }
                 else if (source.NodeType == NodeType.Literal)
                 {
-                    UriLoader.Load(output, UriFactory.Create(((ILiteralNode)source).Value));
+                    ConfigurationLoader.Loader.LoadGraph(output, UriFactory.Create(((ILiteralNode) source).Value));
                 }
                 else
                 {

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
@@ -95,6 +96,14 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to be added.</param>
         /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store.</param>
         bool AddFromUri(Uri graphUri, bool mergeIfExists);
+
+        /// <summary>
+        /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store.
+        /// </summary>
+        /// <param name="graphUri">Uri of the Graph to be added.</param>
+        /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store.</param>
+        /// <param name="loader">The loader to use for retrieving and parsing the graph data.</param>
+        bool AddFromUri(Uri graphUri, bool mergeIfExists, Loader loader);
 
         /// <summary>
         /// Removes a Graph from the Triple Store.

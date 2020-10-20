@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -1351,7 +1352,8 @@ namespace VDS.RDF.Parsing
 
             var prefixQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?prefix) AS ?NamespacePrefix SAMPLE(?uri) AS ?NamespaceURI WHERE { ?s rdfa:prefix ?prefix ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?prefix) = 1 && COUNT(?uri) = 1)";
             var termQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?term) AS ?Term SAMPLE(?uri) AS ?URI WHERE {?s rdfa:term ?term ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?term) = 1 && COUNT(?uri) = 1)";
-
+            using var httpClient = new HttpClient();
+            var loader = new Loader(httpClient);
             foreach (var profile in profiles)
             {
                 try
@@ -1367,7 +1369,7 @@ namespace VDS.RDF.Parsing
                     {
                         try
                         {
-                            UriLoader.Load(g, UriFactory.Create(profile));
+                            loader.LoadGraph(g, UriFactory.Create(profile));
                         }
                         catch
                         {

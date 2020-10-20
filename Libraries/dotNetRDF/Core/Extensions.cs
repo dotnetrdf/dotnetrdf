@@ -927,17 +927,19 @@ namespace VDS.RDF
         /// <param name="g">Graph to load into.</param>
         /// <param name="u">URI to load from.</param>
         /// <param name="parser">Parser to use.</param>
+        /// <param name="loader">Loader to use.</param>
         /// <remarks>
         /// <para>
-        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
+        /// This is just a shortcut to using the static <strong>LoadGraph()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </para>
         /// <para>
-        /// <strong>Note:</strong> UriLoader will assign the Graph the source URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// <strong>Note:</strong> Loader will assign the Graph the source URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
         /// </remarks>
-        public static void LoadFromUri(this IGraph g, Uri u, IRdfReader parser)
+        public static void LoadFromUri(this IGraph g, Uri u, IRdfReader parser, Loader loader = null)
         {
-            UriLoader.Load(g, u, parser);
+            loader ??= new Loader();
+            loader.LoadGraph(g, u, parser);
         }
 
         /// <summary>
@@ -945,17 +947,19 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to load into.</param>
         /// <param name="u">URI to load from.</param>
+        /// <param name="loader">Loader to use.</param>
         /// <remarks>
         /// <para>
-        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
+        /// This is just a shortcut to using the static <strong>LoadGraph()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </para>
         /// <para>
         /// <strong>Note:</strong> UriLoader will assign the Graph the source URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
         /// </remarks>
-        public static void LoadFromUri(this IGraph g, Uri u)
+        public static void LoadFromUri(this IGraph g, Uri u, Loader loader = null)
         {
-            UriLoader.Load(g, u);
+            loader ??= new Loader();
+            loader.LoadGraph(g, u);
         }
 
         // REQ: Add LoadFromUri extensions that do the loading asychronously for use on Silverlight/Windows Phone 7
@@ -1145,11 +1149,11 @@ namespace VDS.RDF
         /// <param name="u">URI to load from.</param>
         /// <param name="parser">Parser to use.</param>
         /// <remarks>
-        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
+        /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
         public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser)
         {
-            UriLoader.Load(store, u, parser);
+            LoadFromUri(store, u, parser, new Loader());
         }
 
         /// <summary>
@@ -1158,11 +1162,27 @@ namespace VDS.RDF
         /// <param name="store">Triple Store to load into.</param>
         /// <param name="u">URI to load from.</param>
         /// <remarks>
-        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
+        /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
         public static void LoadFromUri(this ITripleStore store, Uri u)
         {
-            UriLoader.Load(store, u);
+            LoadFromUri(store, u, null, new Loader());
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from a URI into a Triple Store.
+        /// </summary>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="u">URI to load from.</param>
+        /// <param name="parser">Parser to use.</param>
+        /// <param name="loader">Loader to use.</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
+        /// </remarks>
+
+        public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser, Loader loader)
+        {
+            loader.LoadDataset(store, u, parser);
         }
 
         /// <summary>

@@ -1,0 +1,7 @@
+﻿{
+  <http://example.org/s> a <http://example.org/t> .
+}
+<http://example.org/g> 
+{
+  <http://example.org/s> <http://example.org/p> <http://example.org/o> .
+}

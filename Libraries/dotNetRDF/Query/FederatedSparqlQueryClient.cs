@@ -71,7 +71,7 @@ namespace VDS.RDF.Query
         /// Create a new federated client connecting to a number of remote SPARQL endpoints.
         /// </summary>
         /// <param name="httpClient">The HTTP client to use for all connections.</param>
-        /// <param name="endpointUris">The URIs to connect to</param>
+        /// <param name="endpointUris">The URIs to connect to.</param>
         /// <remarks>The HttpClient instance specified in the <paramref name="httpClient"/> parameter
         /// will be used as the default client for all endpoints subsequently added using the <see cref="AddEndpoint(Uri)"/> method.
         /// </remarks>

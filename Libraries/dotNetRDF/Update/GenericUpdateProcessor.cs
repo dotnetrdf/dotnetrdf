@@ -52,16 +52,24 @@ namespace VDS.RDF.Update
     public class GenericUpdateProcessor 
         : ISparqlUpdateProcessor
     {
-        private IStorageProvider _manager;
+        private readonly IStorageProvider _manager;
+        private readonly Loader _loader;
+
+        /// <summary>
+        /// Get the loader configured for this processor.
+        /// </summary>
+        public Loader Loader => _loader;
 
         /// <summary>
         /// Creates a new Generic Update Processor.
         /// </summary>
         /// <param name="manager">Generic IO Manager.</param>
-        public GenericUpdateProcessor(IStorageProvider manager)
+        /// <param name="loader">The loader to use when retrieving RDF data for a LOAD command.</param>
+        public GenericUpdateProcessor(IStorageProvider manager, Loader loader = null)
         {
             if (manager.IsReadOnly) throw new ArgumentException("Cannot create a GenericUpdateProcessor for a store which is read-only", "manager");
             _manager = manager;
+            _loader = loader ?? new Loader();
         }
 
         /// <summary>
@@ -1122,7 +1130,7 @@ namespace VDS.RDF.Update
 
                     Graph g = new Graph();
                     if (!_manager.UpdateSupported) _manager.LoadGraph(g, cmd.TargetUri);
-                    UriLoader.Load(g, cmd.SourceUri);
+                    Loader.LoadGraph(g, cmd.SourceUri);
                     g.BaseUri = cmd.TargetUri;
                     if (_manager.UpdateSupported)
                     {

@@ -142,13 +142,22 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph to add.</param>
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri.</param>
-        /// <remarks>
-        /// <strong>Important:</strong> Under Silverlight/Windows Phone 7 this will happen asynchronously so the Graph may not be immediatedly available in the store.
-        /// </remarks>
         public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists)
         {
-            Graph g = new Graph();
-            UriLoader.Load(g, graphUri);
+            return AddFromUri(graphUri, mergeIfExists, new Loader());
+        }
+
+        /// <summary>
+        /// Adds a Graph into the Triple Store which is retrieved from the given Uri using the chosen Merging Behaviour.
+        /// </summary>
+        /// <param name="graphUri">Graph to add.</param>
+        /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri.</param>
+        /// <param name="loader">The loader to use to retrieve and parse remote data.</param>
+        public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists, Loader loader)
+        {
+            if (loader == null) throw new ArgumentNullException(nameof(loader));
+            var g = new Graph();
+            loader.LoadGraph(g, graphUri);
             return _graphs.Add(g, mergeIfExists);
         }
 
