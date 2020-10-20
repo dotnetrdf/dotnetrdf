@@ -80,3 +80,7 @@ This option has moved to the `EqualityHelper` static class.
 ## .NET serialization support has been removed
 
 We recommend instead using one of the supported RDF/SPARQL syntaxes to serialize/deserialize triples, graphs, stores or SPARQL results.
+
+## The static UriLoader class has a new non-static replacement
+
+The new `VDS.RDF.Parsing.Loader` class provides similar functionality to the `VDS.RDF.Parsing.UriLoader` class but uses the more modern `System.Net.Http` library for its HTTP connections. Making the class non-static allows you to create multiple loader instances configured with different `HttpClient` instances. The main "missing" feature of the new `Loader` class is caching, which can (and should) be handled at the HttpClient layer.
