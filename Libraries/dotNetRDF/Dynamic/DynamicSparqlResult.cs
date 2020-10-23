@@ -24,16 +24,16 @@
 // </copyright>
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
+using VDS.RDF.Query;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Dynamic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using VDS.RDF.Query;
-
     /// <summary>
     /// Provides read/write dictionary and dynamic functionality for <see cref="SparqlResult">SPARQL results</see>.
     /// </summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Dynamic
                     throw new ArgumentNullException(nameof(variable));
                 }
 
-                return this.original[variable].AsObject();
+                return original[variable].AsObject();
             }
 
             set
@@ -81,7 +81,7 @@ namespace VDS.RDF.Dynamic
                     throw new ArgumentNullException(nameof(variable));
                 }
 
-                this.original.SetValue(variable, value.AsNode());
+                original.SetValue(variable, value.AsNode());
             }
         }
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return (ICollection<string>)this.original.Variables;
+                return (ICollection<string>)original.Variables;
             }
         }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.original.Select(result => result.Value.AsObject()).ToList();
+                return original.Select(result => result.Value.AsObject()).ToList();
             }
         }
 
@@ -114,7 +114,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.original.Count;
+                return original.Count;
             }
         }
 
@@ -148,7 +148,7 @@ namespace VDS.RDF.Dynamic
         /// <inheritdoc/>
         void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
         {
-            this.Add(item.Key, item.Value.AsNode());
+            Add(item.Key, item.Value.AsNode());
         }
 
         /// <summary>
@@ -156,18 +156,18 @@ namespace VDS.RDF.Dynamic
         /// </summary>
         public void Clear()
         {
-            foreach (var variable in this.Keys)
+            foreach (var variable in Keys)
             {
-                this.Remove(variable);
+                Remove(variable);
             }
 
-            this.original.Trim();
+            original.Trim();
         }
 
         /// <inheritdoc/>
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            if (!this.original.TryGetValue(item.Key, out var value))
+            if (!original.TryGetValue(item.Key, out INode value))
             {
                 return false;
             }
@@ -187,19 +187,19 @@ namespace VDS.RDF.Dynamic
                 return false;
             }
 
-            return this.original.HasValue(variable);
+            return original.HasValue(variable);
         }
 
         /// <inheritdoc/>
         void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            this.original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).ToArray().CopyTo(array, arrayIndex);
+            original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).ToArray().CopyTo(array, arrayIndex);
         }
 
         /// <inheritdoc/>
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
-            return this.original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).GetEnumerator();
+            return original.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value.AsObject())).GetEnumerator();
         }
 
         /// <summary>
@@ -214,20 +214,20 @@ namespace VDS.RDF.Dynamic
                 return false;
             }
 
-            if (!this.original.HasValue(variable))
+            if (!original.HasValue(variable))
             {
                 return false;
             }
 
             this[variable] = null;
-            this.original.Trim();
+            original.Trim();
             return true;
         }
 
         /// <inheritdoc/>
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            if (!this.original.TryGetValue(item.Key, out var value))
+            if (!original.TryGetValue(item.Key, out INode value))
             {
                 return false;
             }
@@ -238,7 +238,7 @@ namespace VDS.RDF.Dynamic
             }
 
             this[item.Key] = null;
-            this.original.Trim();
+            original.Trim();
             return true;
         }
 
@@ -257,7 +257,7 @@ namespace VDS.RDF.Dynamic
                 return false;
             }
 
-            if (!this.original.TryGetValue(variable, out var originalValue))
+            if (!original.TryGetValue(variable, out INode originalValue))
             {
                 return false;
             }

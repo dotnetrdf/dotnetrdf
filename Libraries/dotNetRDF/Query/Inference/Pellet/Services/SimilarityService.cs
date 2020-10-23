@@ -40,14 +40,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     public class SimilarityService
         : PelletService
     {
-        private String _similarityUri;
+        private string _similarityUri;
 
         /// <summary>
         /// Creates a new Similarity Service for a Pellet Knowledge Base.
         /// </summary>
         /// <param name="serviceName">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal SimilarityService(String serviceName, JObject obj)
+        internal SimilarityService(string serviceName, JObject obj)
             : base(serviceName, obj)
         {
             if (!Endpoint.Uri.EndsWith("similarity/"))
@@ -66,19 +66,19 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="number">Number of Similar Individuals.</param>
         /// <param name="individual">QName of a Individual to find Similar Individuals to.</param>
         /// <returns></returns>
-        public List<KeyValuePair<INode, double>> Similarity(int number, String individual)
+        public List<KeyValuePair<INode, double>> Similarity(int number, string individual)
         {
             IGraph g = SimilarityRaw(number, individual);
 
-            List<KeyValuePair<INode, double>> similarities = new List<KeyValuePair<INode, double>>();
+            var similarities = new List<KeyValuePair<INode, double>>();
 
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.Namespaces = g.NamespaceMap;
             query.CommandText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
 
             try
             {
-                Object results = g.ExecuteQuery(query);
+                var results = g.ExecuteQuery(query);
                 if (results is SparqlResultSet)
                 {
                     foreach (SparqlResult r in (SparqlResultSet)results)
@@ -116,20 +116,20 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="number">Number of Similar Individuals.</param>
         /// <param name="individual">QName of a Individual to find Similar Individuals to.</param>
         /// <returns></returns>
-        public IGraph SimilarityRaw(int number, String individual)
+        public IGraph SimilarityRaw(int number, string individual)
         {
             if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");
 
-            String requestUri = _similarityUri + number + "/" + individual;
+            var requestUri = _similarityUri + number + "/" + individual;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 response.Close();
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Similarity(int number, String individual, PelletSimilarityServiceCallback callback, Object state)
+        public void Similarity(int number, string individual, PelletSimilarityServiceCallback callback, object state)
         {
             SimilarityRaw(number, individual, (g, s) =>
                 {
@@ -157,13 +157,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     }
                     else
                     {
-                        List<KeyValuePair<INode, double>> similarities = new List<KeyValuePair<INode, double>>();
+                        var similarities = new List<KeyValuePair<INode, double>>();
 
-                        SparqlParameterizedString query = new SparqlParameterizedString();
+                        var query = new SparqlParameterizedString();
                         query.Namespaces = g.NamespaceMap;
                         query.CommandText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
 
-                        Object results = g.ExecuteQuery(query);
+                        var results = g.ExecuteQuery(query);
                         if (results is SparqlResultSet)
                         {
                             foreach (SparqlResult r in (SparqlResultSet) results)
@@ -194,13 +194,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void SimilarityRaw(int number, String individual, GraphCallback callback, Object state)
+        public void SimilarityRaw(int number, string individual, GraphCallback callback, object state)
         {
             if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");
 
-            String requestUri = _similarityUri + number + "/" + individual;
+            var requestUri = _similarityUri + number + "/" + individual;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
@@ -210,10 +210,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                                Graph g = new Graph();
+                                var g = new Graph();
                                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                                 response.Close();

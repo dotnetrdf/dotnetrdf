@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    var lit = (ILiteralNode)temp;
                     if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                     {
                         throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     {
                         if (tempArg.NodeType == NodeType.Literal)
                         {
-                            ILiteralNode litArg = (ILiteralNode)tempArg;
+                            var litArg = (ILiteralNode)tempArg;
                             if (_argumentTypeValidator(litArg.DataType))
                             {
                                 return ValueInternal((ILiteralNode)temp, litArg);

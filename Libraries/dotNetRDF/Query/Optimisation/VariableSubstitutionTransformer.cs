@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Optimisation
     public class VariableSubstitutionTransformer
         : PrimaryExpressionSubstituter, IAlgebraOptimiser
     {
-        private String _findVar;
+        private string _findVar;
         private PatternItem _replaceItem;
         private ISparqlExpression _replaceExpr;
         private IToken _replaceToken;
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         /// <param name="findVar">Find Variable.</param>
         /// <param name="replaceVar">Replace Variable.</param>
-        public VariableSubstitutionTransformer(String findVar, String replaceVar)
+        public VariableSubstitutionTransformer(string findVar, string replaceVar)
         {
             _findVar = findVar;
             _replaceItem = new VariablePattern("?" + replaceVar);
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         /// <param name="findVar">Find Variable.</param>
         /// <param name="replaceTerm">Replace Constant.</param>
-        public VariableSubstitutionTransformer(String findVar, INode replaceTerm)
+        public VariableSubstitutionTransformer(string findVar, INode replaceTerm)
         {
             _findVar = findVar;
             _replaceItem = new NodeMatchPattern(replaceTerm);
@@ -115,21 +115,21 @@ namespace VDS.RDF.Query.Optimisation
             // By default we are only safe to replace objects in a scope if we are replacing with a constant
             // Note that if we also make a replace in a subject/predicate position for a variable replace then
             // that makes object replacement safe for that scope only
-            bool canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : _replaceItem is NodeMatchPattern);
+            var canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : _replaceItem is NodeMatchPattern);
 
             if (algebra is IBgp)
             {
-                IBgp bgp = (IBgp)algebra;
+                var bgp = (IBgp)algebra;
                 if (bgp.PatternCount == 0) return bgp;
 
                 // Do variable substitution on the patterns
-                List<ITriplePattern> ps = new List<ITriplePattern>();
+                var ps = new List<ITriplePattern>();
                 foreach (ITriplePattern p in bgp.TriplePatterns)
                 {
                     switch (p.PatternType)
                     {
                         case TriplePatternType.Match:
-                            IMatchTriplePattern tp = (IMatchTriplePattern)p;
+                            var tp = (IMatchTriplePattern)p;
                             PatternItem subj = tp.Subject.VariableName != null && tp.Subject.VariableName.Equals(_findVar) ? _replaceItem : tp.Subject;
                             if (ReferenceEquals(subj, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
                             PatternItem pred = tp.Predicate.VariableName != null && tp.Predicate.VariableName.Equals(_findVar) ? _replaceItem : tp.Predicate;
@@ -139,15 +139,15 @@ namespace VDS.RDF.Query.Optimisation
                             ps.Add(new TriplePattern(subj, pred, obj));
                             break;
                         case TriplePatternType.Filter:
-                            IFilterPattern fp = (IFilterPattern)p;
+                            var fp = (IFilterPattern)p;
                             ps.Add(new FilterPattern(new UnaryExpressionFilter(Transform(fp.Filter.Expression))));
                             break;
                         case TriplePatternType.BindAssignment:
-                            IAssignmentPattern bp = (IAssignmentPattern)p;
+                            var bp = (IAssignmentPattern)p;
                             ps.Add(new BindPattern(bp.VariableName, Transform(bp.AssignExpression)));
                             break;
                         case TriplePatternType.LetAssignment:
-                            IAssignmentPattern lp = (IAssignmentPattern)p;
+                            var lp = (IAssignmentPattern)p;
                             ps.Add(new LetPattern(lp.VariableName, Transform(lp.AssignExpression)));
                             break;
                         case TriplePatternType.SubQuery:
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (algebra is Algebra.Graph)
             {
-                Algebra.Graph g = (Algebra.Graph)((IUnaryOperator)algebra).Transform(this);
+                var g = (Algebra.Graph)((IUnaryOperator)algebra).Transform(this);
                 if (g.GraphSpecifier is VariableToken && g.GraphSpecifier.Value.Equals("?" + _findVar))
                 {
                     if (_replaceToken != null)
@@ -251,7 +251,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (expr is GraphPatternTerm)
             {
-                GraphPatternTerm gp = (GraphPatternTerm)expr;
+                var gp = (GraphPatternTerm)expr;
                 ISparqlAlgebra alg = gp.Pattern.ToAlgebra();
                 alg = Optimise(alg);
                 return new GraphPatternTerm(alg.ToGraphPattern());

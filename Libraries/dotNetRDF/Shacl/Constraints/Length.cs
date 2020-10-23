@@ -24,15 +24,15 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Query;
-    using VDS.RDF.Shacl.Validation;
-
     internal abstract class Length : Numeric
     {
         [DebuggerStepThrough]
@@ -43,7 +43,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(valueNode).CompareTo(NumericValue))
                 select valueNode;

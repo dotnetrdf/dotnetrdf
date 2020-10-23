@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(ITripleStore store, String filename)
+        public void Load(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Create the Parser Context and Invoke the Parser
-                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false, _tracetokeniser);
+                var context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false, _tracetokeniser);
                 context.Syntax = _syntax;
                 Parse(context);
             }
@@ -219,7 +219,7 @@ namespace VDS.RDF.Parsing
                                 if (!context.Handler.HandleBaseUri(extBase)) ParserHelper.Stop();
                                 context.BaseUri = extBase;
                                 context.Namespaces.Clear();
-                                foreach (String prefix in nsmap.Prefixes)
+                                foreach (var prefix in nsmap.Prefixes)
                                 {
                                     if (!context.Handler.HandleNamespace(prefix, nsmap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                                 }
@@ -279,7 +279,7 @@ namespace VDS.RDF.Parsing
                 {
                     try
                     {
-                        Uri newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
+                        var newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
                         context.BaseUri = newBase;
                         RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
                         if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
@@ -306,8 +306,8 @@ namespace VDS.RDF.Parsing
                         // Ensure the Uri is absolute
                         try
                         {
-                            Uri u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri.ToSafeString()));
-                            String pre = (prefix.Value.Equals(":")) ? String.Empty : prefix.Value.Substring(0, prefix.Value.Length-1);
+                            var u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri.ToSafeString()));
+                            var pre = (prefix.Value.Equals(":")) ? string.Empty : prefix.Value.Substring(0, prefix.Value.Length-1);
                             context.Namespaces.AddNamespace(pre, u);
                             if (!context.Handler.HandleNamespace(pre, u)) ParserHelper.Stop();
                         }
@@ -520,7 +520,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParsePredicateObjectList(TriGParserContext context, Uri graphUri, INode subj)
         {
-            bool ok = false;
+            var ok = false;
             do
             {
                 // After our first run through we'll need to discard semicolons here
@@ -606,7 +606,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseObjectList(TriGParserContext context, Uri graphUri, INode subj, INode pred)
         {
-            bool ok = false;
+            var ok = false;
 
             do
             {
@@ -881,7 +881,7 @@ namespace VDS.RDF.Parsing
         /// Helper method used to raise the Warning event if there is an event handler registered.
         /// </summary>
         /// <param name="message">Warning message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             StoreReaderWarning d = Warning;
             if (d != null)

@@ -120,7 +120,7 @@ namespace VDS.RDF.Web.Configuration.Query
             ISparqlQueryProcessor processor;
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryProcessor)));
             if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load Query Handler Configuration as the RDF configuration file does not specify a dnr:queryProcessor property for the Handler");
-            object temp = ConfigurationLoader.LoadObject(g, procNode);
+            var temp = ConfigurationLoader.LoadObject(g, procNode);
             if (temp is ISparqlQueryProcessor)
             {
                 processor = (ISparqlQueryProcessor)temp;
@@ -138,13 +138,13 @@ namespace VDS.RDF.Web.Configuration.Query
 
             // Handler Configuration
             _showQueryForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowQueryForm)), _showQueryForm);
-            string defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
+            var defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
             if (defQueryFile != null)
             {
                 defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
                 if (File.Exists(defQueryFile))
                 {
-                    using (StreamReader reader = new StreamReader(defQueryFile))
+                    using (var reader = new StreamReader(defQueryFile))
                     {
                         _defaultQuery = reader.ReadToEnd();
                         reader.Close();
@@ -155,7 +155,7 @@ namespace VDS.RDF.Web.Configuration.Query
             // Get Query Syntax to use
             try
             {
-                string syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
+                var syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
                 if (syntaxSetting != null)
                 {
                     _syntax = (SparqlQuerySyntax)Enum.Parse(typeof(SparqlQuerySyntax), syntaxSetting);
@@ -172,10 +172,10 @@ namespace VDS.RDF.Web.Configuration.Query
             {
                 if (describeNode.NodeType == NodeType.Literal)
                 {
-                    string algoClass = ((ILiteralNode)describeNode).Value;
+                    var algoClass = ((ILiteralNode)describeNode).Value;
                     try
                     {
-                        object desc = Activator.CreateInstance(Type.GetType(algoClass));
+                        var desc = Activator.CreateInstance(Type.GetType(algoClass));
                         if (desc is ISparqlDescribe)
                         {
                             _describer = (ISparqlDescribe)desc;
@@ -200,7 +200,7 @@ namespace VDS.RDF.Web.Configuration.Query
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
-                object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                var descrip = ConfigurationLoader.LoadObject(g, descripNode);
                 if (descrip is IGraph)
                 {
                     _serviceDescription = (IGraph)descrip;
@@ -215,7 +215,7 @@ namespace VDS.RDF.Web.Configuration.Query
             INode queryOptNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryOptimiser)));
             if (queryOptNode != null)
             {
-                object queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
+                var queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
                 if (queryOpt is IQueryOptimiser)
                 {
                     _queryOptimiser = (IQueryOptimiser)queryOpt;
@@ -229,7 +229,7 @@ namespace VDS.RDF.Web.Configuration.Query
             // Get the Algebra Optimisers
             foreach (INode algOptNode in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAlgebraOptimiser))))
             {
-                object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
+                var algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
                 if (algOpt is IAlgebraOptimiser)
                 {
                     _algebraOptimisers.Add((IAlgebraOptimiser)algOpt);

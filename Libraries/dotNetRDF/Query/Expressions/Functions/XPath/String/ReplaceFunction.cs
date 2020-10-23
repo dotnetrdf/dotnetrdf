@@ -79,8 +79,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     // Try to parse as a Regular Expression
                     try
                     {
-                        string p = n.AsString();
-                        Regex temp = new Regex(p);
+                        var p = n.AsString();
+                        var temp = new Regex(p);
 
                         // It's a Valid Pattern
                         _fixedPattern = true;
@@ -139,8 +139,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    string ops = n.AsString();
-                    foreach (char c in ops.ToCharArray())
+                    var ops = n.AsString();
+                    foreach (var c in ops.ToCharArray())
                     {
                         switch (c)
                         {
@@ -254,8 +254,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             if (textNode.NodeType == NodeType.Literal)
             {
                 // Execute
-                string text = textNode.AsString();
-                string output = Regex.Replace(text, _find, _replace, _options);
+                var text = textNode.AsString();
+                var output = Regex.Replace(text, _find, _replace, _options);
                 return new StringNode(null, output, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("<");
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Replace);
@@ -314,7 +314,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                List<string> vs = new List<string>();
+                var vs = new List<string>();
                 if (_textExpr != null) vs.AddRange(_textExpr.Variables);
                 if (_findExpr != null) vs.AddRange(_findExpr.Variables);
                 if (_replaceExpr != null) vs.AddRange(_replaceExpr.Variables);

@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing
     [Obsolete("The UriLoader class has been deprecated and will be removed in a future release. Please use the Loader class as a replacement.")]
     public static partial class UriLoader
     {
-        private static String _userAgent;
+        private static string _userAgent;
 
         #region URI Caching
         private static IUriLoaderCache _cache = new UriLoaderCache();
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the Directory used for caching Graphs loaded from URIs.
         /// </summary>
-        public static String CacheDirectory
+        public static string CacheDirectory
         {
             get
             {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets an optional User Agent string that will be appended to HTTP Requests.
         /// </summary>
-        public static String UserAgent
+        public static string UserAgent
         {
             get
             {
@@ -282,8 +282,8 @@ namespace VDS.RDF.Parsing
                 u = Tools.StripUriFragment(u);
 
                 // Use Cache if possible
-                String etag = String.Empty;
-                String local = null;
+                var etag = string.Empty;
+                string local = null;
                 if (CacheEnabled)
                 {
                     if (_cache.HasETag(u))
@@ -330,7 +330,7 @@ namespace VDS.RDF.Parsing
 
                 if (CacheEnabled)
                 {
-                    if (!etag.Equals(String.Empty))
+                    if (!etag.Equals(string.Empty))
                     {
                         httpRequest.Headers[HttpRequestHeader.IfNoneMatch] = etag;
                     }
@@ -341,7 +341,7 @@ namespace VDS.RDF.Parsing
 #if !NETCORE
                 httpRequest.Timeout = Timeout;
 #endif
-                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                if (_userAgent != null && !_userAgent.Equals(string.Empty))
                 {
 #if NETCORE
                     httpRequest.Headers[HttpRequestHeader.UserAgent] = _userAgent;
@@ -350,12 +350,12 @@ namespace VDS.RDF.Parsing
 #endif
                 }
 
-                using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
+                using (var httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
                     if (CacheEnabled)
                     {
                         // Are we using ETag based caching?
-                        if (!etag.Equals(String.Empty))
+                        if (!etag.Equals(string.Empty))
                         {
                             // Did we get a Not-Modified response?
                             if (httpResponse.StatusCode == HttpStatusCode.NotModified)
@@ -456,7 +456,7 @@ namespace VDS.RDF.Parsing
                             // If so then we need to load the Local Copy assuming it exists?
                             if (_cache.HasLocalCopy(u, false))
                             {
-                                String local = _cache.GetLocalCopy(u);
+                                var local = _cache.GetLocalCopy(u);
                                 try
                                 {
                                     FileLoader.Load(handler, local, new TurtleParser());
@@ -582,7 +582,7 @@ namespace VDS.RDF.Parsing
 #if !NETCORE
                 httpRequest.Timeout = Timeout;
 #endif
-                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                if (_userAgent != null && !_userAgent.Equals(string.Empty))
                 {
 #if NETCORE
                     httpRequest.Headers[HttpRequestHeader.UserAgent] = _userAgent;
@@ -593,7 +593,7 @@ namespace VDS.RDF.Parsing
 
                 // HTTP Debugging
 
-                using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
+                using (var httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
                     // Get a Parser and Load the RDF
                     if (parser == null)
@@ -617,7 +617,7 @@ namespace VDS.RDF.Parsing
                             catch (RdfParserSelectionException)
                             {
                                 // Finally fall back to assuming a dataset and trying format guessing
-                                String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
+                                var data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
                                 parser = StringParser.GetDatasetParser(data);
                                 parser.Warning += RaiseStoreWarning;
                                 parser.Load(handler, new StringReader(data));
@@ -668,7 +668,7 @@ namespace VDS.RDF.Parsing
         /// Raises warning messages.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        static void RaiseWarning(String message)
+        static void RaiseWarning(string message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)
@@ -681,7 +681,7 @@ namespace VDS.RDF.Parsing
         /// Raises store warning messages.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        static void RaiseStoreWarning(String message)
+        static void RaiseStoreWarning(string message)
         {
             StoreReaderWarning d = StoreWarning;
             if (d != null)

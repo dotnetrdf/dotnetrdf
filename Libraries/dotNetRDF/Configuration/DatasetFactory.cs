@@ -35,7 +35,7 @@ namespace VDS.RDF.Configuration
     public class DatasetFactory 
         : IObjectFactory
     {
-        private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset",
+        private const string InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset",
                              InMemoryQuadDataset = "VDS.RDF.Query.Datasets.InMemoryQuadDataset",
                              WebDemandDataset = "VDS.RDF.Query.Datasets.WebDemandDataset";
 
@@ -50,7 +50,7 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            bool unionDefGraph = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUnionDefaultGraph)), false);
+            var unionDefGraph = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUnionDefaultGraph)), false);
             INode defaultGraphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)));
             Uri defaultGraph = (defaultGraphNode != null && defaultGraphNode.NodeType == NodeType.Uri ? ((IUriNode)defaultGraphNode).Uri : null);
 
@@ -65,7 +65,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        Object temp = ConfigurationLoader.LoadObject(g, storeNode);
+                        var temp = ConfigurationLoader.LoadObject(g, storeNode);
                         if (temp is IInMemoryQueryableStore)
                         {
                             if (unionDefGraph)
@@ -96,7 +96,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        Object temp = ConfigurationLoader.LoadObject(g, storeNode);
+                        var temp = ConfigurationLoader.LoadObject(g, storeNode);
                         if (temp is IInMemoryQueryableStore)
                         {
                             obj = new InMemoryQuadDataset((IInMemoryQueryableStore)temp);
@@ -116,7 +116,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        Object temp = ConfigurationLoader.LoadObject(g, storeNode);
+                        var temp = ConfigurationLoader.LoadObject(g, storeNode);
                         if (temp is ISparqlDataset)
                         {
                             obj = new WebDemandDataset((ISparqlDataset)temp);

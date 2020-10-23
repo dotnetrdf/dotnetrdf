@@ -28,14 +28,13 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using System;
+using System.Diagnostics;
+using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-    using System;
-    using System.Diagnostics;
-    using VDS.RDF.Writing;
-    using VDS.RDF.Writing.Formatting;
-
     /// <summary>
     /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
     /// </summary>

@@ -41,11 +41,11 @@ namespace VDS.RDF.Parsing
         public ISparqlPath Parse(SparqlQueryParserContext context, IToken first)
         {
             // Need to gather up all the Tokens which make up the path
-            int openBrackets = 0;
-            Queue<IToken> tokens = new Queue<IToken>();
+            var openBrackets = 0;
+            var tokens = new Queue<IToken>();
             IToken next;
             LastPathItemType lastItem = LastPathItemType.None;
-            int lastSequencer = -1;
+            var lastSequencer = -1;
 
             // Add the first token and set the initial last item type
             tokens.Enqueue(first);
@@ -327,8 +327,8 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.LEFTBRACKET:
-                    Queue<IToken> subtokens = new Queue<IToken>();
-                    int openBrackets = 1;
+                    var subtokens = new Queue<IToken>();
+                    var openBrackets = 1;
                     do {
                         next = tokens.Dequeue();
                         if (next.TokenType == Token.LEFTBRACKET) 
@@ -388,7 +388,7 @@ namespace VDS.RDF.Parsing
                     int min, max;
                     if (next.TokenType == Token.PLAINLITERAL)
                     {
-                        if (Int32.TryParse(next.Value, out min))
+                        if (int.TryParse(next.Value, out min))
                         {
                             if (min < 0) throw new RdfParseException("Cannot specify the minimum cardinality of a path as less than zero", next);
                             next = tokens.Dequeue();
@@ -397,7 +397,7 @@ namespace VDS.RDF.Parsing
                                 next = tokens.Dequeue();
                                 if (next.TokenType == Token.PLAINLITERAL)
                                 {
-                                    if (Int32.TryParse(next.Value, out max))
+                                    if (int.TryParse(next.Value, out max))
                                     {
                                         if (max < min) throw new RdfParseException("Cannot specify the maximum cardinality of a path as less than the minimum", next);
                                         next = tokens.Dequeue();
@@ -455,7 +455,7 @@ namespace VDS.RDF.Parsing
                         next = tokens.Dequeue();
                         if (next.TokenType == Token.PLAINLITERAL)
                         {
-                            if (Int32.TryParse(next.Value, out max))
+                            if (int.TryParse(next.Value, out max))
                             {
                                 if (max <= 0) throw new RdfParseException("Cannot specify the maximum cardinality for a path as being less than the minimum", next);
                                 next = tokens.Dequeue();
@@ -511,8 +511,8 @@ namespace VDS.RDF.Parsing
                     }
 
                 case Token.LEFTBRACKET:
-                    List<Property> ps = new List<Property>();
-                    List<Property> inverses = new List<Property>();
+                    var ps = new List<Property>();
+                    var inverses = new List<Property>();
 
                     tokens.Dequeue();
                     next = tokens.Peek();

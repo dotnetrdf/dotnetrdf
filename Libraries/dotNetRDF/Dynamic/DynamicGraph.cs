@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System;
+using System.Dynamic;
+using System.Linq.Expressions;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Dynamic;
-    using System.Linq.Expressions;
-
     /// <summary>
     /// A <see cref="WrapperGraph">wrapper</see> that provides read/write dictionary and dynamic functionality.
     /// </summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.subjectBaseUri ?? this.BaseUri;
+                return subjectBaseUri ?? BaseUri;
             }
         }
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.predicateBaseUri ?? this.SubjectBaseUri;
+                return predicateBaseUri ?? SubjectBaseUri;
             }
         }
 

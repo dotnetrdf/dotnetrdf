@@ -90,8 +90,8 @@ namespace VDS.RDF.Query.Paths
             }
             else
             {
-                PathTransformContext lhsContext = new PathTransformContext(context);
-                PathTransformContext rhsContext = new PathTransformContext(context);
+                var lhsContext = new PathTransformContext(context);
+                var rhsContext = new PathTransformContext(context);
                 lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
                 rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
                 ISparqlAlgebra lhs = lhsContext.ToAlgebra();
@@ -106,11 +106,11 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('!');
             if (_properties.Count + _inverseProperties.Count > 1) output.Append('(');
 
-            for (int i = 0; i < _properties.Count; i++)
+            for (var i = 0; i < _properties.Count; i++)
             {
                 output.Append(_properties[i].ToString());
                 if (i < _properties.Count - 1 || _inverseProperties.Count > 0)
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Paths
                     output.Append(" | ");
                 }
             }
-            for (int i = 0; i < _inverseProperties.Count; i++)
+            for (var i = 0; i < _inverseProperties.Count; i++)
             {
                 output.Append(_inverseProperties[i].ToString());
                 if (i < _inverseProperties.Count - 1)

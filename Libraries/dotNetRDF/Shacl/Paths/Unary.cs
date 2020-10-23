@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Diagnostics;
+using System.Linq;
+
 namespace VDS.RDF.Shacl.Paths
 {
-    using System.Diagnostics;
-    using System.Linq;
-
     internal abstract class Unary : Path
     {
         [DebuggerStepThrough]

@@ -48,7 +48,7 @@ namespace VDS.RDF
             HasAutoAssignedID = true;
 
             // Compute Hash Code
-            _hashcode = (_nodetype + ToString()).GetHashCode();
+            _hashcode =  (_nodetype + ToString()).GetHashCode();
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.Blank)
             {
-                IBlankNode temp = (IBlankNode)other;
+                var temp = (IBlankNode)other;
 
                 return EqualityHelper.AreBlankNodesEqual(this, temp);
             }

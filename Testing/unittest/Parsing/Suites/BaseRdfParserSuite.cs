@@ -35,22 +35,22 @@ namespace VDS.RDF.Parsing.Suites
         protected BaseRdfParserSuite(IRdfReader testParser, IRdfReader resultsParser, String baseDir)
             : base(testParser, resultsParser, baseDir)
         {
-            this.Parser.Warning += TestTools.WarningPrinter;
-            this.ResultsParser.Warning += TestTools.WarningPrinter;
+            Parser.Warning += TestTools.WarningPrinter;
+            ResultsParser.Warning += TestTools.WarningPrinter;
         }
 
         protected override Graph TryParseTestInput(string file)
         {
-            Graph actual = new Graph();
+            var actual = new Graph();
             actual.BaseUri = new Uri(BaseUri, Path.GetFileName(file));
-            this.Parser.Load(actual, file);
+            Parser.Load(actual, file);
             return actual;
         }
 
         protected override void TryValidateResults(string testName, string resultFile, Graph actual)
         {
-            Graph expected = new Graph();
-            this.ResultsParser.Load(expected, resultFile);
+            var expected = new Graph();
+            ResultsParser.Load(expected, resultFile);
 
             GraphDiffReport diff = expected.Difference(actual);
             if (diff.AreEqual)
@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing.Suites
                 Console.WriteLine("Parsed Graph did not match Expected Graph (Test Failed)");
                 Console.Error.WriteLine("Test " + testName + " - Parsed Graph did not match Expected Graph");
                 FailedTest(testName, "Parsed Graph did not match Expected Graph");
-                TestTools.ShowDifferences(diff, "Expected (" + this.ResultsParser.ToString() + ")", "Actual (" + this.Parser.ToString() + ")");
+                TestTools.ShowDifferences(diff, "Expected (" + ResultsParser.ToString() + ")", "Actual (" + Parser.ToString() + ")");
             }
         }
 

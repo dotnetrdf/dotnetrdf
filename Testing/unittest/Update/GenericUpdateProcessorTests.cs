@@ -50,13 +50,13 @@ namespace VDS.RDF.Update
         [SkippableFact]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
-            IStorageProvider manager = this.GetManager();
-            GenericUpdateProcessor processor = new GenericUpdateProcessor(manager);
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+            IStorageProvider manager = GetManager();
+            var processor = new GenericUpdateProcessor(manager);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
             processor.ProcessCommandSet(cmds);
 
-            Graph g = new Graph();
+            var g = new Graph();
             manager.LoadGraph(g, "http://example.org/sparqlUpdate/created");
 
             TestTools.ShowGraph(g);
@@ -68,13 +68,13 @@ namespace VDS.RDF.Update
         [SkippableFact]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
-            IStorageProvider manager = this.GetManager();
-            GenericUpdateProcessor processor = new GenericUpdateProcessor(manager);
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+            IStorageProvider manager = GetManager();
+            var processor = new GenericUpdateProcessor(manager);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString("CREATE SILENT GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
             processor.ProcessCommandSet(cmds);
 
-            Graph g = new Graph();
+            var g = new Graph();
             manager.LoadGraph(g, "http://example.org/sparqlUpdate/created");
 
             TestTools.ShowGraph(g);
@@ -82,10 +82,10 @@ namespace VDS.RDF.Update
             Assert.False(g.IsEmpty, "[" + manager.ToString() + "] Graph should not be empty");
             Assert.Equal(1, g.Triples.Count);
 
-            cmds = this._parser.ParseFromString("DELETE DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
+            cmds = _parser.ParseFromString("DELETE DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
             processor.ProcessCommandSet(cmds);
 
-            Graph h = new Graph();
+            var h = new Graph();
             manager.LoadGraph(h, "http://example.org/sparqlUpdate/created");
 
             TestTools.ShowGraph(h);

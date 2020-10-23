@@ -41,7 +41,7 @@ namespace VDS.RDF
         [Fact]
         public void SparqlAlgebraReverseSimple()
         {
-            List<String> tests = new List<string>()
+            var tests = new List<string>()
             {
                 "SELECT * WHERE { ?s ?p ?o }",
                 "SELECT ?s WHERE { ?s ?p ?o }",
@@ -52,8 +52,8 @@ namespace VDS.RDF
                 "SELECT * WHERE {?s ?p ?o . OPTIONAL {?o ?x ?y . FILTER(BOUND(?s)) } }"
             };
 
-            SparqlQueryParser parser = new SparqlQueryParser();
-            foreach (String test in tests)
+            var parser = new SparqlQueryParser();
+            foreach (var test in tests)
             {
                 Console.WriteLine("Test Input:");
                 Console.WriteLine(test);

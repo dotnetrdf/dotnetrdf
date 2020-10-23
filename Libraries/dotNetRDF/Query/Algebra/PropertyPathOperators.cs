@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Algebra
     {
         private readonly PatternItem _start, _end;
         private readonly ISparqlPath _path;
-        private readonly HashSet<String> _vars = new HashSet<string>();
+        private readonly HashSet<string> _vars = new HashSet<string>();
 
         /// <summary>
         /// Creates a new Path Operator.
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get { return Variables; }
         }
@@ -129,9 +129,9 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -181,7 +181,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="reverse">Whether to evaluate Paths in reverse.</param>
         protected void GetPathStarts(SparqlEvaluationContext context, List<List<INode>> paths, bool reverse)
         {
-            HashSet<KeyValuePair<INode, INode>> nodes = new HashSet<KeyValuePair<INode, INode>>();
+            var nodes = new HashSet<KeyValuePair<INode, INode>>();
             if (Path is Property)
             {
                 INode predicate = ((Property) Path).Predicate;
@@ -201,9 +201,9 @@ namespace VDS.RDF.Query.Algebra
             {
                 BaseMultiset initialInput = context.InputMultiset;
                 context.InputMultiset = new IdentityMultiset();
-                VariablePattern x = new VariablePattern("?x");
-                VariablePattern y = new VariablePattern("?y");
-                Bgp bgp = new Bgp(new PropertyPathPattern(x, Path, y));
+                var x = new VariablePattern("?x");
+                var y = new VariablePattern("?y");
+                var bgp = new Bgp(new PropertyPathPattern(x, Path, y));
 
                 BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
                 context.InputMultiset = initialInput;
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (Path is Property)
             {
-                HashSet<INode> nodes = new HashSet<INode>();
+                var nodes = new HashSet<INode>();
                 INode predicate = ((Property) Path).Predicate;
                 IEnumerable<Triple> ts = (reverse ? context.Data.GetTriplesWithPredicateObject(predicate, path[path.Count - 1]) : context.Data.GetTriplesWithSubjectPredicate(path[path.Count - 1], predicate));
                 foreach (Triple t in ts)
@@ -265,13 +265,13 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                HashSet<INode> nodes = new HashSet<INode>();
+                var nodes = new HashSet<INode>();
 
                 BaseMultiset initialInput = context.InputMultiset;
-                Multiset currInput = new Multiset();
-                VariablePattern x = new VariablePattern("?x");
-                VariablePattern y = new VariablePattern("?y");
-                Set temp = new Set();
+                var currInput = new Multiset();
+                var x = new VariablePattern("?x");
+                var y = new VariablePattern("?y");
+                var temp = new Set();
                 if (reverse)
                 {
                     temp.Add("y", path[path.Count - 1]);
@@ -283,7 +283,7 @@ namespace VDS.RDF.Query.Algebra
                 currInput.Add(temp);
                 context.InputMultiset = currInput;
 
-                Bgp bgp = new Bgp(new PropertyPathPattern(x, Path, y));
+                var bgp = new Bgp(new PropertyPathPattern(x, Path, y));
                 BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
                 context.InputMultiset = initialInput;
 

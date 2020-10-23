@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class CountAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new COUNT Aggregate.
@@ -66,12 +66,12 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            int c = 0;
+            var c = 0;
             if (_varname != null)
             {
                 // Just Count the number of results where the variable is bound
-                VariableTerm varExpr = (VariableTerm)_expr;
-                foreach (int id in bindingIDs)
+                var varExpr = (VariableTerm)_expr;
+                foreach (var id in bindingIDs)
                 {
                     if (varExpr.Evaluate(context, id) != null) c++;
                 }
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             else
             {
                 // Count the number of results where the result in not null/error
-                foreach (int id in bindingIDs)
+                foreach (var id in bindingIDs)
                 {
                     try
                     {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("COUNT(" + _expr.ToString() + ")");
             return output.ToString();
         }

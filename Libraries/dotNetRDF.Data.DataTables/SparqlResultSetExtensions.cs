@@ -42,13 +42,13 @@ namespace VDS.RDF.Data.DataTables
         /// <returns></returns>
         public static DataTable ToDataTable(this SparqlResultSet results)
         {
-            DataTable table = new DataTable();
+            var table = new DataTable();
             DataRow row;
 
             switch (results.ResultsType)
             {
                 case SparqlResultsType.VariableBindings:
-                    foreach (String var in results.Variables)
+                    foreach (var var in results.Variables)
                     {
                         table.Columns.Add(new DataColumn(var, typeof(INode)));
                     }
@@ -57,7 +57,7 @@ namespace VDS.RDF.Data.DataTables
                     {
                         row = table.NewRow();
 
-                        foreach (String var in results.Variables)
+                        foreach (var var in results.Variables)
                         {
                             if (r.HasValue(var))
                             {

@@ -41,9 +41,9 @@ namespace VDS.RDF.Ontology
     public class OntologyProperty 
         : OntologyResource
     {
-        private const String PropertyDerivedProperty = "derivedProperty";
-        private const String PropertyDirectSubProperty = "directSubProperty";
-        private const String PropertyDirectSuperProperty = "directSuperProperty";
+        private const string PropertyDerivedProperty = "derivedProperty";
+        private const string PropertyDirectSubProperty = "directSubProperty";
+        private const string PropertyDirectSuperProperty = "directSuperProperty";
 
         /// <summary>
         /// Creates a new Ontology Property for the given resource in the given Graph.
@@ -73,7 +73,7 @@ namespace VDS.RDF.Ontology
                 _resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
             }
 
-            int c = 0;
+            var c = 0;
             do
             {
                 c = _resourceProperties[PropertyDerivedProperty].Count;
@@ -90,7 +90,7 @@ namespace VDS.RDF.Ontology
             _resourceProperties.Add(PropertyDirectSuperProperty, new HashSet<INode>());
             if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubPropertyOf))
             {
-                foreach (var node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
+                foreach (INode node in _resourceProperties[OntologyHelper.PropertySubPropertyOf])
                 {
                     _resourceProperties[PropertyDirectSuperProperty].Add(node);
                 }
@@ -304,8 +304,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddEquivalentProperty(OntologyProperty property)
         {
-            bool a = AddEquivalentProperty(property.Resource);
-            bool b = property.AddEquivalentProperty(_resource);
+            var a = AddEquivalentProperty(property.Resource);
+            var b = property.AddEquivalentProperty(_resource);
             return (a || b);
         }
 
@@ -361,8 +361,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveEquivalentProperty(OntologyProperty property)
         {
-            bool a = RemoveEquivalentProperty(property.Resource);
-            bool b = property.RemoveEquivalentProperty(_resource);
+            var a = RemoveEquivalentProperty(property.Resource);
+            var b = property.RemoveEquivalentProperty(_resource);
             return (a || b);
         }
 
@@ -406,8 +406,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddInverseProperty(OntologyProperty property)
         {
-            bool a = AddInverseProperty(property.Resource);
-            bool b = property.AddInverseProperty(_resource);
+            var a = AddInverseProperty(property.Resource);
+            var b = property.AddInverseProperty(_resource);
             return (a || b);
         }
 
@@ -463,8 +463,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveInverseProperty(OntologyProperty property)
         {
-            bool a = RemoveInverseProperty(property.Resource);
-            bool b = property.RemoveInverseProperty(_resource);
+            var a = RemoveInverseProperty(property.Resource);
+            var b = property.RemoveInverseProperty(_resource);
             return (a || b);
         }
 
@@ -508,8 +508,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddSubProperty(OntologyProperty property)
         {
-            bool a = AddSubProperty(property.Resource);
-            bool b = property.AddSuperProperty(_resource);
+            var a = AddSubProperty(property.Resource);
+            var b = property.AddSuperProperty(_resource);
             return (a || b);
         }
 
@@ -563,8 +563,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveSubProperty(OntologyProperty property)
         {
-            bool a = RemoveSubProperty(property.Resource);
-            bool b = property.RemoveSuperProperty(_resource);
+            var a = RemoveSubProperty(property.Resource);
+            var b = property.RemoveSuperProperty(_resource);
             return (a || b);
         }
 
@@ -608,8 +608,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddSuperProperty(OntologyProperty property)
         {
-            bool a = AddSuperProperty(property.Resource);
-            bool b = property.AddSubProperty(_resource);
+            var a = AddSuperProperty(property.Resource);
+            var b = property.AddSubProperty(_resource);
             return (a || b);
         }
 
@@ -663,8 +663,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveSuperProperty(OntologyProperty property)
         {
-            bool a = RemoveSuperProperty(property.Resource);
-            bool b = property.RemoveSubProperty(_resource);
+            var a = RemoveSuperProperty(property.Resource);
+            var b = property.RemoveSubProperty(_resource);
             return (a || b);
         }
 

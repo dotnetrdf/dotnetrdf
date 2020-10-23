@@ -38,7 +38,7 @@ namespace VDS.RDF.Query
         : IEnumerable<int>
     {
         private List<int> _bindingIDs = new List<int>();
-        private Dictionary<String, INode> _assignments = new Dictionary<string, INode>();
+        private Dictionary<string, INode> _assignments = new Dictionary<string, INode>();
 
         /// <summary>
         /// Creates a new Binding Group.
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query
         /// <param name="parent">Parent Group.</param>
         public BindingGroup(BindingGroup parent)
         {
-            foreach (KeyValuePair<String, INode> assignment in parent.Assignments)
+            foreach (KeyValuePair<string, INode> assignment in parent.Assignments)
             {
                 _assignments.Add(assignment.Key, assignment.Value);
             }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="variable">Variable.</param>
         /// <param name="value">Value.</param>
-        public void AddAssignment(String variable, INode value)
+        public void AddAssignment(string variable, INode value)
         {
             if (_assignments.ContainsKey(variable))
             {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the Variable Assignments for the Group.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, INode>> Assignments
+        public IEnumerable<KeyValuePair<string, INode>> Assignments
         {
             get
             {
@@ -143,13 +143,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append(_bindingIDs.Count);
             builder.Append(" Member(s)");
             if (_assignments.Count > 0)
             {
                 builder.Append(" {");
-                foreach (String var in _assignments.Keys)
+                foreach (var var in _assignments.Keys)
                 {
                     builder.Append("?" + var + " = " + _assignments[var].ToSafeString());
                 }

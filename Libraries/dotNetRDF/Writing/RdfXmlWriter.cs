@@ -197,7 +197,7 @@ namespace VDS.RDF.Writing
                 WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
                 // WriterHelper.FindCollections(context, CollectionSearchMode.All);
             }
-            var typerefs = FindTypeReferences(context);
+            Dictionary<INode, string> typerefs = FindTypeReferences(context);
 
             // Get the Triples as a Sorted List
             var ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
@@ -209,7 +209,7 @@ namespace VDS.RDF.Writing
 
             for (var i = 0; i < ts.Count; i++)
             {
-                var t = ts[i];
+                Triple t = ts[i];
                 if (context.TriplesDone.Contains(t)) continue; //Skip if already done
 
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
@@ -352,7 +352,7 @@ namespace VDS.RDF.Writing
             }
 
             // Check we haven't failed to output any collections
-            foreach (var pair in context.Collections)
+            foreach (KeyValuePair<INode, OutputRdfCollection> pair in context.Collections)
             {
                 if (pair.Value.Triples.Count > 0)
                 {
@@ -397,7 +397,7 @@ namespace VDS.RDF.Writing
 
         private void GenerateCollectionOutput(RdfXmlWriterContext context, INode key)
         {
-            var c = context.Collections[key];
+            OutputRdfCollection c = context.Collections[key];
             if (!c.IsExplicit)
             {
                 if (context.NamespaceMap.NestingLevel > 2)
@@ -410,7 +410,7 @@ namespace VDS.RDF.Writing
                 while (c.Triples.Count > 0)
                 {
                     // Get the Next Item and generate the rdf:first element
-                    var next = c.Triples.First().Object;
+                    INode next = c.Triples.First().Object;
                     c.Triples.RemoveAt(0);
                     context.NamespaceMap.IncrementNesting();
                     context.Writer.WriteStartElement("rdf", "first", NamespaceMapper.RDF);
@@ -484,10 +484,10 @@ namespace VDS.RDF.Writing
                     // Output the Predicate Object list
                     while (c.Triples.Count > 0)
                     {
-                        var t = c.Triples[0];
+                        Triple t = c.Triples[0];
                         c.Triples.RemoveAt(0);
-                        var nextPred = t.Predicate;
-                        var nextObj = t.Object;
+                        INode nextPred = t.Predicate;
+                        INode nextObj = t.Object;
 
                         // Generate the predicate
                         GeneratePredicateNode(context, nextPred);
@@ -753,15 +753,15 @@ namespace VDS.RDF.Writing
         private Dictionary<INode, string> FindTypeReferences(RdfXmlWriterContext context)
         {
             // LINQ query to find all Triples which define the rdf:type of a Uri/BNode as a Uri
-            var rdfType = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
-            var ts = from t in context.Graph.Triples
+            IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
+            IEnumerable<Triple> ts = from t in context.Graph.Triples
                                      where (t.Subject.NodeType == NodeType.Blank || t.Subject.NodeType == NodeType.Uri)
                                             && t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri
                                             && !context.TriplesDone.Contains(t)
                                      select t;
 
             var typerefs = new Dictionary<INode, string>();
-            foreach (var t in ts)
+            foreach (Triple t in ts)
             {
                 if (!typerefs.ContainsKey(t.Subject))
                 {

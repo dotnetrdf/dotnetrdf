@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('(');
             output.Append(_lhs.ToString());
             output.Append(" | ");
@@ -64,8 +64,8 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            PathTransformContext lhsContext = new PathTransformContext(context);
-            PathTransformContext rhsContext = new PathTransformContext(context);
+            var lhsContext = new PathTransformContext(context);
+            var rhsContext = new PathTransformContext(context);
             ISparqlAlgebra lhs = _lhs.ToAlgebra(lhsContext);
             ISparqlAlgebra rhs = _rhs.ToAlgebra(rhsContext);
             return new Union(lhs, rhs);

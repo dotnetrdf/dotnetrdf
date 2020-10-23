@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Spin.Progress
 
         public void setCanceled(bool value)
         {
-            this.canceled = value;
+            canceled = value;
         }
 
         public void setTaskName(String value)

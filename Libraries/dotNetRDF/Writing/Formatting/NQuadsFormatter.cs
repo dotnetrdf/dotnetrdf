@@ -53,10 +53,10 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="syntax">NQuads syntax to output.</param>
         /// <param name="formatName">Format Name.</param>
-        public NQuadsFormatter(NQuadsSyntax syntax, String formatName)
+        public NQuadsFormatter(NQuadsSyntax syntax, string formatName)
             : base(NQuadsParser.AsNTriplesSyntax(syntax), formatName) { }
 
-        private static String GetName()
+        private static string GetName()
         {
             return GetName(NQuadsSyntax.Original);
         }

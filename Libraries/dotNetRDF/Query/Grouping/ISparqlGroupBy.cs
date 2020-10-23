@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets the Variables used in the GROUP BY.
         /// </summary>
-        IEnumerable<String> Variables
+        IEnumerable<string> Variables
         {
             get;
         }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
-        IEnumerable<String> ProjectableVariables
+        IEnumerable<string> ProjectableVariables
         {
             get;
         }
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets/Sets the Variable the value of the GROUP BY expression should be bound to (may be null if not bound to anything).
         /// </summary>
-        String AssignVariable
+        string AssignVariable
         {
             get;
             set;

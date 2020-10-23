@@ -50,7 +50,7 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesGetDefinitionsAll()
         {
-            int count = MimeTypesHelper.Definitions.Count();
+            var count = MimeTypesHelper.Definitions.Count();
             Console.WriteLine(count + " Definitions registered");
             Assert.Equal(32, count);
         }
@@ -58,7 +58,7 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesGetDefinitionsByTypeAny()
         {
-            int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
+            var count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
             Console.WriteLine(count + " Definitions registered");
             Assert.Equal(32, count);
         }
@@ -2521,7 +2521,7 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesContentNegotiation1()
         {
-            String[] types = new String[] { "application/turtle" , "application/rdf+xml", "text/plain" };
+            var types = new String[] { "application/turtle" , "application/rdf+xml", "text/plain" };
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
             Assert.NotNull(def);
             Assert.Equal(typeof(TurtleParser), def.RdfParserType);
@@ -2530,7 +2530,7 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesContentNegotiation2()
         {
-            String[] types = new String[] { "application/rdf+xml", "application/turtle", "text/plain" };
+            var types = new String[] { "application/rdf+xml", "application/turtle", "text/plain" };
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
             Assert.NotNull(def);
             Assert.Equal(typeof(RdfXmlParser), def.RdfParserType);
@@ -2539,7 +2539,7 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesContentNegotiation3()
         {
-            String[] types = new String[] { "text/plain", "application/rdf+xml", "application/turtle" };
+            var types = new String[] { "text/plain", "application/rdf+xml", "application/turtle" };
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
             Assert.NotNull(def);
             Assert.Equal(typeof(NTriplesParser), def.RdfParserType);
@@ -2555,7 +2555,7 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesContentNegotiation5()
         {
-            String[] types = new String[] { "application/turtle; q=0.8", "application/rdf+xml", "text/plain; q=0.9" };
+            var types = new String[] { "application/turtle; q=0.8", "application/rdf+xml", "text/plain; q=0.9" };
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
             Assert.NotNull(def);
             Assert.Equal(typeof(RdfXmlParser), def.RdfParserType);
@@ -2572,9 +2572,9 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesSelectors1()
         {
-            String[] types = new String[] { "audio/*; q=0.2", "audio/basic" };
-            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
-            this.PrintSelectors(selectors);
+            var types = new String[] { "audio/*; q=0.2", "audio/basic" };
+            var selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            PrintSelectors(selectors);
 
             Assert.False(selectors[0].IsRange);
             Assert.Equal("audio/basic", selectors[0].Type);
@@ -2586,9 +2586,9 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesSelectors2()
         {
-            String[] types = new String[] { "text/plain; q=0.5", "text/turtle" };
-            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
-            this.PrintSelectors(selectors);
+            var types = new String[] { "text/plain; q=0.5", "text/turtle" };
+            var selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            PrintSelectors(selectors);
 
             Assert.Equal("text/turtle", selectors[0].Type);
             Assert.Equal("text/plain", selectors[1].Type);
@@ -2598,9 +2598,9 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesSelectors3()
         {
-            String[] types = new String[] { "text/plain", "text/turtle" };
-            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
-            this.PrintSelectors(selectors);
+            var types = new String[] { "text/plain", "text/turtle" };
+            var selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            PrintSelectors(selectors);
 
             Assert.Equal("text/plain", selectors[0].Type);
             Assert.Equal("text/turtle", selectors[1].Type);
@@ -2609,9 +2609,9 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesSelectors4()
         {
-            String[] types = new String[] { "text/*", "text/html", "*/*" };
-            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
-            this.PrintSelectors(selectors);
+            var types = new String[] { "text/*", "text/html", "*/*" };
+            var selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            PrintSelectors(selectors);
 
             Assert.Equal("text/html", selectors[0].Type);
             Assert.Equal("text/*", selectors[1].Type);
@@ -2621,9 +2621,9 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesSelectors5()
         {
-            String[] types = new String[] { "text/plain; q=0.5", "text/turtle; q=0.5" };
-            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
-            this.PrintSelectors(selectors);
+            var types = new String[] { "text/plain; q=0.5", "text/turtle; q=0.5" };
+            var selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            PrintSelectors(selectors);
 
             Assert.Equal("text/plain", selectors[0].Type);
             Assert.Equal(0.5d, selectors[0].Quality);
@@ -2634,9 +2634,9 @@ namespace VDS.RDF
         [Fact]
         public void MimeTypesSelectors6()
         {
-            String[] types = new String[] { "text/turtle; q=0.5", "text/plain; q=0.5" };
-            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
-            this.PrintSelectors(selectors);
+            var types = new String[] { "text/turtle; q=0.5", "text/plain; q=0.5" };
+            var selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            PrintSelectors(selectors);
 
             Assert.Equal("text/turtle", selectors[0].Type);
             Assert.Equal(0.5d, selectors[0].Quality);
@@ -2650,7 +2650,7 @@ namespace VDS.RDF
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
             {
                 if (!def.HasFileExtensions) continue;
-                String ext = def.CanonicalFileExtension.ToUpper();
+                var ext = def.CanonicalFileExtension.ToUpper();
                 MimeTypeDefinition def2 = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault();
                 Assert.NotNull(def2);
                 Assert.Equal(def.SyntaxName, def2.SyntaxName);

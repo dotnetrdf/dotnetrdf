@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Datasets
 
             if (!_store.HasGraph(defaultGraphUri))
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = defaultGraphUri;
                 _store.Add(g);
             }
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (!_store.HasGraph(graphUri))
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = graphUri;
                 _store.Add(g);
             }

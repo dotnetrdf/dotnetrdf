@@ -54,7 +54,7 @@ namespace VDS.RDF
         {
             if (InternUris)
             {
-                var node = _uris.MoveToNode(uri);
+                ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
                 if (node.HasValue)
                 {
                     return node.Value;

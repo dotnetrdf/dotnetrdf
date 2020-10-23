@@ -51,22 +51,22 @@ namespace VDS.RDF.Query.FullText
         private SparqlQuery TestOptimisation(String query)
         {
             query = "PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>\n" + query;
-            SparqlQuery q = this._parser.ParseFromString(query);
-            Console.WriteLine(this._formatter.Format(q));
+            SparqlQuery q = _parser.ParseFromString(query);
+            Console.WriteLine(_formatter.Format(q));
 
             Console.WriteLine("Normal Algebra: " + q.ToAlgebra().ToString());
 
-            if (this._optimisers == null)
+            if (_optimisers == null)
             {
-                this._optimisers = new List<IAlgebraOptimiser>()
+                _optimisers = new List<IAlgebraOptimiser>()
                 {
                     new StrictAlgebraOptimiser(),
                     new FullTextOptimiser(new MockSearchProvider())
                 };
             }
-            q.AlgebraOptimisers = this._optimisers;
+            q.AlgebraOptimisers = _optimisers;
 
-            String algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);
             Assert.True(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
             Assert.True(algebra.Contains("PropertyFunction("), "Optimised Algebra should use PropertyFunction operator");
@@ -77,43 +77,43 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextOptimiserSimple1()
         {
-            this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' }");
+            TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' }");
         }
 
         [Fact]
         public void FullTextOptimiserSimple2()
         {
-            this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
+            TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
         }
 
         [Fact]
         public void FullTextOptimiserSimple3()
         {
-            this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
+            TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
         }
 
         [Fact]
         public void FullTextOptimiserSimple4()
         {
-            this.TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
+            TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
         }
 
         [Fact]
         public void FullTextOptimiserComplex1()
         {
-            this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
+            TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
         }
 
         [Fact]
         public void FullTextOptimiserComplex2()
         {
-            this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");
+            TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");
         }
 
         [Fact]
         public void FullTextOptimiserComplex3()
         {
-            SparqlQuery q = this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
+            SparqlQuery q = TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
             Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextOptimiserComplex4()
         {
-            SparqlQuery q = this.TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
+            SparqlQuery q = TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
             Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.FullText
         public void FullTextOptimiserComplex5()
         {
             //Actual test case from FTXT-364
-            String query = @"PREFIX rdf: <" + NamespaceMapper.RDF + @">
+            var query = @"PREFIX rdf: <" + NamespaceMapper.RDF + @">
 PREFIX rdfs: <" + NamespaceMapper.RDFS + @">
 PREFIX my: <http://example.org/my#>
 
@@ -146,7 +146,7 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
        ?result a my:Organization .
        ?result rdfs:label ?label .
     } ORDER BY DESC(?isWebSite) DESC(?score) ASC(?label)";
-            SparqlQuery q = this.TestOptimisation(query);
+            SparqlQuery q = TestOptimisation(query);
             ISparqlAlgebra algebra = q.ToAlgebra();
             Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }

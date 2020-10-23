@@ -288,7 +288,7 @@ namespace VDS.RDF.Query.Builder
             var q = b.BuildQuery();
 
             // then
-            ExistsFunction exists = (ExistsFunction)q.RootGraphPattern.Filter.Expression.Arguments.First();
+            var exists = (ExistsFunction)q.RootGraphPattern.Filter.Expression.Arguments.First();
             Assert.True(exists.Arguments.Single() is GraphPatternTerm);
             Assert.True(((GraphPatternTerm)exists.Arguments.Single()).Pattern.IsFiltered);
         }

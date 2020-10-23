@@ -11,9 +11,9 @@ namespace VDS.RDF
 
         private List<INode> GenerateIntegerNodes(int amount)
         {
-            Graph g = new Graph();
-            List<INode> ns = new List<INode>(amount);
-            Random rnd = new Random();
+            var g = new Graph();
+            var ns = new List<INode>(amount);
+            var rnd = new Random();
             while (ns.Count < amount)
             {
                 ns.Add(rnd.Next(Int32.MaxValue).ToLiteral(g));
@@ -24,20 +24,20 @@ namespace VDS.RDF
 
         private void TestSpeed(IEnumerable<INode> nodes, IComparer<INode> comparer, bool expectFaster)
         {
-            List<INode> defaultSorted = new List<INode>(nodes);
-            Stopwatch timer = new Stopwatch();
+            var defaultSorted = new List<INode>(nodes);
+            var timer = new Stopwatch();
             timer.Start();
             defaultSorted.Sort();
             timer.Stop();
 
             Console.WriteLine("Default Sort: " + timer.Elapsed);
-            long defTime = timer.ElapsedTicks;
+            var defTime = timer.ElapsedTicks;
 
             defaultSorted.Clear();
             defaultSorted = null;
             GC.GetTotalMemory(true);
 
-            List<INode> custSorted = new List<INode>(nodes);
+            var custSorted = new List<INode>(nodes);
             timer.Reset();
             timer.Start();
             custSorted.Sort(comparer);
@@ -48,7 +48,7 @@ namespace VDS.RDF
             GC.GetTotalMemory(true);
 
             Console.WriteLine(comparer.GetType().Name + " Sort: " + timer.Elapsed);
-            long custTime = timer.ElapsedTicks;
+            var custTime = timer.ElapsedTicks;
 
             if (expectFaster)
             {
@@ -66,9 +66,9 @@ namespace VDS.RDF
         public void NodeCompareSpeed1()
         {
             //Generate 10,000 node list of random integer nodes
-            List<INode> ns = this.GenerateIntegerNodes(10000);
+            List<INode> ns = GenerateIntegerNodes(10000);
 
-            this.TestSpeed(ns, new FastNodeComparer(), true);
+            TestSpeed(ns, new FastNodeComparer(), true);
         }
 
         [Fact]
@@ -76,9 +76,9 @@ namespace VDS.RDF
         public void NodeCompareSpeed2()
         {
             //Generate 100,000 node list of random integer nodes
-            List<INode> ns = this.GenerateIntegerNodes(100000);
+            List<INode> ns = GenerateIntegerNodes(100000);
 
-            this.TestSpeed(ns, new FastNodeComparer(), true);
+            TestSpeed(ns, new FastNodeComparer(), true);
         }
 
         [Fact]
@@ -87,9 +87,9 @@ namespace VDS.RDF
         public void NodeCompareSpeed3()
         {
             //Generate 1,000,000 node list of random integer nodes
-            List<INode> ns = this.GenerateIntegerNodes(1000000);
+            List<INode> ns = GenerateIntegerNodes(1000000);
 
-            this.TestSpeed(ns, new FastNodeComparer(), true);
+            TestSpeed(ns, new FastNodeComparer(), true);
         }
     }
 }

@@ -238,11 +238,16 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode((Proxy as WebProxy).Address.AbsoluteUri)));
 
             if (!(Proxy.Credentials is NetworkCredential)) return;
-            NetworkCredential cred = (NetworkCredential)Proxy.Credentials;
+            var cred = (NetworkCredential)Proxy.Credentials;
             context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
             context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
         }
 
+        /// <summary>
+        /// Set the credentials for the connector to use for authenticating HTTP requests.
+        /// </summary>
+        /// <param name="username">The user name to use.</param>
+        /// <param name="password">The password to use.</param>
         public void SetCredentials(string username, string password)
         {
             Username = username;

@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Inference
         /// </summary>
         /// <param name="server">Pellet Server.</param>
         /// <param name="kbName">Knowledge Base name.</param>
-        public PelletReasoner(PelletServer server, String kbName)
+        public PelletReasoner(PelletServer server, string kbName)
         {
             _server = server;
             if (_server.HasKnowledgeBase(kbName))
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Inference
         /// </summary>
         /// <param name="serverUri">Pellet Server URI.</param>
         /// <param name="kbName">Knowledge Base name.</param>
-        public PelletReasoner(Uri serverUri, String kbName)
+        public PelletReasoner(Uri serverUri, string kbName)
             : this(new PelletServer(serverUri), kbName) { }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Inference
             Type svcType = typeof(QueryService);
             if (_kb.SupportsService(svcType))
             {
-                QueryService svc = (QueryService)_kb.GetService(svcType);
+                var svc = (QueryService)_kb.GetService(svcType);
                 return svc.Query(sparqlQuery);
             }
             else
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Inference
             Type svcType = typeof(ClassifyService);
             if (_kb.SupportsService(svcType))
             {
-                ClassifyService svc = (ClassifyService)_kb.GetService(svcType);
+                var svc = (ClassifyService)_kb.GetService(svcType);
                 return svc.Classify().Triples;
             }
             else
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Inference
             Type svcType = typeof(RealizeService);
             if (_kb.SupportsService(svcType))
             {
-                RealizeService svc = (RealizeService)_kb.GetService(svcType);
+                var svc = (RealizeService)_kb.GetService(svcType);
                 return svc.Realize().Triples;
             }
             else
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Inference
             Type svcType = typeof(ConsistencyService);
             if (_kb.SupportsService(svcType))
             {
-                ConsistencyService svc = (ConsistencyService)_kb.GetService(svcType);
+                var svc = (ConsistencyService)_kb.GetService(svcType);
                 return svc.IsConsistent();
             }
             else

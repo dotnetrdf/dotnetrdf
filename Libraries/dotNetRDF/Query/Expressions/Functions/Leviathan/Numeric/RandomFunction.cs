@@ -82,12 +82,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
             if (min.NumericType == SparqlNumericType.NaN || max.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
 
-            double x = min.AsDouble();
-            double y = max.AsDouble();
+            var x = min.AsDouble();
+            var y = max.AsDouble();
 
             if (x > y) throw new RdfQueryException("Cannot generate a random number in the given range since the minumum is greater than the maximum");
-            double range = y - x;
-            double rnd = _rnd.NextDouble() * range;
+            var range = y - x;
+            var rnd = _rnd.NextDouble() * range;
             rnd += x;
             return new DoubleNode(null, rnd);
         }
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.Random);

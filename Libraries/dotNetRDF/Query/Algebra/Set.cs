@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra
     public sealed class Set 
         : BaseSet, IEquatable<Set>
     {
-        private Dictionary<String, INode> _values;
+        private Dictionary<string, INode> _values;
 
         /// <summary>
         /// Creates a new Set.
@@ -55,11 +55,11 @@ namespace VDS.RDF.Query.Algebra
         internal Set(ISet x, ISet y)
         {
             _values = new Dictionary<string, INode>();
-            foreach (String var in x.Variables)
+            foreach (var var in x.Variables)
             {
                 _values.Add(var, x[var]);
             }
-            foreach (String var in y.Variables)
+            foreach (var var in y.Variables)
             {
                 if (!_values.ContainsKey(var))
                 {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Algebra
         internal Set(ISet x)
         {
             _values = new Dictionary<string, INode>();
-            foreach (String var in x.Variables)
+            foreach (var var in x.Variables)
             {
                 _values.Add(var, x[var]);
             }
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Algebra
         internal Set(SparqlResult result)
         {
             _values = new Dictionary<string, INode>();
-            foreach (String var in result.Variables)
+            foreach (var var in result.Variables)
             {
                 Add(var, result[var]);
             }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
         internal Set(BindingTuple tuple)
         {
             _values = new Dictionary<string, INode>();
-            foreach (KeyValuePair<String, PatternItem> binding in tuple.Values)
+            foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
             {
                 Add(binding.Key, tuple[binding.Key]);
             }
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="variable">Variable.</param>
         /// <returns>Either a Node or a null.</returns>
-        public override INode this[String variable]
+        public override INode this[string variable]
         {
             get
             {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="variable">Variable.</param>
         /// <param name="value">Value.</param>
-        public override void Add(String variable, INode value)
+        public override void Add(string variable, INode value)
         {
             if (!_values.ContainsKey(variable))
             {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Algebra
         /// Removes a Value for a Variable from the Set.
         /// </summary>
         /// <param name="variable">Variable.</param>
-        public override void Remove(String variable)
+        public override void Remove(string variable)
         {
             if (_values.ContainsKey(variable)) _values.Remove(variable);
         }
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="variable">Variable.</param>
         /// <returns></returns>
-        public override bool ContainsVariable(String variable)
+        public override bool ContainsVariable(string variable)
         {
             return _values.ContainsKey(variable);
         }
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables in the Set.
         /// </summary>
-        public override IEnumerable<String> Variables
+        public override IEnumerable<string> Variables
         {
             get
             {

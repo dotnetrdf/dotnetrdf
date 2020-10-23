@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         /// <returns>A new LiteralExpression whose value is the constant value of this expression.</returns>
         public LiteralExpression ToSimpleLiteral()
         {
-            ConstantTerm constant = (ConstantTerm) Expression;
+            var constant = (ConstantTerm) Expression;
             return new LiteralExpression(constant.Node.AsString().ToSimpleLiteral(false));
         }
     }

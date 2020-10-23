@@ -24,10 +24,10 @@
 // </copyright>
 */
 
+using System.Diagnostics;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Diagnostics;
-
     internal class LessThan : PropertyCompare
     {
         [DebuggerStepThrough]

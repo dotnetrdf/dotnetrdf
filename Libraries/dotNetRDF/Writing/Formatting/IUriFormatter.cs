@@ -38,13 +38,13 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        String FormatUri(Uri u);
+        string FormatUri(Uri u);
 
         /// <summary>
         /// Formats a URI as a String.
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        String FormatUri(String u);
+        string FormatUri(string u);
     }
 }

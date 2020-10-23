@@ -67,9 +67,9 @@ namespace VDS.RDF.Configuration
                 else
                 {
                     // Graph with custom triple collection
-                    BaseTripleCollection tripleCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseTripleCollection;
+                    var tripleCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseTripleCollection;
                     if (tripleCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection");
-                    output = (IGraph)Activator.CreateInstance(targetType, new Object[] { tripleCollection });
+                    output = (IGraph)Activator.CreateInstance(targetType, new object[] { tripleCollection });
                 }
             }
             catch
@@ -88,7 +88,7 @@ namespace VDS.RDF.Configuration
             {
                 ConfigurationLoader.CheckCircularReference(objNode, source, "dnr:fromGraph");
 
-                Object graph = ConfigurationLoader.LoadObject(g, source);
+                var graph = ConfigurationLoader.LoadObject(g, source);
                 if (graph is IGraph)
                 {
                     output.Merge((IGraph)graph);
@@ -141,14 +141,14 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            IEnumerable<Object> connections;
+            IEnumerable<object> connections;
 
             // Load from Stores
             IEnumerable<INode> stores = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromStore)));
             stores.All(s => !ConfigurationLoader.CheckCircularReference(objNode, s, "dnr:fromStore"));
             connections = stores.Select(s => ConfigurationLoader.LoadObject(g, s));
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyWithUri)));
-            foreach (Object store in connections)
+            foreach (var store in connections)
             {
                 if (store is IStorageProvider)
                 {
@@ -191,9 +191,9 @@ namespace VDS.RDF.Configuration
             // Load from Datasets
             IEnumerable<INode> ds = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromDataset)));
             ds.All(d => !ConfigurationLoader.CheckCircularReference(objNode, d, ConfigurationLoader.PropertyFromDataset));
-            IEnumerable<Object> datasets = ds.Select(d => ConfigurationLoader.LoadObject(g, d));
+            IEnumerable<object> datasets = ds.Select(d => ConfigurationLoader.LoadObject(g, d));
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyWithUri)));
-            foreach (Object dataset in datasets)
+            foreach (var dataset in datasets)
             {
                 if (dataset is ISparqlDataset)
                 {
@@ -260,7 +260,7 @@ namespace VDS.RDF.Configuration
             IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
             foreach (INode reasoner in reasoners)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, reasoner);
+                var temp = ConfigurationLoader.LoadObject(g, reasoner);
                 if (temp is IInferenceEngine)
                 {
                     ((IInferenceEngine)temp).Apply(output);
@@ -307,7 +307,7 @@ namespace VDS.RDF.Configuration
     public class StoreFactory 
         : IObjectFactory
     {
-        private const String TripleStore = "VDS.RDF.TripleStore",
+        private const string TripleStore = "VDS.RDF.TripleStore",
                              WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
                              PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
 
@@ -326,7 +326,7 @@ namespace VDS.RDF.Configuration
 
             ITripleStore store = null;
             INode subObj;
-            Object temp;
+            object temp;
 
             // Get Property Nodes we need
             INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
@@ -345,7 +345,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        BaseGraphCollection graphCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseGraphCollection;
+                        var graphCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseGraphCollection;
                         if (graphCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Store identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection");
                         store = new TripleStore(graphCollection);
                     }

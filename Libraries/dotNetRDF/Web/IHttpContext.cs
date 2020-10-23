@@ -76,7 +76,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Gets the MIME Types specified in the Accept header.
         /// </summary>
-        String[] AcceptTypes
+        string[] AcceptTypes
         {
             get;
         }
@@ -92,7 +92,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Gets the Content Type.
         /// </summary>
-        String ContentType
+        string ContentType
         {
             get;
         }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Gets the HTTP Method.
         /// </summary>
-        String HttpMethod
+        string HttpMethod
         {
             get;
         }
@@ -140,7 +140,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Gets the Users Host Address.
         /// </summary>
-        String UserHostAddress
+        string UserHostAddress
         {
             get;
         }
@@ -159,7 +159,7 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="header">Name.</param>
         /// <param name="value">Value.</param>
-        void AddHeader(String header, String value);
+        void AddHeader(string header, string value);
 
         /// <summary>
         /// Clears the Response.
@@ -170,7 +170,7 @@ namespace VDS.RDF.Web
         /// Writes a String to the response body.
         /// </summary>
         /// <param name="data">Data to write.</param>
-        void Write(String data);
+        void Write(string data);
 
         /// <summary>
         /// Gets/Sets the Content Encoding for the response.
@@ -184,7 +184,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Gets/Sets the Content Type for the response.
         /// </summary>
-        String ContentType
+        string ContentType
         {
             get;
             set;

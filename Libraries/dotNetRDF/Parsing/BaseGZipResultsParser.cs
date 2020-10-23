@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing
         /// Helper method for raising warning events.
         /// </summary>
         /// <param name="message">Warning message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null) d(message);

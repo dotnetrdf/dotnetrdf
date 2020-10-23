@@ -245,7 +245,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("DROP ");
             if (_silent) output.Append("SILENT ");
             switch (_mode)

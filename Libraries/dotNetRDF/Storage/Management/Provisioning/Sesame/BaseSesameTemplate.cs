@@ -43,7 +43,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Constants for Sesame repository configuration namespaces.
         /// </summary>
-        public const String RepositoryNamespace = "http://www.openrdf.org/config/repository#",
+        public const string RepositoryNamespace = "http://www.openrdf.org/config/repository#",
                             RepositorySailNamespace = "http://www.openrdf.org/config/repository/sail#",
                             RepositoryHttpNamespace = "http://www.openrdf.org/config/repository/http#",
                             SailNamespace = "http://www.openrdf.org/config/sail#",
@@ -56,14 +56,14 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <param name="id">ID.</param>
         /// <param name="name">Template name.</param>
         /// <param name="description">Template description.</param>
-        public BaseSesameTemplate(String id, String name, String description)
+        public BaseSesameTemplate(string id, string name, string description)
             : base(id, name, description) { }
 
         /// <summary>
         /// Gets/Sets the descriptive label for a Sesame store.
         /// </summary>
         [Category("Sesame Configuration"), Description("A descriptive label for the store that Sesame will store and present when browsing the server through the Sesame workbench UI")]
-        public String Label
+        public string Label
         {
             get;
             set;
@@ -92,7 +92,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             g.NamespaceMap.AddNamespace("ns", UriFactory.Create(SailNativeNamespace));
 
             // Create a unique blank node to represent the Repository Context
-            Guid uuid = Guid.NewGuid();
+            var uuid = Guid.NewGuid();
             while (uuid.Equals(Guid.Empty))
             {
                 uuid = Guid.NewGuid();

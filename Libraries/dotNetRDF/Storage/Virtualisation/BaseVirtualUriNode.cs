@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         protected sealed override void OnMaterialise()
         {
-            IUriNode temp = (IUriNode)_value;
+            var temp = (IUriNode)_value;
             _u = temp.Uri;
         }
 

@@ -97,7 +97,7 @@ namespace VDS.RDF
         /// <param name="ts">List of Triples in the form of an IEnumerable.</param>
         public override bool Assert(IEnumerable<Triple> ts)
         {
-            bool asserted = false;
+            var asserted = false;
             foreach (Triple t in ts)
             {
                 asserted = Assert(t) || asserted;
@@ -126,7 +126,7 @@ namespace VDS.RDF
         /// <param name="ts">Enumeration of Triples to retract.</param>
         public override bool Retract(IEnumerable<Triple> ts)
         {
-            bool retracted = false;
+            var retracted = false;
             foreach (Triple t in ts)
             {
                 retracted = Retract(t) || retracted;

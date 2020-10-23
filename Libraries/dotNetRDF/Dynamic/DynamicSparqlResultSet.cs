@@ -24,15 +24,15 @@
 // </copyright>
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq.Expressions;
+using VDS.RDF.Query;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Dynamic;
-    using System.Linq.Expressions;
-    using VDS.RDF.Query;
-
     /// <summary>
     /// Provides dynamic functionality for <see cref="SparqlResultSet">SPARQL result sets</see>.
     /// </summary>
@@ -60,7 +60,7 @@ namespace VDS.RDF.Dynamic
         /// <returns>An enumerator that can be used to iterate through dynamic results in the set.</returns>
         public IEnumerator<DynamicSparqlResult> GetEnumerator()
         {
-            foreach (var result in this.original)
+            foreach (SparqlResult result in original)
             {
                 yield return new DynamicSparqlResult(result);
             }
@@ -69,7 +69,7 @@ namespace VDS.RDF.Dynamic
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <inheritdoc/>

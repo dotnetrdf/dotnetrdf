@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Datasets
             if (Contains(graphUri))
             {
                 IGraph temp = _dataset[graphUri];
-                bool removed = _dataset.RemoveGraph(graphUri);
+                var removed = _dataset.RemoveGraph(graphUri);
                 _dataset.Flush();
                 RaiseGraphRemoved(temp);
                 temp.Dispose();

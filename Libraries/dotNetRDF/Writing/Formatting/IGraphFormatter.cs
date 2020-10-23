@@ -38,25 +38,25 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="g">Graph.</param>
         /// <returns></returns>
-        String FormatGraphHeader(IGraph g);
+        string FormatGraphHeader(IGraph g);
 
         /// <summary>
         /// Generates the header section for the Graph.
         /// </summary>
         /// <param name="namespaces">Namespaces.</param>
         /// <returns></returns>
-        String FormatGraphHeader(INamespaceMapper namespaces);
+        string FormatGraphHeader(INamespaceMapper namespaces);
 
         /// <summary>
         /// Generates a generic header section.
         /// </summary>
         /// <returns></returns>
-        String FormatGraphHeader();
+        string FormatGraphHeader();
 
         /// <summary>
         /// Generates the footer section.
         /// </summary>
         /// <returns></returns>
-        String FormatGraphFooter();
+        string FormatGraphFooter();
     }
 }

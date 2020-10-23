@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using VDS.RDF;
+using VDS.RDF.Ontology;
+using VDS.RDF.Parsing;
+
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using VDS.RDF;
-    using VDS.RDF.Ontology;
-    using VDS.RDF.Parsing;
-
     /// <summary>
     /// Represents the SHACL vocabulary.
     /// </summary>

@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Patterns
     public class LetPattern
         : BaseTriplePattern, IComparable<LetPattern>, IAssignmentPattern
     {
-        private readonly String _var;
+        private readonly string _var;
         private readonly ISparqlExpression _expr;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="var">Variable to assign to.</param>
         /// <param name="expr">Expression which generates a value which will be assigned to the variable.</param>
-        public LetPattern(String var, ISparqlExpression expr)
+        public LetPattern(string var, ISparqlExpression expr)
         {
             _var = var;
             _expr = expr;
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
-                Set s = new Set();
+                var s = new Set();
                 try
                 {
                     INode temp = _expr.Evaluate(context, 0);
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                foreach (int id in context.InputMultiset.SetIDs.ToList())
+                foreach (var id in context.InputMultiset.SetIDs.ToList())
                 {
                     ISet s = context.InputMultiset[id];
                     if (s.ContainsVariable(_var))
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Name of the Variable to which values will be assigned.
         /// </summary>
-        public String VariableName
+        public string VariableName
         {
             get
             {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("LET(");
             output.Append("?");
             output.Append(_var);

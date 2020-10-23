@@ -145,15 +145,15 @@ namespace dotNetRDF.MockServerTests
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
-            ManualResetEvent signal = new ManualResetEvent(false);
-            int resultsCount = -1;
+            var signal = new ManualResetEvent(false);
+            var resultsCount = -1;
             endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, s) =>
             {
                 resultsCount = r.Count;
                 signal.Set();
             }, null);
 
-            bool wasSet = signal.WaitOne(10000);
+            var wasSet = signal.WaitOne(10000);
             wasSet.Should().BeTrue();
             resultsCount.Should().Be(1);
         }
@@ -163,7 +163,7 @@ namespace dotNetRDF.MockServerTests
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             var resultsCount = -1;
             endpoint.QueryWithResultGraph(_fixture.ConstructQuery, (r, s) =>
             {
@@ -171,7 +171,7 @@ namespace dotNetRDF.MockServerTests
                 signal.Set();
             }, null);
 
-            bool wasSet = signal.WaitOne(10000);
+            var wasSet = signal.WaitOne(10000);
             wasSet.Should().BeTrue();
             resultsCount.Should().Be(1);
         }

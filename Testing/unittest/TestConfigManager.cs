@@ -106,12 +106,12 @@ namespace VDS.RDF
                 {
                     do
                     {
-                        String line = reader.ReadLine();
+                        var line = reader.ReadLine();
                         if (line == null) break;
                         if (line.TrimStart().StartsWith("#")) continue;
                         if (line.Equals("")) continue;
 
-                        String[] parts = line.Split(new char[] { '=' }, 2);
+                        var parts = line.Split(new char[] { '=' }, 2);
                         if (parts.Length == 2)
                         {
                             if (_settings.ContainsKey(parts[0]))
@@ -153,7 +153,7 @@ namespace VDS.RDF
             if (_failed) return null;
             if (_settings.ContainsKey(key))
             {
-                String value = _settings[key];
+                var value = _settings[key];
                 if (String.IsNullOrEmpty(value))
                 {
                     Assert.True(false,
@@ -182,7 +182,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static int GetSettingAsInt(String key)
         {
-            String value = GetSetting(key);
+            var value = GetSetting(key);
             if (_failed) return 0;
             int i;
             if (Int32.TryParse(value, out i))
@@ -206,7 +206,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static bool GetSettingAsBoolean(String key)
         {
-            String value = GetSetting(key);
+            var value = GetSetting(key);
             if (_failed) return false;
             bool b;
             if (Boolean.TryParse(value, out b))

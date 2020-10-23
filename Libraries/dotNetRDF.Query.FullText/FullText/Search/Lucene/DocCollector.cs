@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public DocCollector(double scoreThreshold)
             : this()
         {
-            this._scoreThreshold = scoreThreshold;
+            _scoreThreshold = scoreThreshold;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             get
             {
-                return this._docs;
+                return _docs;
             }
         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             get
             {
-                return this._docs.Count;
+                return _docs.Count;
             }
         }
 
@@ -100,17 +100,17 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="doc">Document ID.</param>
         public override void Collect(int doc)
         {
-            double score = this._scorer.Score();
-            if (!Double.IsNaN(this._scoreThreshold))
+            double score = _scorer.Score();
+            if (!Double.IsNaN(_scoreThreshold))
             {
-                if (score >= this._scoreThreshold)
+                if (score >= _scoreThreshold)
                 {
-                    this._docs.Add(new KeyValuePair<int, double>(doc + this._currBase, score));
+                    _docs.Add(new KeyValuePair<int, double>(doc + _currBase, score));
                 }
             }
             else
             {
-                this._docs.Add(new KeyValuePair<int, double>(doc + this._currBase, score));
+                _docs.Add(new KeyValuePair<int, double>(doc + _currBase, score));
             }
         }
 
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="docBase">Document Base.</param>
         public override void SetNextReader(IndexReader reader, int docBase)
         {
-            this._currBase = docBase;
+            _currBase = docBase;
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="scorer">Scorer.</param>
         public override void SetScorer(Scorer scorer)
         {
-            this._scorer = scorer;
+            _scorer = scorer;
         }
     }
 }

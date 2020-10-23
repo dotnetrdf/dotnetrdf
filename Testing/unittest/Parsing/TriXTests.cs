@@ -47,10 +47,10 @@ namespace VDS.RDF.Parsing
         public void ParsingTriXPerformanceCore351()
         {
             //Test case from CORE-351
-            TripleStore store = new TripleStore();
-            Stopwatch timer = new Stopwatch();
+            var store = new TripleStore();
+            var timer = new Stopwatch();
             timer.Start();
-            this._parser.Load(store, @"resources\\lib_p11_ontology.trix");
+            _parser.Load(store, @"resources\\lib_p11_ontology.trix");
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }
@@ -70,13 +70,13 @@ namespace VDS.RDF.Parsing
         public void ParsingTriXPerformance(int numGraphs, int triplesPerGraph)
         {
             //Generate data
-            TripleStore store = new TripleStore();
-            for (int i = 1; i <= numGraphs; i++)
+            var store = new TripleStore();
+            for (var i = 1; i <= numGraphs; i++)
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = new Uri("http://example.org/graph/" + i);
 
-                for (int j = 1; j <= triplesPerGraph; j++)
+                for (var j = 1; j <= triplesPerGraph; j++)
                 {
                     g.Assert(new Triple(g.CreateUriNode(UriFactory.Create("http://example.org/subject/" + j)), g.CreateUriNode(UriFactory.Create("http://example.org/predicate/" + j)), (j).ToLiteral(g)));
                 }
@@ -85,19 +85,19 @@ namespace VDS.RDF.Parsing
 
             Console.WriteLine("Generated dataset with " + numGraphs + " named graphs (" + triplesPerGraph + " triples/graph) with a total of " + (numGraphs * triplesPerGraph) + " triples");
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
 
             //Write out to disk
             timer.Start();
-            this._writer.Save(store, "temp.trix");
+            _writer.Save(store, "temp.trix");
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to write to disk");
             timer.Reset();
 
             //Read back from disk
-            TripleStore store2 = new TripleStore();
+            var store2 = new TripleStore();
             timer.Start();
-            this._parser.Load(store2, "temp.trix");
+            _parser.Load(store2, "temp.trix");
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
 
@@ -108,8 +108,8 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParseTriXWithEmptyGraph()
         {
-            TripleStore store = new TripleStore();
-            this._parser.Load(store, @"resources\\trix\emptygraph.trix");
+            var store = new TripleStore();
+            _parser.Load(store, @"resources\\trix\emptygraph.trix");
             Assert.Equal(0, store.Graphs.Count);
         }
     }

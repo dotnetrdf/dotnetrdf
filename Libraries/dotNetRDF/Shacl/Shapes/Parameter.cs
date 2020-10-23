@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+
 namespace VDS.RDF.Shacl.Shapes
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-
     internal class Parameter : Property
     {
         [DebuggerStepThrough]
@@ -48,7 +48,7 @@ namespace VDS.RDF.Shacl.Shapes
 
         internal bool Matches(Shape shape)
         {
-            return !this.Equals((INode)shape) && ValidateInternal(shape, shape.AsEnumerable(), null);
+            return !Equals((INode)shape) && ValidateInternal(shape, shape.AsEnumerable(), null);
         }
     }
 }

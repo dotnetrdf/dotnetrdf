@@ -59,13 +59,13 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlJoinWithoutVars1()
         {
-            String data = @"<http://s> <http://p> <http://o> .
+            var data = @"<http://s> <http://p> <http://o> .
 <http://x> <http://y> <http://z> .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, new NTriplesParser());
 
-            SparqlResultSet results = g.ExecuteQuery("ASK WHERE { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> }") as SparqlResultSet;
+            var results = g.ExecuteQuery("ASK WHERE { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> }") as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
             Assert.True(results.Result);
@@ -74,14 +74,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlJoinWithoutVars2()
         {
-            String data = @"<http://s> <http://p> <http://o> .
+            var data = @"<http://s> <http://p> <http://o> .
 <http://x> <http://y> <http://z> .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, new NTriplesParser());
             g.BaseUri = new Uri("http://example/graph");
 
-            SparqlResultSet results = g.ExecuteQuery("ASK WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
+            var results = g.ExecuteQuery("ASK WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
             Assert.True(results.Result);
@@ -90,14 +90,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlJoinWithoutVars3()
         {
-            String data = @"<http://s> <http://p> <http://o> .
+            var data = @"<http://s> <http://p> <http://o> .
 <http://x> <http://y> <http://z> .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, new NTriplesParser());
             g.BaseUri = new Uri("http://example/graph");
 
-            SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
+            var results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Single(results.Results);
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParameterizedStringWithNulls()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.CommandText = "SELECT * WHERE { @s ?p ?o }";
 
             //Set a URI to a valid value
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParameterizedStringWithNulls2()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.CommandText = "SELECT * WHERE { @s ?p ?o }";
 
             //Set a URI to a valid value
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query
         [Fact(Skip = "Not supported by the Uri class")]
         public void SparqlParameterizedStringShouldNotDecodeEncodedCharactersInUri()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
+            var query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some%40encoded%2furi"));
             Assert.Equal("DESCRIBE <http://example.com/some%40encoded%2furi>", query.ToString());
         }
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParameterizedStringShouldNotEncodeUri()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString("DESCRIBE @uri");
+            var query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some@encoded/uri"));
             Assert.Equal("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString());
         }
@@ -161,17 +161,17 @@ namespace VDS.RDF.Query
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            String query =
+            var query =
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
 
-            SparqlRemoteEndpoint endpoint =
+            var endpoint =
                 new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
             SparqlResultSet results = endpoint.QueryWithResultSet(query);
             TestTools.ShowResults(results);
 
             using (HttpWebResponse response = endpoint.QueryRaw(query))
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -192,9 +192,9 @@ namespace VDS.RDF.Query
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            String query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
+            var query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"),
+            var endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"),
                 "https://www.wikidata.org");
             endpoint.UserAgent =
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query
 
             using (HttpWebResponse response = endpoint.QueryRaw(query))
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -221,9 +221,9 @@ namespace VDS.RDF.Query
         public void SparqlRemoteVirtuosoWithSponging()
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso), "Test Config marks Virtuoso as unavailable, cannot run test");
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"));
+            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"));
             endpoint.HttpMode = "POST";
-            String query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
+            var query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
 
             IGraph g = endpoint.QueryWithResultGraph(query);
             TestTools.ShowGraph(g);
@@ -236,14 +236,14 @@ namespace VDS.RDF.Query
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            String query = @"PREFIX dbpediaO: <http://dbpedia.org/ontology/>
+            var query = @"PREFIX dbpediaO: <http://dbpedia.org/ontology/>
 select distinct ?entity ?redirectedEntity
 where {
  ?entity rdfs:label 'Apple Computer'@en .
  ?entity dbpediaO:wikiPageRedirects ?redirectedEntity .
 }";
 
-            SparqlRemoteEndpoint endpoint =
+            var endpoint =
                 new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
             Console.WriteLine("Results obtained with QueryWithResultSet()");
             SparqlResultSet results = endpoint.QueryWithResultSet(query);
@@ -253,7 +253,7 @@ where {
             Console.WriteLine("Results obtained with QueryRaw()");
             using (HttpWebResponse response = endpoint.QueryRaw(query))
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -272,7 +272,7 @@ where {
             using (HttpWebResponse response =
                 endpoint.QueryRaw(query, new String[] {"application/sparql-results+json"}))
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -292,10 +292,10 @@ where {
         [Fact]
         public void SparqlResultSetEquality()
         {
-            SparqlXmlParser parser = new SparqlXmlParser();
-            SparqlRdfParser rdfparser = new SparqlRdfParser();
-            SparqlResultSet a = new SparqlResultSet();
-            SparqlResultSet b = new SparqlResultSet();
+            var parser = new SparqlXmlParser();
+            var rdfparser = new SparqlRdfParser();
+            var a = new SparqlResultSet();
+            var b = new SparqlResultSet();
 
             parser.Load(a, "resources\\list-3.srx");
             parser.Load(b, "resources\\list-3.srx.out");
@@ -328,28 +328,28 @@ where {
         {
             Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
 
-            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + ">\nSELECT DISTINCT ?comment WHERE {?s rdfs:comment ?comment}";
+            var query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + ">\nSELECT DISTINCT ?comment WHERE {?s rdfs:comment ?comment}";
 
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\json.owl");
             store.Add(g);
 
-            Object results = ExecuteQuery(store, query);
+            var results = ExecuteQuery(store, query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
                 //Serialize to both XML and JSON Results format
-                SparqlXmlWriter xmlwriter = new SparqlXmlWriter();
+                var xmlwriter = new SparqlXmlWriter();
                 xmlwriter.Save(rset, "results.xml");
-                SparqlJsonWriter jsonwriter = new SparqlJsonWriter();
+                var jsonwriter = new SparqlJsonWriter();
                 jsonwriter.Save(rset, "results.json");
 
                 //Read both back in
-                SparqlXmlParser xmlparser = new SparqlXmlParser();
-                SparqlResultSet r1 = new SparqlResultSet();
+                var xmlparser = new SparqlXmlParser();
+                var r1 = new SparqlResultSet();
                 xmlparser.Load(r1, "results.xml");
                 Console.WriteLine("Result Set after XML serialization and reparsing contains:");
                 foreach (SparqlResult r in r1)
@@ -358,8 +358,8 @@ where {
                 }
                 Console.WriteLine();
 
-                SparqlJsonParser jsonparser = new SparqlJsonParser();
-                SparqlResultSet r2 = new SparqlResultSet();
+                var jsonparser = new SparqlJsonParser();
+                var r2 = new SparqlResultSet();
                 jsonparser.Load(r2, "results.json");
                 Console.WriteLine("Result Set after JSON serialization and reparsing contains:");
                 foreach (SparqlResult r in r2)
@@ -377,15 +377,15 @@ where {
         [Fact]
         public void SparqlInjection()
         {
-            String baseQuery = @"PREFIX ex: <http://example.org/Vehicles/>
+            var baseQuery = @"PREFIX ex: <http://example.org/Vehicles/>
 SELECT * WHERE {
     ?s a @type .
 }";
 
-            SparqlParameterizedString query = new SparqlParameterizedString(baseQuery);
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = new SparqlParameterizedString(baseQuery);
+            var parser = new SparqlQueryParser();
 
-            List<String> injections = new List<string>()
+            var injections = new List<string>()
             {
                 "ex:Car ; ex:Speed ?speed",
                 "ex:Plane ; ?prop ?value",
@@ -393,7 +393,7 @@ SELECT * WHERE {
                 "ex:Car \u0022; ex:Speed ?speed"
             };
 
-            foreach (String value in injections)
+            foreach (var value in injections)
             {
                 query.SetLiteral("type", value, false);
                 query.SetLiteral("@type", value, false);
@@ -408,11 +408,11 @@ SELECT * WHERE {
         [Fact]
         public void SparqlConflictingParamNames()
         {
-            String baseQuery = @"SELECT * WHERE {
+            var baseQuery = @"SELECT * WHERE {
     ?s a @type ; a @type1 ; a @type2 .
 }";
-            SparqlParameterizedString query = new SparqlParameterizedString(baseQuery);
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = new SparqlParameterizedString(baseQuery);
+            var parser = new SparqlQueryParser();
 
             query.SetUri("type", new Uri("http://example.org/type"));
 
@@ -438,13 +438,13 @@ SELECT * WHERE {
         [Fact]
         public void SparqlParameterizedString()
         {
-            String test = @"INSERT DATA { GRAPH @graph {
+            var test = @"INSERT DATA { GRAPH @graph {
                             <http://uri> <http://uri> <http://uri>
                             }}";
-            SparqlParameterizedString cmdString = new SparqlParameterizedString(test);
+            var cmdString = new SparqlParameterizedString(test);
             cmdString.SetUri("graph", new Uri("http://example.org/graph"));
 
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(cmdString);
             cmds.ToString();
         }
@@ -454,9 +454,9 @@ SELECT * WHERE {
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql), "Test Config marks Remote SPARQL as unavailable, test cannot be run");
 
-            SparqlConnector endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
+            var endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
 
-            String testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            var testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 1";
 
             Console.WriteLine("Testing Sparql Connector with vendor specific extensions in query");
@@ -470,21 +470,21 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
 
             endpoint.SkipLocalParsing = true;
 
-            Object results = endpoint.Query(testQuery);
+            var results = endpoint.Query(testQuery);
             TestTools.ShowResults(results);
         }
 
         [Fact]
         public void SparqlBNodeIDsInResults()
         {
-            SparqlXmlParser xmlparser = new SparqlXmlParser();
-            SparqlResultSet results = new SparqlResultSet();
+            var xmlparser = new SparqlXmlParser();
+            var results = new SparqlResultSet();
             xmlparser.Load(results, "resources\\bnodes.srx");
 
             TestTools.ShowResults(results);
             Assert.Single(results.Results.Distinct());
 
-            SparqlJsonParser jsonparser = new SparqlJsonParser();
+            var jsonparser = new SparqlJsonParser();
             results = new SparqlResultSet();
             jsonparser.Load(results, "resources\\bnodes.json");
 
@@ -495,17 +495,17 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         [Fact]
         public void SparqlAnton()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\anton.rdf");
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("resources\\anton.rq");
 
-            Object results = g.ExecuteQuery(query);
+            var results = g.ExecuteQuery(query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     Console.WriteLine(r);
@@ -560,9 +560,9 @@ WHERE
             IGraph expectedGraph = new Graph();
             expectedGraph.LoadFromString(expectedGraphTurtle);
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
-                IGraph actualGraph = (IGraph)sourceGraph.ExecuteQuery(query);
+                var actualGraph = (IGraph)sourceGraph.ExecuteQuery(query);
                 Assert.True(expectedGraph.Difference(actualGraph).AreEqual);
             }
         }
@@ -573,13 +573,13 @@ WHERE
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
-            SparqlQueryParser sparqlParser = new SparqlQueryParser();
+            var sparqlParser = new SparqlQueryParser();
             SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
             var processor = new LeviathanQueryProcessor(store);
-            Object results = processor.ProcessQuery(query);
+            var results = processor.ProcessQuery(query);
         }
 
         private readonly String[] _langSpecCaseQueries = new string[]
@@ -600,10 +600,10 @@ WHERE
 
         private void TestLanguageSpecifierCase(IGraph g)
         {
-            foreach (String query in this._langSpecCaseQueries)
+            foreach (var query in _langSpecCaseQueries)
             {
                 Console.WriteLine("Checking query:\n" + query);
-                SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
+                var results = g.ExecuteQuery(query) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(1, results.Count);
                 Console.WriteLine();
@@ -669,10 +669,10 @@ WHERE
 {}";
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
-            InMemoryDataset dataset = new InMemoryDataset();
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            var dataset = new InMemoryDataset();
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            IGraph g = processor.ProcessQuery(q) as IGraph;
+            var g = processor.ProcessQuery(q) as IGraph;
             Assert.NotNull(g);
             Assert.False(g.IsEmpty, "Graph should not be empty");
             Assert.Equal(1, g.Triples.Count);
@@ -700,7 +700,7 @@ WHERE
             var person = g.CreateUriNode("foaf:Person");
             var name = g.CreateUriNode("foaf:name");
             var age = g.CreateUriNode("foaf:age");
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 // Create 3 statements for each instance of foaf:Person (including rdf:type statement)
                 var s = g.CreateUriNode(new Uri("http://example.com/people/" + i));

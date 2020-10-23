@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing.Handlers
                         if (!handler.HandleBaseUri(g.BaseUri)) ParserHelper.Stop();
                     }
                     // Handle any namespaces
-                    foreach (String prefix in g.NamespaceMap.Prefixes)
+                    foreach (var prefix in g.NamespaceMap.Prefixes)
                     {
                         if (!handler.HandleNamespace(prefix, g.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                     }
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing.Handlers
                         handler.HandleBooleanResult(results.Result);
                         break;
                     case SparqlResultsType.VariableBindings:
-                        foreach (String var in results.Variables)
+                        foreach (var var in results.Variables)
                         {
                             if (!handler.HandleVariable(var)) ParserHelper.Stop();
                         }

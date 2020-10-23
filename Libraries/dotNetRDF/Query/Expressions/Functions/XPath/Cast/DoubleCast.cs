@@ -74,14 +74,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     if (n is DoubleNode) return n;
                     if (n is FloatNode) return new DoubleNode(n.Graph, n.AsDouble());
                     // See if the value can be cast
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
-                        string dt = lit.DataType.ToString();
+                        var dt = lit.DataType.ToString();
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble) || dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
                         {
                             double d;
-                            if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
+                            if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
                                 return new DoubleNode(lit.Graph, d);
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         else
                         {
                             double d;
-                            if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
+                            if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
                                 return new DoubleNode(lit.Graph, d);
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     else
                     {
                         double d;
-                        if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
+                        if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                         {
                             // Parsed OK
                             return new DoubleNode(lit.Graph, d);

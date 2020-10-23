@@ -39,13 +39,13 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
-        String Format(SparqlResult result);
+        string Format(SparqlResult result);
 
         /// <summary>
         /// Formats a Boolean Result as a String.
         /// </summary>
         /// <param name="result">Boolean Result.</param>
         /// <returns></returns>
-        String FormatBooleanResult(bool result);
+        string FormatBooleanResult(bool result);
     }
 }

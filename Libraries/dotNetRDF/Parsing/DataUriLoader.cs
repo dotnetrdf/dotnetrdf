@@ -85,23 +85,23 @@ namespace VDS.RDF.Parsing
                 throw new RdfParseException("DataUriLoader cannot load data from a URI that does not use the data: scheme.");
             }
 
-            String mimetype = "text/plain";
-            bool mimeSet = false;
-            bool base64 = false;
-            String[] uri = u.AbsolutePath.Split(',');
-            String metadata = uri[0];
-            String data = uri[1];
+            var mimetype = "text/plain";
+            var mimeSet = false;
+            var base64 = false;
+            var uri = u.AbsolutePath.Split(',');
+            var metadata = uri[0];
+            var data = uri[1];
 
             // Process the metadata
-            if (metadata.Equals(String.Empty))
+            if (metadata.Equals(string.Empty))
             {
                 // Nothing to do
             }
             else if (metadata.Contains(';'))
             {
                 if (metadata.StartsWith(";")) metadata = metadata.Substring(1);
-                String[] meta = metadata.Split(';');
-                for (int i = 0; i < meta.Length; i++)
+                var meta = metadata.Split(';');
+                for (var i = 0; i < meta.Length; i++)
                 {
                     if (meta[i].StartsWith("charset="))
                     {
@@ -147,8 +147,8 @@ namespace VDS.RDF.Parsing
             // Process the data
             if (base64)
             {
-                StringWriter temp = new StringWriter();
-                foreach (byte b in Convert.FromBase64String(data))
+                var temp = new StringWriter();
+                foreach (var b in Convert.FromBase64String(data))
                 {
                     temp.Write((char)((int)b));
                 }
@@ -180,7 +180,7 @@ namespace VDS.RDF.Parsing
                 try
                 {
                     // See if the mime type specifies a dataset parser
-                    var reader = MimeTypesHelper.GetStoreParser(mimetype);
+                    IStoreReader reader = MimeTypesHelper.GetStoreParser(mimetype);
                     reader.Load(handler, new StringReader(data));
                 }
                 catch (RdfParserSelectionException)

@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (!System.IO.File.Exists("multi_handler_tests_temp.ttl"))
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
                 g.SaveToFile("multi_handler_tests_temp.ttl");
             }
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingMultiHandlerBadInstantiation3()
         {
-            GraphHandler h = new GraphHandler(new Graph());
+            var h = new GraphHandler(new Graph());
 
             Assert.Throws<ArgumentException>(() => new MultiHandler(new IRdfHandler[] { h, h }));
         }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingMultiHandlerBadInstantiation4()
         {
-            GraphHandler h = new GraphHandler(new Graph());
+            var h = new GraphHandler(new Graph());
 
             Assert.Throws<ArgumentNullException>(() => new MultiHandler(new IRdfHandler[] { h }, null));
         }
@@ -80,15 +80,15 @@ namespace VDS.RDF.Parsing.Handlers
         {
             EnsureTestData();
 
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
-            GraphHandler handler1 = new GraphHandler(g);
-            GraphHandler handler2 = new GraphHandler(h);
+            var handler1 = new GraphHandler(g);
+            var handler2 = new GraphHandler(h);
 
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+            var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(g.Triples.Count, h.Triples.Count);
@@ -100,15 +100,15 @@ namespace VDS.RDF.Parsing.Handlers
         {
             EnsureTestData();
 
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
-            GraphHandler handler1 = new GraphHandler(g);
-            PagingHandler handler2 = new PagingHandler(new GraphHandler(h), 100);
+            var handler1 = new GraphHandler(g);
+            var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+            var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(101, g.Triples.Count);
@@ -122,15 +122,15 @@ namespace VDS.RDF.Parsing.Handlers
         {
             EnsureTestData();
 
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
-            GraphHandler handler1 = new GraphHandler(g);
-            PagingHandler handler2 = new PagingHandler(new GraphHandler(h), 100);
+            var handler1 = new GraphHandler(g);
+            var handler2 = new PagingHandler(new GraphHandler(h), 100);
 
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler2, handler1 });
+            var handler = new MultiHandler(new IRdfHandler[] { handler2, handler1 });
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(101, g.Triples.Count);
@@ -144,14 +144,14 @@ namespace VDS.RDF.Parsing.Handlers
         {
             EnsureTestData();
 
-            Graph g = new Graph();
-            GraphHandler handler1 = new GraphHandler(g);
+            var g = new Graph();
+            var handler1 = new GraphHandler(g);
 
-            CountHandler handler2 = new CountHandler();
+            var handler2 = new CountHandler();
 
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+            var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Equal(g.Triples.Count, handler2.Count);
@@ -163,14 +163,14 @@ namespace VDS.RDF.Parsing.Handlers
         {
             EnsureTestData();
 
-            Graph g = new Graph();
-            GraphHandler handler1 = new GraphHandler(g);
+            var g = new Graph();
+            var handler1 = new GraphHandler(g);
 
-            NullHandler handler2 = new NullHandler();
+            var handler2 = new NullHandler();
 
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
+            var handler = new MultiHandler(new IRdfHandler[] { handler1, handler2 });
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
         }
 
@@ -179,12 +179,12 @@ namespace VDS.RDF.Parsing.Handlers
         {
             EnsureTestData();
 
-            Graph g = new Graph();
-            GraphHandler h = new GraphHandler(g);
+            var g = new Graph();
+            var h = new GraphHandler(g);
 
-            MultiHandler handler = new MultiHandler(new IRdfHandler[] { h }, g);
+            var handler = new MultiHandler(new IRdfHandler[] { h }, g);
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
 
             Assert.Same(g, g.Triples.First().Graph);

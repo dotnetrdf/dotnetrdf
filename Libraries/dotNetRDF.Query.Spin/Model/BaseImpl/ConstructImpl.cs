@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public List<ITripleTemplate> getTemplates()
         {
-            List<ITripleTemplate> results = new List<ITripleTemplate>();
+            var results = new List<ITripleTemplate>();
             foreach (IResource next in getList(SP.PropertyTemplates))
             {
                 if (next != null && !(next.isLiteral()))

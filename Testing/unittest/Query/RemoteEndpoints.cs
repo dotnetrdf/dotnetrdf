@@ -54,7 +54,7 @@ namespace VDS.RDF.Query
         [SkippableFact]
         public void SparqlRemoteEndpointLongQuery()
         {
-            StringBuilder input = new StringBuilder();
+            var input = new StringBuilder();
             input.AppendLine("SELECT * WHERE {?s ?p ?o}");
             input.AppendLine(new String('#', 2048));
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            StringBuilder input = new StringBuilder();
+            var input = new StringBuilder();
             input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
             input.AppendLine(new String('#', 2048));
 
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query
         public void SparqlRemoteEndpointCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-            CountHandler handler = new CountHandler();
+            var handler = new CountHandler();
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
             Console.WriteLine("Triple Count: " + handler.Count);
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query
         public void SparqlRemoteEndpointResultCountHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-            ResultCountHandler handler = new ResultCountHandler();
+            var handler = new ResultCountHandler();
             endpoint.QueryWithResultSet(handler, "SELECT * WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
             Console.WriteLine("Result Count: " + handler.Count);
@@ -125,13 +125,13 @@ results.Dispose()
             SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
             updateEndpoint.Update("DROP ALL; INSERT DATA { <http://subject> <http://predicate> <http://object> . }");
 
-            int totalRuns = 10000;
+            var totalRuns = 10000;
 
             //Loop over making queries to try and reproduce the memory leak
-            for (int i = 1; i <= totalRuns; i++)
+            for (var i = 1; i <= totalRuns; i++)
             {
                 SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                SparqlParameterizedString queryString = new SparqlParameterizedString();
+                var queryString = new SparqlParameterizedString();
                 queryString.CommandText = "SELECT * WHERE { ?s ?p ?o }";
 
                 SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
@@ -160,21 +160,21 @@ results.Dispose()
             SparqlRemoteUpdateEndpoint updateEndpoint = RemoteEndpoints.GetUpdateEndpoint();
             updateEndpoint.Update("DROP ALL");
 
-            int totalRuns = 10000;
-            int subjects = 1000;
-            int predicates = 10;
+            var totalRuns = 10000;
+            var subjects = 1000;
+            var predicates = 10;
 
             //Loop over making queries to try and reproduce the memory leak
-            for (int i = 1; i <= totalRuns; i++)
+            for (var i = 1; i <= totalRuns; i++)
             {
                 //Add new data each time around
                 updateEndpoint.Update("INSERT DATA { <http://subject/" + (i % subjects) + "> <http://predicate/" + (i % predicates) + "> <http://object/" + i + "> . }");
 
                 SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                SparqlParameterizedString queryString = new SparqlParameterizedString();
+                var queryString = new SparqlParameterizedString();
                 queryString.CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }";
 
-                ResultCountHandler handler = new ResultCountHandler();
+                var handler = new ResultCountHandler();
                 endpoint.QueryWithResultSet(handler, queryString.ToString());
                 Assert.True(handler.Count >= 1 && handler.Count <= subjects, "Result Count " + handler.Count + " is not in expected range 1 <= x < " + (i % 1000));
 
@@ -190,7 +190,7 @@ results.Dispose()
         public void SparqlRemoteEndpointWriteThroughHandler()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-            WriteThroughHandler handler = new WriteThroughHandler(typeof(NTriplesFormatter), Console.Out, false);
+            var handler = new WriteThroughHandler(typeof(NTriplesFormatter), Console.Out, false);
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
         }
 
@@ -198,7 +198,7 @@ results.Dispose()
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o }", (r, s) =>
             {
                 TestTools.ShowResults(r);
@@ -214,7 +214,7 @@ results.Dispose()
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
             {
                 TestTools.ShowResults(r);
@@ -233,7 +233,7 @@ results.Dispose()
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
             SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
             {
                 signal.Set();
@@ -262,10 +262,10 @@ results.Dispose()
                 reader.Close();
             }
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-            Stopwatch timer = new Stopwatch();
+            var endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+            var timer = new Stopwatch();
             timer.Start();
-            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
             TestTools.ShowResults(syncGetResults);
@@ -274,14 +274,14 @@ results.Dispose()
 
             timer.Start();
             endpoint.HttpMode = "POST";
-            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
             TestTools.ShowResults(syncPostResults);
             Console.WriteLine();
             timer.Reset();
 
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             SparqlResultSet asyncResults = null;
             //DateTime start = DateTime.Now;
             //DateTime end = start;
@@ -314,11 +314,11 @@ results.Dispose()
                 reader.Close();
             }
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org");
+            var endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org");
             endpoint.Timeout = AsyncTimeout;
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
-            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
             TestTools.ShowResults(syncGetResults);
@@ -327,14 +327,14 @@ results.Dispose()
 
             timer.Start();
             endpoint.HttpMode = "POST";
-            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
             TestTools.ShowResults(syncPostResults);
             Console.WriteLine();
             timer.Reset();
 
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             SparqlResultSet asyncResults = null;
             //DateTime start = DateTime.Now;
             //DateTime end = start;
@@ -367,11 +367,11 @@ results.Dispose()
                 reader.Close();
             }
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"));
+            var endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"));
             endpoint.Timeout = AsyncTimeout;
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
-            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
             TestTools.ShowResults(syncGetResults);
@@ -380,14 +380,14 @@ results.Dispose()
 
             timer.Start();
             endpoint.HttpMode = "POST";
-            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
             TestTools.ShowResults(syncPostResults);
             Console.WriteLine();
             timer.Reset();
 
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             SparqlResultSet asyncResults = null;
             //DateTime start = DateTime.Now;
             //DateTime end = start;
@@ -421,9 +421,9 @@ results.Dispose()
             }
 
             SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
-            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
             TestTools.ShowResults(syncGetResults);
@@ -432,14 +432,14 @@ results.Dispose()
 
             timer.Start();
             endpoint.HttpMode = "POST";
-            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
             TestTools.ShowResults(syncPostResults);
             Console.WriteLine();
             timer.Reset();
 
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             SparqlResultSet asyncResults = null;
             //DateTime start = DateTime.Now;
             //DateTime end = start;
@@ -475,11 +475,11 @@ results.Dispose()
                 reader.Close();
             }
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint)));
+            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint)));
             endpoint.Timeout = AsyncTimeout;
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
-            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
             TestTools.ShowResults(syncGetResults);
@@ -488,14 +488,14 @@ results.Dispose()
 
             timer.Start();
             endpoint.HttpMode = "POST";
-            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            var syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
             Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
             TestTools.ShowResults(syncPostResults);
             Console.WriteLine();
             timer.Reset();
 
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             SparqlResultSet asyncResults = null;
             //DateTime start = DateTime.Now;
             //DateTime end = start;

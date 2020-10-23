@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
 
             var stop = new StopToken();
             var t = (int)Math.Min(timeout, int.MaxValue);
-            var productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
+            Task productTask = Task.Factory.StartNew(() => GenerateProduct(multiset, other, productSet, stop));
             if (!productTask.Wait(t))
             {
                 stop.ShouldStop = true;
@@ -124,10 +124,10 @@ namespace VDS.RDF.Query.Algebra
         {
             if (stop.ShouldStop) return;
             var id = productSet.GetNextBaseID();
-            foreach (var y in other.Sets)
+            foreach (ISet y in other.Sets)
             {
                 id++;
-                var z = x.Join(y);
+                ISet z = x.Join(y);
                 z.ID = id;
                 productSet.Add(z);
                 if (stop.ShouldStop) return;

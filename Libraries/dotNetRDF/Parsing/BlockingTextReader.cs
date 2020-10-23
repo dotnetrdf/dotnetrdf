@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
                     return parsingTextReader;
                 case StreamReader streamReader:
                 {
-                    var s = streamReader.BaseStream;
+                    Stream s = streamReader.BaseStream;
                     if (s is FileStream || s is MemoryStream)
                     {
                         return new NonBlockingTextReader(streamReader, bufferSize);
@@ -247,14 +247,14 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                int copied = 0;
+                var copied = 0;
                 while (copied < count)
                 {
-                    int available = _bufferAmount - _pos;
+                    var available = _bufferAmount - _pos;
                     if (count < copied + available)
                     {
                         // We can finish fufilling this request this round
-                        int toCopy = Math.Min(available, count - copied);
+                        var toCopy = Math.Min(available, count - copied);
                         Array.Copy(_buffer, _pos, buffer, index + copied, toCopy);
                         copied += toCopy;
                         _pos += toCopy;

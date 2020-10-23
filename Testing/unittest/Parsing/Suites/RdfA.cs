@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteRdfA10()
         {
             String[] wantOutput = {  };
-            bool outputAll = false;
+            var outputAll = false;
             String[] skipTests = { 
                                    "0002.xhtml",
                                    "0003.xhtml", 
@@ -102,20 +102,20 @@ namespace VDS.RDF.Parsing.Suites
 
             try
             {
-                int testsPassed = 0;
-                int testsFailed = 0;
-                String[] files = Directory.GetFiles("resources\\rdfa\\");
-                RdfAParser parser = new RdfAParser(RdfASyntax.AutoDetectLegacy);
+                var testsPassed = 0;
+                var testsFailed = 0;
+                var files = Directory.GetFiles("resources\\rdfa\\");
+                var parser = new RdfAParser(RdfASyntax.AutoDetectLegacy);
                 //XHtmlPlusRdfAParser parser = new XHtmlPlusRdfAParser();
                 parser.Warning += parser_Warning;
-                SparqlQueryParser queryparser = new SparqlQueryParser();
+                var queryparser = new SparqlQueryParser();
                 bool passed, passDesired;
-                Graph g = new Graph();
-                Stopwatch timer = new Stopwatch();
+                var g = new Graph();
+                var timer = new Stopwatch();
                 long totalTime = 0;
                 long totalTriples = 0;
 
-                foreach (String file in files)
+                foreach (var file in files)
                 {
                     timer.Reset();
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing.Suites
 
                         if (outputAll || wantOutput.Contains(Path.GetFileName(file)))
                         {
-                            NTriplesWriter writer = new NTriplesWriter();
+                            var writer = new NTriplesWriter();
                             writer.Save(g, "rdfa_tests\\" + Path.GetFileNameWithoutExtension(file) + ".out");
                         }
 
@@ -209,7 +209,7 @@ namespace VDS.RDF.Parsing.Suites
                                 try
                                 {
                                     SparqlQuery q = queryparser.ParseFromFile("rdfa_tests/" + Path.GetFileNameWithoutExtension(file) + ".sparql");
-                                    Object results = g.ExecuteQuery(q);
+                                    var results = g.ExecuteQuery(q);
                                     if (results is SparqlResultSet)
                                     {
                                         //The Result is the result of the ASK Query

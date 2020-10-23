@@ -40,8 +40,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanJoinTwoBooleanExpressionWithAndOperator()
         {
             // given 
-            BooleanExpression b1 = new BooleanExpression(new VariableTerm("a"));
-            BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
+            var b1 = new BooleanExpression(new VariableTerm("a"));
+            var b2 = new BooleanExpression(new VariableTerm("b"));
 
             // when
             var conjunction = (b1 && b2).Expression;
@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // todo: TP: not sure this is expected behaviour
             // given
-            BooleanExpression notNull = new BooleanExpression(new VariableTerm("var"));
+            var notNull = new BooleanExpression(new VariableTerm("var"));
 
             // then
             Assert.Same(notNull, notNull || null);
@@ -72,8 +72,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanJoinTwoExpressionWithOrOperator()
         {
             // given 
-            BooleanExpression b1 = new BooleanExpression(new VariableTerm("a"));
-            BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
+            var b1 = new BooleanExpression(new VariableTerm("a"));
+            var b2 = new BooleanExpression(new VariableTerm("b"));
 
             // when
             var disjunction = (b1 || b2).Expression;
@@ -88,8 +88,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateEqualityComparisonBetweenVariables()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
-            VariableExpression v2 = new VariableExpression("v2");
+            var v1 = new VariableExpression("v1");
+            var v2 = new VariableExpression("v2");
 
             // when
             var areEqual = (v1 == v2).Expression;
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateEqualityComparisonBetweenVariableAndLiteral()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
+            var v1 = new VariableExpression("v1");
             LiteralExpression lit = new TypedLiteralExpression<string>("text");
 
             // when
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateEqualityComparisonBetweenConstantAndVariable()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
+            var v1 = new VariableExpression("v1");
             LiteralExpression lit = new TypedLiteralExpression<string>("text");
 
             // when
@@ -196,8 +196,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateGreaterThanOperatorBetweenVariables()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
-            VariableExpression v2 = new VariableExpression("v2");
+            var v1 = new VariableExpression("v1");
+            var v2 = new VariableExpression("v2");
 
             // when
             var areEqual = (v1 > v2).Expression;
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateGreaterThanOperatorBetweenVariableAndLiteral()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
+            var v1 = new VariableExpression("v1");
             LiteralExpression literal = new NumericExpression<int>(10);
 
             // when
@@ -228,8 +228,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateGreaterThanOrEqualOperatorBetweenVariables()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
-            VariableExpression v2 = new VariableExpression("v2");
+            var v1 = new VariableExpression("v1");
+            var v2 = new VariableExpression("v2");
 
             // when
             var areEqual = (v1 >= v2).Expression;
@@ -244,8 +244,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateLessThanOperatorBetweenVariables()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
-            VariableExpression v2 = new VariableExpression("v2");
+            var v1 = new VariableExpression("v1");
+            var v2 = new VariableExpression("v2");
 
             // when
             var areEqual = (v1 < v2).Expression;
@@ -260,8 +260,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateLessThanOrEqualOperatorBetweenVariables()
         {
             // given
-            VariableExpression v1 = new VariableExpression("v1");
-            VariableExpression v2 = new VariableExpression("v2");
+            var v1 = new VariableExpression("v1");
+            var v2 = new VariableExpression("v2");
 
             // when
             var areEqual = (v1 <= v2).Expression;
@@ -276,8 +276,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateEqualityComparisonBetweenRdfTerms()
         {
             // given
-            IriExpression left = new IriExpression(new Uri("urn:unit:test1"));
-            IriExpression right = new IriExpression(new Uri("urn:unit:test1"));
+            var left = new IriExpression(new Uri("urn:unit:test1"));
+            var right = new IriExpression(new Uri("urn:unit:test1"));
 
             // when
             var areEqual = (left == right).Expression;
@@ -292,7 +292,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyLessThanOperatorBetweenSimpleValuesAndVariables()
         {
             // given
-            VariableExpression var = new VariableExpression("var");
+            var var = new VariableExpression("var");
 
             // then
             Assert.True((10 < var).Expression is LessThanExpression);
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyLessThanOrEqualOperatorBetweenSimpleValuesAndVariables()
         {
             // given
-            VariableExpression var = new VariableExpression("var");
+            var var = new VariableExpression("var");
 
             // then
             Assert.True((10 <= var).Expression is LessThanOrEqualToExpression);
@@ -338,7 +338,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyGreaterThanOperatorBetweenSimpleValuesAndVariables()
         {
             // given
-            VariableExpression var = new VariableExpression("var");
+            var var = new VariableExpression("var");
 
             // then
             Assert.True((10 > var).Expression is GreaterThanExpression);
@@ -361,7 +361,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyGreaterThanOrEqualOperatorBetweenSimpleValuesAndVariables()
         {
             // given
-            VariableExpression var = new VariableExpression("var");
+            var var = new VariableExpression("var");
 
             // then
             Assert.True((10 >= var).Expression is GreaterThanOrEqualToExpression);
@@ -384,7 +384,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyEqualsOperatorBetweenSimpleValuesAndVariables()
         {
             // given
-            VariableExpression var = new VariableExpression("var");
+            var var = new VariableExpression("var");
 
             // then
             Assert.True((10 == var).Expression is EqualsExpression);
@@ -407,7 +407,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyNotEqualsOperatorBetweenSimpleValuesAndVariables()
         {
             // given
-            VariableExpression var = new VariableExpression("var");
+            var var = new VariableExpression("var");
 
             // then
             Assert.True((10 != var).Expression is NotEqualsExpression);

@@ -153,7 +153,7 @@ namespace VDS.RDF.Query
             var asyncCalls = new List<Task<IGraph>>(_endpoints.Count);
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var throttler = new SemaphoreSlim(MaxSimultaneousRequests);
-            foreach (var endpoint in _endpoints)
+            foreach (SparqlQueryClient endpoint in _endpoints)
             {
                 await throttler.WaitAsync(cts.Token);
                 if (!cancellationToken.IsCancellationRequested)
@@ -237,14 +237,14 @@ namespace VDS.RDF.Query
 
                 try
                 {
-                    var g = asyncCalls[i].Result;
+                    IGraph g = asyncCalls[i].Result;
 
                     // Merge the result into the final results
                     // If the handler has previously told us to stop we skip this step
                     if (cont)
                     {
                         handler.StartRdf();
-                        foreach (var t in g.Triples)
+                        foreach (Triple t in g.Triples)
                         {
                             cont = handler.HandleTriple(t);
                             // Stop if the Handler tells us to
@@ -265,34 +265,36 @@ namespace VDS.RDF.Query
             }
         }
 
-        public async Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery)
-        {
-            var results = new SparqlResultSet();
-            await QueryWithResultSetAsync(sparqlQuery, new ResultSetHandler(results), CancellationToken.None);
-            return results;
-        }
-
-        public async Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery,
-            CancellationToken cancellationToken)
+        /// <summary>
+        /// Run a federated query asynchronously.
+        /// </summary>
+        /// <param name="sparqlQuery">The query to be executed.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>The Task object representing the asynchronous operation.</returns>
+        /// <remarks>The query results are returned as a result of the task.</remarks>
+        public async Task<SparqlResultSet> QueryWithResultSetAsync(string sparqlQuery, CancellationToken cancellationToken = default)
         {
             var results = new SparqlResultSet();
             await QueryWithResultSetAsync(sparqlQuery, new ResultSetHandler(results), cancellationToken);
             return results;
         }
 
-        public async Task QueryWithResultSetAsync(string sparqlQuery, ISparqlResultsHandler handler)
-        {
-            await QueryWithResultSetAsync(sparqlQuery, handler, CancellationToken.None);
-        }
-
+        /// <summary>
+        /// Run a federated query asynchronously.
+        /// </summary>
+        /// <param name="sparqlQuery"></param>
+        /// <param name="handler"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>The Task object representing the asynchronous operation.</returns>
+        /// <remarks>The query results are reported through the specified <see cref="ISparqlResultsHandler"/>.</remarks>
         public async Task QueryWithResultSetAsync(string sparqlQuery, ISparqlResultsHandler handler,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             if(_endpoints.Count == 0) return;
             var asyncCalls = new List<Task<SparqlResultSet>>(_endpoints.Count);
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var throttler = new SemaphoreSlim(MaxSimultaneousRequests);
-            foreach (var endpoint in _endpoints)
+            foreach (SparqlQueryClient endpoint in _endpoints)
             {
                 await throttler.WaitAsync(cts.Token);
                 if (!cancellationToken.IsCancellationRequested)
@@ -412,7 +414,7 @@ namespace VDS.RDF.Query
 
                     if (cont)
                     {
-                        foreach (var result in partialResult.Results)
+                        foreach (SparqlResult result in partialResult.Results)
                         {
                             cont = handler.HandleResult(result);
                             // Stop if handler tells us to

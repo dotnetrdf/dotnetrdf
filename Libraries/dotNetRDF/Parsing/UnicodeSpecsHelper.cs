@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing
 #if NETCORE
             return CharUnicodeInfo.GetUnicodeCategory(c);
 #else
-            return Char.GetUnicodeCategory(c);
+            return char.GetUnicodeCategory(c);
 #endif
         }
         /// <summary>
@@ -172,15 +172,15 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="hex">Hex code.</param>
         /// <returns></returns>
-        public static char ConvertToChar(String hex)
+        public static char ConvertToChar(string hex)
         {
             if (hex.Length != 4) throw new RdfParseException("Unable to convert the String + '" + hex + "' into a Unicode Character, 4 characters were expected but received " + hex.Length + " characters");
             try
             {
                 // Convert to an Integer
-                int i = Convert.ToInt32(hex, 16);
+                var i = Convert.ToInt32(hex, 16);
                 // Try to cast to a Char
-                char c = (char)i;
+                var c = (char)i;
                 // Append to Output
                 return c;
             }
@@ -195,17 +195,17 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="hex"></param>
         /// <returns></returns>
-        public static char[] ConvertToChars(String hex)
+        public static char[] ConvertToChars(string hex)
         {
             if (hex.Length != 8) throw new RdfParseException("Unable to convert the String + '" + hex + "' into a Unicode Character, 8 characters were expected but received " + hex.Length + " characters");
             try
             {
                 // Convert to an Integer
-                int i = Convert.ToInt32(hex, 16);
-                if (i > Char.MaxValue)
+                var i = Convert.ToInt32(hex, 16);
+                if (i > char.MaxValue)
                 {
                     // UTF-32 character so down-convert to UTF-16
-                    return Char.ConvertFromUtf32(i).ToCharArray();
+                    return char.ConvertFromUtf32(i).ToCharArray();
                 }
                 else
                 {

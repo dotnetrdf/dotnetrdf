@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Filters
         /// <summary>
         /// Gets the enumeration of Variables used in the Filter.
         /// </summary>
-        public virtual IEnumerable<String> Variables
+        public virtual IEnumerable<string> Variables
         {
             get
             {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Filters
             }
             else
             {
-                foreach (int id in context.InputMultiset.SetIDs.ToList())
+                foreach (var id in context.InputMultiset.SetIDs.ToList())
                 {
                     EvalFilter(context, id);
                 }
@@ -205,13 +205,13 @@ namespace VDS.RDF.Query.Filters
             else
             {
                 // Remember that not all expressions are safe to parallelise
-                if (context.Options.UsePLinqEvaluation && this._arg.CanParallelise)
+                if (context.Options.UsePLinqEvaluation && _arg.CanParallelise)
                 {
                     context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
                 }
                 else
                 {
-                    foreach (int id in context.InputMultiset.SetIDs.ToList())
+                    foreach (var id in context.InputMultiset.SetIDs.ToList())
                     {
                         EvalFilter(context, id);
                     }
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             foreach (ISparqlFilter filter in _filters)
             {
                 output.Append(filter.ToString() + " ");
@@ -322,7 +322,7 @@ namespace VDS.RDF.Query.Filters
         /// <summary>
         /// Gets the enumeration of Variables used in the chained Filters.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -352,7 +352,7 @@ namespace VDS.RDF.Query.Filters
                     expr = new AndExpression(_filters[0].Expression, _filters[1].Expression);
                     if (_filters.Count > 2)
                     {
-                        for (int i = 2; i < _filters.Count; i++)
+                        for (var i = 2; i < _filters.Count; i++)
                         {
                             expr = new AndExpression(expr, _filters[i].Expression);
                         }

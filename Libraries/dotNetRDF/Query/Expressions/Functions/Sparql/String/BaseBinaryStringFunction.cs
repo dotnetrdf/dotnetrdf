@@ -56,8 +56,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                ILiteralNode stringLit = (ILiteralNode)x;
-                ILiteralNode argLit = (ILiteralNode)y;
+                var stringLit = (ILiteralNode)x;
+                var argLit = (ILiteralNode)y;
 
                 if (IsValidArgumentPair(stringLit, argLit))
                 {

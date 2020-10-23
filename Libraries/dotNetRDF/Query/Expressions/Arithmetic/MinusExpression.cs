@@ -59,46 +59,46 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
                     return new LongNode(null, -1 * a.AsInteger());
 
                 case SparqlNumericType.Decimal:
-                    decimal decvalue = a.AsDecimal();
-                    if (decvalue == Decimal.Zero)
+                    var decvalue = a.AsDecimal();
+                    if (decvalue == decimal.Zero)
                     {
-                        return new DecimalNode(null, Decimal.Zero);
+                        return new DecimalNode(null, decimal.Zero);
                     }
                     else
                     {
                         return new DecimalNode(null, -1 * decvalue);
                     }
                 case SparqlNumericType.Float:
-                    float fltvalue = a.AsFloat();
-                    if (Single.IsNaN(fltvalue))
+                    var fltvalue = a.AsFloat();
+                    if (float.IsNaN(fltvalue))
                     {
-                        return new FloatNode(null, Single.NaN);
+                        return new FloatNode(null, float.NaN);
                     }
-                    else if (Single.IsPositiveInfinity(fltvalue))
+                    else if (float.IsPositiveInfinity(fltvalue))
                     {
-                        return new FloatNode(null, Single.NegativeInfinity);
+                        return new FloatNode(null, float.NegativeInfinity);
                     }
-                    else if (Single.IsNegativeInfinity(fltvalue))
+                    else if (float.IsNegativeInfinity(fltvalue))
                     {
-                        return new FloatNode(null, Single.PositiveInfinity);
+                        return new FloatNode(null, float.PositiveInfinity);
                     }
                     else
                     {
                         return new FloatNode(null, -1.0f * fltvalue);
                     }
                 case SparqlNumericType.Double:
-                    double dblvalue = a.AsDouble();
-                    if (Double.IsNaN(dblvalue))
+                    var dblvalue = a.AsDouble();
+                    if (double.IsNaN(dblvalue))
                     {
-                        return new DoubleNode(null, Double.NaN);
+                        return new DoubleNode(null, double.NaN);
                     }
-                    else if (Double.IsPositiveInfinity(dblvalue))
+                    else if (double.IsPositiveInfinity(dblvalue))
                     {
-                        return new DoubleNode(null, Double.NegativeInfinity);
+                        return new DoubleNode(null, double.NegativeInfinity);
                     }
-                    else if (Double.IsNegativeInfinity(dblvalue))
+                    else if (double.IsNegativeInfinity(dblvalue))
                     {
-                        return new DoubleNode(null, Double.PositiveInfinity);
+                        return new DoubleNode(null, double.PositiveInfinity);
                     }
                     else
                     {

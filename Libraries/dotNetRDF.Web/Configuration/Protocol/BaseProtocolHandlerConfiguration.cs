@@ -58,7 +58,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
             ISparqlHttpProtocolProcessor processor;
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProtocolProcessor)));
             if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load Protocol Handler Configuration as the RDF configuration file does not specify a dnr:protocolProcessor property for the Handler");
-            Object temp = ConfigurationLoader.LoadObject(g, procNode);
+            var temp = ConfigurationLoader.LoadObject(g, procNode);
             if (temp is ISparqlHttpProtocolProcessor)
             {
                 processor = (ISparqlHttpProtocolProcessor)temp;
@@ -67,16 +67,16 @@ namespace VDS.RDF.Web.Configuration.Protocol
             {
                 throw new DotNetRdfConfigurationException("Unable to load Protocol Handler Configuration as the RDF configuration file specifies a value for the Handlers dnr:protocolProcessor property which cannot be loaded as an object which implements the ISparqlHttpProtocolProcessor interface");
             }
-            this._processor = processor;
+            _processor = processor;
 
             // Get the Service Description Graph
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
-                Object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                var descrip = ConfigurationLoader.LoadObject(g, descripNode);
                 if (descrip is IGraph)
                 {
-                    this._serviceDescription = (IGraph)descrip;
+                    _serviceDescription = (IGraph)descrip;
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
         {
             get
             {
-                return this._processor;
+                return _processor;
             }
         }
 
@@ -103,7 +103,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
         {
             get
             {
-                return this._serviceDescription;
+                return _serviceDescription;
             }
         }
 

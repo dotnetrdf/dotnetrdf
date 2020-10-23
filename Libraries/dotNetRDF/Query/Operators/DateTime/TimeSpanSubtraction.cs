@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Operators.DateTime
 
         private TimeSpan Subtract(IEnumerable<TimeSpan> ts)
         {
-            bool first = true;
+            var first = true;
             TimeSpan total = TimeSpan.Zero;
             foreach (TimeSpan t in ts)
             {

@@ -44,7 +44,7 @@ namespace VDS.RDF.Storage
     {
         private TripleStore _store = new TripleStore();
         private bool _ready = false;
-        private String _filename;
+        private string _filename;
 
         /// <summary>
         /// Creates a new Dataset File Manager.
@@ -72,7 +72,7 @@ namespace VDS.RDF.Storage
         /// Internal helper method for loading the data.
         /// </summary>
         /// <param name="filename">File to load from.</param>
-        private void Initialise(String filename)
+        private void Initialise(string filename)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Storage
         {
             var queryProcessor = new LeviathanQueryProcessor(_store);
             var queryParser = new SparqlQueryParser();
-            var query = queryParser.ParseFromString(sparqlQuery);
+            SparqlQuery query = queryParser.ParseFromString(sparqlQuery);
             return queryProcessor.ProcessQuery(query);
         }
 
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage
         {
             var queryProcessor = new LeviathanQueryProcessor(_store);
             var queryParser = new SparqlQueryParser();
-            var query = queryParser.ParseFromString(sparqlQuery);
+            SparqlQuery query = queryParser.ParseFromString(sparqlQuery);
             queryProcessor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
@@ -153,9 +153,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public override void LoadGraph(IGraph g, String graphUri)
+        public override void LoadGraph(IGraph g, string graphUri)
         {
-            if (graphUri.Equals(String.Empty))
+            if (graphUri.Equals(string.Empty))
             {
                 LoadGraph(g, (Uri)null);
             }
@@ -170,9 +170,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public override void LoadGraph(IRdfHandler handler, String graphUri)
+        public override void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            if (graphUri.Equals(String.Empty))
+            if (graphUri.Equals(string.Empty))
             {
                 LoadGraph(handler, (Uri)null);
             }
@@ -220,7 +220,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="additions">Triples to be added.</param>
         /// <param name="removals">Triples to be removed.</param>
-        public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete.</param>
         /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection.</exception>
-        public override void DeleteGraph(String graphUri)
+        public override void DeleteGraph(string graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -313,7 +313,7 @@ namespace VDS.RDF.Storage
         /// Gets the Source File this manager represents a read-only view of.
         /// </summary>
         [Description("The Source File from which the dataset originates")]
-        public String SourceFile
+        public string SourceFile
         {
             get
             {

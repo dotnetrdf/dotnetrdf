@@ -49,11 +49,11 @@ namespace VDS.RDF.Query
         private void TestSubstitution(SparqlQuery q, String findVar, String replaceVar, IEnumerable<String> expected, IEnumerable<String> notExpected)
         {
             Console.WriteLine("Input Query:");
-            Console.WriteLine(this._formatter.Format(q));
+            Console.WriteLine(_formatter.Format(q));
             Console.WriteLine();
 
             ISparqlAlgebra algebra = q.ToAlgebra();
-            VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(findVar, replaceVar);
+            var transformer = new VariableSubstitutionTransformer(findVar, replaceVar);
             try
             {
                 ISparqlAlgebra resAlgebra = transformer.Optimise(algebra);
@@ -68,16 +68,16 @@ namespace VDS.RDF.Query
             }
 
             SparqlQuery resQuery = algebra.ToQuery();
-            String resText = this._formatter.Format(resQuery);
+            var resText = _formatter.Format(resQuery);
             Console.WriteLine("Resulting Query:");
             Console.WriteLine(resText);
             Console.WriteLine();
 
-            foreach (String x in expected)
+            foreach (var x in expected)
             {
                 Assert.True(resText.Contains(x), "Expected Transformed Query to contain string '" + x + "'");
             }
-            foreach (String x in notExpected)
+            foreach (var x in notExpected)
             {
                 Assert.False(resText.Contains(x), "Transformed Query contained string '" + x + "' which was expected to have been transformed");
             }
@@ -86,11 +86,11 @@ namespace VDS.RDF.Query
         private void TestSubstitution(SparqlQuery q, String findVar, INode replaceTerm, IEnumerable<String> expected, IEnumerable<String> notExpected)
         {
             Console.WriteLine("Input Query:");
-            Console.WriteLine(this._formatter.Format(q));
+            Console.WriteLine(_formatter.Format(q));
             Console.WriteLine();
 
             ISparqlAlgebra algebra = q.ToAlgebra();
-            VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(findVar, replaceTerm);
+            var transformer = new VariableSubstitutionTransformer(findVar, replaceTerm);
             try
             {
                 ISparqlAlgebra resAlgebra = transformer.Optimise(algebra);
@@ -105,16 +105,16 @@ namespace VDS.RDF.Query
             }
 
             SparqlQuery resQuery = algebra.ToQuery();
-            String resText = this._formatter.Format(resQuery);
+            var resText = _formatter.Format(resQuery);
             Console.WriteLine("Resulting Query:");
             Console.WriteLine(resText);
             Console.WriteLine();
 
-            foreach (String x in expected)
+            foreach (var x in expected)
             {
                 Assert.True(resText.Contains(x), "Expected Transformed Query to contain string '" + x + "'");
             }
-            foreach (String x in notExpected)
+            foreach (var x in notExpected)
             {
                 Assert.False(resText.Contains(x), "Transformed Query contained string '" + x + "' which was not expected");
             }
@@ -123,33 +123,33 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlOptimiserAlgebraVarSub1()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub2()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . ?s a ?type }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . ?s a ?type }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub3()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISBLANK(?s)) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISBLANK(?s)) }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub4()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . BIND(ISBLANK(?s) AS ?blank) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . BIND(ISBLANK(?s) AS ?blank) }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
         [Fact]
@@ -157,108 +157,108 @@ namespace VDS.RDF.Query
         {
             try
             {
-                this._parser.SyntaxMode = SparqlQuerySyntax.Extended;
+                _parser.SyntaxMode = SparqlQuerySyntax.Extended;
 
-                String query = "SELECT * WHERE { ?s ?p ?o . LET (?blank := ISBLANK(?s)) }";
-                SparqlQuery q = this._parser.ParseFromString(query);
-                this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+                var query = "SELECT * WHERE { ?s ?p ?o . LET (?blank := ISBLANK(?s)) }";
+                SparqlQuery q = _parser.ParseFromString(query);
+                TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
             }
             finally
             {
-                this._parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
+                _parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
             }
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub6()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . FILTER(EXISTS { ?s a ?type }) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . FILTER(EXISTS { ?s a ?type }) }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub7()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . { ?s a ?type } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . { ?s a ?type } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub8()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x", "OPTIONAL" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x", "OPTIONAL" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub9()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?s a ?type } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x", "GRAPH" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?s a ?type } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x", "GRAPH" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub10()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?s a ?type } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x", "MINUS" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?s a ?type } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x", "MINUS" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub11()
         {
-            String query = "SELECT * WHERE { { ?s ?p ?o . } UNION { ?s a ?type } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?x", "UNION" }, new String[] { "?s" });
+            var query = "SELECT * WHERE { { ?s ?p ?o . } UNION { ?s a ?type } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?x", "UNION" }, new String[] { "?s" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSub12()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "g", "x", new String[] { "?x", "GRAPH" }, new String[] { "?g" });
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "g", "x", new String[] { "?x", "GRAPH" }, new String[] { "?g" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub1()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub2()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . ?o ?x ?y }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . ?o ?x ?y }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub3()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?o)) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?o)) }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub4()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?o) AS ?uri) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?o) AS ?uri) }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -266,93 +266,93 @@ namespace VDS.RDF.Query
         {
             try
             {
-                this._parser.SyntaxMode = SparqlQuerySyntax.Extended;
+                _parser.SyntaxMode = SparqlQuerySyntax.Extended;
 
-                String query = "SELECT * WHERE { ?s ?p ?o . LET (?uri := ISURI(?o))}";
-                SparqlQuery q = this._parser.ParseFromString(query);
-                NodeFactory factory = new NodeFactory();
-                this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+                var query = "SELECT * WHERE { ?s ?p ?o . LET (?uri := ISURI(?o))}";
+                SparqlQuery q = _parser.ParseFromString(query);
+                var factory = new NodeFactory();
+                TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
             }
             finally
             {
-                this._parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
+                _parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
             }
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub6()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?o ?x ?y } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "OPTIONAL" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?o ?x ?y } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "OPTIONAL" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub7()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?o ?x ?y } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "GRAPH" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?o ?x ?y } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "GRAPH" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub8()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?o ?x ?y } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            NodeFactory factory = new NodeFactory();
-            this.TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "MINUS" }, new String[] { "?o" });
+            var query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?o ?x ?y } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var factory = new NodeFactory();
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "MINUS" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub9()
         {
-            String query = "SELECT * WHERE { { ?s ?p ?o .} UNION { ?o ?x ?y } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            var query = "SELECT * WHERE { { ?s ?p ?o .} UNION { ?o ?x ?y } }";
+            SparqlQuery q = _parser.ParseFromString(query);
 
-            this.TestSubstitution(q, "o", this._factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "UNION" }, new String[] { "?o" });
+            TestSubstitution(q, "o", _factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "UNION" }, new String[] { "?o" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraTermSub10()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "g", this._factory.CreateUriNode(UriFactory.Create("http://example.org/graph")), new String[] { "<http://example.org/graph>", "GRAPH" }, new String[] { "?g" });
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "g", _factory.CreateUriNode(UriFactory.Create("http://example.org/graph")), new String[] { "<http://example.org/graph>", "GRAPH" }, new String[] { "?g" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSubBad1()
         {
-            String query = "SELECT * WHERE { ?s <http://predicate>+ ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?s", "+" }, new String[] { "?x" });
+            var query = "SELECT * WHERE { ?s <http://predicate>+ ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?s", "+" }, new String[] { "?x" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSubBad2()
         {
-            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?s" }, new String[] { "?x" });
+            var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?s" }, new String[] { "?x" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSubBad3()
         {
-            String query = "SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "s", "x", new String[] { "?s", "SERVICE" }, new String[] { "?x" });
+            var query = "SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "s", "x", new String[] { "?s", "SERVICE" }, new String[] { "?x" });
         }
 
         [Fact]
         public void SparqlOptimiserAlgebraVarSubBad4()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            this.TestSubstitution(q, "g", this._factory.CreateLiteralNode("graph"), new String[] { "?g" }, new String[] { "\"graph\"" });
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            TestSubstitution(q, "g", _factory.CreateLiteralNode("graph"), new String[] { "?g" }, new String[] { "\"graph\"" });
         }
     }
 }

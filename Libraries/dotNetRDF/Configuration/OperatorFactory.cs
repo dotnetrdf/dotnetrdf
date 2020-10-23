@@ -52,7 +52,7 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            Object temp = Activator.CreateInstance(targetType);
+            var temp = Activator.CreateInstance(targetType);
             if (temp is ISparqlOperator)
             {
                 obj = (ISparqlOperator)temp;

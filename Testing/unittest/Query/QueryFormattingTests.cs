@@ -41,14 +41,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingFilter1()
         {
             const string query = "SELECT * WHERE { { ?s ?p ?o } FILTER(ISURI(?o)) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("FILTER"), "ToString() form should contain FILTER");
@@ -59,14 +59,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingFilter2()
         {
             const string query = "SELECT * WHERE { { ?s ?p ?o } FILTER(REGEX(?o, 'search', 'i')) }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("FILTER"), "ToString() form should contain FILTER");
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
 
         private int CountOccurrences(String value, char c)
         {
-            char[] cs = value.ToCharArray();
+            var cs = value.ToCharArray();
             return cs.Count(x => x == c);
         }
 
@@ -85,14 +85,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingUnion1()
         {
             const string query = "SELECT * WHERE { { ?s a ?type } UNION { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("UNION"), "ToString() form should contain UNION");
@@ -107,14 +107,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingUnion2()
         {
             const string query = "SELECT * WHERE { { GRAPH <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("UNION"), "ToString() form should contain UNION");
@@ -129,14 +129,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingUnion3()
         {
             const string query = "SELECT * WHERE { { MINUS { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("UNION"), "ToString() form should contain UNION");
@@ -151,14 +151,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingUnion4()
         {
             const string query = "SELECT * WHERE { { OPTIONAL { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("UNION"), "ToString() form should contain UNION");
@@ -173,14 +173,14 @@ namespace VDS.RDF.Query
         public void SparqlFormattingUnion5()
         {
             const string query = "SELECT * WHERE { { SERVICE <http://x> { ?s a ?type } } UNION { GRAPH <http://y> { ?s ?p ?o } } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            String toString = q.ToString();
+            var toString = q.ToString();
             Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            String formatted = this._formatter.Format(q);
+            var formatted = _formatter.Format(q);
             Console.WriteLine(formatted);
 
             Assert.True(toString.Contains("UNION"), "ToString() form should contain UNION");

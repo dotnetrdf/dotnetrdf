@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal UnsupportedService(String name, JObject obj)
+        internal UnsupportedService(string name, JObject obj)
             : base(name, obj)
         {
 

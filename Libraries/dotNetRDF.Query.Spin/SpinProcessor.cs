@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin
             {
                 _spinConfiguration.RemoveGraph(spinGraph.BaseUri);
             }
-            String ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
+            var ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
             IGraph imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
 
             // Explore for subsequent imports
@@ -141,19 +141,19 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IUpdate> GetConstructorsForClass(INode cls)
         {
-            List<IUpdate> constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, this))).ToList();
+            var constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, this))).ToList();
             return constructors;
         }
 
         internal IEnumerable<IResource> GetAllInstances(INode cls)
         {
-            List<Resource> resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
+            var resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
             return resourceList;
         }
 
         internal IEnumerable<IResource> GetAllSubClasses(INode root, bool includeRoot = false)
         {
-            List<Resource> classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
+            var classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
             if (includeRoot)
             {
                 classList.Add(Resource.Get(root, this));
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSuperClasses(INode root, bool includeRoot = false)
         {
-            List<Resource> classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, this)).ToList();
+            var classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, this)).ToList();
             if (includeRoot)
             {
                 classList.Add(Resource.Get(root, this));
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSubProperties(INode root, bool includeRoot = false)
         {
-            List<Resource> propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
+            var propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
             if (includeRoot)
             {
                 propertyList.Add(Resource.Get(root, this));
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSuperProperties(INode root, bool includeRoot = false)
         {
-            List<Resource> propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, this)).ToList();
+            var propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, this)).ToList();
             if (includeRoot)
             {
                 propertyList.Add(Resource.Get(root, this));
@@ -372,7 +372,7 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IUpdate> BuildUpdate(String sparqlQuery)
         {
-            List<IUpdate> spinQueryList = new List<IUpdate>();
+            var spinQueryList = new List<IUpdate>();
             SparqlUpdateCommandSet query = new SparqlUpdateParser().ParseFromString(sparqlQuery);
             query.Optimise();
             foreach (SparqlUpdateCommand command in query.Commands)

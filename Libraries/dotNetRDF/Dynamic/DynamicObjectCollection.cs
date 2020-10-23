@@ -24,15 +24,15 @@
 // </copyright>
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Dynamic;
-    using System.Linq;
-    using System.Linq.Expressions;
-
     /// <summary>
     /// Represents a read/write dynamic collection of objects by subject and predicate.
     /// </summary>

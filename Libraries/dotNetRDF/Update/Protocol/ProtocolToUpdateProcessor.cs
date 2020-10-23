@@ -105,7 +105,7 @@ namespace VDS.RDF.Update.Protocol
             // First we need a 
 
             // Generate an INSERT DATA command for the POST
-            StringBuilder insert = new StringBuilder();
+            var insert = new StringBuilder();
             if (graphUri != null)
             {
                 insert.AppendLine("INSERT DATA { GRAPH @graph {");
@@ -115,7 +115,7 @@ namespace VDS.RDF.Update.Protocol
                 insert.AppendLine("INSERT DATA {");
             }
 
-            TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
+            var formatter = new TurtleFormatter(g.NamespaceMap);
             foreach (Triple t in g.Triples)
             {
                 insert.AppendLine(t.ToString(formatter));
@@ -131,7 +131,7 @@ namespace VDS.RDF.Update.Protocol
             }
 
             // Parse and evaluate the command
-            SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
+            var insertCmd = new SparqlParameterizedString(insert.ToString());
             insertCmd.Namespaces = g.NamespaceMap;
             if (graphUri != null) insertCmd.SetUri("graph", graphUri);
             SparqlUpdateCommandSet cmds = _parser.ParseFromString(insertCmd);
@@ -159,7 +159,7 @@ namespace VDS.RDF.Update.Protocol
             // First generate a CREATE to ensure that the Graph exists
             // We don't do a CREATE SILENT as this operation is supposed to generate a new Graph URI
             // so if MintGraphUri() fails to deliver a unused Graph URI then the operation should fail
-            StringBuilder insert = new StringBuilder();
+            var insert = new StringBuilder();
             insert.AppendLine("CREATE GRAPH @graph ;");
 
             // Then Generate an INSERT DATA command for the actual POST
@@ -167,7 +167,7 @@ namespace VDS.RDF.Update.Protocol
             if (g != null)
             {
                 insert.AppendLine("INSERT DATA { GRAPH @graph {");
-                TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
+                var formatter = new TurtleFormatter(g.NamespaceMap);
                 foreach (Triple t in g.Triples)
                 {
                     insert.AppendLine(t.ToString(formatter));
@@ -176,7 +176,7 @@ namespace VDS.RDF.Update.Protocol
             }
 
             // Parse and evaluate the command
-            SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
+            var insertCmd = new SparqlParameterizedString(insert.ToString());
             insertCmd.Namespaces = g.NamespaceMap;
             insertCmd.SetUri("graph", graphUri);
             SparqlUpdateCommandSet cmds = _parser.ParseFromString(insertCmd);
@@ -208,15 +208,15 @@ namespace VDS.RDF.Update.Protocol
             Uri graphUri = ResolveGraphUri(context, g);
 
             // Determine whether the Graph already exists or not, if it doesn't then we have to send a 201 Response
-            bool created = false;
+            var created = false;
             try
             {
-                SparqlQueryParser parser = new SparqlQueryParser();
-                SparqlParameterizedString graphExistsQuery = new SparqlParameterizedString();
+                var parser = new SparqlQueryParser();
+                var graphExistsQuery = new SparqlParameterizedString();
                 graphExistsQuery.CommandText = "ASK WHERE { GRAPH @graph { } }";
                 graphExistsQuery.SetUri("graph", graphUri);
 
-                Object temp = _queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
+                var temp = _queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
                 if (temp is SparqlResultSet)
                 {
                     created = !((SparqlResultSet)temp).Result;
@@ -229,7 +229,7 @@ namespace VDS.RDF.Update.Protocol
             }            
 
             // Generate a set of commands based upon this
-            StringBuilder cmdSequence = new StringBuilder();
+            var cmdSequence = new StringBuilder();
             if (graphUri != null)
             {
                 cmdSequence.AppendLine("DROP SILENT GRAPH @graph ;");
@@ -251,7 +251,7 @@ namespace VDS.RDF.Update.Protocol
                     cmdSequence.AppendLine("INSERT DATA { ");
                 }
 
-                TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
+                var formatter = new TurtleFormatter(g.NamespaceMap);
                 foreach (Triple t in g.Triples)
                 {
                     cmdSequence.AppendLine(t.ToString(formatter));
@@ -267,7 +267,7 @@ namespace VDS.RDF.Update.Protocol
                 }
             }
 
-            SparqlParameterizedString put = new SparqlParameterizedString(cmdSequence.ToString());
+            var put = new SparqlParameterizedString(cmdSequence.ToString());
             put.Namespaces = g.NamespaceMap;
             if (graphUri != null) put.SetUri("graph", graphUri);
             SparqlUpdateCommandSet putCmds = _parser.ParseFromString(put);
@@ -298,7 +298,7 @@ namespace VDS.RDF.Update.Protocol
             }
 
             // Generate a DROP GRAPH command based on this
-            SparqlParameterizedString drop = new SparqlParameterizedString("DROP ");
+            var drop = new SparqlParameterizedString("DROP ");
             if (graphUri != null)
             {
                 drop.CommandText += "GRAPH @graph";
@@ -324,11 +324,11 @@ namespace VDS.RDF.Update.Protocol
 
             try
             {
-                bool exists = HasGraph(graphUri);
+                var exists = HasGraph(graphUri);
                 if (exists)
                 {
                     // Send the Content Type we'd select based on the Accept header to the user
-                    String ctype;
+                    string ctype;
                     IRdfWriter writer = MimeTypesHelper.GetWriter(context.GetAcceptTypes(), out ctype);
                     context.Response.ContentType = ctype;
                 }
@@ -362,8 +362,8 @@ namespace VDS.RDF.Update.Protocol
                 {
                     // Try and parse the SPARQL Update
                     // No error handling here as we assume the calling IHttpHandler does that
-                    String patchData;
-                    using (StreamReader reader = new StreamReader(context.Request.InputStream))
+                    string patchData;
+                    using (var reader = new StreamReader(context.Request.InputStream))
                     {
                         patchData = reader.ReadToEnd();
                         reader.Close();
@@ -408,7 +408,7 @@ namespace VDS.RDF.Update.Protocol
         protected override IGraph GetGraph(Uri graphUri)
         {
             // Generate a CONSTRUCT query based on the Graph URI
-            SparqlParameterizedString construct = new SparqlParameterizedString();
+            var construct = new SparqlParameterizedString();
             if (graphUri != null)
             {
                 construct.CommandText = "CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }";
@@ -418,10 +418,10 @@ namespace VDS.RDF.Update.Protocol
             {
                 construct.CommandText = "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o }";
             }
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(construct);
 
-            Object results = _queryProcessor.ProcessQuery(q);
+            var results = _queryProcessor.ProcessQuery(q);
             if (results is IGraph)
             {
                 return (IGraph)results;
@@ -440,7 +440,7 @@ namespace VDS.RDF.Update.Protocol
         protected override bool HasGraph(Uri graphUri)
         {
             // Generate an ASK query based on the Graph URI
-            SparqlParameterizedString ask = new SparqlParameterizedString();
+            var ask = new SparqlParameterizedString();
             if (graphUri != null)
             {
                 ask.CommandText = "ASK WHERE { GRAPH @graph { ?s ?p ?o . } }";
@@ -450,10 +450,10 @@ namespace VDS.RDF.Update.Protocol
             {
                 ask.CommandText = "ASK WHERE { ?s ?p ?o }";
             }
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(ask);
 
-            Object results = _queryProcessor.ProcessQuery(q);
+            var results = _queryProcessor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 return ((SparqlResultSet)results).Result;

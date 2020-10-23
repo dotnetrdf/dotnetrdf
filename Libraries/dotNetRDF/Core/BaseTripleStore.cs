@@ -260,7 +260,7 @@ namespace VDS.RDF
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
         /// <remarks>Override this method if your Triple Store implementation wishes to take additional actions when a Graph is added to the Store.</remarks>
-        protected virtual void OnGraphAdded(Object sender, GraphEventArgs args)
+        protected virtual void OnGraphAdded(object sender, GraphEventArgs args)
         {
             RaiseGraphAdded(args);
         }
@@ -298,7 +298,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphRemoved(Object sender, GraphEventArgs args)
+        protected virtual void OnGraphRemoved(object sender, GraphEventArgs args)
         {
             RaiseGraphRemoved(args);
         }
@@ -321,7 +321,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphChanged(Object sender, GraphEventArgs args)
+        protected virtual void OnGraphChanged(object sender, GraphEventArgs args)
         {
             RaiseGraphChanged(args);
         }
@@ -357,7 +357,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphCleared(Object sender, GraphEventArgs args)
+        protected virtual void OnGraphCleared(object sender, GraphEventArgs args)
         {
             RaiseGraphCleared(args);
         }
@@ -380,7 +380,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphMerged(Object sender, GraphEventArgs args)
+        protected virtual void OnGraphMerged(object sender, GraphEventArgs args)
         {
             RaiseGraphMerged(args);
         }

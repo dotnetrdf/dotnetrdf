@@ -42,13 +42,13 @@ namespace VDS.RDF
         [Fact]
         public void NamespaceMapperEvent()
         {
-            bool eventRaised = false;
+            var eventRaised = false;
 
             NamespaceChanged added = delegate(String prefix, Uri u) { eventRaised = true; };
             NamespaceChanged changed = delegate(String prefix, Uri u) { eventRaised = true; };
             NamespaceChanged removed = delegate(String prefix, Uri u) { eventRaised = true; };
 
-            NamespaceMapper nsmap = new NamespaceMapper();
+            var nsmap = new NamespaceMapper();
             nsmap.NamespaceAdded += added;
             nsmap.NamespaceModified += changed;
             nsmap.NamespaceRemoved += removed;
@@ -90,13 +90,13 @@ namespace VDS.RDF
             nsmap.AddNamespace("ns0", new Uri("http://example.org/clashes/"));
 
             Console.WriteLine("Creating another Namespace Mapper with the ex prefix mapped to a different URI");
-            NamespaceMapper nsmap2 = new NamespaceMapper();
+            var nsmap2 = new NamespaceMapper();
             nsmap2.AddNamespace("ex", new Uri("http://example.org/test/"));
 
             Console.WriteLine("Importing the new NamespaceMapper into the original");
             nsmap.Import(nsmap2);
             Console.WriteLine("NamespaceMapper now contains the following Namespaces:");
-            foreach (String prefix in nsmap.Prefixes)
+            foreach (var prefix in nsmap.Prefixes)
             {
                 Console.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).AbsoluteUri + ">");
             }

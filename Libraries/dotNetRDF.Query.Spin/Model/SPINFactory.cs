@@ -440,7 +440,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IArgument createArgument(SpinProcessor model, INode argProperty, INode argType, bool optional)
         {
-            IArgument a = (IArgument)model.CreateResource(SPL.ClassArgument).As(typeof(ArgumentImpl));
+            var a = (IArgument)model.CreateResource(SPL.ClassArgument).As(typeof(ArgumentImpl));
             if (argProperty != null)
             {
                 a.AddProperty(SPL.PropertyPredicate, argProperty);
@@ -468,7 +468,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IAttribute createAttribute(SpinProcessor model, INode argProperty, INode argType, int minCount, int maxCount)
         {
-            IAttribute a =(IAttribute) model.CreateResource(SPL.ClassAttribute).As(typeof(AttributeImpl));
+            var a =(IAttribute) model.CreateResource(SPL.ClassAttribute).As(typeof(AttributeImpl));
             if (argProperty != null)
             {
                 a.AddProperty(SPL.PropertyPredicate, argProperty);
@@ -491,7 +491,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IAsk createAsk(SpinProcessor model, IElementList where)
         {
-            IAsk ask = (IAsk)model.CreateResource(SP.ClassAsk).As(typeof(AskImpl));
+            var ask = (IAsk)model.CreateResource(SP.ClassAsk).As(typeof(AskImpl));
             ask.AddProperty(SP.PropertyWhere, where);
             return ask;
         }
@@ -506,7 +506,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IBind createBind(SpinProcessor model, IVariable variable, INode expression)
         {
-            IBind bind = (IBind)model.CreateResource(SP.ClassBind).As(typeof(BindImpl));
+            var bind = (IBind)model.CreateResource(SP.ClassBind).As(typeof(BindImpl));
             if (variable != null)
             {
                 bind.AddProperty(SP.PropertyVariable, variable);
@@ -566,7 +566,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IExists createExists(SpinProcessor model, IElementList elements)
         {
-            IExists notExists = (IExists)model.CreateResource(SP.ClassExists).As(typeof(ExistsImpl));
+            var notExists = (IExists)model.CreateResource(SP.ClassExists).As(typeof(ExistsImpl));
             notExists.AddProperty(SP.PropertyElements, elements);
             return notExists;
         }
@@ -580,7 +580,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IFilter createFilter(SpinProcessor model, INode expression)
         {
-            IFilter filter = (IFilter)model.CreateResource(SP.ClassFilter).As(typeof(FilterImpl));
+            var filter = (IFilter)model.CreateResource(SP.ClassFilter).As(typeof(FilterImpl));
             filter.AddProperty(SP.PropertyExpression, expression);
             return filter;
         }
@@ -607,7 +607,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IMinus createMinus(SpinProcessor model, IElementList elements)
         {
-            IMinus minus = (IMinus)model.CreateResource(SP.ClassMinus).As(typeof(MinusImpl));
+            var minus = (IMinus)model.CreateResource(SP.ClassMinus).As(typeof(MinusImpl));
             minus.AddProperty(SP.PropertyElements, elements);
             return minus;
         }
@@ -622,7 +622,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static INamedGraph createNamedGraph(SpinProcessor model, INode graphNameNode, IResource elements)
         {
-            INamedGraph result =(INamedGraph) model.CreateResource(SP.ClassNamedGraph).As(typeof(NamedGraphImpl));
+            var result =(INamedGraph) model.CreateResource(SP.ClassNamedGraph).As(typeof(NamedGraphImpl));
             result.AddProperty(SP.PropertyGraphNameNode, graphNameNode);
             result.AddProperty(SP.PropertyElements, elements);
             return result;
@@ -637,7 +637,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static INotExists createNotExists(SpinProcessor model, IElementList elements)
         {
-            INotExists notExists = (INotExists)model.CreateResource(SP.ClassNotExists).As(typeof(NotExistsImpl));
+            var notExists = (INotExists)model.CreateResource(SP.ClassNotExists).As(typeof(NotExistsImpl));
             notExists.AddProperty(SP.PropertyElements, elements);
             return notExists;
         }
@@ -651,7 +651,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IOptional createOptional(SpinProcessor model, IElementList elements)
         {
-            IOptional optional = (IOptional)model.CreateResource(SP.ClassOptional).As(typeof(OptionalImpl));
+            var optional = (IOptional)model.CreateResource(SP.ClassOptional).As(typeof(OptionalImpl));
             optional.AddProperty(SP.PropertyElements, elements);
             return optional;
         }
@@ -659,7 +659,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public static IService createService(SpinProcessor model, INode serviceURI, IElementList elements)
         {
-            IService service = (IService)model.CreateResource(SP.ClassService).As(typeof(ServiceImpl));
+            var service = (IService)model.CreateResource(SP.ClassService).As(typeof(ServiceImpl));
             service.AddProperty(SP.PropertyServiceURI, serviceURI);
             service.AddProperty(SP.PropertyElements, elements);
             return service;
@@ -674,7 +674,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static ISubQuery createSubQuery(SpinProcessor model, IQuery subQuery)
         {
-            ISubQuery result = (ISubQuery)model.CreateResource(SP.ClassSubQuery).As(typeof(SubQueryImpl));
+            var result = (ISubQuery)model.CreateResource(SP.ClassSubQuery).As(typeof(SubQueryImpl));
             result.AddProperty(SP.PropertyQuery, subQuery);
             return result;
         }
@@ -688,7 +688,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static ITemplateCall createTemplateCall(SpinProcessor model, INode template)
         {
-            ITemplateCall templateCall = (ITemplateCall)model.CreateResource(template).As(typeof(TemplateCallImpl));
+            var templateCall = (ITemplateCall)model.CreateResource(template).As(typeof(TemplateCallImpl));
             return templateCall;
         }
 
@@ -703,7 +703,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static ITriplePath createTriplePath(SpinProcessor model, INode subject, INode path, INode obj)
         {
-            ITriplePath triplePath = (ITriplePath)model.CreateResource(SP.ClassTriplePath).As(typeof(TriplePathImpl));
+            var triplePath = (ITriplePath)model.CreateResource(SP.ClassTriplePath).As(typeof(TriplePathImpl));
             triplePath.AddProperty(SP.PropertySubject, subject);
             triplePath.AddProperty(SP.PropertyPath, path);
             triplePath.AddProperty(SP.PropertyObject, obj);
@@ -722,7 +722,7 @@ namespace VDS.RDF.Query.Spin.Model
         public static ITriplePattern createTriplePattern(SpinProcessor model, INode subject, INode predicate, INode obj)
         {
             // No rdf:type sp:TriplePattern needed - engine looks for sp:predicate
-            ITriplePattern triplePattern = (ITriplePattern)model.CreateResource().As(typeof(TriplePatternImpl));
+            var triplePattern = (ITriplePattern)model.CreateResource().As(typeof(TriplePatternImpl));
             triplePattern.AddProperty(SP.PropertySubject, subject);
             triplePattern.AddProperty(SP.PropertyPredicate, predicate);
             triplePattern.AddProperty(SP.PropertyObject, obj);
@@ -738,7 +738,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IUnion createUnion(SpinProcessor model, IElementList elements)
         {
-            IUnion union = (IUnion)model.CreateResource(SP.ClassUnion).As(typeof(UnionImpl));
+            var union = (IUnion)model.CreateResource(SP.ClassUnion).As(typeof(UnionImpl));
             union.AddProperty(SP.PropertyElements, elements);
             return union;
         }
@@ -754,10 +754,10 @@ namespace VDS.RDF.Query.Spin.Model
         public static IValues createValues(SpinProcessor model, SparqlResultSet data, bool untyped)
         {
             IResource blank = untyped ? model.CreateResource() : model.CreateResource(SP.ClassValues);
-            IValues values = (IValues)blank.As(typeof(ValuesImpl));
+            var values = (IValues)blank.As(typeof(ValuesImpl));
 
-            List<IResource> vars = new List<IResource>();
-            foreach (String varName in data.Variables)
+            var vars = new List<IResource>();
+            foreach (var varName in data.Variables)
             {
                 vars.Add(Resource.Get(RDFUtil.CreateLiteralNode(varName), model));
             }
@@ -767,12 +767,12 @@ namespace VDS.RDF.Query.Spin.Model
             IEnumerator<SparqlResult> bindings = data.Results.GetEnumerator();
             if (bindings.MoveNext())
             {
-                List<IResource> lists = new List<IResource>();
+                var lists = new List<IResource>();
                 while (bindings.MoveNext())
                 {
-                    List<IResource> nodes = new List<IResource>();
+                    var nodes = new List<IResource>();
                     SparqlResult binding = bindings.Current;
-                    foreach (String varName in data.Variables)
+                    foreach (var varName in data.Variables)
                     {
                         INode value = binding.Value(varName);
                         if (value == null)
@@ -801,7 +801,7 @@ namespace VDS.RDF.Query.Spin.Model
          */
         public static IVariable createVariable(SpinProcessor model, String varName)
         {
-            IVariable variable = (IVariable)model.CreateResource(SP.ClassVariable).As(typeof(VariableImpl));
+            var variable = (IVariable)model.CreateResource(SP.ClassVariable).As(typeof(VariableImpl));
             variable.AddProperty(SP.PropertyVarName, RDFUtil.CreateLiteralNode(varName));
             return variable;
         }
@@ -822,7 +822,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IResource obj = Resource.Get(it.Current.Object, cls.getModel());
                 if (obj is INode && ((IResource)obj).hasProperty(RDF.PropertyType, SPL.ClassAttribute))
                 {
-                    IAttribute a = (IAttribute)obj.As(typeof(AttributeImpl));
+                    var a = (IAttribute)obj.As(typeof(AttributeImpl));
                     if (RDFUtil.sameTerm(property, a.getPredicate()))
                     {
                         it.Dispose();

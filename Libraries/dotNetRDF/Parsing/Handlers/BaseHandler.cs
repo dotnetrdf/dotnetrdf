@@ -251,7 +251,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="prefix">Prefix.</param>
         /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
-        protected virtual bool HandleNamespaceInternal(String prefix, Uri namespaceUri)
+        protected virtual bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
             return true;
         }
@@ -387,7 +387,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="var">Variable Name.</param>
         /// <returns></returns>
-        public bool HandleVariable(String var)
+        public bool HandleVariable(string var)
         {
             if (!_inUse) throw new RdfParseException("Cannot Handle a Variable as this Handler is not currently in-use");
             return HandleVariableInternal(var);
@@ -398,7 +398,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="var">Variable Name.</param>
         /// <returns></returns>
-        protected abstract bool HandleVariableInternal(String var);
+        protected abstract bool HandleVariableInternal(string var);
 
         /// <summary>
         /// Handlers SPARQL Results.

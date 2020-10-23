@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         [Fact]
         public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressions()
         {
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
             NumericExpression right = new NumericExpression<int>(15);
             Right = right.Expression;
 
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         [Fact]
         public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressionsReversed()
         {
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
             NumericExpression right = new NumericExpression<int>(15);
             Right = right.Expression;
 
@@ -101,8 +101,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndVariableExpression()
         {
             // given
-            NumericExpression left = new NumericExpression(Left);
-            VariableExpression right = new VariableExpression("number");
+            var left = new NumericExpression(Left);
+            var right = new VariableExpression("number");
             Right = right.Expression;
 
             // then
@@ -116,8 +116,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndNumericExpression()
         {
             // given
-            NumericExpression right = new NumericExpression(Right);
-            VariableExpression left = new VariableExpression("number");
+            var right = new NumericExpression(Right);
+            var left = new VariableExpression("number");
             Left = left.Expression;
 
             // then
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const int operandValue = 10;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const int operandValue = 10;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const long operandValue = 10;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const long operandValue = 10;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const short operandValue = 10;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const short operandValue = 10;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const decimal operandValue = 10.5m;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const decimal operandValue = 10.5m;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -276,7 +276,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const double operandValue = 10.5d;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const double operandValue = 10.5d;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const float operandValue = 10.5f;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -330,7 +330,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const float operandValue = 10.5f;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -348,7 +348,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const byte operandValue = 10;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -366,7 +366,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const byte operandValue = 10;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -384,7 +384,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const sbyte operandValue = 10;
-            NumericExpression right = new NumericExpression(Right);
+            var right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -402,7 +402,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const sbyte operandValue = 10;
-            NumericExpression left = new NumericExpression(Left);
+            var left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,

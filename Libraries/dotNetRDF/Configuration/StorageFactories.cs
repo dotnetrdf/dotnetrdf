@@ -42,7 +42,7 @@ namespace VDS.RDF.Configuration
     public class StorageFactory
         : IObjectFactory
     {
-        private const String AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
+        private const string AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
                              AllegroGraphServer = "VDS.RDF.Storage.Management.AllegroGraphServer",
                              DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
                              Dydra = "VDS.RDF.Storage.DydraConnector",
@@ -83,9 +83,9 @@ namespace VDS.RDF.Configuration
             SparqlConnectorLoadMethod loadMode;
             obj = null;
 
-            String server, user, pwd, store, catalog, loadModeRaw;
+            string server, user, pwd, store, catalog, loadModeRaw;
 
-            Object temp;
+            object temp;
             INode storeObj;
 
             // Create the URI Nodes we're going to use to search for things
@@ -136,10 +136,10 @@ namespace VDS.RDF.Configuration
                     break;
                 case DatasetFile:
                     // Get the Filename and whether the loading should be done asynchronously
-                    String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
+                    var file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                     if (file == null) return false;
                     file = ConfigurationLoader.ResolvePath(file);
-                    bool isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
+                    var isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     storageProvider = new DatasetFileManager(file, isAsync);
                     break;
 
@@ -150,7 +150,7 @@ namespace VDS.RDF.Configuration
                     // Get the Server and whether Updates are enabled
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    bool enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates)), true);
+                    var enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates)), true);
                     storageProvider = new FourStoreConnector(server, enableUpdates);
                     break;
 
@@ -239,11 +239,11 @@ namespace VDS.RDF.Configuration
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                     if (user != null && pwd != null)
                     {
-                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store, user, pwd});
+                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new object[] {server, store, user, pwd});
                     }
                     else
                     {
-                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new Object[] {server, store});
+                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new object[] {server, store});
                     }
                     break;
 
@@ -418,7 +418,7 @@ namespace VDS.RDF.Configuration
 
                     // Get Reasoning Mode
                     StardogReasoningMode reasoning = StardogReasoningMode.None;
-                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
+                    var mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
                     if (mode != null)
                     {
                         try
@@ -534,9 +534,9 @@ namespace VDS.RDF.Configuration
             // Check whether this is a standard HTTP manager and if so load standard configuration
             if (obj is BaseHttpConnector)
             {
-                BaseHttpConnector connector = (BaseHttpConnector) obj;
+                var connector = (BaseHttpConnector) obj;
 
-                int timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), 0);
+                var timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), 0);
                 if (timeout > 0)
                 {
                     connector.Timeout = timeout;

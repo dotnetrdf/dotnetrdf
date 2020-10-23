@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="s">Set.</param>
         /// <param name="vars">Variables.</param>
         /// <returns></returns>
-        bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
+        bool IsCompatibleWith(ISet s, IEnumerable<string> vars);
 
         /// <summary>
         /// Gets whether the Set is minus compatible with a given set based on the given variables.
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="s">Set.</param>
         /// <param name="vars">Variables.</param>
         /// <returns></returns>
-        bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
+        bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars);
 
         /// <summary>
         /// Gets/Sets the ID of the Set.
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="s">Set.</param>
         /// <param name="vars">Variables.</param>
         /// <returns></returns>
-        public abstract bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
+        public abstract bool IsCompatibleWith(ISet s, IEnumerable<string> vars);
 
         /// <summary>
         /// Gets whether the Set is minus compatible with a given set based on the given variables.
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="s">Set.</param>
         /// <param name="vars">Variables.</param>
         /// <returns></returns>
-        public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
+        public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars);
 
         /// <summary>
         /// Gets/Sets the ID of the Set.
@@ -263,9 +263,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
-            int count = 0;
-            foreach (String var in Variables.OrderBy(v => v))
+            var output = new StringBuilder();
+            var count = 0;
+            foreach (var var in Variables.OrderBy(v => v))
             {
                 output.Append("?" + var + " = " + this[var].ToSafeString());
                 output.Append(" , ");

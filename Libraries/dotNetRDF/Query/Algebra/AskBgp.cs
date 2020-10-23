@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -136,10 +136,10 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-                IEnumerable<String> floating = from tp in _triplePatterns
+                IEnumerable<string> floating = from tp in _triplePatterns
                                                from v in tp.FloatingVariables
                                                select v;
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v)).Distinct();
             }
         }
@@ -221,12 +221,12 @@ namespace VDS.RDF.Query.Algebra
 
             // Get the Triple Pattern we're evaluating
             ITriplePattern temp = _triplePatterns[pattern];
-            int resultsFound = 0;
+            var resultsFound = 0;
 
             if (temp.PatternType == TriplePatternType.Match)
             {
                 // Find the first Triple which matches the Pattern
-                IMatchTriplePattern tp = (IMatchTriplePattern)temp;
+                var tp = (IMatchTriplePattern)temp;
                 foreach (Triple t in tp.GetTriples(context))
                 {
                     // Remember to check for Timeout during lazy evaluation
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (temp.PatternType == TriplePatternType.Filter)
             {
-                IFilterPattern fp = (IFilterPattern)temp;
+                var fp = (IFilterPattern)temp;
                 ISparqlFilter filter = fp.Filter;
                 ISparqlExpression expr = filter.Expression;
 
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query.Algebra
                 } 
                 else
                 {
-                    foreach (int id in context.InputMultiset.SetIDs)
+                    foreach (var id in context.InputMultiset.SetIDs)
                     {
                         // Remember to check for Timeout during lazy evaluation
                         context.CheckTimeout();
@@ -379,7 +379,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -391,7 +391,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern();
+            var p = new GraphPattern();
             foreach (ITriplePattern tp in _triplePatterns)
             {
                 p.AddTriplePattern(tp);
@@ -459,7 +459,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -470,12 +470,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those not fixed
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return Variables.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -483,7 +483,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {
@@ -529,7 +529,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -541,7 +541,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern();
+            var p = new GraphPattern();
             p.IsUnion = true;
             p.AddGraphPattern(_lhs.ToGraphPattern());
             p.AddGraphPattern(_rhs.ToGraphPattern());

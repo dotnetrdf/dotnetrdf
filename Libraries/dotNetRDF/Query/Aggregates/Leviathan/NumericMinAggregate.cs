@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class NumericMinAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new NMIN Aggregate.
@@ -97,13 +97,13 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
 
             // Prep Variables
             long lngmin = 0;
-            decimal decmin = 0.0m;
-            float fltmin = 0.0f;
-            double dblmin = 0.0d;
+            var decmin = 0.0m;
+            var fltmin = 0.0f;
+            var dblmin = 0.0d;
             SparqlNumericType mintype = SparqlNumericType.NaN;
             SparqlNumericType numtype;
 
-            foreach (int id in bindingIDs)
+            foreach (var id in bindingIDs)
             {
                 IValuedNode temp;
                 try
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.NumericMin);

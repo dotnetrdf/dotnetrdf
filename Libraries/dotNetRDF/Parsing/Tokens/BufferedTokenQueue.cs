@@ -318,7 +318,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             // Buffer up to the amount
             IToken t;
-            int i = 0;
+            var i = 0;
             do
             {
                 t = _tokeniser.GetNextToken();
@@ -469,7 +469,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             // Buffer until we get the EOF Token
             IToken t;
-            int i = 0;
+            var i = 0;
             do
             {
                 t = _tokeniser.GetNextToken();

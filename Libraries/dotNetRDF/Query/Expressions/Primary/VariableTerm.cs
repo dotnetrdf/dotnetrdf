@@ -37,13 +37,13 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class VariableTerm
         : ISparqlExpression
     {
-        private String _name;
+        private string _name;
 
         /// <summary>
         /// Creates a new Variable Expression.
         /// </summary>
         /// <param name="name">Variable Name.</param>
-        public VariableTerm(String name)
+        public VariableTerm(string name)
         {
             _name = name;
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the enumeration containing the single variable that this expression term represents.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -100,11 +100,11 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public String Functor
+        public string Functor
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

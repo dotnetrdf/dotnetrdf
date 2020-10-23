@@ -141,9 +141,9 @@ namespace VDS.RDF.Writing.Contexts
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        public virtual String FormatUri(String u)
+        public virtual string FormatUri(string u)
         {
-            String uri = Uri.EscapeUriString(u);
+            var uri = Uri.EscapeUriString(u);
             uri = uri.Replace(">", "\\>");
             return uri;
         }
@@ -153,7 +153,7 @@ namespace VDS.RDF.Writing.Contexts
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        public virtual String FormatUri(Uri u)
+        public virtual string FormatUri(Uri u)
         {
             return FormatUri(u.AbsoluteUri);
         }

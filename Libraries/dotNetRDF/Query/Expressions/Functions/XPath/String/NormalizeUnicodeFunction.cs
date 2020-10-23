@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
             else
             {
-                string normalized = stringLit.Value;
+                var normalized = stringLit.Value;
 
                 switch (arg.Value)
                 {

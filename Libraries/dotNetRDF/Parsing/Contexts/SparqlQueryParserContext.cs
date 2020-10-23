@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Contexts
         private bool _verbSeen = false;
         private SparqlExpressionParser _exprParser = new SparqlExpressionParser();
         private SparqlPathParser _pathParser = new SparqlPathParser();
-        private Dictionary<String, int> _bnodeLabelUsages = new Dictionary<string, int>();
+        private Dictionary<string, int> _bnodeLabelUsages = new Dictionary<string, int>();
         private int _blankNodeID = 1;
         private int _graphPatternID = 0;
         private Uri _defaultBaseUri = null;
@@ -230,9 +230,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// Gets a new Blank Node ID.
         /// </summary>
         /// <returns></returns>
-        public String GetNewBlankNodeID()
+        public string GetNewBlankNodeID()
         {
-            String id = "_:sparql-autos" + _blankNodeID;
+            var id = "_:sparql-autos" + _blankNodeID;
             while (_bnodeLabelUsages.ContainsKey(id))
             {
                 _blankNodeID++;
@@ -246,7 +246,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the mapping of in use Blank Nodes IDs.
         /// </summary>
-        public Dictionary<String, int> BlankNodeIDUsages
+        public Dictionary<string, int> BlankNodeIDUsages
         {
             get
             {
@@ -290,7 +290,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                int temp = _nextAliasID;
+                var temp = _nextAliasID;
                 _nextAliasID++;
                 return temp;
             }

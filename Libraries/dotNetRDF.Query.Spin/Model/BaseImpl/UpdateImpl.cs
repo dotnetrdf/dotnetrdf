@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public IElementList getWhere()
         {
-            IResource whereS = this.getResource(SP.PropertyWhere);
+            IResource whereS = getResource(SP.PropertyWhere);
             if (whereS != null)
             {
                 return (IElementList)SPINFactory.asElement(whereS);
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         override public void Print(ISparqlPrinter p)
         {
-            String text = getString(SP.PropertyText);
+            var text = getString(SP.PropertyText);
             if (text != null)
             {
                 p.print(text);
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         protected void printGraphDefaultNamedOrAll(ISparqlPrinter p)
         {
-            IResource graph = this.getResource(SP.PropertyGraphIRI);
+            IResource graph = getResource(SP.PropertyGraphIRI);
             if (graph != null)
             {
                 p.printKeyword("GRAPH");
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         protected void printGraphIRIs(ISparqlPrinter p, String keyword)
         {
-            List<String> graphIRIs = new List<String>();
+            var graphIRIs = new List<String>();
             {
                 IEnumerator<Triple> it = listProperties(SP.PropertyGraphIRI).GetEnumerator();
                 while (it.MoveNext())
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Spin.Model
                 }
                 graphIRIs.Sort();
             }
-            foreach (String graphIRI in graphIRIs)
+            foreach (var graphIRI in graphIRIs)
             {
                 p.print(" ");
                 if (keyword != null)
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Spin.Model
                     p.printIndentation(p.getIndentation() + 1);
                     if (node.canAs(SP.ClassNamedGraph))
                     {
-                        INamedGraph namedGraph = (INamedGraph)node.As(typeof(NamedGraphImpl));
+                        var namedGraph = (INamedGraph)node.As(typeof(NamedGraphImpl));
                         p.setIndentation(p.getIndentation() + 1);
                         p.setNamedBNodeMode(true);
                         namedGraph.Print(p);
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Spin.Model
                     }
                     else
                     {
-                        ITripleTemplate template = (ITripleTemplate)node.As(typeof(TripleTemplateImpl));
+                        var template = (ITripleTemplate)node.As(typeof(TripleTemplateImpl));
                         template.Print(p);
                     }
                     p.print(" .");

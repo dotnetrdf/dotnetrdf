@@ -262,7 +262,7 @@ namespace VDS.RDF.Writing
             }
 
             // Take care of any collections that weren't yet written
-            foreach (var kvp in context.Collections)
+            foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
             {
                 if (!kvp.Value.HasBeenWritten)
                 {
@@ -292,7 +292,7 @@ namespace VDS.RDF.Writing
             // If there is a rdf:type triple then create a typed node
             // Otherwise create a rdf:Description node
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            var typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
+            Triple typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
             INode subj;
             if (typeTriple != null)
             {
@@ -397,7 +397,7 @@ namespace VDS.RDF.Writing
                 // Next find any simple literals we can attach directly to the Subject Node
                 var simpleLiterals = new List<Triple>();
                 var simpleLiteralPredicates = new HashSet<INode>();
-                foreach (var t in ts)
+                foreach (Triple t in ts)
                 {
                     if (t.Object.NodeType == NodeType.Literal)
                     {
@@ -420,7 +420,7 @@ namespace VDS.RDF.Writing
             }
 
             // Then generate Predicate Output for each remaining Triple
-            foreach (var t in ts)
+            foreach (Triple t in ts)
             {
                 GeneratePredicateOutput(context, t);
                 context.TriplesDone.Add(t);
@@ -429,7 +429,7 @@ namespace VDS.RDF.Writing
             // Also check for the rare case where the subject is the key to a collection
             if (context.Collections.ContainsKey(subj))
             {
-                var collection = context.Collections[subj];
+                OutputRdfCollection collection = context.Collections[subj];
                 if (!collection.IsExplicit)
                 {
                     GenerateCollectionItemOutput(context, collection);
@@ -447,7 +447,7 @@ namespace VDS.RDF.Writing
             if (ts.Count == 0) return;
 
             // Otherwise attach each Simple Literal directly to the Subject
-            foreach (var t in ts)
+            foreach (Triple t in ts)
             {
                 UriRefType outType;
                 var p = (IUriNode)t.Predicate;
@@ -592,7 +592,7 @@ namespace VDS.RDF.Writing
 
         private void GenerateCollectionOutput(RdfXmlWriterContext context, INode key)
         {
-            var c = context.Collections[key];
+            OutputRdfCollection c = context.Collections[key];
             c.HasBeenWritten = true;
 
             if (c.IsExplicit)
@@ -606,7 +606,7 @@ namespace VDS.RDF.Writing
 
                 // First see if there is a typed triple available (only applicable if we have more than one triple)
                 INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                var typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
+                Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
                 if (typeTriple != null)
                 {
                     // Should be safe to invoke GenerateSubjectOutput but we can't allow rdf:Description
@@ -616,7 +616,7 @@ namespace VDS.RDF.Writing
                 {
                     // Otherwise we invoke GeneratePredicateOutput (and use rdf:parseType="Resource" if there was more than 1 triple)
                     context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
-                    foreach (var t in c.Triples)
+                    foreach (Triple t in c.Triples)
                     {
                         GeneratePredicateOutput(context, t);
                         context.TriplesDone.Add(t);
@@ -645,7 +645,7 @@ namespace VDS.RDF.Writing
             var toClose = c.Triples.Count;
             while (c.Triples.Count > 0)
             {
-                var t = c.Triples[0];
+                Triple t = c.Triples[0];
                 c.Triples.RemoveAt(0);
 
                 // rdf:first Node

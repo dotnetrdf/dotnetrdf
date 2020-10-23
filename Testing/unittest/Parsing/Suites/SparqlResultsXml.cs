@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSparqlResultsXmlCustomAttributes()
         {
             // Test case based off of CORE-410
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
             ResultsParser.Load(results, @"resources\sparql\core-410.srx");
 
             TestTools.ShowResults(results);
@@ -75,13 +75,13 @@ namespace VDS.RDF.Parsing.Suites
             INode third = results[2]["test"];
 
             Assert.Equal(NodeType.Literal, first.NodeType);
-            ILiteralNode firstLit = (ILiteralNode) first;
+            var firstLit = (ILiteralNode) first;
             Assert.NotNull(firstLit.DataType);
             Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeInteger, firstLit.DataType.AbsoluteUri);
             Assert.Equal("1993", firstLit.Value);
 
             Assert.Equal(NodeType.Literal, second.NodeType);
-            ILiteralNode secondLit = (ILiteralNode) second;
+            var secondLit = (ILiteralNode) second;
             Assert.NotEqual(String.Empty, secondLit.Language);
             Assert.NotNull(secondLit.DataType);
             Assert.Equal("en", secondLit.Language);
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Suites
             Assert.Equal(RdfSpecsHelper.RdfLangString, secondLit.DataType.AbsoluteUri);
 
             Assert.Equal(NodeType.Literal, third.NodeType);
-            ILiteralNode thirdLit = (ILiteralNode) third;
+            var thirdLit = (ILiteralNode) third;
             Assert.Equal(String.Empty, thirdLit.Language);
             Assert.NotNull(thirdLit.DataType);
             Assert.Equal(XmlSpecsHelper.XmlSchemaDataTypeString, thirdLit.DataType.AbsoluteUri);
@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSparqlResultsXmlConflictingAttributes()
         {
             // Test case based off of CORE-410
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
             Assert.Throws<RdfParseException>(() => ResultsParser.Load(results, @"resources\sparql\bad-core-410.srx"));
         }

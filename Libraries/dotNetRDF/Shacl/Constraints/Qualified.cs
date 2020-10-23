@@ -24,14 +24,14 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Shacl.Validation;
-
     internal abstract class Qualified : Numeric
     {
         [DebuggerStepThrough]
@@ -63,7 +63,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         protected IEnumerable<INode> QualifiedValueNodes(INode focusNode, IEnumerable<INode> valueNodes)
         {
-            var currentShape = Shape;
+            Shape currentShape = Shape;
 
             IEnumerable<Shape> selectSiblingShapes()
             {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Shacl.Constraints
                 select disjoint)
                 .Any();
 
-            var siblingShapes = isDisjoint ? selectSiblingShapes() : Enumerable.Empty<Shape>();
+            IEnumerable<Shape> siblingShapes = isDisjoint ? selectSiblingShapes() : Enumerable.Empty<Shape>();
 
             return
                 from qualified in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)

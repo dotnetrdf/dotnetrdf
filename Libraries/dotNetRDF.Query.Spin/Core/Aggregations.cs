@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Spin.Core
                 INode aggType = it.Current;
                 Triple labelTriple = model.GetTriplesWithSubjectPredicate(aggType, RDFS.PropertyLabel).FirstOrDefault();
                 if (labelTriple != null) {
-                    String name = ((ILiteralNode)labelTriple.Object).Value;
+                    var name = ((ILiteralNode)labelTriple.Object).Value;
                     register(aggType, name);
                 }
             }

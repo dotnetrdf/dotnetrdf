@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -116,12 +116,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used.
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            String filter = _filter.ToString();
+            var filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
             return "Filter(" + _pattern.ToString() + ", " + filter + ")";
         }
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -174,8 +174,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _pattern.ToGraphPattern();
-            GraphPattern f = new GraphPattern();
+            var p = _pattern.ToGraphPattern();
+            var f = new GraphPattern();
             f.AddFilter(_filter);
             p.AddGraphPattern(f);
             return p;

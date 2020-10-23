@@ -40,14 +40,14 @@ namespace VDS.RDF.Parsing.Suites
 
         protected override SparqlResultSet TryParseTestInput(string file)
         {
-            SparqlResultSet actual = new SparqlResultSet();
+            var actual = new SparqlResultSet();
             Parser.Load(actual, file);
             return actual;
         }
 
         protected override void TryValidateResults(string testName, string resultFile, SparqlResultSet actual)
         {
-            SparqlResultSet expected = new SparqlResultSet();
+            var expected = new SparqlResultSet();
             ResultsParser.Load(expected, resultFile);
 
             if (expected.Equals(actual))

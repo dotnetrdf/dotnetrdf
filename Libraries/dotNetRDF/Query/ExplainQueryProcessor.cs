@@ -299,17 +299,17 @@ namespace VDS.RDF.Query
         {
             if (!HasFlag(ExplanationLevel.AnalyseBgps)) return;
 
-            List<ITriplePattern> ps = bgp.TriplePatterns.ToList();
+            var ps = bgp.TriplePatterns.ToList();
             if (ps.Count == 0)
             {
                 PrintExplanations("Empty BGP");
             }
             else
             {
-                HashSet<String> vars = new HashSet<string>();
-                for (int i = 0; i < ps.Count; i++)
+                var vars = new HashSet<string>();
+                for (var i = 0; i < ps.Count; i++)
                 {
-                    StringBuilder output = new StringBuilder();
+                    var output = new StringBuilder();
 
                     // Print what will happen
                     if (ps[i].PatternType == TriplePatternType.Filter)
@@ -342,7 +342,7 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            List<String> joinVars = vars.Intersect<String>(ps[i].Variables).ToList();
+                            var joinVars = vars.Intersect<String>(ps[i].Variables).ToList();
                             output.Append("Join on {");
                             joinVars.ForEach(v => output.Append(" ?" + v + ","));
                             output.Remove(output.Length - 1, 1);
@@ -356,7 +356,7 @@ namespace VDS.RDF.Query
                     // Update variables seen so far unless a FILTER which cannot introduce new variables
                     if (ps[i].PatternType != TriplePatternType.Filter)
                     {
-                        foreach (String var in ps[i].Variables)
+                        foreach (var var in ps[i].Variables)
                         {
                             vars.Add(var);
                         }
@@ -375,10 +375,10 @@ namespace VDS.RDF.Query
         {
             if (!HasFlag(ExplanationLevel.AnalyseJoins)) return;
 
-            HashSet<String> joinVars = new HashSet<string>(join.Lhs.Variables.Intersect<String>(join.Rhs.Variables));
-            StringBuilder vars = new StringBuilder();
+            var joinVars = new HashSet<string>(join.Lhs.Variables.Intersect<String>(join.Rhs.Variables));
+            var vars = new StringBuilder();
             vars.Append("{");
-            foreach (String var in joinVars)
+            foreach (var var in joinVars)
             {
                 vars.Append(" ?" + var + ",");
             }
@@ -423,15 +423,15 @@ namespace VDS.RDF.Query
                     break;
                 case Token.VARIABLE:
                     // Potentially many active graphs
-                    List<String> activeGraphs = new List<string>();
-                    String gvar = graph.GraphSpecifier.Value.Substring(1);
+                    var activeGraphs = new List<string>();
+                    var gvar = graph.GraphSpecifier.Value.Substring(1);
 
                     // Watch out for the case in which the Graph Variable is not bound for all Sets in which case
                     // we still need to operate over all Graphs
                     if (context.InputMultiset.ContainsVariable(gvar) && context.InputMultiset.Sets.All(s => s[gvar] != null))
                     {
                         // If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
-                        List<Uri> graphUris = new List<Uri>();
+                        var graphUris = new List<Uri>();
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
                             INode temp = s[gvar];
@@ -474,7 +474,7 @@ namespace VDS.RDF.Query
                     activeGraphs = activeGraphs.Distinct().ToList();
                     activeGraphs.RemoveAll(x => x == null);
                     PrintExplanations("Graph clause will access the following " + activeGraphs.Count + " graphs:");
-                    foreach (String uri in activeGraphs)
+                    foreach (var uri in activeGraphs)
                     {
                         PrintExplanations(uri);
                     }
@@ -499,9 +499,9 @@ namespace VDS.RDF.Query
         /// Prints Explanations.
         /// </summary>
         /// <param name="output">String to output.</param>
-        internal void PrintExplanations(String output)
+        internal void PrintExplanations(string output)
         {
-            String indent = new string(' ', Math.Max(_depthCounter.Value-1, 1) * 2);
+            var indent = new string(' ', Math.Max(_depthCounter.Value-1, 1) * 2);
             if (HasFlag(ExplanationLevel.OutputToConsoleStdErr))
             {
                 Console.Error.Write(indent);
@@ -537,7 +537,7 @@ namespace VDS.RDF.Query
 
             _depthCounter.Value++;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
             if (HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + _depthCounter.Value + " ");
             if (HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
@@ -552,11 +552,11 @@ namespace VDS.RDF.Query
         /// <param name="algebra">Algebra.</param>
         /// <param name="context">Context.</param>
         /// <param name="action">Action.</param>
-        private void ExplainEvaluationAction(ISparqlAlgebra algebra, SparqlEvaluationContext context, String action)
+        private void ExplainEvaluationAction(ISparqlAlgebra algebra, SparqlEvaluationContext context, string action)
         {
             if (_level == ExplanationLevel.None) return;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
             if (HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + _depthCounter.Value + " ");
             if (HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
@@ -576,7 +576,7 @@ namespace VDS.RDF.Query
 
             _depthCounter.Value--;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
             if (HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + _depthCounter.Value + " ");
             if (HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
@@ -630,7 +630,7 @@ namespace VDS.RDF.Query
             // Show Intermediate Result Count (if enabled)
             if (HasFlag(ExplanationLevel.ShowIntermediateResultCount))
             {
-                String result;
+                string result;
                 if (results is NullMultiset)
                 {
                     result = "Result is Null";

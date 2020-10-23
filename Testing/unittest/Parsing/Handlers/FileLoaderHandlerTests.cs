@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
                 File.Delete(TestDataFile);
             }
             
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(TestDataFile);
         }
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingFileLoaderGraphHandlerImplicitTurtle()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, TestDataFile);
 
             TestTools.ShowGraph(g);
@@ -58,8 +58,8 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingFileLoaderGraphHandlerExplicitTurtle()
         {
-            Graph g = new Graph();
-            GraphHandler handler = new GraphHandler(g);
+            var g = new Graph();
+            var handler = new GraphHandler(g);
             FileLoader.Load(handler, TestDataFile);
 
             TestTools.ShowGraph(g);
@@ -69,9 +69,9 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingFileLoaderCountHandlerTurtle()
         {
-            Graph orig = new Graph();
+            var orig = new Graph();
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            CountHandler handler = new CountHandler();
+            var handler = new CountHandler();
             FileLoader.Load(handler, TestDataFile);
 
             Assert.Equal(orig.Triples.Count, handler.Count);

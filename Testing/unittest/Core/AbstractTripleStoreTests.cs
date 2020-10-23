@@ -46,7 +46,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreIsEmpty01()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
 
             Assert.True(store.IsEmpty);
         }
@@ -54,7 +54,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreIsEmpty02()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
             store.Add(new Graph());
 
             Assert.False(store.IsEmpty);
@@ -63,9 +63,9 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreAdd01()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
 
-            Graph g = new Graph();
+            var g = new Graph();
             store.Add(g);
 
             Assert.False(store.IsEmpty);
@@ -75,7 +75,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreAdd02()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
 
             IGraph g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
@@ -88,7 +88,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreHasGraph01()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
 
             Assert.False(store.HasGraph(new Uri("http://thereisnosuchdomain.com:1234/graph")));
         }
@@ -96,7 +96,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreHasGraph02()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
 
             IGraph g = new Graph();
             store.Add(g);
@@ -107,7 +107,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleStoreHasGraph03()
         {
-            ITripleStore store = this.GetInstance();
+            ITripleStore store = GetInstance();
 
             IGraph g = new Graph();
             g.BaseUri = new Uri("http://nosuchdomain.com/graph");

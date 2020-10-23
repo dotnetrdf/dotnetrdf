@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Builder
 
         private static TypedLiteralExpression<string> Substr(ISparqlExpression str, ISparqlExpression startingLoc, ISparqlExpression length)
         {
-            var subStrFunction = length == null ? new SubStrFunction(str, startingLoc) : new SubStrFunction(str, startingLoc, length);
+            SubStrFunction subStrFunction = length == null ? new SubStrFunction(str, startingLoc) : new SubStrFunction(str, startingLoc, length);
             return new TypedLiteralExpression<string>(subStrFunction);
         }
 

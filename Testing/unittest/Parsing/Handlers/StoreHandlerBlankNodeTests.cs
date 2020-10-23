@@ -50,8 +50,8 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (!File.Exists(testFile))
             {
-                TriGParser parser = new TriGParser();
-                TripleStore store = new TripleStore();
+                var parser = new TriGParser();
+                var store = new TripleStore();
                 parser.Load(store, new StringReader(TestFragment));
 
                 store.SaveToFile(testFile);
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
             IGraph def = store[null];
             IGraph named = store[new Uri("http://example.org/bnodes#graph")];
 
-            HashSet<INode> subjects = new HashSet<INode>();
+            var subjects = new HashSet<INode>();
             foreach (Triple t in def.Triples)
             {
                 subjects.Add(t.Subject);
@@ -93,15 +93,15 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerBlankNodesTriG()
         {
-            TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriGActual);
+            TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriGActual);
         }
 
         protected void ParsingStoreHandlerBlankNodesTriGActual()
         {
             EnsureTestData("test-bnodes.trig");
 
-            TriGParser parser = new TriGParser();
-            TripleStore store = new TripleStore();
+            var parser = new TriGParser();
+            var store = new TripleStore();
             parser.Load(store, "test-bnodes.trig");
 
             EnsureTestResults(store);
@@ -110,15 +110,15 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerBlankNodesTriX()
         {
-            TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesTriXActual);
+            TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesTriXActual);
         }
 
         protected void ParsingStoreHandlerBlankNodesTriXActual()
         {
             EnsureTestData("test-bnodes.xml");
 
-            TriXParser parser = new TriXParser();
-            TripleStore store = new TripleStore();
+            var parser = new TriXParser();
+            var store = new TripleStore();
             parser.Load(store, "test-bnodes.xml");
 
             EnsureTestResults(store);
@@ -127,15 +127,15 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerBlankNodesNQuads()
         {
-            TestTools.TestInMTAThread(this.ParsingStoreHandlerBlankNodesNQuadsActual);
+            TestTools.TestInMTAThread(ParsingStoreHandlerBlankNodesNQuadsActual);
         }
 
         protected void ParsingStoreHandlerBlankNodesNQuadsActual()
         {
             EnsureTestData("test-bnodes.nq");
 
-            NQuadsParser parser = new NQuadsParser();
-            TripleStore store = new TripleStore();
+            var parser = new NQuadsParser();
+            var store = new TripleStore();
             parser.Load(store, "test-bnodes.nq");
 
             EnsureTestResults(store);

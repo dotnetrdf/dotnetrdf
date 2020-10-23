@@ -34,8 +34,6 @@ namespace VDS.RDF.Update.Commands
     /// </summary>
     public class LoadCommand : SparqlUpdateCommand
     {
-        private readonly Uri _sourceUri, _graphUri;
-        private readonly bool _silent = false;
         private readonly Loader _loader;
 
         /// <summary>
@@ -44,13 +42,14 @@ namespace VDS.RDF.Update.Commands
         /// <param name="sourceUri">Source URI to load data from.</param>
         /// <param name="graphUri">Target URI for the Graph to store data in.</param>
         /// <param name="silent">Whether errors loading should be suppressed.</param>
+        /// <param name="loader">The loader to use for retrieving and parsing data.</param>
         public LoadCommand(Uri sourceUri, Uri graphUri, bool silent, Loader loader = null)
             : base(SparqlUpdateCommandType.Load) 
         {
-            if (sourceUri == null) throw new ArgumentNullException("sourceUri");
-            _sourceUri = sourceUri;
-            _graphUri = graphUri;
-            _silent = silent;
+            if (sourceUri == null) throw new ArgumentNullException(nameof(sourceUri));
+            SourceUri = sourceUri;
+            TargetUri = graphUri;
+            Silent = silent;
             _loader = loader ?? new Loader();
         }
 
@@ -89,27 +88,27 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (_graphUri == null)
+            if (TargetUri == null)
             {
                 return true;
             }
-            return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
+            return TargetUri.AbsoluteUri.Equals(graphUri.ToSafeString());
         }
 
         /// <summary>
         /// Gets the URI that data is loaded from.
         /// </summary>
-        public Uri SourceUri => _sourceUri;
+        public Uri SourceUri { get; }
 
         /// <summary>
         /// Gets the URI of the Graph to load data into.
         /// </summary>
-        public Uri TargetUri => _graphUri;
+        public Uri TargetUri { get; }
 
         /// <summary>
         /// Gets whether errors loading the data are suppressed.
         /// </summary>
-        public bool Silent => _silent;
+        public bool Silent { get; }
 
         /// <summary>
         /// Evaluates the Command in the given Context.
@@ -131,24 +130,24 @@ namespace VDS.RDF.Update.Commands
             try
             {
                 // Load from the URI
-                Graph g = new Graph();
-                _loader.LoadGraph(g, _sourceUri);
+                var g = new Graph();
+                _loader.LoadGraph(g, SourceUri);
 
-                if (context.Data.HasGraph(_graphUri))
+                if (context.Data.HasGraph(TargetUri))
                 {
                     // Merge the Data into the existing Graph
-                    context.Data.GetModifiableGraph(_graphUri).Merge(g);
+                    context.Data.GetModifiableGraph(TargetUri).Merge(g);
                 }
                 else
                 {
                     // Add New Graph to the Dataset
-                    g.BaseUri = _graphUri;
+                    g.BaseUri = TargetUri;
                     context.Data.AddGraph(g);
                 }
             }
             catch
             {
-                if (!_silent) throw;
+                if (!Silent) throw;
             }
         }
 
@@ -167,14 +166,14 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            String silent = (_silent) ? "SILENT " : String.Empty;
-            if (_graphUri == null)
+            var silent = Silent ? "SILENT " : string.Empty;
+            if (TargetUri == null)
             {
-                return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                return "LOAD " + silent + "<" + SourceUri.AbsoluteUri.Replace(">", "\\>") + ">";
             }
             else
             {
-                return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + _graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                return "LOAD " + silent + "<" + SourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + TargetUri.AbsoluteUri.Replace(">", "\\>") + ">";
             }
         }
     }

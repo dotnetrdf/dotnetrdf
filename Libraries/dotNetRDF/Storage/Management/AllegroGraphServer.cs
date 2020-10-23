@@ -41,23 +41,23 @@ namespace VDS.RDF.Storage.Management
     public class AllegroGraphServer
         : SesameServer
     {
-        private String _agraphBase;
-        private String _catalog;
+        private string _agraphBase;
+        private string _catalog;
          
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store.
         /// </summary>
         /// <param name="baseUri">Base URI for the Store.</param>
         /// <param name="catalogID">Catalog ID.</param>
-        public AllegroGraphServer(String baseUri, String catalogID)
-            : this(baseUri, catalogID, (String)null, (String)null) { }
+        public AllegroGraphServer(string baseUri, string catalogID)
+            : this(baseUri, catalogID, (string)null, (string)null) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
         /// </summary>
         /// <param name="baseUri">Base Uri for the Store.</param>
-        public AllegroGraphServer(String baseUri)
-            : this(baseUri, (String)null) { }
+        public AllegroGraphServer(string baseUri)
+            : this(baseUri, (string)null) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store.
@@ -66,7 +66,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="catalogID">Catalog ID.</param>
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
-        public AllegroGraphServer(String baseUri, String catalogID, String username, String password)
+        public AllegroGraphServer(string baseUri, string catalogID, string username, string password)
             : base(baseUri, username, password)
         {
             _baseUri = baseUri;
@@ -74,7 +74,7 @@ namespace VDS.RDF.Storage.Management
 #if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
-            _agraphBase = String.Copy(_baseUri);
+            _agraphBase = string.Copy(_baseUri);
 #endif
             if (catalogID != null)
             {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri for the Store.</param>
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
-        public AllegroGraphServer(String baseUri, String username, String password)
+        public AllegroGraphServer(string baseUri, string username, string password)
             : this(baseUri, null, username, password) { }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri for the Store.</param>
         /// <param name="catalogID">Catalog ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphServer(String baseUri, String catalogID, IWebProxy proxy)
+        public AllegroGraphServer(string baseUri, string catalogID, IWebProxy proxy)
             : this(baseUri, catalogID, null, null, proxy) { }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri for the Store.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphServer(String baseUri, IWebProxy proxy)
+        public AllegroGraphServer(string baseUri, IWebProxy proxy)
             : this(baseUri, null, proxy) { }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphServer(String baseUri, String catalogID, String username, String password, IWebProxy proxy)
+        public AllegroGraphServer(string baseUri, string catalogID, string username, string password, IWebProxy proxy)
             : this(baseUri, catalogID, username, password)
         {
             Proxy = proxy;
@@ -130,7 +130,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphServer(String baseUri,  String username, String password, IWebProxy proxy)
+        public AllegroGraphServer(string baseUri, string username, string password, IWebProxy proxy)
             : this(baseUri, null, username, password, proxy) { }
         
         /// <summary>
@@ -138,7 +138,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="id">Store ID.</param>
         /// <returns></returns>
-        public override IStoreTemplate GetDefaultTemplate(String id)
+        public override IStoreTemplate GetDefaultTemplate(string id)
         {
             return new StoreTemplate(id, "AllegroGraph", "An AllgroGraph store");
         }
@@ -148,7 +148,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="id">Store ID.</param>
         /// <returns></returns>
-        public override IEnumerable<IStoreTemplate> GetAvailableTemplates(String id)
+        public override IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
             return GetDefaultTemplate(id).AsEnumerable();
         }
@@ -182,7 +182,7 @@ namespace VDS.RDF.Storage.Management
 
                     // Got a Response so we can analyse the Response Code
                     response = (HttpWebResponse)webEx.Response;
-                    int code = (int)response.StatusCode;
+                    var code = (int)response.StatusCode;
                     if (code == 400)
                     {
                         // OK - Just means the Store already exists
@@ -203,13 +203,13 @@ namespace VDS.RDF.Storage.Management
         /// Requests that AllegroGraph deletes a Store.
         /// </summary>
         /// <param name="storeID">Store ID.</param>
-        public override void DeleteStore(String storeID)
+        public override void DeleteStore(string storeID)
         {
             try
             {
                 HttpWebRequest request = CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     response.Close();
                 }
@@ -224,15 +224,15 @@ namespace VDS.RDF.Storage.Management
         /// Get the lists of stores available on the Server.
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<String> ListStores()
+        public override IEnumerable<string> ListStores()
         {
-            String data;
+            string data;
             try
             {
                 HttpWebRequest request = CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    using (var reader = new StreamReader(response.GetResponseStream()))
                     {
                         data = reader.ReadToEnd();
                         reader.Close();
@@ -247,7 +247,7 @@ namespace VDS.RDF.Storage.Management
 
             var json = JArray.Parse(data);
             var stores = new List<string>();
-            foreach (var token in json.Children())
+            foreach (JToken token in json.Children())
             {
                 if (token["id"] is JValue id)
                 {
@@ -265,7 +265,7 @@ namespace VDS.RDF.Storage.Management
         /// <remarks>
         /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue.
         /// </remarks>
-        public override IStorageProvider GetStore(String storeID)
+        public override IStorageProvider GetStore(string storeID)
         {
             // Otherwise return a new instance
             return new AllegroGraphConnector(_agraphBase, _catalog, storeID, _username, _pwd, Proxy);
@@ -285,9 +285,9 @@ namespace VDS.RDF.Storage.Management
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-                        String data;
-                        using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
+                        string data;
+                        using (var reader = new StreamReader(response.GetResponseStream()))
                         {
                             data = reader.ReadToEnd();
                             reader.Close();
@@ -295,7 +295,7 @@ namespace VDS.RDF.Storage.Management
 
                         var json = JArray.Parse(data);
                         var stores = new List<string>();
-                        foreach (var token in json.Children())
+                        foreach (JToken token in json.Children())
                         {
                             if (token["id"] is JValue id)
                             {
@@ -343,7 +343,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to callback.</param>
         /// <returns></returns>
-        public override void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state)
+        public override void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, new IStoreTemplate[] { new StoreTemplate(id) }), state);
         }
@@ -359,13 +359,13 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 var createParams = new Dictionary<string, string> {{"override", "false"}};
-                var request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
+                HttpWebRequest request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
                     }
@@ -410,8 +410,8 @@ namespace VDS.RDF.Storage.Management
                     }
 
                     // Got a Response so we can analyse the Response Code
-                    HttpWebResponse response = (HttpWebResponse)webEx.Response;
-                    int code = (int)response.StatusCode;
+                    var response = (HttpWebResponse)webEx.Response;
+                    var code = (int)response.StatusCode;
                     if (code == 400)
                     {
                         // 400 just means the store already exists so this is OK
@@ -443,13 +443,13 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                var request = CreateRequest("repositories/" + storeId, "*/*", "DELETE", new Dictionary<string, string>());
+                HttpWebRequest request = CreateRequest("repositories/" + storeId, "*/*", "DELETE", new Dictionary<string, string>());
 
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
 
                         // If we get here then the operation completed OK
                         response.Close();
@@ -504,12 +504,12 @@ namespace VDS.RDF.Storage.Management
             // This is a compatability issue with Allegro having a weird custom JSON serialisation
             if (accept.Contains("application/json"))
             {
-                accept = accept.Replace("application/json,", String.Empty);
+                accept = accept.Replace("application/json,", string.Empty);
                 if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
             }
             if (accept.Contains("text/json"))
             {
-                accept = accept.Replace("text/json", String.Empty);
+                accept = accept.Replace("text/json", string.Empty);
                 if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
             }
             if (accept.Contains(",;")) accept = accept.Replace(",;", ",");

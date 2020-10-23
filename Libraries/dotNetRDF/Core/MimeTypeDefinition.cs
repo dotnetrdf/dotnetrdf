@@ -40,10 +40,10 @@ namespace VDS.RDF
     /// </summary>
     public sealed class MimeTypeDefinition
     {
-        private String _name, _canonicalType, _canonicalExt, _formatUri;
+        private string _name, _canonicalType, _canonicalExt, _formatUri;
         private Encoding _encoding = Encoding.UTF8;
-        private List<String> _mimeTypes = new List<string>();
-        private List<String> _fileExtensions = new List<string>();
+        private List<string> _mimeTypes = new List<string>();
+        private List<string> _fileExtensions = new List<string>();
         private Type _rdfParserType, _rdfDatasetParserType, _sparqlResultsParserType;
         private Type _rdfWriterType, _rdfDatasetWriterType, _sparqlResultsWriterType;
         private Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
@@ -54,13 +54,13 @@ namespace VDS.RDF
         /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition.</param>
         /// <param name="mimeTypes">MIME Types.</param>
         /// <param name="fileExtensions">File Extensions.</param>
-        public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        public MimeTypeDefinition(string syntaxName, IEnumerable<string> mimeTypes, IEnumerable<string> fileExtensions)
         {
             if (mimeTypes == null) throw new ArgumentNullException("MIME Types enumeration cannot be null");
             _name = syntaxName;
             _mimeTypes.AddRange(mimeTypes.Select(t => CheckValidMimeType(t)));
 
-            foreach (String ext in fileExtensions)
+            foreach (var ext in fileExtensions)
             {
                 _fileExtensions.Add(CheckFileExtension(ext));
             }
@@ -73,7 +73,7 @@ namespace VDS.RDF
         /// <param name="formatUri">Format URI as defined by the. <a href="http://www.w3.org/ns/formats/">W3C</a></param>
         /// <param name="mimeTypes">MIME Types.</param>
         /// <param name="fileExtensions">File Extensions.</param>
-        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        public MimeTypeDefinition(string syntaxName, string formatUri, IEnumerable<string> mimeTypes, IEnumerable<string> fileExtensions)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
             _formatUri = formatUri;
@@ -91,7 +91,7 @@ namespace VDS.RDF
         /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable).</param>
         /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable).</param>
         /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable).</param>
-        public MimeTypeDefinition(String syntaxName, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
+        public MimeTypeDefinition(string syntaxName, IEnumerable<string> mimeTypes, IEnumerable<string> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
             RdfParserType = rdfParserType;
@@ -115,7 +115,7 @@ namespace VDS.RDF
         /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable).</param>
         /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable).</param>
         /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable).</param>
-        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
+        public MimeTypeDefinition(string syntaxName, string formatUri, IEnumerable<string> mimeTypes, IEnumerable<string> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
             : this(syntaxName, mimeTypes, fileExtensions, rdfParserType, rdfDatasetParserType, sparqlResultsParserType, rdfWriterType, rdfDatasetWriterType, sparqlResultsWriterType)
         {
             _formatUri = formatUri;
@@ -124,7 +124,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the name of the Syntax to which this MIME Type Definition relates.
         /// </summary>
-        public String SyntaxName
+        public string SyntaxName
         {
             get
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable).
         /// </summary>
-        public String FormatUri
+        public string FormatUri
         {
             get
             {
@@ -170,7 +170,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the MIME Types defined.
         /// </summary>
-        public IEnumerable<String> MimeTypes
+        public IEnumerable<string> MimeTypes
         {
             get
             {
@@ -182,7 +182,7 @@ namespace VDS.RDF
         /// Checks that MIME Types are valid.
         /// </summary>
         /// <param name="type">Type.</param>
-        public String CheckValidMimeType(String type)
+        public string CheckValidMimeType(string type)
         {
             type = type.Trim().ToLowerInvariant();
             if (!MimeTypesHelper.IsValidMimeType(type))
@@ -196,7 +196,7 @@ namespace VDS.RDF
         /// Adds a MIME Type to this definition.
         /// </summary>
         /// <param name="type">MIME Type.</param>
-        public void AddMimeType(String type)
+        public void AddMimeType(string type)
         {
             if (!_mimeTypes.Contains(CheckValidMimeType(type)))
             {
@@ -207,7 +207,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Canonical MIME Type that should be used.
         /// </summary>
-        public String CanonicalMimeType
+        public string CanonicalMimeType
         {
             get
             {
@@ -247,9 +247,9 @@ namespace VDS.RDF
         /// <param name="mimeType">MIME Type.</param>
         /// <returns></returns>
         [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", true)]
-        public bool SupportsMimeType(String mimeType)
+        public bool SupportsMimeType(string mimeType)
         {
-            String type = mimeType.ToLowerInvariant();
+            var type = mimeType.ToLowerInvariant();
             type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
             return _mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
         }
@@ -281,7 +281,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the File Extensions associated with this Syntax.
         /// </summary>
-        public IEnumerable<String> FileExtensions
+        public IEnumerable<string> FileExtensions
         {
             get
             {
@@ -293,7 +293,7 @@ namespace VDS.RDF
         /// Adds a File Extension for this Syntax.
         /// </summary>
         /// <param name="ext">File Extension.</param>
-        public void AddFileExtension(String ext)
+        public void AddFileExtension(string ext)
         {
             if (!_fileExtensions.Contains(CheckFileExtension(ext)))
             {
@@ -301,7 +301,7 @@ namespace VDS.RDF
             }
         }
 
-        private String CheckFileExtension(String ext)
+        private string CheckFileExtension(string ext)
         {
             if (ext.StartsWith(".")) return ext.Substring(1);
             return ext.ToLowerInvariant();
@@ -321,7 +321,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the Canonical File Extension for this Syntax.
         /// </summary>
-        public String CanonicalFileExtension
+        public string CanonicalFileExtension
         {
             get
             {
@@ -360,7 +360,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ext">File Extension.</param>
         /// <returns></returns>
-        public bool SupportsFileExtension(String ext)
+        public bool SupportsFileExtension(string ext)
         {
             ext = ext.ToLowerInvariant();
             if (ext.StartsWith(".")) ext = ext.Substring(1);
@@ -377,7 +377,7 @@ namespace VDS.RDF
         /// <param name="property">Property to which we are assigning.</param>
         /// <param name="t">Type.</param>
         /// <param name="interfaceType">Required Interface Type.</param>
-        private bool EnsureInterface(String property, Type t, Type interfaceType)
+        private bool EnsureInterface(string property, Type t, Type interfaceType)
         {
             if (!t.GetInterfaces().Any(itype => itype.Equals(interfaceType)))
             {
@@ -391,7 +391,7 @@ namespace VDS.RDF
 
         private bool EnsureObjectParserInterface(Type t, Type obj)
         {
-            bool ok = false;
+            var ok = false;
             foreach (Type i in t.GetInterfaces())
             {
 #if NETCORE
@@ -833,7 +833,7 @@ namespace VDS.RDF
     public sealed class MimeTypeSelector
         : IComparable<MimeTypeSelector>
     {
-        private String _type, _rangeType, _charset;
+        private string _type, _rangeType, _charset;
         private double _quality = 1.0d;
         private int _order;
         private bool _isSpecific = false, _isRange = false, _isAny = false, _isInvalid = false;
@@ -844,18 +844,18 @@ namespace VDS.RDF
         /// <param name="contentType">MIME Type.</param>
         /// <param name="order">Order the selector appears in the input.</param>
         /// <returns></returns>
-        public static MimeTypeSelector Create(String contentType, int order)
+        public static MimeTypeSelector Create(string contentType, int order)
         {
             if (contentType.Contains(';'))
             {
-                String[] parts = contentType.Split(';');
-                String type = parts[0].Trim().ToLowerInvariant();
+                var parts = contentType.Split(';');
+                var type = parts[0].Trim().ToLowerInvariant();
 
-                double quality = 1.0d;
-                String charset = null;
-                for (int i = 1; i < parts.Length; i++)
+                var quality = 1.0d;
+                string charset = null;
+                for (var i = 1; i < parts.Length; i++)
                 {
-                    String[] data = parts[i].Split('=');
+                    var data = parts[i].Split('=');
                     if (data.Length == 1) continue;
                     switch (data[0].Trim().ToLowerInvariant())
                     {
@@ -863,7 +863,7 @@ namespace VDS.RDF
                             charset = data[1].Trim();
                             break;
                         case "q":
-                            if (!Double.TryParse(data[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out quality))
+                            if (!double.TryParse(data[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out quality))
                             {
                                 quality = 1.0d;
                             }
@@ -884,15 +884,15 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ctypes">MIME Types.</param>
         /// <returns></returns>
-        public static IEnumerable<MimeTypeSelector> CreateSelectors(IEnumerable<String> ctypes)
+        public static IEnumerable<MimeTypeSelector> CreateSelectors(IEnumerable<string> ctypes)
         {
-            List<MimeTypeSelector> selectors = new List<MimeTypeSelector>();
+            var selectors = new List<MimeTypeSelector>();
 
             // Convert types into selectors
             if (ctypes != null)
             {
-                int order = 1;
-                foreach (String type in ctypes)
+                var order = 1;
+                foreach (var type in ctypes)
                 {
                     selectors.Add(Create(type, order));
                     order++;
@@ -920,7 +920,7 @@ namespace VDS.RDF
         /// <param name="charset">Charset.</param>
         /// <param name="quality">Quality (in range 0.0-1.0).</param>
         /// <param name="order">Order of appearance (used as precendence tiebreaker where necessary).</param>
-        public MimeTypeSelector(String type, String charset, double quality, int order)
+        public MimeTypeSelector(string type, string charset, double quality, int order)
         {
             if (type == null) throw new ArgumentNullException("type", "Type cannot be null");
             _type = type.Trim().ToLowerInvariant();
@@ -966,7 +966,7 @@ namespace VDS.RDF
         /// Gets the selected type.
         /// </summary>
         /// <returns>A type string of the form <strong>type/subtype</strong> assuming the type if valid.</returns>
-        public String Type
+        public string Type
         {
             get
             {
@@ -978,7 +978,7 @@ namespace VDS.RDF
         /// Gets the range type if this is a range selector.
         /// </summary>
         /// <returns>A type string of the form <strong>type/</strong> if this is a range selector, otherwise null.</returns>
-        public String RangeType
+        public string RangeType
         {
             get
             {
@@ -989,7 +989,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Charset for the selector (may be null if none specified).
         /// </summary>
-        public String Charset
+        public string Charset
         {
             get
             {
@@ -1100,7 +1100,7 @@ namespace VDS.RDF
                 if (other.IsAny)
                 {
                     // If both Any use quality
-                    int c = -1 * Quality.CompareTo(other.Quality);
+                    var c = -1 * Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         // If same quality use order
@@ -1124,7 +1124,7 @@ namespace VDS.RDF
                 else if (other.IsRange)
                 {
                     // If both Range use quality
-                    int c = -1 * Quality.CompareTo(other.Quality);
+                    var c = -1 * Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         // If same quality use order
@@ -1148,7 +1148,7 @@ namespace VDS.RDF
                 else
                 {
                     // Both specific so use quality
-                    int c = -1 * Quality.CompareTo(other.Quality);
+                    var c = -1 * Quality.CompareTo(other.Quality);
                     if (c == 0)
                     {
                         // If same quality use order
@@ -1168,7 +1168,7 @@ namespace VDS.RDF
         /// </remarks>
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append(_type);
             if (_quality != 1.0d)
             {

@@ -100,7 +100,7 @@ namespace VDS.RDF
         /// Creates a new unused Blank Node ID and returns it.
         /// </summary>
         /// <returns></returns>
-        String GetNextBlankNodeID();
+        string GetNextBlankNodeID();
 
         /// <summary>
         /// Get or set the flag that controls whether the value strings of literal nodes should be normalized on creation.

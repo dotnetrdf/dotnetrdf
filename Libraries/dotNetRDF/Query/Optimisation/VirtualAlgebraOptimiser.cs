@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (algebra is IBgp)
             {
-                IBgp current = (IBgp)algebra;
+                var current = (IBgp)algebra;
                 if (current.PatternCount == 0)
                 {
                     return current;
@@ -88,11 +88,11 @@ namespace VDS.RDF.Query.Optimisation
                 else
                 {
                     ISparqlAlgebra result = new Bgp();
-                    List<ITriplePattern> patterns = new List<ITriplePattern>();
-                    List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
+                    var patterns = new List<ITriplePattern>();
+                    var ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
                     TNodeID nullID = _provider.NullID;
 
-                    for (int i = 0; i < current.PatternCount; i++)
+                    for (var i = 0; i < current.PatternCount; i++)
                     {
                         if (ps[i].PatternType == TriplePatternType.Filter || ps[i].PatternType == TriplePatternType.BindAssignment || ps[i].PatternType == TriplePatternType.LetAssignment)
                         {
@@ -109,14 +109,14 @@ namespace VDS.RDF.Query.Optimisation
                             }
                             else
                             {
-                                IAssignmentPattern bind = (IAssignmentPattern)ps[i];
+                                var bind = (IAssignmentPattern)ps[i];
                                 result = new Extend(result, Transform(bind.AssignExpression), bind.VariableName);
                             }
                         }
                         else if (ps[i].PatternType == TriplePatternType.Match)
                         {
                             // Convert Terms in the Pattern into Virtual Nodes
-                            IMatchTriplePattern tp = (IMatchTriplePattern)ps[i];
+                            var tp = (IMatchTriplePattern)ps[i];
                             PatternItem subj, pred, obj;
                             if (tp.Subject is NodeMatchPattern)
                             {
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (expr.GetType().Equals(_exprType))
             {
-                ConstantTerm term = (ConstantTerm)expr;
+                var term = (ConstantTerm)expr;
                 INode curr = term.Evaluate(null, 0);
                 TNodeID id = _provider.GetID(curr);
                 if (id == null || id.Equals(_provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");

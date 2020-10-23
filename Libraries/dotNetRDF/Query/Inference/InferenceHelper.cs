@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Inference
             /// <summary>
             /// OWL Extraction Mode constants.
             /// </summary>
-            public const String DefaultStatements = "DefaultStatements",
+            public const string DefaultStatements = "DefaultStatements",
                                 AllClass = "AllClass",
                                 AllIndividual = "AllIndividual",
                                 AllProperty = "AllProperty",
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Inference
         /// <summary>
         /// OWL Class and Property Constants.
         /// </summary>
-        public const String OwlNothing = "http://www.w3.org/2002/07/owl#Nothing";
+        public const string OwlNothing = "http://www.w3.org/2002/07/owl#Nothing";
     }
 
 }

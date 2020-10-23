@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Patterns
                     if (!context.PreserveBlankNodes && value.GraphUri != null)
                     {
                         // Rename Blank Node based on the Graph Uri Hash Code
-                        int hash = value.GraphUri.GetEnhancedHashCode();
+                        var hash = value.GraphUri.GetEnhancedHashCode();
                         if (hash >= 0)
                         {
                             return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());

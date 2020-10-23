@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System;
+using System.Dynamic;
+using System.Linq.Expressions;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Dynamic;
-    using System.Linq.Expressions;
-
     /// <summary>
     /// A <see cref="WrapperNode">wrapper</see> that provides read/write dictionary and dynamic functionality.
     /// </summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.baseUri ?? this.Graph.BaseUri;
+                return baseUri ?? Graph.BaseUri;
             }
         }
 
@@ -71,7 +71,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.Node is IUriNode uriNode ?
+                return Node is IUriNode uriNode ?
                     uriNode.Uri :
                     throw new InvalidOperationException("is not a uri node");
             }
@@ -82,7 +82,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                return this.Node is IBlankNode blankNode ?
+                return Node is IBlankNode blankNode ?
                     blankNode.InternalID :
                     throw new InvalidOperationException("is not a blank node");
             }

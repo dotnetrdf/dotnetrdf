@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal ClassifyService(String name, JObject obj)
+        internal ClassifyService(string name, JObject obj)
             : base(name, obj) { }
 
         /// <summary>
@@ -50,16 +50,16 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         public IGraph Classify()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    Graph g = new Graph();
+                    var g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
@@ -84,9 +84,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Classify(GraphCallback callback, Object state)
+        public void Classify(GraphCallback callback, object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
@@ -96,10 +96,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                                Graph g = new Graph();
+                                var g = new Graph();
                                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                                 response.Close();

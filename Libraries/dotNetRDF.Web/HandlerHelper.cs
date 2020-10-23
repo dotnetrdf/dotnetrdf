@@ -78,7 +78,7 @@ namespace VDS.RDF.Web
         /// <returns></returns>
         public static bool IsAuthenticated(IHttpContext context, IEnumerable<UserGroup> groups)
         {
-            String user = HandlerHelper.GetUsername(context);
+            var user = HandlerHelper.GetUsername(context);
             if (groups.Any())
             {
                 if (user != null && groups.Any(g => g.HasMember(user)))
@@ -108,7 +108,7 @@ namespace VDS.RDF.Web
             if (groups.Any())
             {
                 // Does any Group have this Member and allow this action?
-                String user = HandlerHelper.GetUsername(context);
+                var user = HandlerHelper.GetUsername(context);
                 if (user != null && !groups.Any(g => g.HasMember(user) && g.IsActionPermitted(context.Request.HttpMethod)))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -157,8 +157,8 @@ namespace VDS.RDF.Web
         public static void SendToClient(IHttpContext context, Object result, BaseHandlerConfiguration config)
         {
             MimeTypeDefinition definition = null;
-            String ctype = "text/plain";
-            String[] acceptTypes = context.GetAcceptTypes();
+            var ctype = "text/plain";
+            var acceptTypes = context.GetAcceptTypes();
 
             // Return the Results
             if (result is SparqlResultSet)
@@ -273,7 +273,7 @@ namespace VDS.RDF.Web
             else if (result is ISparqlDataset)
             {
                 // Wrap in a Triple Store and then call self so the Triple Store writing branch of this if gets called instead
-                TripleStore store = new TripleStore(new DatasetGraphCollection((ISparqlDataset)result));
+                var store = new TripleStore(new DatasetGraphCollection((ISparqlDataset)result));
                 HandlerHelper.SendToClient(context, store, config);
             }
             else
@@ -374,8 +374,8 @@ namespace VDS.RDF.Web
             // Output Query with Line Numbers
             if (!String.IsNullOrEmpty(query))
             {
-                String[] lines = query.Split('\n');
-                for (int l = 0; l < lines.Length; l++)
+                var lines = query.Split('\n');
+                for (var l = 0; l < lines.Length; l++)
                 {
                     context.Response.Write((l + 1) + ": " + lines[l] + "\n");
                 }
@@ -442,8 +442,8 @@ namespace VDS.RDF.Web
             // Output Query with Line Numbers
             if (update != null && !update.Equals(String.Empty))
             {
-                String[] lines = update.Split('\n');
-                for (int l = 0; l < lines.Length; l++)
+                var lines = update.Split('\n');
+                for (var l = 0; l < lines.Length; l++)
                 {
                     context.Response.Write((l + 1) + ": " + lines[l] + "\n");
                 }
@@ -476,20 +476,20 @@ namespace VDS.RDF.Web
         /// <returns></returns>
         public static String GetETag(this IGraph g)
         {
-            List<Triple> ts = g.Triples.ToList();
+            var ts = g.Triples.ToList();
             ts.Sort();
 
-            StringBuilder hash = new StringBuilder();
+            var hash = new StringBuilder();
             foreach (Triple t in ts)
             {
                 hash.AppendLine(t.GetHashCode().ToString());
             }
-            String h = hash.ToString().GetHashCode().ToString();
+            var h = hash.ToString().GetHashCode().ToString();
 
-            SHA1 sha1 = SHA1.Create();
-            byte[] hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(h));
+            var sha1 = SHA1.Create();
+            var hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(h));
             hash = new StringBuilder();
-            foreach (byte b in hashBytes)
+            foreach (var b in hashBytes)
             {
                 hash.Append(b.ToString("x2"));
             }
@@ -518,10 +518,10 @@ namespace VDS.RDF.Web
 
                 if (lastModified != null)
                 {
-                    String requestLastModifed = context.Request.Headers["If-Modified-Since"];
+                    var requestLastModifed = context.Request.Headers["If-Modified-Since"];
                     if (requestLastModifed != null)
                     {
-                        DateTime test = DateTime.Parse(requestLastModifed);
+                        var test = DateTime.Parse(requestLastModifed);
                         // If the resource has not been modified after the date the request gave then can send a 304 Not Modified
                         if (lastModified < test) return true;
                     }

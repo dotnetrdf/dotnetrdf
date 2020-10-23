@@ -185,7 +185,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    Graph g = new Graph();
+                    var g = new Graph();
                     g.BaseUri = graphUri;
                     _store.Add(g);
                     return g;
@@ -222,7 +222,7 @@ namespace VDS.RDF
             else
             {
                 created = true;
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = graphUri;
                 _store.Add(g);
                 return g;

@@ -58,22 +58,22 @@ namespace VDS.RDF.Query.Optimisation
             {
                 if (algebra is Filter)
                 {
-                    Filter f = (Filter)algebra;
+                    var f = (Filter)algebra;
 
                     // See if the Filtered Product style optimization applies instead
-                    int splitPoint = -1;
+                    var splitPoint = -1;
                     if (f.SparqlFilter.Expression.CanParallelise && IsDisjointOperation(f.InnerAlgebra, f.SparqlFilter.Expression.Variables.ToList(), out splitPoint))
                     {
                         if (splitPoint > -1)
                         {
                             // Means the inner algebra is a BGP we can split into two parts
-                            IBgp bgp = (IBgp)f.InnerAlgebra;
+                            var bgp = (IBgp)f.InnerAlgebra;
                             return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
                         }
                         else
                         {
                             // Means that the inner algebra is a Join where the sides are disjoint
-                            IJoin join = (IJoin)f.InnerAlgebra;
+                            var join = (IJoin)f.InnerAlgebra;
                             return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
                         }
                     }
@@ -101,18 +101,18 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
-        private bool IsDisjointOperation(ISparqlAlgebra algebra, List<String> filterVars, out int splitPoint)
+        private bool IsDisjointOperation(ISparqlAlgebra algebra, List<string> filterVars, out int splitPoint)
         {
             splitPoint = -1;
             if (algebra is IBgp)
             {
                 // Get Triple Patterns, can't split into a product if there are blank variables present
-                List<ITriplePattern> ps = ((IBgp)algebra).TriplePatterns.ToList();
+                var ps = ((IBgp)algebra).TriplePatterns.ToList();
                 if (ps.Any(p => !p.HasNoBlankVariables)) return false;
 
                 // Iterate over the Triple Patterns to see if we can split into a Product
-                List<String> vars = new List<String>();
-                for (int i = 0; i < ps.Count; i++)
+                var vars = new List<string>();
+                for (var i = 0; i < ps.Count; i++)
                 {
                     // Not a product if we've seen both variables already
                     if (filterVars.All(v => vars.Contains(v))) return false;
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Optimisation
                         {
                             // Is a filterable product if we've not seen all the variables so far and have hit a point where a product occurs
                             // and all the variables are not in the RHS
-                            Bgp rhs = new Bgp(ps.Skip(i));
+                            var rhs = new Bgp(ps.Skip(i));
                             if (!filterVars.All(v => rhs.Variables.Contains(v)))
                             {
                                 splitPoint = i;
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (algebra is IJoin)
             {
-                IJoin join = (IJoin)algebra;
+                var join = (IJoin)algebra;
                 if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                 {
                     // There a product between the two sides of the join but are the variables spead over different sides of that join?

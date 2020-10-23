@@ -36,14 +36,14 @@ namespace VDS.RDF.Writing
     {
         #region IHtmlWriter Members
 
-        private String _stylesheet = String.Empty;
-        private String _uriClass = "uri",
+        private string _stylesheet = string.Empty;
+        private string _uriClass = "uri",
                        _bnodeClass = "bnode",
                        _literalClass = "literal",
                        _datatypeClass = "datatype",
                        _langClass = "langspec",
                        _boxClass = "box";
-        private String _uriPrefix = String.Empty;
+        private string _uriPrefix = string.Empty;
 
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the CSS class used for div tags used to group chunks of markup into a box.
         /// </summary>
-        public String CssClassBox
+        public string CssClassBox
         {
             get
             {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the Prefix applied to href attributes.
         /// </summary>
-        public String UriPrefix
+        public string UriPrefix
         {
             get
             {

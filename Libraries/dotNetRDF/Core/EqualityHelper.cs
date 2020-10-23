@@ -266,22 +266,22 @@ namespace VDS.RDF
             // Scheme, UserInfo, Host the Port (all case insensitive except UserInfo)
             // Path, Query and Fragment (all case sensitive)
 
-            int c = String.Compare(a.Scheme, b.Scheme, StringComparison.OrdinalIgnoreCase);
+            var c = string.Compare(a.Scheme, b.Scheme, StringComparison.OrdinalIgnoreCase);
             if (c == 0)
             {
-                c = String.Compare(a.UserInfo, b.UserInfo, StringComparison.Ordinal);
+                c = string.Compare(a.UserInfo, b.UserInfo, StringComparison.Ordinal);
                 if (c == 0)
                 {
-                    c = String.Compare(a.Host, b.Host, StringComparison.OrdinalIgnoreCase);
+                    c = string.Compare(a.Host, b.Host, StringComparison.OrdinalIgnoreCase);
                     if (c == 0)
                     {
                         c = a.Port.CompareTo(b.Port);
                         if (c == 0)
                         {
-                            c = String.Compare(a.PathAndQuery, b.PathAndQuery, StringComparison.Ordinal);
+                            c = string.Compare(a.PathAndQuery, b.PathAndQuery, StringComparison.Ordinal);
                             if (c == 0)
                             {
-                                c = String.Compare(a.Fragment, b.Fragment, StringComparison.Ordinal);
+                                c = string.Compare(a.Fragment, b.Fragment, StringComparison.Ordinal);
                             }
                         }
                     }
@@ -360,7 +360,7 @@ namespace VDS.RDF
             if (EqualityHelper.AreUrisEqual(a.DataType, b.DataType))
             {
                 // Are we using a known and orderable DataType?
-                String type = a.DataType.AbsoluteUri;
+                var type = a.DataType.AbsoluteUri;
                 if (!XmlSpecsHelper.IsSupportedType(type))
                 {
                     // Don't know how to order so use specified order on the value
@@ -375,9 +375,9 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
                                 // Can use Lexical ordering for this so use specified order on the value
                                 bool aBool, bBool;
-                                if (Boolean.TryParse(a.Value, out aBool))
+                                if (bool.TryParse(a.Value, out aBool))
                                 {
-                                    if (Boolean.TryParse(b.Value, out bBool))
+                                    if (bool.TryParse(b.Value, out bBool))
                                     {
                                         return aBool.CompareTo(bBool);
                                     }
@@ -388,7 +388,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Boolean.TryParse(b.Value, out bBool))
+                                    if (bool.TryParse(b.Value, out bBool))
                                     {
                                         return 1;
                                     }
@@ -400,9 +400,9 @@ namespace VDS.RDF
                                 // Remember that xsd:byte is actually equivalent to SByte in .Net
                                 // Extract the Byte Values and compare
                                 sbyte aSByte, bSByte;
-                                if (SByte.TryParse(a.Value, out aSByte))
+                                if (sbyte.TryParse(a.Value, out aSByte))
                                 {
-                                    if (SByte.TryParse(b.Value, out bSByte))
+                                    if (sbyte.TryParse(b.Value, out bSByte))
                                     {
                                         return aSByte.CompareTo(bSByte);
                                     }
@@ -413,7 +413,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (SByte.TryParse(b.Value, out bSByte))
+                                    if (sbyte.TryParse(b.Value, out bSByte))
                                     {
                                         return 1;
                                     }
@@ -425,9 +425,9 @@ namespace VDS.RDF
                                 // Remember that xsd:unsignedByte is equivalent to Byte in .Net
                                 // Extract the Byte Values and compare
                                 byte aByte, bByte;
-                                if (Byte.TryParse(a.Value, out aByte))
+                                if (byte.TryParse(a.Value, out aByte))
                                 {
-                                    if (Byte.TryParse(b.Value, out bByte))
+                                    if (byte.TryParse(b.Value, out bByte))
                                     {
                                         return aByte.CompareTo(bByte);
                                     }
@@ -438,7 +438,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Byte.TryParse(b.Value, out bByte))
+                                    if (byte.TryParse(b.Value, out bByte))
                                     {
                                         return 1;
                                     }
@@ -454,9 +454,9 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeShort:
                                 // Extract the Integer Values and compare
                                 long aInt64, bInt64;
-                                if (Int64.TryParse(a.Value, out aInt64))
+                                if (long.TryParse(a.Value, out aInt64))
                                 {
-                                    if (Int64.TryParse(b.Value, out bInt64))
+                                    if (long.TryParse(b.Value, out bInt64))
                                     {
                                         return aInt64.CompareTo(bInt64);
                                     }
@@ -467,7 +467,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Int64.TryParse(b.Value, out bInt64))
+                                    if (long.TryParse(b.Value, out bInt64))
                                     {
                                         return 1;
                                     }
@@ -481,9 +481,9 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
                                 // Extract the Integer Values, ensure negative and compare
                                 long aNegInt, bNegInt;
-                                if (Int64.TryParse(a.Value, out aNegInt))
+                                if (long.TryParse(a.Value, out aNegInt))
                                 {
-                                    if (Int64.TryParse(b.Value, out bNegInt))
+                                    if (long.TryParse(b.Value, out bNegInt))
                                     {
                                         if (aNegInt >= 0)
                                         {
@@ -516,7 +516,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Int64.TryParse(b.Value, out bNegInt))
+                                    if (long.TryParse(b.Value, out bNegInt))
                                     {
                                         if (bNegInt >= 0)
                                         {
@@ -543,9 +543,9 @@ namespace VDS.RDF
                                 // same checking we have to do for their inverse types since parsing into an 
                                 // Unsigned Long ensures that they must be positive
                                 ulong aUInt64, bUInt64;
-                                if (UInt64.TryParse(a.Value, out aUInt64))
+                                if (ulong.TryParse(a.Value, out aUInt64))
                                 {
-                                    if (UInt64.TryParse(b.Value, out bUInt64))
+                                    if (ulong.TryParse(b.Value, out bUInt64))
                                     {
                                         return aUInt64.CompareTo(bUInt64);
                                     }
@@ -556,7 +556,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (UInt64.TryParse(b.Value, out bUInt64))
+                                    if (ulong.TryParse(b.Value, out bUInt64))
                                     {
                                         return 1;
                                     }
@@ -569,10 +569,10 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                 // Extract the Double Values and compare
                                 double aDouble, bDouble;
-                                if (Double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                if (double.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
                                     out aDouble))
                                 {
-                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    if (double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
                                         out bDouble))
                                     {
                                         return aDouble.CompareTo(bDouble);
@@ -584,7 +584,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    if (double.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
                                         out bDouble))
                                     {
                                         return 1;
@@ -627,10 +627,10 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                                 // Extract the Float Values and compare
                                 float aFloat, bFloat;
-                                if (Single.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                if (float.TryParse(a.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
                                     out aFloat))
                                 {
-                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    if (float.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
                                         out bFloat))
                                     {
                                         return aFloat.CompareTo(bFloat);
@@ -642,7 +642,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Single.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                    if (float.TryParse(b.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
                                         out bFloat))
                                     {
                                         return 1;
@@ -656,9 +656,9 @@ namespace VDS.RDF
                             case XmlSpecsHelper.XmlSchemaDataTypeHexBinary:
                                 // Extract the numeric value of the Hex encoded Binary and compare
                                 long aHex, bHex;
-                                if (Int64.TryParse(a.Value, NumberStyles.HexNumber, null, out aHex))
+                                if (long.TryParse(a.Value, NumberStyles.HexNumber, null, out aHex))
                                 {
-                                    if (Int64.TryParse(b.Value, NumberStyles.HexNumber, null, out bHex))
+                                    if (long.TryParse(b.Value, NumberStyles.HexNumber, null, out bHex))
                                     {
                                         return aHex.CompareTo(bHex);
                                     }
@@ -669,7 +669,7 @@ namespace VDS.RDF
                                 }
                                 else
                                 {
-                                    if (Int64.TryParse(b.Value, NumberStyles.HexNumber, null, out bHex))
+                                    if (long.TryParse(b.Value, NumberStyles.HexNumber, null, out bHex))
                                     {
                                         return 1;
                                     }
@@ -699,7 +699,7 @@ namespace VDS.RDF
                                         }
                                         else
                                         {
-                                            for (int i = 0; i < aBin.Length; i++)
+                                            for (var i = 0; i < aBin.Length; i++)
                                             {
                                                 if (aBin[i] != bBin[i])
                                                 {
@@ -963,7 +963,7 @@ namespace VDS.RDF
                 return 1;
             }
 
-            return String.Compare(a.VariableName, b.VariableName, StringComparison.Ordinal);
+            return string.Compare(a.VariableName, b.VariableName, StringComparison.Ordinal);
         }
     }
 

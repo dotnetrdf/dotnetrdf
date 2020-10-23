@@ -45,7 +45,7 @@ namespace VDS.RDF.Writing
         /// <param name="fileEncoding">The text encoding to use for the output file.</param>
         public virtual void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
+            using (FileStream stream = File.Open(filename, FileMode.Create))
             {
                 Save(results, new StreamWriter(stream, fileEncoding));
             }
@@ -140,7 +140,7 @@ namespace VDS.RDF.Writing
                 // <results> Element
                 writer.WriteStartElement("results");
 
-                foreach (var r in resultSet.Results)
+                foreach (SparqlResult r in resultSet.Results)
                 {
                     // <result> Element
                     writer.WriteStartElement("result");
@@ -149,7 +149,7 @@ namespace VDS.RDF.Writing
                     {
                         if (r.HasValue(var))
                         {
-                            var n = r.Value(var);
+                            INode n = r.Value(var);
                             if (n == null) continue; //NULLs don't get serialized in the XML Format
 
                             // <binding> Element
@@ -241,7 +241,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message.</param>
         protected void RaiseWarning(string message)
         {
-            var d = Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

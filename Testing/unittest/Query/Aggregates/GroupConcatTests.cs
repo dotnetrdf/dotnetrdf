@@ -40,10 +40,10 @@ namespace VDS.RDF.Query.Aggregates
 
         private void RunTest(IGraph g, String query, int expected, String var, bool expectNotNull, String expectMatch)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
 
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             TestTools.ShowResults(results);
 
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Aggregates
                     Assert.True(r.HasBoundValue(var));
                     INode value = r[var];
                     Assert.Equal(NodeType.Literal, value.NodeType);
-                    String lexValue = ((ILiteralNode)value).Value;
+                    var lexValue = ((ILiteralNode)value).Value;
                     Assert.Contains(expectMatch, lexValue);
                 }
                 else
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Aggregates
             g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/ns#"));
             g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
-            this.RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
+            RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Aggregates
             g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/ns#"));
             g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
-            this.RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
+            RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Aggregates
         {
             IGraph g = new Graph();
 
-            String query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
+            var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
 WHERE
 {
   VALUES ( ?x )
@@ -103,7 +103,7 @@ WHERE
     ( true )
   }
 }";
-            this.RunTest(g, query, 1, "concat", true, "1234");
+            RunTest(g, query, 1, "concat", true, "1234");
         }
 
         [Fact]
@@ -111,7 +111,7 @@ WHERE
         {
             IGraph g = new Graph();
 
-            String query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
+            var query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
 WHERE
 {
   VALUES ( ?x )
@@ -122,7 +122,7 @@ WHERE
     ( 'custom'^^<http://datatype> )
   }
 }";
-            this.RunTest(g, query, 1, "concat", true, "custom");
+            RunTest(g, query, 1, "concat", true, "custom");
         }
     }
 }

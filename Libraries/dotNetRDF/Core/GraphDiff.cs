@@ -69,7 +69,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public GraphDiffReport Difference(IGraph a, IGraph b)
         {
-            GraphDiffReport report = new GraphDiffReport();
+            var report = new GraphDiffReport();
 
             if (a == null)
             {
@@ -129,7 +129,7 @@ namespace VDS.RDF
             }
 
             // Firstly check for Graph Equality
-            Dictionary<INode,INode> equalityMapping = new Dictionary<INode,INode>();
+            var equalityMapping = new Dictionary<INode,INode>();
             if (a.Equals(b, out equalityMapping))
             {
                 // If Graphs are equal set AreEqual to true, assign the mapping and return
@@ -137,7 +137,7 @@ namespace VDS.RDF
                 if (equalityMapping != null) report.Mapping = equalityMapping;
                 return report;
             }
-            Debug.WriteLine(String.Empty);
+            Debug.WriteLine(string.Empty);
 
             report.AreDifferentSizes = (a.Triples.Count != b.Triples.Count);
 
@@ -180,7 +180,7 @@ namespace VDS.RDF
                 ComputeMSGs(b, _rhsUnassigned, _rhsMSGs);
 
                 // Sort MSGs by size - this is just so we start checking MSG equality from smallest MSGs first for efficiency
-                GraphSizeComparer comparer = new GraphSizeComparer();
+                var comparer = new GraphSizeComparer();
                 _lhsMSGs.Sort(comparer);
                 _rhsMSGs.Sort(comparer);
 
@@ -188,7 +188,7 @@ namespace VDS.RDF
                 foreach (IGraph msg in _lhsMSGs)
                 {
                     // Get Candidate MSGs from RHS i.e. those of equal size
-                    List<IGraph> candidates = (from g in _rhsMSGs
+                    var candidates = (from g in _rhsMSGs
                                                where g.Triples.Count == msg.Triples.Count
                                                select g).ToList();
 
@@ -200,10 +200,10 @@ namespace VDS.RDF
                     else
                     {
                         // Do any of the candidates match?
-                        bool hasMatch = false;
+                        var hasMatch = false;
                         foreach (IGraph candidate in candidates)
                         {
-                            Dictionary<INode, INode> tempMapping = new Dictionary<INode, INode>();
+                            var tempMapping = new Dictionary<INode, INode>();
                             if (msg.Equals(candidate, out tempMapping))
                             {
                                 // This MSG has a Match in the 2nd Graph so add the Mapping information
@@ -250,8 +250,8 @@ namespace VDS.RDF
             // While we have unassigned Triples build MSGs
             while (unassigned.Count > 0)
             {
-                HashSet<INode> processed = new HashSet<INode>();
-                Queue<INode> unprocessed = new Queue<INode>();
+                var processed = new HashSet<INode>();
+                var unprocessed = new Queue<INode>();
 
                 // Get next Triple from unassigned
                 Triple first = unassigned.First();
@@ -261,7 +261,7 @@ namespace VDS.RDF
                 GetNodesForProcessing(first, unprocessed);
 
                 // Start building an MSG starting from the Triple
-                Graph msg = new Graph();
+                var msg = new Graph();
                 msg.Assert(first);
                 while (unprocessed.Count > 0)
                 {

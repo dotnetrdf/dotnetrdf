@@ -38,8 +38,8 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfABadSyntax()
         {
-            RdfAParser parser = new RdfAParser();
-            Graph g = new Graph();
+            var parser = new RdfAParser();
+            var g = new Graph();
             Console.WriteLine("Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored");
             g.BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale");
             FileLoader.Load(g, "resources\\bad_rdfa.html");
@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
             }
 
             Console.WriteLine();
-            CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+            var ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
             ttlwriter.HighSpeedModePermitted = false;
             ttlwriter.Save(g, "test.ttl");
         }
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 UriLoader.CacheEnabled = false;
-                List<String> tests = new List<string>()
+                var tests = new List<string>()
                 {
                     "gr1",
                     "gr2",
@@ -71,14 +71,14 @@ namespace VDS.RDF.Parsing
 
                 FileLoader.Warning += TestTools.WarningPrinter;
 
-                foreach (String test in tests)
+                foreach (var test in tests)
                 {
                     Console.WriteLine("Test '" + test + "'");
                     Console.WriteLine();
 
-                    Graph g = new Graph();
+                    var g = new Graph();
                     g.BaseUri = new Uri("http://example.org/goodrelations");
-                    Graph h = new Graph();
+                    var h = new Graph();
                     h.BaseUri = g.BaseUri;
 
                     Console.WriteLine("Graph A Warnings:");
@@ -107,10 +107,10 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfABadProfile()
         {
-            RdfAParser parser = new RdfAParser(RdfASyntax.RDFa_1_1);
+            var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
             parser.Warning += TestTools.WarningPrinter;
 
-            Graph g = new Graph();
+            var g = new Graph();
             parser.Load(g, "resources\\bad_profile.xhtml");
 
             TestTools.ShowGraph(g);

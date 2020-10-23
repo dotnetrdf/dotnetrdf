@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets an enumeration of all the Variables used in an expression.
         /// </summary>
-        IEnumerable<String> Variables
+        IEnumerable<string> Variables
         {
             get;
         }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords or the empty string in the case of primary expressions.
         /// </summary>
-        String Functor
+        string Functor
         {
             get;
         }

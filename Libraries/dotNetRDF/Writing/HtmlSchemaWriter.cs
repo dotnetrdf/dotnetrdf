@@ -58,7 +58,7 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(IGraph g, string filename, Encoding fileEncoding)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
+            using (FileStream stream = File.Open(filename, FileMode.Create))
             {
                 Save(g, new StreamWriter(stream, fileEncoding));
             }
@@ -79,7 +79,7 @@ namespace VDS.RDF.Writing
         { 
             try
             {
-                HtmlWriterContext context = new HtmlWriterContext(g, output);
+                var context = new HtmlWriterContext(g, output);
                 GenerateOutput(context);
                 if (!leaveOpen) output.Close();
             }
@@ -177,7 +177,7 @@ namespace VDS.RDF.Writing
             // Show the Description of the Schema (if any)
             if (ontoNode != null)
             {
-                SparqlParameterizedString getOntoDescrip = new SparqlParameterizedString();
+                var getOntoDescrip = new SparqlParameterizedString();
                 getOntoDescrip.Namespaces = context.QNameMapper;
                 getOntoDescrip.CommandText = "SELECT * WHERE { @onto a owl:Ontology . OPTIONAL { @onto rdfs:comment ?description } . OPTIONAL { @onto vann:preferredNamespacePrefix ?nsPrefix ; vann:preferredNamespaceUri ?nsUri } . OPTIONAL { @onto dc:creator ?creator . ?creator (foaf:name | rdfs:label) ?creatorName } }";
                 getOntoDescrip.SetParameter("onto", ontoNode);
@@ -242,7 +242,7 @@ namespace VDS.RDF.Writing
                                 if (ontoInfo["nsPrefix"].NodeType == NodeType.Literal && ontoInfo["nsUri"].NodeType == NodeType.Uri)
                                 {
                                     // Add this QName to the QName Mapper so we can get nice QNames later on
-                                    string prefix = ((ILiteralNode)ontoInfo["nsPrefix"]).Value;
+                                    var prefix = ((ILiteralNode)ontoInfo["nsPrefix"]).Value;
                                     context.QNameMapper.AddNamespace(prefix, ((IUriNode)ontoInfo["nsUri"]).Uri);
 
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
@@ -271,7 +271,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
-                                    int currIndent = context.HtmlWriter.Indent;
+                                    var currIndent = context.HtmlWriter.Indent;
                                     context.HtmlWriter.Indent = 0;
                                     context.HtmlWriter.WriteEncodedText("<?xml version=\"1.0\" charset=\"utf-8\"?>");
                                     context.HtmlWriter.WriteLine();
@@ -326,11 +326,11 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            SparqlParameterizedString getPropertyRanges = new SparqlParameterizedString();
+            var getPropertyRanges = new SparqlParameterizedString();
             getPropertyRanges.Namespaces = new NamespaceMapper();
             getPropertyRanges.Namespaces.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
             getPropertyRanges.CommandText = "SELECT ?range WHERE { { @property rdfs:range ?range . FILTER(ISURI(?range)) } UNION { @property rdfs:range ?union . ?union owl:unionOf ?ranges . { ?ranges rdf:first ?range } UNION { ?ranges rdf:rest+/rdf:first ?range } } }";
-            SparqlParameterizedString getPropertyDomains = new SparqlParameterizedString();
+            var getPropertyDomains = new SparqlParameterizedString();
             getPropertyDomains.Namespaces = getPropertyRanges.Namespaces;
             getPropertyDomains.CommandText = "SELECT ?domain WHERE { { @property rdfs:domain ?domain . FILTER(ISURI(?domain)) } UNION { @property rdfs:domain ?union . ?union owl:unionOf ?domains . { ?domains rdf:first ?domain } UNION { ?domains rdf:rest+/rdf:first ?domain } } }";
 
@@ -349,7 +349,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
             // Get the Classes and Display
-            SparqlParameterizedString getClasses = new SparqlParameterizedString();
+            var getClasses = new SparqlParameterizedString();
             getClasses.Namespaces = context.QNameMapper;
             getClasses.CommandText = "SELECT DISTINCT ?class WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } FILTER(ISURI(?class)) } ORDER BY ?class";
             try
@@ -357,14 +357,14 @@ namespace VDS.RDF.Writing
                 results = context.Graph.ExecuteQuery(getClasses);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rs = (SparqlResultSet)results;
-                    for (int i = 0; i < rs.Count; i++)
+                    var rs = (SparqlResultSet)results;
+                    for (var i = 0; i < rs.Count; i++)
                     {
                         SparqlResult r = rs[i];
 
                         // Get the QName and output a Link to an anchor that we'll generate later to let
                         // users jump to a Class/Property definition
-                        string qname = context.NodeFormatter.Format(r["class"]);
+                        var qname = context.NodeFormatter.Format(r["class"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
@@ -399,7 +399,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
             // Get the Properties and Display
-            SparqlParameterizedString getProperties = new SparqlParameterizedString();
+            var getProperties = new SparqlParameterizedString();
             getProperties.Namespaces = context.QNameMapper;
             getProperties.CommandText = "SELECT DISTINCT ?property WHERE { { ?property a rdf:Property } UNION { ?property a owl:DatatypeProperty } UNION { ?property a owl:ObjectProperty } FILTER(ISURI(?property)) } ORDER BY ?property";
             try
@@ -407,14 +407,14 @@ namespace VDS.RDF.Writing
                 results = context.Graph.ExecuteQuery(getProperties);
                 if (results is SparqlResultSet)
                 {
-                    SparqlResultSet rs = (SparqlResultSet)results;
-                    for (int i = 0; i < rs.Count; i++)
+                    var rs = (SparqlResultSet)results;
+                    for (var i = 0; i < rs.Count; i++)
                     {
                         SparqlResult r = rs[i];
 
                         // Get the QName and output a Link to an anchor that we'll generate later to let
                         // users jump to a Class/Property definition
-                        string qname = context.NodeFormatter.Format(r["property"]);
+                        var qname = context.NodeFormatter.Format(r["property"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
@@ -466,7 +466,7 @@ namespace VDS.RDF.Writing
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
                         if (!r.HasValue("class")) continue;
-                        string qname = context.NodeFormatter.Format(r["class"]);
+                        var qname = context.NodeFormatter.Format(r["class"]);
 
                         // Use a <div> for each Class
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
@@ -490,7 +490,7 @@ namespace VDS.RDF.Writing
                         }
                         else
                         {
-                            Uri temp = new Uri(qname, UriKind.RelativeOrAbsolute);
+                            var temp = new Uri(qname, UriKind.RelativeOrAbsolute);
                             if (!temp.Fragment.Equals(string.Empty))
                             {
                                 context.HtmlWriter.WriteEncodedText(temp.Fragment);
@@ -575,7 +575,7 @@ namespace VDS.RDF.Writing
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
                         if (!r.HasValue("property")) continue;
-                        string qname = context.NodeFormatter.Format(r["property"]);
+                        var qname = context.NodeFormatter.Format(r["property"]);
 
                         // Use a <div> for each Property
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBox);
@@ -599,7 +599,7 @@ namespace VDS.RDF.Writing
                         }
                         else
                         {
-                            Uri temp = new Uri(qname, UriKind.RelativeOrAbsolute);
+                            var temp = new Uri(qname, UriKind.RelativeOrAbsolute);
                             if (!temp.Fragment.Equals(string.Empty))
                             {
                                 context.HtmlWriter.WriteEncodedText(temp.Fragment);
@@ -702,7 +702,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteLine();
                 foreach (INode n in ns.OrderBy(x => x))
                 {
-                    string qname = context.NodeFormatter.Format(n);
+                    var qname = context.NodeFormatter.Format(n);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, CssClassUri);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);

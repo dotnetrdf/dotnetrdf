@@ -90,7 +90,7 @@ namespace VDS.RDF.Writing
             if (output is StreamWriter)
             {
                 // Check for inner GZipStream and re-wrap if required
-                StreamWriter streamOutput = (StreamWriter)output;
+                var streamOutput = (StreamWriter)output;
                 if (streamOutput.BaseStream is GZipStream)
                 {
                     _writer.Save(results, streamOutput);
@@ -111,7 +111,7 @@ namespace VDS.RDF.Writing
         /// Helper method for raising warning events.
         /// </summary>
         /// <param name="message">Warning message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null) d(message);

@@ -41,20 +41,20 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple.</param>
         protected override void Index(String graphUri, Triple t)
         {
-            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(String graphUri, Triple t) method");
+            if (IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(String graphUri, Triple t) method");
 
             if (t.Object.NodeType == NodeType.Literal)
             {
-                switch (this.IndexingMode)
+                switch (IndexingMode)
                 {
                     case IndexingMode.Predicates:
-                        this.Index(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
+                        Index(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Objects:
-                        this.Index(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
+                        Index(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Subjects:
-                        this.Index(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
+                        Index(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
                         break;
 
                     default:
@@ -78,20 +78,20 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple.</param>
         protected override void Unindex(String graphUri, Triple t)
         {
-            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(String graphUri, Triple t) method");
+            if (IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(String graphUri, Triple t) method");
 
             if (t.Object.NodeType == NodeType.Literal)
             {
-                switch (this.IndexingMode)
+                switch (IndexingMode)
                 {
                     case IndexingMode.Predicates:
-                        this.Unindex(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
+                        Unindex(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Objects:
-                        this.Unindex(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
+                        Unindex(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Subjects:
-                        this.Unindex(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
+                        Unindex(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
                         break;
 
                     default:

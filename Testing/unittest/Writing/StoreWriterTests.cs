@@ -33,8 +33,8 @@ namespace VDS.RDF.Writing
     {
         private void TestWriter(IStoreWriter writer, IStoreReader reader, bool useMultiThreaded, int compressionLevel = WriterCompressionLevel.More)
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = null;
             store.Add(g);
@@ -55,14 +55,14 @@ namespace VDS.RDF.Writing
             {
                 ((IMultiThreadedWriter)writer).UseMultiThreadedWriting = useMultiThreaded;
             }
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            var strWriter = new System.IO.StringWriter();
             writer.Save(store, strWriter);
 
             Console.WriteLine(strWriter.ToString());
 
             Assert.NotEqual(strWriter.ToString(), String.Empty);
 
-            TripleStore store2 = new TripleStore();
+            var store2 = new TripleStore();
             reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));
 
             foreach (IGraph graph in store.Graphs)
@@ -75,109 +75,109 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingTriX()
         {
-            this.TestWriter(new TriXWriter(), new TriXParser(), false);
+            TestWriter(new TriXWriter(), new TriXParser(), false);
         }
 
         [Fact]
         public void WritingNQuads()
         {
-            TestTools.TestInMTAThread(this.WritingNQuadsActual);
+            TestTools.TestInMTAThread(WritingNQuadsActual);
         }
 
         [Fact]
         public void WritingNQuadsSingleThreaded()
         {
-            this.WritingNQuadsActual();
+            WritingNQuadsActual();
         }
 
         private void WritingNQuadsActual()
         {
-            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
+            TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
         [Fact]
         public void WritingNQuadsMixed()
         {
-            TestTools.TestInMTAThread(this.WritingNQuadsMixedActual);
+            TestTools.TestInMTAThread(WritingNQuadsMixedActual);
         }
 
         [Fact]
         public void WritingNQuadsMixedSingleThreaded()
         {
-            this.WritingNQuadsMixedActual();
+            WritingNQuadsMixedActual();
         }
 
         private void WritingNQuadsMixedActual()
         {
-            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
+            TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
         [Fact]
         public void WritingNQuadsMixedBad()
         {
-            Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(this.WritingNQuadsMixedBadActual));
+            Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(WritingNQuadsMixedBadActual));
         }
 
         [Fact]
         public void WritingNQuadsMixedBadSingleThreaded()
         {
-            Assert.Throws<RdfParseException>(() => this.WritingNQuadsMixedBadActual());
+            Assert.Throws<RdfParseException>(() => WritingNQuadsMixedBadActual());
         }
 
         private void WritingNQuadsMixedBadActual()
         {
-            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
+            TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
         [Fact]
         public void WritingNQuads11()
         {
-            TestTools.TestInMTAThread(this.WritingNQuads11Actual);
+            TestTools.TestInMTAThread(WritingNQuads11Actual);
         }
 
         [Fact]
         public void WritingNQuads11SingleThreaded()
         {
-            this.WritingNQuads11Actual();
+            WritingNQuads11Actual();
         }
 
         private void WritingNQuads11Actual()
         {
-            this.TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
+            TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
         [Fact]
         public void WritingTriG()
         {
-            TestTools.TestInMTAThread(this.WritingTriGActual);
+            TestTools.TestInMTAThread(WritingTriGActual);
         }
 
         [Fact]
         public void WritingTriGSingleThreaded()
         {
-            this.WritingTriGActual();
+            WritingTriGActual();
         }
 
         private void WritingTriGActual()
         {
-            this.TestWriter(new TriGWriter(), new TriGParser(), true);
+            TestWriter(new TriGWriter(), new TriGParser(), true);
         }
 
         [Fact]
         public void WritingTriGUncompressed()
         {
-            TestTools.TestInMTAThread(this.WritingTriGUncompressedActual);
+            TestTools.TestInMTAThread(WritingTriGUncompressedActual);
         }
 
         [Fact]
         public void WritingTriGUncompressedSingleThreaded()
         {
-            this.WritingTriGUncompressedActual();
+            WritingTriGUncompressedActual();
         }
 
         private void WritingTriGUncompressedActual()
         {
-            this.TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
+            TestWriter(new TriGWriter(), new TriGParser(), true, WriterCompressionLevel.None);
         }
     }
 }

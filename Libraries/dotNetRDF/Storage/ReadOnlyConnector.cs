@@ -104,7 +104,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public void LoadGraph(IRdfHandler handler, string graphUri)
         {
             _manager.LoadGraph(handler, graphUri);
         }
@@ -320,7 +320,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public Object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
             return _queryManager.Query(sparqlQuery);
         }
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             _queryManager.Query(rdfHandler, resultsHandler, sparqlQuery);
         }
@@ -352,10 +352,10 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                    var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                     if (results is SparqlResultSet)
                     {
-                        List<Uri> graphs = new List<Uri>();
+                        var graphs = new List<Uri>();
                         foreach (SparqlResult r in ((SparqlResultSet)results))
                         {
                             if (r.HasValue("g"))

@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public Dictionary<IArgument, IResource> getArgumentsMap()
         {
-            Dictionary<IArgument, IResource> map = new Dictionary<IArgument, IResource>();
+            var map = new Dictionary<IArgument, IResource>();
             ITemplate template = getTemplate();
             if (template != null)
             {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public Dictionary<IResource, IResource> getArgumentsMapByProperties()
         {
-            Dictionary<IResource, IResource> map = new Dictionary<IResource, IResource>();
+            var map = new Dictionary<IResource, IResource>();
             ITemplate template = getTemplate();
             if (template != null)
             {
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public Dictionary<String, IResource> getArgumentsMapByVarNames()
         {
-            Dictionary<String, IResource> map = new Dictionary<String, IResource>();
+            var map = new Dictionary<String, IResource>();
             ITemplate template = getTemplate();
             if (template != null)
             {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Spin.Model
                     IResource argProperty = ad.getPredicate();
                     if (argProperty != null)
                     {
-                        String varName = ad.getVarName();
+                        var varName = ad.getVarName();
                         IResource valueS = getObject(argProperty);
                         if (valueS != null)
                         {
@@ -116,9 +116,9 @@ namespace VDS.RDF.Query.Spin.Model
 
         /*override*/ public Dictionary<String, IResource> getInitialBinding()
         {
-            Dictionary<String, IResource> map = new Dictionary<String, IResource>();
+            var map = new Dictionary<String, IResource>();
             Dictionary<String, IResource> input = getArgumentsMapByVarNames();
-            foreach (String varName in input.Keys)
+            foreach (var varName in input.Keys)
             {
                 IResource value = input[varName];
                 map.Add(varName, value);

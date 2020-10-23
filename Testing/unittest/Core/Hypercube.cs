@@ -42,50 +42,50 @@ namespace VDS.RDF
 
         public Hypercube(int dimension, IGraph g)
         {
-            this._dim = dimension;
-            this._g = g;
-            this._rdfValue = this._g.CreateUriNode(new Uri(NamespaceMapper.RDF + "value"));
-            this._corners = new INode[1 << dimension];
+            _dim = dimension;
+            _g = g;
+            _rdfValue = _g.CreateUriNode(new Uri(NamespaceMapper.RDF + "value"));
+            _corners = new INode[1 << dimension];
 
-            for (int i = 0; i < this._corners.Length; i++)
+            for (var i = 0; i < _corners.Length; i++)
             {
-                this._corners[i] = this._g.CreateBlankNode();
+                _corners[i] = _g.CreateBlankNode();
             }
-            for (int i = 0; i < this._corners.Length; i++)
+            for (var i = 0; i < _corners.Length; i++)
             {
-                this.AddTriple(i, this._corners[i]);
+                AddTriple(i, _corners[i]);
             }
         }
 
         private void AddTriple(int corner, INode n)
         {
-            for (int j = 0; j < this._dim; j++)
+            for (var j = 0; j < _dim; j++)
             {
-                int bit = 1 << j;
-                this._g.Assert(n, this._rdfValue, this._corners[corner ^ bit]);
+                var bit = 1 << j;
+                _g.Assert(n, _rdfValue, _corners[corner ^ bit]);
             }
         }
 
         public Hypercube Duplicate(int corner)
         {
-            INode n = this._g.CreateBlankNode();
-            this.AddTriple(corner, n);
+            INode n = _g.CreateBlankNode();
+            AddTriple(corner, n);
             return this;
         }
 
         public Hypercube Toggle(int from, int to)
         {
-            INode f = this._corners[from];
-            INode t = this._corners[to];
+            INode f = _corners[from];
+            INode t = _corners[to];
 
-            Triple triple = new Triple(f, this._rdfValue, t);
-            if (this._g.ContainsTriple(triple))
+            var triple = new Triple(f, _rdfValue, t);
+            if (_g.ContainsTriple(triple))
             {
-                this._g.Retract(triple);
+                _g.Retract(triple);
             }
             else
             {
-                this._g.Assert(triple);
+                _g.Assert(triple);
             }
             return this;
         }
@@ -103,46 +103,46 @@ namespace VDS.RDF
 
         public DiHypercube(int dimension, IGraph g)
         {
-            this._dim = dimension;
-            this._g = g;
-            this._rdfValue = this._g.CreateUriNode(new Uri(NamespaceMapper.RDF + "value"));
-            this._corners = new INode[1 << dimension];
+            _dim = dimension;
+            _g = g;
+            _rdfValue = _g.CreateUriNode(new Uri(NamespaceMapper.RDF + "value"));
+            _corners = new INode[1 << dimension];
 
-            for (int i = 0; i < this._corners.Length; i++)
+            for (var i = 0; i < _corners.Length; i++)
             {
-                this._corners[i] = this._g.CreateBlankNode();
+                _corners[i] = _g.CreateBlankNode();
             }
-            for (int i = 0; i < this._corners.Length; i++)
+            for (var i = 0; i < _corners.Length; i++)
             {
-                this.AddTriple(i, this._corners[i]);
+                AddTriple(i, _corners[i]);
             }
         }
 
         private void AddTriple(int corner, INode n)
         {
-            for (int j = 0; j < this._dim; j++)
+            for (var j = 0; j < _dim; j++)
             {
-                int bit = 1 << j;
+                var bit = 1 << j;
                 if ((corner & bit) != 0)
                 {
-                    this._g.Assert(n, this._rdfValue, this._corners[corner ^ bit]);
+                    _g.Assert(n, _rdfValue, _corners[corner ^ bit]);
                 }
             }
         }
 
         public DiHypercube Duplicate(int corner)
         {
-            INode n = this._g.CreateBlankNode();
-            for (int j = 0; j < this._dim; j++)
+            INode n = _g.CreateBlankNode();
+            for (var j = 0; j < _dim; j++)
             {
-                int bit = 1 << j;
+                var bit = 1 << j;
                 if ((corner & bit) != 0)
                 {
-                    this._g.Assert(n, this._rdfValue, this._corners[corner ^ bit]);
+                    _g.Assert(n, _rdfValue, _corners[corner ^ bit]);
                 }
                 else
                 {
-                    this._g.Assert(this._corners[corner ^ bit], this._rdfValue, n);
+                    _g.Assert(_corners[corner ^ bit], _rdfValue, n);
                 }
             }
             return this;

@@ -53,7 +53,7 @@ namespace VDS.RDF.Writing
         public override void Save(IGraph g, string filename)
         {
             // Open the Stream for the File
-            StreamWriter output = new StreamWriter(File.OpenWrite(filename));
+            var output = new StreamWriter(File.OpenWrite(filename));
 
             // Call the other version of Save to do the actual work
             Save(g, output);
@@ -66,9 +66,9 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            var context = new BaseWriterContext(g, output) { PrettyPrint = this.PrettyPrintMode };
+            var context = new BaseWriterContext(g, output) { PrettyPrint = PrettyPrintMode };
 
-            GraphVizWriter.WriteGraph(context, this.CollapseLiterals);
+            GraphVizWriter.WriteGraph(context, CollapseLiterals);
         }
 
         private static void WriteGraph(BaseWriterContext context, bool collapseLiterals)
@@ -87,7 +87,7 @@ namespace VDS.RDF.Writing
             context.Output.Write(DOT.OpenCurly);
             GraphVizWriter.Prettify(DOT.NewLine, context);
 
-            foreach (var t in context.Graph.Triples)
+            foreach (Triple t in context.Graph.Triples)
             {
                 GraphVizWriter.WriteTriple(t, context, collapseLiterals);
             }
@@ -127,7 +127,7 @@ namespace VDS.RDF.Writing
 
         private static string ProcessNode(Triple t, TripleSegment segment, BaseWriterContext context, bool collapseLiterals)
         {
-            var node = GraphVizWriter.GetNode(t, segment);
+            INode node = GraphVizWriter.GetNode(t, segment);
 
             switch (node)
             {
@@ -204,7 +204,7 @@ namespace VDS.RDF.Writing
 
             if (literalnode.DataType != null)
             {
-                string datatype = GraphVizWriter.ReduceToQName(literalnode.DataType, context);
+                var datatype = GraphVizWriter.ReduceToQName(literalnode.DataType, context);
 
                 context.Output.Write("^^");
                 context.Output.Write(datatype);
@@ -215,7 +215,7 @@ namespace VDS.RDF.Writing
 
         private static string ReduceToQName(Uri uri, BaseWriterContext context)
         {
-            if (!context.QNameMapper.ReduceToQName(uri.ToString(), out string result))
+            if (!context.QNameMapper.ReduceToQName(uri.ToString(), out var result))
             {
                 result = uri.ToString();
             }
@@ -257,8 +257,10 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event that is raised if there is a potential problem with the RDF being output
         /// </summary>
-        /// <remarks>Not used by this Writer</remarks>
+        /// <remarks>This class does not raise this event.</remarks>
+#pragma warning disable CS0067
         public override event RdfWriterWarning Warning;
+#pragma warning restore CS0067
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.

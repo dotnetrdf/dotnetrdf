@@ -41,7 +41,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Constant URIs for properties exposed by <see cref="OntologyResource">OntologyResource</see> and its derived classes.
         /// </summary>
-        public const String PropertyVersionInfo = NamespaceMapper.OWL + "versionInfo",
+        public const string PropertyVersionInfo = NamespaceMapper.OWL + "versionInfo",
                             PropertySameAs = NamespaceMapper.OWL + "sameAs",
                             PropertyDifferentFrom = NamespaceMapper.OWL + "differentFrom",
                             PropertyEquivalentClass = NamespaceMapper.OWL + "equivalentClass",
@@ -67,7 +67,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Constants for URIs for classes in Ontologies.
         /// </summary>
-        public const String RdfsClass = NamespaceMapper.RDFS + "Class",
+        public const string RdfsClass = NamespaceMapper.RDFS + "Class",
                             OwlClass = NamespaceMapper.OWL + "Class",
                             RdfProperty = NamespaceMapper.RDF + "Property",
                             RdfsResource = NamespaceMapper.RDFS + "Resource",

@@ -38,16 +38,16 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private static void ParsingUsingPagingHandler(String tempFile, IRdfReader parser)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
-            Graph h = new Graph();
-            PagingHandler handler = new PagingHandler(new GraphHandler(h), 25);
+            var h = new Graph();
+            var handler = new PagingHandler(new GraphHandler(h), 25);
             parser.Load(handler, tempFile);
             h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.False(h.IsEmpty, "Graph should not be empty");
             Assert.True(h.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
-            Graph i = new Graph();
+            var i = new Graph();
             handler = new PagingHandler(new GraphHandler(i), 25, 25);
             parser.Load(handler, tempFile);
             i.Retract(i.Triples.Where(t => !t.IsGroundTriple));
@@ -79,12 +79,12 @@ namespace VDS.RDF.Parsing.Handlers
 
         private static void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
-            Graph h = new Graph();
-            PagingHandler handler = new PagingHandler(new GraphHandler(h), 0);
+            var h = new Graph();
+            var handler = new PagingHandler(new GraphHandler(h), 0);
 
             parser.Load(handler, tempFile);
 
@@ -93,12 +93,12 @@ namespace VDS.RDF.Parsing.Handlers
 
         private static void ParsingUsingPagingHandler3(String tempFile, IRdfReader parser)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
-            Graph h = new Graph();
-            PagingHandler handler = new PagingHandler(new GraphHandler(h), -1, 100);
+            var h = new Graph();
+            var handler = new PagingHandler(new GraphHandler(h), -1, 100);
 
             parser.Load(handler, tempFile);
 

@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Spin.Model
         {
             Dictionary<IResource, IResource> values = getArgumentsMap();
             IResource[] ps = getArgumentProperties(values);
-            List<IResource> results = new List<IResource>(ps.Length);
+            var results = new List<IResource>(ps.Length);
             foreach (IResource key in ps)
             {
                 IResource node = values[key];
@@ -64,13 +64,13 @@ namespace VDS.RDF.Query.Spin.Model
 
         private IResource[] getArgumentProperties(Dictionary<IResource, IResource> values)
         {
-            IResource[] ps = new IResource[values.Count];
-            List<IResource> others = new List<IResource>();
+            var ps = new IResource[values.Count];
+            var others = new List<IResource>();
             foreach (IResource p in values.Keys)
             {
                 if (p.Uri.ToString().StartsWith(SP_ARG) && !RDFUtil.sameTerm(p, SP.PropertyArg))
                 {
-                    int index = int.Parse(p.Uri.ToString().Substring(SP_ARG.Length));
+                    var index = int.Parse(p.Uri.ToString().Substring(SP_ARG.Length));
                     ps[index - 1] = p;
                 }
                 else
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Spin.Model
                 }
                 );
                 IEnumerator<IResource> it = others.GetEnumerator();
-                for (int i = 0; i < ps.Length; i++)
+                for (var i = 0; i < ps.Length; i++)
                 {
                     if (ps[i] == null)
                     {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Spin.Model
         public Dictionary<IResource, IResource> getArgumentsMap()
         {
             /*sealed*/
-            Dictionary<IResource, IResource> values = new Dictionary<IResource, IResource>();
+            var values = new Dictionary<IResource, IResource>();
             IEnumerator<Triple> it = listProperties().GetEnumerator();
             while (it.MoveNext())
             {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Spin.Model
             IResource function = getFunction();
             List<IResource> args = getArguments();
 
-            String symbol = getSymbol(function);
+            var symbol = getSymbol(function);
             //TODO implement isLetter
             if (symbol != null && (/*TODO !symbol[0].isLetter() ||*/ isSetOperator(symbol)))
             {
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Spin.Model
             {
                 p.print("(");
             }
-            bool set = isSetOperator(op);
+            var set = isSetOperator(op);
             if (args.Count == 1 && !set)
             {
                 p.print(op);
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Spin.Model
                 if (set)
                 {
                     p.print("(");
-                    for (int i = 1; i < args.Count; i++)
+                    for (var i = 1; i < args.Count; i++)
                     {
                         if (i > 1)
                         {
@@ -289,7 +289,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         private void printFunctionQName(ISparqlPrinter p, IResource function)
         {
-            String symbol = getSymbol(function);
+            var symbol = getSymbol(function);
             if (symbol != null)
             {
                 p.print(symbol);

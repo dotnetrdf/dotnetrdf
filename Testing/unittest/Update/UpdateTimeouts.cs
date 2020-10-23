@@ -40,12 +40,12 @@ namespace VDS.RDF.Update
         [Fact(Skip="Remote configuration not currently available")]
         public void SparqlUpdateTimeout()
         {
-            String update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(update);
+            var update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(update);
             cmds.Timeout = 1;
 
-            TripleStore store = new TripleStore();
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
+            var store = new TripleStore();
+            var processor = new LeviathanUpdateProcessor(store);
             try
             {
                 processor.ProcessCommandSet(cmds);

@@ -37,14 +37,14 @@ namespace VDS.RDF
         [Fact]
         public void UriAbsoluteUriWithQuerystring()
         {
-            Uri u = new Uri("http://example.org/?test");
+            var u = new Uri("http://example.org/?test");
             Assert.Equal("http://example.org/?test", u.AbsoluteUri);
         }
 
         [Fact]
         public void UriAbsoluteUriWithFragment()
         {
-            Uri u = new Uri("http://example.org/#test");
+            var u = new Uri("http://example.org/#test");
             Assert.Equal("http://example.org/#test", u.AbsoluteUri);
         }
     }

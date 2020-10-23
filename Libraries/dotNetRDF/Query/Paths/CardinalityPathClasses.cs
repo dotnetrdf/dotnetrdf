@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Paths
             if (_n > 0)
             {
                 // Generate a Triple Pattern for each step in the cardinality
-                for (int i = 0; i < _n; i++)
+                for (var i = 0; i < _n; i++)
                 {
                     context.Object = context.GetNextTemporaryVariable();
 
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return Int32.MaxValue;
+                return int.MaxValue;
             }
         }
 
@@ -248,8 +248,8 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            PathTransformContext lhsContext = new PathTransformContext(context);
-            PathTransformContext rhsContext = new PathTransformContext(context);
+            var lhsContext = new PathTransformContext(context);
+            var rhsContext = new PathTransformContext(context);
             ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, _path);
             ISparqlAlgebra rhs = _path.ToAlgebra(rhsContext);
 
@@ -277,7 +277,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return Int32.MaxValue;
+                return int.MaxValue;
             }
         }
 
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return Int32.MaxValue;
+                return int.MaxValue;
             }
         }
 
@@ -495,10 +495,10 @@ namespace VDS.RDF.Query.Paths
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             ISparqlAlgebra complex = null;
-            int i = _n;
+            var i = _n;
             while (i <= _m)
             {
-                PathTransformContext tempContext = new PathTransformContext(context);
+                var tempContext = new PathTransformContext(context);
                 tempContext.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(_path, i), context.Object));
                 if (complex == null)
                 {

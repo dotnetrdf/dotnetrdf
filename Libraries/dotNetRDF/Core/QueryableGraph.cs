@@ -51,7 +51,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public Object ExecuteQuery(String sparqlQuery)
+        public object ExecuteQuery(string sparqlQuery)
         {
             SparqlQuery q = _parser.ParseFromString(sparqlQuery);
             return ExecuteQuery(q);
@@ -63,7 +63,7 @@ namespace VDS.RDF
         /// <param name="rdfHandler">RDF Handler.</param>
         /// <param name="resultsHandler">SPARQL Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
-        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             SparqlQuery q = _parser.ParseFromString(sparqlQuery);
             ExecuteQuery(rdfHandler, resultsHandler, q);
@@ -74,11 +74,11 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
-        public Object ExecuteQuery(SparqlQuery query)
+        public object ExecuteQuery(SparqlQuery query)
         {
             if (_processor == null)
             {
-                InMemoryDataset ds = new InMemoryDataset(this);
+                var ds = new InMemoryDataset(this);
                 _processor = new LeviathanQueryProcessor(ds);
             }
             return _processor.ProcessQuery(query);
@@ -94,7 +94,7 @@ namespace VDS.RDF
         {
             if (_processor == null)
             {
-                InMemoryDataset ds = new InMemoryDataset(this);
+                var ds = new InMemoryDataset(this);
                 _processor = new LeviathanQueryProcessor(ds);
             }
             _processor.ProcessQuery(rdfHandler, resultsHandler, query);

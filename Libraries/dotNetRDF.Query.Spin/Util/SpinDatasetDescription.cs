@@ -53,8 +53,8 @@ namespace VDS.RDF.Query.Spin.Util
             SpinDatasetDescription dataset;
             if (datasetUri == null)
             {
-                SparqlResultSet datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <" + SD.ClassDataset.Uri.ToString() + ">}");
-                int datasetCount = datasetDiscovery.Results.Count;
+                var datasetDiscovery = (SparqlResultSet)storage.Query("SELECT ?dataset WHERE {?dataset a <" + SD.ClassDataset.Uri.ToString() + ">}");
+                var datasetCount = datasetDiscovery.Results.Count;
                 if (datasetCount > 1)
                 {
                     throw new Exception("More than one dataset has been found in the current storage provider. Please specify which to use through the datasetUri parameter.");
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Spin.Util
                 this.Assert(updateControlGraph, RDFRuntime.PropertyUpdatesGraph, sourceGraph);
             }
 
-            SpinWrappedGraph graph = (SpinWrappedGraph)this[graphUri];
+            var graph = (SpinWrappedGraph)this[graphUri];
             graph.BaseUri = graphUri;
             graph.Readonly = false;
             graph.Changed += OnModificableGraphChange;
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         private void OnModificableGraphCleared(object sender, GraphEventArgs e)
         {
-            SpinWrappedGraph graph = (SpinWrappedGraph)e.Graph;
+            var graph = (SpinWrappedGraph)e.Graph;
             graph.Reset();
 
             IUriNode sourceGraph = RDFUtil.CreateUriNode(graph.BaseUri);

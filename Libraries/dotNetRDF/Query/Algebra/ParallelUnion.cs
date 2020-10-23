@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
             if (!(context.InputMultiset is IdentityMultiset))
             {
                 context2.InputMultiset = new Multiset();
-                foreach (var s in context.InputMultiset.Sets)
+                foreach (ISet s in context.InputMultiset.Sets)
                 {
                     context2.InputMultiset.Add(s.Copy());
                 }
@@ -72,15 +72,15 @@ namespace VDS.RDF.Query.Algebra
             var activeGraphs = context.Data.ActiveGraphUris.ToList();
             var defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
-            var lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Lhs, context, activeGraphs, defaultGraphs));
-            var rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Rhs, context2, activeGraphs, defaultGraphs));
+            Task<BaseMultiset> lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Lhs, context, activeGraphs, defaultGraphs));
+            Task<BaseMultiset> rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Rhs, context2, activeGraphs, defaultGraphs));
             Task[] evaluationTasks = {lhsTask, rhsTask};
             try
             {
                 Task.WaitAll(evaluationTasks);
                 context.CheckTimeout();
-                var lhsResult = lhsTask.Result;
-                var rhsResult = rhsTask.Result;
+                BaseMultiset lhsResult = lhsTask.Result;
+                BaseMultiset rhsResult = rhsTask.Result;
                 context.OutputMultiset = lhsResult.Union(rhsResult);
                 context.CheckTimeout();
                 context.InputMultiset = context.OutputMultiset;
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those not fixed
-                HashSet<string> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return Variables.Where(v => !fixedVars.Contains(v));
             }
         }

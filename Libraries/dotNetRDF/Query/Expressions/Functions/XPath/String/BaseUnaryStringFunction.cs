@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    var lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))

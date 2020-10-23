@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 results = new Multiset();
             }
-            GroupMultiset groupSet = new GroupMultiset(results);
+            var groupSet = new GroupMultiset(results);
             List<BindingGroup> groups;
 
             // Calculate Groups
@@ -89,10 +89,10 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Add Groups to the GroupMultiset
-            HashSet<String> vars = new HashSet<String>();
+            var vars = new HashSet<string>();
             foreach (BindingGroup group in groups)
             {
-                foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+                foreach (KeyValuePair<string, INode> assignment in group.Assignments)
                 {
                     if (vars.Contains(assignment.Key)) continue;
 
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra.

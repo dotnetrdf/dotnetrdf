@@ -41,7 +41,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void SparqlResultsCallback(SparqlResultSet results, Object state);
+    public delegate void SparqlResultsCallback(SparqlResultSet results, object state);
 
     /// <summary>
     /// Callback for methods that return a <see cref="IGraph">IGraph</see> asynchronously.
@@ -51,7 +51,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void GraphCallback(IGraph g, Object state);
+    public delegate void GraphCallback(IGraph g, object state);
 
     /// <summary>
     /// Callback for methods that return a <see cref="ITripleStore">ITripleStore</see> asynchronously.
@@ -61,7 +61,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void TripleStoreCallback(ITripleStore store, Object state);
+    public delegate void TripleStoreCallback(ITripleStore store, object state);
 
     /// <summary>
     /// Callbacks for methods that process the resulting triples with an RDF Handler asynchronously.
@@ -71,7 +71,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void RdfHandlerCallback(IRdfHandler handler, Object state);
+    public delegate void RdfHandlerCallback(IRdfHandler handler, object state);
 
     /// <summary>
     /// Callbacks for methods that process the results with an SPARQL Results Handler asynchronously.
@@ -81,7 +81,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void SparqlResultsHandlerCallback(ISparqlResultsHandler handler, Object state);
+    public delegate void SparqlResultsHandlerCallback(ISparqlResultsHandler handler, object state);
 
     /// <summary>
     /// Callbacks for methods that may process the results with either an RDF or a SPARQL Results Handler.
@@ -92,7 +92,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void QueryCallback(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Object state);
+    public delegate void QueryCallback(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, object state);
 
     /// <summary>
     /// Callbacks for methods that perform SPARQL Updates.
@@ -101,7 +101,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void UpdateCallback(Object state);
+    public delegate void UpdateCallback(object state);
 
     /// <summary>
     /// Callback for methods that return a Namespace Map.
@@ -111,7 +111,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void NamespaceCallback(INamespaceMapper nsmap, Object state);
+    public delegate void NamespaceCallback(INamespaceMapper nsmap, object state);
 
     /// <summary>
     /// Callbacks for methods that return a list of nodes.
@@ -121,7 +121,7 @@ namespace VDS.RDF
     /// <remarks>
     /// In the event of an error you will be passed an instance of <see cref="AsyncError"/> which will contain the error and the original state information you passed into the method that took this callback.
     /// </remarks>
-    public delegate void NodeListCallback(List<INode> nodes, Object state);
+    public delegate void NodeListCallback(List<INode> nodes, object state);
 
     /// <summary>
     /// Marker that will be passed to your callback in the event that an async error occurs, provides access to the error and any state that you passed in originally.
@@ -133,7 +133,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ex">Exception.</param>
         /// <param name="state">State.</param>
-        public AsyncError(Exception ex, Object state)
+        public AsyncError(Exception ex, object state)
         {
             Error = ex;
             State = state;
@@ -147,7 +147,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the original state that was passed in to the async call.
         /// </summary>
-        public Object State { get; private set; }
+        public object State { get; private set; }
     }
 
 }
@@ -159,34 +159,34 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// </summary>
     /// <param name="server">Pellet Server.</param>
     /// <param name="state">State.</param>
-    public delegate void PelletServerReadyCallback(PelletServer server, Object state);
+    public delegate void PelletServerReadyCallback(PelletServer server, object state);
 
     /// <summary>
     /// Callback for Pellet Constistency Service.
     /// </summary>
     /// <param name="isConsistent">Whether the Knowledge Base is consistent.</param>
     /// <param name="state">State.</param>
-    public delegate void PelletConsistencyCallback(bool isConsistent, Object state);
+    public delegate void PelletConsistencyCallback(bool isConsistent, object state);
 
     /// <summary>
     /// Callback for Pellet Search Service.
     /// </summary>
     /// <param name="results">Pellet Search Results.</param>
     /// <param name="state">State.</param>
-    public delegate void PelletSearchServiceCallback(List<SearchServiceResult> results, Object state);
+    public delegate void PelletSearchServiceCallback(List<SearchServiceResult> results, object state);
 
     /// <summary>
     /// Callback for Pellet Cluster Service.
     /// </summary>
     /// <param name="clusters">Clusters.</param>
     /// <param name="state">State.</param>
-    public delegate void PelletClusterServiceCallback(List<List<INode>> clusters, Object state);
+    public delegate void PelletClusterServiceCallback(List<List<INode>> clusters, object state);
 
     /// <summary>
     /// Callback for Pellet Similarity Service.
     /// </summary>
     /// <param name="results">Similarity Results.</param>
     /// <param name="state">State.</param>
-    public delegate void PelletSimilarityServiceCallback(List<KeyValuePair<INode, double>> results, Object state);
+    public delegate void PelletSimilarityServiceCallback(List<KeyValuePair<INode, double>> results, object state);
 
 }

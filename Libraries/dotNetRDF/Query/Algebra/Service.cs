@@ -70,15 +70,15 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            bool bypassSilent = false;
+            var bypassSilent = false;
             try
             {
                 SparqlRemoteEndpoint endpoint;
                 Uri endpointUri;
-                String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
-                SparqlParameterizedString sparqlQuery = new SparqlParameterizedString("SELECT * WHERE ");
+                var baseUri = (context.Query.BaseUri == null) ? string.Empty : context.Query.BaseUri.AbsoluteUri;
+                var sparqlQuery = new SparqlParameterizedString("SELECT * WHERE ");
 
-                String pattern = _pattern.ToString();
+                var pattern = _pattern.ToString();
                 pattern = pattern.Substring(pattern.IndexOf('{'));
                 sparqlQuery.CommandText += pattern;
 
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     // Calculate a LIMIT which is the LIMIT plus the OFFSET
                     // We'll apply OFFSET locally so don't pass that through explicitly
-                    int limit = context.Query.Limit;
+                    var limit = context.Query.Limit;
                     if (context.Query.Offset > 0) limit += context.Query.Offset;
                     sparqlQuery.CommandText += " LIMIT " + limit;
                 }
@@ -101,9 +101,9 @@ namespace VDS.RDF.Query.Algebra
                 else if (_endpointSpecifier.TokenType == Token.VARIABLE)
                 {
                     // Get all the URIs that are bound to this Variable in the Input
-                    String var = _endpointSpecifier.Value.Substring(1);
+                    var var = _endpointSpecifier.Value.Substring(1);
                     if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
-                    List<IUriNode> services = new List<IUriNode>();
+                    var services = new List<IUriNode>();
                     foreach (ISet s in context.InputMultiset.Sets)
                     {
                         if (s.ContainsVariable(var))
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Algebra
                     services = services.Distinct().ToList();
 
                     // Now generate a Federated Remote Endpoint
-                    List<SparqlRemoteEndpoint> serviceEndpoints = new List<SparqlRemoteEndpoint>();
+                    var serviceEndpoints = new List<SparqlRemoteEndpoint>();
                     services.ForEach(u => serviceEndpoints.Add(new SparqlRemoteEndpoint(u.Uri)));
                     endpoint = new FederatedSparqlRemoteEndpoint(serviceEndpoints);
                 }
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Algebra
 
                 // Where possible do substitution and execution to get accurate and correct SERVICE results
                 context.OutputMultiset = new Multiset();
-                List<String> existingVars = (from v in _pattern.Variables
+                var existingVars = (from v in _pattern.Variables
                                              where context.InputMultiset.ContainsVariable(v)
                                              select v).ToList();
 
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Algebra
                     // Pre-bound variables/BINDINGS clause so do substitution and execution
 
                     // Build the set of possible bindings
-                    HashSet<ISet> bindings = new HashSet<ISet>();
+                    var bindings = new HashSet<ISet>();
                     if (context.Query.Bindings != null && !_pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
                     {
                         // Possible Bindings comes from BINDINGS clause
@@ -156,8 +156,8 @@ namespace VDS.RDF.Query.Algebra
                         // In this case each possibility only contains Variables bound so far
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
-                            Set t = new Set();
-                            foreach (String var in existingVars)
+                            var t = new Set();
+                            foreach (var var in existingVars)
                             {
                                 t.Add(var, s[var]);
                             }
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         // Q: Should we continue processing here if and when we hit an error?
 
-                        foreach (String var in s.Variables)
+                        foreach (var var in s.Variables)
                         {
                             sparqlQuery.SetVariable(var, s[var]);
                         }
@@ -179,8 +179,8 @@ namespace VDS.RDF.Query.Algebra
 
                         foreach (SparqlResult r in results)
                         {
-                            Set t = new Set(r);
-                            foreach (String var in s.Variables)
+                            var t = new Set(r);
+                            foreach (var var in s.Variables)
                             {
                                 t.Add(var, s[var]);
                             }
@@ -215,8 +215,8 @@ namespace VDS.RDF.Query.Algebra
                     // Unless some of the SPARQL queries did return results in which we just return the results we did obtain
                     if (context.OutputMultiset.IsEmpty)
                     {
-                        Set s = new Set();
-                        foreach (String var in _pattern.Variables.Distinct())
+                        var s = new Set();
+                        foreach (var var in _pattern.Variables.Distinct())
                         {
                             s.Add(var, null);
                         }
@@ -234,13 +234,13 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
                 if (_endpointSpecifier.TokenType == Token.VARIABLE)
                 {
-                    String serviceVar = ((VariableToken)_endpointSpecifier).Value.Substring(1);
+                    var serviceVar = ((VariableToken)_endpointSpecifier).Value.Substring(1);
                     return _pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
                 }
                 else
@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
@@ -265,7 +265,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return Enumerable.Empty<String>(); } }
+        public IEnumerable<string> FixedVariables { get { return Enumerable.Empty<string>(); } }
 
         /// <summary>
         /// Gets the Endpoint Specifier.
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -316,7 +316,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern(_pattern);
+            var p = new GraphPattern(_pattern);
             if (!p.HasModifier)
             {
                 p.IsService = true;
@@ -325,7 +325,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                GraphPattern parent = new GraphPattern();
+                var parent = new GraphPattern();
                 parent.IsService = true;
                 parent.GraphSpecifier = _endpointSpecifier;
                 parent.AddGraphPattern(p);

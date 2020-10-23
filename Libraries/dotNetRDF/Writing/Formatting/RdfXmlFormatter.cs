@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing.Formatting
     {
         private QNameOutputMapper _mapper;
 
-        private String GetGraphHeaderBase()
+        private string GetGraphHeaderBase()
         {
             return @"<?xml version=""1.0"" encoding=""utf-8""?>
 <rdf:RDF xmlns:rdf=""" + NamespaceMapper.RDF + "\"";
@@ -53,13 +53,13 @@ namespace VDS.RDF.Writing.Formatting
         public string FormatGraphHeader(IGraph g)
         {
             _mapper = new QNameOutputMapper(g.NamespaceMap);
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(GetGraphHeaderBase());
-            foreach (String prefix in g.NamespaceMap.Prefixes)
+            foreach (var prefix in g.NamespaceMap.Prefixes)
             {
                 if (!prefix.Equals("rdf"))
                 {
-                    if (prefix.Equals(String.Empty))
+                    if (prefix.Equals(string.Empty))
                     {
                         output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
@@ -85,13 +85,13 @@ namespace VDS.RDF.Writing.Formatting
         public string FormatGraphHeader(INamespaceMapper namespaces)
         {
             _mapper = new QNameOutputMapper(namespaces);
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(GetGraphHeaderBase());
-            foreach (String prefix in namespaces.Prefixes)
+            foreach (var prefix in namespaces.Prefixes)
             {
                 if (!prefix.Equals("rdf"))
                 {
-                    if (prefix.Equals(String.Empty))
+                    if (prefix.Equals(string.Empty))
                     {
                         output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(namespaces.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
@@ -123,15 +123,15 @@ namespace VDS.RDF.Writing.Formatting
             return "</rdf:RDF>";
         }
 
-        private void GetQName(Uri u, out String qname, out String ns)
+        private void GetQName(Uri u, out string qname, out string ns)
         {
             if (_mapper != null && _mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 // Succesfully reduced to a QName using the known namespaces
-                ns = String.Empty;
+                ns = string.Empty;
                 return;
             }
-            else if (!u.Fragment.Equals(String.Empty))
+            else if (!u.Fragment.Equals(string.Empty))
             {
                 ns = u.AbsoluteUri.Substring(0, u.AbsoluteUri.Length - u.Fragment.Length + 1);
                 qname = u.Fragment.Substring(1);
@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string Format(Triple t)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("<rdf:Description ");
             switch (t.Subject.NodeType)
             {
@@ -172,15 +172,15 @@ namespace VDS.RDF.Writing.Formatting
             }
             output.AppendLine(">");
 
-            String qname;
-            String ns;
+            string qname;
+            string ns;
             switch (t.Predicate.NodeType)
             {
                 case NodeType.Uri:
                     Uri u = ((IUriNode)t.Predicate).Uri;
                     GetQName(u, out qname, out ns);
                     output.Append('\t');
-                    if (ns.Equals(String.Empty))
+                    if (ns.Equals(string.Empty))
                     {
                         output.Append("<" + qname);
                     }

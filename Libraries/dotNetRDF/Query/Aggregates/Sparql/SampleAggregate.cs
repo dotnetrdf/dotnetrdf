@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
             // Try the expression with each member of the Group until we find a non-null
-            foreach (int id in bindingIDs)
+            foreach (var id in bindingIDs)
             {
                 try
                 {

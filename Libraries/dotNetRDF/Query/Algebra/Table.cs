@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {

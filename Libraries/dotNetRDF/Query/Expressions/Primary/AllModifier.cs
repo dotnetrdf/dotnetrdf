@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return Enumerable.Empty<String>();
+                return Enumerable.Empty<string>();
             }
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public String Functor
+        public string Functor
         {
             get
             {

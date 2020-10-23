@@ -159,19 +159,19 @@ namespace VDS.RDF.Query.Spin.Statistics
 
         public void setRecording(bool value)
         {
-            this._recording = value;
+            _recording = value;
         }
 
 
         public void setRecordingNativeFunctions(bool value)
         {
-            this._recordingNativeFunctions = value;
+            _recordingNativeFunctions = value;
         }
 
 
         public void setRecordingSPINFunctions(bool value)
         {
-            this._recordingSPINFunctions = value;
+            _recordingSPINFunctions = value;
         }
     }
 }

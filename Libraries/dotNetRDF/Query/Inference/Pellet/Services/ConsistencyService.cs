@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal ConsistencyService(String name, JObject obj)
+        internal ConsistencyService(string name, JObject obj)
             : base(name, obj) { }
 
         /// <summary>
@@ -51,16 +51,16 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         public bool IsConsistent()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                    SparqlResultSet results = new SparqlResultSet();
+                    var results = new SparqlResultSet();
                     parser.Load(results, new StreamReader(response.GetResponseStream()));
 
                     // Expect a boolean result set
@@ -85,9 +85,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void IsConsistent(PelletConsistencyCallback callback, Object state)
+        public void IsConsistent(PelletConsistencyCallback callback, object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
@@ -97,10 +97,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                                SparqlResultSet results = new SparqlResultSet();
+                                var results = new SparqlResultSet();
                                 parser.Load(results, new StreamReader(response.GetResponseStream()));
 
                                 // Expect a boolean result set

@@ -354,7 +354,7 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        Object ExecuteQuery(String query);
+        object ExecuteQuery(string query);
 
         /// <summary>
         /// Executes a SPARQL Query on the Triple Store.
@@ -370,7 +370,7 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        Object ExecuteQuery(SparqlQuery query);
+        object ExecuteQuery(SparqlQuery query);
 
         /// <summary>
         /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided.
@@ -388,7 +388,7 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
+        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query);
 
         /// <summary>
         /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided.
@@ -428,7 +428,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This assumes that the Store has access to some native SPARQL query processor on/at the Store which will be used to return the results.  Implementations should parse the returned result into a <see cref="SparqlResultSet">SparqlResultSet</see> or <see cref="Graph">Graph</see>.
         /// </remarks>
-        Object ExecuteQuery(String query);
+        object ExecuteQuery(string query);
 
         /// <summary>
         /// Executes a SPARQL Query on the Triple Store processing the results using an appropriate handler from those provided.
@@ -436,7 +436,7 @@ namespace VDS.RDF
         /// <param name="rdfHandler">RDF Handler.</param>
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="query">SPARQL Query as unparsed String.</param>
-        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
+        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query);
     }
 
     /// <summary>
@@ -460,7 +460,7 @@ namespace VDS.RDF
         /// <remarks>
         /// As per the SPARQL 1.1 Update specification the command string may be a sequence of commands.
         /// </remarks>
-        void ExecuteUpdate(String update);
+        void ExecuteUpdate(string update);
 
         /// <summary>
         /// Executes a single Update Command against the Triple Store.

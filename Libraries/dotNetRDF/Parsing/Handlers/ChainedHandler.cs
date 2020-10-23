@@ -54,9 +54,9 @@ namespace VDS.RDF.Parsing.Handlers
             _handlers.AddRange(handlers);
 
             // Check there are no identical handlers in the List
-            for (int i = 0; i < _handlers.Count; i++)
+            for (var i = 0; i < _handlers.Count; i++)
             {
-                for (int j = i + 1; j < _handlers.Count; j++)
+                for (var j = i + 1; j < _handlers.Count; j++)
                 {
                     if (ReferenceEquals(_handlers[i], _handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
                 }

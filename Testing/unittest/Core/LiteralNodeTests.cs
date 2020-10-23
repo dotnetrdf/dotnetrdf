@@ -85,8 +85,8 @@ namespace VDS.RDF
                 culture.NumberFormat.NegativeSign = "!";
                 Thread.CurrentThread.CurrentCulture = culture;
 
-                TurtleFormatter formatter = new TurtleFormatter();
-                String fmtStr = formatter.Format((-1).ToLiteral(factory));
+                var formatter = new TurtleFormatter();
+                var fmtStr = formatter.Format((-1).ToLiteral(factory));
                 Assert.Equal("-1 ", fmtStr);
                 fmtStr = formatter.Format((-1.2m).ToLiteral(factory));
                 Assert.Equal("-1.2", fmtStr);
@@ -101,12 +101,12 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             ILiteralNode litNow = now.ToLiteral(factory);
 
             //Print out
             Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
@@ -122,12 +122,12 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision2()
         {
             DateTime now = DateTime.Now;
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             ILiteralNode litNow = now.ToLiteral(factory);
 
             //Print out
             Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
@@ -143,12 +143,12 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision3()
         {
             DateTimeOffset now = DateTimeOffset.Now;
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             ILiteralNode litNow = now.ToLiteral(factory, false);
 
             //Print out
             Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
@@ -164,12 +164,12 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision4()
         {
             DateTime now = DateTime.Now;
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             ILiteralNode litNow = now.ToLiteral(factory, false);
 
             //Print out
             Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
@@ -184,7 +184,7 @@ namespace VDS.RDF
         [Fact]
         public void NodeLiteralLanguageSpecifierCase1()
         {
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
 
@@ -194,7 +194,7 @@ namespace VDS.RDF
         [Fact]
         public void NodeLiteralLanguageSpecifierCase2()
         {
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
 

@@ -43,7 +43,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlFunctionsIsNumeric()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
 
@@ -57,10 +57,10 @@ namespace VDS.RDF.Query
             g.Assert(subj, pred, g.CreateLiteralNode("-50", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte)));
             g.Assert(subj, pred, g.CreateUriNode(new Uri("http://example.org")));
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(g);
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT ?obj (IsNumeric(?obj) AS ?IsNumeric) WHERE { ?s ?p ?obj }");
 
             var processor = new LeviathanQueryProcessor(store);
@@ -73,20 +73,20 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlFunctionsNow()
         {
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromFile("resources\\now01.rq");
 
             Console.WriteLine("ToString Output:");
             Console.WriteLine(q.ToString());
             Console.WriteLine();
 
-            SparqlFormatter formatter = new SparqlFormatter();
+            var formatter = new SparqlFormatter();
             Console.WriteLine("SparqlFormatter Output:");
             Console.WriteLine(formatter.Format(q));
 
-            TripleStore store = new TripleStore();
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            var store = new TripleStore();
+            var processor = new LeviathanQueryProcessor(store);
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results != null)
             {
                 Assert.True(results.Result, "Result should be true");
@@ -100,14 +100,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlFunctionsRand()
         {
-            String query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
-            Graph g = new Graph();
+            var query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(query);
+            var results = g.ExecuteQuery(query);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
             }
             else
@@ -119,13 +119,13 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlOrderByNonDeterministic()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
-            Graph g = new Graph();
+            var query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 50; i++)
             {
-                Object results = g.ExecuteQuery(query);
+                var results = g.ExecuteQuery(query);
                 if (results is SparqlResultSet)
                 {
                     Console.WriteLine("Run #" + (i+1) + " OK");

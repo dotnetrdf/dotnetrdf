@@ -46,7 +46,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Boolean Value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>
-        public BooleanNode(IGraph g, bool value, String lexicalValue, bool normalizeValue = false)
+        public BooleanNode(IGraph g, bool value, string lexicalValue, bool normalizeValue = false)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
         {
             _value = value;
@@ -143,7 +143,7 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
-        public String EffectiveType
+        public string EffectiveType
         {
             get
             {

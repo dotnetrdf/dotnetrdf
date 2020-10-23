@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Spin.Model
         // TODO relocate this into the SparqlWrapperDataset
         public List<QueryOrTemplateCall> getQueriesAndTemplateCalls(INode predicate)
         {
-            List<QueryOrTemplateCall> results = new List<QueryOrTemplateCall>();
+            var results = new List<QueryOrTemplateCall>();
             //SparqlParameterizedString queryString = new SparqlParameterizedString("SELECT DISTINCT ?class WHERE {@instance a ?class}");
             //queryString.SetParameter("instance", getSource());
             //IEnumerator<SparqlResult> types = ((SparqlResultSet)getModel().Query(queryString.ToString())).Results.GetEnumerator();

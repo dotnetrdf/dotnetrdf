@@ -35,7 +35,7 @@ namespace VDS.RDF
     /// </summary>
     public class NestedNamespaceMapper : INestedNamespaceMapper
     {
-        private Dictionary<String, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
+        private Dictionary<string, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
         private Dictionary<int, List<NestedMapping>> _prefixes = new Dictionary<int, List<NestedMapping>>();
         private int _level = 0;
 
@@ -69,7 +69,7 @@ namespace VDS.RDF
         public void AddNamespace(string prefix, Uri uri)
         {
             if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
-            NestedMapping mapping = new NestedMapping(prefix, uri, _level);
+            var mapping = new NestedMapping(prefix, uri, _level);
             if (!_prefixes.ContainsKey(uri.GetEnhancedHashCode())) _prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
 
             if (_uris.ContainsKey(prefix))
@@ -136,7 +136,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string GetPrefix(Uri uri)
         {
-            int hash = uri.GetEnhancedHashCode();
+            var hash = uri.GetEnhancedHashCode();
             if (_prefixes.ContainsKey(hash))
             {
                 return _prefixes[hash].Last().Prefix;
@@ -152,7 +152,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Prefix.</param>
         /// <returns></returns>
-        public int GetNestingLevel(String prefix)
+        public int GetNestingLevel(string prefix)
         {
             if (_uris.ContainsKey(prefix))
             {
@@ -180,9 +180,9 @@ namespace VDS.RDF
         /// <param name="nsmap">Namespace Map.</param>
         public void Import(INamespaceMapper nsmap)
         {
-            String tempPrefix = "ns0";
-            int tempPrefixID = 0;
-            foreach (String prefix in nsmap.Prefixes)
+            var tempPrefix = "ns0";
+            var tempPrefixID = 0;
+            foreach (var prefix in nsmap.Prefixes)
             {
                 if (!_uris.ContainsKey(prefix))
                 {
@@ -225,15 +225,15 @@ namespace VDS.RDF
             _level--;
             if (_level > 0)
             {
-                foreach (String prefix in _uris.Keys)
+                foreach (var prefix in _uris.Keys)
                 {
                     _uris[prefix].RemoveAll(m => m.Level > _level);
                 }
-                foreach (int u in _prefixes.Keys)
+                foreach (var u in _prefixes.Keys)
                 {
                     _prefixes[u].RemoveAll(m => m.Level > _level);
                 }
-                foreach (KeyValuePair<String, List<NestedMapping>> mapping in _uris.ToList())
+                foreach (KeyValuePair<string, List<NestedMapping>> mapping in _uris.ToList())
                 {
                     if (mapping.Value.Count == 0) _uris.Remove(mapping.Key);
                 }
@@ -275,7 +275,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Namespace Prefix.</param>
         /// <param name="uri">Namespace Uri.</param>
-        protected virtual void RaiseNamespaceAdded(String prefix, Uri uri)
+        protected virtual void RaiseNamespaceAdded(string prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceAdded;
             if (handler != null)
@@ -289,7 +289,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Namespace Prefix.</param>
         /// <param name="uri">Namespace Uri.</param>
-        protected virtual void RaiseNamespaceModified(String prefix, Uri uri)
+        protected virtual void RaiseNamespaceModified(string prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceModified;
             if (handler != null)
@@ -303,7 +303,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Namespace Prefix.</param>
         /// <param name="uri">Namespace Uri.</param>
-        protected virtual void OnNamespaceRemoved(String prefix, Uri uri)
+        protected virtual void OnNamespaceRemoved(string prefix, Uri uri)
         {
             NamespaceChanged handler = NamespaceRemoved;
             if (handler != null)
@@ -333,7 +333,7 @@ namespace VDS.RDF
         {
             foreach (Uri u in _uris.Values.Select(l => l.Last().Uri))
             {
-                String baseuri = u.AbsoluteUri;
+                var baseuri = u.AbsoluteUri;
 
                 // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -349,7 +349,7 @@ namespace VDS.RDF
             }
 
             // Failed to find a Reduction
-            qname = String.Empty;
+            qname = string.Empty;
             return false;
         }
 
@@ -367,7 +367,7 @@ namespace VDS.RDF
                     _uris[prefix].RemoveAt(_uris[prefix].Count - 1);
                     if (_uris[prefix].Count == 0) _uris.Remove(prefix);
                     Uri nsUri = GetNamespaceUri(prefix);
-                    int hash = nsUri.GetEnhancedHashCode();
+                    var hash = nsUri.GetEnhancedHashCode();
                     _prefixes[hash].RemoveAt(_prefixes[hash].Count - 1);
                     if (_prefixes[hash].Count == 0) _prefixes.Remove(hash);
                     OnNamespaceRemoved(prefix, nsUri);
@@ -392,7 +392,7 @@ namespace VDS.RDF
     class NestedMapping
     {
         private int _level;
-        private String _prefix;
+        private string _prefix;
         private Uri _uri;
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace VDS.RDF
         /// <param name="prefix">Prefix.</param>
         /// <param name="uri">Namespace URI.</param>
         /// <param name="level">Nesting Level.</param>
-        public NestedMapping(String prefix, Uri uri, int level)
+        public NestedMapping(string prefix, Uri uri, int level)
         {
             _prefix = prefix;
             _uri = uri;
@@ -413,7 +413,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Prefix.</param>
         /// <param name="uri">Namespace URI.</param>
-        public NestedMapping(String prefix, Uri uri)
+        public NestedMapping(string prefix, Uri uri)
             : this(prefix, uri, 0) { }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Namespace Prefix.
         /// </summary>
-        public String Prefix
+        public string Prefix
         {
             get 
             {

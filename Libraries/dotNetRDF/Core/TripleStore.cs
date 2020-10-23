@@ -340,10 +340,10 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual Object ExecuteQuery(String query)
+        public virtual object ExecuteQuery(string query)
         {
             // Parse the Query
-            SparqlQueryParser sparqlparser = new SparqlQueryParser();
+            var sparqlparser = new SparqlQueryParser();
             SparqlQuery q = sparqlparser.ParseFromString(query);
 
             // Invoke other execute method
@@ -364,7 +364,7 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual Object ExecuteQuery(SparqlQuery query)
+        public virtual object ExecuteQuery(SparqlQuery query)
         {
             if (_processor == null) _processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
             return _processor.ProcessQuery(query);
@@ -385,10 +385,10 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
+        public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
             // Parse the Query
-            SparqlQueryParser sparqlparser = new SparqlQueryParser();
+            var sparqlparser = new SparqlQueryParser();
             SparqlQuery q = sparqlparser.ParseFromString(query);
 
             // Invoke other execute method
@@ -522,7 +522,7 @@ namespace VDS.RDF
         /// </remarks>
         public void ExecuteUpdate(string update)
         {
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet commandSet = parser.ParseFromString(update);
             ExecuteUpdate(commandSet);
         }
@@ -533,7 +533,7 @@ namespace VDS.RDF
         /// <param name="update">SPARQL Update Command.</param>
         public void ExecuteUpdate(SparqlUpdateCommand update)
         {
-            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
+            var context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
             update.Evaluate(context);
         }
 
@@ -543,9 +543,9 @@ namespace VDS.RDF
         /// <param name="updates">SPARQL Update Command Set.</param>
         public void ExecuteUpdate(SparqlUpdateCommandSet updates)
         {
-            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
+            var context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
 
-            for (int i = 0; i < updates.CommandCount; i++)
+            for (var i = 0; i < updates.CommandCount; i++)
             {
                 updates[i].Evaluate(context);
             }

@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(ISparqlResultsHandler handler, String filename)
+        public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             Load(handler, new StreamReader(File.OpenRead(filename)));
@@ -128,14 +128,14 @@ namespace VDS.RDF.Parsing
             Parse(context, input.ReadToEnd());
         }
 
-        private void Parse(IResultsParserContext context, String data)
+        private void Parse(IResultsParserContext context, string data)
         {
             try
             {
                 context.Handler.StartResults();
 
                 bool result;
-                if (Boolean.TryParse(data.Trim(), out result))
+                if (bool.TryParse(data.Trim(), out result))
                 {
                     context.Handler.HandleBooleanResult(result);
                 }
@@ -161,7 +161,7 @@ namespace VDS.RDF.Parsing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

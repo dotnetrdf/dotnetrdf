@@ -40,23 +40,23 @@ namespace VDS.RDF.Parsing.Suites
             : base(new TriGParser(), new NQuadsParser(), "trig\\")
         {
             _testOutputHelper = testOutputHelper;
-            this.CheckResults = false;
+            CheckResults = false;
         }
 
         [Fact]
         public void ParsingSuiteTriG()
         {
             //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".trig") && !f.Contains("bad"), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".trig") && f.Contains("bad"), false);
+            RunDirectory(f => Path.GetExtension(f).Equals(".trig") && !f.Contains("bad"), true);
+            RunDirectory(f => Path.GetExtension(f).Equals(".trig") && f.Contains("bad"), false);
 
-            if (this.Count == 0) Assert.True(false, "No tests found");
+            if (Count == 0) Assert.True(false, "No tests found");
 
-            _testOutputHelper.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
-            _testOutputHelper.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            _testOutputHelper.WriteLine((((double)Passed / (double)Count) * 100) + "% Passed");
 
-            if (this.Failed > 0) Assert.True(false, this.Failed + " Tests failed");
-            Skip.If(Indeterminate > 0, this.Indeterminate + " Tests are indeterminate");
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed");
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
         }
     }
 }

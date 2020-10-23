@@ -57,16 +57,16 @@ namespace VDS.RDF.Query.Optimisation
             {
                 if (algebra is Filter)
                 {
-                    Filter f = (Filter)algebra;
-                    String var;
+                    var f = (Filter)algebra;
+                    string var;
                     INode term;
-                    bool equals = false;
+                    var equals = false;
                     if (IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
                     {
                         try
                         {
                             // Try to use the extend style optimization
-                            VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(var, term);
+                            var transformer = new VariableSubstitutionTransformer(var, term);
                             ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
                             return new Extend(extAlgebra, new ConstantTerm(term), var);
                         }
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="term">Term.</param>
         /// <param name="equals">Whether it is an equals expression (true) or a same term expression (false).</param>
         /// <returns></returns>
-        private bool IsIdentityExpression(ISparqlExpression expr, out String var, out INode term, out bool equals)
+        private bool IsIdentityExpression(ISparqlExpression expr, out string var, out INode term, out bool equals)
         {
             var = null;
             term = null;
@@ -124,13 +124,13 @@ namespace VDS.RDF.Query.Optimisation
             if (expr is EqualsExpression)
             {
                 equals = true;
-                EqualsExpression eq = (EqualsExpression)expr;
+                var eq = (EqualsExpression)expr;
                 lhs = eq.Arguments.First();
                 rhs = eq.Arguments.Last();
             } 
             else if (expr is SameTermFunction)
             {
-                SameTermFunction st = (SameTermFunction)expr;
+                var st = (SameTermFunction)expr;
                 lhs = st.Arguments.First();
                 rhs = st.Arguments.Last();
             }

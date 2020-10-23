@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (!System.IO.File.Exists("write_to_store_handler_tests_temp.ttl"))
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
                 g.SaveToFile("write_to_store_handler_tests_temp.ttl");
             }
@@ -62,12 +62,12 @@ namespace VDS.RDF.Parsing.Handlers
             }
             else
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = TestGraphUri;
                 manager.SaveGraph(g);
             }
 
-            Graph temp = new Graph();
+            var temp = new Graph();
             try
             {
                 manager.LoadGraph(temp, TestGraphUri);
@@ -78,14 +78,14 @@ namespace VDS.RDF.Parsing.Handlers
                 //An Error Loading the Graph is OK
             }
 
-            WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri, 100);
-            TurtleParser parser = new TurtleParser();
+            var handler = new WriteToStoreHandler(manager, TestGraphUri, 100);
+            var parser = new TurtleParser();
             parser.Load(handler, "write_to_store_handler_tests_temp.ttl");
 
             manager.LoadGraph(temp, TestGraphUri);
             Assert.False(temp.IsEmpty, "Graph should not be empty");
 
-            Graph orig = new Graph();
+            var orig = new Graph();
             orig.LoadFromFile("write_to_store_handler_tests_temp.ttl");
 
             Assert.Equal(orig, temp);
@@ -93,14 +93,14 @@ namespace VDS.RDF.Parsing.Handlers
 
         private void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
         {
-            NodeFactory factory = new NodeFactory();
+            var factory = new NodeFactory();
             INode a = factory.CreateUriNode(new Uri("http://example.org/a"));
             INode b = factory.CreateUriNode(new Uri("http://example.org/b"));
             INode c = factory.CreateUriNode(new Uri("http://example.org/c"));
             INode d = factory.CreateUriNode(new Uri("http://example.org/d"));
 
-            Uri graphB = new Uri("http://example.org/graphs/b");
-            Uri graphD = new Uri("http://example.org/graphs/d");
+            var graphB = new Uri("http://example.org/graphs/b");
+            var graphD = new Uri("http://example.org/graphs/d");
 
             //Try to ensure that the target Graphs do not exist
             if (manager.DeleteSupported)
@@ -111,7 +111,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             else
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = TestGraphUri;
                 manager.SaveGraph(g);
                 g.BaseUri = graphB;
@@ -121,16 +121,16 @@ namespace VDS.RDF.Parsing.Handlers
             }
 
             //Do the parsing and thus the loading
-            WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri);
-            NQuadsParser parser = new NQuadsParser();
+            var handler = new WriteToStoreHandler(manager, TestGraphUri);
+            var parser = new NQuadsParser();
             parser.Load(handler, File.OpenText("resources\\writetostore.nq"));
 
             //Load the expected Graphs
-            Graph def = new Graph();
+            var def = new Graph();
             manager.LoadGraph(def, TestGraphUri);
-            Graph gB = new Graph();
+            var gB = new Graph();
             manager.LoadGraph(gB, graphB);
-            Graph gD = new Graph();
+            var gD = new Graph();
             manager.LoadGraph(gD, graphD);
 
             Assert.Equal(2, def.Triples.Count);
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         private void TestWriteToStoreHandlerWithBNodes(IStorageProvider manager)
         {
-            String fragment = "@prefix : <http://example.org/>. :subj :has [ a :BNode ; :with \"value\" ] .";
+            var fragment = "@prefix : <http://example.org/>. :subj :has [ a :BNode ; :with \"value\" ] .";
 
             //Try to ensure that the target Graph does not exist
             if (manager.DeleteSupported)
@@ -153,25 +153,25 @@ namespace VDS.RDF.Parsing.Handlers
             } 
             else 
             {
-                Graph temp = new Graph();
+                var temp = new Graph();
                 temp.BaseUri = TestBNodeUri;
                 manager.SaveGraph(temp);
             }
 
             //Then write to the store
-            TurtleParser parser = new TurtleParser();
-            WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestBNodeUri, 1);
+            var parser = new TurtleParser();
+            var handler = new WriteToStoreHandler(manager, TestBNodeUri, 1);
             parser.Load(handler, new StringReader(fragment));
 
             //Then load back the data and check it
-            Graph g = new Graph();
+            var g = new Graph();
             manager.LoadGraph(g, TestBNodeUri);
 
             Assert.Equal(3, g.Triples.Count);
-            List<IBlankNode> nodes = g.Nodes.BlankNodes().ToList();
-            for (int i = 0; i < nodes.Count; i++)
+            var nodes = g.Nodes.BlankNodes().ToList();
+            for (var i = 0; i < nodes.Count; i++)
             {
-                for (int j = 0; j < nodes.Count; j++)
+                for (var j = 0; j < nodes.Count; j++)
                 {
                     if (i == j) continue;
                     Assert.Equal(nodes[i], nodes[j]);
@@ -200,22 +200,22 @@ namespace VDS.RDF.Parsing.Handlers
         [SkippableFact]
         public void ParsingWriteToStoreHandlerInMemory()
         {
-            InMemoryManager mem = new InMemoryManager();
-            this.TestWriteToStoreHandler(mem);
+            var mem = new InMemoryManager();
+            TestWriteToStoreHandler(mem);
         }
 
         [SkippableFact]
         public void ParsingWriteToStoreHandlerDatasetsInMemory()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestWriteToStoreDatasetsHandler(manager);
+            var manager = new InMemoryManager();
+            TestWriteToStoreDatasetsHandler(manager);
         }
 
         [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestWriteToStoreHandlerWithBNodes(manager);
+            var manager = new InMemoryManager();
+            TestWriteToStoreHandlerWithBNodes(manager);
         }
 
 #if !NO_VIRTUOSO
@@ -223,28 +223,28 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingWriteToStoreHandlerVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandler(virtuoso);
+            TestWriteToStoreHandler(virtuoso);
         }
 
         [SkippableFact]
         public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreDatasetsHandler(virtuoso);
+            TestWriteToStoreDatasetsHandler(virtuoso);
         }
 
         [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
+            TestWriteToStoreHandlerWithBNodes(virtuoso);
         }
 #endif
         [SkippableFact]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-            this.TestWriteToStoreHandler(agraph);
+            TestWriteToStoreHandler(agraph);
         }
 
         [SkippableFact]
@@ -254,7 +254,7 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 UriLoader.CacheEnabled = false;
                 FusekiConnector fuseki = FusekiTest.GetConnection();
-                this.TestWriteToStoreHandler(fuseki);
+                TestWriteToStoreHandler(fuseki);
             }
             finally
             {
@@ -266,14 +266,14 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
         {
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(agraph);
+            TestWriteToStoreHandlerWithBNodes(agraph);
         }
 
         [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestWriteToStoreHandlerWithBNodes(fuseki);
+            TestWriteToStoreHandlerWithBNodes(fuseki);
         }
 
     }

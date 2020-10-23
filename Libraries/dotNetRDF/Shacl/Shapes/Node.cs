@@ -24,10 +24,10 @@
 // </copyright>
 */
 
+using System.Diagnostics;
+
 namespace VDS.RDF.Shacl.Shapes
 {
-    using System.Diagnostics;
-
     internal class Node : Shape
     {
         [DebuggerStepThrough]

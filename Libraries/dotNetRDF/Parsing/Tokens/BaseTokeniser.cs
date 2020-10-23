@@ -76,7 +76,7 @@ namespace VDS.RDF.Parsing.Tokens
         private int _startpos = 1;
         private int _endpos = 1;
         private int _currpos = 1;
-        private String _format = "Unknown";
+        private string _format = "Unknown";
         private int _lasttokentype = -1;
         private char? _tempChar;
 
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// Gets/Sets the Format that this Tokeniser is used for.
         /// </summary>
         /// <remarks>The value set here will replace any instances of {0} specified in inputs to the <see cref="BaseTokeniser.Error">Error()</see> function allowing messages regarding certain syntaxes not being valid in a given format to be provided.</remarks>
-        protected String Format
+        protected string Format
         {
             get
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             if (_tempChar.HasValue)
             {
-                char c = (char)_tempChar;
+                var c = (char)_tempChar;
                 return c;
             }
             else
@@ -159,7 +159,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Gets the value of the Output Buffer.
         /// </summary>
-        protected String Value
+        protected string Value
         {
             get
             {
@@ -278,13 +278,13 @@ namespace VDS.RDF.Parsing.Tokens
         {
             if (_tempChar.HasValue)
             {
-                char c = (char)_tempChar;
+                var c = (char)_tempChar;
                 _tempChar = null;
                 _output.Append(c);
                 return;
             }
 
-            int temp = _reader.Read();
+            var temp = _reader.Read();
             if (temp > -1)
             {
                 _output.Append((char)temp);
@@ -312,7 +312,7 @@ namespace VDS.RDF.Parsing.Tokens
                 ConsumeCharacter();
                 return false;
             }
-            int temp = _reader.Read();
+            var temp = _reader.Read();
             if (temp <= -1) return true;
             _output.Append((char) temp);
             _currpos++;
@@ -336,13 +336,13 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="allowEOF">Whether EOF is permitted instead of a New Line.</param>
         protected void ConsumeNewLine(bool asOutput, bool allowEOF)
         {
-            int c = _reader.Peek();
+            var c = _reader.Peek();
             if (c == -1)
             {
                 if (!allowEOF) throw UnexpectedEndOfInput(", expected a New Line");
                 return;
             }
-            char next = (char)c;
+            var next = (char)c;
 
             switch (next)
             {
@@ -407,12 +407,12 @@ namespace VDS.RDF.Parsing.Tokens
         {
             if (_tempChar.HasValue)
             {
-                char c = (char)_tempChar;
+                var c = (char)_tempChar;
                 _tempChar = null;
                 return c;
             }
 
-            int temp = _reader.Read();
+            var temp = _reader.Read();
             if (temp > -1)
             {
                 _currpos++;
@@ -430,9 +430,9 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void DiscardWhiteSpace()
         {
-            char next = Peek();
+            var next = Peek();
 
-            while (Char.IsWhiteSpace(next))
+            while (char.IsWhiteSpace(next))
             {
                 switch (next)
                 {
@@ -461,14 +461,14 @@ namespace VDS.RDF.Parsing.Tokens
         protected void HandleEscapes(TokeniserEscapeMode mode)
         {
             // Grab the first character which must be a \
-            char next = SkipCharacter();
+            var next = SkipCharacter();
 
             if (next != '\\') throw Error("HandleEscapes() was called but the first character was not a \\ as expected");
 
             // Stuff for Unicode escapes
             StringBuilder localOutput;
 
-            bool isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth);
+            var isLiteral = (mode == TokeniserEscapeMode.QuotedLiterals || mode == TokeniserEscapeMode.QuotedLiteralsAlternate || mode == TokeniserEscapeMode.QuotedLiteralsBoth);
 
             next = Peek();
             switch (next)
@@ -627,7 +627,7 @@ namespace VDS.RDF.Parsing.Tokens
         protected void HandleComplexLocalNameEscapes()
         {
             // Grab the first character which must be a \ or %
-            char next = SkipCharacter();
+            var next = SkipCharacter();
 
             // Stuff for Unicode/Hex escapes
 
@@ -674,7 +674,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw Error("HandleComplexLocalNameEscapes() was called but the next character is not a % or \\ as expected");
             }
-            StringBuilder localOutput = new StringBuilder();
+            var localOutput = new StringBuilder();
             localOutput.Append(next);
 
             next = Peek();
@@ -705,7 +705,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         protected bool IsHexDigit(char c)
         {
-            if (Char.IsDigit(c))
+            if (char.IsDigit(c))
             {
                 return true;
             }
@@ -737,12 +737,12 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="detail">The Error Message.</param>
         /// <returns></returns>
-        protected RdfParseException Error(String detail)
+        protected RdfParseException Error(string detail)
         {
             _reader.Close();
             if (detail.Contains("{0}"))
             {
-                return new RdfParseException("[Line " + _currline + " Column " + _currpos + "] " + String.Format(detail, _format), _currline, _currpos);
+                return new RdfParseException("[Line " + _currline + " Column " + _currpos + "] " + string.Format(detail, _format), _currline, _currpos);
             }
             else
             {
@@ -756,11 +756,11 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="c">Unexpected Character.</param>
         /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation).</param>
         /// <returns></returns>
-        protected RdfParseException UnexpectedCharacter(char c, String expected)
+        protected RdfParseException UnexpectedCharacter(char c, string expected)
         {
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             error.Append("Unexpected Character (Code " + (int)c + ") " + (char)c + " was encountered");
-            if (!expected.Equals(String.Empty))
+            if (!expected.Equals(string.Empty))
             {
                 error.Append(", " + expected);
             }
@@ -772,11 +772,11 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation).</param>
         /// <returns></returns>
-        protected RdfParseException UnexpectedEndOfInput(String expected)
+        protected RdfParseException UnexpectedEndOfInput(string expected)
         {
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             error.Append("[Line " + _startline + " Column " + _startpos + " to Line " + _currline + " Column " + _currpos + "] Unexpected end of input while trying to parse " + expected);
-            if (Value.Length > 0 && !Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
+            if (Value.Length > 0 && !Value.ToCharArray().All(c => char.IsWhiteSpace(c)))
             {
                 error.AppendLine(" from content:");
                 error.Append(Value);
@@ -789,11 +789,11 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation).</param>
         /// <returns></returns>
-        protected RdfParseException UnexpectedNewLine(String expected)
+        protected RdfParseException UnexpectedNewLine(string expected)
         {
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             error.AppendLine("[Line " + _startline + " Column " + _startpos + " to Line " + _currline + " Column " + _currpos + "] Unexpected new line while trying to parse " + expected + " from content:");
-            if (Value.Length > 0 && !Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
+            if (Value.Length > 0 && !Value.ToCharArray().All(c => char.IsWhiteSpace(c)))
             {
                 error.AppendLine(" from content:");
                 error.Append(Value);
@@ -807,9 +807,9 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="expected">Message detailing what was expected (may be empty if no explicity expectation).</param>
         /// <param name="t">Token that was parsed.</param>
         /// <returns></returns>
-        protected RdfParseException UnexpectedToken(String expected, IToken t)
+        protected RdfParseException UnexpectedToken(string expected, IToken t)
         {
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             error.Append("[Line " + t.StartLine + " Column " + t.StartPosition + " to Line " + t.EndLine + " Column " + t.EndPosition + "] Unexpected Token parsed " + expected);
             return new RdfParseException(error.ToString(), t);
         }

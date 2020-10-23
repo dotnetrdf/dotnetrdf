@@ -51,20 +51,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot evaluate factorial of a null");
-            long l = temp.AsInteger();
+            var l = temp.AsInteger();
 
             if (l == 0) return new LongNode(null, 0);
             long fac = 1;
             if (l > 0)
             {
-                for (long i = l; i > 1; i--)
+                for (var i = l; i > 1; i--)
                 {
                     fac = fac * i;
                 }
             }
             else
             {
-                for (long i = l; i < -1; i++)
+                for (var i = l; i < -1; i++)
                 {
                     fac = fac * i;
                 }

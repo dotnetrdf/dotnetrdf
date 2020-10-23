@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Builder
 
         private IriExpression Datatype(ISparqlExpression expression)
         {
-            var dataTypeFunction = SparqlVersion == SparqlQuerySyntax.Sparql_1_0
+            DataTypeFunction dataTypeFunction = SparqlVersion == SparqlQuerySyntax.Sparql_1_0
                                        ? new DataTypeFunction(expression)
                                        : new DataType11Function(expression);
             return new IriExpression(dataTypeFunction);

@@ -109,6 +109,9 @@ namespace VDS.RDF.Query
         /// </summary>
         public ISparqlDataset Data { get; }
 
+        /// <summary>
+        /// Get the configured query options for this evaluation context.
+        /// </summary>
         public LeviathanQueryOptions Options { get; }
 
         /// <summary>

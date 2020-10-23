@@ -42,17 +42,17 @@ namespace VDS.RDF.Writing
         public void WritingFormattingTriples()
         {
             //Create the Graph and define an additional namespace
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
             //Create URIs used for datatypes
-            Uri dtInt = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
-            Uri dtFloat = new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat);
-            Uri dtDouble = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble);
-            Uri dtDecimal = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
-            Uri dtBoolean = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
-            Uri dtUnknown = new Uri("http://example.org/unknownType");
-            Uri dtXmlLiteral = new Uri(RdfSpecsHelper.RdfXmlLiteral);
+            var dtInt = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
+            var dtFloat = new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat);
+            var dtDouble = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble);
+            var dtDecimal = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
+            var dtBoolean = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
+            var dtUnknown = new Uri("http://example.org/unknownType");
+            var dtXmlLiteral = new Uri(RdfSpecsHelper.RdfXmlLiteral);
 
             //Create Nodes used for our test Triples
             IBlankNode subjBnode = g.CreateBlankNode();
@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing
             ILiteralNode objUnknown = g.CreateLiteralNode("This is a literal with an unknown type", dtUnknown);
             ILiteralNode objXmlLiteral = g.CreateLiteralNode("<strong>XML Literal</strong>", dtXmlLiteral);
 
-            List<ITripleFormatter> formatters = new List<ITripleFormatter>()
+            var formatters = new List<ITripleFormatter>()
             {
                 new NTriplesFormatter(NTriplesSyntax.Original),
                 new NTriplesFormatter(NTriplesSyntax.Rdf11),
@@ -86,18 +86,18 @@ namespace VDS.RDF.Writing
                 new TsvFormatter(),
                 new RdfXmlFormatter()
             };
-            List<INode> subjects = new List<INode>()
+            var subjects = new List<INode>()
             {
                 subjBnode,
                 subjUri,
                 subjUri2
             };
-            List<INode> predicates = new List<INode>()
+            var predicates = new List<INode>()
             {
                 predUri,
                 predType
             };
-            List<INode> objects = new List<INode>()
+            var objects = new List<INode>()
             {
                 objBnode,
                 objUri,
@@ -112,7 +112,7 @@ namespace VDS.RDF.Writing
                 objUnknown,
                 objXmlLiteral
             };
-            List<Triple> testTriples = (from s in subjects from p in predicates from o in objects select new Triple(s, p, o)).ToList();
+            var testTriples = (from s in subjects from p in predicates from o in objects select new Triple(s, p, o)).ToList();
 
             foreach (Triple t in testTriples)
             {
@@ -132,8 +132,8 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingFormattingGraphs()
         {
-            List<IGraph> graphs = new List<IGraph>();
-            Graph g = new Graph();
+            var graphs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             graphs.Add(g);
             g = new Graph();
@@ -146,17 +146,17 @@ namespace VDS.RDF.Writing
             g.LoadFromFile("resources\\complex-collections.nt");
             graphs.Add(g);
 
-            List<IGraphFormatter> formatters = new List<IGraphFormatter>()
+            var formatters = new List<IGraphFormatter>()
             {
                 new RdfXmlFormatter()
             };
 
-            List<IRdfReader> parsers = new List<IRdfReader>()
+            var parsers = new List<IRdfReader>()
             {
                 new RdfXmlParser()
             };
 
-            for (int i = 0; i < formatters.Count; i++)
+            for (var i = 0; i < formatters.Count; i++)
             {
                 IGraphFormatter formatter = formatters[i];
                 Console.WriteLine("Using Formatter " + formatter.GetType().ToString());
@@ -164,7 +164,7 @@ namespace VDS.RDF.Writing
                 foreach (IGraph graph in graphs)
                 {
                     //Console.WriteLine("Testing Graph " + (graph.BaseUri != null ? graph.BaseUri.ToString() : String.Empty));
-                    StringBuilder output = new StringBuilder();
+                    var output = new StringBuilder();
                     output.AppendLine(formatter.FormatGraphHeader(graph));
                     foreach (Triple t in graph.Triples)
                     {
@@ -175,7 +175,7 @@ namespace VDS.RDF.Writing
                     Console.WriteLine(output.ToString());
 
                     //Try parsing to check it round trips
-                    Graph h = new Graph();
+                    var h = new Graph();
                     IRdfReader parser = parsers[i];
                     parser.Load(h, new StringReader(output.ToString()));
 
@@ -194,26 +194,26 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingFormattingResultSets()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            SparqlResultSet expected = g.ExecuteQuery("SELECT * WHERE { ?s a ?type }") as SparqlResultSet;
+            var expected = g.ExecuteQuery("SELECT * WHERE { ?s a ?type }") as SparqlResultSet;
 
-            List<IResultSetFormatter> formatters = new List<IResultSetFormatter>()
+            var formatters = new List<IResultSetFormatter>()
             {
                 new SparqlXmlFormatter()
             };
 
-            List<ISparqlResultsReader> parsers = new List<ISparqlResultsReader>()
+            var parsers = new List<ISparqlResultsReader>()
             {
                 new SparqlXmlParser()
             };
 
             Console.WriteLine("Using Formatter " + formatters.GetType().ToString());
-            for (int i = 0; i < formatters.Count; i++)
+            for (var i = 0; i < formatters.Count; i++)
             {
                 IResultSetFormatter formatter = formatters[i];
 
-                StringBuilder output = new StringBuilder();
+                var output = new StringBuilder();
                 output.AppendLine(formatter.FormatResultSetHeader(expected.Variables));
                 foreach (SparqlResult r in expected)
                 {
@@ -224,7 +224,7 @@ namespace VDS.RDF.Writing
                 Console.WriteLine(output.ToString());
 
                 //Try parsing to check it round trips
-                SparqlResultSet actual = new SparqlResultSet();
+                var actual = new SparqlResultSet();
                 ISparqlResultsReader parser = parsers[i];
                 parser.Load(actual, new StringReader(output.ToString()));
 

@@ -53,12 +53,12 @@ namespace VDS.RDF.Parsing
                 Console.WriteLine("Testing the StringParser with a bunch of strings which are either invalid RDF or all express the one same simple Triple");
                 Console.WriteLine();
 
-                Graph g = new Graph();
-                for (int i = 0; i < someRDF.Length; i++)
+                var g = new Graph();
+                for (var i = 0; i < someRDF.Length; i++)
                 {
                     try
                     {
-                        String rdf = someRDF[i];
+                        var rdf = someRDF[i];
                         Console.WriteLine("# Trying to parse the following");
                         Console.WriteLine(rdf);
 
@@ -109,12 +109,12 @@ namespace VDS.RDF.Parsing
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            Graph g = new Graph();
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/Southampton");
+            var g = new Graph();
+            var request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/Southampton");
             request.Method = "GET";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            var response = (HttpWebResponse)request.GetResponse();
             IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
             parser.Load(g, new StreamReader(response.GetResponseStream()));
 
@@ -127,9 +127,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfXmlStreaming()
         {
-                RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
+                var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
                 parser.TraceParsing = true;
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, "resources\\example.rdf");
 
                 TestTools.ShowGraph(g);
@@ -138,9 +138,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingMalformedFileUris()
         {
-            String malformedFileUriFragment = "@base <file:/path/to/somewhere>. @prefix ex: <file:/path/to/nowhere/> . <#this> a \"URI Resolved with a malformed Base URI\" . <this> a \"Another URI Resolved with a malformed Base URI\" . ex:this a \"QName Resolved with a malformed Namespace URI\" .";
+            var malformedFileUriFragment = "@base <file:/path/to/somewhere>. @prefix ex: <file:/path/to/nowhere/> . <#this> a \"URI Resolved with a malformed Base URI\" . <this> a \"Another URI Resolved with a malformed Base URI\" . ex:this a \"QName Resolved with a malformed Namespace URI\" .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             VDS.RDF.Parsing.StringParser.Parse(g, malformedFileUriFragment);
             foreach (Triple t in g.Triples)
             {
@@ -222,10 +222,10 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfXmlEmptyElement()
         {
-            String fragment = @"<?xml version='1.0'?><rdf:RDF xmlns:rdf='" + NamespaceMapper.RDF + @"' xmlns='http://example.org/'><rdf:Description rdf:about='http://example.org/subject'><predicate rdf:resource='http://example.org/object' /></rdf:Description></rdf:RDF>";
+            var fragment = @"<?xml version='1.0'?><rdf:RDF xmlns:rdf='" + NamespaceMapper.RDF + @"' xmlns='http://example.org/'><rdf:Description rdf:about='http://example.org/subject'><predicate rdf:resource='http://example.org/object' /></rdf:Description></rdf:RDF>";
 
-            Graph g = new Graph();
-            RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
+            var g = new Graph();
+            var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
             parser.TraceParsing = true;
             VDS.RDF.Parsing.StringParser.Parse(g, fragment, parser);
             foreach (Triple t in g.Triples)
@@ -237,11 +237,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTurtleWithAndWithoutBOM()
         {
-            TurtleParser parser = new TurtleParser();
-            Graph g = new Graph();
+            var parser = new TurtleParser();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\ttl-with-bom.ttl");
 
-            Graph h = new Graph();
+            var h = new Graph();
             FileLoader.Load(h, "resources\\ttl-without-bom.ttl");
 
             Assert.Equal(g, h);
@@ -250,8 +250,8 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingMalformedSparqlXml()
         {
-            SparqlResultSet results = new SparqlResultSet();
-            SparqlXmlParser parser = new SparqlXmlParser();
+            var results = new SparqlResultSet();
+            var parser = new SparqlXmlParser();
 
             Assert.Throws<RdfParseException>(() => parser.Load(results, "resources\\bad_srx.srx"));
         }
@@ -259,8 +259,8 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTurtleDBPediaMalformedData()
         {
-            Graph g = new Graph();
-            TurtleParser parser = new TurtleParser(TurtleSyntax.Original, false);
+            var g = new Graph();
+            var parser = new TurtleParser(TurtleSyntax.Original, false);
 
             Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\dbpedia_malformed.ttl"));
         }
@@ -268,9 +268,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingDefaultPrefixFallbackTurtle1()
         {
-            String data = @"@base <http://base/> . :subj :pred :obj .";
+            var data = @"@base <http://base/> . :subj :pred :obj .";
             IRdfReader parser = new TurtleParser();
-            Graph g = new Graph();
+            var g = new Graph();
 
             Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(data)));
         }
@@ -278,9 +278,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingDefaultPrefixFallbackTurtle2()
         {
-            String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
+            var data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
             IRdfReader parser = new TurtleParser();
-            Graph g = new Graph();
+            var g = new Graph();
             parser.Load(g, new StringReader(data));
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -289,9 +289,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingDefaultPrefixFallbackNotation3_1()
         {
-            String data = @"@base <http://base/> . :subj :pred :obj .";
+            var data = @"@base <http://base/> . :subj :pred :obj .";
             IRdfReader parser = new Notation3Parser();
-            Graph g = new Graph();
+            var g = new Graph();
             parser.Load(g, new StringReader(data));
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -300,9 +300,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingDefaultPrefixFallbackNotation3_2()
         {
-            String data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
+            var data = @"@prefix : <http://default/ns#> . :subj :pred :obj .";
             IRdfReader parser = new Notation3Parser();
-            Graph g = new Graph();
+            var g = new Graph();
             parser.Load(g, new StringReader(data));
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -311,13 +311,13 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingBlankNodeIDs()
         {
-            List<IRdfReader> parsersToTest = new List<IRdfReader>()
+            var parsersToTest = new List<IRdfReader>()
             {
                 new TurtleParser(),
                 new Notation3Parser()
             };
 
-            String[] samples = new String[] {
+            var samples = new String[] {
                 "@prefix ex: <http://example.org>. [] a ex:bNode. _:autos1 a ex:bNode. _:autos1 a ex:another.",
                 "@prefix ex: <http://example.org>. _:autos1 a ex:bNode. [] a ex:bNode. _:autos1 a ex:another.",
                 "@prefix : <http://example.org/>. [] a :BlankNode ; :firstProperty :a ; :secondProperty :b .",
@@ -326,7 +326,7 @@ namespace VDS.RDF.Parsing
                 "@prefix : <http://example.org/>. [a :bNode ; :connectsTo [a :bNode ; :connectsTo []]] a []. [] a :another ; a [a :yetAnother] ."
             };
 
-            int[] expectedTriples = new int[] {
+            var expectedTriples = new int[] {
                 3,
                 3,
                 3,
@@ -335,7 +335,7 @@ namespace VDS.RDF.Parsing
                 8
             };
 
-            int[] expectedSubjects = new int[] {
+            var expectedSubjects = new int[] {
                 2,
                 2,
                 1,
@@ -347,7 +347,7 @@ namespace VDS.RDF.Parsing
             Console.WriteLine("Tests Blank Node ID assignment in Parsing and Serialization as well as Graph Equality");
             Console.WriteLine();
 
-            List<IRdfWriter> writers = new List<IRdfWriter>() {
+            var writers = new List<IRdfWriter>() {
                 new NTriplesWriter(),
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
@@ -356,7 +356,7 @@ namespace VDS.RDF.Parsing
                 new RdfJsonWriter()
             };
 
-            List<IRdfReader> readers = new List<IRdfReader>() {
+            var readers = new List<IRdfReader>() {
                 new NTriplesParser(),
                 new TurtleParser(),
                 new Notation3Parser(),
@@ -371,15 +371,15 @@ namespace VDS.RDF.Parsing
                 //parser.TraceTokeniser = true;
                 //parser.TraceParsing = true;
 
-                int s = 0;
-                foreach (String sample in samples)
+                var s = 0;
+                foreach (var sample in samples)
                 {
                     Console.WriteLine();
                     Console.WriteLine("Sample:");
                     Console.WriteLine(sample);
                     Console.WriteLine();
 
-                    Graph g = new Graph();
+                    var g = new Graph();
                     VDS.RDF.Parsing.StringParser.Parse(g, sample, parser);
                     Console.WriteLine("Original Graph");
                     Console.WriteLine(g.Triples.Count + " Triples produced");
@@ -393,10 +393,10 @@ namespace VDS.RDF.Parsing
                     Assert.Equal(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count());
 
                     //Try outputting with each of the available writers
-                    for (int i = 0; i < writers.Count; i++)
+                    for (var i = 0; i < writers.Count; i++)
                     {
-                        String temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
-                        Graph h = new Graph();
+                        var temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
+                        var h = new Graph();
                         VDS.RDF.Parsing.StringParser.Parse(h, temp, readers[i]);
 
                         Console.WriteLine("Trying " + writers[i].GetType().ToString());
@@ -420,7 +420,7 @@ namespace VDS.RDF.Parsing
 
                         //Do full equality Test
                         Dictionary<INode, INode> mapping;
-                        bool equals = g.Equals(h, out mapping);
+                        var equals = g.Equals(h, out mapping);
                         if (!equals)
                         {
                             Console.WriteLine(writers[i].GetType().ToString() + " failed");
@@ -446,31 +446,31 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingCollections()
         {
-            List<IRdfReader> parsersToTest = new List<IRdfReader>()
+            var parsersToTest = new List<IRdfReader>()
             {
                 new TurtleParser(),
                 new Notation3Parser()
             };
 
-            String[] samples = new String[] {
+            var samples = new String[] {
                 "@prefix ex: <http://example.com/>. (\"one\" \"two\") a ex:Collection .",
                 "@prefix ex: <http://example.com/>. (\"one\" \"two\" \"three\") a ex:Collection .",
                 "@prefix ex: <http://example.com/>. (1) ex:someProp \"Value\"."
             };
 
-            int[] expectedTriples = new int[] {
+            var expectedTriples = new int[] {
                 5,
                 7,
                 3
             };
 
-            int[] expectedSubjects = new int[] {
+            var expectedSubjects = new int[] {
                 2,
                 3,
                 1
             };
 
-            List<IRdfWriter> writers = new List<IRdfWriter>() {
+            var writers = new List<IRdfWriter>() {
                 new NTriplesWriter(),
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
@@ -479,7 +479,7 @@ namespace VDS.RDF.Parsing
                 new RdfJsonWriter()
             };
 
-            List<IRdfReader> readers = new List<IRdfReader>() {
+            var readers = new List<IRdfReader>() {
                 new NTriplesParser(),
                 new TurtleParser(),
                 new Notation3Parser(),
@@ -494,15 +494,15 @@ namespace VDS.RDF.Parsing
                 //parser.TraceTokeniser = true;
                 //parser.TraceParsing = true;
 
-                int s = 0;
-                foreach (String sample in samples)
+                var s = 0;
+                foreach (var sample in samples)
                 {
                     Console.WriteLine();
                     Console.WriteLine("Sample:");
                     Console.WriteLine(sample);
                     Console.WriteLine();
 
-                    Graph g = new Graph();
+                    var g = new Graph();
                     VDS.RDF.Parsing.StringParser.Parse(g, sample, parser);
                     Console.WriteLine(g.Triples.Count + " Triples produced");
                     foreach (Triple t in g.Triples)
@@ -515,12 +515,12 @@ namespace VDS.RDF.Parsing
                     Assert.Equal(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count());
 
                     //Try outputting with each of the available writers
-                    for (int i = 0; i < writers.Count; i++)
+                    for (var i = 0; i < writers.Count; i++)
                     {
                         Console.WriteLine("Trying " + writers[i].GetType().ToString());
-                        String temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
+                        var temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
                         Console.WriteLine(temp);
-                        Graph h = new Graph();
+                        var h = new Graph();
                         try
                         {
                             VDS.RDF.Parsing.StringParser.Parse(h, temp, readers[i]);
@@ -535,7 +535,7 @@ namespace VDS.RDF.Parsing
                         Assert.Equal(expectedSubjects[s], h.Triples.SubjectNodes.Distinct().Count());
 
                         Dictionary<INode, INode> mapping;
-                        bool equals = g.Equals(h, out mapping);
+                        var equals = g.Equals(h, out mapping);
                         Assert.True(equals, "Graphs should have been equal");
                         Console.WriteLine("Node mapping was:");
                         foreach (KeyValuePair<INode, INode> pair in mapping)

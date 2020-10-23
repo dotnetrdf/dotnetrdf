@@ -24,10 +24,10 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+
 namespace VDS.RDF.Skos
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// Represents an aggregation of one or more SKOS concepts.
     /// </summary>
@@ -46,7 +46,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.HasTopConcept);
+                return GetConcepts(SkosHelper.HasTopConcept);
             }
         }
     }

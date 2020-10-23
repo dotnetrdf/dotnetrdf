@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Expressions
         [Fact]
         public void SparqlParsingReplaceExpression()
         {
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
 
             ISparqlExpression expr = q.Variables.First().Projection;
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions
             // when
             var find = new ConstantTerm(new StringNode(null, "find"));
             var replace = new VariableTerm("replacement");
-            ReplaceFunction func = new ReplaceFunction(new VariableTerm("term"), find, replace);
+            var func = new ReplaceFunction(new VariableTerm("term"), find, replace);
 
             // then
             var canParallelise = func.CanParallelise;
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Expressions
             // when
             var find = new VariableTerm("find");
             var replace = new ConstantTerm(new StringNode(null, "replacement"));
-            ReplaceFunction func = new ReplaceFunction(new VariableTerm("term"), find, replace);
+            var func = new ReplaceFunction(new VariableTerm("term"), find, replace);
 
             // then
             var canParallelise = func.CanParallelise;

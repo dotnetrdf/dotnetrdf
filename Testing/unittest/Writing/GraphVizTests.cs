@@ -36,10 +36,10 @@ namespace VDS.RDF.Writing
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz),
                 "Test Config marks GraphViz as unavailable, test cannot be run");
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            GraphVizWriter writer = new GraphVizWriter();
+            var writer = new GraphVizWriter();
             writer.Save(g, "WritingGraphViz1.dot");
         }
 
@@ -48,10 +48,10 @@ namespace VDS.RDF.Writing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            GraphVizGenerator generator = new GraphVizGenerator("svg");
+            var generator = new GraphVizGenerator("svg");
             generator.Generate(g, "WritingGraphViz2.svg", false);
         }
 
@@ -60,10 +60,10 @@ namespace VDS.RDF.Writing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz), "Test Config marks GraphViz as unavailable, test cannot be run");
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            GraphVizGenerator generator = new GraphVizGenerator("png");
+            var generator = new GraphVizGenerator("png");
             generator.Generate(g, "WritingGraphViz3.png", false);
         }
     }

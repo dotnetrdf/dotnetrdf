@@ -54,17 +54,17 @@ namespace VDS.RDF.Query.FullText
 
         public FullTextGraphScopingTests()
         {
-            String data = @"<http://x> <http://p> ""This is sample text"" <http://g1> .
+            var data = @"<http://x> <http://p> ""This is sample text"" <http://g1> .
 <http://y> <http://p> ""This is sample text"" <http://g2> .
 <http://y> <http://p> ""Additional sample"" <http://g2> .";
 
-            this._store = new TripleStore();
-            StringParser.ParseDataset(this._store, data, new NQuadsParser());
+            _store = new TripleStore();
+            StringParser.ParseDataset(_store, data, new NQuadsParser());
 
-            this._index = new RAMDirectory();
-            using (LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30), new DefaultIndexSchema()))
+            _index = new RAMDirectory();
+            using (var indexer = new LuceneSubjectsIndexer(_index, new StandardAnalyzer(LucUtil.Version.LUCENE_30), new DefaultIndexSchema()))
             {
-                foreach (IGraph g in this._store.Graphs)
+                foreach (IGraph g in _store.Graphs)
                 {
                     indexer.Index(g);
                 }
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.FullText
         public void FullTextGraphScoping1()
         {
             //With no Graph scope all results should be returned
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match("sample");
                 Assert.Equal(3, results.Count());
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.FullText
         public void FullTextGraphScoping2()
         {
             //With Graph scope to g1 only one result should be returned
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g1") }, "sample");
                 Assert.Single(results);
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.FullText
         public void FullTextGraphScoping3()
         {
             //With Graph scope to g2 only two results should be returned
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g2") }, "sample");
                 Assert.Equal(2, results.Count());
@@ -110,15 +110,15 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextGraphSparqlScoping1()
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+            var processor = new LeviathanQueryProcessor(_store);
 
             //No results should be returned as no results in default graph
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + "SELECT * WHERE { ?s pf:textMatch 'sample' }");
+                SparqlQuery q = _parser.ParseFromString(FullTextPrefix + "SELECT * WHERE { ?s pf:textMatch 'sample' }");
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(0, results.Count);
             }
@@ -127,15 +127,15 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextGraphSparqlScoping2()
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+            var processor = new LeviathanQueryProcessor(_store);
 
             //1 result should be returned as only one result in the given graph g1
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g1> { ?s pf:textMatch 'sample' } }");
+                SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g1> { ?s pf:textMatch 'sample' } }");
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(1, results.Count);
             }
@@ -144,15 +144,15 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextGraphSparqlScoping3()
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+            var processor = new LeviathanQueryProcessor(_store);
 
             //2 results should be returned as two results in the given graph g2
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch 'sample' } }");
+                SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch 'sample' } }");
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(2, results.Count);
             }
@@ -161,15 +161,15 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextGraphSparqlScoping4()
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+            var processor = new LeviathanQueryProcessor(_store);
 
             //All results should be returned because all graphs are considered
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH ?g { ?s pf:textMatch 'sample' } }");
+                SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH ?g { ?s pf:textMatch 'sample' } }");
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(3, results.Count);
             }
@@ -178,15 +178,15 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextGraphSparqlScoping5()
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+            var processor = new LeviathanQueryProcessor(_store);
 
             //Interaction of graph scope with limit
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 1 ) } }");
+                SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 1 ) } }");
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(1, results.Count);
                 Assert.Equal(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
@@ -196,15 +196,15 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextGraphSparqlScoping6()
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+            var processor = new LeviathanQueryProcessor(_store);
 
             //Interaction of graph scope with limit
-            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 5 ) } }");
+                SparqlQuery q = _parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 5 ) } }");
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
 
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(2, results.Count);
                 Assert.Equal(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);

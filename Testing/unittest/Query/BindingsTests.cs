@@ -42,58 +42,58 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlBindingsSimple()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
 
-            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
+            var bindingsQuery = new SparqlParameterizedString();
             bindingsQuery.Namespaces = query.Namespaces;
             bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car }";
 
-            this.TestBindings(this.GetTestData(), bindingsQuery, query);
+            TestBindings(GetTestData(), bindingsQuery, query);
         }
 
         [Fact]
         public void SparqlBindingsSimple2()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
 
-            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
+            var bindingsQuery = new SparqlParameterizedString();
             bindingsQuery.Namespaces = query.Namespaces;
             bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car ex:Plane }";
 
-            this.TestBindings(this.GetTestData(), bindingsQuery, query);
+            TestBindings(GetTestData(), bindingsQuery, query);
         }
         [Fact]
         public void SparqlBindingsSimple3()
         {
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
 
-            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
+            var bindingsQuery = new SparqlParameterizedString();
             bindingsQuery.Namespaces = query.Namespaces;
             bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ( ?subj ?type ) { (ex:FordFiesta ex:Car) }";
 
-            this.TestBindings(this.GetTestData(), bindingsQuery, query);
+            TestBindings(GetTestData(), bindingsQuery, query);
         }
 
 
         private void TestBindings(ISparqlDataset data, SparqlParameterizedString queryWithBindings, SparqlParameterizedString queryWithoutBindings)
         {
-            this.TestBindings(data, queryWithBindings.ToString(), queryWithoutBindings.ToString());
+            TestBindings(data, queryWithBindings.ToString(), queryWithoutBindings.ToString());
         }
 
         private void TestBindings(ISparqlDataset data, String queryWithBindings, String queryWithoutBindings)
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(data);
-            SparqlQuery bindingsQuery = this._parser.ParseFromString(queryWithBindings);
-            SparqlQuery noBindingsQuery = this._parser.ParseFromString(queryWithoutBindings);
+            var processor = new LeviathanQueryProcessor(data);
+            SparqlQuery bindingsQuery = _parser.ParseFromString(queryWithBindings);
+            SparqlQuery noBindingsQuery = _parser.ParseFromString(queryWithoutBindings);
 
-            SparqlResultSet bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
-            SparqlResultSet noBindingsResults = processor.ProcessQuery(noBindingsQuery) as SparqlResultSet;
+            var bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
+            var noBindingsResults = processor.ProcessQuery(noBindingsQuery) as SparqlResultSet;
 
             if (bindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Bindings Query");
             if (noBindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Non-Bindings Query");
@@ -110,10 +110,10 @@ namespace VDS.RDF.Query
 
         private void TestBindings(ISparqlDataset data, String queryWithBindings)
         {
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(data);
-            SparqlQuery bindingsQuery = this._parser.ParseFromString(queryWithBindings);
+            var processor = new LeviathanQueryProcessor(data);
+            SparqlQuery bindingsQuery = _parser.ParseFromString(queryWithBindings);
 
-            SparqlResultSet bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
+            var bindingsResults = processor.ProcessQuery(bindingsQuery) as SparqlResultSet;
 
             if (bindingsResults == null) Assert.True(false, "Did not get a SPARQL Result Set for the Bindings Query");
 
@@ -126,8 +126,8 @@ namespace VDS.RDF.Query
 
         private ISparqlDataset GetTestData()
         {
-            InMemoryDataset dataset = new InMemoryDataset();
-            Graph g = new Graph();
+            var dataset = new InMemoryDataset();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             dataset.AddGraph(g);
 

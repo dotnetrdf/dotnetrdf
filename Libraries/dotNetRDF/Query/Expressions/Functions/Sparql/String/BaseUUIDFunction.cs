@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            Guid uuid = Guid.NewGuid();
+            var uuid = Guid.NewGuid();
             return EvaluateInternal(uuid);
         }
 
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return Enumerable.Empty<System.String>(); 
+                return Enumerable.Empty<string>(); 
             }
         }
 

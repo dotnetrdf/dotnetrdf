@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
                     if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
                     // Otherwise it has an offset which is a given number of hours and minutse
-                    string offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
+                    var offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
                     if (dt.Offset.Hours < 0) offset = "-" + offset;
                     if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";
                     if (dt.Offset.Hours == 0 && dt.Offset.Minutes < 0) offset = "-" + offset;

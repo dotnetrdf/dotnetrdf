@@ -80,7 +80,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Creates a Sesame Native store template.
         /// </summary>
         /// <param name="id">Store ID.</param>
-        public SesameNativeTemplate(String id)
+        public SesameNativeTemplate(string id)
             : base(id, "Sesame Native", "A Sesame native store resides on disk")
         {
             IndexMode = SesameNativeIndexMode.SPOC;
@@ -115,7 +115,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             }
 
             g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:NativeStore"));
-            String mode = IndexMode.ToString().ToLower();
+            var mode = IndexMode.ToString().ToLower();
             if (mode.Contains(".")) mode = mode.Substring(mode.LastIndexOf('.') + 1);
             g.Assert(sailImpl, g.CreateUriNode("ns:tripleIndexes"), g.CreateLiteralNode(mode));
             return g;

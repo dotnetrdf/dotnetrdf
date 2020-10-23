@@ -57,12 +57,12 @@ namespace VDS.RDF
             _triples.TripleRemoved += HandleTripleRemoved;
         }
 
-        private void HandleTripleAdded(Object sender, TripleEventArgs args)
+        private void HandleTripleAdded(object sender, TripleEventArgs args)
         {
             RaiseTripleAdded(args.Triple);
         }
 
-        private void HandleTripleRemoved(Object sender, TripleEventArgs args)
+        private void HandleTripleRemoved(object sender, TripleEventArgs args)
         {
             RaiseTripleRemoved(args.Triple);
         }

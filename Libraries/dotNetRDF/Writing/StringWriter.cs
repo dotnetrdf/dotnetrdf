@@ -44,9 +44,9 @@ namespace VDS.RDF.Writing
         /// <remarks>
         /// Since the API allows for any <see cref="TextWriter">TextWriter</see> to be passed to the <see cref="IRdfWriter.Save(IGraph, TextWriter)">Save()</see> method of a <see cref="IRdfWriter">IRdfWriter</see> you can just pass in a <see cref="StringWriter">StringWriter</see> to the Save() method to get the output as a String.  This method simply provides a wrapper to doing just that.
         /// </remarks>
-        public static String Write(IGraph g, IRdfWriter writer)
+        public static string Write(IGraph g, IRdfWriter writer)
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
+            var sw = new System.IO.StringWriter();
             writer.Save(g, sw);
 
             return sw.ToString();
@@ -58,9 +58,9 @@ namespace VDS.RDF.Writing
         /// <param name="store">Triple Store.</param>
         /// <param name="writer">Writer to use to generate conrete RDF Syntax.</param>
         /// <returns></returns>
-        public static String Write(ITripleStore store, IStoreWriter writer)
+        public static string Write(ITripleStore store, IStoreWriter writer)
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
+            var sw = new System.IO.StringWriter();
             writer.Save(store, sw);
 
             return sw.ToString();
@@ -72,9 +72,9 @@ namespace VDS.RDF.Writing
         /// <param name="results">SPARQL Result Set.</param>
         /// <param name="writer">Writer to use to generate the SPARQL Results output.</param>
         /// <returns></returns>
-        public static String Write(SparqlResultSet results, ISparqlResultsWriter writer)
+        public static string Write(SparqlResultSet results, ISparqlResultsWriter writer)
         {
-            System.IO.StringWriter sw = new System.IO.StringWriter();
+            var sw = new System.IO.StringWriter();
             writer.Save(results, sw);
 
             return sw.ToString();

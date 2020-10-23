@@ -41,14 +41,14 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingStringReaderEncoding()
         {
-            String test = "<http://example.org/subject> <http://example.org/predicate> \"" + (char)32769 + "\" . ";
+            var test = "<http://example.org/subject> <http://example.org/predicate> \"" + (char)32769 + "\" . ";
 
-            TurtleParser parser = new TurtleParser();
-            Graph g = new Graph();
+            var parser = new TurtleParser();
+            var g = new Graph();
             parser.Load(g, new StringReader(test));
             g.SaveToFile("encoding.ttl");
 
-            Graph h = new Graph();
+            var h = new Graph();
             parser.Load(h, "encoding.ttl");
 
             Assert.Equal(g, h);

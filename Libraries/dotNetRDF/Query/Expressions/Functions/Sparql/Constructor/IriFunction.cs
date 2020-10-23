@@ -61,8 +61,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
-                        string baseUri = string.Empty;
+                        var lit = (ILiteralNode)result;
+                        var baseUri = string.Empty;
                         if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
                         string uri;
                         if (lit.DataType == null)
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         }
                         else
                         {
-                            string dt = lit.DataType.AbsoluteUri;
+                            var dt = lit.DataType.AbsoluteUri;
                             if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
                             {
                                 uri = Tools.ResolveUri(lit.Value, baseUri);

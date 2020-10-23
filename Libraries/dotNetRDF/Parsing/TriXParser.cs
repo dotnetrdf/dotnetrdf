@@ -198,7 +198,7 @@ namespace VDS.RDF.Parsing
                     reader.MoveToNextAttribute();
                     if (reader.Name.Equals("asserted"))
                     {
-                        if (bool.TryParse(reader.Value, out bool asserted))
+                        if (bool.TryParse(reader.Value, out var asserted))
                         {
                             // Don't process this Graph further if it is not being asserted
                             // i.e. it is only (potentially) being quoted
@@ -270,9 +270,9 @@ namespace VDS.RDF.Parsing
             }
 
             // Parse XML Nodes into RDF Nodes
-            var subj = TryParseNode(reader, handler, TripleSegment.Subject);
-            var pred = TryParseNode(reader, handler, TripleSegment.Predicate);
-            var obj = TryParseNode(reader, handler, TripleSegment.Object);
+            INode subj = TryParseNode(reader, handler, TripleSegment.Subject);
+            INode pred = TryParseNode(reader, handler, TripleSegment.Predicate);
+            INode obj = TryParseNode(reader, handler, TripleSegment.Object);
 
             if (reader.NodeType != XmlNodeType.EndElement)
             {
@@ -392,11 +392,11 @@ namespace VDS.RDF.Parsing
                 using (var xmlReader = XmlReader.Create(input, GetSettings()))
                 {
                     var source = XDocument.Load(xmlReader);
-                    foreach (var pi in source.Nodes().OfType<XProcessingInstruction>().Where(pi => pi.Target.Equals("xml-stylesheet")))
+                    foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>().Where(pi => pi.Target.Equals("xml-stylesheet")))
                     {
                         source = ApplyTransform(source, pi);
                     }
-                    using (var transformedXmlReader = source.CreateReader())
+                    using (XmlReader transformedXmlReader = source.CreateReader())
                     {
                         TryParseGraphset(transformedXmlReader, handler);
                     }
@@ -410,14 +410,14 @@ namespace VDS.RDF.Parsing
 
         private XDocument ApplyTransform(XDocument input, XProcessingInstruction pi)
         {
-            var match = Regex.Match(pi.Data, @"href\s*=\s*""([^""]*)""");
+            Match match = Regex.Match(pi.Data, @"href\s*=\s*""([^""]*)""");
             if (match == null) throw new RdfParseException("Expected href value in xml-stylesheet PI");
             var xslRef = match.Groups[1].Value;
             var xslt = new XslCompiledTransform();
             var xmlStringBuilder = new StringBuilder();
             xslt.Load(XmlReader.Create(new StreamReader(xslRef), GetSettings()));
             var output = new XDocument();
-            using (var writer = output.CreateWriter())
+            using (XmlWriter writer = output.CreateWriter())
             {
                 xslt.Transform(input.CreateReader(), writer);
             }

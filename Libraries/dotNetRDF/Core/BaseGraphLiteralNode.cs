@@ -100,7 +100,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
+            if ((object)other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -186,7 +186,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             // Use N3 Style notation for Graph Literal string representation
             output.Append("{");
@@ -394,11 +394,11 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
-        public String EffectiveType
+        public string EffectiveType
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

@@ -99,12 +99,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables includes those of the property function that aren't themselves fixed
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return _algebra.FloatingVariables.Concat(_function.Variables.Where(v => !fixedVars.Contains(v))).Distinct();
             }
         }
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _algebra.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _algebra.FixedVariables; } }
 
         /// <summary>
         /// Throws an error because property functions cannot be converted back to queries.

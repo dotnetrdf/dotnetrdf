@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public IVariable getAs()
         {
-            IResource node = this.getObject(SP.PropertyAs);
+            IResource node = getObject(SP.PropertyAs);
             if (node != null)
             {
                 return SPINFactory.asVariable(node);
@@ -78,8 +78,8 @@ namespace VDS.RDF.Query.Spin.Model
                 p.print("(");
             }
 
-            INode aggType = this.getObject(RDF.PropertyType);
-            String aggName = Aggregations.getName(aggType);
+            INode aggType = getObject(RDF.PropertyType);
+            var aggName = Aggregations.getName(aggType);
             p.printKeyword(aggName);
             p.print("(");
 
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Spin.Model
                 p.print("DISTINCT ");
             }
 
-            Triple exprS = this.getProperty(SP.PropertyExpression);
+            Triple exprS = getProperty(SP.PropertyExpression);
             if (exprS != null && !(exprS.Object is ILiteralNode))
             {
                 IResource r = Resource.Get(exprS.Object, getModel());
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Spin.Model
             {
                 p.print("*");
             }
-            String separator = getString(SP.PropertySeparator);
+            var separator = getString(SP.PropertySeparator);
             if (separator != null)
             {
                 p.print("; ");

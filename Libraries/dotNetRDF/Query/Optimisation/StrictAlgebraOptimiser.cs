@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Optimisation
                 // Don't integerfer with other optimisers which have added custom BGP implementations
                 if (!(algebra is Bgp)) return algebra;
 
-                IBgp current = (IBgp)algebra;
+                var current = (IBgp)algebra;
                 if (current.PatternCount == 0)
                 {
                     return current;
@@ -69,9 +69,9 @@ namespace VDS.RDF.Query.Optimisation
                 else
                 {
                     ISparqlAlgebra result = new Bgp();
-                    List<ITriplePattern> patterns = new List<ITriplePattern>();
-                    List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
-                    for (int i = 0; i < current.PatternCount; i++)
+                    var patterns = new List<ITriplePattern>();
+                    var ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
+                    for (var i = 0; i < current.PatternCount; i++)
                     {
                         // Can't split the BGP if there are Blank Nodes present
                         if (!ps[i].HasNoBlankVariables) return current;
@@ -94,19 +94,19 @@ namespace VDS.RDF.Query.Optimisation
                                     break;
                                 case TriplePatternType.BindAssignment:
                                 case TriplePatternType.LetAssignment:
-                                    IAssignmentPattern assignment = (IAssignmentPattern)ps[i];
+                                    var assignment = (IAssignmentPattern)ps[i];
                                     result = new Extend(result, assignment.AssignExpression, assignment.VariableName);
                                     break;
                                 case TriplePatternType.SubQuery:
-                                    ISubQueryPattern sq = (ISubQueryPattern)ps[i];
+                                    var sq = (ISubQueryPattern)ps[i];
                                     result = Join.CreateJoin(result, new SubQuery(sq.SubQuery));
                                     break;
                                 case TriplePatternType.Path:
-                                    IPropertyPathPattern pp = (IPropertyPathPattern)ps[i];
+                                    var pp = (IPropertyPathPattern)ps[i];
                                     result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
                                     break;
                                 case TriplePatternType.PropertyFunction:
-                                    IPropertyFunctionPattern pf = (IPropertyFunctionPattern)ps[i];
+                                    var pf = (IPropertyFunctionPattern)ps[i];
                                     result = new PropertyFunction(result, pf.PropertyFunction);
                                     break;
                                 default:

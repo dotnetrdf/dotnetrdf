@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
         /// Non-filesystem based caches are free to return String.Empty or null but <strong>MUST NOT</strong> throw any form or error.
         /// </para>
         /// </remarks>
-        String CacheDirectory { get; set; }
+        string CacheDirectory { get; set; }
 
         /// <summary>
         /// Gets/Sets how long results should be cached.
@@ -77,14 +77,14 @@ namespace VDS.RDF.Parsing
         /// Calling code <strong>MUST</strong> always use the <see cref="HasETag(Uri)">HasETag()</see> method prior to using this method so it should be safe to throw the <see cref="KeyNotFoundException">KeyNotFoundException</see> if there is no ETag for the given URI.
         /// </para>
         /// </remarks>
-        String GetETag(Uri u);
+        string GetETag(Uri u);
 
         /// <summary>
         /// Gets the path to the locally cached copy of the Graph from the given URI.
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        String GetLocalCopy(Uri u);
+        string GetLocalCopy(Uri u);
 
         /// <summary>
         /// Gets whether there is an ETag for the given URI.
@@ -120,6 +120,6 @@ namespace VDS.RDF.Parsing
         /// <param name="responseUri">The actual URI which responded to the request.</param>
         /// <param name="etag">ETag of the response (if any).</param>
         /// <returns>Either an instance of an <see cref="IRdfHandler">IRdfHandler</see> that will do the caching or null if no caching is possible.</returns>
-        IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag);
+        IRdfHandler ToCache(Uri requestUri, Uri responseUri, string etag);
     }
 }

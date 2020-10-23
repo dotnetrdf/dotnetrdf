@@ -51,13 +51,13 @@ namespace VDS.RDF.JsonLd
         /// <inheritdoc />
         public JsonLdRemoteContext GetRemoteContext(Uri reference)
         {
-            if (_remoteContextCache.TryGetValue(reference, out var cachedContext)) return cachedContext;
+            if (_remoteContextCache.TryGetValue(reference, out JsonLdRemoteContext cachedContext)) return cachedContext;
             try
             {
-                var remoteDoc = LoadJson(reference,
+                RemoteDocument remoteDoc = LoadJson(reference,
                     new JsonLdLoaderOptions
                         { Profile = JsonLdVocabulary.Context, RequestProfile = JsonLdVocabulary.Context }, _options);
-                var jsonRepresentation = GetJsonRepresentation(remoteDoc);
+                JToken jsonRepresentation = GetJsonRepresentation(remoteDoc);
                 if (!(jsonRepresentation is JObject remoteJsonObject))
                 {
                     throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,

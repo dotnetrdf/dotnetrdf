@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing
         public override bool Read()
         {
             // Read next token
-            bool result = base.Read();
+            var result = base.Read();
 
             if (result)
             {

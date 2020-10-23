@@ -49,8 +49,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="algebra">Inner Algebra.</param>
         public FullTextQuery(IFullTextSearchProvider searchProvider, ISparqlAlgebra algebra)
         {
-            this._provider = searchProvider;
-            this.InnerAlgebra = algebra;
+            _provider = searchProvider;
+            InnerAlgebra = algebra;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(Optimisation.IAlgebraOptimiser optimiser)
         {
-            return new FullTextQuery(this._provider, optimiser.Optimise(this.InnerAlgebra));
+            return new FullTextQuery(_provider, optimiser.Optimise(InnerAlgebra));
         }
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context[FullTextHelper.ContextKey] = this._provider;
-            return context.Evaluate(this.InnerAlgebra);
+            context[FullTextHelper.ContextKey] = _provider;
+            return context.Evaluate(InnerAlgebra);
         }
 
         /// <summary>
@@ -90,19 +90,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this.InnerAlgebra.Variables;
+                return InnerAlgebra.Variables;
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return this.InnerAlgebra.FloatingVariables; } }
+        public IEnumerable<String> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return this.InnerAlgebra.FixedVariables; } } 
+        public IEnumerable<String> FixedVariables { get { return InnerAlgebra.FixedVariables; } } 
 
         /// <summary>
         /// Converts the algebra into a query.
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            return this.InnerAlgebra.ToQuery();
+            return InnerAlgebra.ToQuery();
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
         {
-            return this.InnerAlgebra.ToGraphPattern();
+            return InnerAlgebra.ToGraphPattern();
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "FullTextQuery(" + this.InnerAlgebra.ToString() + ")";
+            return "FullTextQuery(" + InnerAlgebra.ToString() + ")";
         }
     }
 }

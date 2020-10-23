@@ -42,9 +42,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingN3Variables()
         {
-            String TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
-            Notation3Parser parser = new Notation3Parser();
-            Graph g = new Graph();
+            var TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
+            var parser = new Notation3Parser();
+            var g = new Graph();
             StringParser.Parse(g, TestFragment, parser);
 
             foreach (Triple t in g.Triples)
@@ -58,8 +58,8 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingN3GraphLiterals()
         {
-            String TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
-            Graph g = new Graph();
+            var TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/n3/graph-literals");
             StringParser.Parse(g, TestFragment, new Notation3Parser());
 
@@ -70,8 +70,8 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingN3VariableContexts()
         {
-            String prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
-            List<String> tests = new List<string>()
+            var prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
+            var tests = new List<string>()
             {
                 prefixes + "@forAll :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
                 prefixes + "@forSome :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
@@ -80,11 +80,11 @@ namespace VDS.RDF.Parsing
                 prefixes + "{@forSome :a . :Joe :home :a } a :Formula . :Joe :phone \"555-1212\" ."
             };
 
-            Notation3Parser parser = new Notation3Parser();
-            Notation3Writer writer = new Notation3Writer();
-            foreach (String test in tests)
+            var parser = new Notation3Parser();
+            var writer = new Notation3Writer();
+            foreach (var test in tests)
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = new Uri("http://example.org/n3rules");
                 StringParser.Parse(g, test, parser);
                 Console.WriteLine(StringWriter.Write(g, writer));
@@ -96,22 +96,22 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingN3Reasoner()
         {
-            String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . { ?s rdfs:subClassOf ?class } => { ?s a ?class } .";
+            var rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . { ?s rdfs:subClassOf ?class } => { ?s a ?class } .";
 
-            Graph rulesGraph = new Graph();
+            var rulesGraph = new Graph();
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
-            Graph data = new Graph();
+            var data = new Graph();
             FileLoader.Load(data, "resources\\InferenceTest.ttl");
 
             Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
-            int origCount = data.Triples.Count;
+            var origCount = data.Triples.Count;
             foreach (Triple t in data.Triples)
             {
                 Console.WriteLine(t.ToString());
             }
 
-            SimpleN3RulesReasoner reasoner = new SimpleN3RulesReasoner();
+            var reasoner = new SimpleN3RulesReasoner();
             reasoner.Initialise(rulesGraph);
 
             reasoner.Apply(data);
@@ -128,23 +128,23 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingN3ReasonerWithForAll()
         {
-            String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
+            var rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
 
-            Graph rulesGraph = new Graph();
+            var rulesGraph = new Graph();
             rulesGraph.BaseUri = new Uri("http://example.org/rules");
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
-            Graph data = new Graph();
+            var data = new Graph();
             FileLoader.Load(data, "resources\\InferenceTest.ttl");
 
             Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
-            int origCount = data.Triples.Count;
+            var origCount = data.Triples.Count;
             foreach (Triple t in data.Triples)
             {
                 Console.WriteLine(t.ToString());
             }
 
-            SimpleN3RulesReasoner reasoner = new SimpleN3RulesReasoner();
+            var reasoner = new SimpleN3RulesReasoner();
             reasoner.Initialise(rulesGraph);
 
             reasoner.Apply(data);

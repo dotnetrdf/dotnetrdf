@@ -46,12 +46,12 @@ namespace VDS.RDF.Query
 
         private void TestCountHandler(ISparqlQueryProcessor processor, String query)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
-            Graph expected = processor.ProcessQuery(q) as Graph;
+            var expected = processor.ProcessQuery(q) as Graph;
             Assert.NotNull(expected);
 
-            CountHandler handler = new CountHandler();
+            var handler = new CountHandler();
             processor.ProcessQuery(handler, null, q);
 
             Assert.Equal(expected.Triples.Count, handler.Count);
@@ -59,13 +59,13 @@ namespace VDS.RDF.Query
 
         private void TestGraphHandler(ISparqlQueryProcessor processor, String query)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
-            Graph expected = processor.ProcessQuery(q) as Graph;
+            var expected = processor.ProcessQuery(q) as Graph;
             Assert.NotNull(expected);
 
-            Graph actual = new Graph();
-            GraphHandler handler = new GraphHandler(actual);
+            var actual = new Graph();
+            var handler = new GraphHandler(actual);
             processor.ProcessQuery(handler, null, q);
 
             Assert.Equal(expected, actual);
@@ -78,12 +78,12 @@ namespace VDS.RDF.Query
 
         private void TestResultCountHandler(ISparqlQueryProcessor processor, String query)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
-            SparqlResultSet expected = processor.ProcessQuery(q) as SparqlResultSet;
+            var expected = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(expected);
 
-            ResultCountHandler handler = new ResultCountHandler();
+            var handler = new ResultCountHandler();
             processor.ProcessQuery(null, handler, q);
 
             Assert.Equal(expected.Count, handler.Count);
@@ -91,13 +91,13 @@ namespace VDS.RDF.Query
 
         private void TestResultSetHandler(ISparqlQueryProcessor processor, String query)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
-            SparqlResultSet expected = processor.ProcessQuery(q) as SparqlResultSet;
+            var expected = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(expected);
 
-            SparqlResultSet actual = new SparqlResultSet();
-            ResultSetHandler handler = new ResultSetHandler(actual);
+            var actual = new SparqlResultSet();
+            var handler = new ResultSetHandler(actual);
             processor.ProcessQuery(null, handler, q);
 
             Assert.Equal(expected, actual);
@@ -105,18 +105,18 @@ namespace VDS.RDF.Query
 
         private void TestWriteThroughHandler(ISparqlQueryProcessor processor, String query)
         {
-            NTriplesFormatter formatter = new NTriplesFormatter();
-            StringWriter data = new StringWriter();
+            var formatter = new NTriplesFormatter();
+            var data = new StringWriter();
 
-            SparqlQuery q = this._parser.ParseFromString(query);
-            Graph expected = processor.ProcessQuery(q) as Graph;
+            SparqlQuery q = _parser.ParseFromString(query);
+            var expected = processor.ProcessQuery(q) as Graph;
             Assert.NotNull(expected);
 
-            WriteThroughHandler handler = new WriteThroughHandler(formatter, data, false);
+            var handler = new WriteThroughHandler(formatter, data, false);
             processor.ProcessQuery(handler, null, q);
             Console.WriteLine(data.ToString());
 
-            Graph actual = new Graph();
+            var actual = new Graph();
             StringParser.Parse(actual, data.ToString(), new NTriplesParser());
 
             Assert.Equal(expected, actual);
@@ -128,16 +128,16 @@ namespace VDS.RDF.Query
 
         private void TestCountHandlers(ISparqlQueryProcessor processor)
         {
-            this.TestResultCountHandler(processor, "SELECT * WHERE { ?s a ?type }");
-            this.TestResultCountHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?child rdfs:subClassOf ?parent }");
-            this.TestCountHandler(processor, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
-            this.TestCountHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?child rdfs:subClassOf ?parent }");
+            TestResultCountHandler(processor, "SELECT * WHERE { ?s a ?type }");
+            TestResultCountHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?child rdfs:subClassOf ?parent }");
+            TestCountHandler(processor, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+            TestCountHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?child rdfs:subClassOf ?parent }");
         }
 
         private void TestGraphHandlers(ISparqlQueryProcessor processor)
         {
-            this.TestGraphHandler(processor, "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
-            this.TestGraphHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?s a ?type ; rdfs:subClassOf ?parent }");
+            TestGraphHandler(processor, "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+            TestGraphHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?s a ?type ; rdfs:subClassOf ?parent }");
         }
 
         private void TestPagingHandlers(ISparqlQueryProcessor processor)
@@ -147,8 +147,8 @@ namespace VDS.RDF.Query
 
         private void TestWriteThroughHandlers(ISparqlQueryProcessor processor)
         {
-            this.TestWriteThroughHandler(processor, "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
-            this.TestWriteThroughHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?s a ?type ; rdfs:subClassOf ?parent }");
+            TestWriteThroughHandler(processor, "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
+            TestWriteThroughHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?s a ?type ; rdfs:subClassOf ?parent }");
         }
 
         #endregion
@@ -161,65 +161,65 @@ namespace VDS.RDF.Query
 
         private void EnsureLeviathanReady()
         {
-            if (this._dataset == null)
+            if (_dataset == null)
             {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
+                var store = new TripleStore();
+                var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
                 store.Add(g);
 
-                this._dataset = new InMemoryDataset(store);
+                _dataset = new InMemoryDataset(store);
             }
-            if (this._leviathan == null)
+            if (_leviathan == null)
             {
-                this._leviathan = new LeviathanQueryProcessor(this._dataset);
+                _leviathan = new LeviathanQueryProcessor(_dataset);
             }
-            if (this._explainer == null)
+            if (_explainer == null)
             {
-                this._explainer = new ExplainQueryProcessor(this._dataset, ExplanationLevel.Default);
+                _explainer = new ExplainQueryProcessor(_dataset, ExplanationLevel.Default);
             }
         }
 
         [Fact]
         public void SparqlWithHandlersLeviathanCount()
         {
-            this.EnsureLeviathanReady();
-            this.TestCountHandlers(this._leviathan);
+            EnsureLeviathanReady();
+            TestCountHandlers(_leviathan);
         }
 
         [Fact]
         public void SparqlWithHandlersLeviathanExplainCount()
         {
-            this.EnsureLeviathanReady();
-            this.TestCountHandlers(this._explainer);
+            EnsureLeviathanReady();
+            TestCountHandlers(_explainer);
         }
 
         [Fact]
         public void SparqlWithHandlersLeviathanGraph()
         {
-            this.EnsureLeviathanReady();
-            this.TestGraphHandlers(this._leviathan);
+            EnsureLeviathanReady();
+            TestGraphHandlers(_leviathan);
         }
 
         [Fact]
         public void SparqlWithHandlersLeviathanExplainGraph()
         {
-            this.EnsureLeviathanReady();
-            this.TestGraphHandlers(this._explainer);
+            EnsureLeviathanReady();
+            TestGraphHandlers(_explainer);
         }
 
         [Fact]
         public void SparqlWithHandlersLeviathanWriteThrough()
         {
-            this.EnsureLeviathanReady();
-            this.TestWriteThroughHandlers(this._leviathan);
+            EnsureLeviathanReady();
+            TestWriteThroughHandlers(_leviathan);
         }
 
         [Fact]
         public void SparqlWithHandlersLeviathanExplainWriteThrough()
         {
-            this.EnsureLeviathanReady();
-            this.TestWriteThroughHandlers(this._explainer);
+            EnsureLeviathanReady();
+            TestWriteThroughHandlers(_explainer);
         }
 
         #endregion
@@ -230,32 +230,32 @@ namespace VDS.RDF.Query
 
         private void EnsureRemoteReady()
         {
-            if (this._remote == null)
+            if (_remote == null)
             {
                 Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
-                this._remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
+                _remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
             }
         }
 
         [SkippableFact]
         public void SparqlWithHandlersRemoteCount()
         {
-            this.EnsureRemoteReady();
-            this.TestCountHandlers(this._remote);
+            EnsureRemoteReady();
+            TestCountHandlers(_remote);
         }
 
         [SkippableFact]
         public void SparqlWithHandlersRemoteGraph()
         {
-            this.EnsureRemoteReady();
-            this.TestGraphHandlers(this._remote);
+            EnsureRemoteReady();
+            TestGraphHandlers(_remote);
         }
 
         [SkippableFact]
         public void SparqlWithHandlersRemoteWriteThrough()
         {
-            this.EnsureRemoteReady();
-            this.TestWriteThroughHandlers(this._remote);
+            EnsureRemoteReady();
+            TestWriteThroughHandlers(_remote);
         }
 
         #endregion
@@ -266,32 +266,32 @@ namespace VDS.RDF.Query
 
         private void EnsureGenericReady()
         {
-            this.EnsureLeviathanReady();
-            if (this._generic == null)
+            EnsureLeviathanReady();
+            if (_generic == null)
             {
-                this._generic = new GenericQueryProcessor(new InMemoryManager(this._dataset));
+                _generic = new GenericQueryProcessor(new InMemoryManager(_dataset));
             }
         }
 
         [Fact]
         public void SparqlWithHandlersGenericCount()
         {
-            this.EnsureGenericReady();
-            this.TestCountHandlers(this._generic);
+            EnsureGenericReady();
+            TestCountHandlers(_generic);
         }
 
         [Fact]
         public void SparqlWithHandlersGenericGraph()
         {
-            this.EnsureGenericReady();
-            this.TestGraphHandlers(this._generic);
+            EnsureGenericReady();
+            TestGraphHandlers(_generic);
         }
 
         [Fact]
         public void SparqlWithHandlersGenericWriteThrough()
         {
-            this.EnsureGenericReady();
-            this.TestWriteThroughHandlers(this._generic);
+            EnsureGenericReady();
+            TestWriteThroughHandlers(_generic);
         }
 
         #endregion

@@ -37,8 +37,8 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class ReasonerFactory : IObjectFactory
     {
-        private const String OwlReasonerWrapperType = "VDS.RDF.Query.Inference.OwlReasonerWrapper";
-        private const String PelletReasonerType = "VDS.RDF.Query.Inference.PelletReasoner";
+        private const string OwlReasonerWrapperType = "VDS.RDF.Query.Inference.OwlReasonerWrapper";
+        private const string PelletReasonerType = "VDS.RDF.Query.Inference.PelletReasoner";
 
         /// <summary>
         /// Tries to load a Reasoner based on information from the Configuration Graph.
@@ -51,14 +51,14 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            Object output;
+            object output;
 
             switch (targetType.FullName)
             {
                 case PelletReasonerType:
-                    String server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
+                    var server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
                     if (server == null) return false;
-                    String kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
+                    var kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
                     if (kb == null) return false;
 
                     output = new PelletReasoner(UriFactory.Create(server), kb);
@@ -67,7 +67,7 @@ namespace VDS.RDF.Configuration
                 case OwlReasonerWrapperType:
                     INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
                     if (reasonerNode == null) return false;
-                    Object reasoner = ConfigurationLoader.LoadObject(g, reasonerNode);
+                    var reasoner = ConfigurationLoader.LoadObject(g, reasonerNode);
                     if (reasoner is IOwlReasoner)
                     {
                         output = new OwlReasonerWrapper((IOwlReasoner)reasoner);
@@ -100,7 +100,7 @@ namespace VDS.RDF.Configuration
                     IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
                     foreach (INode rulesGraph in rulesGraphs)
                     {
-                        Object temp = ConfigurationLoader.LoadObject(g, rulesGraph);
+                        var temp = ConfigurationLoader.LoadObject(g, rulesGraph);
                         if (temp is IGraph)
                         {
                             ((IInferenceEngine)output).Initialise((IGraph)temp);

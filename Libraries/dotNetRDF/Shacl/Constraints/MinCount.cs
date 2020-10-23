@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-
     internal class MinCount : Numeric
     {
         [DebuggerStepThrough]
@@ -56,7 +56,7 @@ namespace VDS.RDF.Shacl.Constraints
                 return true;
             }
 
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from valueNode in focusNode.AsEnumerable()
                 where !valueNodes.Skip(NumericValue - 1).Any()
                 select valueNode;

@@ -546,7 +546,7 @@ namespace VDS.RDF.Storage.Virtualisation
             areEqual = false;
             if (other is IVirtualNode<TNodeID, TGraphID>)
             {
-                IVirtualNode<TNodeID, TGraphID> virt = (IVirtualNode<TNodeID, TGraphID>)other;
+                var virt = (IVirtualNode<TNodeID, TGraphID>)other;
                 if (ReferenceEquals(_provider, virt.Provider))
                 {
                     areEqual = _id.Equals(virt.VirtualID);

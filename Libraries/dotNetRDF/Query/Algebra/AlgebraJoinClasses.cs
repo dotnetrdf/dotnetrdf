@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get { return _lhs.FloatingVariables; }
         }
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get { return _lhs.FixedVariables; }
         }
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -179,8 +179,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _lhs.ToGraphPattern();
-            GraphPattern opt = _rhs.ToGraphPattern();
+            var p = _lhs.ToGraphPattern();
+            var opt = _rhs.ToGraphPattern();
             if (_mustExist)
             {
                 opt.IsExists = true;
@@ -304,10 +304,10 @@ namespace VDS.RDF.Query.Algebra
         private bool CanFlowResultsToRhs(SparqlEvaluationContext context)
         {
             // Can't have any conflicting variables
-            HashSet<String> lhsFixed = new HashSet<string>(_lhs.FixedVariables);
-            HashSet<String> lhsFloating = new HashSet<string>(_lhs.FloatingVariables);
-            HashSet<String> rhsFloating = new HashSet<string>(_rhs.FloatingVariables);
-            HashSet<String> rhsFixed = new HashSet<string>(_rhs.FixedVariables);
+            var lhsFixed = new HashSet<string>(_lhs.FixedVariables);
+            var lhsFloating = new HashSet<string>(_lhs.FloatingVariables);
+            var rhsFloating = new HashSet<string>(_rhs.FloatingVariables);
+            var rhsFixed = new HashSet<string>(_rhs.FixedVariables);
 
             // RHS Floating can't be floating/fixed on LHS
             if (rhsFloating.Any(v => lhsFloating.Contains(v) || lhsFixed.Contains(v))) return false;
@@ -326,7 +326,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -337,13 +337,13 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those fixed on RHS or floating on either side and not fixed on LHS
-                IEnumerable<String> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Concat(_rhs.FixedVariables).Distinct();
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Concat(_rhs.FixedVariables).Distinct();
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -351,7 +351,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {
@@ -399,7 +399,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            String filter = _filter.ToString();
+            var filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
             return "LeftJoin(" + _lhs.ToString() + ", " + _rhs.ToString() + ", " + filter + ")";
         }
@@ -410,7 +410,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -422,8 +422,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _lhs.ToGraphPattern();
-            GraphPattern opt = _rhs.ToGraphPattern();
+            var p = _lhs.ToGraphPattern();
+            var opt = _rhs.ToGraphPattern();
             opt.IsOptional = true;
             if (_filter.Expression is ConstantTerm)
             {
@@ -602,7 +602,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -613,13 +613,13 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those floating on either side which are not fixed
-                IEnumerable<String> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -627,7 +627,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {
@@ -673,7 +673,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -685,7 +685,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _lhs.ToGraphPattern();
+            var p = _lhs.ToGraphPattern();
             p.AddGraphPattern(_rhs.ToGraphPattern());
             return p;
         }
@@ -768,7 +768,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -779,12 +779,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those not fixed
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return Variables.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -792,7 +792,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {
@@ -838,7 +838,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -850,7 +850,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern();
+            var p = new GraphPattern();
             p.IsUnion = true;
             p.AddGraphPattern(_lhs.ToGraphPattern());
             p.AddGraphPattern(_rhs.ToGraphPattern());

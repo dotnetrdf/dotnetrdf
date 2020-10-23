@@ -124,11 +124,11 @@ WHERE
         private void TestQuery(IInMemoryQueryableStore store, String query, String queryName, int differences)
         {
             Console.WriteLine(queryName);
-            SparqlQuery q = this._sparqlParser.ParseFromString(query);
+            SparqlQuery q = _sparqlParser.ParseFromString(query);
             Console.WriteLine(q.ToAlgebra().ToString());
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
-            using (SparqlResultSet resultSet = processor.ProcessQuery(q) as SparqlResultSet)
+            var processor = new LeviathanQueryProcessor(store);
+            using (var resultSet = processor.ProcessQuery(q) as SparqlResultSet)
             {
                 Assert.NotNull(resultSet);
                 TestTools.ShowResults(resultSet);
@@ -146,10 +146,10 @@ WHERE
             store.Add(a);
             store.Add(b);
 
-            this.TestQuery(store, MinusQuery, "Minus", differences);
-            this.TestQuery(store, OptionalSameTermQuery1, "OptionalSameTerm1", differences);
-            this.TestQuery(store, OptionalSameTermQuery2, "OptionalSameTerm2", differences);
-            this.TestQuery(store, NotExistsQuery, "NotExists", differences);
+            TestQuery(store, MinusQuery, "Minus", differences);
+            TestQuery(store, OptionalSameTermQuery1, "OptionalSameTerm1", differences);
+            TestQuery(store, OptionalSameTermQuery2, "OptionalSameTerm2", differences);
+            TestQuery(store, NotExistsQuery, "NotExists", differences);
         }
 
         [Fact]
@@ -158,11 +158,11 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            this._parser.Load(a, new StringReader(TestData));
-            this._parser.Load(b, new StringReader(TestData));
+            _parser.Load(a, new StringReader(TestData));
+            _parser.Load(b, new StringReader(TestData));
 
-            this.TestDeltas(a, b, 0);
-            this.TestDeltas(b, a, 0);
+            TestDeltas(a, b, 0);
+            TestDeltas(b, a, 0);
         }
 
         [Fact]
@@ -171,11 +171,11 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            this._parser.Load(a, new StringReader(TestData));
-            this._parser.Load(b, new StringReader(TestData2));
+            _parser.Load(a, new StringReader(TestData));
+            _parser.Load(b, new StringReader(TestData2));
 
-            this.TestDeltas(a, b, 0);
-            this.TestDeltas(b, a, 1);
+            TestDeltas(a, b, 0);
+            TestDeltas(b, a, 1);
         }
 
         [Fact]
@@ -184,12 +184,12 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            this._parser.Load(a, new StringReader(TestData));
-            this._parser.Load(b, new StringReader(TestData));
+            _parser.Load(a, new StringReader(TestData));
+            _parser.Load(b, new StringReader(TestData));
             b.Retract(b.GetTriplesWithSubject(new Uri("http://r1")).ToList());
 
-            this.TestDeltas(a, b, 1);
-            this.TestDeltas(b, a, 0);
+            TestDeltas(a, b, 1);
+            TestDeltas(b, a, 0);
             // TODO This should pass
         }
 
@@ -199,10 +199,10 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            this._parser.Load(a, new StringReader(TestData));
+            _parser.Load(a, new StringReader(TestData));
 
-            this.TestDeltas(a, b, 2);
-            this.TestDeltas(b, a, 0);
+            TestDeltas(a, b, 2);
+            TestDeltas(b, a, 0);
         }
 
         [Fact]
@@ -211,11 +211,11 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            this._parser.Load(a, new StringReader(TestData3));
-            this._parser.Load(b, new StringReader(TestData));
+            _parser.Load(a, new StringReader(TestData3));
+            _parser.Load(b, new StringReader(TestData));
 
-            this.TestDeltas(a, b, 2);
-            this.TestDeltas(b, a, 0);
+            TestDeltas(a, b, 2);
+            TestDeltas(b, a, 0);
         }
 
         [Fact]
@@ -224,11 +224,11 @@ WHERE
             IGraph a = new Graph();
             IGraph b = new Graph();
 
-            this._parser.Load(a, new StringReader(TestData4));
-            this._parser.Load(b, new StringReader(TestData));
+            _parser.Load(a, new StringReader(TestData4));
+            _parser.Load(b, new StringReader(TestData));
 
-            this.TestDeltas(a, b, 6);
-            this.TestDeltas(b, a, 0);
+            TestDeltas(a, b, 6);
+            TestDeltas(b, a, 0);
         }
     }
 }

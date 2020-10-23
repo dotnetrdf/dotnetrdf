@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Builder
 
         private static string GetLiteralString(object literal)
         {
-            string literalString = literal.ToString();
+            var literalString = literal.ToString();
             if (literal is DateTimeOffset)
             {
                 literalString = GetDatetimeString((DateTimeOffset) literal);

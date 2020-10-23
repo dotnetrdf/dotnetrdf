@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Algebra
             // Try and generate an Algebra expression
             // Make sure we don't generate clashing temporary variable IDs over the life of the
             // Evaluation
-            PathTransformContext transformContext = new PathTransformContext(PathStart, PathEnd);
+            var transformContext = new PathTransformContext(PathStart, PathEnd);
             if (context["PathTransformID"] != null)
             {
                 transformContext.NextID = (int)context["PathTransformID"];
@@ -64,8 +64,8 @@ namespace VDS.RDF.Query.Algebra
 
             // Now we can evaluate the resulting algebra
             BaseMultiset initialInput = context.InputMultiset;
-            bool trimMode = context.TrimTemporaryVariables;
-            bool rigMode = context.Options.RigorousEvaluation;
+            var trimMode = context.TrimTemporaryVariables;
+            var rigMode = context.Options.RigorousEvaluation;
             try
             {
                 // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Algebra
                 // into an algebra at a time and may need to do further nested translate calls we do
                 // need to do this here
                 context.TrimTemporaryVariables = false;
-                var result = context.Evaluate(algebra);
+                BaseMultiset result = context.Evaluate(algebra);
 
                 // Also note that we don't trim temporary variables here even if we've set the setting back
                 // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.AddTriplePattern(new PropertyPathPattern(PathStart, Path, PathEnd));
             return gp;
         }

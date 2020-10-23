@@ -72,9 +72,9 @@ namespace VDS.RDF.Query.FullText.Search
         /// <param name="score">Score.</param>
         public FullTextSearchResult(Uri graphUri, INode n, double score)
         {
-            this.GraphUri = graphUri;
-            this.Node = n;
-            this.Score = score;
+            GraphUri = graphUri;
+            Node = n;
+            Score = score;
         }
 
         /// <summary>

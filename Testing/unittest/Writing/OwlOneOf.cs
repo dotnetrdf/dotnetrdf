@@ -42,9 +42,9 @@ namespace VDS.RDF.Writing
         public void WritingSerializeOwnOneOf()
         {
             //Create the Graph for the Test and Generate a List of URIs
-            Graph g = new Graph();
-            List<IUriNode> nodes = new List<IUriNode>();
-            for (int i = 1; i <= 10; i++)
+            var g = new Graph();
+            var nodes = new List<IUriNode>();
+            for (var i = 1; i <= 10; i++)
             {
                 nodes.Add(g.CreateUriNode(new Uri("http://example.org/Class" + i)));
             }
@@ -53,7 +53,7 @@ namespace VDS.RDF.Writing
             thingOneOf(g, nodes.ToArray());
 
             //Dump as NTriples to the Console
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (Triple t in g.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -73,13 +73,13 @@ namespace VDS.RDF.Writing
             Console.WriteLine();
 
             //Now check that the Graphs are all equivalent
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromFile("owl-one-of.rdf");
             Assert.Equal(g, h);
             Console.WriteLine("RdfXmlWriter serialization was OK");
             Console.WriteLine();
 
-            Graph j = new Graph();
+            var j = new Graph();
             j.LoadFromFile("owl-one-of-pretty.rdf");
             Assert.Equal(g, j);
             Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
@@ -89,9 +89,9 @@ namespace VDS.RDF.Writing
         public void WritingSerializeOwnOneOfVeryLarge()
         {
                 //Create the Graph for the Test and Generate a List of URIs
-                Graph g = new Graph();
-                List<IUriNode> nodes = new List<IUriNode>();
-                for (int i = 1; i <= 10000; i++)
+                var g = new Graph();
+                var nodes = new List<IUriNode>();
+                for (var i = 1; i <= 10000; i++)
                 {
                     nodes.Add(g.CreateUriNode(new Uri("http://example.org/Class" + i)));
                 }
@@ -100,7 +100,7 @@ namespace VDS.RDF.Writing
                 thingOneOf(g, nodes.ToArray());
 
                 //Dump as NTriples to the Console
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
                 foreach (Triple t in g.Triples)
                 {
                     Console.WriteLine(t.ToString(formatter));
@@ -122,13 +122,13 @@ namespace VDS.RDF.Writing
                 Console.WriteLine();
 
                 //Now check that the Graphs are all equivalent
-                Graph h = new Graph();
+                var h = new Graph();
                 h.LoadFromFile("owl-one-of.rdf");
                 Assert.Equal(g, h);
                 Console.WriteLine("RdfXmlWriter serialization was OK");
                 Console.WriteLine();
 
-                Graph j = new Graph();
+                var j = new Graph();
                 j.LoadFromFile("owl-one-of-pretty.rdf");
                 Assert.Equal(g, j);
                 Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing
             graph.Assert(new Triple(oneOfNode, owlOneOf, chainA));
             graph.Assert(new Triple(owlThing, owlEquivClass, oneOfNode));
 
-            for (int i = 0; i < listInds.Length; i++)
+            for (var i = 0; i < listInds.Length; i++)
             {
                 graph.Assert(new Triple(chainA, rdfFirst, listInds[i]));
                 IBlankNode chainB = graph.CreateBlankNode();

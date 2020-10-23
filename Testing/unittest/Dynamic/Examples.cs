@@ -254,7 +254,7 @@ namespace VDS.RDF.Dynamic
         {
             public FoafPerson(INode node)
                 : base(node, UriFactory.Create("http://xmlns.com/foaf/0.1/"))
-                => this.Add("rdf:type", UriFactory.Create("http://xmlns.com/foaf/0.1/Person"));
+                => Add("rdf:type", UriFactory.Create("http://xmlns.com/foaf/0.1/Person"));
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
 
@@ -289,7 +289,7 @@ namespace VDS.RDF.Dynamic
         {
             public DoapProject(INode node)
                 : base(node, UriFactory.Create("http://www.web-semantics.org/ns/pm#"))
-                => this.Add("rdf:type", UriFactory.Create("http://usefulinc.com/ns/doap#Project"));
+                => Add("rdf:type", UriFactory.Create("http://usefulinc.com/ns/doap#Project"));
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
 
@@ -300,7 +300,7 @@ namespace VDS.RDF.Dynamic
         {
             public WotKey(INode node)
                 : base(node, UriFactory.Create("http://xmlns.com/wot/0.1/"))
-                => this.Add("rdf:type", UriFactory.Create("http://xmlns.com/wot/0.1/PubKey"));
+                => Add("rdf:type", UriFactory.Create("http://xmlns.com/wot/0.1/PubKey"));
 
             public ICollection<string> Ids => new DynamicObjectCollection<string>(this, "hex_id");
 

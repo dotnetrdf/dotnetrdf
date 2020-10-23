@@ -38,9 +38,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// </summary>
     public class ClusterService : PelletService
     {
-        private String _clusterUri;
+        private string _clusterUri;
 
-        internal ClusterService(String serviceName, JObject obj)
+        internal ClusterService(string serviceName, JObject obj)
             : base(serviceName, obj)
         {
             if (!Endpoint.Uri.EndsWith("cluster/"))
@@ -63,10 +63,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             IGraph g = ClusterRaw(number); 
 
             // Build the List of Lists
-            List<List<INode>> clusters = new List<List<INode>>();
+            var clusters = new List<List<INode>>();
             foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
             {
-                List<INode> cluster = new List<INode>();
+                var cluster = new List<INode>();
                 foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
                 {
                     cluster.Add(t.Object);
@@ -83,15 +83,15 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="number">Number of Clusters.</param>
         /// <param name="type">QName of a Type to cluster around.</param>
         /// <returns></returns>
-        public List<List<INode>> Cluster(int number, String type)
+        public List<List<INode>> Cluster(int number, string type)
         {
             IGraph g = ClusterRaw(number, type);
 
             // Build the List of Lists
-            List<List<INode>> clusters = new List<List<INode>>();
+            var clusters = new List<List<INode>>();
             foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
             {
-                List<INode> cluster = new List<INode>();
+                var cluster = new List<INode>();
                 foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
                 {
                     cluster.Add(t.Object);
@@ -111,16 +111,16 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = _clusterUri + number + "/";
+            var requestUri = _clusterUri + number + "/";
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 response.Close();
@@ -134,22 +134,22 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="number">Number of Clusters.</param>
         /// <param name="type">QName of a Type to Cluster around.</param>
         /// <returns></returns>
-        public IGraph ClusterRaw(int number, String type)
+        public IGraph ClusterRaw(int number, string type)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = _clusterUri + number + "/" + type;
+            var requestUri = _clusterUri + number + "/" + type;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    Graph g = new Graph();
+                    var g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Cluster(int number, PelletClusterServiceCallback callback, Object state)
+        public void Cluster(int number, PelletClusterServiceCallback callback, object state)
         {
             ClusterRaw(number, (g, s) =>
                 {
@@ -186,10 +186,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     else
                     {
                         // Build the List of Lists
-                        List<List<INode>> clusters = new List<List<INode>>();
+                        var clusters = new List<List<INode>>();
                         foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
                         {
-                            List<INode> cluster = new List<INode>();
+                            var cluster = new List<INode>();
                             foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
                             {
                                 cluster.Add(t.Object);
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Cluster(int number, String type, PelletClusterServiceCallback callback, Object state)
+        public void Cluster(int number, string type, PelletClusterServiceCallback callback, object state)
         {
             ClusterRaw(number, type, (g, s) =>
                 {
@@ -224,10 +224,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     else
                     {
                         // Build the List of Lists
-                        List<List<INode>> clusters = new List<List<INode>>();
+                        var clusters = new List<List<INode>>();
                         foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
                         {
-                            List<INode> cluster = new List<INode>();
+                            var cluster = new List<INode>();
                             foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
                             {
                                 cluster.Add(t.Object);
@@ -250,13 +250,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void ClusterRaw(int number, GraphCallback callback, Object state)
+        public void ClusterRaw(int number, GraphCallback callback, object state)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = _clusterUri + number + "/";
+            var requestUri = _clusterUri + number + "/";
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
@@ -266,10 +266,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                                Graph g = new Graph();
+                                var g = new Graph();
                                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                                 response.Close();
@@ -314,13 +314,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void ClusterRaw(int number, String type, GraphCallback callback, Object state)
+        public void ClusterRaw(int number, string type, GraphCallback callback, object state)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
 
-            String requestUri = _clusterUri + number + "/" + type;
+            var requestUri = _clusterUri + number + "/" + type;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
@@ -330,10 +330,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                                Graph g = new Graph();
+                                var g = new Graph();
                                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                                 response.Close();

@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing
                 writer.WriteEndAttribute();
 
                 // Output Graphs as XML <graph> elements
-                foreach (var g in store.Graphs)
+                foreach (IGraph g in store.Graphs)
                 {
                     GraphToTriX(g, writer);
                 }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Writing
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TriX"));
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         writer.WriteStartElement("typedLiteral");

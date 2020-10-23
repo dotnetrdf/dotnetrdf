@@ -170,7 +170,7 @@ namespace VDS.RDF
         public bool Assert(IEnumerable<Triple> ts)
         {
             var asserted = false;
-            foreach (var t in ts)
+            foreach (Triple t in ts)
             {
                 asserted = Assert(t) || asserted;
             }
@@ -199,7 +199,7 @@ namespace VDS.RDF
         public bool Retract(IEnumerable<Triple> ts)
         {
             var retracted = false;
-            foreach (var t in ts)
+            foreach (Triple t in ts)
             {
                 retracted = Retract(t) || retracted;
             }
@@ -211,7 +211,7 @@ namespace VDS.RDF
         /// </summary>
         public void Clear()
         {
-            foreach (var t in _g.Triples)
+            foreach (Triple t in _g.Triples)
             {
                 _actions.Add(new TriplePersistenceAction(t, true));
             }
@@ -340,7 +340,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name.</param>
         /// <returns></returns>
-        public IVariableNode CreateVariableNode(String varname)
+        public IVariableNode CreateVariableNode(string varname)
         {
             return _g.CreateVariableNode(varname);
         }
@@ -561,7 +561,7 @@ namespace VDS.RDF
             if (IsEmpty)
             {
                 // Empty Graph so do a quick copy
-                foreach (var t in g.Triples)
+                foreach (Triple t in g.Triples)
                 {
                     Assert(new Triple(Tools.CopyNode(t.Subject, _g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, _g, keepOriginalGraphUri), Tools.CopyNode(t.Object, _g, keepOriginalGraphUri)));
                 }
@@ -570,14 +570,14 @@ namespace VDS.RDF
             {   //Prepare a mapping of Blank Nodes to Blank Nodes
                 var mapping = new Dictionary<INode, IBlankNode>();
 
-                foreach (var t in g.Triples)
+                foreach (Triple t in g.Triples)
                 {
                     INode s, p, o;
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
                         if (!mapping.ContainsKey(t.Subject))
                         {
-                            var temp = CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
                             mapping.Add(t.Subject, temp);
                         }
@@ -592,7 +592,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Predicate))
                         {
-                            var temp = CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
                             mapping.Add(t.Predicate, temp);
                         }
@@ -607,7 +607,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Object))
                         {
-                            var temp = CreateBlankNode();
+                            IBlankNode temp = CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
                             mapping.Add(t.Object, temp);
                         }
@@ -807,7 +807,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleAsserted(object sender, TripleEventArgs args)
         {
             RaiseTripleAsserted(args);
         }
@@ -818,7 +818,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments.</param>
         protected void RaiseTripleAsserted(TripleEventArgs args)
         {
-            var d = TripleAsserted;
+            TripleEventHandler d = TripleAsserted;
             args.Graph = this;
             if (d != null)
             {
@@ -833,8 +833,8 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         protected void RaiseTripleAsserted(Triple t)
         {
-            var d = TripleAsserted;
-            var e = Changed;
+            TripleEventHandler d = TripleAsserted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 var args = new TripleEventArgs(t, this);
@@ -848,7 +848,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleRetracted(object sender, TripleEventArgs args)
         {
             RaiseTripleRetracted(args);
         }
@@ -859,7 +859,7 @@ namespace VDS.RDF
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
         {
-            var d = TripleRetracted;
+            TripleEventHandler d = TripleRetracted;
             args.Graph = this;
             if (d != null)
             {
@@ -874,8 +874,8 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         protected void RaiseTripleRetracted(Triple t)
         {
-            var d = TripleRetracted;
-            var e = Changed;
+            TripleEventHandler d = TripleRetracted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 var args = new TripleEventArgs(t, this, false);
@@ -890,7 +890,7 @@ namespace VDS.RDF
         /// <param name="args">Triple Event Arguments.</param>
         protected void RaiseGraphChanged(TripleEventArgs args)
         {
-            var d = Changed;
+            GraphEventHandler d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this, args));
@@ -902,7 +902,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseGraphChanged()
         {
-            var d = Changed;
+            GraphEventHandler d = Changed;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -915,7 +915,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted.</returns>
         protected bool RaiseClearRequested()
         {
-            var d = ClearRequested;
+            CancellableGraphEventHandler d = ClearRequested;
             if (d != null)
             {
                 var args = new CancellableGraphEventArgs(this);
@@ -933,7 +933,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseCleared()
         {
-            var d = Cleared;
+            GraphEventHandler d = Cleared;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -946,7 +946,7 @@ namespace VDS.RDF
         /// <returns>True if the operation can continue, false if it should be aborted.</returns>
         protected bool RaiseMergeRequested()
         {
-            var d = MergeRequested;
+            CancellableGraphEventHandler d = MergeRequested;
             if (d != null)
             {
                 var args = new CancellableGraphEventArgs(this);
@@ -964,7 +964,7 @@ namespace VDS.RDF
         /// </summary>
         protected void RaiseMerged()
         {
-            var d = Merged;
+            GraphEventHandler d = Merged;
             if (d != null)
             {
                 d(this, new GraphEventArgs(this));
@@ -1010,7 +1010,7 @@ namespace VDS.RDF
             {
                 if (SupportsTriplePersistence)
                 {
-                    var action = _actions[0];
+                    TriplePersistenceAction action = _actions[0];
                     var isDelete = action.IsDelete;
                     var ts = new List<Triple>();
                     ts.Add(action.Triple);
@@ -1067,7 +1067,7 @@ namespace VDS.RDF
             var i = _actions.Count - 1;
             while (i >= 0)
             {
-                var action = _actions[i];
+                TriplePersistenceAction action = _actions[i];
                 if (action.IsDelete)
                 {
                     _g.Assert(action.Triple);
@@ -1153,14 +1153,14 @@ namespace VDS.RDF
     public class FileGraphPersistenceWrapper 
         : GraphPersistenceWrapper
     {
-        private String _filename;
+        private string _filename;
 
         /// <summary>
         /// Creates a new File Graph Persistence Wrapper around the given Graph.
         /// </summary>
         /// <param name="g">Graph.</param>
         /// <param name="filename">File to persist to.</param>
-        public FileGraphPersistenceWrapper(IGraph g, String filename)
+        public FileGraphPersistenceWrapper(IGraph g, string filename)
             : base(g)
         {
             if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");
@@ -1174,7 +1174,7 @@ namespace VDS.RDF
         /// <remarks>
         /// If the given file already exists then the Graph will be loaded from that file.
         /// </remarks>
-        public FileGraphPersistenceWrapper(String filename)
+        public FileGraphPersistenceWrapper(string filename)
             : base(new Graph())
         {
             if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");

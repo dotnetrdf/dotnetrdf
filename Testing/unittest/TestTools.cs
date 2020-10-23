@@ -112,7 +112,7 @@ namespace VDS.RDF
             }
             else if (results is SparqlResultSet)
             {
-                SparqlResultSet resultSet = (SparqlResultSet) results;
+                var resultSet = (SparqlResultSet) results;
                 output.WriteLine("Result: " + resultSet.Result);
                 output.WriteLine(resultSet.Results.Count + " Results");
                 foreach (SparqlResult r in resultSet.Results)
@@ -159,7 +159,7 @@ namespace VDS.RDF
                     Console.WriteLine("NULL");
                 }
                 Console.WriteLine(g.Triples.Count + " Triples");
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
                 foreach (Triple t in g.Triples.ToList())
                 {
                     Console.WriteLine(t.ToString(formatter));
@@ -179,7 +179,7 @@ namespace VDS.RDF
 
         public static void ShowDifferences(GraphDiffReport report, String lhsName, String rhsName)
         {
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             lhsName = String.IsNullOrEmpty(lhsName) ? "1st Graph" : lhsName;
             rhsName = String.IsNullOrEmpty(rhsName) ? "2nd Graph" : rhsName;
 
@@ -247,7 +247,7 @@ namespace VDS.RDF
 
         public static void ShowMapping(GraphDiffReport report)
         {
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             Console.WriteLine("Blank Node Mapping between Graphs:");
             foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
             {
@@ -282,7 +282,7 @@ namespace VDS.RDF
         public static void PrintEnumerable<T>(IEnumerable<T> items, String sep)
             where T : class
         {
-            bool first = true;
+            var first = true;
             foreach (T item in items)
             {
                 if (!first)
@@ -300,7 +300,7 @@ namespace VDS.RDF
         public static void PrintEnumerableStruct<T>(IEnumerable<T> items, String sep)
             where T : struct
         {
-            bool first = true;
+            var first = true;
             foreach (T item in items)
             {
                 if (!first)
@@ -335,7 +335,7 @@ namespace VDS.RDF
         public static void TestInMTAThread(Action action)
         {
             Exception ex = null;
-            Thread t = new Thread(() => ThreadExecute(action, out ex));
+            var t = new Thread(() => ThreadExecute(action, out ex));
             t.SetApartmentState(ApartmentState.MTA);
             t.Start();
             t.Join();

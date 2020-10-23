@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Dynamic
 {
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-
     public partial class DynamicGraph
     {
         /// <summary>

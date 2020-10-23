@@ -24,22 +24,22 @@
 // </copyright>
 */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Constraints;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Constraints;
-    using VDS.RDF.Shacl.Validation;
-
     internal abstract class Constraint : WrapperNode
     {
         [DebuggerStepThrough]
         protected Constraint(Shape shape, INode value)
             : base(value)
         {
-            this.Shape = shape;
+            Shape = shape;
         }
 
         internal abstract INode ConstraintComponent { get; }
@@ -122,7 +122,7 @@ namespace VDS.RDF.Shacl
                 return true;
             }
 
-            foreach (var invalidValue in invalidValues)
+            foreach (INode invalidValue in invalidValues)
             {
                 var result = Result.Create(report.Graph);
                 result.SourceConstraintComponent = ConstraintComponent;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Shacl
                 return true;
             }
 
-            foreach (var invalidValue in invalidValues)
+            foreach (Triple invalidValue in invalidValues)
             {
                 var result = Result.Create(report.Graph);
                 result.SourceConstraintComponent = ConstraintComponent;
@@ -223,7 +223,7 @@ namespace VDS.RDF.Shacl
                 return true;
             }
 
-            foreach (var invalidValue in invalidValues)
+            foreach (INode invalidValue in invalidValues)
             {
                 var result = Result.Create(report.Graph);
                 result.SourceConstraintComponent = ConstraintComponent;

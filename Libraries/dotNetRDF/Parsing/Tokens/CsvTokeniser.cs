@@ -90,10 +90,10 @@ namespace VDS.RDF.Parsing.Tokens
                         }
                     }
 
-                    char next = Peek();
+                    var next = Peek();
 
                     // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == Char.MaxValue && _in.EndOfStream)
+                    if (next == char.MaxValue && _in.EndOfStream)
                     {
                         if (Length == 0)
                         {
@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetUnquotedField()
         {
-            char next = Peek();
+            var next = Peek();
             while (next != ',' && next != '\n' && next != '\r')
             {
                 ConsumeCharacter();
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetQuotedField()
         {
             ConsumeCharacter();
-            char next = Peek();
+            var next = Peek();
             do
             {
                 if (next == '"')

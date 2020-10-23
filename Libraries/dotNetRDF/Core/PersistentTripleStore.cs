@@ -158,8 +158,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public object ExecuteQuery(string query)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             ExecuteQuery(new GraphHandler(g), new ResultSetHandler(results), query);
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -255,7 +255,7 @@ namespace VDS.RDF
         private IStorageProvider _manager;
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
         private List<TripleStorePersistenceAction> _actions = new List<TripleStorePersistenceAction>();
-        private HashSet<String> _removedGraphs = new HashSet<string>();
+        private HashSet<string> _removedGraphs = new HashSet<string>();
         private bool _persisting = false;
 
         public PersistentGraphCollection(IStorageProvider manager)
@@ -297,7 +297,7 @@ namespace VDS.RDF
         {
             if (!_persisting)
             {
-                String uri = g.BaseUri.ToSafeString();
+                var uri = g.BaseUri.ToSafeString();
                 _removedGraphs.Add(uri);
                 if (_manager.UpdateSupported)
                 {
@@ -314,7 +314,7 @@ namespace VDS.RDF
 
         public override bool Contains(Uri graphUri)
         {
-            String uri = graphUri.ToSafeString();
+            var uri = graphUri.ToSafeString();
             if (base.Contains(graphUri))
             {
                 return true;
@@ -322,7 +322,7 @@ namespace VDS.RDF
             else if (!_removedGraphs.Contains(uri))
             {
                 // Try and load the Graph and return true if anything is returned
-                Graph g = new Graph();
+                var g = new Graph();
                 try
                 {
                     _manager.LoadGraph(g, graphUri);
@@ -392,7 +392,7 @@ namespace VDS.RDF
 
         private bool ContainsInternal(Uri graphUri)
         {
-            AnyHandler handler = new AnyHandler();
+            var handler = new AnyHandler();
             try
             {
                 _manager.LoadGraph(handler, graphUri);
@@ -416,7 +416,7 @@ namespace VDS.RDF
             g.TripleRetracted -= TripleRemovedHandler;
         }
 
-        private void OnTripleAsserted(Object sender, TripleEventArgs args)
+        private void OnTripleAsserted(object sender, TripleEventArgs args)
         {
             if (!_persisting)
             {
@@ -424,7 +424,7 @@ namespace VDS.RDF
             }
         }
 
-        private void OnTripleRetracted(Object sender, TripleEventArgs args)
+        private void OnTripleRetracted(object sender, TripleEventArgs args)
         {
             if (!_persisting)
             {
@@ -463,13 +463,13 @@ namespace VDS.RDF
 
                         if (action.IsTripleAction)
                         {
-                            Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
+                            var actions = new Queue<TriplePersistenceAction>();
                             Uri currUri = action.TripleAction.Triple.GraphUri;
                             actions.Enqueue(_actions[0].TripleAction);
                             _actions.RemoveAt(0);
 
                             // Find all the Triple actions related to this Graph up to the next non-Triple action
-                            for (int i = 0; i < _actions.Count && _actions[i].IsTripleAction; i++)
+                            for (var i = 0; i < _actions.Count && _actions[i].IsTripleAction; i++)
                             {
                                 if (EqualityHelper.AreUrisEqual(currUri, _actions[i].TripleAction.Triple.GraphUri))
                                 {
@@ -481,8 +481,8 @@ namespace VDS.RDF
 
                             // Split the Triple Actions for this Graph into batches of adds and deletes to ensure
                             // accurate persistence of the actions
-                            bool toDelete = false;
-                            List<Triple> batch = new List<Triple>();
+                            var toDelete = false;
+                            var batch = new List<Triple>();
                             while (actions.Count > 0)
                             {
                                 TriplePersistenceAction next = actions.Dequeue();
@@ -529,7 +529,7 @@ namespace VDS.RDF
                                     // Call SaveGraph() with an empty graph to create the relevant graph
                                     // If Triples were added these will be persisted separately with
                                     // TriplePersistenceActions
-                                    Graph g = new Graph();
+                                    var g = new Graph();
                                     g.BaseUri = action.GraphAction.Graph.BaseUri;
                                     _manager.SaveGraph(g);
                                     break;
@@ -600,13 +600,13 @@ namespace VDS.RDF
 
                         if (action.IsTripleAction)
                         {
-                            Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
+                            var actions = new Queue<TriplePersistenceAction>();
                             Uri currUri = _actions[0].TripleAction.Triple.GraphUri;
                             actions.Enqueue(_actions[0].TripleAction);
                             _actions.RemoveAt(0);
 
                             // Find all the Triple actions related to this Graph up to the next non-Triple action
-                            for (int i = 0; i < _actions.Count && _actions[i].IsTripleAction; i++)
+                            for (var i = 0; i < _actions.Count && _actions[i].IsTripleAction; i++)
                             {
                                 if (EqualityHelper.AreUrisEqual(currUri, _actions[i].TripleAction.Triple.GraphUri))
                                 {
@@ -618,8 +618,8 @@ namespace VDS.RDF
 
                             // Split the Triples for this Graph into batches of adds and deletes to ensure
                             // accurate persistence of the actions
-                            bool toDelete = false;
-                            List<Triple> batch = new List<Triple>();
+                            var toDelete = false;
+                            var batch = new List<Triple>();
                             while (actions.Count > 0)
                             {
                                 TriplePersistenceAction next = actions.Dequeue();

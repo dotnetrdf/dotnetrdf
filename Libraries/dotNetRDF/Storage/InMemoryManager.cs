@@ -109,7 +109,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI to load.</param>
         public override void LoadGraph(IGraph g, string graphUri)
         {
-            if (graphUri == null || graphUri.Equals(String.Empty))
+            if (graphUri == null || graphUri.Equals(string.Empty))
             {
                 LoadGraph(g, (Uri)null);
             }
@@ -124,9 +124,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="graphUri">Graph URI to load.</param>
-        public override void LoadGraph(IRdfHandler handler, String graphUri)
+        public override void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            if (graphUri == null || graphUri.Equals(String.Empty))
+            if (graphUri == null || graphUri.Equals(string.Empty))
             {
                 LoadGraph(handler, (Uri)null);
             }
@@ -171,7 +171,7 @@ namespace VDS.RDF.Storage
         {
             if (!_dataset.HasGraph(graphUri))
             {
-                Graph temp = new Graph();
+                var temp = new Graph();
                 temp.BaseUri = graphUri;
                 _dataset.AddGraph(temp);
             }
@@ -198,7 +198,7 @@ namespace VDS.RDF.Storage
             {
                 UpdateGraph((Uri)null, additions, removals);
             }
-            else if (graphUri.Equals(String.Empty))
+            else if (graphUri.Equals(string.Empty))
             {
                 UpdateGraph((Uri)null, additions, removals);
             }
@@ -248,7 +248,7 @@ namespace VDS.RDF.Storage
             {
                 DeleteGraph((Uri)null);
             }
-            else if (graphUri.Equals(String.Empty))
+            else if (graphUri.Equals(string.Empty))
             {
                 DeleteGraph((Uri)null);
             }
@@ -316,7 +316,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public Object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
             if (_queryParser == null) _queryParser = new SparqlQueryParser();
             SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
@@ -332,7 +332,7 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             if (_queryParser == null) _queryParser = new SparqlQueryParser();
             SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
@@ -345,7 +345,7 @@ namespace VDS.RDF.Storage
         /// Applies SPARQL Updates to the Store.
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update.</param>
-        public void Update(String sparqlUpdate)
+        public void Update(string sparqlUpdate)
         {
             if (_updateParser == null) _updateParser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(sparqlUpdate);

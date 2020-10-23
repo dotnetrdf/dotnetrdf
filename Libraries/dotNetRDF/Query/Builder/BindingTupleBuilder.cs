@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Builder
 
         public IBindingTupleBuilder Value(object literal)
         {
-            var node = LiteralExpressionExtensions.ToLiteral(literal);
+            ILiteralNode node = LiteralExpressionExtensions.ToLiteral(literal);
             _patternItems.Add(_patternItemFactory.CreateNodeMatchPattern(node));
             return this;
         }

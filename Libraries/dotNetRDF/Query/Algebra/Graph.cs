@@ -62,10 +62,10 @@ namespace VDS.RDF.Query.Algebra
         {
             // Q: Can we optimise GRAPH when the input is the Null Multiset to just return the Null Multiset?
 
-            bool datasetOk = false;
+            var datasetOk = false;
             try
             {
-                List<String> activeGraphs = new List<string>();
+                var activeGraphs = new List<string>();
 
                 // Get the URIs of Graphs that should be evaluated over
                 if (_graphSpecifier.TokenType != Token.VARIABLE)
@@ -110,14 +110,14 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    String gvar = _graphSpecifier.Value.Substring(1);
+                    var gvar = _graphSpecifier.Value.Substring(1);
 
                     // Watch out for the case in which the Graph Variable is not bound for all Sets in which case
                     // we still need to operate over all Graphs
                     if (context.InputMultiset.ContainsVariable(gvar) && context.InputMultiset.Sets.All(s => s[gvar] != null))
                     {
                         // If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
-                        List<Uri> graphUris = new List<Uri>();
+                        var graphUris = new List<Uri>();
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
                             INode temp = s[gvar];
@@ -157,13 +157,13 @@ namespace VDS.RDF.Query.Algebra
                 BaseMultiset finalResult = new Multiset();
 
                 // Evalute for each Graph URI and union the results
-                foreach (String uri in activeGraphs)
+                foreach (var uri in activeGraphs)
                 {
                     // Always use the same Input for each Graph URI and set that Graph to be the Active Graph
                     // Be sure to translate String.Empty back to the null URI to select the default graph
                     // correctly
                     context.InputMultiset = initialInput;
-                    Uri currGraphUri = (uri.Equals(String.Empty)) ? null : UriFactory.Create(uri);
+                    Uri currGraphUri = (uri.Equals(string.Empty)) ? null : UriFactory.Create(uri);
 
                     // Set Active Graph
                     if (currGraphUri == null)
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Algebra
                         {
                             // Include graph variable if not yet bound
                             INode currGraph = new UriNode(null, currGraphUri);
-                            Set s = new Set();
+                            var s = new Set();
                             s.Add(_graphSpecifier.Value.Substring(1), currGraph);
                             finalResult.Add(s);
                         }
@@ -208,9 +208,9 @@ namespace VDS.RDF.Query.Algebra
                         // variable or eliminate solutions which have an incorrect value for it
                         if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
-                            String gvar = _graphSpecifier.Value.Substring(1);
+                            var gvar = _graphSpecifier.Value.Substring(1);
                             INode currGraph = new UriNode(null, currGraphUri);
-                            foreach (int id in result.SetIDs.ToList())
+                            foreach (var id in result.SetIDs.ToList())
                             {
                                 ISet s = result[id];
                                 if (s[gvar] == null)
@@ -250,20 +250,20 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
                 if (_graphSpecifier.TokenType != Token.VARIABLE) return _pattern.Variables.Distinct();
 
                 // Include graph variable
-                String graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
+                var graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
                 return _pattern.Variables.Concat(graphVar.AsEnumerable()).Distinct();
             }
         }
 
         /// <inheritdoc />
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
@@ -271,8 +271,8 @@ namespace VDS.RDF.Query.Algebra
 
                 // May need to add graph variable to floating variables if it isn't fixed
                 // Stricly speaking the graph variable should always be fixed but non-standard implementations may treat the default graph as a named graph with a null URI
-                String graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return fixedVars.Contains(graphVar) ? _pattern.FloatingVariables : _pattern.FloatingVariables.Concat(graphVar.AsEnumerable()).Distinct();
             }
         }
@@ -280,7 +280,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get { return _pattern.FixedVariables; }
         }
@@ -316,7 +316,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -328,7 +328,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _pattern.ToGraphPattern();
+            var p = _pattern.ToGraphPattern();
             if (!p.IsGraph)
             {
                 p.IsGraph = true;

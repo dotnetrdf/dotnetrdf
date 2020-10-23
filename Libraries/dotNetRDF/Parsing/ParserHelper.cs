@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing
         /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
         /// <param name="qnameUnescape">QName unescaping function.</param>
         /// <returns></returns>
-        public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<String, String> qnameUnescape)
+        public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<string, string> qnameUnescape)
         {
             switch (t.TokenType)
             {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     try
                     {
-                        String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
+                        var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
                         return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     try
                     {
-                        String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
+                        var uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
                         return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
@@ -169,7 +169,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     try
                     {
-                        String uri = Tools.ResolveUri(t.Value, String.Empty);
+                        var uri = Tools.ResolveUri(t.Value, string.Empty);
                         return handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
@@ -193,7 +193,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     try
                     {
-                        String uri = Tools.ResolveUri(t.Value, String.Empty);
+                        var uri = Tools.ResolveUri(t.Value, string.Empty);
                         return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
@@ -210,21 +210,24 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        internal static INode TryResolveUri(IResultsParserContext context, String value)
+        internal static INode TryResolveUri(IResultsParserContext context, string value)
         {
-                    try
-                    {
-                        String uri = Tools.ResolveUri(value, String.Empty);
-                        return context.Handler.CreateUriNode(UriFactory.Create(uri));
-                    }
-                    catch (UriFormatException formatEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + value + "' due to the following error:\n" + formatEx.Message, formatEx);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + value + "' due to the following error:\n" + rdfEx.Message, rdfEx);
-                    }
+            try
+            {
+                var uri = Tools.ResolveUri(value, string.Empty);
+                return context.Handler.CreateUriNode(UriFactory.Create(uri));
+            }
+            catch (UriFormatException formatEx)
+            {
+                throw new RdfParseException(
+                    "Unable to resolve the URI '" + value + "' due to the following error:\n" + formatEx.Message,
+                    formatEx);
+            }
+            catch (RdfException rdfEx)
+            {
+                throw new RdfParseException(
+                    "Unable to resolve the URI '" + value + "' due to the following error:\n" + rdfEx.Message, rdfEx);
+            }
         }
 
         /// <summary>
@@ -246,7 +249,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     try
                     {
-                        String uri = Tools.ResolveUri(t.Value, String.Empty);
+                        var uri = Tools.ResolveUri(t.Value, string.Empty);
                         return handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
@@ -290,7 +293,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     try
                     {
-                        String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
+                        var uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
                         return g.CreateUriNode(UriFactory.Create(uri));
                      }
                     catch (UriFormatException formatEx)
@@ -313,9 +316,9 @@ namespace VDS.RDF.Parsing
         /// <param name="msg">The Error Message.</param>
         /// <param name="t">The Token that is the cause of the Error.</param>
         /// <returns></returns>
-        public static RdfParseException Error(String msg, IToken t)
+        public static RdfParseException Error(string msg, IToken t)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("[");
             output.Append(t.GetType().Name);
             output.Append(" at Line ");
@@ -338,9 +341,9 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Error Message.</param>
         /// <param name="evt">Event causing the Error.</param>
         /// <returns></returns>
-        public static RdfParseException Error(String message, IRdfXmlEvent evt)
+        public static RdfParseException Error(string message, IRdfXmlEvent evt)
         {
-            return Error(message, String.Empty, evt);
+            return Error(message, string.Empty, evt);
         }
 
         /// <summary>
@@ -350,9 +353,9 @@ namespace VDS.RDF.Parsing
         /// <param name="production">The Production where the Error occurred.</param>
         /// <param name="evt">Event causing the Error.</param>
         /// <returns></returns>
-        public static RdfParseException Error(String message, String production, IRdfXmlEvent evt)
+        public static RdfParseException Error(string message, string production, IRdfXmlEvent evt)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (evt.Position != null)
             {
                 output.Append('[');
@@ -363,8 +366,8 @@ namespace VDS.RDF.Parsing
                 output.Append("] ");
             }
             output.AppendLine(message);
-            if (!production.Equals(String.Empty)) output.AppendLine("Occurred in Grammar Production '" + production + "'");
-            if (!evt.SourceXml.Equals(String.Empty))
+            if (!production.Equals(string.Empty)) output.AppendLine("Occurred in Grammar Production '" + production + "'");
+            if (!evt.SourceXml.Equals(string.Empty))
             {
                 output.AppendLine("[Source XML]");
                 output.AppendLine(evt.SourceXml);

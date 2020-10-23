@@ -181,11 +181,11 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (Syntax != NTriplesSyntax.Original) return base.FormatChar(cs);
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             int start = 0, length = 0;
-            for (int i = 0; i < cs.Length; i++)
+            for (var i = 0; i < cs.Length; i++)
             {
-                char c = cs[i];
+                var c = cs[i];
                 if (c <= 127)
                 {
                     length++;

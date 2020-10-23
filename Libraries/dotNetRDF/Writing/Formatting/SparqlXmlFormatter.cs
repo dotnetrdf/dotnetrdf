@@ -37,7 +37,7 @@ namespace VDS.RDF.Writing.Formatting
     public class SparqlXmlFormatter 
         : IResultSetFormatter
     {
-        private String GetBaseHeader()
+        private string GetBaseHeader()
         {
             return @"<?xml version=""1.0"" encoding=""utf-8""?>
 <sparql xmlns=""" + SparqlSpecsHelper.SparqlNamespace + "\">";
@@ -50,10 +50,10 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatResultSetHeader(IEnumerable<string> variables)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.AppendLine(GetBaseHeader());
             output.AppendLine("<head>");
-            foreach (String var in variables)
+            foreach (var var in variables)
             {
                 output.AppendLine(" <variable name=\"" + var + "\" />"); 
             }
@@ -68,7 +68,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatResultSetHeader()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.AppendLine(GetBaseHeader());
             output.AppendLine("<head />");
             output.Append("<results>");
@@ -91,9 +91,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string Format(SparqlResult result)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.AppendLine(" <result>");
-            foreach (String var in result.Variables)
+            foreach (var var in result.Variables)
             {
                 if (result.HasValue(var))
                 {
@@ -109,13 +109,13 @@ namespace VDS.RDF.Writing.Formatting
                             case NodeType.GraphLiteral:
                                 throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL XML Results"));
                             case NodeType.Literal:
-                                ILiteralNode lit = (ILiteralNode)value;
+                                var lit = (ILiteralNode)value;
                                 output.Append("<literal");
                                 if (lit.DataType != null)
                                 {
                                     output.Append(" datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</literal>");
                                 }
-                                else if (!lit.Language.Equals(String.Empty))
+                                else if (!lit.Language.Equals(string.Empty))
                                 {
                                     output.Append(" xml:lang=\"" + lit.Language + "\">" + lit.Value + "</literal>");
                                 }

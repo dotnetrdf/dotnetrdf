@@ -45,7 +45,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <summary>
         /// Gets/Sets the ID for the Store.
         /// </summary>
-        String ID
+        string ID
         {
             get;
             set;
@@ -54,7 +54,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <summary>
         /// Gets the name of the type of store the template will create.
         /// </summary>
-        String TemplateName
+        string TemplateName
         {
             get;
         }
@@ -62,7 +62,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <summary>
         /// Gets the description of the type of store the template will create.
         /// </summary>
-        String TemplateDescription
+        string TemplateDescription
         {
             get;
         }
@@ -71,6 +71,6 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// Validates the template returning an enumeration of error messages.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<String> Validate();
+        IEnumerable<string> Validate();
     }
 }

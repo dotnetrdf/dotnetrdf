@@ -326,7 +326,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder outString = new StringBuilder();
+            var outString = new StringBuilder();
             outString.Append(Subject.ToString());
             outString.Append(" , ");
             outString.Append(Predicate.ToString());
@@ -349,7 +349,7 @@ namespace VDS.RDF
             }
             else
             {
-                TurtleFormatter formatter = new TurtleFormatter(Graph.NamespaceMap);
+                var formatter = new TurtleFormatter(Graph.NamespaceMap);
                 return formatter.Format(this);
             }
         }

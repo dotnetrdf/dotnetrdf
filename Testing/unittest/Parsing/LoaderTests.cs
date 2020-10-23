@@ -43,10 +43,10 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingDataUri1()
         {
-            String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
-            String rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
-            String rdfAscii = Uri.EscapeDataString(rdfFragment);
-            List<String> uris = new List<string>()
+            var rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
+            var rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
+            var rdfAscii = Uri.EscapeDataString(rdfFragment);
+            var uris = new List<string>()
             {
                 "data:text/turtle;charset=UTF-8;base64," + rdfBase64,
                 "data:text/turtle;base64," + rdfBase64,
@@ -56,13 +56,13 @@ namespace VDS.RDF.Parsing
                 "data:," + rdfAscii
             };
 
-            foreach (String uri in uris)
+            foreach (var uri in uris)
             {
-                Uri u = new Uri(uri);
+                var u = new Uri(uri);
 
                 Console.WriteLine("Testing URI " + u.AbsoluteUri);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 DataUriLoader.Load(g, u);
 
                 Assert.Equal(1, g.Triples.Count);
@@ -79,10 +79,10 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingDataUri2()
         {
-            String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
-            String rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
-            String rdfAscii = Uri.EscapeDataString(rdfFragment);
-            List<String> uris = new List<string>()
+            var rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
+            var rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
+            var rdfAscii = Uri.EscapeDataString(rdfFragment);
+            var uris = new List<string>()
             {
                 "data:text/turtle;charset=UTF-8;base64," + rdfBase64,
                 "data:text/turtle;base64," + rdfBase64,
@@ -92,13 +92,13 @@ namespace VDS.RDF.Parsing
                 "data:," + rdfAscii
             };
 
-            foreach (String uri in uris)
+            foreach (var uri in uris)
             {
-                Uri u = new Uri(uri);
+                var u = new Uri(uri);
 
                 Console.WriteLine("Testing URI " + u.AbsoluteUri);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, u);
 
                 Assert.Equal(1, g.Triples.Count);
@@ -117,14 +117,14 @@ namespace VDS.RDF.Parsing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
+            var request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
             request.Timeout = 45000;
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/London"));
                 Console.WriteLine("OK");
                 Console.WriteLine(g.Triples.Count + " Triples retrieved");
@@ -187,15 +187,15 @@ namespace VDS.RDF.Parsing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = UriLoader.Timeout;
+            var defaultTimeout = UriLoader.Timeout;
             try
             {
                 SetUriLoaderCaching(false);
                 UriLoader.Timeout = 45000;
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Barack_Obama"));
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
                 foreach (Triple t in g.Triples)
                 {
                     Console.WriteLine(t.ToString(formatter));
@@ -231,13 +231,13 @@ namespace VDS.RDF.Parsing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = UriLoader.Timeout;
+            var defaultTimeout = UriLoader.Timeout;
             try
             {
                 SetUriLoaderCaching(false);
                 UriLoader.Timeout = 45000;
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
                 Assert.False(g.IsEmpty, "Graph should not be empty");
                 TestTools.ShowGraph(g);
@@ -252,7 +252,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingEmbeddedResourceInDotNetRdf()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
 
             TestTools.ShowGraph(g);
@@ -263,7 +263,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingEmbeddedResourceInDotNetRdf2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
 
             TestTools.ShowGraph(g);
@@ -274,7 +274,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
 
             TestTools.ShowGraph(g);
@@ -284,7 +284,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             Assert.True(store.Triples.Count() > 0);
@@ -294,11 +294,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingFileLoaderGraphIntoTripleStore()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile("fileloader-graph-to-store.ttl");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             
             store.LoadFromFile("fileloader-graph-to-store.ttl");
 

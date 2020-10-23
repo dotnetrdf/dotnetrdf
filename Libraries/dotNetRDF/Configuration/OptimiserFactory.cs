@@ -39,9 +39,9 @@ namespace VDS.RDF.Configuration
     public class OptimiserFactory
         : IObjectFactory
     {
-        private const String QueryOptimiserDefault = "VDS.RDF.Query.Optimisation.DefaultOptimiser";
-        private const String QueryOptimiserNoReorder = "VDS.RDF.Query.Optimisation.NoReorderOptimiser";
-        private const String QueryOptimiserWeighted = "VDS.RDF.Query.Optimisation.WeightedOptimiser";
+        private const string QueryOptimiserDefault = "VDS.RDF.Query.Optimisation.DefaultOptimiser";
+        private const string QueryOptimiserNoReorder = "VDS.RDF.Query.Optimisation.NoReorderOptimiser";
+        private const string QueryOptimiserWeighted = "VDS.RDF.Query.Optimisation.WeightedOptimiser";
 
         /// <summary>
         /// Tries to load a SPARQL Query/Algebra Optimiser based on information from the Configuration Graph.
@@ -54,7 +54,7 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            Object temp;
+            object temp;
 
             switch (targetType.FullName)
             {

@@ -37,13 +37,13 @@ namespace VDS.RDF.Parsing.Handlers
         : BaseResultsHandler
     {
         private List<Uri> _uris;
-        private HashSet<String> _vars = new HashSet<String>();
+        private HashSet<string> _vars = new HashSet<string>();
 
         /// <summary>
         /// Creates a new List URIs Handler.
         /// </summary>
         /// <param name="var">Variable to build the list from.</param>
-        public ListUrisHandler(String var)
+        public ListUrisHandler(string var)
         {
             _vars.Add(var);
         }
@@ -52,9 +52,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a new List URIs Handler.
         /// </summary>
         /// <param name="vars">Variables to build the list from.</param>
-        public ListUrisHandler(IEnumerable<String> vars)
+        public ListUrisHandler(IEnumerable<string> vars)
         {
-            foreach (String var in vars)
+            foreach (var var in vars)
             {
                 _vars.Add(var);
             }
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
-            foreach (String var in result.Variables)
+            foreach (var var in result.Variables)
             {
                 if (_vars.Contains(var) && result.HasValue(var))
                 {
@@ -127,14 +127,14 @@ namespace VDS.RDF.Parsing.Handlers
     public class ListStringsHandler
         : BaseResultsHandler
     {
-        private List<String> _values;
-        private HashSet<String> _vars = new HashSet<String>();
+        private List<string> _values;
+        private HashSet<string> _vars = new HashSet<string>();
 
         /// <summary>
         /// Creates a new List Strings handler.
         /// </summary>
         /// <param name="var">Variable to build the list from.</param>
-        public ListStringsHandler(String var)
+        public ListStringsHandler(string var)
         {
             _vars.Add(var);
         }
@@ -143,9 +143,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a new List Strings handler.
         /// </summary>
         /// <param name="vars">Variables to build the list from.</param>
-        public ListStringsHandler(IEnumerable<String> vars)
+        public ListStringsHandler(IEnumerable<string> vars)
         {
-            foreach (String var in vars)
+            foreach (var var in vars)
             {
                 _vars.Add(var);
             }
@@ -154,7 +154,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Gets the Strings.
         /// </summary>
-        public IEnumerable<String> Strings
+        public IEnumerable<string> Strings
         {
             get
             {
@@ -197,7 +197,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
-            foreach (String var in result.Variables)
+            foreach (var var in result.Variables)
             {
                 if (_vars.Contains(var) && result.HasValue(var))
                 {

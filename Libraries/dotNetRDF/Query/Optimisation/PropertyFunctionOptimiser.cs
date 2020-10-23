@@ -54,10 +54,10 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (algebra is IBgp)
             {
-                IBgp current = (IBgp)algebra;
+                var current = (IBgp)algebra;
                 if (current.PatternCount == 0) return current;
 
-                List<ITriplePattern> ps = current.TriplePatterns.ToList();
+                var ps = current.TriplePatterns.ToList();
                 List<IPropertyFunctionPattern> propFuncs = PropertyFunctionHelper.ExtractPatterns(ps, _factories.Value);
                 if (propFuncs.Count == 0) return current;
 
@@ -66,10 +66,10 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     // Track where we need to insert the property function back into the BGP
                     ITriplePattern first = propFunc.OriginalPatterns.First();
-                    int origLocation = ps.FindIndex(p => p.Equals(first));
+                    var origLocation = ps.FindIndex(p => p.Equals(first));
                     foreach (ITriplePattern tp in propFunc.OriginalPatterns)
                     {
-                        int location = ps.FindIndex(p => p.Equals(tp));
+                        var location = ps.FindIndex(p => p.Equals(tp));
                         if (location >= 0)
                         {
                             if (location < origLocation) origLocation--;

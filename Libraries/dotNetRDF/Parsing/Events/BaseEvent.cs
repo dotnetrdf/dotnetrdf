@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Events
     public abstract class BaseRdfXmlEvent 
         : BaseEvent, IRdfXmlEvent
     {
-        private String _sourcexml;
+        private string _sourcexml;
 
         /// <summary>
         /// Creates an Event and fills in its Values.
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="eventType">Type of the Event.</param>
         /// <param name="sourceXml">Source XML that generated the Event.</param>
         /// <param name="pos">Position of the XML Event.</param>
-        public BaseRdfXmlEvent(int eventType, String sourceXml, PositionInfo pos)
+        public BaseRdfXmlEvent(int eventType, string sourceXml, PositionInfo pos)
             : base(eventType, pos)
         {
             _sourcexml = sourceXml;
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="eventType">Type of the Event.</param>
         /// <param name="sourceXml">Source XML that generated the Event.</param>
-        public BaseRdfXmlEvent(int eventType, String sourceXml)
+        public BaseRdfXmlEvent(int eventType, string sourceXml)
             : this(eventType, sourceXml, null) { }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Events
     public abstract class BaseRdfAEvent 
         : BaseEvent, IRdfAEvent
     {
-        private Dictionary<String, String> _attributes;
+        private Dictionary<string, string> _attributes;
 
         /// <summary>
         /// Creates a new RDFa Event.
@@ -136,11 +136,11 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="eventType">Event Type.</param>
         /// <param name="pos">Position Info.</param>
         /// <param name="attributes">Attributes.</param>
-        public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<String, String>> attributes)
+        public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<string, string>> attributes)
             : base(eventType, pos)
         {
             _attributes = new Dictionary<string, string>();
-            foreach (KeyValuePair<String, String> attr in attributes)
+            foreach (KeyValuePair<string, string> attr in attributes)
             {
                 _attributes.Add(attr.Key, attr.Value);
             }
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
-        public bool HasAttribute(String name)
+        public bool HasAttribute(string name)
         {
             return _attributes.ContainsKey(name);
         }
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
-        public String this[String name]
+        public string this[string name]
         {
             get
             {

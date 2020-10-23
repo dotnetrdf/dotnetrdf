@@ -35,6 +35,9 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Builder for normal graph patterns.
+    /// </summary>
     public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPatternBuilder
     {
         private readonly IList<InlineDataBuilder> _inlineDataBuilders = new List<InlineDataBuilder>();
@@ -69,22 +72,22 @@ namespace VDS.RDF.Query.Builder
 
         internal GraphPattern BuildGraphPattern(INamespaceMapper prefixes)
         {
-            var graphPattern = CreateGraphPattern();
+            GraphPattern graphPattern = CreateGraphPattern();
 
-            foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns(prefixes)))
+            foreach (ITriplePattern triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns(prefixes)))
             {
                 AddTriplePattern(graphPattern, triplePattern);
             }
-            foreach (var graphPatternBuilder in _childGraphPatternBuilders)
+            foreach (GraphPatternBuilder graphPatternBuilder in _childGraphPatternBuilders)
             {
                 graphPattern.AddGraphPattern(graphPatternBuilder.BuildGraphPattern(prefixes));
             }
-            foreach (var buildFilter in _filterBuilders)
+            foreach (Func<INamespaceMapper, ISparqlExpression> buildFilter in _filterBuilders)
             {
                 graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter(prefixes)));
             }
 
-            foreach (var builder in _inlineDataBuilders)
+            foreach (InlineDataBuilder builder in _inlineDataBuilders)
             {
                 builder.AppendTo(graphPattern);
             }
@@ -152,7 +155,7 @@ namespace VDS.RDF.Query.Builder
         /// <inheritdoc />
         public IGraphPatternBuilder Group(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            GraphPatternBuilder groupBuilder = new GraphPatternBuilder();
+            var groupBuilder = new GraphPatternBuilder();
 
             buildGraphPattern(groupBuilder);
 
@@ -245,7 +248,7 @@ namespace VDS.RDF.Query.Builder
             var union = new GraphPatternBuilder(GraphPatternType.Union);
             union.Child(firstGraphPattern);
 
-            foreach (var builder in unionedGraphPatternBuilders)
+            foreach (GraphPatternBuilder builder in unionedGraphPatternBuilders)
             {
                 union.Child(builder);
             }
@@ -266,7 +269,7 @@ namespace VDS.RDF.Query.Builder
             var union = new GraphPatternBuilder(GraphPatternType.Union);
             union.AddChildGraphPattern(firstGraphPattern, GraphPatternType.Normal);
 
-            foreach (var builder in unionedGraphPatternBuilders)
+            foreach (Action<IGraphPatternBuilder> builder in unionedGraphPatternBuilders)
             {
                 union.AddChildGraphPattern(builder, GraphPatternType.Normal);
             }
@@ -286,7 +289,7 @@ namespace VDS.RDF.Query.Builder
         {
             SparqlQuery subquery = queryBuilder.BuildQuery();
 
-            GraphPatternBuilder childBuilder = new GraphPatternBuilder();
+            var childBuilder = new GraphPatternBuilder();
             childBuilder.Where(new SubQueryPattern(subquery));
 
             _childGraphPatternBuilders.Add(childBuilder);

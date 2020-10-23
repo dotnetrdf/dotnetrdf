@@ -233,7 +233,7 @@ namespace VDS.RDF.Parsing
                 requestMessage.Headers.Add("Accept",
                     parser != null ? MimeTypesHelper.CustomHttpAcceptHeader(parser) : MimeTypesHelper.HttpAcceptHeader);
 
-                using var httpResponse = await HttpClient.SendAsync(requestMessage, cancellationToken);
+                using HttpResponseMessage httpResponse = await HttpClient.SendAsync(requestMessage, cancellationToken);
                 AssertResponseSuccess(uri, httpResponse);
 
                 parser ??= MimeTypesHelper.GetParser(httpResponse.Content.Headers.ContentType.MediaType);
@@ -460,7 +460,7 @@ namespace VDS.RDF.Parsing
                         ? MimeTypesHelper.CustomHttpAcceptHeader(parser)
                         : MimeTypesHelper.HttpRdfDatasetAcceptHeader);
 
-                using var responseMessage = await HttpClient.SendAsync(requestMessage, cancellationToken);
+                using HttpResponseMessage responseMessage = await HttpClient.SendAsync(requestMessage, cancellationToken);
                 AssertResponseSuccess(uri, responseMessage);
 
                 if (parser == null)
@@ -469,7 +469,7 @@ namespace VDS.RDF.Parsing
                     {
                         parser = MimeTypesHelper.GetStoreParser(responseMessage.Content.Headers.ContentType.MediaType);
                         parser.Warning += RaiseStoreWarning;
-                        var stream = await responseMessage.Content.ReadAsStreamAsync();
+                        Stream stream = await responseMessage.Content.ReadAsStreamAsync();
                         cancellationToken.ThrowIfCancellationRequested();
                         parser.Load(handler, new StreamReader(stream));
                     }
@@ -480,8 +480,8 @@ namespace VDS.RDF.Parsing
                                           " - seeing if the content is an RDF Graph instead.");
                         try
                         {
-                            var rdfParser = MimeTypesHelper.GetParser(responseMessage.Content.Headers.ContentType.MediaType);
-                            var stream = await responseMessage.Content.ReadAsStreamAsync();
+                            IRdfReader rdfParser = MimeTypesHelper.GetParser(responseMessage.Content.Headers.ContentType.MediaType);
+                            Stream stream = await responseMessage.Content.ReadAsStreamAsync();
                             cancellationToken.ThrowIfCancellationRequested();
                             rdfParser.Load(handler, new StreamReader(stream));
                         }
@@ -519,7 +519,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message.</param>
         private static void RaiseWarning(string message)
         {
-            var d = Warning;
+            RdfReaderWarning d = Warning;
             d?.Invoke(message);
         }
 
@@ -529,7 +529,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning Message.</param>
         private static void RaiseStoreWarning(string message)
         {
-            var d = StoreWarning;
+            StoreReaderWarning d = StoreWarning;
             d?.Invoke(message);
         }
 

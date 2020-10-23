@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -73,12 +73,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _bindings.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _bindings.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _bindings.FixedVariables; } } 
+        public IEnumerable<string> FixedVariables { get { return _bindings.FixedVariables; } } 
 
         /// <summary>
         /// Gets the Bindings. 
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             GraphPattern gp = ToGraphPattern();
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = gp;
             return q;
         }
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.AddInlineData(_bindings);
             return gp;
         }

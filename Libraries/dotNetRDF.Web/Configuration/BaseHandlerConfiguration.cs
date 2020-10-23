@@ -132,10 +132,10 @@ namespace VDS.RDF.Web.Configuration
             IEnumerable<INode> groups = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUserGroup)));
             foreach (INode group in groups)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, group);
+                var temp = ConfigurationLoader.LoadObject(g, group);
                 if (temp is UserGroup)
                 {
-                    this._userGroups.Add((UserGroup)temp);
+                    _userGroups.Add((UserGroup)temp);
                 }
                 else
                 {
@@ -144,37 +144,37 @@ namespace VDS.RDF.Web.Configuration
             }
 
             // General Handler Settings
-            this._showErrors = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowErrors)), this._showErrors);
-            String introFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyIntroFile)));
+            _showErrors = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowErrors)), _showErrors);
+            var introFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyIntroFile)));
             if (introFile != null)
             {
                 introFile = ConfigurationLoader.ResolvePath(introFile);
                 if (File.Exists(introFile))
                 {
-                    using (StreamReader reader = new StreamReader(introFile))
+                    using (var reader = new StreamReader(introFile))
                     {
-                        this._introText = reader.ReadToEnd();
+                        _introText = reader.ReadToEnd();
                         reader.Close();
                     }
                 }
             }
-            this._stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStylesheet)))?.ToString() ?? string.Empty;
-            this._corsEnabled = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableCors)), true);
+            _stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStylesheet)))?.ToString() ?? string.Empty;
+            _corsEnabled = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableCors)), true);
 
             // Cache Settings
-            this._cacheDuration = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCacheDuration)), this._cacheDuration);
-            if (this._cacheDuration < MinimumCacheDuration) this._cacheDuration = MinimumCacheDuration;
-            if (this._cacheDuration > MaximumCacheDuration) this._cacheDuration = MaximumCacheDuration;
-            this._cacheSliding = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCacheSliding)), this._cacheSliding);
+            _cacheDuration = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCacheDuration)), _cacheDuration);
+            if (_cacheDuration < MinimumCacheDuration) _cacheDuration = MinimumCacheDuration;
+            if (_cacheDuration > MaximumCacheDuration) _cacheDuration = MaximumCacheDuration;
+            _cacheSliding = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCacheSliding)), _cacheSliding);
 
             // SPARQL Expression Factories
             IEnumerable<INode> factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyExpressionFactory)));
             foreach (INode factory in factories)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, factory);
+                var temp = ConfigurationLoader.LoadObject(g, factory);
                 if (temp is ISparqlCustomExpressionFactory)
                 {
-                    this._expressionFactories.Add((ISparqlCustomExpressionFactory)temp);
+                    _expressionFactories.Add((ISparqlCustomExpressionFactory)temp);
                 }
                 else
                 {
@@ -186,10 +186,10 @@ namespace VDS.RDF.Web.Configuration
             factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFunctionFactory)));
             foreach (INode factory in factories)
             {
-                Object temp = ConfigurationLoader.LoadObject(g, factory);
+                var temp = ConfigurationLoader.LoadObject(g, factory);
                 if (temp is IPropertyFunctionFactory)
                 {
-                    this._propertyFunctionFactories.Add((IPropertyFunctionFactory)temp);
+                    _propertyFunctionFactories.Add((IPropertyFunctionFactory)temp);
                 }
                 else
                 {
@@ -198,21 +198,21 @@ namespace VDS.RDF.Web.Configuration
             }
 
             // Writer Properties
-            this._writerCompressionLevel = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCompressionLevel)), this._writerCompressionLevel);
-            this._writerDtds = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDtdWriting)), this._writerDtds);
-            this._writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyHighSpeedWriting)), this._writerHighSpeed);
-            this._writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyMultiThreadedWriting)), this._writerMultiThreading);
-            this._writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPrettyPrinting)), this._writerPrettyPrinting);
-            this._writerAttributes = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAttributeWriting)), this._writerAttributes);
+            _writerCompressionLevel = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCompressionLevel)), _writerCompressionLevel);
+            _writerDtds = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDtdWriting)), _writerDtds);
+            _writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyHighSpeedWriting)), _writerHighSpeed);
+            _writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyMultiThreadedWriting)), _writerMultiThreading);
+            _writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPrettyPrinting)), _writerPrettyPrinting);
+            _writerAttributes = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAttributeWriting)), _writerAttributes);
 
             // Load in the Default Namespaces if specified
             INode nsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyImportNamespacesFrom)));
             if (nsNode != null)
             {
-                Object nsTemp = ConfigurationLoader.LoadObject(g, nsNode);
+                var nsTemp = ConfigurationLoader.LoadObject(g, nsNode);
                 if (nsTemp is IGraph)
                 {
-                    this._defaultNamespaces.Import(((IGraph)nsTemp).NamespaceMap);
+                    _defaultNamespaces.Import(((IGraph)nsTemp).NamespaceMap);
                 }
             }
         }
@@ -224,7 +224,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._userGroups;
+                return _userGroups;
             }
         }
 
@@ -235,7 +235,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._showErrors;
+                return _showErrors;
             }
         }
 
@@ -246,7 +246,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._corsEnabled;
+                return _corsEnabled;
             }
         }
 
@@ -257,7 +257,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._stylesheet;
+                return _stylesheet;
             }
         }
 
@@ -268,7 +268,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._introText;
+                return _introText;
             }
         }
 
@@ -285,7 +285,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._cacheDuration;
+                return _cacheDuration;
             }
         }
 
@@ -301,7 +301,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._cacheSliding;
+                return _cacheSliding;
             }
         }
 
@@ -312,7 +312,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return (this._expressionFactories.Count > 0);
+                return (_expressionFactories.Count > 0);
             }
         }
 
@@ -323,7 +323,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._expressionFactories;
+                return _expressionFactories;
             }
         }
 
@@ -334,7 +334,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return (this._propertyFunctionFactories.Count > 0);
+                return (_propertyFunctionFactories.Count > 0);
             }
         }
 
@@ -345,7 +345,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._propertyFunctionFactories;
+                return _propertyFunctionFactories;
             }
         }
 
@@ -356,7 +356,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._writerCompressionLevel;
+                return _writerCompressionLevel;
             }
         }
 
@@ -367,7 +367,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._writerDtds;
+                return _writerDtds;
             }
         }
 
@@ -378,7 +378,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._writerAttributes;
+                return _writerAttributes;
             }
         }
 
@@ -389,7 +389,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._writerHighSpeed;
+                return _writerHighSpeed;
             }
         }
 
@@ -400,7 +400,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._writerMultiThreading;
+                return _writerMultiThreading;
             }
         }
 
@@ -411,7 +411,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._writerPrettyPrinting;
+                return _writerPrettyPrinting;
             }
         }
 
@@ -422,7 +422,7 @@ namespace VDS.RDF.Web.Configuration
         {
             get
             {
-                return this._defaultNamespaces;
+                return _defaultNamespaces;
             }
         }
     }

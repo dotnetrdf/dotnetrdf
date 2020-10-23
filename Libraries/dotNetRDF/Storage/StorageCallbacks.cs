@@ -221,7 +221,7 @@ namespace VDS.RDF.Storage
         /// <param name="query">SPARQL Query.</param>
         /// <param name="rdfHandler">RDF Handler to return.</param>
         /// <param name="resultsHandler">Results Handler to return.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
             : this(operation, query, rdfHandler, resultsHandler, null) { }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace VDS.RDF.Storage
         /// <param name="rdfHandler">RDF Handler.</param>
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="e">Error that occurred.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Exception e)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Exception e)
             : this(operation, e)
         {
             SetData(query);
@@ -246,7 +246,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation.</param>
         /// <param name="query">SPARQL Query.</param>
         /// <param name="queryResults">Results to return.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, Object queryResults)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string query, object queryResults)
             : this(operation, queryResults as IGraph)
         {
             SetData(query);
@@ -260,7 +260,7 @@ namespace VDS.RDF.Storage
         /// <param name="query">SPARQL Query.</param>
         /// <param name="queryResults">Results to return.</param>
         /// <param name="e">Error that occurred.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, Object queryResults, Exception e)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string query, object queryResults, Exception e)
             : this(operation, e)
         {
             SetData(query);
@@ -272,7 +272,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="operation">Operation.</param>
         /// <param name="data">Data to return.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String data)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string data)
             : this(operation, data, (Exception)null) { }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation.</param>
         /// <param name="data">Data to return.</param>
         /// <param name="e">Error that occurred.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String data, Exception e)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string data, Exception e)
             : this(operation, e)
         {
             SetData(data);
@@ -292,7 +292,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="operation">Operation.</param>
         /// <param name="stores">Enumeration of Store IDs.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<String> stores)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<string> stores)
             : this(operation, stores, null) { }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation.</param>
         /// <param name="stores">Enumeration of Store IDs.</param>
         /// <param name="e">Error that occurred.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<String> stores, Exception e)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<string> stores, Exception e)
             : this(operation, e)
         {
             StoreIDs = stores;
@@ -314,7 +314,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="provider">Storage Provider.</param>
         /// <param name="e">Error that occurred.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IAsyncStorageProvider provider, Exception e)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string storeID, IAsyncStorageProvider provider, Exception e)
             : this(operation, storeID, e)
         {
             StorageProvider = provider;
@@ -326,7 +326,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="template">Template.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IStoreTemplate template)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string storeID, IStoreTemplate template)
             : this(operation, storeID)
         {
             Template = template;
@@ -338,7 +338,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="templates">Templates.</param>
-        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IEnumerable<IStoreTemplate> templates)
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, string storeID, IEnumerable<IStoreTemplate> templates)
             : this(operation, storeID)
         {
             AvailableTemplates = templates;
@@ -348,7 +348,7 @@ namespace VDS.RDF.Storage
         /// Sets the Data to the appropriate property based on the operation type.
         /// </summary>
         /// <param name="data">Data.</param>
-        private void SetData(String data)
+        private void SetData(string data)
         {
             switch (Operation)
             {
@@ -413,27 +413,27 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Query Results (if applicable).
         /// </summary>
-        public Object QueryResults { get; private set; }
+        public object QueryResults { get; private set; }
 
         /// <summary>
         /// Gets the SPARQL Query (if applicable).
         /// </summary>
-        public String Query { get; private set; }
+        public string Query { get; private set; }
 
         /// <summary>
         /// Gets the SPARQL Update (if applicable).
         /// </summary>
-        public String Updates { get; private set; }
+        public string Updates { get; private set; }
 
         /// <summary>
         /// Gets the Store ID (if applicable).
         /// </summary>
-        public String StoreID { get; private set; }
+        public string StoreID { get; private set; }
 
         /// <summary>
         /// Gets the list of Store IDs (if applicable).
         /// </summary>
-        public IEnumerable<String> StoreIDs { get; private set; }
+        public IEnumerable<string> StoreIDs { get; private set; }
 
         /// <summary>
         /// Gets the Storage Provider (if applicable).
@@ -467,5 +467,5 @@ namespace VDS.RDF.Storage
     /// <param name="sender">Originator of the callback.</param>
     /// <param name="args">Callback Arguments.</param>
     /// <param name="state">State object originally passed to the async call.</param>
-    public delegate void AsyncStorageCallback(Object sender, AsyncStorageCallbackArgs args, Object state);
+    public delegate void AsyncStorageCallback(object sender, AsyncStorageCallbackArgs args, object state);
 }

@@ -44,7 +44,7 @@ namespace VDS.RDF
         : BaseTripleCollection
     {
         // Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
+        private MultiDictionary<Triple, object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Indexes
         private MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
                                                                               _p = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
@@ -88,7 +88,7 @@ namespace VDS.RDF
         /// <param name="hashFunc">Hash Function for the Index.</param>
         private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
         {
-            if (index.TryGetValue(n, out var subtree))
+            if (index.TryGetValue(n, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
                 if (subtree.TryGetValue(t, out HashSet<Triple> ts))
                 {
@@ -209,7 +209,7 @@ namespace VDS.RDF
         {
             get
             {
-                if (_triples.TryGetKey(t, out var actual))
+                if (_triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }

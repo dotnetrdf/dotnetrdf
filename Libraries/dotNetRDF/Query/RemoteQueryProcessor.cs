@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
         {
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
-            Object temp;
+            object temp;
             try
             {
                 switch (query.QueryType)
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// In the event of a success the appropriate callback will be invoked, if there is an error both callbacks will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
         /// </remarks>
-        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, object state)
         {
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// In the event of a success the callback will be invoked, if there is an error the callback will be invoked and passed an instance of <see cref="AsyncError"/> which contains details of the error and the original state information passed in.
         /// </remarks>
-        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, object state)
         {
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;

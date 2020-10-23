@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class AverageAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new AVG Aggregate.
@@ -83,16 +83,16 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
             // Prep Variables
-            HashSet<IValuedNode> values = new HashSet<IValuedNode>();
-            int count = 0;
+            var values = new HashSet<IValuedNode>();
+            var count = 0;
             // long lngtotal = 0;
-            decimal dectotal = 0.0m;
-            float flttotal = 0.0f;
-            double dbltotal = 0.0d;
+            var dectotal = 0.0m;
+            var flttotal = 0.0f;
+            var dbltotal = 0.0d;
             SparqlNumericType maxtype = SparqlNumericType.NaN;
             SparqlNumericType numtype;
 
-            foreach (int id in bindingIDs)
+            foreach (var id in bindingIDs)
             {
                 IValuedNode temp;
                 try
@@ -200,7 +200,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("AVG(");
             if (_distinct) output.Append("DISTINCT ");
             output.Append(_expr.ToString() + ")");

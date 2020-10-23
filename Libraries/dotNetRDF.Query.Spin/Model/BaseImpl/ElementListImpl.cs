@@ -47,21 +47,21 @@ namespace VDS.RDF.Query.Spin.Model
 
         private int addListMembers(List<IElement> elements, int i, List<IResource> members)
         {
-            bool first = true;
+            var first = true;
             while (i < elements.Count - 1 &&
                     elements[i] is ITriplePattern &&
                     elements[i + 1] is ITriplePattern)
             {
-                ITriplePattern firstPattern = (ITriplePattern)elements[i];
-                ITriplePattern secondPattern = (ITriplePattern)elements[i + 1];
+                var firstPattern = (ITriplePattern)elements[i];
+                var secondPattern = (ITriplePattern)elements[i + 1];
                 if (RDFUtil.sameTerm(RDF.PropertyFirst,firstPattern.getPredicate()) && RDFUtil.sameTerm(RDF.PropertyRest,secondPattern.getPredicate()))
                 {
                     IResource firstSubject = firstPattern.getSubject();
                     IResource secondSubject = secondPattern.getSubject();
                     if (firstSubject is IVariable && secondSubject is IVariable)
                     {
-                        IVariable firstVar = (IVariable)firstSubject;
-                        IVariable secondVar = (IVariable)secondSubject;
+                        var firstVar = (IVariable)firstSubject;
+                        var secondVar = (IVariable)secondSubject;
                         if (firstVar.isBlankNodeVar() && firstVar.getName().Equals(secondVar.getName()))
                         {
                             members.Add(firstPattern.getObject());
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public new List<IElement> getElements()
         {
-            List<IElement> results = new List<IElement>();
+            var results = new List<IElement>();
             IEnumerator<IResource> it = AsList().GetEnumerator();
             while (it.MoveNext())
             {
@@ -114,11 +114,11 @@ namespace VDS.RDF.Query.Spin.Model
                     elements[i + 1] is ITriplePattern &&
                     elements[i + 2] is ITriplePattern)
             {
-                IVariable mainVar = (IVariable)main.getObject();
+                var mainVar = (IVariable)main.getObject();
                 if (mainVar.isBlankNodeVar())
                 {
-                    ITriplePattern nextPattern = (ITriplePattern)elements[i + 1];
-                    ITriplePattern lastPattern = (ITriplePattern)elements[i + 2];
+                    var nextPattern = (ITriplePattern)elements[i + 1];
+                    var lastPattern = (ITriplePattern)elements[i + 2];
                     IResource nextSubject = nextPattern.getSubject();
                     IResource lastSubject = lastPattern.getSubject();
                     if (nextSubject is IVariable &&
@@ -126,10 +126,10 @@ namespace VDS.RDF.Query.Spin.Model
                             RDFUtil.sameTerm(RDF.PropertyFirst, nextPattern.getPredicate()) &&
                             RDFUtil.sameTerm(RDF.PropertyRest, lastPattern.getPredicate()))
                     {
-                        IVariable nextVar = (IVariable)nextSubject;
+                        var nextVar = (IVariable)nextSubject;
                         if (mainVar.getName().Equals(nextVar.getName()))
                         {
-                            IVariable lastVar = (IVariable)lastSubject;
+                            var lastVar = (IVariable)lastSubject;
                             return mainVar.getName().Equals(lastVar.getName());
                         }
                     }
@@ -143,8 +143,8 @@ namespace VDS.RDF.Query.Spin.Model
         {
             List<IElement> elements = getElements();
 
-            int oldI = -1;
-            for (int i = 0; i < elements.Count; i++)
+            var oldI = -1;
+            for (var i = 0; i < elements.Count; i++)
             {
                 if (i == oldI)
                 {
@@ -186,10 +186,10 @@ namespace VDS.RDF.Query.Spin.Model
         // Special treatment of nested rdf:Lists
         private int printTriplePattern(List<IElement> elements, int i, ISparqlPrinter p)
         {
-            ITriplePattern main = (ITriplePattern)elements[i];
+            var main = (ITriplePattern)elements[i];
 
             // Print subject
-            List<IResource> leftList = new List<IResource>();
+            var leftList = new List<IResource>();
             i = addListMembers(elements, i, leftList);
             if (leftList.Count == 0)
             {
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Spin.Model
             // Print object
             if (nextIsMatchingVarPattern(main, elements, i))
             {
-                List<IResource> rightList = new List<IResource>();
+                var rightList = new List<IResource>();
                 i = addListMembers(elements, i + 1, rightList);
                 if (rightList.Count == 0)
                 {
@@ -254,7 +254,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public new String toString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             //ISparqlPrinter context = new StringSparqlPrinter(sb);
             //print(context);
             return sb.ToString();

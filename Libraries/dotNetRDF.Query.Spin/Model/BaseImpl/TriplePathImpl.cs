@@ -72,12 +72,12 @@ namespace VDS.RDF.Query.Spin.Model
             if (p.getUsePrefixes())
             {
                 //TODO INamespaceMapper prefixMapping = path.getModel().getPrefixMapping();
-                String str = arqPath.ToString(); //PathWriter.asString(arqPath, null/*TODO new Prologue(prefixMapping)*/);
+                var str = arqPath.ToString(); //PathWriter.asString(arqPath, null/*TODO new Prologue(prefixMapping)*/);
                 p.print(str);
             }
             else
             {
-                String str = arqPath.ToString();//PathWriter.asString(arqPath);
+                var str = arqPath.ToString();//PathWriter.asString(arqPath);
                 p.print(str);
             }
         }
@@ -104,8 +104,8 @@ namespace VDS.RDF.Query.Spin.Model
                     else if (RDFUtil.sameTerm(SP.ClassModPath, type))
                     {
                         ISparqlPath subPath = createPath(path, SP.PropertySubPath);
-                        int? min = path.getInteger(SP.PropertyModMin);
-                        int? max = path.getInteger(SP.PropertyModMax);
+                        var min = path.getInteger(SP.PropertyModMin);
+                        var max = path.getInteger(SP.PropertyModMax);
                         if (max == null || max < 0)
                         {
                             if (min == 1)

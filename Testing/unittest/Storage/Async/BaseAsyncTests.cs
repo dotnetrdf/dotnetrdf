@@ -65,10 +65,10 @@ namespace VDS.RDF.Storage
 
         protected void TestAsyncSaveLoad(IGraph g)
         {
-            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            IAsyncStorageProvider provider = GetAsyncProvider();
             try
             {
-                ManualResetEvent signal = new ManualResetEvent(false);
+                var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
                 g.BaseUri = UriFactory.Create(SaveGraphUri);
                 provider.SaveGraph(g, (_, args, state) =>
@@ -80,14 +80,14 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
 
                     resArgs = null;
                     signal.Reset();
-                    Graph h = new Graph();
+                    var h = new Graph();
                     provider.LoadGraph(h, SaveGraphUri, (_, args, state) =>
                         {
                             resArgs = args;
@@ -97,7 +97,7 @@ namespace VDS.RDF.Storage
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async LoadGraph() worked OK, checking for graph equality...");
@@ -107,12 +107,12 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                        Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Storage
 
         protected void TestAsyncDelete(IGraph g)
         {
-            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.DeleteSupported)
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -131,7 +131,7 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                ManualResetEvent signal = new ManualResetEvent(false);
+                var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
                 g.BaseUri = UriFactory.Create(DeleteGraphUri);
                 provider.SaveGraph(g, (_, args, state) =>
@@ -143,7 +143,7 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async DeleteGraph() to remove newly added graph...");
@@ -158,14 +158,14 @@ namespace VDS.RDF.Storage
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "DeleteGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs == null) Fail(provider, "DeleteGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async DeleteGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
 
                         resArgs = null;
                         signal.Reset();
-                        Graph h = new Graph();
+                        var h = new Graph();
                         provider.LoadGraph(h, DeleteGraphUri, (_, args, state) =>
                         {
                             resArgs = args;
@@ -175,7 +175,7 @@ namespace VDS.RDF.Storage
                         //Wait for response, max 15s
                         signal.WaitOne(WaitDelay);
 
-                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                        if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for empty graph");
@@ -183,17 +183,17 @@ namespace VDS.RDF.Storage
                         }
                         else
                         {
-                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                            Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                         }
                     }
                     else
                     {
-                        this.Fail(provider, "DeleteGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                        Fail(provider, "DeleteGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -204,7 +204,7 @@ namespace VDS.RDF.Storage
 
         protected void TestAsyncDeleteTriples(IGraph g)
         {
-            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -212,7 +212,7 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                ManualResetEvent signal = new ManualResetEvent(false);
+                var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
                 g.BaseUri = UriFactory.Create(RemoveTriplesUri);
                 provider.SaveGraph(g, (_, args, state) =>
@@ -224,11 +224,11 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to remove some triples...");
-                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).ToList();
+                    var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).ToList();
                     resArgs = null;
                     signal.Reset();
                     provider.UpdateGraph(RemoveTriplesUri, null, ts, (_, args, state) =>
@@ -240,14 +240,14 @@ namespace VDS.RDF.Storage
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs == null) Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
 
                         resArgs = null;
                         signal.Reset();
-                        Graph h = new Graph();
+                        var h = new Graph();
                         provider.LoadGraph(h, RemoveTriplesUri, (_, args, state) =>
                         {
                             resArgs = args;
@@ -257,7 +257,7 @@ namespace VDS.RDF.Storage
                         //Wait for response, max 15s
                         signal.WaitOne(WaitDelay);
 
-                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                        if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for triples removed...");
@@ -268,17 +268,17 @@ namespace VDS.RDF.Storage
                         }
                         else
                         {
-                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                            Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                         }
                     }
                     else
                     {
-                        this.Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                        Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -289,7 +289,7 @@ namespace VDS.RDF.Storage
 
         protected void TestAsyncAddTriples(IGraph g)
         {
-            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -297,7 +297,7 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                ManualResetEvent signal = new ManualResetEvent(false);
+                var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
                 g.BaseUri = UriFactory.Create(AddTripleUri);
                 provider.SaveGraph(g, (_, args, state) =>
@@ -309,11 +309,11 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to add some triples...");
-                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("http://example.org/Test")))).ToList();
+                    var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("http://example.org/Test")))).ToList();
                     resArgs = null;
                     signal.Reset();
                     provider.UpdateGraph(AddTripleUri, ts, null, (_, args, state) =>
@@ -325,14 +325,14 @@ namespace VDS.RDF.Storage
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs == null) Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
 
                         resArgs = null;
                         signal.Reset();
-                        Graph h = new Graph();
+                        var h = new Graph();
                         provider.LoadGraph(h, AddTripleUri, (_, args, state) =>
                         {
                             resArgs = args;
@@ -342,7 +342,7 @@ namespace VDS.RDF.Storage
                         //Wait for response, max 15s
                         signal.WaitOne(WaitDelay);
 
-                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                        if (resArgs == null) Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for triples added...");
@@ -353,17 +353,17 @@ namespace VDS.RDF.Storage
                         }
                         else
                         {
-                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                            Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                         }
                     }
                     else
                     {
-                        this.Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                        Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -374,7 +374,7 @@ namespace VDS.RDF.Storage
 
         protected void TestAsyncListGraphs()
         {
-            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            IAsyncStorageProvider provider = GetAsyncProvider();
             if (!provider.ListGraphsSupported)
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -382,7 +382,7 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                ManualResetEvent signal = new ManualResetEvent(false);
+                var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
                 provider.ListGraphs((_, args, state) =>
                     {
@@ -393,7 +393,7 @@ namespace VDS.RDF.Storage
                 //Wait, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "ListGraphs() failed to return in 15s");
+                if (resArgs == null) Fail(provider, "ListGraphs() failed to return in 15s");
                 if (resArgs.WasSuccessful)
                 {
                     foreach (Uri u in resArgs.GraphUris)
@@ -403,7 +403,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    this.Fail(provider, "ListGraphs() returned an error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "ListGraphs() returned an error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -414,7 +414,7 @@ namespace VDS.RDF.Storage
 
         protected void TestAsyncQuery(IGraph g)
         {
-            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            IAsyncStorageProvider provider = GetAsyncProvider();
             if (!(provider is IAsyncQueryableStorage))
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -422,7 +422,7 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                ManualResetEvent signal = new ManualResetEvent(false);
+                var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
                 g.BaseUri = UriFactory.Create(SaveGraphUri);
                 provider.SaveGraph(g, (_, args, state) =>
@@ -434,7 +434,7 @@ namespace VDS.RDF.Storage
                 //Wait for response, max 15s
                 signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
+                if (resArgs == null) Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async Query() to confirm operation worked as expected");
@@ -450,12 +450,12 @@ namespace VDS.RDF.Storage
                     //Wait for response, max 15s
                     signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "Query() did not return in " + (WaitDelay / 1000) + " seconds");
+                    if (resArgs == null) Fail(provider, "Query() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async Query() worked OK, checking results...");
-                        SparqlResultSet results = resArgs.QueryResults as SparqlResultSet;
-                        if (results == null) this.Fail(provider, "Result Set was empty");
+                        var results = resArgs.QueryResults as SparqlResultSet;
+                        if (results == null) Fail(provider, "Result Set was empty");
                         foreach (SparqlResult r in results)
                         {
                             Assert.True(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(), "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() + " was returned");
@@ -463,12 +463,12 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                        Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -480,47 +480,47 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncSaveLoad()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            this.TestAsyncSaveLoad(g);
+            TestAsyncSaveLoad(g);
         }
 
         [SkippableFact]
         public void StorageAsyncDeleteGraph()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            this.TestAsyncDelete(g);
+            TestAsyncDelete(g);
         }
         
         [SkippableFact]
         public void StorageAsyncRemoveTriples()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            this.TestAsyncDeleteTriples(g);
+            TestAsyncDeleteTriples(g);
         }
 
         [SkippableFact]
         public void StorageAsyncAddTriples()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            this.TestAsyncAddTriples(g);
+            TestAsyncAddTriples(g);
         }
 
         [SkippableFact]
         public void StorageAsyncListGraphs()
         {
-            this.TestAsyncListGraphs();
+            TestAsyncListGraphs();
         }
 
         [SkippableFact]
         public void StorageAsyncQuery()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            this.TestAsyncQuery(g);
+            TestAsyncQuery(g);
         }
     }
 }

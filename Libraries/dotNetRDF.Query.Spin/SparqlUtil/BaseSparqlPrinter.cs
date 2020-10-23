@@ -116,13 +116,13 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
 
         public ISparqlPrinter clone()
         {
-            BaseSparqlPrinter cl = new BaseSparqlPrinter(queryModel, sb);
+            var cl = new BaseSparqlPrinter(queryModel, sb);
             cl.setIndentation(getIndentation());
             cl.setNested(isNested());
             cl.setUseExtraPrefixes(getUseExtraPrefixes());
             cl.setUsePrefixes(getUsePrefixes());
             cl.initialBindings = initialBindings;
-            cl.sb = this.sb;
+            cl.sb = sb;
             return cl;
         }
 
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
 
         public void printIndentation(int depth)
         {
-            for (int i = 0; i < depth; i++)
+            for (var i = 0; i < depth; i++)
             {
                 print(indentationString);
             }
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
             }
             else
             {
-                String lit = binding.ToString();//FmtUtils.stringForNode(binding, noPrefixMapping);
+                var lit = binding.ToString();//FmtUtils.stringForNode(binding, noPrefixMapping);
                 print(lit);
             }
         }
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
         {
             if (getUsePrefixes())
             {
-                String qname = qnameFor(resource);
+                var qname = qnameFor(resource);
                 if (qname != null)
                 {
                     print(qname);
@@ -269,9 +269,9 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
                 else if (getUseExtraPrefixes())
                 {
                     INamespaceMapper extras = new NamespaceMapper(); //ExtraPrefixes.getExtraPrefixes();
-                    foreach (String prefix in extras.Prefixes)
+                    foreach (var prefix in extras.Prefixes)
                     {
-                        String ns = extras.GetNamespaceUri(prefix).ToString();
+                        var ns = extras.GetNamespaceUri(prefix).ToString();
                         if (resource.Uri.ToString().StartsWith(ns))
                         {
                             print(prefix);
@@ -303,43 +303,43 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
 
         public void setIndentation(int value)
         {
-            this.indentation = value;
+            indentation = value;
         }
 
 
         public void setIndentationString(String value)
         {
-            this.indentationString = value;
+            indentationString = value;
         }
 
 
         public void setNamedBNodeMode(bool value)
         {
-            this.namedBNodeMode = value;
+            namedBNodeMode = value;
         }
 
 
         public void setNested(bool value)
         {
-            this.nested = value;
+            nested = value;
         }
 
 
         public void setPrintPrefixes(bool value)
         {
-            this.printPrefixes = value;
+            printPrefixes = value;
         }
 
 
         public void setUseExtraPrefixes(bool value)
         {
-            this.useExtraPrefixes = value;
+            useExtraPrefixes = value;
         }
 
 
         public void setUsePrefixes(bool value)
         {
-            this.usePrefixes = value;
+            usePrefixes = value;
         }
 
         #endregion
@@ -358,8 +358,8 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
                 return new SparqlParameterizedString("");
             }
             spinQuery.PrintEnhancedSPARQL(this);
-            String commandText = this.getString();
-            StringBuilder sb = new StringBuilder();
+            var commandText = getString();
+            var sb = new StringBuilder();
             foreach (Uri graphUri in Dataset.DefaultGraphUris)
             {
                 sb.AppendLine("USING <" + graphUri.ToString() + ">");
@@ -456,7 +456,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
         public virtual void PrintEnhancedSPARQL(IDeleteData command)
         {
             IResource data = command.getResource(SP.PropertyData);
-            String template = SparqlTemplates.DeleteData;
+            var template = SparqlTemplates.DeleteData;
             if (data != null)
             {
                 foreach (Resource graph in data.AsList())
@@ -468,7 +468,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
                         IGraph ucg = queryModel.GetModifiableGraph(graphUri);
                         foreach (Resource t in graph.getResource(SP.PropertyElements).AsList())
                         {
-                            ITriplePattern triple = (ITriplePattern)t.As(typeof(TriplePatternImpl));
+                            var triple = (ITriplePattern)t.As(typeof(TriplePatternImpl));
                             ucg.Retract(triple.getSubject().getSource(), triple.getPredicate().getSource(), triple.getObject().getSource());
                         }
                     }
@@ -489,7 +489,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
         public virtual void PrintEnhancedSPARQL(IInsertData command)
         {
             IResource data = command.getResource(SP.PropertyData);
-            String template = SparqlTemplates.InsertData;
+            var template = SparqlTemplates.InsertData;
             if (data != null)
             {
                 foreach (Resource graph in data.AsList())
@@ -501,7 +501,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
                         IGraph ucg = queryModel.GetModifiableGraph(graphUri);
                         foreach (Resource t in graph.getResource(SP.PropertyElements).AsList())
                         {
-                            ITriplePattern triple = (ITriplePattern)t.As(typeof(TriplePatternImpl));
+                            var triple = (ITriplePattern)t.As(typeof(TriplePatternImpl));
                             ucg.Assert(triple.getSubject().getSource(), triple.getPredicate().getSource(), triple.getObject().getSource());
                         }
                     }
@@ -548,7 +548,7 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
 
         private String GetAnonVariable()
         {
-            String varName = "_anonVar" + anonVarIndex.ToString();
+            var varName = "_anonVar" + anonVarIndex.ToString();
             anonVarIndex++;
             return varName;
         }
@@ -559,9 +559,9 @@ namespace VDS.RDF.Query.Spin.SparqlUtil
             {
                 return _graphMaps[nameNode];
             }
-            String varName = GetAnonVariable();
+            var varName = GetAnonVariable();
             _graphMaps.Add(nameNode, varName);
-            String filter = "OPTIONAL { GRAPH @datasetUri { ?" + varName + " dnr:updatesGraph @graphNode . @graphNode a sd:Graph . } } . ";
+            var filter = "OPTIONAL { GRAPH @datasetUri { ?" + varName + " dnr:updatesGraph @graphNode . @graphNode a sd:Graph . } } . ";
             if (nameNode.isUri())
             {
                 filter = filter.Replace("@graphNode", "<" + nameNode.Uri.ToString() + ">");

@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public int? getMaxCount()
         {
-            int? value = (int?)getLong(SPL.PropertyMaxCount);
+            var value = (int?)getLong(SPL.PropertyMaxCount);
             if (value != null)
             {
                 return value;
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public int getMinCount()
         {
-            int? value = (int?)getLong(SPL.PropertyMaxCount);
+            var value = (int?)getLong(SPL.PropertyMaxCount);
             if (value != null)
             {
                 return (int)value;

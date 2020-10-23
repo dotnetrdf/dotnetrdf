@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingResultParserContext context = new TokenisingResultParserContext(handler, new TsvTokeniser(ParsingTextReader.Create(input)));
+                var context = new TokenisingResultParserContext(handler, new TsvTokeniser(ParsingTextReader.Create(input)));
                 TryParseResults(context);
                 input.Close();
             }
@@ -231,8 +231,8 @@ namespace VDS.RDF.Parsing
             }
 
             bool allowEOL = true, expectTab = false;
-            int v = 0;
-            SparqlResult result = new SparqlResult();
+            var v = 0;
+            var result = new SparqlResult();
             while (true)
             {
                 next = context.Tokens.Dequeue();
@@ -317,7 +317,7 @@ namespace VDS.RDF.Parsing
 
         private INode TryParseLiteral(TokenisingResultParserContext context, IToken t)
         {
-            String value;
+            string value;
             if (t.TokenType == Token.LITERAL)
             {
                 value = t.Value;
@@ -364,7 +364,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event SparqlWarning Warning;
 
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null) d(message);

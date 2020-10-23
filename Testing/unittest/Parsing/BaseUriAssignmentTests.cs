@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingBaseUriAssignmentFileLoader()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
             Assert.NotNull(g.BaseUri);
@@ -67,12 +67,12 @@ namespace VDS.RDF.Parsing
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = UriLoader.Timeout;
+            var defaultTimeout = UriLoader.Timeout;
             try
             {
                 //DBPedia can be slow so up the timeout for this test
                 UriLoader.Timeout = 45000;
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
                 Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
                 Assert.NotNull(g.BaseUri);
@@ -87,11 +87,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingBaseUriAssignmentRdfXml()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/RdfXml");
 
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            RdfXmlWriter writer = new RdfXmlWriter();
+            var strWriter = new System.IO.StringWriter();
+            var writer = new RdfXmlWriter();
             writer.Save(g, strWriter);
 
             Console.WriteLine("Original Base URI: " + ShowBaseUri(g.BaseUri));
@@ -100,8 +100,8 @@ namespace VDS.RDF.Parsing
             Console.WriteLine(strWriter.ToString());
             Console.WriteLine();
 
-            Graph h = new Graph();
-            RdfXmlParser parser = new RdfXmlParser();
+            var h = new Graph();
+            var parser = new RdfXmlParser();
             parser.Load(h, new System.IO.StringReader(strWriter.ToString()));
 
             Console.WriteLine("Base URI after round-trip using RdfXmlWriter: " + ShowBaseUri(h.BaseUri));

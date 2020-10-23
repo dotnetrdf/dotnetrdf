@@ -48,7 +48,7 @@ namespace VDS.RDF.Nodes
         /// <remarks>
         /// This is distinct from <strong>ToString()</strong> because that method will typically include additional information like language specifier/datatype as appropriate whereas this method is used to produce a string as would be produced by applying the <strong>STR()</strong> function from SPARQL.
         /// </remarks>
-        String AsString();
+        string AsString();
 
         /// <summary>
         /// Gets the Long value of the Node.
@@ -111,7 +111,7 @@ namespace VDS.RDF.Nodes
         /// <remarks>
         /// Either String.Empty if no type or the string form of the type URI.
         /// </remarks>
-        String EffectiveType
+        string EffectiveType
         {
             get;
         }

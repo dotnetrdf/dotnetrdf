@@ -32,7 +32,6 @@ using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
@@ -45,14 +44,15 @@ namespace VDS.RDF.Parsing
     public class JsonLdParser : IStoreReader
     {
         /// <inheritdoc/>
-        public event StoreReaderWarning Warning;
-
-        private readonly JsonSerializer _jsonSerializer;
+        /// <remarks>This class does not raise this event.</remarks>
+#pragma warning disable CS0067
+        public event StoreReaderWarning Warning; // TODO: Enable passing up of JsonLdProcessor warnings through this event
+#pragma warning restore CS0067
 
         /// <summary>
         /// Get the current parser options.
         /// </summary>
-        public JsonLdProcessorOptions ParserOptions { get; private set; }
+        public JsonLdProcessorOptions ParserOptions { get; }
 
         /// <summary>
         /// Create an instance of the parser configured to parser JSON-LD 1.1 with no pre-defined context.
@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (filename == null) throw new ArgumentNullException(nameof(filename));
-            using (var reader = File.OpenText(filename))
+            using (StreamReader reader = File.OpenText(filename))
             {
                 Load(new StoreHandler(store), reader);
             }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filename == null) throw new ArgumentNullException(nameof(filename));
-            using (var reader = File.OpenText(filename))
+            using (StreamReader reader = File.OpenText(filename))
             {
                 Load(handler, reader);
             }
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing
         public void Load(IRdfHandler handler, TextReader input)
         {
             handler.StartRdf();
-            var rdfTypeNode = handler.CreateUriNode(new Uri(RdfNs + "type"));
+            IUriNode rdfTypeNode = handler.CreateUriNode(new Uri(RdfNs + "type"));
             try
             {
                 JToken element;
@@ -114,10 +114,10 @@ namespace VDS.RDF.Parsing
                 {
                     element = JToken.ReadFrom(reader);
                 }
-                var expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
+                JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
                 var nodeMapGenerator = new NodeMapGenerator();
-                var nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
-                foreach (var p in nodeMap.Properties())
+                JObject nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
+                foreach (JProperty p in nodeMap.Properties())
                 {
                     var graphName = p.Name;
                     var graph = p.Value as JObject;
@@ -138,7 +138,7 @@ namespace VDS.RDF.Parsing
                             continue;
                         }
                     }
-                    foreach (var gp in graph.Properties())
+                    foreach (JProperty gp in graph.Properties())
                     {
                         var subject = gp.Name;
                         var node = gp.Value as JObject;
@@ -149,18 +149,18 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            if (!(Uri.TryCreate(subject, UriKind.Absolute, out var subjectIri) && subjectIri.IsWellFormedOriginalString())) continue;
+                            if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) && subjectIri.IsWellFormedOriginalString())) continue;
                             subjectNode = handler.CreateUriNode(subjectIri);
                         }
-                        foreach (var np in node.Properties())
+                        foreach (JProperty np in node.Properties())
                         {
                             var property = np.Name;
                             var values = np.Value as JArray;
                             if (property.Equals("@type"))
                             {
-                                foreach (var type in values)
+                                foreach (JToken type in values)
                                 {
-                                    var typeNode = MakeNode(handler, type, graphIri);
+                                    INode typeNode = MakeNode(handler, type, graphIri);
                                     if (typeNode != null)
                                     {
                                         handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphIri));
@@ -170,10 +170,10 @@ namespace VDS.RDF.Parsing
                             else if (JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf ||
                                      Uri.IsWellFormedUriString(property, UriKind.Absolute))
                             {
-                                foreach (var item in values)
+                                foreach (JToken item in values)
                                 {
-                                    var predicateNode = MakeNode(handler, property, graphIri);
-                                    var objectNode = MakeNode(handler, item, graphIri);
+                                    INode predicateNode = MakeNode(handler, property, graphIri);
+                                    INode objectNode = MakeNode(handler, item, graphIri);
                                     if (predicateNode != null && objectNode != null)
                                     {
                                         handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode,
@@ -218,7 +218,7 @@ namespace VDS.RDF.Parsing
             if (JsonLdUtils.IsValueObject(token) && token is JObject valueObject)
             {
                 string literalValue;
-                var value = valueObject["@value"];
+                JToken value = valueObject["@value"];
                 var datatype = valueObject.Property("@type")?.Value.Value<string>();
                 var language = valueObject.Property("@language")?.Value.Value<string>();
                 if (datatype == "@json")
@@ -271,8 +271,8 @@ namespace VDS.RDF.Parsing
                         return handler.CreateLiteralNode(literalValue, new Uri(datatype));
                     }
                     // Otherwise direction mode is CompoundLiteral
-                    var literalNode = handler.CreateBlankNode();
-                    var xsdString =
+                    IBlankNode literalNode = handler.CreateBlankNode();
+                    Uri xsdString =
                         UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
                     handler.HandleTriple(new Triple(
                         literalNode,
@@ -329,20 +329,20 @@ namespace VDS.RDF.Parsing
 
         private INode MakeRdfList(IRdfHandler handler, JArray list, Uri graphIri)
         {
-            var rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
-            var rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
-            var rdfNil = handler.CreateUriNode(new Uri(RdfNs + "nil"));
+            IUriNode rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
+            IUriNode rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
+            IUriNode rdfNil = handler.CreateUriNode(new Uri(RdfNs + "nil"));
             if (list == null || list.Count == 0) return rdfNil;
             var bNodes = list.Select(x => handler.CreateBlankNode()).ToList();
-            for(int ix = 0; ix < list.Count; ix++)
+            for(var ix = 0; ix < list.Count; ix++)
             {
-                var subject = bNodes[ix];
-                var obj = MakeNode(handler, list[ix], graphIri);
+                IBlankNode subject = bNodes[ix];
+                INode obj = MakeNode(handler, list[ix], graphIri);
                 if (obj != null)
                 {
                     handler.HandleTriple(new Triple(subject, rdfFirst, obj, graphIri));
                 }
-                var rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
+                INode rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
                 handler.HandleTriple(new Triple(subject, rdfRest, rest, graphIri));
             }
             return bNodes[0];

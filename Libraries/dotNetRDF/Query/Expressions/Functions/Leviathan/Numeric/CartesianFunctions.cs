@@ -113,8 +113,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             IValuedNode y2 = _y2.Evaluate(context, bindingID);
             if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
-            double dX = x2.AsDouble() - x1.AsDouble();
-            double dY = y2.AsDouble() - y1.AsDouble();
+            var dX = x2.AsDouble() - x1.AsDouble();
+            var dY = y2.AsDouble() - y1.AsDouble();
 
             return new DoubleNode(null, Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2)));
         }
@@ -140,9 +140,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             IValuedNode z2 = _z2.Evaluate(context, bindingID);
             if (z2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
 
-            double dX = x2.AsDouble() - x1.AsDouble();
-            double dY = y2.AsDouble() - y1.AsDouble();
-            double dZ = z2.AsDouble() - z1.AsDouble();
+            var dX = x2.AsDouble() - x1.AsDouble();
+            var dY = y2.AsDouble() - y1.AsDouble();
+            var dZ = z2.AsDouble() - z1.AsDouble();
 
             return new DoubleNode(null, Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2) + Math.Pow(dZ,2)));
         }
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cartesian + ">(");
             output.Append(_x1.ToString());
             output.Append(',');

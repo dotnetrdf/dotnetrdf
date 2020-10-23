@@ -251,7 +251,7 @@ namespace VDS.RDF
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
         /// <remarks>Override this method if your Triple Store implementation wishes to take additional actions when a Graph is added to the Store.</remarks>
-        protected virtual void OnGraphAdded(Object sender, TripleStoreEventArgs args)
+        protected virtual void OnGraphAdded(object sender, TripleStoreEventArgs args)
         {
             RaiseGraphAdded(args.GraphEvent);
         }
@@ -287,7 +287,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphRemoved(Object sender, TripleStoreEventArgs args)
+        protected virtual void OnGraphRemoved(object sender, TripleStoreEventArgs args)
         {
             RaiseGraphRemoved(args.GraphEvent);
         }
@@ -310,7 +310,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphChanged(Object sender, TripleStoreEventArgs args)
+        protected virtual void OnGraphChanged(object sender, TripleStoreEventArgs args)
         {
             RaiseGraphChanged(args.GraphEvent);
         }
@@ -346,7 +346,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphCleared(Object sender, TripleStoreEventArgs args)
+        protected virtual void OnGraphCleared(object sender, TripleStoreEventArgs args)
         {
             RaiseGraphCleared(args.GraphEvent);
         }
@@ -369,7 +369,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Graph Event Arguments.</param>
-        protected virtual void OnGraphMerged(Object sender, TripleStoreEventArgs args)
+        protected virtual void OnGraphMerged(object sender, TripleStoreEventArgs args)
         {
             RaiseGraphMerged(args.GraphEvent);
         }

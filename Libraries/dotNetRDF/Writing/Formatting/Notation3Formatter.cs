@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(FormatName));
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("{");
             foreach (Triple t in glit.SubGraph.Triples)
             {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(FormatName));
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("{");
             foreach (Triple t in glit.SubGraph.Triples)
             {

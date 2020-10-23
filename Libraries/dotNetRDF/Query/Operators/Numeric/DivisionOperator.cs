@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Operators.Numeric
         {
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply division when any arguments are null");
 
-            SparqlNumericType type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
+            var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
 
             try
             {
@@ -64,8 +64,8 @@ namespace VDS.RDF.Query.Operators.Numeric
                     case SparqlNumericType.Integer:
                     case SparqlNumericType.Decimal:
                         // For Division Integers are treated as decimals
-                        decimal d = Divide(ns.Select(n => n.AsDecimal()));
-                        if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
+                        var d = Divide(ns.Select(n => n.AsDecimal()));
+                        if (decimal.Floor(d).Equals(d) && d >= long.MinValue && d <= long.MaxValue)
                         {
                             return new LongNode(null, Convert.ToInt64(d));
                         }
@@ -86,9 +86,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private decimal Divide(IEnumerable<decimal> ls)
         {
-            bool first = true;
+            var first = true;
             decimal total = 0;
-            foreach (decimal l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {
@@ -105,9 +105,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private float Divide(IEnumerable<float> ls)
         {
-            bool first = true;
+            var first = true;
             float total = 0;
-            foreach (float l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {
@@ -124,9 +124,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private double Divide(IEnumerable<double> ls)
         {
-            bool first = true;
+            var first = true;
             double total = 0;
-            foreach (double l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {

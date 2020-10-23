@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-
     internal class PrefixDeclaration : WrapperNode
     {
         [DebuggerStepThrough]

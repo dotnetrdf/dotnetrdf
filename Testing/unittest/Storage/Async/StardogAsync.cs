@@ -39,7 +39,7 @@ namespace VDS.RDF.Storage.Async
         public StardogAsync()
         {
             //Increase the wait delay for Stardog because we have extra overhead for transactions
-            this.WaitDelay = 45000;
+            WaitDelay = 45000;
         }
 
         protected override IAsyncStorageProvider GetAsyncProvider()

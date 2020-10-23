@@ -52,10 +52,10 @@ namespace VDS.RDF.Storage
         , IUpdateableStorage
     {
         private readonly SparqlFormatter _formatter = new SparqlFormatter();
-        private readonly String _updateUri;
-        private readonly String _queryUri;
+        private readonly string _updateUri;
+        private readonly string _queryUri;
 
-        private const String FusekiDefaultGraphUri = "?default";
+        private const string FusekiDefaultGraphUri = "?default";
 
         /// <summary>
         /// Creates a new connection to a Fuseki Server.
@@ -70,7 +70,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
         /// <param name="writerMimeTypeDefinition">The MIME type of the syntax to use when sending RDF data to the server. Defaults to RDF/XML.</param>
-        public FusekiConnector(String serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
+        public FusekiConnector(string serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
             : base(serviceUri, writerMimeTypeDefinition) 
         {
             if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
@@ -92,7 +92,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public FusekiConnector(String serviceUri, IWebProxy proxy)
+        public FusekiConnector(string serviceUri, IWebProxy proxy)
             : this(serviceUri)
         {
             Proxy = proxy;
@@ -139,10 +139,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SparqlResultSet results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") as SparqlResultSet;
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") as SparqlResultSet;
                 if (results != null)
                 {
-                    List<Uri> uris = new List<Uri>();
+                    var uris = new List<Uri>();
                     foreach (SparqlResult r in results)
                     {
                         if (r.HasValue("g"))
@@ -181,22 +181,22 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : String.Empty;
-                StringBuilder update = new StringBuilder();
+                var graph = (graphUri != null && !graphUri.Equals(string.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : string.Empty;
+                var update = new StringBuilder();
 
                 if (additions != null)
                 {
                     if (additions.Any())
                     {
                         update.AppendLine("INSERT DATA {");
-                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+                        if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
                         foreach (Triple t in additions)
                         {
                             update.AppendLine(_formatter.Format(t));
                         }
 
-                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        if (!graph.Equals(string.Empty)) update.AppendLine("}");
                         update.AppendLine("}");
                     }
                 }
@@ -208,14 +208,14 @@ namespace VDS.RDF.Storage
                         if (update.Length > 0) update.AppendLine(";");
 
                         update.AppendLine("DELETE DATA {");
-                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+                        if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
                         foreach (Triple t in removals)
                         {
                             update.AppendLine(_formatter.Format(t));
                         }
 
-                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        if (!graph.Equals(string.Empty)) update.AppendLine("}");
                         update.AppendLine("}");
                     }
                 }
@@ -223,16 +223,16 @@ namespace VDS.RDF.Storage
                 if (update.Length > 0)
                 {
                     // Make the SPARQL Update Request
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_updateUri);
+                    var request = (HttpWebRequest)WebRequest.Create(_updateUri);
                     request.Method = "POST";
                     request.ContentType = "application/sparql-update";
                     request = ApplyRequestOptions(request);
 
-                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
+                    var writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(update.ToString());
                     writer.Close();
 
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    using (var response = (HttpWebResponse)request.GetResponse())
                     {
                         // If we get here without erroring then the request was OK
                         response.Close();
@@ -261,10 +261,10 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public Object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
@@ -284,14 +284,14 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
             {
                 HttpWebRequest request;
 
                 // Create the Request
-                String queryUri = _queryUri;
+                var queryUri = _queryUri;
                 if (sparqlQuery.Length < 2048)
                 {
                     queryUri += "?query=" + Uri.EscapeDataString(sparqlQuery);
@@ -309,10 +309,10 @@ namespace VDS.RDF.Storage
 
                     // Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    StringBuilder postData = new StringBuilder();
+                    var postData = new StringBuilder();
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
+                    using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                     {
                         writer.Write(postData);
                         writer.Close();
@@ -320,10 +320,10 @@ namespace VDS.RDF.Storage
                 }
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    StreamReader data = new StreamReader(response.GetResponseStream());
-                    String ctype = response.ContentType;
+                    var data = new StreamReader(response.GetResponseStream());
+                    var ctype = response.ContentType;
                     try
                     {
                         // Is the Content Type referring to a RDF format?
@@ -352,21 +352,21 @@ namespace VDS.RDF.Storage
         /// Executes SPARQL Updates against the Fuseki store.
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update.</param>
-        public void Update(String sparqlUpdate)
+        public void Update(string sparqlUpdate)
         {
             try
             {
                 // Make the SPARQL Update Request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_updateUri);
+                var request = (HttpWebRequest)WebRequest.Create(_updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
                 request = ApplyRequestOptions(request);
 
-                StreamWriter writer = new StreamWriter(request.GetRequestStream());
+                var writer = new StreamWriter(request.GetRequestStream());
                 writer.Write(sparqlUpdate);
                 writer.Close();
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // If we get here without erroring then the request was OK
                     response.Close();
@@ -387,8 +387,8 @@ namespace VDS.RDF.Storage
         /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query.</returns>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
@@ -411,14 +411,14 @@ namespace VDS.RDF.Storage
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             try
             {
                 HttpWebRequest request;
 
                 // Create the Request, always use POST for async for simplicity
-                String queryUri = _queryUri;
+                var queryUri = _queryUri;
 
                 request = (HttpWebRequest)WebRequest.Create(queryUri);
                 request.Method = "POST";
@@ -427,7 +427,7 @@ namespace VDS.RDF.Storage
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
+                var postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(sparqlQuery));
 
@@ -436,7 +436,7 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write(postData);
                                 writer.Close();
@@ -447,10 +447,10 @@ namespace VDS.RDF.Storage
                             {
                                 try
                                 {
-                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                    var response = (HttpWebResponse)request.EndGetResponse(r2);
 
-                                    StreamReader data = new StreamReader(response.GetResponseStream());
-                                    String ctype = response.ContentType;
+                                    var data = new StreamReader(response.GetResponseStream());
+                                    var ctype = response.ContentType;
                                     try
                                     {
                                         // Is the Content Type referring to a Sparql Result Set format?
@@ -505,12 +505,12 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public void Update(String sparqlUpdate, AsyncStorageCallback callback, Object state)
+        public void Update(string sparqlUpdate, AsyncStorageCallback callback, object state)
         {
             try
             {
                 // Make the SPARQL Update Request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_updateUri);
+                var request = (HttpWebRequest)WebRequest.Create(_updateUri);
                 request.Method = "POST";
                 request.ContentType = "application/sparql-update";
                 request = ApplyRequestOptions(request);
@@ -520,7 +520,7 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            StreamWriter writer = new StreamWriter(stream);
+                            var writer = new StreamWriter(stream);
                             writer.Write(sparqlUpdate);
                             writer.Close();
 
@@ -528,7 +528,7 @@ namespace VDS.RDF.Storage
                                 {
                                     try
                                     {
-                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                        var response = (HttpWebResponse)request.EndGetResponse(r2);
                                         // If we get here without erroring then the request was OK
                                         response.Close();
                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
@@ -571,7 +571,7 @@ namespace VDS.RDF.Storage
         public override void ListGraphs(AsyncStorageCallback callback, object state)
         {
             // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
-            ListUrisHandler handler = new ListUrisHandler("g");
+            var handler = new ListUrisHandler("g");
             ((IAsyncQueryableStorage)this).Query(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", (sender, args, st) =>
             {
                 if (args.WasSuccessful)
@@ -597,22 +597,22 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : String.Empty;
-                StringBuilder update = new StringBuilder();
+                var graph = (graphUri != null && !graphUri.Equals(string.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : string.Empty;
+                var update = new StringBuilder();
 
                 if (additions != null)
                 {
                     if (additions.Any())
                     {
                         update.AppendLine("INSERT DATA {");
-                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+                        if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
                         foreach (Triple t in additions)
                         {
                             update.AppendLine(_formatter.Format(t));
                         }
 
-                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        if (!graph.Equals(string.Empty)) update.AppendLine("}");
                         update.AppendLine("}");
                     }
                 }
@@ -624,14 +624,14 @@ namespace VDS.RDF.Storage
                         if (update.Length > 0) update.AppendLine(";");
 
                         update.AppendLine("DELETE DATA {");
-                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+                        if (!graph.Equals(string.Empty)) update.AppendLine(graph);
 
                         foreach (Triple t in removals)
                         {
                             update.AppendLine(_formatter.Format(t));
                         }
 
-                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        if (!graph.Equals(string.Empty)) update.AppendLine("}");
                         update.AppendLine("}");
                     }
                 }

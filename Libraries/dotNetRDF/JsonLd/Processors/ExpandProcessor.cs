@@ -105,10 +105,10 @@ namespace VDS.RDF.JsonLd.Processors
                 var resultArray = (JArray)result;
 
                 // 5.2 - For each item in element:
-                foreach (var item in elementArray)
+                foreach (JToken item in elementArray)
                 {
                     // 5.2.1 - Initialize expanded item to the result of using this algorithm recursively, passing active context, active property, and item as element.
-                    var expandedItem = ExpandElement(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
+                    JToken expandedItem = ExpandElement(activeContext, activeProperty, item, baseUrl, frameExpansion, ordered, fromMap);
                     if (expandedItem != null)
                     {
                         // 5.2.2 - If the container mapping of active property includes @list, and expanded item is an array, set expanded item to a new map
@@ -122,7 +122,7 @@ namespace VDS.RDF.JsonLd.Processors
                         // 5.2.3 - If expanded item is an array, append each of its items to result. Otherwise, if expanded item is not null, append it to result.
                         if (expandedItem is JArray expandedItemArray)
                         {
-                            foreach (var arrayItem in expandedItemArray)
+                            foreach (JToken arrayItem in expandedItemArray)
                             {
                                 resultArray.Add(arrayItem);
                             }
@@ -161,27 +161,27 @@ namespace VDS.RDF.JsonLd.Processors
             // 9 - If element contains the key @context, set active context to the 
             // result of the Context Processing algorithm, passing active context 
             // and the value of the @context key as local context.
-            var contextValue = JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@context");
+            JToken contextValue = JsonLdUtils.GetPropertyValue(activeContext, elementObject, "@context");
             if (contextValue != null)
             {
                 activeContext = _contextProcessor.ProcessContext(activeContext, contextValue, baseUrl);
             }
 
             // 10 - Initialize type-scoped context to active context. This is used for expanding values that may be relevant to any previous type-scoped context.
-            var typeScopedContext = activeContext;
+            JsonLdContext typeScopedContext = activeContext;
 
             // 11 - For each key/value pair in element ordered lexicographically by key where key expands to @type using the IRI Expansion algorithm, passing active context, key for value, and true for vocab:
             var typeProperties = elementObject.Properties().Where(property => "@type".Equals(_contextProcessor.ExpandIri(activeContext, property.Name, true))).OrderBy(p => p.Name).ToList();
-            foreach (var property in typeProperties)
+            foreach (JProperty property in typeProperties)
             {
                 // 11.1 Convert value into an array, if necessary.
-                var values = property.Value.Type == JTokenType.Array ? property.Value as JArray : new JArray(property.Value);
+                JArray values = property.Value.Type == JTokenType.Array ? property.Value as JArray : new JArray(property.Value);
                 // 11.2 For each term which is a value of value ordered lexicographically
-                foreach (var term in values.OrderBy(v => v))
+                foreach (JToken term in values.OrderBy(v => v))
                 {
                     // if term is a string, and term's term definition in type-scoped context has a local context, set active context to the result Context Processing algorithm, passing active context, the value of the term's local context as local context, base URL from the term definition for value in active context, and false for propagate.
                     if (term.Type == JTokenType.String &&
-                        typeScopedContext.TryGetTerm(term.Value<string>(), out var termDefinition) &&
+                        typeScopedContext.TryGetTerm(term.Value<string>(), out JsonLdTermDefinition termDefinition) &&
                         termDefinition.LocalContext != null)
                     {
                         activeContext = _contextProcessor.ProcessContext(activeContext, termDefinition.LocalContext,
@@ -194,7 +194,7 @@ namespace VDS.RDF.JsonLd.Processors
             // NOTE: nests is only used in steps 13/14 so is initialized in ExpandElement
             result = new JObject();
             var resultObject = result as JObject;
-            var firstTypeProperty = elementObject.Properties()
+            JProperty firstTypeProperty = elementObject.Properties()
                 .OrderBy(p => p.Name).FirstOrDefault(p => "@type".Equals(_contextProcessor.ExpandIri(activeContext, p.Name, true)));
             JToken inputType = null;
             if (firstTypeProperty != null)
@@ -226,8 +226,8 @@ namespace VDS.RDF.JsonLd.Processors
                         $"Invalid value object. The expansion of {activeProperty} resulted in a value object with both @type and either @language or @direction.");
                 }
 
-                var resultType = resultObject.ContainsKey("@type") ? resultObject["@type"] : null;
-                var resultValue = resultObject["@value"];
+                JToken resultType = resultObject.ContainsKey("@type") ? resultObject["@type"] : null;
+                JToken resultValue = resultObject["@value"];
                 // If the result's @type entry is @json, then the @value entry may contain any value, and is treated as a JSON literal.
                 if (resultType != null && resultType.Type == JTokenType.String && resultType.Value<string>().Equals("@json"))
                 {
@@ -314,12 +314,12 @@ namespace VDS.RDF.JsonLd.Processors
             var nests = new JObject();
 
             // 13 - For each key and value in element, ordered lexicographically by key if ordered is true: 
-            var elementProperties = elementObject.Properties();
+            IEnumerable<JProperty> elementProperties = elementObject.Properties();
             if (ordered) elementProperties = elementProperties.OrderBy(p => p.Name);
-            foreach (var p in elementProperties)
+            foreach (JProperty p in elementProperties)
             {
                 var key = p.Name;
-                var value = p.Value;
+                JToken value = p.Value;
                 // 13.1 - If key is @context, continue to the next key.
                 if (key.Equals("@context")) continue;
                 // 13.2 - Initialize expanded property to the result of IRI expanding key.
@@ -372,7 +372,7 @@ namespace VDS.RDF.JsonLd.Processors
 
                             case JTokenType.Array:
                                 var newArray = new JArray();
-                                foreach (var child in value.Children())
+                                foreach (JToken child in value.Children())
                                     newArray.Add(_contextProcessor.ExpandIri(activeContext, child.Value<string>(), false, true));
                                 expandedValue = newArray;
                                 break;
@@ -410,7 +410,7 @@ namespace VDS.RDF.JsonLd.Processors
                                     $"Invalid @type value. The property {key} in the value of {activeProperty} expands to the @type keyword, but its array value contains one or more non-string items.");
                             case JTokenType.Array:
                                 var expandedItems = new JArray();
-                                foreach (var item in value.Children())
+                                foreach (JToken item in value.Children())
                                 {
                                     expandedItems.Add(_contextProcessor.ExpandIri(typeScopedContext, item.Value<string>(), true, true));
                                 }
@@ -634,7 +634,7 @@ namespace VDS.RDF.JsonLd.Processors
                             {
                                 if (expandedValueObject["@reverse"] is JObject reverseObject)
                                 {
-                                    foreach (var property in reverseObject.Properties())
+                                    foreach (JProperty property in reverseObject.Properties())
                                     {
                                         // 13.4.13.3.1 - Use add value to add item to the property entry in result using true for as array.
                                         JsonLdUtils.AddValue(resultObject, property.Name, property.Value, true);
@@ -648,15 +648,15 @@ namespace VDS.RDF.JsonLd.Processors
                                 if (!resultObject.ContainsKey("@reverse")) resultObject["@reverse"] = new JObject();
                                 var reverseMap = resultObject["@reverse"] as JObject;
                                 // 13.4.13.4.2 - For each property and items in expanded value other than @reverse: 
-                                foreach (var property in expandedValueObject)
+                                foreach (KeyValuePair<string, JToken> property in expandedValueObject)
                                 {
                                     if (property.Key.Equals("@reverse")) continue;
                                     // 13.4.13.4.2.1 - For each item in items:
                                     // KA: Spec is not quite clear here but appears to indicate that the value of all properties should be an array or that array property values should be iterated over
-                                    var items = property.Value is JArray itemsArray
+                                    IEnumerable<JToken> items = property.Value is JArray itemsArray
                                         ? (IEnumerable<JToken>)itemsArray.Children()
                                         : new[] { property.Value };
-                                    foreach (var item in items)
+                                    foreach (JToken item in items)
                                     {
                                         // 13.4.13.4.2.1.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
                                         if (JsonLdUtils.IsValueObject(item) || JsonLdUtils.IsListObject(item))
@@ -708,8 +708,8 @@ namespace VDS.RDF.JsonLd.Processors
                 }
 
                 // 13.5 - Initialize container mapping to key's container mapping in active context.
-                var termDefinition = activeContext.GetTerm(key);
-                var containerMapping = termDefinition?.ContainerMapping ?? new SortedSet<JsonLdContainer>();
+                JsonLdTermDefinition termDefinition = activeContext.GetTerm(key);
+                ISet<JsonLdContainer> containerMapping = termDefinition?.ContainerMapping ?? new SortedSet<JsonLdContainer>();
                 // 13.6 - If key's term definition in active context has a type mapping of @json, set expanded value to a new map, set the entry @value to value, and set the entry @type to @json.
                 if ("@json".Equals(termDefinition?.TypeMapping))
                 {
@@ -724,18 +724,18 @@ namespace VDS.RDF.JsonLd.Processors
 
                     // 13.7.2 - Initialize direction to the default base direction from active context.
                     // 13.7.3 - If key's term definition in active context has a direction mapping, update direction with that value.
-                    var direction = termDefinition.DirectionMapping ?? activeContext.BaseDirection;
+                    LanguageDirection? direction = termDefinition.DirectionMapping ?? activeContext.BaseDirection;
 
                     // 13.7.4 - For each key - value pair language-language value in value, ordered lexicographically by language if ordered is true: 
-                    var properties = (value as JObject).Properties();
+                    IEnumerable<JProperty> properties = (value as JObject).Properties();
                     if (ordered) properties = properties.OrderBy(prop => prop.Name);
-                    foreach (var languageMappingProperty in properties)
+                    foreach (JProperty languageMappingProperty in properties)
                     {
                         var language = languageMappingProperty.Name;
                         // 13.4.7.1 - If language value is not an array set language value to an array containing only language value.
-                        var languageValue = JsonLdUtils.EnsureArray(languageMappingProperty.Value);
+                        JArray languageValue = JsonLdUtils.EnsureArray(languageMappingProperty.Value);
                         // 13.4.7.2 - For each item in language value: 
-                        foreach (var item in languageValue)
+                        foreach (JToken item in languageValue)
                         {
                             // 13.4.7.2.1 - If item is null, continue to the next entry in language value.
                             if (JsonLdUtils.IsNull(item)) continue;
@@ -789,12 +789,12 @@ namespace VDS.RDF.JsonLd.Processors
                     var indexKey = termDefinition.IndexMapping ?? "@index";
 
                     // 13.8.3 - For each key - value pair index-index value in value, ordered lexicographically by index if ordered is true: 
-                    var properties = (value as JObject).Properties();
+                    IEnumerable<JProperty> properties = (value as JObject).Properties();
                     if (ordered) properties = properties.OrderBy(prop => prop.Name);
-                    foreach (var indexValueProperty in properties)
+                    foreach (JProperty indexValueProperty in properties)
                     {
                         var index = indexValueProperty.Name;
-                        var indexValue = JsonLdUtils.EnsureArray(indexValueProperty.Value);
+                        JArray indexValue = JsonLdUtils.EnsureArray(indexValueProperty.Value);
 
                         JsonLdContext mapContext = null;
                         // 13.8.3.1 - If container mapping includes @id or @type, initialize map context to the previous context from active context if it exists, otherwise, set map context to active context.
@@ -805,7 +805,7 @@ namespace VDS.RDF.JsonLd.Processors
                             // 13.8.3.2 - If container mapping includes @type and index's term definition in map context has a local context, update map context to the result of the Context Processing algorithm, passing map context as active context the value of the index's local context as local context and base URL from the term definition for index in map context.
                             if (containerMapping.Contains(JsonLdContainer.Type))
                             {
-                                var indexTermDefinition = mapContext.GetTerm(index);
+                                JsonLdTermDefinition indexTermDefinition = mapContext.GetTerm(index);
                                 if (indexTermDefinition?.LocalContext != null)
                                 {
                                     mapContext = _contextProcessor.ProcessContext(mapContext, indexTermDefinition.LocalContext,
@@ -844,7 +844,7 @@ namespace VDS.RDF.JsonLd.Processors
                                 !expandedIndex.Equals("@none"))
                             {
                                 // 13.8.7.2.1 - Initialize re-expanded index to the result of calling the Value Expansion algorithm, passing the active context, index key as active property, and index as value.
-                                var reExpandedIndex = ExpandValue(activeContext, indexKey, index);
+                                JToken reExpandedIndex = ExpandValue(activeContext, indexKey, index);
 
                                 // 13.8.7.2.2 - Initialize expanded index key to the result of IRI expanding index key.
                                 var expandedIndexKey = _contextProcessor.ExpandIri(activeContext, indexKey, true);
@@ -917,9 +917,9 @@ namespace VDS.RDF.JsonLd.Processors
                 if (containerMapping.Contains(JsonLdContainer.Graph) &&
                     !containerMapping.Contains(JsonLdContainer.Id) && !containerMapping.Contains(JsonLdContainer.Index))
                 {
-                    var tmp = JsonLdUtils.EnsureArray(expandedValue);
+                    JArray tmp = JsonLdUtils.EnsureArray(expandedValue);
                     var expandedValueArray = new JArray();
-                    foreach (var ev in tmp)
+                    foreach (JToken ev in tmp)
                     {
                         // 13.12.1 - Convert ev into a graph object by creating a map containing the key-value pair @graph-ev where ev is represented as an array.
                         // Note: This may lead to a graph object including another graph object, if ev was already in the form of a graph object.
@@ -942,7 +942,7 @@ namespace VDS.RDF.JsonLd.Processors
                     // 13.13.3 - If expanded value is not an array, set it to an array containing expanded value.
                     expandedValue = JsonLdUtils.EnsureArray(expandedValue);
                     // 13.13.4 - For each item in expanded value
-                    foreach (var item in expandedValue.Children())
+                    foreach (JToken item in expandedValue.Children())
                     {
                         // 13.13.4.1 - If item is a value object or list object, an invalid reverse property value has been detected and processing is aborted.
                         if (JsonLdUtils.IsValueObject(item) || JsonLdUtils.IsListObject(item))
@@ -968,16 +968,16 @@ namespace VDS.RDF.JsonLd.Processors
             }
 
             // 14 - For each key nesting-key in nests, ordered lexicographically if ordered is true: 
-            var nestProperties = nests.Properties();
+            IEnumerable<JProperty> nestProperties = nests.Properties();
             if (ordered) nestProperties = nestProperties.OrderBy(p => p.Name);
-            foreach (var nestingProperty in nestProperties)
+            foreach (JProperty nestingProperty in nestProperties)
             {
                 var nestingKey = nestingProperty.Name;
                 // 14.1 - Initialize nested values to the value of nesting-key in element, ensuring that it is an array.
-                var nestedValues = JsonLdUtils.EnsureArray(elementObject[nestingKey]);
+                JArray nestedValues = JsonLdUtils.EnsureArray(elementObject[nestingKey]);
                 var expandedNestedValues = new JArray();
                 // 14.2 - For each nested value in nested values: 
-                foreach (var nestedValue in nestedValues)
+                foreach (JToken nestedValue in nestedValues)
                 {
                     // 14.2.1 - If nested value is not a map, or any key within nested value expands to @value, an invalid @nest value error has been detected and processing is aborted.
                     // 14.2.2 - Recursively repeat steps 13 and 14 using nested value for element. 
@@ -1012,7 +1012,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns></returns>
         private JToken ExpandValue(JsonLdContext activeContext, string activeProperty, JToken value)
         {
-            activeContext.TryGetTerm(activeProperty, out var activePropertyTermDefinition, true);
+            activeContext.TryGetTerm(activeProperty, out JsonLdTermDefinition activePropertyTermDefinition, true);
             var typeMapping = activePropertyTermDefinition?.TypeMapping;
 
             // 1 - If the active property has a type mapping in active context that is @id, and the value is a string, return a new map containing a single entry
@@ -1047,7 +1047,7 @@ namespace VDS.RDF.JsonLd.Processors
                         : activeContext.Language;
 
                 // 5.2 - Initialize direction to the direction mapping for active property in active context, if any, otherwise to the default base direction of active context.
-                var direction = activePropertyTermDefinition?.DirectionMapping ?? (activeContext.BaseDirection ?? LanguageDirection.Unspecified);
+                LanguageDirection direction = activePropertyTermDefinition?.DirectionMapping ?? (activeContext.BaseDirection ?? LanguageDirection.Unspecified);
                 // 5.3 - If language is not null, add @language to result with the value language.
                 if (language != null)
                 {

@@ -143,7 +143,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string GetNextBlankNodeID()
         {
-            String id = String.Empty;
+            var id = string.Empty;
             try 
             {
                 _lockManager.EnterWriteLock();
@@ -152,7 +152,7 @@ namespace VDS.RDF
             finally 
             {
                 _lockManager.ExitWriteLock();
-                if (id.Equals(String.Empty))
+                if (id.Equals(string.Empty))
                 {
                     throw new RdfException("Unable to generate a new Blank Node ID due to a Threading issue");
                 }
@@ -305,7 +305,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriples(INode n)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -325,7 +325,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriples(Uri uri)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -345,7 +345,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -365,7 +365,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -385,7 +385,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -405,7 +405,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -425,7 +425,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();
@@ -445,7 +445,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 _lockManager.EnterReadLock();

@@ -44,7 +44,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <param name="name">Template Name.</param>
         /// <param name="descrip">Template Description.</param>
         /// <param name="dbtype">Stardog Database Type.</param>
-        public BaseStardogTemplate(String id, String name, String descrip, String dbtype)
+        public BaseStardogTemplate(string id, string name, string descrip, string dbtype)
             : base(id, name, descrip)
         {
             // Index Options
@@ -100,7 +100,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         [Category("Index Options"), 
          DisplayName("Index Type"),
          Description("The type of the index structures used for the database")]
-        public String DatabaseType
+        public string DatabaseType
         {
             get;
             private set;
@@ -214,7 +214,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         [Category("Integrity Constraint Validation"),
          DisplayName("Active Graphs"), 
          Description("Sets the named graphs upon which integrity constraints are enforced")]
-        public List<String> IcvActiveGraphs
+        public List<string> IcvActiveGraphs
         {
             get;
             set;
@@ -289,7 +289,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         [Category("Reasoning Options"),
          DisplayName("Schema Graphs"),
          Description("Sets the graphs considered to contain the schema (TBox) used for reasoning")]
-        public List<String> SchemaGraphs
+        public List<string> SchemaGraphs
         {
             get;
             set;
@@ -325,7 +325,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
          Category("Search Options"),
          DisplayName("Search Re-index Mode"),
          Description("Controls when search indexes are re-indexed, valid values are sync or async")]
-        public String SearchReindexMode
+        public string SearchReindexMode
         {
             get;
             set;
@@ -358,7 +358,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// <returns>Enumeration of errors that occurred.</returns>
         public override IEnumerable<string> Validate()
         {
-            List<String> errors = new List<string>();
+            var errors = new List<string>();
             if (!BaseStardogServer.DatabaseOptions.IsValidDatabaseName(ID))
             {
                 errors.Add("Database Name " + ID + " is invalid, Stardog database names must match the regular expression " + BaseStardogServer.DatabaseOptions.ValidDatabaseNamePattern);
@@ -371,14 +371,14 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             {
                 errors.Add("Search Re-index Mode " + SearchReindexMode + " is invalid, only sync or async are currently permitted");
             }
-            foreach (String uri in SchemaGraphs)
+            foreach (var uri in SchemaGraphs)
             {
                 if (!BaseStardogServer.DatabaseOptions.IsValidNamedGraph(uri))
                 {
                     errors.Add("Schema Graphs contains invalid Graph URI '" + uri + "' - must use a valid URI, default or *");
                 }
             }
-            foreach (String uri in IcvActiveGraphs)
+            foreach (var uri in IcvActiveGraphs)
             {
                 if (!BaseStardogServer.DatabaseOptions.IsValidNamedGraph(uri))
                 {
@@ -393,7 +393,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Does any additional validation a derived template may require.
         /// </summary>
         /// <param name="errors">Error collection to add to.</param>
-        protected virtual void ValidateInternal(List<String> errors) { }
+        protected virtual void ValidateInternal(List<string> errors) { }
 
         /// <summary>
         /// Gets the JSON Template for creating a store.
@@ -402,12 +402,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         public JObject GetTemplateJson()
         {
             // Set up the basic template
-            JObject template = new JObject();
+            var template = new JObject();
             template.Add("dbname", new JValue(ID));
 
             // Build up the options object
             // Don't bother included non-required options if the user hasn't adjusted them from their defaults
-            JObject options = new JObject();
+            var options = new JObject();
 
             // Index Options
             options.Add(BaseStardogServer.DatabaseOptions.IndexType, new JValue(DatabaseType.ToLower()));
@@ -420,14 +420,14 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             if (AutoUpdateStatistics != BaseStardogServer.DatabaseOptions.DefaultAutoUpdateStats) options.Add(BaseStardogServer.DatabaseOptions.IndexStatisticsAutoUpdate, new JValue(AutoUpdateStatistics));
 
             // ICV Options
-            if (IcvActiveGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.IcvActiveGraphs, new JValue(String.Join(",", IcvActiveGraphs.ToArray())));
+            if (IcvActiveGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.IcvActiveGraphs, new JValue(string.Join(",", IcvActiveGraphs.ToArray())));
             if (IcvEnabled != BaseStardogServer.DatabaseOptions.DefaultIcvEnabled) options.Add(BaseStardogServer.DatabaseOptions.IcvEnabled, new JValue(IcvEnabled));
             if (IcvReasoningMode != BaseStardogServer.DatabaseOptions.DefaultIcvReasoningMode) options.Add(BaseStardogServer.DatabaseOptions.IcvReasoningType, new JValue(IcvReasoningMode.ToString()));
             
             // Reasoning
             if (ConsistencyChecking != BaseStardogServer.DatabaseOptions.DefaultConsistencyChecking) options.Add(BaseStardogServer.DatabaseOptions.ReasoningAutoConsistency, new JValue(ConsistencyChecking));
             if (EnablePunning != BaseStardogServer.DatabaseOptions.DefaultPunning) options.Add(BaseStardogServer.DatabaseOptions.ReasoningPunning, new JValue(EnablePunning));
-            if (SchemaGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.ReasoningSchemaGraphs, new JValue(String.Join(",", SchemaGraphs.ToArray())));
+            if (SchemaGraphs.Count > 0) options.Add(BaseStardogServer.DatabaseOptions.ReasoningSchemaGraphs, new JValue(string.Join(",", SchemaGraphs.ToArray())));
 
             // Search
             if (FullTextSearch != BaseStardogServer.DatabaseOptions.DefaultFullTextSearch) options.Add(BaseStardogServer.DatabaseOptions.SearchEnabled, new JValue(FullTextSearch));

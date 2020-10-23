@@ -41,7 +41,7 @@ namespace VDS.RDF
         /// <summary>
         /// Underlying Storage of the Triple Collection.
         /// </summary>
-        protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
+        protected readonly MultiDictionary<Triple, object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
 
         /// <summary>
         /// Creates a new Triple Collection.
@@ -283,7 +283,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple already exists in the Triple Collection.</returns>
         public override bool Contains(Triple t)
         {
-            bool contains = false;
+            var contains = false;
             try
             {
                 EnterReadLock();
@@ -303,7 +303,7 @@ namespace VDS.RDF
         {
             get
             {
-                int c = 0;
+                var c = 0;
                 try
                 {
                     EnterReadLock();
@@ -365,7 +365,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
@@ -385,7 +385,7 @@ namespace VDS.RDF
         {
             get
             {
-                List<INode> nodes = new List<INode>();
+                var nodes = new List<INode>();
                 try
                 {
                     EnterReadLock();
@@ -406,7 +406,7 @@ namespace VDS.RDF
         {
             get
             {
-                List<INode> nodes = new List<INode>();
+                var nodes = new List<INode>();
                 try
                 {
                     EnterReadLock();
@@ -427,7 +427,7 @@ namespace VDS.RDF
         {
             get
             {
-                List<INode> nodes = new List<INode>();
+                var nodes = new List<INode>();
                 try
                 {
                     EnterReadLock();
@@ -448,7 +448,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
@@ -468,7 +468,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
@@ -489,7 +489,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
@@ -509,7 +509,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
@@ -530,7 +530,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();
@@ -551,7 +551,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            List<Triple> triples = new List<Triple>();
+            var triples = new List<Triple>();
             try
             {
                 EnterReadLock();

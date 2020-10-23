@@ -63,18 +63,18 @@ namespace VDS.RDF.Web
         /// <param name="e">Event Arguments</param>
         void context_BeginRequest(object sender, EventArgs e)
         {
-            HttpApplication app = sender as HttpApplication;
+            var app = sender as HttpApplication;
             if (app == null) return;
             HttpContext context = app.Context;
             if (context == null) return;
 
             if (context.Request.Url.AbsolutePath.Contains("."))
             {
-                String actualPath = context.Request.MapPath(context.Request.Path);
+                var actualPath = context.Request.MapPath(context.Request.Path);
                 if (!File.Exists(actualPath))
                 {
                     // Get the File Extension and see if it is for an RDF format
-                    String ext = context.Request.Url.AbsolutePath.Substring(context.Request.Url.AbsolutePath.LastIndexOf("."));
+                    var ext = context.Request.Url.AbsolutePath.Substring(context.Request.Url.AbsolutePath.LastIndexOf("."));
                     switch (ext)
                     {
                         case ".aspx":
@@ -88,16 +88,16 @@ namespace VDS.RDF.Web
 
                     try
                     {
-                        List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(ext).ToList();
+                        var defs = MimeTypesHelper.GetDefinitionsByFileExtension(ext).ToList();
                         if (defs.Count == 0) return;
 
                         context.Request.Headers["Accept"] = String.Join(",", defs.Select(d => d.CanonicalMimeType).ToArray());
-                        String filePath = Path.GetFileNameWithoutExtension(actualPath);
+                        var filePath = Path.GetFileNameWithoutExtension(actualPath);
                         if (filePath == null || filePath.Equals(String.Empty))
                         {
                             if (context.Request.Url.AbsolutePath.EndsWith(ext)) filePath = context.Request.Url.AbsolutePath.Substring(0, context.Request.Url.AbsolutePath.Length - ext.Length);
                         }
-                        String query = context.Request.Url.Query;
+                        var query = context.Request.Url.Query;
                         if (query.StartsWith("?")) query = query.Substring(1);
                         context.RewritePath(filePath, String.Empty, query, true);
                     }

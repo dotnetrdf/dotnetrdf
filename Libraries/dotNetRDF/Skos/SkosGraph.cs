@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF.Parsing;
+
 namespace VDS.RDF.Skos
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Parsing;
-
     /// <summary>
     /// Represents a wrapper around a SKOS graph providing convenient access to concepts, schemes, and collections.
     /// </summary>
@@ -53,8 +53,8 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this
-                    .GetInstances(SkosHelper.ConceptScheme)
+                return 
+                    GetInstances(SkosHelper.ConceptScheme)
                     .Select(node => new SkosConceptScheme(node));
             }
         }
@@ -66,8 +66,8 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this
-                    .GetInstances(SkosHelper.Concept)
+                return 
+                    GetInstances(SkosHelper.Concept)
                     .Select(node => new SkosConcept(node));
             }
         }
@@ -79,8 +79,8 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this
-                    .GetInstances(SkosHelper.Collection)
+                return 
+                    GetInstances(SkosHelper.Collection)
                     .Select(node => new SkosCollection(node));
             }
         }
@@ -92,19 +92,19 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this
-                    .GetInstances(SkosHelper.OrderedCollection)
+                return 
+                    GetInstances(SkosHelper.OrderedCollection)
                     .Select(node => new SkosOrderedCollection(node));
             }
         }
 
         private IEnumerable<INode> GetInstances(string typeUri)
         {
-            var a = this.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            var type = this.CreateUriNode(UriFactory.Create(typeUri));
+            IUriNode a = CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode type = CreateUriNode(UriFactory.Create(typeUri));
 
-            return this
-                .GetTriplesWithPredicateObject(a, type)
+            return 
+                GetTriplesWithPredicateObject(a, type)
                 .Select(t => t.Subject);
         }
     }

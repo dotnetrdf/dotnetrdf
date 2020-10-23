@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Property : Constraint
     {
         [DebuggerStepThrough]

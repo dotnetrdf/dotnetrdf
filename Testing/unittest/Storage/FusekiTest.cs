@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage
             try
             {
                 UriLoader.CacheEnabled = false;
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
@@ -77,13 +77,13 @@ namespace VDS.RDF.Storage
                 _testOutputHelper.WriteLine("Graph saved to Fuseki OK");
 
                 //Now retrieve Graph from Fuseki
-                Graph h = new Graph();
+                var h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fusekiTest");
 
                 _testOutputHelper.WriteLine("");
                 foreach (Triple t in h.Triples)
                 {
-                    _testOutputHelper.WriteLine(t.ToString(this._formatter));
+                    _testOutputHelper.WriteLine(t.ToString(_formatter));
                 }
 
                 Assert.Equal(g, h);
@@ -100,7 +100,7 @@ namespace VDS.RDF.Storage
             try
             {
                 UriLoader.CacheEnabled = false;
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fuseki#test");
 
@@ -110,13 +110,13 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Graph saved to Fuseki OK");
 
                 //Now retrieve Graph from Fuseki
-                Graph h = new Graph();
+                var h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fuseki#test");
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 Assert.Equal(g, h);
@@ -133,7 +133,7 @@ namespace VDS.RDF.Storage
             try
             {
                 UriLoader.CacheEnabled = false;
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
@@ -143,13 +143,13 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Graph saved to Fuseki OK");
 
                 //Now retrieve Graph from Fuseki
-                Graph h = new Graph();
+                var h = new Graph();
                 fuseki.LoadGraph(h, (Uri)null);
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 Assert.Equal(g, h);
@@ -167,7 +167,7 @@ namespace VDS.RDF.Storage
             try
             {
                 UriLoader.CacheEnabled = false;
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
@@ -177,13 +177,13 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Graph saved to Fuseki OK");
 
                 //Now retrieve Graph from Fuseki
-                Graph h = new Graph();
+                var h = new Graph();
                 fuseki.LoadGraph(h, (String)null);
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 Assert.Equal(g, h);
@@ -204,20 +204,20 @@ namespace VDS.RDF.Storage
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageFusekiSaveGraph();
 
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store
                 FusekiConnector fuseki = FusekiTest.GetConnection();
 
-                Graph h = new Graph();
+                var h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fusekiTest");
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 Assert.Equal(g, h);
@@ -239,7 +239,7 @@ namespace VDS.RDF.Storage
                 FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.DeleteGraph("http://example.org/fusekiTest");
 
-                Graph g = new Graph();
+                var g = new Graph();
                 try
                 {
                     fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -271,7 +271,7 @@ namespace VDS.RDF.Storage
                 FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.DeleteGraph((Uri)null);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 try
                 {
                     fuseki.LoadGraph(g, (Uri)null);
@@ -303,7 +303,7 @@ namespace VDS.RDF.Storage
                 FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.DeleteGraph((String)null);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 try
                 {
                     fuseki.LoadGraph(g, (Uri)null);
@@ -332,8 +332,8 @@ namespace VDS.RDF.Storage
                 UriLoader.CacheEnabled = false;
                 StorageFusekiSaveGraph();
 
-                Graph g = new Graph();
-                List<Triple> ts = new List<Triple>();
+                var g = new Graph();
+                var ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
                 FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -356,8 +356,8 @@ namespace VDS.RDF.Storage
                 UriLoader.CacheEnabled = false;
                 StorageFusekiSaveGraph();
 
-                Graph g = new Graph();
-                List<Triple> ts = new List<Triple>();
+                var g = new Graph();
+                var ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
                 FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -377,7 +377,7 @@ namespace VDS.RDF.Storage
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
 
-            Object results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
+            var results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -397,7 +397,7 @@ namespace VDS.RDF.Storage
             FusekiConnector fuseki = FusekiTest.GetConnection();
 
             //Try doing a SPARQL Update LOAD command
-            String command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
+            var command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
             fuseki.Update(command);
 
             //Then see if we can retrieve the newly loaded graph
@@ -406,7 +406,7 @@ namespace VDS.RDF.Storage
             Assert.False(g.IsEmpty, "Graph should be non-empty");
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString(this._formatter));
+                Console.WriteLine(t.ToString(_formatter));
             }
 
             Console.WriteLine();
@@ -425,7 +425,7 @@ namespace VDS.RDF.Storage
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
 
-            Object results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
+            var results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
             if (results is IGraph)
             {
                 TestTools.ShowGraph((IGraph) results);

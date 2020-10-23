@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Validation
         /// </summary>
         /// <param name="data">Data.</param>
         /// <returns></returns>
-        ISyntaxValidationResults Validate(String data);
+        ISyntaxValidationResults Validate(string data);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <summary>
         /// Gets an informational message about the validity/invalidity of the Syntax.
         /// </summary>
-        String Message
+        string Message
         {
             get;
         }
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <summary>
         /// Gets an enumeration of any warning messages.
         /// </summary>
-        IEnumerable<String> Warnings
+        IEnumerable<string> Warnings
         {
             get;
         }
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <summary>
         /// Gets any result object that was parsed from the syntax.
         /// </summary>
-        Object Result
+        object Result
         {
             get;
         }

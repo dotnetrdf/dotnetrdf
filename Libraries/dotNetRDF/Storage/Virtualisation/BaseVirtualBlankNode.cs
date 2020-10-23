@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         protected sealed override void OnMaterialise()
         {
-            IBlankNode temp = (IBlankNode)_value;
+            var temp = (IBlankNode)_value;
             _internalID = temp.InternalID;
         }
 

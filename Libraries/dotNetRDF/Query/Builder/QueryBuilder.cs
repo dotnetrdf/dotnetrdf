@@ -32,6 +32,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -83,6 +84,10 @@ namespace VDS.RDF.Query.Builder
             protected set { _sparqlQueryType = value; }
         }
 
+        /// <summary>
+        /// Create a new query builder for a specific type of SPARQL query.
+        /// </summary>
+        /// <param name="sparqlQueryType">The type of SPARQL query to build.</param>
         protected internal QueryBuilder(SparqlQueryType sparqlQueryType)
         {
             _sparqlQueryType = sparqlQueryType;
@@ -151,7 +156,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IAssignmentVariableNamePart<ISelectBuilder> Select<TExpression>(Func<IExpressionBuilder, PrimaryExpression<TExpression>> buildAssignmentExpression)
         {
-            SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
+            var selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
             return new SelectAssignmentVariableNamePart<TExpression>(selectBuilder, buildAssignmentExpression);
         }
 
@@ -264,7 +269,7 @@ namespace VDS.RDF.Query.Builder
             _buildGroups.Add(prefixes =>
             {
                 var expressionBuilder = new ExpressionBuilder(prefixes);
-                var sparqlExpression = buildGroupingExpression(expressionBuilder).Expression;
+                ISparqlExpression sparqlExpression = buildGroupingExpression(expressionBuilder).Expression;
                 return new GroupByExpression(sparqlExpression);
             });
             return this;
@@ -282,7 +287,7 @@ namespace VDS.RDF.Query.Builder
             _buildOrderings.Add(prefixes =>
             {
                 var expressionBuilder = new ExpressionBuilder(prefixes);
-                var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
+                ISparqlExpression sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
                 var orderBy = new OrderByExpression(sparqlExpression) { Descending = descending };
                 return orderBy;
             });
@@ -301,6 +306,10 @@ namespace VDS.RDF.Query.Builder
             return BuildQuery(query);
         }
 
+        /// <summary>
+        /// Performs the internal build process for a SparqlQuery.
+        /// </summary>
+        /// <param name="query">The query to be processed.</param>
         protected virtual SparqlQuery  BuildQuery(SparqlQuery query)
         {
             BuildRootGraphPattern(query);
@@ -316,7 +325,7 @@ namespace VDS.RDF.Query.Builder
 
         private void BuildRootGraphPattern(SparqlQuery query)
         {
-            var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
+            GraphPattern rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
 
             query.RootGraphPattern = rootGraphPattern;
         }
@@ -326,7 +335,7 @@ namespace VDS.RDF.Query.Builder
             ISparqlGroupBy rootGroup = null;
             ISparqlGroupBy lastGroup = null;
 
-            foreach (var buildGroup in _buildGroups)
+            foreach (Func<INamespaceMapper, ISparqlGroupBy> buildGroup in _buildGroups)
             {
                 if (rootGroup == null)
                 {
@@ -356,7 +365,7 @@ namespace VDS.RDF.Query.Builder
         {
             IList<ISparqlOrderBy> orderings = (from orderByBuilder in _buildOrderings select orderByBuilder(Prefixes)).ToList();
 
-            for (int i = 1; i < orderings.Count; i++)
+            for (var i = 1; i < orderings.Count; i++)
             {
                 orderings[i - 1].Child = orderings[i];
             }

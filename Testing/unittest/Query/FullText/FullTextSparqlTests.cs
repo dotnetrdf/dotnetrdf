@@ -56,52 +56,52 @@ namespace VDS.RDF.Query.FullText
 
         private INamespaceMapper GetQueryNamespaces()
         {
-            if (this._nsmap == null)
+            if (_nsmap == null)
             {
-                this._nsmap = new NamespaceMapper();
-                this._nsmap.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
+                _nsmap = new NamespaceMapper();
+                _nsmap.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
             }
-            return this._nsmap;
+            return _nsmap;
         }
 
         private void EnsureTestData()
         {
-            if (this._dataset == null)
+            if (_dataset == null)
             {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
+                var store = new TripleStore();
+                var g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
 
-                this._dataset = new InMemoryDataset(store, g.BaseUri);
+                _dataset = new InMemoryDataset(store, g.BaseUri);
             }
         }
 
         private void RunTest(IFullTextIndexer indexer, String query, int expectedResults, bool exact)
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            indexer.Index(this._dataset);
+            indexer.Index(_dataset);
             indexer.Dispose();
 
             //Build the SPARQL Query and parse it
-            SparqlParameterizedString queryString = new SparqlParameterizedString(query);
-            queryString.Namespaces = this.GetQueryNamespaces();
-            SparqlQuery q = this._parser.ParseFromString(queryString);
+            var queryString = new SparqlParameterizedString(query);
+            queryString.Namespaces = GetQueryNamespaces();
+            SparqlQuery q = _parser.ParseFromString(queryString);
 
-            SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
+            var formatter = new SparqlFormatter(q.NamespaceMap);
             Console.WriteLine("Parsed Query:");
             Console.WriteLine(formatter.Format(q));
 
-            LuceneSearchProvider provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-            FullTextPropertyFunctionFactory factory = new FullTextPropertyFunctionFactory();
+            var provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+            var factory = new FullTextPropertyFunctionFactory();
             try
             {
                 PropertyFunctionFactory.AddFactory(factory);
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
 
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._dataset);
-                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                var processor = new LeviathanQueryProcessor(_dataset);
+                var results = processor.ProcessQuery(q) as SparqlResultSet;
                 if (results != null)
                 {
                     TestTools.ShowResults(results);
@@ -130,202 +130,202 @@ namespace VDS.RDF.Query.FullText
 
         private void RunTest(IFullTextIndexer indexer, String query, int expectedResults)
         {
-            this.RunTest(indexer, query, expectedResults, true);
+            RunTest(indexer, query, expectedResults, true);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneObjects1()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
+            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneObjects2()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
+            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneObjects3()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
+            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneObjects4()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneObjects5()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneSubjects1()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
+            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneSubjects2()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
+            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneSubjects3()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
+            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneSubjects4()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLuceneSubjects5()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLucenePredicates1()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
+            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
         }
 
         [Fact]
         public void FullTextSparqlSearchLucenePredicates2()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
+            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
         }
 
         [Fact]
         public void FullTextSparqlSearchLucenePredicates3()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
+            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLucenePredicates4()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
         public void FullTextSparqlSearchLucenePredicates5()
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            int expected = (from t in this._dataset.Triples
+            var expected = (from t in _dataset.Triples
                             where t.Object.NodeType == NodeType.Literal
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            this.RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
     }
 }

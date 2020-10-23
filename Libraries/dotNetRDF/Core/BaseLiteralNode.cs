@@ -254,7 +254,7 @@ namespace VDS.RDF
         /// <remarks>Gives a value without quotes (as some syntaxes use) with the Data Type/Language Specifier appended using Notation 3 syntax.</remarks>
         public override string ToString()
         {
-            StringBuilder stringOut = new StringBuilder();
+            var stringOut = new StringBuilder();
             stringOut.Append(Value);
             if (!Language.Equals(string.Empty))
             {

@@ -231,7 +231,7 @@ namespace VDS.RDF.Query.Spin
         {
             get
             {
-                List<Resource> graphs = Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
+                var graphs = Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
                     .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph))
                     .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassEntailmentGraph))
                     .Select(t => t.Subject)
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query.Spin
                 restrictionQuery = new SparqlParameterizedString(SparqlTemplates.SetExecutionContext);
 
                 restrictionQuery.SetUri("resourceRestriction", executionContextUri);
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 foreach (Resource graph in DefaultGraphs)
                 {
                     sb.AppendLine("USING <" + graph.Uri.ToString() + ">");
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query.Spin
         {
             get
             {
-                HashSet<Uri> graphUris = new HashSet<Uri>();
+                var graphUris = new HashSet<Uri>();
                 graphUris.UnionWith(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
                     .Select(t => ((IUriNode)t.Subject).Uri));
                 graphUris.UnionWith(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology)
@@ -455,7 +455,7 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public bool AddGraph(IGraph g)
         {
-            SpinWrappedGraph graph = (SpinWrappedGraph)GetModifiableGraph(g.BaseUri);
+            var graph = (SpinWrappedGraph)GetModifiableGraph(g.BaseUri);
             graph.Reset();
 
             // Add graph handlers to monitor subsequent changes to the graph
@@ -534,7 +534,7 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public object ExecuteQuery(string sparqlQuery)
         {
-            object result = ExecuteQuery(_spinProcessor.BuildQuery(sparqlQuery));
+            var result = ExecuteQuery(_spinProcessor.BuildQuery(sparqlQuery));
             ResetActiveGraph();
             return result;
         }
@@ -550,7 +550,7 @@ namespace VDS.RDF.Query.Spin
             if (_hasPendingChanges)
             {
                 _hasPendingChanges = false; // for security only
-                List<IUpdate> commands = new List<IUpdate>();
+                var commands = new List<IUpdate>();
                 commands.Add(new DeleteDataImpl(RDF.Nil, spinProcessor));
                 commands.Add(new InsertDataImpl(RDF.Nil, spinProcessor));
                 ExecuteUpdate(commands);
@@ -582,7 +582,7 @@ namespace VDS.RDF.Query.Spin
             }
             // TODO check if the updates did not raise any constraint violation, otherwise reject the Flush request
             // TODO related to the concurrency policy problem : handle any concurrent updates may have happened and succeded between the first modification and here
-            SpinDatasetDescription updatedSourceDataset = new SpinDatasetDescription( Configuration.SourceUri);
+            var updatedSourceDataset = new SpinDatasetDescription( Configuration.SourceUri);
 
             updatedSourceDataset.Assert(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology));
             updatedSourceDataset.Assert(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph));
@@ -679,7 +679,7 @@ namespace VDS.RDF.Query.Spin
                 }
                 Storage.LoadGraph(remoteChanges, currentExecutionGraphUri);
 
-                List<Resource> newTypes = new List<Resource>();
+                var newTypes = new List<Resource>();
                 foreach (Triple t in remoteChanges.Triples)
                 {
                     if (RDFUtil.sameTerm(RDF.PropertyType, t.Predicate))
@@ -735,7 +735,7 @@ namespace VDS.RDF.Query.Spin
             command.SetUri("datasetUri", Configuration.BaseUri);
             command.SetUri("outputGraph", outputGraphUri);
 
-            this.SaveConfiguration();
+            SaveConfiguration();
             if (!(spinQuery is IInsertData || spinQuery is IDeleteData))
             {
                 CommandCalls.Add(command.ToString());
@@ -747,7 +747,7 @@ namespace VDS.RDF.Query.Spin
             }
             SaveInMemoryChanges();
 
-            HashSet<Uri> dataGraphs = new HashSet<Uri>(RDFUtil.uriComparer);
+            var dataGraphs = new HashSet<Uri>(RDFUtil.uriComparer);
             dataGraphs.UnionWith(spinQuery is IDeleteData ? Configuration.GetTriplesRemovalsGraphs() : Configuration.GetTriplesAdditionsGraphs());
             try
             {
@@ -786,11 +786,11 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         public String GetUpdateQuery(String spinQuery)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (IUpdate update in _spinProcessor.BuildUpdate(spinQuery))
             {
-                this.SaveConfiguration();
-                BaseSparqlPrinter sparqlFactory = new BaseSparqlPrinter(this);
+                SaveConfiguration();
+                var sparqlFactory = new BaseSparqlPrinter(this);
                 sb.Append(sparqlFactory.GetCommandText(update));
                 sb.AppendLine();
             }
@@ -830,7 +830,7 @@ namespace VDS.RDF.Query.Spin
         {
             if (_ignoreMonitoredChangeEvents) return;
             Uri graphUri = e.Graph.BaseUri;
-            SpinWrappedGraph g = (SpinWrappedGraph)GetModifiableGraph(graphUri);
+            var g = (SpinWrappedGraph)GetModifiableGraph(graphUri);
             if (e.TripleEvent != null)
             {
                 if (e.TripleEvent.WasAsserted)
@@ -851,7 +851,7 @@ namespace VDS.RDF.Query.Spin
 
         internal void OnMonitoredGraphCleared(object sender, GraphEventArgs e)
         {
-            SpinWrappedGraph g = (SpinWrappedGraph)GetModifiableGraph(e.Graph.BaseUri);
+            var g = (SpinWrappedGraph)GetModifiableGraph(e.Graph.BaseUri);
             g.Clear();
             Storage.DeleteGraph(g.BaseUri);
             _ignoreMonitoredChangeEvents = false;
@@ -870,7 +870,7 @@ namespace VDS.RDF.Query.Spin
                         .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassUpdateControlGraph))
                         .Union(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, RDFRuntime.ClassUpdateControlledDataset))
                         .Select(t => ((IUriNode)t.Subject).Uri.ToString());
-            foreach (String graphUri in disposableGraphs)
+            foreach (var graphUri in disposableGraphs)
             {
                 Storage.DeleteGraph(graphUri);
             }

@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF;
+
 namespace VDS.RDF.Shacl.Validation
 {
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF;
-
     /// <summary>
     /// Represents a SHACL validation result.
     /// </summary>
@@ -53,7 +53,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var severity in Vocabulary.ResultSeverity.ObjectsOf(this).ToList())
+                foreach (INode severity in Vocabulary.ResultSeverity.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.ResultSeverity, severity);
                 }
@@ -79,7 +79,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var focusNode in Vocabulary.FocusNode.ObjectsOf(this).ToList())
+                foreach (INode focusNode in Vocabulary.FocusNode.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.FocusNode, focusNode);
                 }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var valueNode in Vocabulary.Value.ObjectsOf(this).ToList())
+                foreach (INode valueNode in Vocabulary.Value.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.Value, valueNode);
                 }
@@ -131,7 +131,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var sourceShape in Vocabulary.SourceShape.ObjectsOf(this).ToList())
+                foreach (INode sourceShape in Vocabulary.SourceShape.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.SourceShape, sourceShape);
                 }
@@ -158,7 +158,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var sourceShape in Vocabulary.ResultMessage.ObjectsOf(this).ToList())
+                foreach (INode sourceShape in Vocabulary.ResultMessage.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.ResultMessage, sourceShape);
                 }
@@ -184,7 +184,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var sourceConstraintComponent in Vocabulary.SourceConstraintComponent.ObjectsOf(this).ToList())
+                foreach (INode sourceConstraintComponent in Vocabulary.SourceConstraintComponent.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.SourceConstraintComponent, sourceConstraintComponent);
                 }
@@ -210,7 +210,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var sourceConstraintComponent in Vocabulary.ResultPath.ObjectsOf(this).ToList())
+                foreach (INode sourceConstraintComponent in Vocabulary.ResultPath.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.ResultPath, sourceConstraintComponent);
                 }
@@ -236,7 +236,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var sourceConstraint in Vocabulary.SourceConstraint.ObjectsOf(this).ToList())
+                foreach (INode sourceConstraint in Vocabulary.SourceConstraint.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.SourceConstraint, sourceConstraint);
                 }
@@ -259,7 +259,7 @@ namespace VDS.RDF.Shacl.Validation
 
             set
             {
-                foreach (var type in Vocabulary.RdfType.ObjectsOf(this).ToList())
+                foreach (INode type in Vocabulary.RdfType.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.RdfType, type);
                 }

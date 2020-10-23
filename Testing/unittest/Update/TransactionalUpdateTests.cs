@@ -53,9 +53,9 @@ namespace VDS.RDF.Update
 
         protected virtual ISparqlDataset GetNonEmptyDataset()
         {
-            InMemoryDataset dataset = new InMemoryDataset();
+            var dataset = new InMemoryDataset();
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = TestGraphUri;
             dataset.AddGraph(g);
 
@@ -66,13 +66,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateGraphCommit()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
@@ -80,13 +80,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateGraphRollback()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -103,13 +103,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateGraphRollbackWithoutAutoCommit()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset,
+            var processor = new LeviathanUpdateProcessor(dataset,
                 options => { options.AutoCommit = false;});
             try
             {
@@ -143,14 +143,14 @@ namespace VDS.RDF.Update
 
         private void TestDropGraphCommit()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist");
@@ -158,13 +158,13 @@ namespace VDS.RDF.Update
 
         private void TestDropGraphRollback()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -180,13 +180,13 @@ namespace VDS.RDF.Update
 
         private void TestLoadCommit()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
@@ -194,13 +194,13 @@ namespace VDS.RDF.Update
 
         private void TestLoadRollback()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -216,13 +216,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateDropSequenceCommit()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
@@ -230,13 +230,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateDropSequenceCommit2()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist");
@@ -244,13 +244,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateDropSequenceRollback()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -267,13 +267,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateDropSequenceRollback2()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; CREATE GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -289,13 +289,13 @@ namespace VDS.RDF.Update
 
         private void TestInsertDataThenDropCommit()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; DROP GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.False(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Flush() should cause it to be removed from the Dataset");
@@ -303,13 +303,13 @@ namespace VDS.RDF.Update
 
         private void TestInsertDataThenDropRollback()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; DROP GRAPH <" + TestGraphUri.ToString() + ">; DROP GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -326,13 +326,13 @@ namespace VDS.RDF.Update
 
         private void TestCreateThenInsertDataRollback()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "CREATE GRAPH <" + TestGraphUri.ToString() + ">; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -348,13 +348,13 @@ namespace VDS.RDF.Update
 
         private void TestDropThenInsertDataRollback()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "DROP GRAPH <" + TestGraphUri.ToString() + ">; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subject> <ex:predicate> <ex:object> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -371,13 +371,13 @@ namespace VDS.RDF.Update
 
         private void TestInsertDataThenDeleteDataCommit()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
+            var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.True(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Flush() should persist first the insert then the delete");
@@ -385,13 +385,13 @@ namespace VDS.RDF.Update
 
         private void TestInsertDataThenDeleteDataRollback()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
 
-            String updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -407,16 +407,16 @@ namespace VDS.RDF.Update
 
         private void TestDeleteDataThenInsertDataCommit()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
             IGraph g = dataset.GetModifiableGraph(TestGraphUri);
             g.Assert(new Triple(g.CreateUriNode(new Uri("ex:subj")), g.CreateUriNode(new Uri("ex:pred")), g.CreateUriNode(new Uri("ex:obj"))));
             dataset.Flush();
 
-            String updates = "DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
+            var updates = "DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.False(dataset[TestGraphUri].IsEmpty, "Graph should not be empty as the Flush() should persist first the delete then the insert so the end results should be the triple still being in the Graph");
@@ -424,15 +424,15 @@ namespace VDS.RDF.Update
 
         private void TestDeleteDataThenInsertDataRollback()
         {
-            ISparqlDataset dataset = this.GetNonEmptyDataset();
+            ISparqlDataset dataset = GetNonEmptyDataset();
             IGraph g = dataset.GetModifiableGraph(TestGraphUri);
             g.Assert(new Triple(g.CreateUriNode(new Uri("ex:subj")), g.CreateUriNode(new Uri("ex:pred")), g.CreateUriNode(new Uri("ex:obj"))));
 
-            String updates = "DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
+            var updates = "DELETE DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }; CREATE GRAPH <" + TestGraphUri.ToString() + ">";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var processor = new LeviathanUpdateProcessor(dataset);
             try
             {
                 processor.ProcessCommandSet(cmds);
@@ -448,12 +448,12 @@ namespace VDS.RDF.Update
 
         private void TestInsertDataSequenceCommit()
         {
-            ISparqlDataset dataset = this.GetEmptyDataset();
+            ISparqlDataset dataset = GetEmptyDataset();
 
-            String updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
+            var updates = "INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { } }; INSERT DATA { GRAPH <" + TestGraphUri.ToString() + "> { <ex:subj> <ex:pred> <ex:obj> } }";
 
-            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(updates);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
+            var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.True(dataset.HasGraph(TestGraphUri), "Graph should exist");
@@ -549,13 +549,13 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDropCommit()
         {
-            this.TestInsertDataThenDropCommit();
+            TestInsertDataThenDropCommit();
         }
 
         [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDropRollback()
         {
-            this.TestInsertDataThenDropRollback();
+            TestInsertDataThenDropRollback();
         }
 
         #endregion
@@ -565,7 +565,7 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTransactionsCreateThenInsertRollback()
         {
-            this.TestCreateThenInsertDataRollback();
+            TestCreateThenInsertDataRollback();
         }
 
         #endregion
@@ -575,7 +575,7 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTransactionsDropThenInsertRollback()
         {
-            this.TestDropThenInsertDataRollback();
+            TestDropThenInsertDataRollback();
         }
 
         #endregion
@@ -585,13 +585,13 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDeleteDataCommit()
         {
-            this.TestInsertDataThenDeleteDataCommit();
+            TestInsertDataThenDeleteDataCommit();
         }
 
         [Fact]
         public void SparqlUpdateTransactionsInsertDataThenDeleteDataRollback()
         {
-            this.TestInsertDataThenDeleteDataRollback();
+            TestInsertDataThenDeleteDataRollback();
         }
 
         #endregion
@@ -601,13 +601,13 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTransactionsDeleteDataThenInsertDataCommit()
         {
-            this.TestDeleteDataThenInsertDataCommit();
+            TestDeleteDataThenInsertDataCommit();
         }
 
         [Fact]
         public void SparqlUpdateTransactionsDeleteDataThenInsertDataRollback()
         {
-            this.TestDeleteDataThenInsertDataRollback();
+            TestDeleteDataThenInsertDataRollback();
         }
 
         #endregion
@@ -617,7 +617,7 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTransactionsInsertDataSequenceCommit()
         {
-            this.TestInsertDataSequenceCommit();
+            TestInsertDataSequenceCommit();
         }
 
         #endregion

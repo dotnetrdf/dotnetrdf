@@ -34,31 +34,31 @@ namespace VDS.RDF
     /// Delegate Type for Warning Messages raised by RDF Readers.
     /// </summary>
     /// <param name="warning">Warning Message.</param>
-    public delegate void RdfReaderWarning(String warning);
+    public delegate void RdfReaderWarning(string warning);
 
     /// <summary>
     /// Delegate Type for Warning Messages raised by RDF Writers.
     /// </summary>
     /// <param name="message">Warning Message.</param>
-    public delegate void RdfWriterWarning(String message);
+    public delegate void RdfWriterWarning(string message);
 
     /// <summary>
     /// Delegate Type for Warning Events raised by RDF Dataset Writers.
     /// </summary>
     /// <param name="message">Warning Message.</param>
-    public delegate void StoreWriterWarning(String message);
+    public delegate void StoreWriterWarning(string message);
 
     /// <summary>
     /// Delegate Type for Warning Events raised by RDF Dataset Readers.
     /// </summary>
     /// <param name="message">Warning Message.</param>
-    public delegate void StoreReaderWarning(String message);
+    public delegate void StoreReaderWarning(string message);
 
     /// <summary>
     /// Delegate Type for Warning Events raised by SPARQL Readers and Writers for Queries, Updates and Results.
     /// </summary>
     /// <param name="message">Warning Message.</param>
-    public delegate void SparqlWarning(String message);
+    public delegate void SparqlWarning(string message);
 
     #endregion
 
@@ -69,28 +69,28 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="sender">Originator of the Event.</param>
     /// <param name="args">Triple Event Arguments.</param>
-    public delegate void TripleEventHandler(Object sender, TripleEventArgs args);
+    public delegate void TripleEventHandler(object sender, TripleEventArgs args);
 
     /// <summary>
     /// Delegate Type for Graph events raised by Graphs.
     /// </summary>
     /// <param name="sender">Originator of the Event.</param>
     /// <param name="args">Graph Event Arguments.</param>
-    public delegate void GraphEventHandler(Object sender, GraphEventArgs args);
+    public delegate void GraphEventHandler(object sender, GraphEventArgs args);
 
     /// <summary>
     /// Delegate Type for Graph events raised by Graphs where event handlers may set a Cancel flag to cancel the subsequent operation.
     /// </summary>
     /// <param name="sender">Originator of the Event.</param>
     /// <param name="args">Graph Event Arguments.</param>
-    public delegate void CancellableGraphEventHandler(Object sender, CancellableGraphEventArgs args);
+    public delegate void CancellableGraphEventHandler(object sender, CancellableGraphEventArgs args);
 
     /// <summary>
     /// Delegate Type for Triple Store events raised by Triple Stores.
     /// </summary>
     /// <param name="sender">Originator of the event.</param>
     /// <param name="args">Triple Store Event Arguments.</param>
-    public delegate void TripleStoreEventHandler(Object sender, TripleStoreEventArgs args);
+    public delegate void TripleStoreEventHandler(object sender, TripleStoreEventArgs args);
 
     #endregion
 

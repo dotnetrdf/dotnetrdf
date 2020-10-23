@@ -39,14 +39,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     public class PredictService
         : PelletService
     {
-        private String _predictUri;
+        private string _predictUri;
 
         /// <summary>
         /// Creates a new Predict Service for a Pellet Knowledge Base.
         /// </summary>
         /// <param name="serviceName">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal PredictService(String serviceName, JObject obj)
+        internal PredictService(string serviceName, JObject obj)
             : base(serviceName, obj)
         {
             if (!Endpoint.Uri.EndsWith("predict/"))
@@ -65,11 +65,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="individual">QName of an Inidividual.</param>
         /// <param name="property">QName of a Property.</param>
         /// <returns></returns>
-        public List<INode> Predict(String individual, String property)
+        public List<INode> Predict(string individual, string property)
         {
             IGraph g = PredictRaw(individual, property);
 
-            List<INode> predictions = (from t in g.Triples
+            var predictions = (from t in g.Triples
                                        select t.Object).Distinct().ToList();
 
             return predictions;
@@ -81,20 +81,20 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="individual">QName of an Individual.</param>
         /// <param name="property">QName of a Property.</param>
         /// <returns></returns>
-        public IGraph PredictRaw(String individual, String property)
+        public IGraph PredictRaw(string individual, string property)
         {
-            String requestUri = _predictUri + individual + "/" + property;
+            var requestUri = _predictUri + individual + "/" + property;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    Graph g = new Graph();
+                    var g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Predict(String individual, String property, NodeListCallback callback, Object state)
+        public void Predict(string individual, string property, NodeListCallback callback, object state)
         {
             PredictRaw(individual, property, (g, s) =>
                 {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     }
                     else
                     {
-                        List<INode> predictions = (from t in g.Triples
+                        var predictions = (from t in g.Triples
                                                    select t.Object).Distinct().ToList();
 
                         callback(predictions, state);
@@ -149,11 +149,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void PredictRaw(String individual, String property, GraphCallback callback, Object state)
+        public void PredictRaw(string individual, string property, GraphCallback callback, object state)
         {
-            String requestUri = _predictUri + individual + "/" + property;
+            var requestUri = _predictUri + individual + "/" + property;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
@@ -163,10 +163,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                                Graph g = new Graph();
+                                var g = new Graph();
                                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                                 response.Close();

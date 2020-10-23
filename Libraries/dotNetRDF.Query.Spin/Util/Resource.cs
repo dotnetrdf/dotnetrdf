@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         public List<IResource> AsList()
         {
-            List<IResource> result = new List<IResource>();
+            var result = new List<IResource>();
             INode listRoot = this;
             Triple step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyFirst).FirstOrDefault();
             if (step != null)

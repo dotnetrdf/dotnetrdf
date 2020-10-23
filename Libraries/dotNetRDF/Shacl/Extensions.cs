@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     internal static class Extensions
     {
         internal static IEnumerable<INode> SubjectsOf(this INode predicate, INode @object)
@@ -76,9 +76,9 @@ namespace VDS.RDF.Shacl
             {
                 yield return node;
 
-                foreach (var subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node))
+                foreach (INode subclass in Vocabulary.RdfsSubClassOf.SubjectsOf(node))
                 {
-                    foreach (var inferred in InferSubclasses(subclass, seen))
+                    foreach (INode inferred in InferSubclasses(subclass, seen))
                     {
                         yield return inferred;
                     }

@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Construct
         private INodeFactory _factory;
         private IGraph _g;
         private bool _preserveBNodes = false;
-        private Dictionary<String, INode> _bnodeMap;
+        private Dictionary<string, INode> _bnodeMap;
         private MultiDictionary<INode, INode> _nodeMap;
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Construct
         /// If the same Blank Node ID is used multiple times in this Context you will always get the same Blank Node for that ID.
         /// </para>
         /// </remarks>
-        public INode GetBlankNode(String id)
+        public INode GetBlankNode(string id)
         {
             if (_bnodeMap == null) _bnodeMap = new Dictionary<string, INode>();
 
@@ -184,27 +184,27 @@ namespace VDS.RDF.Query.Construct
                     break;
 
                 case NodeType.Variable:
-                    IVariableNode v = (IVariableNode)n;
+                    var v = (IVariableNode)n;
                     temp = _factory.CreateVariableNode(v.VariableName);
                     break;
 
                 case NodeType.GraphLiteral:
-                    IGraphLiteralNode g = (IGraphLiteralNode)n;
+                    var g = (IGraphLiteralNode)n;
                     temp = _factory.CreateGraphLiteralNode(g.SubGraph);
                     break;
 
                 case NodeType.Uri:
-                    IUriNode u = (IUriNode)n;
+                    var u = (IUriNode)n;
                     temp = _factory.CreateUriNode(u.Uri);
                     break;
 
                 case NodeType.Literal:
-                    ILiteralNode l = (ILiteralNode)n;
+                    var l = (ILiteralNode)n;
                     if (l.DataType != null)
                     {
                         temp = _factory.CreateLiteralNode(l.Value, l.DataType);
                     } 
-                    else if (!l.Language.Equals(String.Empty))
+                    else if (!l.Language.Equals(string.Empty))
                     {
                         temp = _factory.CreateLiteralNode(l.Value, l.Language);
                     } 

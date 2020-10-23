@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Aggregates
             var aggregate = new CountDistinctAggregate(new VariableTerm("var"));
 
             // when
-            string aggregateString = aggregate.ToString();
+            var aggregateString = aggregate.ToString();
 
             // then
             Assert.Equal("COUNT(DISTINCT ?var)", aggregateString);

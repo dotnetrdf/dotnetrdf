@@ -107,7 +107,7 @@ namespace VDS.RDF.Query
                 else
                 {
                     // SELECT Query so get the handler to handle variables and then handle results
-                    foreach (String var in context.OutputMultiset.Variables)
+                    foreach (var var in context.OutputMultiset.Variables)
                     {
                         if (!handler.HandleVariable(var)) ParserHelper.Stop();
                     }

@@ -83,10 +83,10 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             // Get a Blank Node Output Mapper
-            BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+            var bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
 
             // Get the Writer and Configure Options
-            JsonTextWriter writer = new JsonTextWriter(output);
+            var writer = new JsonTextWriter(output);
             if (_prettyprint)
             {
                 writer.Formatting = Newtonsoft.Json.Formatting.Indented;
@@ -100,14 +100,14 @@ namespace VDS.RDF.Writing
             writer.WriteStartObject();
 
             // Get the Triples as a Sorted List
-            List<Triple> ts = g.Triples.ToList();
+            var ts = g.Triples.ToList();
             ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
             // Variables we need to track our writing
             INode lastSubj, lastPred;
             lastSubj = lastPred = null;
 
-            for (int i = 0; i < ts.Count; i++)
+            for (var i = 0; i < ts.Count; i++)
             {
                 Triple t = ts[i];
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
@@ -226,10 +226,10 @@ namespace VDS.RDF.Writing
                         throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/JSON"));
 
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)obj;
+                        var lit = (ILiteralNode)obj;
                         writer.WriteValue(lit.Value);
 
-                        if (!lit.Language.Equals(String.Empty))
+                        if (!lit.Language.Equals(string.Empty))
                         {
                             writer.WritePropertyName("lang");
                             writer.WriteValue(lit.Language);
@@ -261,7 +261,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for raising the Warning event.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             if (Warning != null)
             {

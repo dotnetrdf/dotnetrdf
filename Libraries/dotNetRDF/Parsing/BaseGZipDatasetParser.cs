@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(ITripleStore store, String filename)
+        public void Load(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing
 
             if (input is StreamReader)
             {
-                StreamReader reader = (StreamReader)input;
+                var reader = (StreamReader)input;
                 if (reader.BaseStream is GZipStream)
                 {
                     _parser.Load(handler, input);
@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing
         /// Helper method for raising warning events.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             StoreReaderWarning d = Warning;
             if (d != null) d(message);

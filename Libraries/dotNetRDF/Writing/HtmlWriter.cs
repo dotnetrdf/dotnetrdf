@@ -68,7 +68,7 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(IGraph g, string filename, Encoding fileEncoding)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
+            using (FileStream stream = File.Open(filename, FileMode.Create))
             {
                 Save(g, new StreamWriter(stream, fileEncoding));
             }
@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing
             try
             {
                 g.NamespaceMap.Import(_defaultNamespaces);
-                HtmlWriterContext context = new HtmlWriterContext(g, output);
+                var context = new HtmlWriterContext(g, output);
                 GenerateOutput(context);
                 if (!leaveOpen) output.Close();
             }
@@ -188,7 +188,7 @@ namespace VDS.RDF.Writing
             // Create a Table Body for the Triple
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Tbody);
 
-            TripleCollection triplesDone = new TripleCollection();
+            var triplesDone = new TripleCollection();
             foreach (INode subj in context.Graph.Triples.SubjectNodes)
             {
                 IEnumerable<Triple> ts = context.Graph.GetTriplesWithSubject(subj);
@@ -224,7 +224,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.RenderEndTag();
                 context.HtmlWriter.WriteLine();
 
-                bool firstPred = true;
+                var firstPred = true;
                 foreach (Triple t in ts)
                 {
                     if (triplesDone.Contains(t)) continue;
@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
                     context.HtmlWriter.WriteLine();
 
                     // Then we write out all the Objects
-                    bool firstObj = true;
+                    var firstObj = true;
                     foreach (Triple predTriple in predTriples)
                     {
                         if (triplesDone.Contains(predTriple)) continue;
@@ -307,7 +307,7 @@ namespace VDS.RDF.Writing
         private void GenerateNodeOutput(HtmlWriterContext context, INode n, Triple t)
         {                
             // Embed RDFa on the Node Output
-            bool rdfASerializable = false;
+            var rdfASerializable = false;
             if (t != null)
             {
                 if (t.Predicate.NodeType == NodeType.Uri)
@@ -337,7 +337,7 @@ namespace VDS.RDF.Writing
                         if (context.QNameMapper.ReduceToQName(t.Predicate.ToString(), out curie, out tempNamespace))
                         {
                             // Extract the Namespace and make sure it's registered on this Attribute
-                            string ns = curie.Substring(0, curie.IndexOf(':'));
+                            var ns = curie.Substring(0, curie.IndexOf(':'));
                             context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                         }
                         else
@@ -391,7 +391,7 @@ namespace VDS.RDF.Writing
                     break;
 
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         if (rdfASerializable)
@@ -401,7 +401,7 @@ namespace VDS.RDF.Writing
                             if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
                             {
                                 // Extract the Namespace and make sure it's registered on this Attribute
-                                string ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
+                                var ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
                                 context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                                 context.HtmlWriter.AddAttribute("datatype", dtcurie);
                             }

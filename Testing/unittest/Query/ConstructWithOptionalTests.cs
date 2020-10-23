@@ -57,23 +57,23 @@ namespace VDS.RDF.Query
 
         private void TestConstruct(IGraph data, IGraph expected, String query)
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(data);
 
-            this.TestConstruct(store, expected, query);
+            TestConstruct(store, expected, query);
         }
 
         private void TestConstruct(IInMemoryQueryableStore store, IGraph expected, String query)
         {
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(AsDataset(store));
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph result = (IGraph)results;
+                var result = (IGraph)results;
 
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
                 Console.WriteLine("Result Data");
                 foreach (Triple t in result.Triples)
                 {
@@ -98,23 +98,23 @@ namespace VDS.RDF.Query
 
         private void TestUpdate(IGraph data, IGraph expected, String update)
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(data);
 
-            this.TestUpdate(store, expected, update);
+            TestUpdate(store, expected, update);
         }
 
         private void TestUpdate(IInMemoryQueryableStore store, IGraph expected, String update)
         {
-            SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(update);
+            SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(update);
 
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
+            var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(cmds);
 
             Assert.True(store.HasGraph(null), "Store should have a default unnamed Graph");
             IGraph result = store[null];
             
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             Console.WriteLine("Result Data");
             foreach (Triple t in result.Triples)
             {
@@ -135,98 +135,98 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlConstructWithOptional()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            Graph expected = new Graph();
+            var expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("eg:Speed")));
 
-            String query = "PREFIX ex: <http://example.org/vehicles/> CONSTRUCT { ?s a ?type . ?s ex:Speed ?speed } WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
+            var query = "PREFIX ex: <http://example.org/vehicles/> CONSTRUCT { ?s a ?type . ?s ex:Speed ?speed } WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 
-            this.TestConstruct(g, expected, query);
+            TestConstruct(g, expected, query);
         }
 
         [Fact]
         public void SparqlUpdateInsertWithOptional()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
-            Graph expected = new Graph();
+            var expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("eg:Speed")));
 
-            String update = "PREFIX ex: <http://example.org/vehicles/> INSERT { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
+            var update = "PREFIX ex: <http://example.org/vehicles/> INSERT { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 
-            this.TestUpdate(g, expected, update);
+            TestUpdate(g, expected, update);
         }
 
         [Fact]
         public void SparqlUpdateDeleteWithOptional()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
-            Graph def = new Graph();
+            var def = new Graph();
             def.Merge(g);
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(g);
             store.Add(def);
 
-            Graph expected = new Graph();
+            var expected = new Graph();
             expected.NamespaceMap.Import(g.NamespaceMap);
             expected.Merge(g);
             expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("rdf:type")).ToList());
             expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("eg:Speed")).ToList());
 
-            String update = "PREFIX ex: <http://example.org/vehicles/> DELETE { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
+            var update = "PREFIX ex: <http://example.org/vehicles/> DELETE { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 
-            this.TestUpdate(store, expected, update);
+            TestUpdate(store, expected, update);
         }
 
         [Fact]
         public void SparqlUpdateModifyWithOptional()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
-            Graph expected = new Graph();
+            var expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("eg:Speed")));
 
-            String update = "PREFIX ex: <http://example.org/vehicles/> DELETE { } INSERT { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
+            var update = "PREFIX ex: <http://example.org/vehicles/> DELETE { } INSERT { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 
-            this.TestUpdate(g, expected, update);
+            TestUpdate(g, expected, update);
         }
 
         [Fact]
         public void SparqlUpdateModifyWithOptional2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/vehicles/");
 
-            Graph def = new Graph();
+            var def = new Graph();
             def.Merge(g);
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(g);
             store.Add(def);
 
-            Graph expected = new Graph();
+            var expected = new Graph();
             expected.NamespaceMap.Import(g.NamespaceMap);
             expected.Merge(g);
             expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("rdf:type")).ToList());
             expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("eg:Speed")).ToList());
 
-            String update = "PREFIX ex: <http://example.org/vehicles/> DELETE { ?s a ?type . ?s ex:Speed ?speed } INSERT { } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
+            var update = "PREFIX ex: <http://example.org/vehicles/> DELETE { ?s a ?type . ?s ex:Speed ?speed } INSERT { } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 
-            this.TestUpdate(store, expected, update);
+            TestUpdate(store, expected, update);
         }
     }
 }

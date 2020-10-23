@@ -60,11 +60,11 @@ namespace VDS.RDF.Query.Spin.Statistics
          */
         public SPINStatistics(String label, String queryText, TimeSpan duration, DateTime startTime, INode context)
         {
-            this._context = context;
-            this._duration = duration;
-            this._label = label;
-            this._queryText = queryText;
-            this._startTime = startTime;
+            _context = context;
+            _duration = duration;
+            _label = label;
+            _queryText = queryText;
+            _startTime = startTime;
         }
 
 

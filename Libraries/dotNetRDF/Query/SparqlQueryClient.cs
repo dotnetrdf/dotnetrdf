@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,6 +67,14 @@ namespace VDS.RDF.Query
         /// </remarks>
         public string RdfAcceptHeader { get; set; } = MimeTypesHelper.HttpAcceptHeader;
 
+        /// <summary>
+        /// Get or set the mode used to determine the HTTP method to be used by the client.
+        /// </summary>
+        /// <remarks>
+        /// <para>The default mode is <see cref="VDS.RDF.HttpMode.Auto"/> which uses a GET unless the
+        /// SPARQL query is too long or contains characters that cannot be encoded as an HTTP query string, in which case POST is used.
+        /// </para>
+        /// </remarks>
         public HttpMode HttpMode { get; set; } = HttpMode.Auto;
 
         /// <summary>
@@ -146,15 +155,15 @@ namespace VDS.RDF.Query
         public async Task QueryWithResultSetAsync(
             string sparqlQuery, ISparqlResultsHandler resultsHandler, CancellationToken cancellationToken)
         {
-            using var response = await QueryInternal(sparqlQuery, ResultsAcceptHeader, cancellationToken);
+            using HttpResponseMessage response = await QueryInternal(sparqlQuery, ResultsAcceptHeader, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
             }
-            var ctype = response.Content.Headers.ContentType;
-            var resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
-            var responseStream = await response.Content.ReadAsStreamAsync();
-            using var responseReader = string.IsNullOrEmpty(ctype.CharSet)
+            MediaTypeHeaderValue ctype = response.Content.Headers.ContentType;
+            ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype.MediaType);
+            Stream responseStream = await response.Content.ReadAsStreamAsync();
+            using StreamReader responseReader = string.IsNullOrEmpty(ctype.CharSet)
                 ? new StreamReader(responseStream)
                 : new StreamReader(responseStream, Encoding.GetEncoding(ctype.CharSet));
             resultsParser.Load(resultsHandler, responseReader);
@@ -210,15 +219,15 @@ namespace VDS.RDF.Query
         public async Task QueryWithResultGraphAsync(string sparqlQuery, IRdfHandler handler,
             CancellationToken cancellationToken)
         {
-            using var response = await QueryInternal(sparqlQuery, RdfAcceptHeader, cancellationToken);
+            using HttpResponseMessage response = await QueryInternal(sparqlQuery, RdfAcceptHeader, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw new RdfQueryException($"Server reports {(int)response.StatusCode}: {response.ReasonPhrase}.");
             }
-            var ctype = response.Content.Headers.ContentType;
-            var rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);
-            var responseStream = await response.Content.ReadAsStreamAsync();
-            using var responseReader = string.IsNullOrEmpty(ctype.CharSet)
+            MediaTypeHeaderValue ctype = response.Content.Headers.ContentType;
+            IRdfReader rdfParser = MimeTypesHelper.GetParser(ctype.MediaType);
+            Stream responseStream = await response.Content.ReadAsStreamAsync();
+            using StreamReader responseReader = string.IsNullOrEmpty(ctype.CharSet)
                 ? new StreamReader(responseStream)
                 : new StreamReader(responseStream, Encoding.GetEncoding(ctype.CharSet));
             rdfParser.Load(handler, responseReader);

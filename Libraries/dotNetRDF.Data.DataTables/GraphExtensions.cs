@@ -42,7 +42,7 @@ namespace VDS.RDF.Data.DataTables
         /// </returns>
         public static DataTable ToDataTable(this IGraph g)
         {
-            DataTable table = new DataTable();
+            var table = new DataTable();
             table.Columns.Add(new DataColumn("Subject", typeof(INode)));
             table.Columns.Add(new DataColumn("Predicate", typeof(INode)));
             table.Columns.Add(new DataColumn("Object", typeof(INode)));

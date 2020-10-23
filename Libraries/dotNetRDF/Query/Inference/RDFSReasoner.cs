@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Inference
         /// </summary>
         public StaticRdfsReasoner()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             _rdfType = g.CreateUriNode("rdf:type");
             _rdfsClass = g.CreateUriNode("rdfs:Class");
             _rdfsSubClass = g.CreateUriNode("rdfs:subClassOf");
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Inference
         public virtual void Apply(IGraph input, IGraph output)
         {
             // Infer information
-            List<Triple> inferences = new List<Triple>();
+            var inferences = new List<Triple>();
             foreach (Triple t in input.Triples)
             {
                 // Apply class/property hierarchy inferencing

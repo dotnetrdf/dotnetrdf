@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     public partial class DynamicGraph : IDictionary<Uri, object>
     {
         /// <inheritdoc/>
@@ -210,7 +210,7 @@ namespace VDS.RDF.Dynamic
 
         private INode Convert(Uri subject)
         {
-            return subject.AsUriNode(this, this.SubjectBaseUri);
+            return subject.AsUriNode(this, SubjectBaseUri);
         }
     }
 }

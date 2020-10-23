@@ -66,61 +66,61 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessRequest(HttpContext context)
         {
-            this._config = this.LoadConfig(context);
-            WebContext webContext = new WebContext(context);
+            _config = LoadConfig(context);
+            var webContext = new WebContext(context);
 
             // Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(webContext, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, _config);
 
             // Check whether we need to use authentication
             // If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
-            bool isAuth = true;
-            if (this._config.UserGroups.Any())
+            var isAuth = true;
+            if (_config.UserGroups.Any())
             {
                 // If we have user
-                isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
+                isAuth = HandlerHelper.IsAuthenticated(webContext, _config.UserGroups);
             }
             if (!isAuth) return;
 
             // Check whether we can just send a 304 Not Modified
-            if (HandlerHelper.CheckCachingHeaders(webContext, this._config.ETag, null))
+            if (HandlerHelper.CheckCachingHeaders(webContext, _config.ETag, null))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotModified;
-                HandlerHelper.AddCachingHeaders(webContext, this._config.ETag, null);
+                HandlerHelper.AddCachingHeaders(webContext, _config.ETag, null);
                 return;
             }
 
             try
             {
-                String[] acceptTypes = webContext.GetAcceptTypes();
+                var acceptTypes = webContext.GetAcceptTypes();
 
                 // Retrieve an appropriate MIME Type Definition which can be used to get a Writer
                 MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                 if (definition == null) throw new RdfWriterSelectionException("No MIME Type Definitions have a registered RDF Writer for the MIME Types specified in the HTTP Accept Header");
-                IRdfWriter writer = this.SelectWriter(definition);
-                HandlerHelper.ApplyWriterOptions(writer, this._config);
+                IRdfWriter writer = SelectWriter(definition);
+                HandlerHelper.ApplyWriterOptions(writer, _config);
 
-                IGraph g = this.ProcessGraph(this._config.Graph);
-                if (this._config.ETag == null)
+                IGraph g = ProcessGraph(_config.Graph);
+                if (_config.ETag == null)
                 {
-                    this._config.ETag = this.ComputeETag(g);
+                    _config.ETag = ComputeETag(g);
                 }
 
                 // Serve the Graph to the User
                 context.Response.ContentType = definition.CanonicalMimeType;
-                HandlerHelper.AddCachingHeaders(webContext, this._config.ETag, null);
+                HandlerHelper.AddCachingHeaders(webContext, _config.ETag, null);
                 if (writer is IHtmlWriter)
                 {
-                    if (!this._config.Stylesheet.Equals(String.Empty))
+                    if (!_config.Stylesheet.Equals(String.Empty))
                     {
-                        ((IHtmlWriter)writer).Stylesheet = this._config.Stylesheet;
+                        ((IHtmlWriter)writer).Stylesheet = _config.Stylesheet;
                     }
                 }
                 context.Response.ContentEncoding = definition.Encoding;
-                HandlerHelper.ApplyWriterOptions(writer, this._config);
+                HandlerHelper.ApplyWriterOptions(writer, _config);
                 writer.Save(g, new StreamWriter(context.Response.OutputStream, definition.Encoding));
 
-                this.UpdateConfig(context);
+                UpdateConfig(context);
             }
             catch (RdfWriterSelectionException)
             {

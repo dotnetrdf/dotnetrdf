@@ -73,16 +73,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     // See if the value can be cast
                     if (n is BooleanNode) return n;
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
-                        string dt = lit.DataType.ToString();
+                        var dt = lit.DataType.ToString();
 
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                         {
                             // Already a Boolean
                             bool b;
-                            if (Boolean.TryParse(lit.Value, out b))
+                            if (bool.TryParse(lit.Value, out b))
                             {
                                 return new BooleanNode(lit.Graph, b);
                             }
@@ -98,10 +98,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         switch (type)
                         {
                             case SparqlNumericType.Decimal:
-                                Decimal dec;
-                                if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
+                                decimal dec;
+                                if (decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                 {
-                                    if (dec.Equals(Decimal.Zero))
+                                    if (dec.Equals(decimal.Zero))
                                     {
                                         return new BooleanNode(lit.Graph, false);
                                     }
@@ -116,10 +116,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 }
 
                             case SparqlNumericType.Double:
-                                Double dbl;
-                                if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
+                                double dbl;
+                                if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                 {
-                                    if (Double.IsNaN(dbl) || dbl == 0.0d)
+                                    if (double.IsNaN(dbl) || dbl == 0.0d)
                                     {
                                         return new BooleanNode(lit.Graph, false);
                                     }
@@ -134,8 +134,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 }
 
                             case SparqlNumericType.Integer:
-                                Int64 i;
-                                if (Int64.TryParse(lit.Value, out i))
+                                long i;
+                                if (long.TryParse(lit.Value, out i))
                                 {
                                     if (i == 0)
                                     {
@@ -159,8 +159,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 }
                                 else
                                 {
-                                    Boolean b;
-                                    if (Boolean.TryParse(lit.Value, out b))
+                                    bool b;
+                                    if (bool.TryParse(lit.Value, out b))
                                     {
                                         return new BooleanNode(lit.Graph, b);
                                     }
@@ -176,8 +176,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     }
                     else
                     {
-                        Boolean b;
-                        if (Boolean.TryParse(lit.Value, out b))
+                        bool b;
+                        if (bool.TryParse(lit.Value, out b))
                         {
                             return new BooleanNode(lit.Graph, b);
                         }

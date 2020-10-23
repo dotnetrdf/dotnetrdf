@@ -534,7 +534,7 @@ namespace VDS.RDF.Query
             if (QueryProcessor == null) throw new RdfQueryException("Cannot call ExecuteQuery() when the QueryProcessor property has not been set");
 
             var parser = new SparqlQueryParser();
-            var q = parser.ParseFromString(ToString());
+            SparqlQuery q = parser.ParseFromString(ToString());
             QueryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
         }
 
@@ -546,7 +546,7 @@ namespace VDS.RDF.Query
             if (UpdateProcessor == null) throw new SparqlUpdateException("Cannot call ExecuteUpdate() when the UpdateProcessor property has not been set");
 
             var parser = new SparqlUpdateParser();
-            var cmds = parser.ParseFromString(ToString());
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(ToString());
             UpdateProcessor.ProcessCommandSet(cmds);
         }
 

@@ -39,7 +39,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="prefix">Namespae Prefix.</param>
         /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
-        String FormatNamespace(String prefix, Uri namespaceUri);
+        string FormatNamespace(string prefix, Uri namespaceUri);
     }
 
     /// <summary>
@@ -52,6 +52,6 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="u">Base URI.</param>
         /// <returns></returns>
-        String FormatBaseUri(Uri u);
+        string FormatBaseUri(Uri u);
     }
 }

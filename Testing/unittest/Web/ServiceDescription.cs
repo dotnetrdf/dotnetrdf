@@ -50,21 +50,21 @@ namespace VDS.RDF.Web
         public void ServiceDescriptionOptionsRequestOnSparqlServer()
         {
             EnsureIIS();
-            String server = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri);
+            var server = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri);
 
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server at " + server);
             Console.WriteLine();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
+            var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 TestTools.ShowGraph(g);
@@ -79,22 +79,22 @@ namespace VDS.RDF.Web
         public void ServiceDescriptionOptionsRequestOnSparqlServer2()
         {
             EnsureIIS();
-            String path = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri) + "some/long/path/elsewhere";
+            var path = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri) + "some/long/path/elsewhere";
 
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server at " + path);
             Console.WriteLine("This Test tries to ensure that the URI resolution works correctly");
             Console.WriteLine();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(path);
+            var request = (HttpWebRequest)System.Net.WebRequest.Create(path);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 TestTools.ShowGraph(g);
@@ -109,13 +109,13 @@ namespace VDS.RDF.Web
         public void ServiceDescriptionDescriptionUriSparqlServer()
         {
             EnsureIIS();
-            String path = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri) + "description";
+            var path = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri) + "description";
 
             Console.WriteLine("Making an request for the Service Description from the web demos SPARQL Server at " + path);
             Console.WriteLine();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
-            Graph g = new Graph();
+            var formatter = new NTriplesFormatter();
+            var g = new Graph();
             UriLoader.Load(g, new Uri(path));
             TestTools.ShowGraph(g);
 
@@ -126,21 +126,21 @@ namespace VDS.RDF.Web
         public void ServiceDescriptionOptionsRequestOnQueryHandler()
         {
             EnsureIIS();
-            String server = TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri);
+            var server = TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri);
 
             Console.WriteLine("Making an OPTIONS request to the web demos Query Handler at " + server);
             Console.WriteLine();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
+            var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 TestTools.ShowGraph(g);
@@ -155,21 +155,21 @@ namespace VDS.RDF.Web
         public void ServiceDescriptionOptionsRequestOnSparqlServer3()
         {
             EnsureIIS();
-            String server = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreQueryUri);
+            var server = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreQueryUri);
 
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server Query Endpoint at " + server);
             Console.WriteLine();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
+            var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 TestTools.ShowGraph(g);
@@ -184,21 +184,21 @@ namespace VDS.RDF.Web
         public void ServiceDescriptionOptionsRequestOnSparqlServer4()
         {
             EnsureIIS();
-            String server = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri);
+            var server = TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri);
 
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server Update Endpoint at " + server);
             Console.WriteLine();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
+            var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
+                var g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 TestTools.ShowGraph(g);

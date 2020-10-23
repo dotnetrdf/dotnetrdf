@@ -55,7 +55,7 @@ namespace VDS.RDF.Writing
         {
             // Load the Transform
             _transform = new XslCompiledTransform();
-            XsltSettings settings = new XsltSettings();
+            var settings = new XsltSettings();
             _transform.Load(stylesheetUri, settings, null);
         }
 
@@ -70,8 +70,8 @@ namespace VDS.RDF.Writing
             try
             {
                 // XmlDocument doc = this.GenerateOutput(results);
-                StringBuilder temp = new StringBuilder();
-                System.IO.StringWriter writer = new System.IO.StringWriter(temp);
+                var temp = new StringBuilder();
+                var writer = new System.IO.StringWriter(temp);
                 base.Save(results, writer);
                 // this._transform.Transform(doc, null, XmlWriter.Create(output));
                 _transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));

@@ -36,9 +36,9 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowComparisonOperationOnTypedLiteralExpressions()
         {
             // given
-            TypedLiteralExpression<bool> left = new TypedLiteralExpression<bool>(true);
+            var left = new TypedLiteralExpression<bool>(true);
             Left = left.Expression;
-            TypedLiteralExpression<bool> right = new TypedLiteralExpression<bool>(true);
+            var right = new TypedLiteralExpression<bool>(true);
             Right = right.Expression;
 
             // then
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const decimal value = 10;
-            TypedLiteralExpression<decimal> left = new TypedLiteralExpression<decimal>(120);
+            var left = new TypedLiteralExpression<decimal>(120);
             Left = left.Expression;
 
             // then
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             const float value = 10.5f;
-            TypedLiteralExpression<float> right = new TypedLiteralExpression<float>(120);
+            var right = new TypedLiteralExpression<float>(120);
             Right = right.Expression;
 
             // then

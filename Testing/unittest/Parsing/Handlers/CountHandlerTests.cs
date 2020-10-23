@@ -38,11 +38,11 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private void ParsingUsingCountHandler(String tempFile, IRdfReader parser)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
-            CountHandler handler = new CountHandler();
+            var handler = new CountHandler();
             parser.Load(handler, tempFile);
 
             Console.WriteLine("Counted " + handler.Count + " Triples");
@@ -52,37 +52,37 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingCountHandlerNTriples()
         {
-            this.ParsingUsingCountHandler("test.nt", new NTriplesParser());
+            ParsingUsingCountHandler("test.nt", new NTriplesParser());
         }
 
         [Fact]
         public void ParsingCountHandlerTurtle()
         {
-            this.ParsingUsingCountHandler("test.ttl", new TurtleParser());
+            ParsingUsingCountHandler("test.ttl", new TurtleParser());
         }
 
         [Fact]
         public void ParsingCountHandlerNotation3()
         {
-            this.ParsingUsingCountHandler("temp.n3", new Notation3Parser());
+            ParsingUsingCountHandler("temp.n3", new Notation3Parser());
         }
 
         [Fact]
         public void ParsingCountHandlerRdfA()
         {
-            this.ParsingUsingCountHandler("test.html", new RdfAParser());
+            ParsingUsingCountHandler("test.html", new RdfAParser());
         }
 
         [Fact]
         public void ParsingCountHandlerRdfJson()
         {
-            this.ParsingUsingCountHandler("test.json", new RdfJsonParser());
+            ParsingUsingCountHandler("test.json", new RdfJsonParser());
         }
 
         [Fact]
         public void ParsingCountHandlerRdfXml()
         {
-            this.ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
+            ParsingUsingCountHandler("test.rdf", new RdfXmlParser());
         }
     }
 }

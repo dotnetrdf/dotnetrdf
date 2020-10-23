@@ -24,14 +24,14 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Describe;
+
 namespace VDS.RDF.Shacl.Validation
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Parsing;
-    using VDS.RDF.Query;
-    using VDS.RDF.Query.Describe;
-
     internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
     {
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
@@ -43,9 +43,9 @@ namespace VDS.RDF.Shacl.Validation
 
             void process(INode originalSubject, INode mappedSubject = null)
             {
-                foreach (var t in context.Data.GetTriplesWithSubject(originalSubject))
+                foreach (Triple t in context.Data.GetTriplesWithSubject(originalSubject))
                 {
-                    var @object = t.Object;
+                    INode @object = t.Object;
                     if (@object.NodeType == NodeType.Blank && !done.Contains(@object))
                     {
                         if (Vocabulary.PredicatesToExpandInReport.Contains(t.Predicate))
@@ -63,17 +63,17 @@ namespace VDS.RDF.Shacl.Validation
                 }
             }
 
-            foreach (var node in nodes)
+            foreach (INode node in nodes)
             {
                 process(node);
 
                 while (outstanding.Any())
                 {
-                    var mappedSubject = outstanding.Dequeue();
+                    INode mappedSubject = outstanding.Dequeue();
 
                     if (done.Add(mappedSubject))
                     {
-                        if (map.TryGetValue(mappedSubject, out var originalSubject))
+                        if (map.TryGetValue(mappedSubject, out INode originalSubject))
                         {
                             process(originalSubject, mappedSubject);
                         }

@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Operators.Numeric
             if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply addition when any arguments are null");
 
-            SparqlNumericType type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
+            var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
 
             switch (type)
             {

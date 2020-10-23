@@ -47,16 +47,16 @@ namespace VDS.RDF.Writing
 
         private void EnsureTestData()
         {
-            if (this._dataset == null)
+            if (_dataset == null)
             {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
+                var store = new TripleStore();
+                var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
                 store.Add(g);
 
-                this._dataset = new InMemoryDataset(store);
-                this._processor = new LeviathanQueryProcessor(this._dataset);
+                _dataset = new InMemoryDataset(store);
+                _processor = new LeviathanQueryProcessor(_dataset);
             }
         }
 
@@ -69,26 +69,26 @@ namespace VDS.RDF.Writing
         [InlineData("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }")]
         public void TestTsvRoundTrip(String query)
         {
-            this.EnsureTestData();
+            EnsureTestData();
 
-            SparqlParameterizedString queryString = new SparqlParameterizedString(query);
+            var queryString = new SparqlParameterizedString(query);
             queryString.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            SparqlQuery q = this._parser.ParseFromString(queryString);
+            SparqlQuery q = _parser.ParseFromString(queryString);
 
-            SparqlResultSet original = this._processor.ProcessQuery(q) as SparqlResultSet;
+            var original = _processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(original);
 
             Console.WriteLine("Original Results:");
             TestTools.ShowResults(original);
 
-            System.IO.StringWriter writer = new System.IO.StringWriter();
-            this._tsvWriter.Save(original, writer);
+            var writer = new System.IO.StringWriter();
+            _tsvWriter.Save(original, writer);
             Console.WriteLine("Serialized TSV Results:");
             Console.WriteLine(writer.ToString());
             Console.WriteLine();
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._tsvParser.Load(results, new StringReader(writer.ToString()));
+            var results = new SparqlResultSet();
+            _tsvParser.Load(results, new StringReader(writer.ToString()));
             Console.WriteLine("Parsed Results:");
             TestTools.ShowResults(results);
 

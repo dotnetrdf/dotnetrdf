@@ -213,7 +213,7 @@ namespace VDS.RDF.Query
             // If no endpoints return an Empty Graph
             if (_endpoints.Count == 0) return new Graph();
 
-            Graph g = new Graph();
+            var g = new Graph();
             QueryWithResultGraph(new GraphHandler(g), sparqlQuery);
             return g;
         }
@@ -232,7 +232,7 @@ namespace VDS.RDF.Query
             var asyncCalls = new List<Task<IGraph>>();
             var count = 0;
             var cts = new CancellationTokenSource();
-            foreach (var endpoint in _endpoints)
+            foreach (SparqlRemoteEndpoint endpoint in _endpoints)
             {
                 // Limit the number of simultaneous requests we make to the user defined level (default 4)
                 // We do this limiting check before trying to issue a request so that when the last request
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query
                 while (count >= _maxSimultaneousRequests)
                 {
                     // First check that the count of active requests is accurate
-                    int active = asyncCalls.Count(r => !r.IsCompleted);
+                    var active = asyncCalls.Count(r => !r.IsCompleted);
                     if (active < count)
                     {
                         // Some of the requests have already completed so we don't need to wait
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query
                     catch (AggregateException ex)
                     {
                         var faultedTaskIx = asyncCalls.FindIndex(x => x.IsFaulted);
-                        var faultedEndpoint = _endpoints[faultedTaskIx];
+                        SparqlRemoteEndpoint faultedEndpoint = _endpoints[faultedTaskIx];
                         if (!_ignoreFailedRequests)
                         {
                             throw new RdfQueryException("Federated Querying failed due to the query against the endpoint '" + faultedEndpoint + "' failing", ex);
@@ -322,14 +322,14 @@ namespace VDS.RDF.Query
 
                 try
                 {
-                    var g = asyncCalls[i].Result;
+                    IGraph g = asyncCalls[i].Result;
 
                     // Merge the result into the final results
                     // If the handler has previously told us to stop we skip this step
                     if (cont)
                     {
                         handler.StartRdf();
-                        foreach (var t in g.Triples)
+                        foreach (Triple t in g.Triples)
                         {
                             cont = handler.HandleTriple(t);
                             // Stop if the Handler tells us to
@@ -371,7 +371,7 @@ namespace VDS.RDF.Query
             if (_endpoints.Count == 0) return new SparqlResultSet();
 
             // Declare a result set and invoke the other overload
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
             QueryWithResultSet(new MergingResultSetHandler(results), sparqlQuery);
             return results;
         }
@@ -391,7 +391,7 @@ namespace VDS.RDF.Query
             // Fire off all the asynchronous Requests
             var asyncCalls = new List<Task<SparqlResultSet>>();
             var cts = new CancellationTokenSource();
-            int count = 0;
+            var count = 0;
             foreach (SparqlRemoteEndpoint endpoint in _endpoints)
             {
                 // Limit the number of simultaneous requests we make to the user defined level (default 4)
@@ -400,7 +400,7 @@ namespace VDS.RDF.Query
                 while (count >= _maxSimultaneousRequests)
                 {
                     // First check that the count of active requests is accurate
-                    int active = asyncCalls.Count(r => !r.IsCompleted);
+                    var active = asyncCalls.Count(r => !r.IsCompleted);
                     if (active < count)
                     {
                         // Some of the requests have already completed so we don't need to wait
@@ -426,7 +426,7 @@ namespace VDS.RDF.Query
             }
 
             // Wait for all our requests to finish
-            int waitTimeout = (Timeout > 0) ? Timeout : System.Threading.Timeout.Infinite;
+            var waitTimeout = (Timeout > 0) ? Timeout : System.Threading.Timeout.Infinite;
 
             try
             {
@@ -500,7 +500,7 @@ namespace VDS.RDF.Query
 
                     if (cont)
                     {
-                        foreach (var result in partialResult.Results)
+                        foreach (SparqlResult result in partialResult.Results)
                         {
                             cont = handler.HandleResult(result);
                             // Stop if handler tells us to

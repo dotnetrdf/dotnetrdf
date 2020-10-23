@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("GROUP_CONCAT(");
             if (_distinct) output.Append("DISTINCT ");
             output.Append(_expr.ToString());

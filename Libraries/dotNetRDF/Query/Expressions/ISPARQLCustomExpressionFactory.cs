@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArguments">Dictionary of Scalar Arguments which are supportable by aggregates when Syntax is set to SPARQL 1.1 Extended.</param>
         /// <param name="expr">Resulting Expression if able to generate.</param>
         /// <returns>True if an expression is generated, false if not.</returns>
-        bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArguments, out ISparqlExpression expr);
+        bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr);
 
         /// <summary>
         /// Gets the Extension Function URIs that this Factory provides.

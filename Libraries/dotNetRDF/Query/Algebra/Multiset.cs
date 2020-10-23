@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Variables contained in the Multiset.
         /// </summary>
-        protected List<String> _variables = new List<string>();
+        protected List<string> _variables = new List<string>();
         /// <summary>
         /// Dictionary of Sets in the Multiset.
         /// </summary>
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Algebra
         /// Counter used to assign Set IDs.
         /// </summary>
         protected int _counter = 0;
-        private Dictionary<String, HashSet<INode>> _containsCache;
+        private Dictionary<string, HashSet<INode>> _containsCache;
         private bool _cacheInvalid = true;
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Empty Mutliset that has the list of given Variables.
         /// </summary>
         /// <param name="variables"></param>
-        public Multiset(IEnumerable<String> variables)
+        public Multiset(IEnumerable<string> variables)
         {
-            foreach (String var in variables)
+            foreach (var var in variables)
             {
                 _variables.Add(var);
             }
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="results">Result Set.</param>
         internal Multiset(SparqlResultSet results)
         {
-            foreach (String var in results.Variables)
+            foreach (var var in results.Variables)
             {
                 AddVariable(var);
             }
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="multiset">Group Multiset.</param>
         internal Multiset(GroupMultiset multiset)
         {
-            foreach (String var in multiset.Variables)
+            foreach (var var in multiset.Variables)
             {
                 AddVariable(var);
             }
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable.</param>
         /// <param name="n">Value.</param>
         /// <returns></returns>
-        public override bool ContainsValue(String var, INode n)
+        public override bool ContainsValue(string var, INode n)
         {
             if (_variables.Contains(var))
             {
@@ -160,31 +160,31 @@ namespace VDS.RDF.Query.Algebra
             int id;
             if (UsePLinqEvaluation)
             {
-                lock (this._sets)
+                lock (_sets)
                 {
-                    this._counter++;
-                    id = this._counter;
-                    this._sets.Add(id, s);
+                    _counter++;
+                    id = _counter;
+                    _sets.Add(id, s);
                     s.ID = id;
                 }
-                lock (this._variables)
+                lock (_variables)
                 {
-                    foreach (String var in s.Variables)
+                    foreach (var var in s.Variables)
                     {
-                        if (!this._variables.Contains(var)) this._variables.Add(var);
+                        if (!_variables.Contains(var)) _variables.Add(var);
                     }
                 }
             }
             else
             {
-                this._counter++;
-                id = this._counter;
-                this._sets.Add(id, s);
+                _counter++;
+                id = _counter;
+                _sets.Add(id, s);
                 s.ID = id;
 
-                foreach (String var in s.Variables)
+                foreach (var var in s.Variables)
                 {
-                    if (!this._variables.Contains(var)) this._variables.Add(var);
+                    if (!_variables.Contains(var)) _variables.Add(var);
                 }
             }
             _cacheInvalid = true;
@@ -207,7 +207,7 @@ namespace VDS.RDF.Query.Algebra
         {
             // Validate that the ordering is applicable
             if (variables.Count() < _variables.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
-            foreach (String var in _variables)
+            foreach (var var in _variables)
             {
                 if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
             }
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="id">Set ID.</param>
         public override void Remove(int id)
         {
-            lock (this._sets)
+            lock (_sets)
             {
                 if (_sets.ContainsKey(id))
                 {
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public override void Trim()
         {
-            foreach (String var in _variables)
+            foreach (var var in _variables)
             {
                 if (var.StartsWith("_:"))
                 {
@@ -257,7 +257,7 @@ namespace VDS.RDF.Query.Algebra
         /// Trims the Multiset to remove the given Variable.
         /// </summary>
         /// <param name="variable">Variable.</param>
-        public override void Trim(String variable)
+        public override void Trim(string variable)
         {
             if (variable == null) return;
             if (_variables.Remove(variable))
@@ -374,7 +374,7 @@ namespace VDS.RDF.Query.Algebra
             Add(new Set());
         }
 
-        public SingletonMultiset(IEnumerable<String> vars)
+        public SingletonMultiset(IEnumerable<string> vars)
             : base(vars)
         {
             Add(new Set());

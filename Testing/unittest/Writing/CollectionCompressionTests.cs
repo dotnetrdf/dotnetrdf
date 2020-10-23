@@ -46,7 +46,7 @@ namespace VDS.RDF.Writing
         [Fact(Skip = "Commented out before, now fails (?)")]
         public void WritingCollectionCompressionSimple7()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -65,7 +65,7 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingCollectionCompressionNamedListNodes3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode data1 = g.CreateBlankNode();
             g.Assert(data1, g.CreateUriNode(new Uri("http://property")), g.CreateLiteralNode("test1"));
             INode data2 = g.CreateBlankNode();
@@ -85,7 +85,7 @@ namespace VDS.RDF.Writing
             INode root = g.CreateUriNode(new Uri("http://root"));
             g.Assert(root, g.CreateUriNode(new Uri("http://list")), listEntry2);
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             _output.WriteLine("Original Graph");
             foreach (Triple t in g.Triples)
             {
@@ -94,14 +94,14 @@ namespace VDS.RDF.Writing
             _output.WriteLine("");
 
             var sw = new System.IO.StringWriter();
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, sw);
+            var context = new CompressingTurtleWriterContext(g, sw);
             WriterHelper.FindCollections(context);
             _output.WriteLine(sw.ToString());
             _output.WriteLine(context.Collections.Count + " Collections Found");
             _output.WriteLine("");
 
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            CompressingTurtleWriter writer = new CompressingTurtleWriter();
+            var strWriter = new System.IO.StringWriter();
+            var writer = new CompressingTurtleWriter();
             writer.CompressionLevel = WriterCompressionLevel.High;
             writer.Save(g, strWriter);
 
@@ -109,8 +109,8 @@ namespace VDS.RDF.Writing
             _output.WriteLine(strWriter.ToString());
             _output.WriteLine("");
 
-            Graph h = new Graph();
-            TurtleParser parser = new TurtleParser();
+            var h = new Graph();
+            var parser = new TurtleParser();
             StringParser.Parse(h, strWriter.ToString());
             _output.WriteLine("Graph after Round Trip to Compressed Turtle");
             foreach (Triple t in h.Triples)
@@ -144,13 +144,13 @@ namespace VDS.RDF.Writing
 
             Assert.Equal(2, collections.Count);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionCyclic2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
             INode a = g.CreateBlankNode();
@@ -173,13 +173,13 @@ namespace VDS.RDF.Writing
 
             Assert.Equal(2, collections.Count);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionCyclic3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
             INode a = g.CreateBlankNode();
@@ -204,13 +204,13 @@ namespace VDS.RDF.Writing
 
             Assert.Equal(3, collections.Count);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionEmpty1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
 
@@ -221,13 +221,13 @@ namespace VDS.RDF.Writing
             Assert.Single(collections);
             Assert.Empty(collections.First().Value.Triples);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionEmpty2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode rdfType = g.CreateUriNode("rdf:type");
 
@@ -237,13 +237,13 @@ namespace VDS.RDF.Writing
 
             Assert.Empty(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionSimple1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -256,7 +256,7 @@ namespace VDS.RDF.Writing
             Assert.Single(collections);
             Assert.Single(collections.First().Value.Triples);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         private Dictionary<INode, OutputRdfCollection> FindCollections(IGraph g)
@@ -271,7 +271,7 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingCollectionCompressionSimple2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -284,13 +284,13 @@ namespace VDS.RDF.Writing
 
             Assert.Empty(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionSimple3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -306,13 +306,13 @@ namespace VDS.RDF.Writing
 
             Assert.Single(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionSimple4()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -327,13 +327,13 @@ namespace VDS.RDF.Writing
 
             Assert.Empty(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionSimple5()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -350,13 +350,13 @@ namespace VDS.RDF.Writing
 
             Assert.Empty(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionSimple6()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -368,20 +368,20 @@ namespace VDS.RDF.Writing
             Assert.Single(collections);
             Assert.Empty(collections.First().Value.Triples);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionComplex1()
         {
-            SparqlConnector connector = new SparqlConnector(new VDS.RDF.Query.SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql")));
-            Graph g = new Graph();
+            var connector = new SparqlConnector(new VDS.RDF.Query.SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql")));
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
             INode n = g.CreateBlankNode();
 
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("dnr:genericManager"), n);
-            ConfigurationSerializationContext sContext = new ConfigurationSerializationContext(g);
+            var sContext = new ConfigurationSerializationContext(g);
             sContext.NextSubject = n;
             connector.SerializeConfiguration(sContext);
 
@@ -389,19 +389,19 @@ namespace VDS.RDF.Writing
 
             Assert.Equal(2, collections.Count);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionComplex2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\complex-collections.nt");
 
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+            var context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
             {
                 _output.WriteLine("Collection Root - " + kvp.Key.ToString(formatter));
@@ -413,13 +413,13 @@ namespace VDS.RDF.Writing
                 _output.WriteLine("");
             }
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionNamedListNodes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateUriNode("ex:list");
             INode rdfType = g.CreateUriNode("rdf:type");
@@ -435,13 +435,13 @@ namespace VDS.RDF.Writing
 
             Assert.Empty(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]
         public void WritingCollectionCompressionNamedListNodes2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode n = g.CreateUriNode("ex:listRoot");
             INode m = g.CreateUriNode("ex:listItem");
@@ -460,7 +460,7 @@ namespace VDS.RDF.Writing
 
             Assert.Empty(collections);
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Fact]

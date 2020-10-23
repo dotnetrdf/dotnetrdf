@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing.Suites
                     }
                     else
                     {
-                        string lastSegment = u.Segments[u.Segments.Length - 1];
+                        var lastSegment = u.Segments[u.Segments.Length - 1];
                         return Path.Combine(_baseDir, lastSegment);
                     }
                 default:
@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing.Suites
 
         protected void RunDirectory(string dir, string pattern, bool shouldParse)
         {
-            foreach (string file in Directory.GetFiles(dir, pattern))
+            foreach (var file in Directory.GetFiles(dir, pattern))
             {
                 RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".nt"), shouldParse);
             }
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing.Suites
 
         protected void RunAllDirectories(string dir, Func<string, bool> isTest, bool shouldParse)
         {
-            foreach (string subdir in Directory.GetDirectories(dir))
+            foreach (var subdir in Directory.GetDirectories(dir))
             {
                 RunDirectory(subdir, isTest, shouldParse);
                 RunAllDirectories(subdir, isTest, shouldParse);
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Suites
 
         protected void RunDirectory(string dir, Func<string, bool> isTest, bool shouldParse)
         {
-            foreach (string file in Directory.GetFiles(dir).Where(isTest))
+            foreach (var file in Directory.GetFiles(dir).Where(isTest))
             {
                 RunTest(Path.GetFileName(file), null, file, Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + FileExtension), shouldParse);
             }
@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             Assert.True(File.Exists(file), "Manifest file " + file + " not found");
 
-            Graph manifest = new Graph();
+            var manifest = new Graph();
             manifest.BaseUri = BaseUri;
             try
             {
@@ -190,17 +190,17 @@ WHERE
   OPTIONAL { ?test mf:result ?result }
 }";
 
-            SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
+            var tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
             Assert.NotNull(tests);
 
             foreach (SparqlResult test in tests)
             {
                 INode nameNode, commentNode, resultNode;
-                string name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
+                var name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
                 INode inputNode = test["input"];
-                string input = GetFile(inputNode);
-                string comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
-                string results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
+                var input = GetFile(inputNode);
+                var comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
+                var results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
 
                 RunTest(name, comment, input, results, shouldParse);
             }
@@ -218,7 +218,7 @@ WHERE
             Assert.True(File.Exists(file), "Manifest file " + file + " not found");
             
 
-            Graph manifest = new Graph();
+            var manifest = new Graph();
             manifest.BaseUri = BaseUri;
             try
             {
@@ -231,7 +231,7 @@ WHERE
             }
             manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
 
-            string findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+            var findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 
 prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
 prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> 
@@ -248,17 +248,17 @@ WHERE
   OPTIONAL { ?test mf:result ?result }
 }";
 
-            SparqlResultSet tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
+            var tests = manifest.ExecuteQuery(findTests) as SparqlResultSet;
             Assert.NotNull(tests);
 
             foreach (SparqlResult test in tests)
             {
                 INode nameNode, inputNode, commentNode, resultNode;
-                string name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
+                var name = test.TryGetBoundValue("name", out nameNode) ? nameNode.ToString() : null;
                 inputNode = test["input"];
-                string input = GetFile(inputNode);
-                string comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
-                string results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
+                var input = GetFile(inputNode);
+                var comment = test.TryGetBoundValue("comment", out commentNode) ? commentNode.ToString() : null;
+                var results = test.TryGetBoundValue("result", out resultNode) ? GetFile(resultNode) : null;
 
                 //Determine expected outcome
                 //Evaluation tests will have results and should always parse succesfully

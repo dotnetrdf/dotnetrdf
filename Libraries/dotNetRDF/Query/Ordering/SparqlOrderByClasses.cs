@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Ordering
         /// <summary>
         /// Gets all the Variables used in the Ordering.
         /// </summary>
-        public abstract IEnumerable<String> Variables
+        public abstract IEnumerable<string> Variables
         {
             get;
         }
@@ -146,13 +146,13 @@ namespace VDS.RDF.Query.Ordering
     public class OrderByVariable
         : BaseOrderBy
     {
-        private String _varname = String.Empty;
+        private string _varname = string.Empty;
 
         /// <summary>
         /// Creates a new Ordering based on the Value of a given Variable.
         /// </summary>
         /// <param name="name">Variable to order upon.</param>
-        public OrderByVariable(String name)
+        public OrderByVariable(string name)
         {
             _varname = name.TrimStart('?', '$');
         }
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Ordering
             }
             else
             {
-                int c = _context.OrderingComparer.Compare(xval, y[_varname]);
+                var c = _context.OrderingComparer.Compare(xval, y[_varname]);
 
                 if (c == 0 && Child != null)
                 {
@@ -204,11 +204,12 @@ namespace VDS.RDF.Query.Ordering
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
+        /// <param name="nodeComparer">The comparer to use for node ordering.</param>
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer)
         {
             var comparer = new SparqlOrderingComparer(nodeComparer);
-            IComparer<Triple> child = (Child == null) ? null : Child.GetComparer(pattern, nodeComparer);
+            IComparer<Triple> child = Child?.GetComparer(pattern, nodeComparer);
             Func<Triple, Triple, int> compareFunc = null;
             if (_varname.Equals(pattern.Subject.VariableName))
             {
@@ -223,8 +224,7 @@ namespace VDS.RDF.Query.Ordering
                 compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
             }
 
-            if (compareFunc == null) return null;
-            return new TripleComparer(compareFunc, Descending, child);
+            return compareFunc == null ? null : new TripleComparer(compareFunc, Descending, child);
         }
 
         /// <summary>
@@ -232,19 +232,9 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public override bool IsSimple
         {
-            get 
+            get
             {
-                if (Child != null)
-                {
-                    // An ordering on a Variable is always simple so whether the Ordering is simple
-                    // depends on whether the Child Ordering is simple
-                    return Child.IsSimple;
-                }
-                else
-                {
-                    // An ordering on a Variable is always simple
-                    return true;
-                }
+                return Child == null || Child.IsSimple;
             }
         }
 
@@ -253,16 +243,11 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public override IEnumerable<string> Variables
         {
-            get 
+            get
             {
-                if (Child != null)
-                {
-                    return _varname.AsEnumerable<String>().Concat(Child.Variables).Distinct();
-                }
-                else
-                {
-                    return _varname.AsEnumerable<String>();
-                }
+                return Child != null
+                    ? _varname.AsEnumerable().Concat(Child.Variables).Distinct()
+                    : _varname.AsEnumerable();
             }
         }
 
@@ -283,7 +268,7 @@ namespace VDS.RDF.Query.Ordering
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_modifier == -1)
             {
                 output.Append("DESC(");
@@ -363,7 +348,7 @@ namespace VDS.RDF.Query.Ordering
                     // If both give a value then compare
                     if (a != null)
                     {
-                        int c = _context.OrderingComparer.Compare(a, b);
+                        var c = _context.OrderingComparer.Compare(a, b);
                         if (c == 0 && Child != null)
                         {
                             return Child.Compare(x, y);
@@ -409,14 +394,15 @@ namespace VDS.RDF.Query.Ordering
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
+        /// <param name="nodeComparer">The comparer to use for node ordering.</param>
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern, ISparqlNodeComparer nodeComparer)
         {
             if (_expr is VariableTerm)
             {
-                IComparer<Triple> child = (Child == null) ? null : Child.GetComparer(pattern, nodeComparer);
+                IComparer<Triple> child = Child?.GetComparer(pattern, nodeComparer);
                 Func<Triple, Triple, int> compareFunc = null;
-                string var = _expr.Variables.First();
+                var var = _expr.Variables.First();
                 var comparer = new SparqlOrderingComparer(nodeComparer);
                 if (var.Equals(pattern.Subject.VariableName))
                 {
@@ -431,13 +417,10 @@ namespace VDS.RDF.Query.Ordering
                     compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
                 }
 
-                if (compareFunc == null) return null;
-                return new TripleComparer(compareFunc, Descending, child);
+                return compareFunc == null ? null : new TripleComparer(compareFunc, Descending, child);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -445,25 +428,16 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public override bool IsSimple
         {
-            get 
+            get
             {
                 if (_expr is VariableTerm)
                 {
                     // An Expression Ordering can be simple if that expression is a Variable Term
                     // and the Child Ordering (if any) is simple
-                    if (Child != null)
-                    {
-                        return Child.IsSimple;
-                    }
-                    else
-                    {
-                        return true;
-                    }
+                    return Child == null || Child.IsSimple;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
         }
 
@@ -474,14 +448,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                if (Child != null)
-                {
-                    return _expr.Variables.Concat(Child.Variables).Distinct();
-                }
-                else
-                {
-                    return _expr.Variables;
-                }
+                return Child != null ? _expr.Variables.Concat(Child.Variables).Distinct() : _expr.Variables;
             }
         }
 
@@ -502,22 +469,15 @@ namespace VDS.RDF.Query.Ordering
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
-            if (_modifier == -1)
-            {
-                output.Append("DESC(");
-            }
-            else
-            {
-                output.Append("ASC(");
-            }
-            output.Append(_expr.ToString());
+            var output = new StringBuilder();
+            output.Append(_modifier == -1 ? "DESC(" : "ASC(");
+            output.Append(_expr);
             output.Append(")");
 
             if (Child != null)
             {
                 output.Append(" ");
-                output.Append(Child.ToString());
+                output.Append(Child);
             }
             else
             {

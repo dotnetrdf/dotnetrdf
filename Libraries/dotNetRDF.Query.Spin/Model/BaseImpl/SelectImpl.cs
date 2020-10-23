@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public List<IResource> getResultVariables()
         {
-            List<IResource> results = new List<IResource>();
+            var results = new List<IResource>();
             foreach (IResource node in getList(SP.PropertyResultVariables))
             {
                 results.Add(SPINFactory.asExpression(node));
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Spin.Model
         {
             p.print("((");
             IResource expr = var.getResource(SP.PropertyExpression);
-            IPrintable expression = (IPrintable)SPINFactory.asExpression(expr);
+            var expression = (IPrintable)SPINFactory.asExpression(expr);
             expression.Print(p);
             p.print(") ");
             p.printKeyword("AS");

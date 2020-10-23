@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Component : Constraint
     {
         private readonly IEnumerable<KeyValuePair<string, INode>> parameters;
@@ -58,7 +58,7 @@ namespace VDS.RDF.Shacl.Constraints
             {
                 if (Shape is Shapes.Node)
                 {
-                    var nodeValidator = Vocabulary.NodeValidator.ObjectsOf(this).SingleOrDefault();
+                    INode nodeValidator = Vocabulary.NodeValidator.ObjectsOf(this).SingleOrDefault();
 
                     if (nodeValidator != null)
                     {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Shacl.Constraints
 
                 if (Shape is Shapes.Property)
                 {
-                    var propertyValidator = Vocabulary.PropertyValidator.ObjectsOf(this).SingleOrDefault();
+                    INode propertyValidator = Vocabulary.PropertyValidator.ObjectsOf(this).SingleOrDefault();
 
                     if (propertyValidator != null)
                     {
@@ -82,9 +82,9 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var validator = Validator;
+            Constraint validator = Validator;
 
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 where !validator.Validate(focusNode, valueNode.AsEnumerable(), null)
                 select valueNode;

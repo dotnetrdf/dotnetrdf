@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-
     internal class HasValue : Constraint
     {
         [DebuggerStepThrough]
@@ -51,7 +51,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from value in focusNode.AsEnumerable()
                 where !valueNodes.Contains(this)
                 select value;

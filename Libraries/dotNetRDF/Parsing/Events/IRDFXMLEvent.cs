@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the XML that produced the given event (if any).
         /// </summary>
-        String SourceXml
+        string SourceXml
         {
             get;
         }

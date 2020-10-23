@@ -96,7 +96,7 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                List<String> affectedUris = new List<string>();
+                var affectedUris = new List<string>();
                 if (TargetUri != null)
                 {
                     affectedUris.Add(TargetUri.AbsoluteUri);
@@ -120,14 +120,14 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            List<String> affectedUris = new List<string>();
+            var affectedUris = new List<string>();
             if (TargetUri != null)
             {
                 affectedUris.Add(TargetUri.AbsoluteUri);
             }
             else
             {
-                affectedUris.Add(String.Empty);
+                affectedUris.Add(string.Empty);
             }
             if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
             if (_deletePattern.HasChildGraphPatterns)
@@ -136,7 +136,7 @@ namespace VDS.RDF.Update.Commands
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
-            if (affectedUris.Any(u => u != null)) affectedUris.Add(String.Empty);
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
         }
@@ -188,8 +188,8 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            bool defGraphOk = false;
-            bool datasetOk = false;
+            var defGraphOk = false;
+            var datasetOk = false;
 
             try
             {
@@ -227,7 +227,7 @@ namespace VDS.RDF.Update.Commands
                 // USING/USING NAMEDs along with GRAPH clauses then the algebra needs to have the
                 // URIs available to it which it gets from the Query property of the Context
                 // object
-                SparqlQuery query = new SparqlQuery();
+                var query = new SparqlQuery();
                 foreach (Uri u in UsingUris)
                 {
                     query.AddDefaultGraph(u);
@@ -236,7 +236,7 @@ namespace VDS.RDF.Update.Commands
                 {
                     query.AddNamedGraph(u);
                 }
-                SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
+                var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
                 if (UsingUris.Any())
                 {
                     // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
@@ -268,14 +268,14 @@ namespace VDS.RDF.Update.Commands
                 // Delete the Triples for each Solution
                 foreach (ISet s in results.Sets)
                 {
-                    List<Triple> deletedTriples = new List<Triple>();
+                    var deletedTriples = new List<Triple>();
 
                     if (g != null)
                     {
                         // Triples from raw Triple Patterns
                         try
                         {
-                            ConstructContext constructContext = new ConstructContext(g, s, true);
+                            var constructContext = new ConstructContext(g, s, true);
                             foreach (IConstructTriplePattern p in _deletePattern.TriplePatterns
                                 .OfType<IConstructTriplePattern>())
                             {
@@ -305,14 +305,14 @@ namespace VDS.RDF.Update.Commands
                         deletedTriples.Clear();
                         try
                         {
-                            String graphUri;
+                            string graphUri;
                             switch (gp.GraphSpecifier.TokenType)
                             {
                                 case Token.URI:
                                     graphUri = gp.GraphSpecifier.Value;
                                     break;
                                 case Token.VARIABLE:
-                                    String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                    var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                     if (s.ContainsVariable(graphVar))
                                     {
                                         INode temp = s[graphVar];
@@ -347,7 +347,7 @@ namespace VDS.RDF.Update.Commands
 
                             // Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
-                            ConstructContext constructContext = new ConstructContext(h, s, true);
+                            var constructContext = new ConstructContext(h, s, true);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -394,7 +394,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_graphUri != null)
             {
                 output.Append("WITH <");

@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -57,7 +58,7 @@ namespace VDS.RDF.JsonLd.Processors
             // 1 = Initialize node map to a map consisting of a single member whose key is @default
             // and whose value is an empty map.
             // 2 - Perform the Node Map Generation algorithm, passing element and node map.
-            var nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
+            JObject nodeMap = _nodeMapGenerator.GenerateNodeMap(element);
 
             // 3 - Initialize default graph to the value of the @default member of node map,
             // which is a map representing the default graph.
@@ -65,9 +66,9 @@ namespace VDS.RDF.JsonLd.Processors
 
             // 4 - For each key-value pair graph name-graph in node map where graph name is not @default,
             // ordered lexicographically by graph name if ordered is true, perform the following steps: 
-            var properties = nodeMap.Properties().Where(p => !p.Name.Equals("@default"));
+            IEnumerable<JProperty> properties = nodeMap.Properties().Where(p => !p.Name.Equals("@default"));
             if (ordered) properties = properties.OrderBy(p => p.Name);
-            foreach (var p in properties)
+            foreach (JProperty p in properties)
             {
                 var graphName = p.Name;
                 var graph = p.Value as JObject;
@@ -91,7 +92,7 @@ namespace VDS.RDF.JsonLd.Processors
             // 5 - Initialize an empty array flattened.
             // 6 - For each id-node pair in default graph ordered lexicographically by id if ordered is true,
             // add node to flattened, unless the only entry of node is @id.
-            var flattened = FlattenGraph(defaultGraph, ordered);
+            JArray flattened = FlattenGraph(defaultGraph, ordered);
 
 
             // 7 - return flattened.
@@ -101,9 +102,9 @@ namespace VDS.RDF.JsonLd.Processors
         private static JArray FlattenGraph(JObject graphObject, bool ordered)
         {
             var flattened = new JArray();
-            var graphProperties = graphObject.Properties();
+            IEnumerable<JProperty> graphProperties = graphObject.Properties();
             if (ordered) graphProperties = graphProperties.OrderBy(p => p.Name);
-            foreach (var p in graphProperties)
+            foreach (JProperty p in graphProperties)
             {
                 var node = p.Value as JObject;
                 if (node.Count > 1 || node.Properties().Any(x => !x.Name.Equals("@id")))

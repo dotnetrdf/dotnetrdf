@@ -66,8 +66,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 }
                 if (langRange.NodeType == NodeType.Literal)
                 {
-                    string range = ((ILiteralNode)langRange).Value;
-                    string lang = ((ILiteralNode)result).Value;
+                    var range = ((ILiteralNode)langRange).Value;
+                    var lang = ((ILiteralNode)result).Value;
 
                     if (range.Equals("*"))
                     {

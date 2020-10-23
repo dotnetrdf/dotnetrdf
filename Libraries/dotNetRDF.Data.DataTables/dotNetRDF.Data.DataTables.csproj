@@ -37,7 +37,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
-	<PackageReference Include="System.Data.Common" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

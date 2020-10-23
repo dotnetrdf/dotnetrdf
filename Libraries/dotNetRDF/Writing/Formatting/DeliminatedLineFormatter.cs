@@ -43,7 +43,7 @@ namespace VDS.RDF.Writing.Formatting
         private char _escapeChar = '\\';
         private bool _fullLiteralOutput = true;
 
-        private List<String[]> _delimEscapes;
+        private List<string[]> _delimEscapes;
 
         /// <summary>
         /// Creates a new Deliminated Line Formatter.
@@ -57,7 +57,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="longLiteralWrapperChar">Character to wrap Long Literals in (may be null).</param>
         /// <param name="lineEndChar">Character to add at end of line (may be null).</param>
         /// <param name="fullLiteralOutput">Whether Literals are output with Language/Datatype information.</param>
-        public DeliminatedLineFormatter(String formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
+        public DeliminatedLineFormatter(string formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
             : base(formatName)
         {
             _deliminatorChar = deliminator;
@@ -70,15 +70,15 @@ namespace VDS.RDF.Writing.Formatting
             _fullLiteralOutput = fullLiteralOutput;
 
             _delimEscapes = new List<string[]>();
-            _delimEscapes.Add(new String[] { new String(new char[] { _deliminatorChar }), new String(new char[] { _escapeChar, _deliminatorChar }) });
-            _delimEscapes.Add(new String[] { new String(new char[] { '\n' }), new String(new char[] { _escapeChar, 'n' }) });
-            _delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { _escapeChar, 'r' }) });
-            _delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { _escapeChar, 't' }) });
+            _delimEscapes.Add(new string[] { new string(new char[] { _deliminatorChar }), new string(new char[] { _escapeChar, _deliminatorChar }) });
+            _delimEscapes.Add(new string[] { new string(new char[] { '\n' }), new string(new char[] { _escapeChar, 'n' }) });
+            _delimEscapes.Add(new string[] { new string(new char[] { '\r' }), new string(new char[] { _escapeChar, 'r' }) });
+            _delimEscapes.Add(new string[] { new string(new char[] { '\t' }), new string(new char[] { _escapeChar, 't' }) });
 
             // TODO: Need to handle difference between standard and long literals better
             if (_literalWrapperChar.HasValue)
             {
-                _delimEscapes.Add(new String[] { new String(new char[] { _literalWrapperChar.Value }), new String(new char[] { _escapeChar, _literalWrapperChar.Value }) });
+                _delimEscapes.Add(new string[] { new string(new char[] { _literalWrapperChar.Value }), new string(new char[] { _escapeChar, _literalWrapperChar.Value }) });
             }
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public override string Format(Triple t)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(Format(t.Subject));
             output.Append(_deliminatorChar);
             output.Append(Format(t.Predicate));
@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_uriStartChar != null) output.Append(_uriStartChar);
             if (_uriEndChar != null)
             {
@@ -132,14 +132,14 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType, TurtleSyntax.Original))
             {
                 output.Append(lit.Value);
             }
             else
             {
-                String value = lit.Value;
+                var value = lit.Value;
 
                 if (TurtleSpecsHelper.IsLongLiteral(value))
                 {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing.Formatting
                         if (_literalWrapperChar == null && _longLiteralWrapperChar == null)
                         {
                             // Replace the deliminator
-                            value = value.Replace(new String(new char[] { _deliminatorChar }), new String(new char[] { _escapeChar, _deliminatorChar }));
+                            value = value.Replace(new string(new char[] { _deliminatorChar }), new string(new char[] { _escapeChar, _deliminatorChar }));
                         }
                     }
 
@@ -187,7 +187,7 @@ namespace VDS.RDF.Writing.Formatting
 
                 if (_fullLiteralOutput)
                 {
-                    if (!lit.Language.Equals(String.Empty))
+                    if (!lit.Language.Equals(string.Empty))
                     {
                         output.Append("@" + lit.Language.ToLower());
                     }
@@ -215,11 +215,11 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="u"></param>
         /// <returns></returns>
-        public override string FormatUri(String u)
+        public override string FormatUri(string u)
         {
             if (_uriEndChar != null)
             {
-                return u.Replace(new String(new char[] { (char)_uriEndChar }), new String(new char[] { _escapeChar, (char)_uriEndChar }));
+                return u.Replace(new string(new char[] { (char)_uriEndChar }), new string(new char[] { _escapeChar, (char)_uriEndChar }));
             }
             else
             {

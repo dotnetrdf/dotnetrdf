@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Stream to read from.</param>
         private void Parse(IRdfHandler handler, TextReader input)
         {
-            JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
+            var context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
 
             try
             {
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing
                     // Expect Property Names for Subjects
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
-                        String subjValue = context.Input.Value.ToString();
+                        var subjValue = context.Input.Value.ToString();
                         INode subjNode;
                         if (subjValue.StartsWith("_:"))
                         {
@@ -257,7 +257,7 @@ namespace VDS.RDF.Parsing
                         // Expect Property Names for Predicates
                         if (context.Input.TokenType == JsonToken.PropertyName)
                         {
-                            String predValue = context.Input.Value.ToString();
+                            var predValue = context.Input.Value.ToString();
                             INode predNode = context.Handler.CreateUriNode(UriFactory.Create(predValue));
 
                             ParseObjectList(context, subj, predNode);
@@ -321,7 +321,7 @@ namespace VDS.RDF.Parsing
         /// <param name="pred">Predicate of Triples which comes form the Grandparent Json Object.</param>
         private void ParseObject(JsonParserContext context, INode subj, INode pred)
         {
-            String token, nodeValue, nodeType, nodeLang, nodeDatatype;
+            string token, nodeValue, nodeType, nodeLang, nodeDatatype;
             nodeValue = nodeType = nodeLang = nodeDatatype = null;
 
             PositionInfo startPos = context.CurrentPosition;
@@ -467,9 +467,9 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context.</param>
         /// <param name="message">Error Message.</param>
         /// <returns></returns>
-        private RdfParseException Error(JsonParserContext context, String message)
+        private RdfParseException Error(JsonParserContext context, string message)
         {
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             if (context.Input.HasLineInfo()) 
             {
                 error.Append("[Line " + context.Input.LineNumber + " Column " + context.Input.LinePosition + "] ");
@@ -486,10 +486,10 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Error Message.</param>
         /// <param name="startPos">Start Position.</param>
         /// <returns></returns>
-        private RdfParseException Error(JsonParserContext context, String message, PositionInfo startPos)
+        private RdfParseException Error(JsonParserContext context, string message, PositionInfo startPos)
         {
             PositionInfo info = context.GetPositionRange(startPos);
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             error.Append("[Line " + info.StartLine + " Column " + info.StartPosition + " to Line " + info.EndLine + " Column " + info.EndPosition + "] ");
             error.AppendLine(message);
             throw new RdfParseException(error.ToString(), info);
@@ -499,7 +499,7 @@ namespace VDS.RDF.Parsing
         /// Helper Method for raising the <see cref="RdfJsonParser.Warning">Warning</see> event.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

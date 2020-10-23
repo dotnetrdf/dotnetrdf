@@ -56,14 +56,14 @@ namespace VDS.RDF.Query
         public object ProcessQuery(SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            var start = DateTime.Now;
+            DateTime start = DateTime.Now;
             try
             {
                 return _store.ExecuteQuery(_formatter.Format(query));
             }
             finally
             {
-                var elapsed = (DateTime.Now - start);
+                TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
             }
         }
@@ -77,14 +77,14 @@ namespace VDS.RDF.Query
         public override void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            var start = DateTime.Now;
+            DateTime start = DateTime.Now;
             try
             {
                 _store.ExecuteQuery(rdfHandler, resultsHandler, _formatter.Format(query));
             }
             finally
             {
-                var elapsed = (DateTime.Now - start);
+                TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
             }
         }

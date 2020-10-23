@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Closed : Boolean
     {
         [DebuggerStepThrough]
@@ -56,7 +56,7 @@ namespace VDS.RDF.Shacl.Constraints
                 return true;
             }
 
-            var invalidValues =
+            IEnumerable<Triple> invalidValues =
                 from valueNode in valueNodes
                 from outgoing in valueNode.Graph.GetTriplesWithSubject(valueNode)
                 let property = outgoing.Predicate

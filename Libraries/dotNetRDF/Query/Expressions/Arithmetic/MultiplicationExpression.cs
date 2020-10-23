@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             IValuedNode a = _leftExpr.Evaluate(context, bindingID);
             IValuedNode b = _rightExpr.Evaluate(context, bindingID);
 
-            IValuedNode[] inputs = new IValuedNode[] { a, b };
+            var inputs = new IValuedNode[] { a, b };
             ISparqlOperator op = null;
             if (SparqlOperators.TryGetOperator(SparqlOperatorType.Multiply, context.Options.StrictOperators, out op, inputs))
             {
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + _leftExpr.ToString() + ")");

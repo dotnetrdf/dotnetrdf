@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Ordering
             }
             else
             {
-                int c = _compareFunc(x, y);
+                var c = _compareFunc(x, y);
                 if (c == 0)
                 {
                     if (_child != null)

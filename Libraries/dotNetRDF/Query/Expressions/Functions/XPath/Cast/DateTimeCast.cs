@@ -74,10 +74,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     if (n is DateTimeNode) return n;
                     if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
                     // See if the value can be cast
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
-                        string dt = lit.DataType.ToString();
+                        var dt = lit.DataType.ToString();
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                         {
                             // Already a xsd:dateTime

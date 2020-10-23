@@ -48,8 +48,8 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -66,8 +66,8 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -84,8 +84,8 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            SparqlResultSet results = new SparqlResultSet();
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            var results = new SparqlResultSet();
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -100,8 +100,8 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -118,14 +118,14 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            SparqlResultSet results = new SparqlResultSet();
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            var results = new SparqlResultSet();
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
         public void ParsingSparqlJsonGuid1()
         {
-            String data = @"{
+            var data = @"{
  ""head"" : { ""vars"" : [ ""guid"" ] } ,
  ""results"" : {
   ""bindings"" : [
@@ -134,8 +134,8 @@ namespace VDS.RDF.Parsing
  }
 }";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -153,8 +153,8 @@ namespace VDS.RDF.Parsing
    ""ordered"" : true
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -172,8 +172,8 @@ namespace VDS.RDF.Parsing
    ""ordered"" : true
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -191,8 +191,8 @@ namespace VDS.RDF.Parsing
    ]
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -211,8 +211,8 @@ namespace VDS.RDF.Parsing
    ""extra"" : ""ignored""
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -231,8 +231,8 @@ namespace VDS.RDF.Parsing
    ""extra"" : [ ""ignored"", ""junk"" ]
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -251,8 +251,8 @@ namespace VDS.RDF.Parsing
    ""extra"" : { ""ignored"" : true }
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -271,8 +271,8 @@ namespace VDS.RDF.Parsing
    ""extra"" : { ""ignored"" : { ""foo"" : ""bar"" } }
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -291,8 +291,8 @@ namespace VDS.RDF.Parsing
    ""extra"" : { ""ignored"" : { ""foo"" : [ ""bar"", ""faz"", { ""object"" : ""value"" } ] } }
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(1, results.Count);
         }
@@ -311,9 +311,9 @@ namespace VDS.RDF.Parsing
    ""extra"" : 
  }
 }";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -321,17 +321,17 @@ namespace VDS.RDF.Parsing
         {
             const String data = @"{ ""junk"": ]";
 
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
         public void ParsingSparqlJsonCore423_01()
         {
             const String data = @"{""boolean"": false, ""head"": {""link"": []}}";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
             Assert.False(results.Result);
@@ -341,8 +341,8 @@ namespace VDS.RDF.Parsing
         public void ParsingSparqlJsonCore423_02()
         {
             const String data = @"{""boolean"": true, ""head"": {""link"": []}}";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
             Assert.True(results.Result);
@@ -358,8 +358,8 @@ namespace VDS.RDF.Parsing
    ],
   },
   ""head"": { ""vars"": [ ""x"" ] }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(1, results.Count);
@@ -376,8 +376,8 @@ namespace VDS.RDF.Parsing
    ],
   },
   ""head"": { ""vars"": [ ""x"", ""y"" ] }";
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(1, results.Count);
@@ -394,9 +394,9 @@ namespace VDS.RDF.Parsing
    ],
   },
   ""head"": { ""vars"": [ ""x"" ] }";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -411,9 +411,9 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -428,9 +428,9 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -445,9 +445,9 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -462,9 +462,9 @@ namespace VDS.RDF.Parsing
    ],
   }
 }";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
     }
 }

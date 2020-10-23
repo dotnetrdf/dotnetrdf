@@ -150,7 +150,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                var doc = LoadAndParse(input);
+                THtmlDocument doc = LoadAndParse(input);
 
                 var context = new RdfAParserContext<THtmlDocument>(handler, doc);
                 Parse(context);
@@ -318,7 +318,7 @@ namespace VDS.RDF.Parsing
                 evalContext.LocalVocabulary = new TermMappings();
 
                 // If there's a base element this permanently changes the Base URI
-                var baseEl = GetBaseElement(context.Document);
+                TElement baseEl = GetBaseElement(context.Document);
                 if (baseEl != null)
                 {
                     var uri = GetAttribute(baseEl, "href");
@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
                 context.Syntax = _syntax;
                 if (context.Syntax == RdfASyntax.AutoDetect || context.Syntax == RdfASyntax.AutoDetectLegacy)
                 {
-                    var docNode = GetHtmlElement(context.Document);
+                    TElement docNode = GetHtmlElement(context.Document);
                     if (docNode != null && HasAttribute(docNode, "version"))
                     {
                         var version = GetAttribute(docNode, "version");
@@ -433,7 +433,7 @@ namespace VDS.RDF.Parsing
             var inScopePrefixes = new List<string>();
             Dictionary<string, Uri> hiddenPrefixes = null;
             var lang = evalContext.Language;
-            var oldBase = evalContext.BaseUri;
+            Uri oldBase = evalContext.BaseUri;
             var baseChanged = false;
             var oldLang = lang;
             var langChanged = false;
@@ -442,7 +442,7 @@ namespace VDS.RDF.Parsing
 #region Steps 2-5 of the RDFa Processing Rules
 
             // Locate namespaces and other relevant attributes
-            foreach (var attr in GetAttributes(currElement))
+            foreach (TAttribute attr in GetAttributes(currElement))
             {
                 string uri;
                 if (GetAttributeName(attr).StartsWith("xmlns:"))
@@ -546,7 +546,7 @@ namespace VDS.RDF.Parsing
                             {
                                 if (ParseProfileAttribute(context, evalContext, attr))
                                 {
-                                    foreach (var ns in evalContext.LocalVocabulary.Namespaces)
+                                    foreach (KeyValuePair<string, string> ns in evalContext.LocalVocabulary.Namespaces)
                                     {
                                         uri = Tools.ResolveUri(ns.Value, baseUri);
                                         if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
@@ -711,7 +711,7 @@ namespace VDS.RDF.Parsing
                 INode rdfType = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
                 if (type)
                 {
-                    foreach (var dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
+                    foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
                     {
                         if (!context.Handler.HandleTriple(new Triple(newSubj, rdfType, dtObj))) ParserHelper.Stop();
                     }
@@ -728,14 +728,14 @@ namespace VDS.RDF.Parsing
                 // We can generate some complete triples
                 if (rel)
                 {
-                    foreach (var pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
+                    foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
                     {
                         if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currObj))) ParserHelper.Stop();
                     }
                 }
                 if (rev)
                 {
-                    foreach (var pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rev")))
+                    foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rev")))
                     {
                         if (!context.Handler.HandleTriple(new Triple(currObj, pred, newSubj))) ParserHelper.Stop();
                     }
@@ -747,7 +747,7 @@ namespace VDS.RDF.Parsing
                 var preds = false;
                 if (rel)
                 {
-                    foreach (var pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
+                    foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
                     {
                         preds = true;
                         incomplete.Add(new IncompleteTriple(pred, IncompleteTripleDirection.Forward));
@@ -755,7 +755,7 @@ namespace VDS.RDF.Parsing
                 }
                 if (rev)
                 {
-                    foreach (var pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rev")))
+                    foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rev")))
                     {
                         preds = true;
                         incomplete.Add(new IncompleteTriple(pred, IncompleteTripleDirection.Reverse));
@@ -812,7 +812,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Value is concatentation of child text nodes
                             var lit = new StringBuilder();
-                            foreach (var n in GetChildren(currElement))
+                            foreach (TNode n in GetChildren(currElement))
                             {
                                 GrabText(lit, n);
                             }
@@ -823,7 +823,7 @@ namespace VDS.RDF.Parsing
                     {
                         // It's an XML Literal - this is now RDFa 1.0 Only
                         // This is an incompatability with RDFa 1.1
-                        foreach (var child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
+                        foreach (TElement child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
@@ -854,7 +854,7 @@ namespace VDS.RDF.Parsing
                     {
                         // Value is concatenation of all Text Child Nodes
                         var lit = new StringBuilder();
-                        foreach (var n in GetChildren(currElement).Where(IsTextNode))
+                        foreach (TNode n in GetChildren(currElement).Where(IsTextNode))
                         {
                             lit.Append(GetInnerText(n));
                         }
@@ -863,7 +863,7 @@ namespace VDS.RDF.Parsing
                     else if (!datatype || (datatype && GetAttribute(currElement, "datatype").Equals(string.Empty)))
                     {
                         // Value is an XML Literal
-                        foreach (var child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
+                        foreach (TElement child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
@@ -874,7 +874,7 @@ namespace VDS.RDF.Parsing
                 // Get the Properties which we are connecting this literal with
                 if (currLiteral != null)
                 {
-                    foreach (var pred in ParseAttribute(context, evalContext, GetAttribute(currElement, "property")))
+                    foreach (INode pred in ParseAttribute(context, evalContext, GetAttribute(currElement, "property")))
                     {
                         if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currLiteral))) ParserHelper.Stop();
                     }
@@ -888,7 +888,7 @@ namespace VDS.RDF.Parsing
             // Complete incomplete Triples if this is possible
             if (!skip && newSubj != null && evalContext.ParentSubject != null)
             {
-                foreach (var i in evalContext.IncompleteTriples)
+                foreach (IncompleteTriple i in evalContext.IncompleteTriples)
                 {
                     if (i.Direction == IncompleteTripleDirection.Forward)
                     {
@@ -919,7 +919,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        var newBase = (baseUri.Equals(string.Empty)) ? null : UriFactory.Create(baseUri);
+                        Uri newBase = (baseUri.Equals(string.Empty)) ? null : UriFactory.Create(baseUri);
                         newEvalContext = new RdfAEvaluationContext(newBase, evalContext.NamespaceMap);
                         // Set the Parent Subject for the new Context
                         if (newSubj != null)
@@ -950,7 +950,7 @@ namespace VDS.RDF.Parsing
                     newEvalContext.LocalVocabulary = new TermMappings(evalContext.LocalVocabulary);
 
                     // Iterate over the Nodes
-                    foreach (var element in GetChildren(currElement).OfType<TElement>())
+                    foreach (TElement element in GetChildren(currElement).OfType<TElement>())
                     {
                         ProcessElement(context, newEvalContext, element);
                     }
@@ -1203,7 +1203,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    var n = ResolveTermOrCurieOrUri(context, evalContext, val);
+                    INode n = ResolveTermOrCurieOrUri(context, evalContext, val);
                     nodes.Add(n);
                 }
                 catch
@@ -1241,7 +1241,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    var n = ResolveCurie(context, evalContext, val);
+                    INode n = ResolveCurie(context, evalContext, val);
                     nodes.Add(n);
                 }
                 catch
@@ -1383,10 +1383,10 @@ namespace VDS.RDF.Parsing
                         if (results is SparqlResultSet)
                         {
                             var rset = (SparqlResultSet)results;
-                            foreach (var r in rset.Results)
+                            foreach (SparqlResult r in rset.Results)
                             {
-                                var prefixNode = r["NamespacePrefix"];
-                                var nsNode = r["NamespaceURI"];
+                                INode prefixNode = r["NamespacePrefix"];
+                                INode nsNode = r["NamespaceURI"];
                                 if (prefixNode.NodeType == NodeType.Literal && nsNode.NodeType == NodeType.Literal)
                                 {
                                     var prefix = ((ILiteralNode)prefixNode).Value.ToLower();
@@ -1401,10 +1401,10 @@ namespace VDS.RDF.Parsing
                         if (results is SparqlResultSet)
                         {
                             var rset = (SparqlResultSet)results;
-                            foreach (var r in rset.Results)
+                            foreach (SparqlResult r in rset.Results)
                             {
-                                var termNode = r["Term"];
-                                var uriNode = r["URI"];
+                                INode termNode = r["Term"];
+                                INode uriNode = r["URI"];
                                 if (termNode.NodeType == NodeType.Literal && uriNode.NodeType == NodeType.Literal)
                                 {
                                     var term = ((ILiteralNode)termNode).Value;
@@ -1486,7 +1486,7 @@ namespace VDS.RDF.Parsing
             }
 
             // Recurse on any child nodes
-            foreach (var child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
+            foreach (TElement child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
             {
                 ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
             }

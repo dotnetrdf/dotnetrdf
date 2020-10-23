@@ -50,10 +50,10 @@ namespace VDS.RDF.Web.Configuration.Resource
             if (graphNode == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the required dnr:usingGraph property does not exist");
 
             // Load the Graph
-            Object temp = ConfigurationLoader.LoadObject(g, graphNode);
+            var temp = ConfigurationLoader.LoadObject(g, graphNode);
             if (temp is IGraph)
             {
-                this._g = (IGraph)temp;
+                _g = (IGraph)temp;
             }
             else
             {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Web.Configuration.Resource
         {
             get
             {
-                return this._g;
+                return _g;
             }
         }
 
@@ -79,11 +79,11 @@ namespace VDS.RDF.Web.Configuration.Resource
         {
             get
             {
-                return this._etag;
+                return _etag;
             }
             set
             {
-                this._etag = value;
+                _etag = value;
             }
         }
     }

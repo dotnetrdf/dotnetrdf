@@ -499,7 +499,7 @@ namespace VDS.RDF
             else
             {
                 // Prepare a mapping of Blank Nodes to Blank Nodes
-                Dictionary<INode, IBlankNode> mapping = new Dictionary<INode, IBlankNode>();
+                var mapping = new Dictionary<INode, IBlankNode>();
 
                 foreach (Triple t in g.Triples)
                 {
@@ -583,7 +583,7 @@ namespace VDS.RDF
 
             if (obj is IGraph g)
             {
-                return Equals(g, out var temp);
+                return Equals(g, out Dictionary<INode, INode> temp);
             }
 
             // Graphs can only be equal to other Graphs
@@ -604,7 +604,7 @@ namespace VDS.RDF
             // Set the mapping to be null
             mapping = null;
 
-            GraphMatcher matcher = new GraphMatcher();
+            var matcher = new GraphMatcher();
             if (matcher.Equals(this, g))
             {
                 mapping = matcher.Mapping;
@@ -627,7 +627,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool IsSubGraphOf(IGraph g)
         {
-            return IsSubGraphOf(g, out var temp);
+            return IsSubGraphOf(g, out Dictionary<INode, INode> temp);
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace VDS.RDF
             // Set the mapping to be null
             mapping = null;
 
-            SubGraphMatcher matcher = new SubGraphMatcher();
+            var matcher = new SubGraphMatcher();
             if (matcher.IsSubGraph(this, g))
             {
                 mapping = matcher.Mapping;
@@ -690,7 +690,7 @@ namespace VDS.RDF
         /// </remarks>
         public GraphDiffReport Difference(IGraph g)
         {
-            GraphDiff differ = new GraphDiff();
+            var differ = new GraphDiff();
             return differ.Difference(this, g);
         }
 
@@ -791,8 +791,8 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         protected void RaiseTripleAsserted(Triple t)
         {
-            var d = TripleAsserted;
-            var e = Changed;
+            TripleEventHandler d = TripleAsserted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 var args = new TripleEventArgs(t, this);
@@ -817,7 +817,7 @@ namespace VDS.RDF
         /// <param name="args"></param>
         protected void RaiseTripleRetracted(TripleEventArgs args)
         {
-            var d = TripleRetracted;
+            TripleEventHandler d = TripleRetracted;
             args.Graph = this;
             d?.Invoke(this, args);
             RaiseGraphChanged(args);
@@ -829,8 +829,8 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         protected void RaiseTripleRetracted(Triple t)
         {
-            var d = TripleRetracted;
-            var e = Changed;
+            TripleEventHandler d = TripleRetracted;
+            GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
                 var args = new TripleEventArgs(t, this, false);
@@ -865,7 +865,7 @@ namespace VDS.RDF
             CancellableGraphEventHandler d = ClearRequested;
             if (d != null)
             {
-                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
+                var args = new CancellableGraphEventArgs(this);
                 d(this, args);
                 return !args.Cancel;
             }
@@ -892,7 +892,7 @@ namespace VDS.RDF
             CancellableGraphEventHandler d = MergeRequested;
             if (d != null)
             {
-                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
+                var args = new CancellableGraphEventArgs(this);
                 d(this, args);
                 return !args.Cancel;
             }

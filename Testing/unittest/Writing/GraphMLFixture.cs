@@ -37,12 +37,12 @@ namespace VDS.RDF.Writing
 
         public GraphMLFixture()
         {
-            this.Output = new XDocument();
-            this.Input = GraphMLFixture.Load();
+            Output = new XDocument();
+            Input = GraphMLFixture.Load();
 
-            using (var outputWriter = this.Output.CreateWriter())
+            using (var outputWriter = Output.CreateWriter())
             {
-                new GraphMLWriter().Save(this.Input, outputWriter);
+                new GraphMLWriter().Save(Input, outputWriter);
             }
         }
 
@@ -64,7 +64,7 @@ namespace VDS.RDF.Writing
 
         internal XElement GraphElementByBaseUri(Uri baseUri)
         {
-            var graphElements = this.Output.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS));
+            var graphElements = Output.Descendants(XName.Get(GraphMLSpecsHelper.Graph, GraphMLSpecsHelper.NS));
 
             if (baseUri == null)
             {

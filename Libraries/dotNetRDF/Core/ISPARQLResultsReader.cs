@@ -51,7 +51,7 @@ namespace VDS.RDF
         /// <param name="results">Result Set to load into.</param>
         /// <returns></returns>
         /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
-        void Load(SparqlResultSet results, String filename);
+        void Load(SparqlResultSet results, string filename);
 
         /// <summary>
         /// Loads a Result Set from the given Input.
@@ -74,7 +74,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="handler">Results Handler.</param>
         /// <param name="filename">File to read results from.</param>
-        void Load(ISparqlResultsHandler handler, String filename);
+        void Load(ISparqlResultsHandler handler, string filename);
 
         /// <summary>
         /// Loads a Result Set using a Results Handler from the given Input.

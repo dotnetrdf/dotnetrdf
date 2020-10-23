@@ -233,7 +233,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            String silent = (_silent) ? "SILENT " : String.Empty;
+            var silent = (_silent) ? "SILENT " : string.Empty;
             switch (_mode)
             {
                 case ClearMode.All:

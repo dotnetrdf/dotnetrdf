@@ -61,8 +61,8 @@ namespace VDS.RDF.Parsing.Suites
 
         private void RunManifests()
         {
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
+            RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);
+            RunDirectory(f => Path.GetExtension(f).Equals(".xml") && f.Contains("bad"), false);
         }
     }
 }

@@ -44,26 +44,26 @@ namespace VDS.RDF.Query
 
         public OperatorTests()
         {
-            this._numArgs = new List<IValuedNode>()
+            _numArgs = new List<IValuedNode>()
             {
                 new LongNode(null, 12345),
                 new DecimalNode(null, 123.45m),
                 new FloatNode(null, 123.45f),
                 new DoubleNode(null, 123.45d)
             };
-            this._someNullArgs = new List<IValuedNode>()
+            _someNullArgs = new List<IValuedNode>()
             {
                 new LongNode(null, 12345),
                 null,
                 new BooleanNode(null, false),
                 null
             };
-            this._dtArgs = new List<IValuedNode>()
+            _dtArgs = new List<IValuedNode>()
             {
                 new DateTimeNode(null, DateTimeOffset.Now),
                 new TimeSpanNode(null, new TimeSpan(0, 1, 30))
             };
-            this._tsArgs = new List<IValuedNode>()
+            _tsArgs = new List<IValuedNode>()
             {
                 new TimeSpanNode(null, new TimeSpan(1, 0, 0)),
                 new TimeSpanNode(null, new TimeSpan(0, 30, 0)),
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
         private void TestStrictLookup(SparqlOperatorType opType, Type returnedOpInstanceType,
             IEnumerable<IValuedNode> ns, bool opExists)
         {
-            this.TestLookup(opType, true, returnedOpInstanceType, ns, opExists);
+            TestLookup(opType, true, returnedOpInstanceType, ns, opExists);
         }
 
         private void TestApplication(SparqlOperatorType opType, bool strict, IEnumerable<IValuedNode> ns,
@@ -120,575 +120,575 @@ namespace VDS.RDF.Query
         private void TestStrictApplication(SparqlOperatorType opType, IEnumerable<IValuedNode> ns, IValuedNode expected,
             bool shouldFail)
         {
-            this.TestApplication(opType, true, ns, expected, shouldFail);
+            TestApplication(opType, true, ns, expected, shouldFail);
         }
 
         [Fact]
         public void SparqlOperatorLookup1()
         {
-            this.TestLookup(SparqlOperatorType.Add, false, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Add, false, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Add, false, typeof(AdditionOperator), this._numArgs, true);
+            TestLookup(SparqlOperatorType.Add, false, null, Enumerable.Empty<IValuedNode>(), false);
+            TestLookup(SparqlOperatorType.Add, false, null, _someNullArgs, false);
+            TestLookup(SparqlOperatorType.Add, false, typeof(AdditionOperator), _numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup2()
         {
-            this.TestLookup(SparqlOperatorType.Subtract, false, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Subtract, false, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Subtract, false, typeof(SubtractionOperator), this._numArgs, true);
+            TestLookup(SparqlOperatorType.Subtract, false, null, Enumerable.Empty<IValuedNode>(), false);
+            TestLookup(SparqlOperatorType.Subtract, false, null, _someNullArgs, false);
+            TestLookup(SparqlOperatorType.Subtract, false, typeof(SubtractionOperator), _numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup3()
         {
-            this.TestLookup(SparqlOperatorType.Divide, false, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Divide, false, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Divide, false, typeof(DivisionOperator), this._numArgs, true);
+            TestLookup(SparqlOperatorType.Divide, false, null, Enumerable.Empty<IValuedNode>(), false);
+            TestLookup(SparqlOperatorType.Divide, false, null, _someNullArgs, false);
+            TestLookup(SparqlOperatorType.Divide, false, typeof(DivisionOperator), _numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup4()
         {
-            this.TestLookup(SparqlOperatorType.Multiply, false, null, Enumerable.Empty<IValuedNode>(), false);
-            this.TestLookup(SparqlOperatorType.Multiply, false, null, this._someNullArgs, false);
-            this.TestLookup(SparqlOperatorType.Multiply, false, typeof(MultiplicationOperator), this._numArgs, true);
+            TestLookup(SparqlOperatorType.Multiply, false, null, Enumerable.Empty<IValuedNode>(), false);
+            TestLookup(SparqlOperatorType.Multiply, false, null, _someNullArgs, false);
+            TestLookup(SparqlOperatorType.Multiply, false, typeof(MultiplicationOperator), _numArgs, true);
         }
 
         [Fact]
         public void SparqlOperatorLookup5()
         {
-            this.TestLookup(SparqlOperatorType.Add, false, typeof(DateTimeAddition), this._dtArgs, true);
-            this.TestStrictLookup(SparqlOperatorType.Add, null, this._dtArgs, false);
+            TestLookup(SparqlOperatorType.Add, false, typeof(DateTimeAddition), _dtArgs, true);
+            TestStrictLookup(SparqlOperatorType.Add, null, _dtArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorLookup6()
         {
-            this.TestLookup(SparqlOperatorType.Subtract, false, typeof(DateTimeSubtraction), this._dtArgs, true);
-            this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._dtArgs, false);
+            TestLookup(SparqlOperatorType.Subtract, false, typeof(DateTimeSubtraction), _dtArgs, true);
+            TestStrictLookup(SparqlOperatorType.Subtract, null, _dtArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorLookup7()
         {
-            this.TestLookup(SparqlOperatorType.Add, false, typeof(TimeSpanAddition), this._tsArgs, true);
-            this.TestStrictLookup(SparqlOperatorType.Add, null, this._tsArgs, false);
+            TestLookup(SparqlOperatorType.Add, false, typeof(TimeSpanAddition), _tsArgs, true);
+            TestStrictLookup(SparqlOperatorType.Add, null, _tsArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorLookup8()
         {
-            this.TestLookup(SparqlOperatorType.Subtract, false, typeof(TimeSpanSubtraction), this._tsArgs, true);
-            this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._tsArgs, false);
+            TestLookup(SparqlOperatorType.Subtract, false, typeof(TimeSpanSubtraction), _tsArgs, true);
+            TestStrictLookup(SparqlOperatorType.Subtract, null, _tsArgs, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric1()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new LongNode(null, 2)
             };
             IValuedNode expected = new LongNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric2()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric3()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric4()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric5()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric6()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric7()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DoubleNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric8()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric9()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddNumeric10()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DoubleNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 3);
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric1()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new LongNode(null, 2)
             };
             IValuedNode expected = new LongNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric2()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new LongNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric3()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric4()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric5()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric6()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric7()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric8()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric9()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractNumeric10()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DoubleNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, -1);
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric1()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new LongNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 0.5m);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric2()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 0.5m);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric3()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 0.5f);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric4()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric5()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new DecimalNode(null, 2)
             };
             IValuedNode expected = new DecimalNode(null, 0.5m);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric6()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 0.5f);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric7()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric8()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new FloatNode(null, 2)
             };
             IValuedNode expected = new FloatNode(null, 0.5f);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric9()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationDivideNumeric10()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DoubleNode(null, 1),
                 new DoubleNode(null, 2)
             };
             IValuedNode expected = new DoubleNode(null, 0.5d);
-            this.TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric1()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 3),
                 new LongNode(null, 6)
             };
             IValuedNode expected = new LongNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric2()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 3),
                 new DecimalNode(null, 6)
             };
             IValuedNode expected = new DecimalNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric3()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 3),
                 new FloatNode(null, 6)
             };
             IValuedNode expected = new FloatNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric4()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new LongNode(null, 3),
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric5()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 3),
                 new DecimalNode(null, 6)
             };
             IValuedNode expected = new DecimalNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric6()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 3),
                 new FloatNode(null, 6)
             };
             IValuedNode expected = new FloatNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric7()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DecimalNode(null, 3),
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric8()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 3),
                 new FloatNode(null, 6)
             };
             IValuedNode expected = new FloatNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric9()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new FloatNode(null, 3),
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationMultiplyNumeric10()
         {
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DoubleNode(null, 3),
                 new DoubleNode(null, 6)
             };
             IValuedNode expected = new DoubleNode(null, 18);
-            this.TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
+            TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
         [Fact]
         public void SparqlOperatorApplicationAddDateTime1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DateTimeNode(null, now),
                 new TimeSpanNode(null, new TimeSpan(1, 0, 0))
             };
             IValuedNode expected = new DateTimeNode(null, now.AddHours(1));
-            this.TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
-            this.TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
+            TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
+            TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
         }
 
         [Fact]
         public void SparqlOperatorApplicationSubtractDateTime1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
-            List<IValuedNode> ns = new List<IValuedNode>()
+            var ns = new List<IValuedNode>()
             {
                 new DateTimeNode(null, now),
                 new TimeSpanNode(null, new TimeSpan(1, 0, 0))
             };
             IValuedNode expected = new DateTimeNode(null, now.AddHours(-1));
-            this.TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
-            this.TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
+            TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
+            TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
         }
 
         [Fact]
@@ -696,7 +696,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                MockSparqlOperator op = new MockSparqlOperator();
+                var op = new MockSparqlOperator();
                 SparqlOperators.AddOperator(op);
                 Assert.True(SparqlOperators.IsRegistered(op));
                 SparqlOperators.RemoveOperator(op);
@@ -713,7 +713,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                MockSparqlOperator op = new MockSparqlOperator();
+                var op = new MockSparqlOperator();
                 SparqlOperators.AddOperator(op);
                 Assert.True(SparqlOperators.IsRegistered(op));
                 SparqlOperators.RemoveOperatorByType(new MockSparqlOperator());
@@ -730,7 +730,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                MockSparqlOperator op = new MockSparqlOperator();
+                var op = new MockSparqlOperator();
                 SparqlOperators.AddOperator(op);
                 Assert.True(SparqlOperators.IsRegistered(op));
                 SparqlOperators.Reset();

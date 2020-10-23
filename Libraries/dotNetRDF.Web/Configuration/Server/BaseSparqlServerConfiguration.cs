@@ -232,7 +232,7 @@ namespace VDS.RDF.Web.Configuration.Server
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryProcessor)));
             if (procNode != null)
             {
-                object temp = ConfigurationLoader.LoadObject(g, procNode);
+                var temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlQueryProcessor)
                 {
                     _queryProcessor = (ISparqlQueryProcessor)temp;
@@ -250,13 +250,13 @@ namespace VDS.RDF.Web.Configuration.Server
 
             // Handler Configuration
             _showQueryForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowQueryForm)), _showQueryForm);
-            string defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
+            var defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultQueryFile)));
             if (defQueryFile != null)
             {
                 defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
                 if (File.Exists(defQueryFile))
                 {
-                    using (StreamReader reader = new StreamReader(defQueryFile))
+                    using (var reader = new StreamReader(defQueryFile))
                     {
                         _defaultQuery = reader.ReadToEnd();
                         reader.Close();
@@ -267,7 +267,7 @@ namespace VDS.RDF.Web.Configuration.Server
             // Get Query Syntax to use
             try
             {
-                string syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
+                var syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertySyntax)));
                 if (syntaxSetting != null)
                 {
                     _syntax = (SparqlQuerySyntax)Enum.Parse(typeof(SparqlQuerySyntax), syntaxSetting);
@@ -284,10 +284,10 @@ namespace VDS.RDF.Web.Configuration.Server
             {
                 if (describeNode.NodeType == NodeType.Literal)
                 {
-                    string algoClass = ((ILiteralNode)describeNode).Value;
+                    var algoClass = ((ILiteralNode)describeNode).Value;
                     try
                     {
-                        object desc = Activator.CreateInstance(Type.GetType(algoClass));
+                        var desc = Activator.CreateInstance(Type.GetType(algoClass));
                         if (desc is ISparqlDescribe)
                         {
                             _describer = (ISparqlDescribe)desc;
@@ -312,7 +312,7 @@ namespace VDS.RDF.Web.Configuration.Server
             INode queryOptNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryOptimiser)));
             if (queryOptNode != null)
             {
-                object queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
+                var queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
                 if (queryOpt is IQueryOptimiser)
                 {
                     _queryOptimiser = (IQueryOptimiser)queryOpt;
@@ -326,7 +326,7 @@ namespace VDS.RDF.Web.Configuration.Server
             // Get the Algebra Optimisers
             foreach (INode algOptNode in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAlgebraOptimiser))))
             {
-                object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
+                var algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
                 if (algOpt is IAlgebraOptimiser)
                 {
                     _algebraOptimisers.Add((IAlgebraOptimiser)algOpt);
@@ -341,7 +341,7 @@ namespace VDS.RDF.Web.Configuration.Server
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode != null)
             {
-                object temp = ConfigurationLoader.LoadObject(g, procNode);
+                var temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlUpdateProcessor)
                 {
                     _updateProcessor = (ISparqlUpdateProcessor)temp;
@@ -354,13 +354,13 @@ namespace VDS.RDF.Web.Configuration.Server
 
             // Handler Settings
             _showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), _showUpdateForm);
-            string defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
+            var defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
             if (defUpdateFile != null)
             {
                 defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
                 if (File.Exists(defUpdateFile))
                 {
-                    using (StreamReader reader = new StreamReader(defUpdateFile))
+                    using (var reader = new StreamReader(defUpdateFile))
                     {
                         _defaultUpdate = reader.ReadToEnd();
                         reader.Close();
@@ -372,7 +372,7 @@ namespace VDS.RDF.Web.Configuration.Server
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProtocolProcessor)));
             if (procNode != null)
             {
-                object temp = ConfigurationLoader.LoadObject(g, procNode);
+                var temp = ConfigurationLoader.LoadObject(g, procNode);
                 if (temp is ISparqlHttpProtocolProcessor)
                 {
                     _protocolProcessor = (ISparqlHttpProtocolProcessor)temp;
@@ -392,7 +392,7 @@ namespace VDS.RDF.Web.Configuration.Server
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
-                object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                var descrip = ConfigurationLoader.LoadObject(g, descripNode);
                 if (descrip is IGraph)
                 {
                     _serviceDescription = (IGraph)descrip;

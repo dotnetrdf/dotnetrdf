@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Creates a new Beginning of File Token.
         /// </summary>
-        public BOFToken() : base(Token.BOF, String.Empty, 1, 1, 1, 1) { }
+        public BOFToken() : base(Token.BOF, string.Empty, 1, 1, 1, 1) { }
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line at which the File Ends.</param>
         /// <param name="pos">Column as which the File Ends.</param>
-        public EOFToken(int line, int pos) : base(Token.EOF, String.Empty, line, line, pos, pos) { }
+        public EOFToken(int line, int pos) : base(Token.EOF, string.Empty, line, line, pos, pos) { }
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line.</param>
         /// <param name="pos">Column at which the line ends.</param>
-        public EOLToken(int line, int pos) : base(Token.EOL, String.Empty, line, line, pos, pos+1) { }
+        public EOLToken(int line, int pos) : base(Token.EOL, string.Empty, line, line, pos, pos+1) { }
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line on which the Comment occurs.</param>
         /// <param name="start">Column at which the Comment starts.</param>
         /// <param name="end">Column at which the Comment ends.</param>
-        public CommentToken(String value, int line, int start, int end) : base(Token.COMMENT, value, line, line, start, end) { }
+        public CommentToken(string value, int line, int start, int end) : base(Token.COMMENT, value, line, line, start, end) { }
     }
 
     /// <summary>
@@ -363,7 +363,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line at which the Prefix occurs.</param>
         /// <param name="start">Column at which the Prefix starts.</param>
         /// <param name="end">Column at which the Prefix ends.</param>
-        public PrefixToken(String value, int line, int start, int end) : base(Token.PREFIX, value, line, line, start, end) { }
+        public PrefixToken(string value, int line, int start, int end) : base(Token.PREFIX, value, line, line, start, end) { }
     }
 
     /// <summary>
@@ -434,7 +434,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Uri occurs on.</param>
         /// <param name="start">Column the Uri starts at.</param>
         /// <param name="end">Column the Uri ends at.</param>
-        public UriToken(String value, int line, int start, int end) : base(Token.URI, value.Substring(1, value.Length - 2), line, line, start + 1, end - 1) { }
+        public UriToken(string value, int line, int start, int end) : base(Token.URI, value.Substring(1, value.Length - 2), line, line, start + 1, end - 1) { }
     }
 
     /// <summary>
@@ -449,7 +449,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the QName occurs on.</param>
         /// <param name="start">Column the QName starts at.</param>
         /// <param name="end">Column the QName ends at.</param>
-        public QNameToken(String value, int line, int start, int end) : base(Token.QNAME, value, line, line, start, end) { }
+        public QNameToken(string value, int line, int start, int end) : base(Token.QNAME, value, line, line, start, end) { }
     }
 
 #endregion
@@ -468,7 +468,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Literal occurs on.</param>
         /// <param name="start">Column the Literal starts at.</param>
         /// <param name="end">Column the Literal ends at.</param>
-        public PlainLiteralToken(String value, int line, int start, int end) : base(Token.PLAINLITERAL, value, line, line, start, end) { }
+        public PlainLiteralToken(string value, int line, int start, int end) : base(Token.PLAINLITERAL, value, line, line, start, end) { }
     }
 
     /// <summary>
@@ -483,7 +483,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Literal occurs on.</param>
         /// <param name="start">Column the Literal starts at.</param>
         /// <param name="end">Column the Literal ends at.</param>
-        public LiteralToken(String value, int line, int start, int end) : base(Token.LITERAL, value.Substring(1, value.Length - 2), line, line, start, end) { }
+        public LiteralToken(string value, int line, int start, int end) : base(Token.LITERAL, value.Substring(1, value.Length - 2), line, line, start, end) { }
 
         /// <summary>
         /// Creates a new Literal Token.
@@ -496,7 +496,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <remarks>
         /// Most syntaxes use different deliminators for multiline literals and will usually use a <see cref="LongLiteralToken">LongLiteralToken</see> instead but some formats like CSV only use quotes for multiline literals and use no delimitors for single line literals.
         /// </remarks>
-        public LiteralToken(String value, int startLine, int endLine, int start, int end) : base(Token.LITERAL, value.Substring(1, value.Length - 2), startLine, endLine, start, end) { }
+        public LiteralToken(string value, int startLine, int endLine, int start, int end) : base(Token.LITERAL, value.Substring(1, value.Length - 2), startLine, endLine, start, end) { }
     }
 
     /// <summary>
@@ -512,7 +512,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="endLine">Line the Long Literal ends on.</param>
         /// <param name="start">Column the Literal starts at.</param>
         /// <param name="end">Column the Literal ends at.</param>
-        public LongLiteralToken(String value, int startLine, int endLine, int start, int end) : base(Token.LONGLITERAL, value.Substring(3, value.Length-6), startLine, endLine, start, end) { }
+        public LongLiteralToken(string value, int startLine, int endLine, int start, int end) : base(Token.LONGLITERAL, value.Substring(3, value.Length-6), startLine, endLine, start, end) { }
 }
 
     /// <summary>
@@ -527,7 +527,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Literal occurs on.</param>
         /// <param name="start">Column the Literal starts at.</param>
         /// <param name="end">Column the Literal ends at.</param>
-        public LanguageSpecifierToken(String value, int line, int start, int end) : base(Token.LANGSPEC, value, line, line, start, end) { }
+        public LanguageSpecifierToken(string value, int line, int start, int end) : base(Token.LANGSPEC, value, line, line, start, end) { }
     }
 
     /// <summary>
@@ -542,7 +542,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the DataType occurs on.</param>
         /// <param name="start">Column the DataType starts at.</param>
         /// <param name="end">Column the DataType ends at.</param>
-        public DataTypeToken(String value, int line, int start, int end) : base(Token.DATATYPE, value, line, line, start, end) { }
+        public DataTypeToken(string value, int line, int start, int end) : base(Token.DATATYPE, value, line, line, start, end) { }
     }
 
     /// <summary>
@@ -550,7 +550,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class LiteralWithLanguageSpecifierToken : BaseToken
     {
-        private String _lang;
+        private string _lang;
 
         /// <summary>
         /// Creates a new Literal with Language Specifier Token.
@@ -566,7 +566,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// The Language Specifier for this Literal.
         /// </summary>
-        public String Language
+        public string Language
         {
             get
             {
@@ -581,7 +581,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class LiteralWithDataTypeToken : BaseToken
     {
-        private String _datatype;
+        private string _datatype;
 
         /// <summary>
         /// Creates a new Literal with DataType Token.
@@ -596,7 +596,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// The Data Type Uri/QName for this Literal.
         /// </summary>
-        public String DataType
+        public string DataType
         {
             get
             {
@@ -620,7 +620,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="endLine">Line the Graph Literal ends on.</param>
         /// <param name="startPos">Column the Graph Literal starts at.</param>
         /// <param name="endPos">Column the Graph Literal ends at.</param>
-        public GraphLiteralToken(String value, int startLine, int endLine, int startPos, int endPos)
+        public GraphLiteralToken(string value, int startLine, int endLine, int startPos, int endPos)
             : base(Token.GRAPHLITERAL, value, startLine, endLine, startPos, endPos)
         {
         }
@@ -656,7 +656,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Blank Node occurs on.</param>
         /// <param name="start">Column the Blank Node starts at.</param>
         /// <param name="end">Column the Blank Node ends at.</param>
-        public BlankNodeWithIDToken(String value, int line, int start, int end) : base(Token.BLANKNODEWITHID, value, line, line, start, end) { }
+        public BlankNodeWithIDToken(string value, int line, int start, int end) : base(Token.BLANKNODEWITHID, value, line, line, start, end) { }
      }
 
     /// <summary>
@@ -786,7 +786,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on.</param>
         /// <param name="start">Column the Keyword starts at.</param>
         /// <param name="end">Column the Keyword ends at.</param>
-        public CustomKeywordToken(String value, int line, int start, int end) : base(Token.KEYWORDCUSTOM, value, line, line, start, end) { }
+        public CustomKeywordToken(string value, int line, int start, int end) : base(Token.KEYWORDCUSTOM, value, line, line, start, end) { }
     }
 
     /// <summary>
@@ -801,7 +801,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on.</param>
         /// <param name="start">Column the Keyword starts at.</param>
         /// <param name="end">Column the Keyword ends at.</param>
-        public CustomKeywordDefinitionToken(String value, int line, int start, int end) : base(Token.KEYWORDDEF, value, line, line, start, end) { }
+        public CustomKeywordDefinitionToken(string value, int line, int start, int end) : base(Token.KEYWORDDEF, value, line, line, start, end) { }
     }
 
 #endregion
@@ -820,12 +820,12 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Variable occurs on.</param>
         /// <param name="start">Column the Variable starts at.</param>
         /// <param name="end">Column the Variable ends at.</param>
-        public VariableToken(String value, int line, int start, int end) : base(Token.VARIABLE, value, line, line, start, end) { }
+        public VariableToken(string value, int line, int start, int end) : base(Token.VARIABLE, value, line, line, start, end) { }
     }
 
     class PlaceholderToken : BaseToken
     {
-        public PlaceholderToken(String value, int line, int pos) : base(-1, value, line, line, pos, pos + value.Length) { }
+        public PlaceholderToken(string value, int line, int pos) : base(-1, value, line, line, pos, pos + value.Length) { }
     }
 
 #endregion

@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
+                        var lit = (ILiteralNode)result;
                         if (lit.DataType == null)
                         {
                             if (!lit.Language.Equals(string.Empty))
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
+                        var lit = (ILiteralNode)result;
                         if (lit.DataType == null)
                         {
                             if (!lit.Language.Equals(string.Empty))

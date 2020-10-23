@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
@@ -33,7 +34,7 @@ namespace VDS.RDF.Writing.Formatting
         public static string EscapeUriString(string uriString)
         {
             var builder = new StringBuilder();
-            using (var enumerator = uriString.GetEnumerator())
+            using (CharEnumerator enumerator = uriString.GetEnumerator())
             {
                 while (enumerator.MoveNext())
                 {

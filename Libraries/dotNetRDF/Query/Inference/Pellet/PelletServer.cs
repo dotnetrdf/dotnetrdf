@@ -38,13 +38,13 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// </summary>
     public class PelletServer
     {
-        private String _serverUri;
+        private string _serverUri;
         private List<KnowledgeBase> _kbs = new List<KnowledgeBase>();
 
         /// <summary>
         /// Preferred MIME Type for the format to retrieve the Server Description in.
         /// </summary>
-        private const String ServerDescriptionFormat = "text/json";
+        private const string ServerDescriptionFormat = "text/json";
 
         /// <summary>
         /// Creates a new connection to a Pellet Server.
@@ -63,10 +63,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// Creates a new connection to a Pellet Server.
         /// </summary>
         /// <param name="serverUri">Server URI.</param>
-        public PelletServer(String serverUri)
+        public PelletServer(string serverUri)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
-            if (serverUri.Equals(String.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
+            if (serverUri.Equals(string.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
             _serverUri = serverUri;
             if (!_serverUri.EndsWith("/")) _serverUri += "/";
 
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="serverUri">Server URI.</param>
         /// <param name="callback">Callback to invoke when the connection is ready.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public static void Connect(Uri serverUri, PelletServerReadyCallback callback, Object state)
+        public static void Connect(Uri serverUri, PelletServerReadyCallback callback, object state)
         {
             new PelletServer(serverUri, callback, state);
         }
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="serverUri">Server URI.</param>
         /// <param name="callback">Callback to invoke when the connection is ready.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public static void Connect(String serverUri, PelletServerReadyCallback callback, Object state)
+        public static void Connect(string serverUri, PelletServerReadyCallback callback, object state)
         {
             new PelletServer(serverUri, callback, state);
         }
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="serverUri">Server URI.</param>
         /// <param name="callback">Callback to invoke when the connection is ready.</param>
         /// <param name="state">State to pass to the callback.</param>
-        private PelletServer(Uri serverUri, PelletServerReadyCallback callback, Object state)
+        private PelletServer(Uri serverUri, PelletServerReadyCallback callback, object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
             _serverUri = serverUri.AbsoluteUri;
@@ -116,10 +116,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="serverUri">Server URI.</param>
         /// <param name="callback">Callback to invoke when the connection is ready.</param>
         /// <param name="state">State to pass to the callback.</param>
-        private PelletServer(String serverUri, PelletServerReadyCallback callback, Object state)
+        private PelletServer(string serverUri, PelletServerReadyCallback callback, object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
-            if (serverUri.Equals(String.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
+            if (serverUri.Equals(string.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
             _serverUri = serverUri;
             if (!_serverUri.EndsWith("/")) _serverUri += "/";
 
@@ -134,14 +134,14 @@ namespace VDS.RDF.Query.Inference.Pellet
             try
             {
                 // Make the request to the Server Root URL to get the JSON description of the server
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serverUri);
+                var request = (HttpWebRequest)WebRequest.Create(_serverUri);
                 request.Method = "GET";
                 request.Accept = ServerDescriptionFormat;
 
                 // Get the response and parse the JSON
-                String jsonText;
+                string jsonText;
                 JObject json;
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
@@ -175,19 +175,19 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         /// <param name="callback">Callback to invoke when the operation completes.</param>
         /// <param name="state"></param>
-        private void Discover(PelletServerReadyCallback callback, Object state)
+        private void Discover(PelletServerReadyCallback callback, object state)
         {
             // Make the request to the Server Root URL to get the JSON description of the server
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serverUri);
+            var request = (HttpWebRequest)WebRequest.Create(_serverUri);
             request.Method = "GET";
             request.Accept = ServerDescriptionFormat;
 
             // Get the response and parse the JSON
-            String jsonText;
+            string jsonText;
             JObject json;
             request.BeginGetResponse(result =>
                 {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
+                    var response = (HttpWebResponse)request.EndGetResponse(result);
 
                     // Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         /// <param name="name">Knowledge Base Name.</param>
         /// <returns></returns>
-        public bool HasKnowledgeBase(String name)
+        public bool HasKnowledgeBase(string name)
         {
             return _kbs.Any(kb => kb.Name.Equals(name));
         }
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="name">Knowledge Base Name.</param>
         /// <returns>
         /// </returns>
-        public KnowledgeBase GetKnowledgeBase(String name)
+        public KnowledgeBase GetKnowledgeBase(string name)
         {
             KnowledgeBase kb = _kbs.FirstOrDefault(k => k.Name.Equals(name));
             if (kb != null) return kb;

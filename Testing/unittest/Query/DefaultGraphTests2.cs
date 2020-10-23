@@ -41,7 +41,7 @@ namespace VDS.RDF.Query
 
         private ISparqlDataset GetDataset(List<IGraph> gs, bool unionDefaultGraph)
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             foreach (IGraph g in gs)
             {
                 store.Add(g, false);
@@ -52,7 +52,7 @@ namespace VDS.RDF.Query
 
         private ISparqlDataset GetDataset(List<IGraph> gs, Uri defaultGraphUri)
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             foreach (IGraph g in gs)
             {
                 store.Add(g, false);
@@ -64,23 +64,23 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphUnion()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, true);
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, true);
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(g.Triples.Count + h.Triples.Count, r.Triples.Count);
                 Assert.True(r.HasSubGraph(g), "g should be a subgraph of the results");
                 Assert.True(r.HasSubGraph(h), "h should be a subgraph of the results");
@@ -94,23 +94,23 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphUnionAndGraphClause()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, true);
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/unknown> { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, true);
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/unknown> { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(0, r.Triples.Count);
                 Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
                 Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
@@ -124,23 +124,23 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphNoUnion()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, false);
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, false);
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(0, r.Triples.Count);
                 Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
                 Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
@@ -154,25 +154,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphNamed()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, new Uri("http://example.org/1"));
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(g.Triples.Count, r.Triples.Count);
                 Assert.Equal(g, r);
                 Assert.NotEqual(h, r);
@@ -186,25 +186,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphNamedAndGraphClause()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, new Uri("http://example.org/1"));
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/2> { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(h.Triples.Count, r.Triples.Count);
                 Assert.NotEqual(g, r);
                 Assert.Equal(h, r);
@@ -218,25 +218,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphNamed2()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, new Uri("http://example.org/2"));
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(h.Triples.Count, r.Triples.Count);
                 Assert.NotEqual(g, r);
                 Assert.Equal(h, r);
@@ -250,25 +250,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphNamedAndGraphClause2()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, new Uri("http://example.org/2"));
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/1> { ?s ?p ?o } }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(g.Triples.Count, r.Triples.Count);
                 Assert.Equal(g, r);
                 Assert.NotEqual(h, r);
@@ -282,25 +282,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphUnknownName()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, new Uri("http://example.org/unknown"));
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/unknown"));
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(0, r.Triples.Count);
                 Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
                 Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
@@ -314,25 +314,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphUnnamed()
         {
-            List<IGraph> gs = new List<IGraph>();
-            Graph g = new Graph();
+            var gs = new List<IGraph>();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
-            ISparqlDataset dataset = this.GetDataset(gs, null);
-            String query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            SparqlQuery q = this._parser.ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            ISparqlDataset dataset = GetDataset(gs, null);
+            var query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            SparqlQuery q = _parser.ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(dataset);
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
-                IGraph r = (IGraph)results;
+                var r = (IGraph)results;
                 Assert.Equal(0, r.Triples.Count);
                 Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
                 Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");

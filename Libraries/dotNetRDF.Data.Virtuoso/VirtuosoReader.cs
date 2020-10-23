@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing
         /// <param name="manager">Manager for the connection to Virtuoso.</param>
         public VirtuosoReader(VirtuosoManager manager)
         {
-            this._manager = manager;
+            _manager = manager;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace VDS.RDF.Parsing
         /// <param name="graphUri">Uri of the Graph to load.</param>
         public void Load(IGraph g, Uri graphUri)
         {
-            this._manager.LoadGraph(g, graphUri);
+            _manager.LoadGraph(g, graphUri);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing
         /// <param name="graphUri">Uri of the Graph to load.</param>
         public void Load(IGraph g, String graphUri)
         {
-            this._manager.LoadGraph(g, graphUri);
+            _manager.LoadGraph(g, graphUri);
         }
     }
 }

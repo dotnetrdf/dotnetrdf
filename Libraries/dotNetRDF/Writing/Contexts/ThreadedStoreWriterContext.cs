@@ -106,7 +106,7 @@ namespace VDS.RDF.Writing.Contexts
         public bool TryGetNextUri(out Uri uri)
         {
             uri = null;
-            bool ok = false;
+            var ok = false;
             try
             {
                 Monitor.Enter(_writeList);

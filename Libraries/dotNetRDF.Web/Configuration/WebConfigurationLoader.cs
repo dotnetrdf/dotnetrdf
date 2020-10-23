@@ -67,7 +67,7 @@ namespace VDS.RDF.Web.Configuration
             }
             else
             {
-                Object temp = context.Cache[WebConfigGraphCacheKey + Path.GetFileName(configFile)];
+                var temp = context.Cache[WebConfigGraphCacheKey + Path.GetFileName(configFile)];
                 if (temp is IGraph)
                 {
                     // Q: Do we need to call the AutoDetectX() methods again here or not?
@@ -93,11 +93,11 @@ namespace VDS.RDF.Web.Configuration
         /// <returns></returns>
         public static INode FindObject(IGraph g, Uri requestUri, out String matchedPath)
         {
-            int pathSegments = requestUri.Segments.Length;
-            for (int s = pathSegments; s > -1; s--)
+            var pathSegments = requestUri.Segments.Length;
+            for (var s = pathSegments; s > -1; s--)
             {
-                String path = String.Join(String.Empty, requestUri.Segments, 0, s) + "*";
-                String objUri = "dotnetrdf:" + path;
+                var path = String.Join(String.Empty, requestUri.Segments, 0, s) + "*";
+                var objUri = "dotnetrdf:" + path;
                 INode temp = g.GetUriNode(UriFactory.Create(objUri));
                 if (temp != null)
                 {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Web.Configuration
         /// <param name="server">HTTP Server Utility</param>
         public WebConfigurationPathResolver(HttpServerUtility server)
         {
-            this._server = server;
+            _server = server;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace VDS.RDF.Web.Configuration
         {
             if (path.StartsWith("~"))
             {
-                return this._server.MapPath(path);
+                return _server.MapPath(path);
             }
             else
             {

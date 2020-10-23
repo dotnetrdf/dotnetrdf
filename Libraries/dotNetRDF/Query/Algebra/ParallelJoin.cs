@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             // Create a copy of the evaluation context for the RHS
-            SparqlEvaluationContext context2 =
+            var context2 =
                 new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
             if (!(context.InputMultiset is IdentityMultiset))
             {
@@ -76,16 +76,16 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            List<Uri> activeGraphs = context.Data.ActiveGraphUris.ToList();
-            List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
+            var activeGraphs = context.Data.ActiveGraphUris.ToList();
+            var defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
             // Start both executing asynchronously
             var cts = new CancellationTokenSource();
-            var cancellationToken = cts.Token;
-            var lhsEvaluation =
+            CancellationToken cancellationToken = cts.Token;
+            Task<BaseMultiset> lhsEvaluation =
                 Task.Factory.StartNew(() => ParallelEvaluate(_lhs, context, activeGraphs, defaultGraphs),
                     cancellationToken);
-            var rhsEvaluation =
+            Task<BaseMultiset> rhsEvaluation =
                 Task.Factory.StartNew(() => ParallelEvaluate(_rhs, context2, activeGraphs, defaultGraphs),
                     cancellationToken);
             var evaluationTasks = new Task[] {lhsEvaluation, rhsEvaluation};
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Algebra
                     Task.WaitAny(evaluationTasks, cancellationToken);
                 }
 
-                var firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
+                BaseMultiset firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
                 if (firstResult == null)
                 {
                     context.OutputMultiset = new NullMultiset();
@@ -123,8 +123,8 @@ namespace VDS.RDF.Query.Algebra
                         Task.WaitAll(evaluationTasks, cancellationToken);
                     }
 
-                    var lhsResult = lhsEvaluation.Result;
-                    var rhsResult = rhsEvaluation.Result;
+                    BaseMultiset lhsResult = lhsEvaluation.Result;
+                    BaseMultiset rhsResult = rhsEvaluation.Result;
                     if (lhsResult is NullMultiset)
                     {
                         context.OutputMultiset = lhsResult;
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Algebra
             }
             catch (AggregateException ex)
             {
-                var firstCause = ex.InnerExceptions.FirstOrDefault();
+                Exception firstCause = ex.InnerExceptions.FirstOrDefault();
                 if (firstCause is RdfException) throw firstCause;
                 throw new RdfQueryException("Error in parallel join evaluation.", ex);
             }
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -248,13 +248,13 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those floating on either side which are not fixed
-                IEnumerable<String> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -262,7 +262,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {
@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -320,7 +320,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _lhs.ToGraphPattern();
+            var p = _lhs.ToGraphPattern();
             p.AddGraphPattern(_rhs.ToGraphPattern());
             return p;
         }

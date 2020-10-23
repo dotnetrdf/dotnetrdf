@@ -140,7 +140,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             switch (CommandType)
             {
                 case SparqlUpdateCommandType.Add:

@@ -165,7 +165,7 @@ namespace VDS.RDF
             {
                 try
                 {
-                    Graph g = new Graph();
+                    var g = new Graph();
                     FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
 
                     return g;

@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <returns></returns>
         public ISyntaxValidationResults Validate(string data)
         {
-            String message;
+            string message;
             try
             {
                 SparqlUpdateCommandSet cmds = _parser.ParseFromString(data);

@@ -108,7 +108,7 @@ namespace VDS.RDF.Writing
             }
 
             // Write the Header of the File
-            foreach (var g in context.Store.Graphs)
+            foreach (IGraph g in context.Store.Graphs)
             {
                 context.NamespaceMap.Import(g.NamespaceMap);
             }
@@ -135,7 +135,7 @@ namespace VDS.RDF.Writing
                 // Standard Multi-Threaded Writing
 
                 // Queue the Graphs to be written
-                foreach (var g in context.Store.Graphs)
+                foreach (IGraph g in context.Store.Graphs)
                 {
                     context.Add(g.BaseUri);
                 }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Writing
                 {
                     var outputException =
                         new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
-                    foreach (var innerException in ex.InnerExceptions)
+                    foreach (Exception innerException in ex.InnerExceptions)
                     {
                         outputException.AddException(innerException);
                     }
@@ -174,7 +174,7 @@ namespace VDS.RDF.Writing
                 try
                 {
                     // Optional Single Threaded Writing
-                    foreach (var g in store.Graphs)
+                    foreach (IGraph g in store.Graphs)
                     {
                         var graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
                         if (context.CompressionLevel > WriterCompressionLevel.None)
@@ -272,7 +272,7 @@ namespace VDS.RDF.Writing
                 var indentation = new string(' ', 4);
                 context.Output.Write(indentation);
                 if (globalContext.CompressionLevel > WriterCompressionLevel.None) context.Output.WriteLine("# Written using High Speed Mode");
-                foreach (var t in context.Graph.Triples)
+                foreach (Triple t in context.Graph.Triples)
                 {
                     context.Output.Write(indentation);
                     context.Output.Write(GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject));
@@ -298,7 +298,7 @@ namespace VDS.RDF.Writing
 
                 for (var i = 0; i < ts.Count; i++)
                 {
-                    var t = ts[i];
+                    Triple t = ts[i];
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
                         // Terminate previous Triples
@@ -397,7 +397,7 @@ namespace VDS.RDF.Writing
                 while (globalContext.TryGetNextUri(out u))
                 {
                     // Get the Graph from the Store
-                    var g = globalContext.Store.Graphs[u];
+                    IGraph g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
                     var context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);

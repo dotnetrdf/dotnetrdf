@@ -48,18 +48,18 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Namespace Uri for XPath Functions Namespace.
         /// </summary>
-        public const String XPathFunctionsNamespace = "http://www.w3.org/2005/xpath-functions#";
+        public const string XPathFunctionsNamespace = "http://www.w3.org/2005/xpath-functions#";
 
         /// <summary>
         /// Constant representing the XPath boolean functions.
         /// </summary>
-        public const String Not = "not",
+        public const string Not = "not",
                             Boolean = "boolean";
 
         /// <summary>
         /// Constants representing the names of XPath String functions.
         /// </summary>
-        public const String Matches = "matches",
+        public const string Matches = "matches",
                             Contains = "contains",
                             StartsWith = "starts-with",
                             EndsWith = "ends-with",
@@ -82,13 +82,13 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Constants representing the XPath Boolean constructor functions.
         /// </summary>
-        public const String True = "true",
+        public const string True = "true",
                             False = "false";
 
         /// <summary>
         /// Constants representing the XPath Numeric Functions.
         /// </summary>
-        public const String Absolute = "abs",
+        public const string Absolute = "abs",
                             Ceiling = "ceiling",
                             Floor = "floor",
                             Round = "round",
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Constants representing the XPath Date Time functions.
         /// </summary>
-        public const String YearFromDateTime = "year-from-dateTime",
+        public const string YearFromDateTime = "year-from-dateTime",
                             MonthFromDateTime = "month-from-dateTime",
                             DayFromDateTime = "day-from-dateTime",
                             HoursFromDateTime = "hours-from-dateTime",
@@ -109,13 +109,13 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Constants representing the Normalization Form values supported by the XPath normalize-unicode() function.
         /// </summary>
-        public const String XPathUnicodeNormalizationFormC = "NFC",
+        public const string XPathUnicodeNormalizationFormC = "NFC",
                             XPathUnicodeNormalizationFormD = "NFD",
                             XPathUnicodeNormalizationFormKC = "NFKC",
                             XPathUnicodeNormalizationFormKD = "NFKD",
                             XPathUnicodeNormalizationFormFull = "FULLY-NORMALIZED";
 
-        private String[] FunctionUris = {
+        private string[] FunctionUris = {
                                             Not,
                                             Boolean,
                                             True,
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Expressions
                                             TimezoneFromDateTime,
                                         };
 
-        private String[] AggregateUris = {StringJoin};
+        private string[] AggregateUris = {StringJoin};
 
         /// <summary>
         /// Argument Type Validator for validating that a Literal either has no datatype or is a String.
@@ -173,7 +173,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArgs">Scalar Arguments.</param>
         /// <param name="expr">Generated Expression.</param>
         /// <returns>Whether an expression was successfully generated.</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             // If any Scalar Arguments are present then can't possibly be an XPath Function
             if (scalarArgs.Count > 0)
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Expressions
                 return false;
             }
 
-            String func = u.AbsoluteUri;
+            var func = u.AbsoluteUri;
             if (func.StartsWith(XPathFunctionsNamespace))
             {
                 func = func.Substring(XPathFunctionsNamespace.Length);

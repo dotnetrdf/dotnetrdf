@@ -24,14 +24,14 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Query;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Query;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Pattern : Constraint
     {
         [DebuggerStepThrough]
@@ -80,7 +80,7 @@ ASK {
                 return !((SparqlResultSet)node.Graph.ExecuteQuery(query)).Result;
             }
 
-            var invalidValues = valueNodes.Where(isInvalid);
+            IEnumerable<INode> invalidValues = valueNodes.Where(isInvalid);
 
             return ReportValueNodes(focusNode, invalidValues, report);
         }

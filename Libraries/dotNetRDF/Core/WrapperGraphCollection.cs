@@ -58,12 +58,12 @@ namespace VDS.RDF
             _graphs.GraphRemoved += HandleGraphRemoved;
         }
 
-        private void HandleGraphAdded(Object sender, GraphEventArgs args)
+        private void HandleGraphAdded(object sender, GraphEventArgs args)
         {
             RaiseGraphAdded(args.Graph);
         }
 
-        private void HandleGraphRemoved(Object sender, GraphEventArgs args)
+        private void HandleGraphRemoved(object sender, GraphEventArgs args)
         {
             RaiseGraphRemoved(args.Graph);
         }

@@ -37,22 +37,22 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// </summary>
     public abstract class PelletService
     {
-        private String _name;
+        private string _name;
         private ServiceEndpoint _endpoint;
-        private List<String> _mimeTypes = new List<string>();
+        private List<string> _mimeTypes = new List<string>();
 
         /// <summary>
         /// Creates a new Pellet Service instance.
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object representing the Service.</param>
-        protected PelletService(String name, JObject obj)
+        protected PelletService(string name, JObject obj)
         {
             _name = name;
             JToken mimeTypes = obj.SelectToken("response-mimetype");
             foreach (JToken mimeType in mimeTypes.Children())
             {
-                _mimeTypes.Add((String)mimeType);
+                _mimeTypes.Add((string)mimeType);
             }
             _endpoint = new ServiceEndpoint((JObject)obj.SelectToken("endpoint"));
         }
@@ -64,8 +64,8 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns></returns>
         internal static PelletService CreateService(JToken t)
         {
-            String serviceName = ((JProperty)t).Name;
-            JObject obj = (JObject)t.Children().First();
+            var serviceName = ((JProperty)t).Name;
+            var obj = (JObject)t.Children().First();
 
             switch (serviceName)
             {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <summary>
         /// Gets the Name of the Service.
         /// </summary>
-        public String Name
+        public string Name
         {
             get
             {
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <summary>
         /// Gets the Response MIME Types supported by the Service.
         /// </summary>
-        public IEnumerable<String> MimeTypes
+        public IEnumerable<string> MimeTypes
         {
             get
             {

@@ -142,7 +142,7 @@ namespace VDS.RDF.Parsing
         /// Helper method for raising warning events.
         /// </summary>
         /// <param name="message"></param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfReaderWarning d = Warning;
             if (d != null) d(message);
@@ -192,8 +192,9 @@ namespace VDS.RDF.Parsing
         /// Creates a new GZipped Turtle parser.
         /// </summary>
         /// <param name="syntax">Turtle Syntax.</param>
-        public GZippedTurtleParser(TurtleSyntax syntax)
-            : base(new TurtleParser(syntax)) { }
+        /// <param name="validateIris">Whether or not to validate IRIs while parsing.</param>
+        public GZippedTurtleParser(TurtleSyntax syntax, bool validateIris = true)
+            : base(new TurtleParser(syntax, validateIris)) { }
     }
 
     /// <summary>

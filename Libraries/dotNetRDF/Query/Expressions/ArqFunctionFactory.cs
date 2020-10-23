@@ -45,12 +45,12 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// ARQ Function Namespace.
         /// </summary>
-        public const String ArqFunctionsNamespace = "http://jena.hpl.hp.com/ARQ/function#";
+        public const string ArqFunctionsNamespace = "http://jena.hpl.hp.com/ARQ/function#";
 
         /// <summary>
         /// Constants for ARQ Numeric functions.
         /// </summary>
-        public const String Max = "max",
+        public const string Max = "max",
                             Min = "min",
                             Pi = "pi",
                             E = "e";
@@ -58,27 +58,27 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Constants for ARQ Graph functions.
         /// </summary>
-        public const String BNode = "bnode",
+        public const string BNode = "bnode",
                             LocalName = "localname",
                             Namespace = "namespace";
 
         /// <summary>
         /// Constants for ARQ String functions.
         /// </summary>
-        public const String Substr = "substr",
+        public const string Substr = "substr",
                             Substring = "substring",
                             StrJoin = "strjoin";
 
         /// <summary>
         /// Constants for ARQ Miscellaneous functions.
         /// </summary>
-        public const String Sha1Sum = "sha1sum",
+        public const string Sha1Sum = "sha1sum",
                             Now = "now";
 
         /// <summary>
         /// Array of Extension Function URIs.
         /// </summary>
-        private String[] FunctionUris = {
+        private string[] FunctionUris = {
                                             Max,
                                             Min,
                                             Pi,
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArgs">Scalar Arguments.</param>
         /// <param name="expr">Generated Expression.</param>
         /// <returns>Whether an expression was successfully generated.</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             // If any Scalar Arguments are present then can't possibly be an ARQ Function
             if (scalarArgs.Count > 0)
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions
                 return false;
             }
 
-            String func = u.AbsoluteUri;
+            var func = u.AbsoluteUri;
             if (func.StartsWith(ArqFunctionsNamespace))
             {
                 func = func.Substring(ArqFunctionsNamespace.Length);

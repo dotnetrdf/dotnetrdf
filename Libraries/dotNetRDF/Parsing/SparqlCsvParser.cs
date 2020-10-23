@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingResultParserContext context = new TokenisingResultParserContext(handler, new CsvTokeniser(ParsingTextReader.Create(input)));
+                var context = new TokenisingResultParserContext(handler, new CsvTokeniser(ParsingTextReader.Create(input)));
                 TryParseResults(context);
                 input.Close();
             }
@@ -231,8 +231,8 @@ namespace VDS.RDF.Parsing
             }
 
             bool allowEOL = true, expectComma = false;
-            int v = 0;
-            SparqlResult result = new SparqlResult();
+            var v = 0;
+            var result = new SparqlResult();
             while (true)
             {
                 next = context.Tokens.Dequeue();
@@ -253,9 +253,9 @@ namespace VDS.RDF.Parsing
                     case Token.PLAINLITERAL:
                         if (expectComma) throw ParserHelper.Error("Unexpected Blank Node, expected a comma between RDF Terms", next);
                         if (v >= context.Variables.Count) throw ParserHelper.Error("Too many RDF Terms, only expecting " + context.Variables.Count + " terms", next);
-                        
+
                         // Try and guess what kind of term this is
-                        String lexicalForm = next.Value;
+                        var lexicalForm = next.Value;
                         INode value;
                         if (lexicalForm.StartsWith("http://") || lexicalForm.StartsWith("https://") || lexicalForm.StartsWith("mailto:") || lexicalForm.StartsWith("ftp://"))
                         {
@@ -329,7 +329,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event SparqlWarning Warning;
 
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null) d(message);

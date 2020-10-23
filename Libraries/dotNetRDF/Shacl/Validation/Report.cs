@@ -24,14 +24,15 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Builder;
+
 namespace VDS.RDF.Shacl.Validation
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Parsing;
-    using VDS.RDF.Query.Builder;
-
     /// <summary>
     /// Represents a SHACL validation report.
     /// </summary>
@@ -51,7 +52,7 @@ namespace VDS.RDF.Shacl.Validation
         {
             get
             {
-                var conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
+                INode conforms = Vocabulary.Conforms.ObjectsOf(this).SingleOrDefault();
 
                 if (conforms is null)
                 {
@@ -63,7 +64,7 @@ namespace VDS.RDF.Shacl.Validation
 
             internal set
             {
-                foreach (var conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
+                foreach (INode conforms in Vocabulary.Conforms.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.Conforms, conforms);
                 }
@@ -79,7 +80,7 @@ namespace VDS.RDF.Shacl.Validation
         {
             get
             {
-                var q = new SparqlQueryParser().ParseFromString(@"
+                SparqlQuery q = new SparqlQueryParser().ParseFromString(@"
 PREFIX sh: <http://www.w3.org/ns/shacl#> 
 
 DESCRIBE ?s
@@ -114,7 +115,7 @@ WHERE {
 
             set
             {
-                foreach (var type in Vocabulary.RdfType.ObjectsOf(this).ToList())
+                foreach (INode type in Vocabulary.RdfType.ObjectsOf(this).ToList())
                 {
                     Graph.Retract(this, Vocabulary.RdfType, type);
                 }

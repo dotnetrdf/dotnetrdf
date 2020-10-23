@@ -44,7 +44,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
-            String user, pwd;
+            string user, pwd;
             ConfigurationLoader.GetUsernameAndPassword(g, objNode, false, out user, out pwd);
 
             if (user != null && pwd != null)

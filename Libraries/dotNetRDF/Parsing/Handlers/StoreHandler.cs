@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (!_store.HasGraph(t.GraphUri))
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = t.GraphUri;
                 _store.Add(g);
             }

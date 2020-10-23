@@ -56,12 +56,12 @@ namespace VDS.RDF
         /// Creates an Web Demand Triple Store.
         /// </summary>
         /// <param name="defaultGraphFile">A Filename for the Default Graph which should be loaded from a local File as the initial Graph.</param>
-        public WebDemandTripleStore(String defaultGraphFile)
+        public WebDemandTripleStore(string defaultGraphFile)
             : this()
         {
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, defaultGraphFile);
                 _graphs.Add(g, false);
             }

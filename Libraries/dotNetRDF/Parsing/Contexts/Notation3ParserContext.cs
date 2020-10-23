@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Contexts
     public class Notation3ParserContext : TokenisingParserContext
     {
         private bool _keywordsMode = false;
-        private List<String> _keywords = new List<string>();
+        private List<string> _keywords = new List<string>();
         private Stack<IGraph> _subgraphs = new Stack<IGraph>();
         private IGraph _g;
         private Stack<IRdfHandler> _handlers = new Stack<IRdfHandler>();
@@ -142,7 +142,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the list of in-use Keywords.
         /// </summary>
-        public List<String> Keywords
+        public List<string> Keywords
         {
             get
             {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </remarks>
         public void PushGraph()
         {
-            Graph h = new Graph();
+            var h = new Graph();
             h.NamespaceMap.Import(Namespaces);
             h.BaseUri = BaseUri;
 
@@ -184,7 +184,7 @@ namespace VDS.RDF.Parsing.Contexts
             _subgraphs.Push(_g);
             _g = h;
 
-            VariableContext v = new VariableContext(VariableContextType.None);
+            var v = new VariableContext(VariableContextType.None);
             _varContexts.Push(_varContext);
             _varContext = v;
         }

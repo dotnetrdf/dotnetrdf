@@ -103,7 +103,7 @@ namespace VDS.RDF.Update.Commands
                 }
                 else
                 {
-                    List<String> affectedUris = new List<string>();
+                    var affectedUris = new List<string>();
                     if (_pattern.IsGraph)
                     {
                         affectedUris.Add(_pattern.GraphSpecifier.Value);
@@ -128,14 +128,14 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            List<String> affectedUris = new List<string>();
+            var affectedUris = new List<string>();
             if (_pattern.IsGraph)
             {
                 affectedUris.Add(_pattern.GraphSpecifier.Value);
             }
             else
             {
-                affectedUris.Add(String.Empty);
+                affectedUris.Add(string.Empty);
             }
             if (_pattern.HasChildGraphPatterns)
             {
@@ -143,7 +143,7 @@ namespace VDS.RDF.Update.Commands
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
-            if (affectedUris.Any(u => u != null)) affectedUris.Add(String.Empty);
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
         }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Update.Commands
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             // Split the Pattern into the set of Graph Patterns
-            List<GraphPattern> patterns = new List<GraphPattern>();
+            var patterns = new List<GraphPattern>();
             if (_pattern.IsGraph)
             {
                 patterns.Add(_pattern);
@@ -207,7 +207,7 @@ namespace VDS.RDF.Update.Commands
                 // Delete the actual Triples
                 INode subj, pred, obj;
 
-                ConstructContext constructContext = new ConstructContext(target, null, false);
+                var constructContext = new ConstructContext(target, null, false);
                 foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
                     subj = p.Subject.Construct(constructContext);
@@ -234,7 +234,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.AppendLine("DELETE DATA");
             if (_pattern.IsGraph) output.AppendLine("{");
             output.AppendLine(_pattern.ToString());

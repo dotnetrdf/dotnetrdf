@@ -41,21 +41,21 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
-        String Format(SparqlQuery query);
+        string Format(SparqlQuery query);
 
         /// <summary>
         /// Formats a Graph Pattern into a String.
         /// </summary>
         /// <param name="gp">Graph Pattern.</param>
         /// <returns></returns>
-        String Format(GraphPattern gp);
+        string Format(GraphPattern gp);
 
         /// <summary>
         /// Formats a Triple Pattern into a String.
         /// </summary>
         /// <param name="tp">Triple Pattern.</param>
         /// <returns></returns>
-        String Format(ITriplePattern tp);
+        string Format(ITriplePattern tp);
 
         /// <summary>
         /// Formats a Triple Pattern item into a String.
@@ -63,6 +63,6 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="item">Pattern Item.</param>
         /// <param name="segment">Segment of the Triple Pattern in which the Item appears.</param>
         /// <returns></returns>
-        String Format(PatternItem item, TripleSegment? segment);
+        string Format(PatternItem item, TripleSegment? segment);
     }
 }

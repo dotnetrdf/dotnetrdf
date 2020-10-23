@@ -79,8 +79,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     // Try to parse as a Regular Expression
                     try
                     {
-                        string p = n.AsString();
-                        Regex temp = new Regex(p);
+                        var p = n.AsString();
+                        var temp = new Regex(p);
 
                         // It's a Valid Pattern
                         _fixedPattern = true;
@@ -139,8 +139,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    string ops = ((ILiteralNode)n).Value;
-                    foreach (char c in ops.ToCharArray())
+                    var ops = ((ILiteralNode)n).Value;
+                    foreach (var c in ops.ToCharArray())
                     {
                         switch (c)
                         {
@@ -255,10 +255,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
 
                 // Execute
-                ILiteralNode lit = (ILiteralNode)textNode;
+                var lit = (ILiteralNode)textNode;
                 if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
-                string text = lit.Value;
-                string output = Regex.Replace(text, _find, _replace, _options);
+                var text = lit.Value;
+                var output = Regex.Replace(text, _find, _replace, _options);
 
                 if (lit.DataType != null)
                 {
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("<");
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Replace);
@@ -329,7 +329,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                List<string> vs = new List<string>();
+                var vs = new List<string>();
                 if (_textExpr != null) vs.AddRange(_textExpr.Variables);
                 if (_findExpr != null) vs.AddRange(_findExpr.Variables);
                 if (_replaceExpr != null) vs.AddRange(_replaceExpr.Variables);

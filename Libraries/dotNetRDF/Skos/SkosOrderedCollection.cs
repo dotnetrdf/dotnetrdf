@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Skos
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
     /// Represents an ordered group of SKOS concepts.
     /// </summary>
@@ -47,9 +47,9 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.Resource.Graph
+                return Resource.Graph
                     .GetListItems(
-                        this.GetObjects(SkosHelper.MemberList)
+                        GetObjects(SkosHelper.MemberList)
                         .Single())
                     .Select(SkosMember.Create);
             }

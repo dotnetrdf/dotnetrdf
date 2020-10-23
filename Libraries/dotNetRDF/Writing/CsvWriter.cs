@@ -106,7 +106,10 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if the Writer detects a non-fatal error while outputting CSV
         /// </summary>
+        /// <remarks>This class does not raise this event.</remarks>
+#pragma warning disable CS0067
         public override event RdfWriterWarning Warning;
+#pragma warning restore CS0067
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.

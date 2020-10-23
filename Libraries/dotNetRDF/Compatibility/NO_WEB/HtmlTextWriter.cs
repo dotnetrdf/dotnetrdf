@@ -47,9 +47,9 @@ namespace System.Web.UI
         private TextWriter _writer;
         private bool _newline = true;
         private int _indent = 0;
-        private Stack<String> _tags = new Stack<String>();
-        private List<KeyValuePair<String, String>> _attributes = new List<KeyValuePair<String, String>>();
-        private List<KeyValuePair<String, String>> _styles = new List<KeyValuePair<String, String>>();
+        private Stack<string> _tags = new Stack<string>();
+        private List<KeyValuePair<string, string>> _attributes = new List<KeyValuePair<string, string>>();
+        private List<KeyValuePair<string, string>> _styles = new List<KeyValuePair<string, string>>();
 
         /// <summary>
         /// Creates a new HTML Text Writer.
@@ -74,7 +74,7 @@ namespace System.Web.UI
         /// <summary>
         /// Gets/Sets the current Indent.
         /// </summary>
-        public Int32 Indent
+        public int Indent
         {
             get
             {
@@ -97,7 +97,7 @@ namespace System.Web.UI
             }
         }
 
-        private String EncodeAttribute(String value)
+        private string EncodeAttribute(string value)
         {
             value = WriterHelper.EncodeForXml(value);
             if (value.EndsWith("&")) value += "amp;";
@@ -107,7 +107,7 @@ namespace System.Web.UI
             return value;
         }
 
-        private String EncodeStyle(String value)
+        private string EncodeStyle(string value)
         {
             value = WriterHelper.EncodeForXml(value);
             if (value.EndsWith("&")) value += "amp;";
@@ -117,23 +117,23 @@ namespace System.Web.UI
             return value;
         }
 
-        private String GetAttributeName(HtmlTextWriterAttribute key)
+        private string GetAttributeName(HtmlTextWriterAttribute key)
         {
-            String name = key.ToString().ToLower();
+            var name = key.ToString().ToLower();
             if (name.Contains(".")) name = name.Substring(name.LastIndexOf(".") + 1);
             return name;
         }
 
-        private String GetStyleName(HtmlTextWriterStyle key)
+        private string GetStyleName(HtmlTextWriterStyle key)
         {
-            String name = key.ToString();
+            var name = key.ToString();
             if (name.Contains(".")) name = name.Substring(name.LastIndexOf(".") + 1);
 
-            StringBuilder output = new StringBuilder();
-            char[] cs = name.ToCharArray();
-            for (int i = 0; i < cs.Length; i++)
+            var output = new StringBuilder();
+            var cs = name.ToCharArray();
+            for (var i = 0; i < cs.Length; i++)
             {
-                if (Char.IsUpper(cs[i]) && i > 0)
+                if (char.IsUpper(cs[i]) && i > 0)
                 {
                     output.Append('-');
                     output.Append(cs[i]);
@@ -146,9 +146,9 @@ namespace System.Web.UI
             return output.ToString();
         }
 
-        private String GetTagName(HtmlTextWriterTag key)
+        private string GetTagName(HtmlTextWriterTag key)
         {
-            String name = key.ToString().ToLower();
+            var name = key.ToString().ToLower();
             if (name.Contains(".")) name = name.Substring(name.LastIndexOf(".") + 1);
             return name;
         }
@@ -158,9 +158,9 @@ namespace System.Web.UI
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <param name="value">Value.</param>
-        public void AddAttribute(String name, String value)
+        public void AddAttribute(string name, string value)
         {
-            _attributes.Add(new KeyValuePair<String, String>(name, EncodeAttribute(value)));
+            _attributes.Add(new KeyValuePair<string, string>(name, EncodeAttribute(value)));
         }
 
         /// <summary>
@@ -169,10 +169,10 @@ namespace System.Web.UI
         /// <param name="name">Attribute Name.</param>
         /// <param name="value">Value.</param>
         /// <param name="fEncode">Whether to encode the attribute value.</param>
-        public void AddAttribute(String name, String value, Boolean fEncode)
+        public void AddAttribute(string name, string value, bool fEncode)
         {
             if (fEncode) value = EncodeAttribute(value);
-            _attributes.Add(new KeyValuePair<String, String>(name, value));
+            _attributes.Add(new KeyValuePair<string, string>(name, value));
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace System.Web.UI
         /// </summary>
         /// <param name="key">Attribute.</param>
         /// <param name="value">Value.</param>
-        public void AddAttribute(HtmlTextWriterAttribute key, String value)
+        public void AddAttribute(HtmlTextWriterAttribute key, string value)
         {
             AddAttribute(GetAttributeName(key), value);
         }
@@ -191,7 +191,7 @@ namespace System.Web.UI
         /// <param name="key">Attribute.</param>
         /// <param name="value">Value.</param>
         /// <param name="fEncode">Whether to encode the attribute value.</param>
-        public void AddAttribute(HtmlTextWriterAttribute key, String value, Boolean fEncode)
+        public void AddAttribute(HtmlTextWriterAttribute key, string value, bool fEncode)
         {
             AddAttribute(GetAttributeName(key), value, fEncode);
         }
@@ -201,9 +201,9 @@ namespace System.Web.UI
         /// </summary>
         /// <param name="name">CSS Attribute Name.</param>
         /// <param name="value">Value.</param>
-        public void AddStyleAttribute(String name, String value)
+        public void AddStyleAttribute(string name, string value)
         {
-            _styles.Add(new KeyValuePair<String, String>(name, value));
+            _styles.Add(new KeyValuePair<string, string>(name, value));
         }
 
         /// <summary>
@@ -211,9 +211,9 @@ namespace System.Web.UI
         /// </summary>
         /// <param name="key">CSS Attribute.</param>
         /// <param name="value">Value.</param>
-        public void AddStyleAttribute(HtmlTextWriterStyle key, String value)
+        public void AddStyleAttribute(HtmlTextWriterStyle key, string value)
         {
-            _styles.Add(new KeyValuePair<String, String>(GetStyleName(key), value));
+            _styles.Add(new KeyValuePair<string, string>(GetStyleName(key), value));
         }
 
 #if NETCORE
@@ -243,16 +243,16 @@ namespace System.Web.UI
         /// Writes the begin tag for an element.
         /// </summary>
         /// <param name="tagName">Tag Name.</param>
-        public void RenderBeginTag(String tagName)
+        public void RenderBeginTag(string tagName)
         {
             _tags.Push(tagName);
             if (_newline)
             {
-                _writer.Write(new String('\t', _indent));
+                _writer.Write(new string('\t', _indent));
                 _newline = false;
             }
             _writer.Write("<" + tagName.ToLower());
-            foreach (KeyValuePair<String, String> attr in _attributes)
+            foreach (KeyValuePair<string, string> attr in _attributes)
             {
                 _writer.Write(" " + attr.Key + "=\"" + attr.Value + "\"");
             }
@@ -261,7 +261,7 @@ namespace System.Web.UI
             if (_styles.Count > 0)
             {
                 _writer.Write(" style=\"");
-                foreach (KeyValuePair<String, String> style in _styles)
+                foreach (KeyValuePair<string, string> style in _styles)
                 {
                     _writer.Write(style.Key + ": " + EncodeStyle(style.Value) + ";");
                 }
@@ -301,7 +301,7 @@ namespace System.Web.UI
                 if (_newline)
                 {
                     _writer.WriteLine();
-                    _writer.Write(new String('\t', _indent));
+                    _writer.Write(new string('\t', _indent));
                 }
                 _writer.WriteLine("</" + _tags.Pop().ToLower() + ">");
                 _newline = true;
@@ -467,7 +467,7 @@ namespace System.Web.UI
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <param name="value">Value.</param>
-        public void WriteAttribute(String name, String value)
+        public void WriteAttribute(string name, string value)
         {
             _writer.Write(name + "=\"" + EncodeAttribute(value) + "\"");
         }
@@ -478,21 +478,21 @@ namespace System.Web.UI
         /// <param name="name">Attribute Name.</param>
         /// <param name="value">Value.</param>
         /// <param name="fEncode">Whether to encode the value.</param>
-        public void WriteAttribute(String name, String value, Boolean fEncode)
+        public void WriteAttribute(string name, string value, bool fEncode)
         {
             if (fEncode) value = EncodeAttribute(value);
             _writer.Write(name + "=\"" + value + "\"");
         }
 
         /// <summary>
-        /// Writes a begin tag but does not terminate it so that methods like <see cref="HtmlTextWriter.WriteAttribute(String,String)"/> may be used.
+        /// Writes a begin tag but does not terminate it so that methods like <see cref="HtmlTextWriter.WriteAttribute(string,string)"/> may be used.
         /// </summary>
         /// <param name="tagName">Tag Name.</param>
-        public void WriteBeginTag(String tagName)
+        public void WriteBeginTag(string tagName)
         {
             if (_newline)
             {
-                _writer.Write(new String('\t', _indent));
+                _writer.Write(new string('\t', _indent));
                 _newline = false;
             }
             _writer.Write("<" + tagName.ToLower());
@@ -505,7 +505,7 @@ namespace System.Web.UI
         {
             if (_newline)
             {
-                _writer.WriteLine(new String('\t', _indent));
+                _writer.WriteLine(new string('\t', _indent));
                 _newline = false;
             }
             _writer.Write("<br />");
@@ -515,11 +515,11 @@ namespace System.Web.UI
         /// Writes encoded text.
         /// </summary>
         /// <param name="text">Text.</param>
-        public void WriteEncodedText(String text)
+        public void WriteEncodedText(string text)
         {
             if (_newline)
             {
-                _writer.Write(new String('\t', _indent));
+                _writer.Write(new string('\t', _indent));
                 _newline = false;
             }
             _writer.Write(HttpUtility.HtmlEncode(text));
@@ -529,7 +529,7 @@ namespace System.Web.UI
         /// Writes an encoded URL.
         /// </summary>
         /// <param name="url">URL.</param>
-        public void WriteEncodedUrl(String url)
+        public void WriteEncodedUrl(string url)
         {
             _writer.Write(Uri.EscapeUriString(url));
         }
@@ -538,7 +538,7 @@ namespace System.Web.UI
         /// Writes an encoded URL parameter.
         /// </summary>
         /// <param name="urlText">URL parameter.</param>
-        public void WriteEncodedUrlParameter(String urlText)
+        public void WriteEncodedUrlParameter(string urlText)
         {
             _writer.Write(HttpUtility.UrlEncode(urlText));
         }
@@ -547,25 +547,25 @@ namespace System.Web.UI
         /// Writes an end tag.
         /// </summary>
         /// <param name="tagName">Tag Name.</param>
-        public void WriteEndTag(String tagName)
+        public void WriteEndTag(string tagName)
         {
             if (_newline)
             {
-                _writer.Write(new String('\t', _indent));
+                _writer.Write(new string('\t', _indent));
                 _newline = false;
             }
             _writer.Write("</" + tagName.ToLower() + ">");
         }
 
         /// <summary>
-        /// Writes a begin tag with the terminating &lt;, use <see cref="WriteBeginTag(String)"/> instead if you need to add attributes afterwards.
+        /// Writes a begin tag with the terminating &lt;, use <see cref="WriteBeginTag(string)"/> instead if you need to add attributes afterwards.
         /// </summary>
         /// <param name="tagName">Tag Name.</param>
-        public void WriteFullBeginTag(String tagName)
+        public void WriteFullBeginTag(string tagName)
         {
             if (_newline)
             {
-                _writer.Write(new String('\t', _indent));
+                _writer.Write(new string('\t', _indent));
                 _newline = false;
             }
             _writer.Write("<" + tagName.ToLower() + ">");
@@ -733,7 +733,7 @@ namespace System.Web.UI
         /// Writes a string on a line with no tabs.
         /// </summary>
         /// <param name="s">String.</param>
-        public void WriteLineNoTabs(String s)
+        public void WriteLineNoTabs(string s)
         {
             _writer.WriteLine();
             _writer.WriteLine(s);
@@ -744,7 +744,7 @@ namespace System.Web.UI
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <param name="value">Value.</param>
-        public void WriteStyleAttribute(String name, String value)
+        public void WriteStyleAttribute(string name, string value)
         {
             _writer.Write(name + ": " + EncodeStyle(value) + ";");
         }
@@ -755,7 +755,7 @@ namespace System.Web.UI
         /// <param name="name">Attribute Name.</param>
         /// <param name="value">Value.</param>
         /// <param name="fEncode">Whether to encode the value.</param>
-        public void WriteStyleAttribute(String name, String value, Boolean fEncode)
+        public void WriteStyleAttribute(string name, string value, bool fEncode)
         {
             if (fEncode) value = EncodeAttribute(value);
             _writer.Write(name + ": " + value + ";");

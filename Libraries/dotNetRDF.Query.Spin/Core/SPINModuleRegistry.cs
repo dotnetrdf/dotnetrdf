@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public static HashSet<SpinProcessor> getModels()
         {
-            HashSet<SpinProcessor> spinModels = new HashSet<SpinProcessor>();
+            var spinModels = new HashSet<SpinProcessor>();
             foreach (IFunction function in SPINModuleRegistry.getFunctions())
             {
                 spinModels.Add(function.getModel());
@@ -332,7 +332,7 @@ namespace VDS.RDF.Query.Spin.Core
             {
                 if (resource.isUri())
                 {
-                    ITemplate template = (ITemplate)resource.As(typeof(TemplateImpl));
+                    var template = (ITemplate)resource.As(typeof(TemplateImpl));
                     register(template);
                     ExtraPrefixes.Add(template);
                 }

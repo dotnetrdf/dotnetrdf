@@ -114,7 +114,7 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                    var response = (HttpWebResponse)request.EndGetResponse(r);
                     // Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -172,7 +172,7 @@ namespace VDS.RDF.Storage
                     {
                         try
                         {
-                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                            var response = (HttpWebResponse)request.EndGetResponse(r2);
                             // If we get here then it was OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
@@ -232,7 +232,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         protected internal void UpdateGraphAsync(HttpWebRequest request, IRdfWriter writer, Uri graphUri, IEnumerable<Triple> ts, AsyncStorageCallback callback, object state)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.Assert(ts);
 
             request.BeginGetRequestStream(r =>
@@ -246,7 +246,7 @@ namespace VDS.RDF.Storage
                     {
                         try
                         {
-                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                            var response = (HttpWebResponse)request.EndGetResponse(r2);
                             // If we get here then it was OK
                             response.Close();
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri), state);
@@ -305,7 +305,7 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                    var response = (HttpWebResponse)request.EndGetResponse(r);
 
                     // Assume if returns to here we deleted the Graph OK
                     response.Close();
@@ -345,7 +345,7 @@ namespace VDS.RDF.Storage
             if (this is IAsyncQueryableStorage)
             {
                 // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
-                ListUrisHandler handler = new ListUrisHandler("g");
+                var handler = new ListUrisHandler("g");
                 ((IAsyncQueryableStorage)this).Query(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", (sender, args, st) =>
                 {
                     if (args.WasSuccessful)
@@ -389,7 +389,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncHttpConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple},AsyncStorageCallback,Object)">UpdateGraph()</see> method.
+        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncHttpConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple},AsyncStorageCallback,object)">UpdateGraph()</see> method.
         /// </summary>
         public abstract bool UpdateSupported
         {
@@ -397,7 +397,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncHttpConnector.DeleteGraph(Uri, AsyncStorageCallback, Object)">DeleteGraph()</see> method.
+        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncHttpConnector.DeleteGraph(Uri, AsyncStorageCallback, object)">DeleteGraph()</see> method.
         /// </summary>
         public abstract bool DeleteSupported
         {
@@ -405,7 +405,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncHttpConnector.ListGraphs(AsyncStorageCallback, Object)">ListGraphs()</see> method.
+        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncHttpConnector.ListGraphs(AsyncStorageCallback, object)">ListGraphs()</see> method.
         /// </summary>
         public abstract bool ListGraphsSupported
         {
@@ -440,14 +440,14 @@ namespace VDS.RDF.Storage
 
         private void DoRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, object state)
         {
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             foreach (HttpWebRequest request in requests)
             {
                 request.BeginGetResponse(r =>
                 {
                     try
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                        var response = (HttpWebResponse)request.EndGetResponse(r);
 
                         // This request worked OK, close the response and carry on
                         response.Close();

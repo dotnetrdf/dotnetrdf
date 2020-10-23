@@ -42,7 +42,7 @@ namespace VDS.RDF.Storage
 
         private void EnsureTestDataset(IStorageProvider manager)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri(TestGraphUri1);
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
@@ -77,9 +77,9 @@ namespace VDS.RDF.Storage
 
         private void TestContains(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 Assert.True(store.HasGraph(new Uri(TestGraphUri1)), "URI 1 should return true for HasGraph()");
@@ -89,7 +89,7 @@ namespace VDS.RDF.Storage
                 Assert.True(store.HasGraph(new Uri(TestGraphUri3)), "URI 3 should return true for HasGraph()");
                 Assert.True(store.Graphs.Contains(new Uri(TestGraphUri3)), "URI 3 should return true for Graphs.Contains()");
 
-                Uri noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
+                var noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
@@ -103,8 +103,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemContains()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestContains(manager);
+            var manager = new InMemoryManager();
+            TestContains(manager);
         }
 
         #endregion
@@ -113,12 +113,12 @@ namespace VDS.RDF.Storage
 
         private void TestGetGraph(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Graph aExpected = new Graph();
+                var aExpected = new Graph();
                 aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 aExpected.BaseUri = new Uri(TestGraphUri1);
@@ -127,7 +127,7 @@ namespace VDS.RDF.Storage
                 aActual = store.Graphs[aExpected.BaseUri];
                 Assert.Equal(aExpected, aActual);
 
-                Graph bExpected = new Graph();
+                var bExpected = new Graph();
                 bExpected.LoadFromFile("resources\\InferenceTest.ttl");
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 bExpected.BaseUri = new Uri(TestGraphUri2);
@@ -136,7 +136,7 @@ namespace VDS.RDF.Storage
                 bActual = store.Graphs[bExpected.BaseUri];
                 Assert.Equal(bExpected, bActual);
 
-                Graph cExpected = new Graph();
+                var cExpected = new Graph();
                 cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
                 cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 cExpected.BaseUri = new Uri(TestGraphUri3);
@@ -154,8 +154,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemGetGraph()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestGetGraph(manager);
+            var manager = new InMemoryManager();
+            TestGetGraph(manager);
         }
 
         #endregion
@@ -164,19 +164,19 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesFlushed(IStorageProvider manager)
         {
-            this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
-            this.EnsureTestDataset(manager);
+            EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 IGraph g = store[new Uri(TestGraphUri1)];
 
-                Triple toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
+                var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
                 g.Assert(toAdd);
 
                 Assert.True(g.ContainsTriple(toAdd), "Added triple should be present in in-memory view prior to Flush/Discard");
-                Graph h = new Graph();
+                var h = new Graph();
                 manager.LoadGraph(h, g.BaseUri);
                 Assert.False(h.ContainsTriple(toAdd), "Added triple should not be present in underlying store prior to Flush/Discard");
 
@@ -196,25 +196,25 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemAddTriplesFlushed()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestAddTriplesFlushed(manager);
+            var manager = new InMemoryManager();
+            TestAddTriplesFlushed(manager);
         }
 
         private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
-            this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
-            this.EnsureTestDataset(manager);
+            EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 IGraph g = store[new Uri(TestGraphUri1)];
 
-                Triple toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
+                var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
                 g.Assert(toAdd);
 
                 Assert.True(g.ContainsTriple(toAdd), "Added triple should be present in in-memory view prior to Flush/Discard");
-                Graph h = new Graph();
+                var h = new Graph();
                 manager.LoadGraph(h, g.BaseUri);
                 Assert.False(h.ContainsTriple(toAdd), "Added triple should not be present in underlying store prior to Flush/Discard");
 
@@ -234,8 +234,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestAddTriplesDiscarded(manager);
+            var manager = new InMemoryManager();
+            TestAddTriplesDiscarded(manager);
         }
 
         #endregion
@@ -244,9 +244,9 @@ namespace VDS.RDF.Storage
 
         private void TestRemoveTriplesFlushed(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 IGraph g = store[new Uri(TestGraphUri1)];
@@ -255,7 +255,7 @@ namespace VDS.RDF.Storage
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
-                Graph h = new Graph();
+                var h = new Graph();
                 manager.LoadGraph(h, g.BaseUri);
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store prior to Flush/Discard");
 
@@ -276,15 +276,15 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestRemoveTriplesFlushed(manager);
+            var manager = new InMemoryManager();
+            TestRemoveTriplesFlushed(manager);
         }
 
         private void TestRemoveTriplesDiscarded(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 IGraph g = store[new Uri(TestGraphUri1)];
@@ -293,7 +293,7 @@ namespace VDS.RDF.Storage
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
-                Graph h = new Graph();
+                var h = new Graph();
                 manager.LoadGraph(h, g.BaseUri);
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store prior to Flush/Discard");
 
@@ -314,8 +314,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestRemoveTriplesDiscarded(manager);
+            var manager = new InMemoryManager();
+            TestRemoveTriplesDiscarded(manager);
         }
 
         #endregion
@@ -324,14 +324,14 @@ namespace VDS.RDF.Storage
 
         private void TestAddGraphFlushed(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed");
-                this.EnsureGraphDeleted(manager, g.BaseUri);
+                EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
@@ -351,20 +351,20 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemAddGraphFlushed()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestAddGraphFlushed(manager);
+            var manager = new InMemoryManager();
+            TestAddGraphFlushed(manager);
         }
 
         private void TestAddGraphDiscarded(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded");
-                this.EnsureGraphDeleted(manager, g.BaseUri);
+                EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
@@ -373,7 +373,7 @@ namespace VDS.RDF.Storage
 
                 store.Discard();
 
-                Graph h = new Graph();
+                var h = new Graph();
                 try
                 {
                     manager.LoadGraph(h, g.BaseUri);
@@ -393,8 +393,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemAddGraphDiscarded()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestAddGraphDiscarded(manager);
+            var manager = new InMemoryManager();
+            TestAddGraphDiscarded(manager);
         }
 
         #endregion
@@ -403,12 +403,12 @@ namespace VDS.RDF.Storage
 
         private void TestRemoveGraphFlushed(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Uri toRemove = new Uri(TestGraphUri1);
+                var toRemove = new Uri(TestGraphUri1);
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -416,7 +416,7 @@ namespace VDS.RDF.Storage
                 store.Flush();
 
                 Assert.False(store.HasGraph(toRemove), "In-Memory view should no longer contain the Graph we removed after Flushing");
-                AnyHandler handler = new AnyHandler();
+                var handler = new AnyHandler();
                 try
                 {
                     manager.LoadGraph(handler, toRemove);
@@ -436,18 +436,18 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestRemoveGraphFlushed(manager);
+            var manager = new InMemoryManager();
+            TestRemoveGraphFlushed(manager);
         }
 
         private void TestRemoveGraphDiscarded(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Uri toRemove = new Uri(TestGraphUri1);
+                var toRemove = new Uri(TestGraphUri1);
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -455,7 +455,7 @@ namespace VDS.RDF.Storage
                 store.Discard();
 
                 Assert.True(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we removed as we Discarded that change");
-                AnyHandler handler = new AnyHandler();
+                var handler = new AnyHandler();
                 manager.LoadGraph(handler, toRemove);
                 Assert.True(handler.Any, "Attempting to load Graph from underlying store should return something as the Discard() prevented the removal being persisted");
             }
@@ -468,8 +468,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestRemoveGraphDiscarded(manager);
+            var manager = new InMemoryManager();
+            TestRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -478,14 +478,14 @@ namespace VDS.RDF.Storage
 
         private void TestAddThenRemoveGraphFlushed(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed");
-                this.EnsureGraphDeleted(manager, g.BaseUri);
+                EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
@@ -510,20 +510,20 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphFlushed()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestAddThenRemoveGraphFlushed(manager);
+            var manager = new InMemoryManager();
+            TestAddThenRemoveGraphFlushed(manager);
         }
 
         private void TestAddThenRemoveGraphDiscarded(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded");
-                this.EnsureGraphDeleted(manager, g.BaseUri);
+                EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
@@ -548,8 +548,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemAddThenRemoveGraphDiscarded()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestAddThenRemoveGraphDiscarded(manager);
+            var manager = new InMemoryManager();
+            TestAddThenRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -558,12 +558,12 @@ namespace VDS.RDF.Storage
 
         private void TestRemoveThenAddGraphFlushed(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Uri toRemove = new Uri(TestGraphUri1);
+                var toRemove = new Uri(TestGraphUri1);
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -576,7 +576,7 @@ namespace VDS.RDF.Storage
                 store.Flush();
 
                 Assert.True(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we added back after Flushing");
-                AnyHandler handler = new AnyHandler();
+                var handler = new AnyHandler();
                 manager.LoadGraph(handler, toRemove);
                 Assert.True(handler.Any, "Attempting to load Graph from underlying store should return something after the Flush() operation since we didn't remove the graph in the end");
             }
@@ -589,18 +589,18 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphFlushed()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestRemoveThenAddGraphFlushed(manager);
+            var manager = new InMemoryManager();
+            TestRemoveThenAddGraphFlushed(manager);
         }
 
         private void TestRemoveThenAddGraphDiscarded(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                Uri toRemove = new Uri(TestGraphUri1);
+                var toRemove = new Uri(TestGraphUri1);
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -613,7 +613,7 @@ namespace VDS.RDF.Storage
                 store.Discard();
 
                 Assert.True(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we removed and added back regardless as we Discarded that change");
-                AnyHandler handler = new AnyHandler();
+                var handler = new AnyHandler();
                 manager.LoadGraph(handler, toRemove);
                 Assert.True(handler.Any, "Attempting to load Graph from underlying store should return something as the Discard() prevented the removal and add back being persisted");
             }
@@ -626,8 +626,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemRemoveThenAddGraphDiscarded()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestRemoveThenAddGraphDiscarded(manager);
+            var manager = new InMemoryManager();
+            TestRemoveThenAddGraphDiscarded(manager);
         }
 
         #endregion
@@ -636,9 +636,9 @@ namespace VDS.RDF.Storage
 
         private void TestQueryUnsynced(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 store.Remove(new Uri(TestGraphUri1));
@@ -654,12 +654,12 @@ namespace VDS.RDF.Storage
 
         private void TestQuerySelect(IStorageProvider manager, String query)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+                var results = store.ExecuteQuery(query) as SparqlResultSet;
                 if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
 
                 TestTools.ShowResults(results);
@@ -672,12 +672,12 @@ namespace VDS.RDF.Storage
 
         private void TestQueryAsk(IStorageProvider manager, String query, bool expected)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+                var results = store.ExecuteQuery(query) as SparqlResultSet;
                 if (results == null) Assert.True(false, "Did not get a SPARQL Result Set as expected");
 
                 TestTools.ShowResults(results);
@@ -693,12 +693,12 @@ namespace VDS.RDF.Storage
 
         private void TestQueryConstruct(IStorageProvider manager, String query)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store.ExecuteQuery(query) as IGraph;
+                var g = store.ExecuteQuery(query) as IGraph;
                 if (g == null) Assert.True(false, "Did not get a Graph as expected");
 
                 TestTools.ShowResults(g);
@@ -711,12 +711,12 @@ namespace VDS.RDF.Storage
 
         private void TestQueryDescribe(IStorageProvider manager, String query)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store.ExecuteQuery(query) as IGraph;
+                var g = store.ExecuteQuery(query) as IGraph;
                 if (g == null) Assert.True(false, "Did not get a Graph as expected");
 
                 TestTools.ShowResults(g);
@@ -730,37 +730,37 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemQueryUnsynced()
         {
-            InMemoryManager manager = new InMemoryManager();
-            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(manager));
+            var manager = new InMemoryManager();
+            Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(manager));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemQuerySelect()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
+            var manager = new InMemoryManager();
+            TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemQueryAsk()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
-            this.TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
+            var manager = new InMemoryManager();
+            TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
+            TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemQueryConstruct()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+            var manager = new InMemoryManager();
+            TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemQueryDescribe()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
+            var manager = new InMemoryManager();
+            TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
         }
 
         #endregion
@@ -769,12 +769,12 @@ namespace VDS.RDF.Storage
 
         private void TestUpdateUnsynced(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 store.Remove(new Uri(TestGraphUri1));
@@ -790,11 +790,11 @@ namespace VDS.RDF.Storage
 
         private void TestUpdate(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
-            Uri updateUri = new Uri("http://example.org/persistence/update/temp");
-            this.EnsureGraphDeleted(manager, updateUri);
+            EnsureTestDataset(manager);
+            var updateUri = new Uri("http://example.org/persistence/update/temp");
+            EnsureGraphDeleted(manager, updateUri);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 Assert.False(store.HasGraph(updateUri), "Prior to SPARQL Update our target graph should not exist using HasGraph()");
@@ -818,8 +818,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemUpdateUnsynced()
         {
-            InMemoryManager manager = new InMemoryManager();
-            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(manager));
+            var manager = new InMemoryManager();
+            Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(manager));
         }
 
         #endregion
@@ -828,14 +828,14 @@ namespace VDS.RDF.Storage
         
         private void TestDumpStoreEmpty(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 // Try and dump
-                StringWriter strWriter = new StringWriter();
-                TriGWriter writer = new TriGWriter();
+                var strWriter = new StringWriter();
+                var writer = new TriGWriter();
                 writer.UseMultiThreadedWriting = false;
 
                 writer.Save(store, strWriter);
@@ -851,9 +851,9 @@ namespace VDS.RDF.Storage
 
         private void TestDumpStorePrimed(IStorageProvider manager)
         {
-            this.EnsureTestDataset(manager);
+            EnsureTestDataset(manager);
 
-            PersistentTripleStore store = new PersistentTripleStore(manager);
+            var store = new PersistentTripleStore(manager);
             try
             {
                 // First prime the persistent store by loading a bunch of stuff
@@ -864,13 +864,13 @@ namespace VDS.RDF.Storage
                 Assert.True(store.HasGraph(new Uri(TestGraphUri3)), "URI 3 should return true for HasGraph()");
                 Assert.True(store.Graphs.Contains(new Uri(TestGraphUri3)), "URI 3 should return true for Graphs.Contains()");
 
-                Uri noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
+                var noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
                 // Then try and dump
-                StringWriter strWriter = new StringWriter();
-                TriGWriter writer = new TriGWriter();
+                var strWriter = new StringWriter();
+                var writer = new TriGWriter();
                 writer.UseMultiThreadedWriting = false;
 
                 writer.Save(store, strWriter);
@@ -887,15 +887,15 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreMemDump1()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestDumpStoreEmpty(manager);
+            var manager = new InMemoryManager();
+            TestDumpStoreEmpty(manager);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemDump2()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestDumpStorePrimed(manager);
+            var manager = new InMemoryManager();
+            TestDumpStorePrimed(manager);
         }
 
         #endregion
@@ -904,28 +904,28 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreFusekiContains()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestContains(fuseki);
+            TestContains(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiGetGraph()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestGetGraph(fuseki);
+            TestGetGraph(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestAddTriplesFlushed(fuseki);
+            TestAddTriplesFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestAddTriplesDiscarded(fuseki);
+            TestAddTriplesDiscarded(fuseki);
         }
 
 
@@ -933,14 +933,14 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestRemoveTriplesFlushed(fuseki);
+            TestRemoveTriplesFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestRemoveTriplesDiscarded(fuseki);
+            TestRemoveTriplesDiscarded(fuseki);
         }
 
 
@@ -948,14 +948,14 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestAddGraphFlushed(fuseki);
+            TestAddGraphFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestAddGraphDiscarded(fuseki);
+            TestAddGraphDiscarded(fuseki);
         }
 
 
@@ -963,21 +963,21 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestRemoveGraphFlushed(fuseki);
+            TestRemoveGraphFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestRemoveGraphDiscarded(fuseki);
+            TestRemoveGraphDiscarded(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestAddThenRemoveGraphFlushed(fuseki);
+            TestAddThenRemoveGraphFlushed(fuseki);
         }
 
 
@@ -985,78 +985,78 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestAddThenRemoveGraphDiscarded(fuseki);
+            TestAddThenRemoveGraphDiscarded(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestRemoveThenAddGraphFlushed(fuseki);
+            TestRemoveThenAddGraphFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphDiscarded()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestRemoveThenAddGraphDiscarded(fuseki);
+            TestRemoveThenAddGraphDiscarded(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(fuseki));
+            Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(fuseki));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQuerySelect()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
+            TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryAsk()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
-            this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
+            TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
+            TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryConstruct()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+            TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryDescribe()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
+            TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(fuseki));
+            Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(fuseki));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemUpdate()
         {
-            InMemoryManager manager = new InMemoryManager();
-            this.TestUpdate(manager);
+            var manager = new InMemoryManager();
+            TestUpdate(manager);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiUpdate()
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
-            this.TestUpdate(fuseki);
+            TestUpdate(fuseki);
         }
 
 #if !NO_VIRTUOSO
@@ -1064,148 +1064,148 @@ namespace VDS.RDF.Storage
         public void StoragePersistentTripleStoreVirtuosoContains()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestContains(virtuoso);
+            TestContains(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoGetGraph()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestGetGraph(virtuoso);
+            TestGetGraph(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddTriplesFlushed(virtuoso);
+            TestAddTriplesFlushed(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoAddTriplesDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddTriplesDiscarded(virtuoso);
+            TestAddTriplesDiscarded(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoRemoveTriplesFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveTriplesFlushed(virtuoso);
+            TestRemoveTriplesFlushed(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoRemoveTriplesDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveTriplesDiscarded(virtuoso);
+            TestRemoveTriplesDiscarded(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoAddGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddGraphFlushed(virtuoso);
+            TestAddGraphFlushed(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoAddGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddGraphDiscarded(virtuoso);
+            TestAddGraphDiscarded(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoRemoveGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveGraphFlushed(virtuoso);
+            TestRemoveGraphFlushed(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoRemoveGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveGraphDiscarded(virtuoso);
+            TestRemoveGraphDiscarded(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddThenRemoveGraphFlushed(virtuoso);
+            TestAddThenRemoveGraphFlushed(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestAddThenRemoveGraphDiscarded(virtuoso);
+            TestAddThenRemoveGraphDiscarded(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphFlushed()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveThenAddGraphFlushed(virtuoso);
+            TestRemoveThenAddGraphFlushed(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphDiscarded()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestRemoveThenAddGraphDiscarded(virtuoso);
+            TestRemoveThenAddGraphDiscarded(virtuoso);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            Assert.Throws<RdfQueryException>(() => this.TestQueryUnsynced(virtuoso));
+            Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(virtuoso));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoQuerySelect()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
+            TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoQueryAsk()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s a ?type }", true);
-            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
+            TestQueryAsk(virtuoso, "ASK WHERE { ?s a ?type }", true);
+            TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoQueryConstruct()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+            TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoQueryDescribe()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestQueryDescribe(virtuoso, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
+            TestQueryDescribe(virtuoso, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            Assert.Throws<SparqlUpdateException>(() => this.TestUpdateUnsynced(virtuoso));
+            Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(virtuoso));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreVirtuosoUpdate()
         {
             VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            this.TestUpdate(virtuoso);
+            TestUpdate(virtuoso);
         }
 
 #endif

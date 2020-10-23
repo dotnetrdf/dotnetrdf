@@ -40,14 +40,14 @@ namespace VDS.RDF
         /// <summary>
         /// A Method which will indicate whether the Context contains some arbitrary property.
         /// </summary>
-        bool HasProperty(String name);
+        bool HasProperty(string name);
 
         /// <summary>
         /// A Property which exposes the arbitrary properties of the Context as an Key Based Index.
         /// </summary>
         /// <param name="name">Name of the Property.</param>
         /// <returns></returns>
-        Object this[String name]
+        object this[string name]
         {
             get;
             set;
@@ -62,7 +62,7 @@ namespace VDS.RDF
     /// </remarks>
     public class BasicTripleContext : ITripleContext
     {
-        private Dictionary<String, Object> _properties;
+        private Dictionary<string, object> _properties;
 
         /// <summary>
         /// Creates a new Basic Triple Context without a Source.

@@ -440,7 +440,7 @@ namespace VDS.RDF
         public static void AddDefinition(MimeTypeDefinition definition)
         {
             if (!_init) Init();
-            if (definition == null) throw new ArgumentNullException("definition");
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
             _mimeTypes.Add(definition);
         }
 
@@ -457,8 +457,8 @@ namespace VDS.RDF
             if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
             // Get any existing defintions that are to be altered
-            var existing = GetDefinitions(mimeTypes);
-            foreach (var def in existing)
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
             {
                 foreach (var type in mimeTypes)
                 {
@@ -472,7 +472,7 @@ namespace VDS.RDF
             }
 
             // Create any new defintions
-            var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
                 var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -494,8 +494,8 @@ namespace VDS.RDF
             if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
             // Get any existing defintions that are to be altered
-            var existing = GetDefinitions(mimeTypes);
-            foreach (var def in existing)
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
             {
                 foreach (var type in mimeTypes)
                 {
@@ -509,7 +509,7 @@ namespace VDS.RDF
             }
 
             // Create any new defintions
-            var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
                 var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -531,8 +531,8 @@ namespace VDS.RDF
             if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
 
             // Get any existing defintions that are to be altered
-            var existing = GetDefinitions(mimeTypes);
-            foreach (var def in existing)
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
             {
                 foreach (var type in mimeTypes)
                 {
@@ -546,7 +546,7 @@ namespace VDS.RDF
             }
 
             // Create any new defintions
-            var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
                 var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -568,8 +568,8 @@ namespace VDS.RDF
             if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
             // Get any existing defintions that are to be altered
-            var existing = GetDefinitions(mimeTypes);
-            foreach (var def in existing)
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
             {
                 foreach (var type in mimeTypes)
                 {
@@ -583,7 +583,7 @@ namespace VDS.RDF
             }
 
             // Create any new defintions
-            var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
                 var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -605,8 +605,8 @@ namespace VDS.RDF
             if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
             // Get any existing defintions that are to be altered
-            var existing = GetDefinitions(mimeTypes);
-            foreach (var def in existing)
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
             {
                 foreach (var type in mimeTypes)
                 {
@@ -620,7 +620,7 @@ namespace VDS.RDF
             }
 
             // Create any new defintions
-            var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
                 var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -642,8 +642,8 @@ namespace VDS.RDF
             if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
 
             // Get any existing defintions that are to be altered
-            var existing = GetDefinitions(mimeTypes);
-            foreach (var def in existing)
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
             {
                 foreach (var type in mimeTypes)
                 {
@@ -657,7 +657,7 @@ namespace VDS.RDF
             }
 
             // Create any new defintions
-            var newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            IEnumerable<string> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
             if (newTypes.Any())
             {
                 var newDef = new MimeTypeDefinition(string.Empty, newTypes, fileExtensions);
@@ -694,7 +694,7 @@ namespace VDS.RDF
 
             if (!_init) Init();
 
-            var selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
+            IEnumerable<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
             return (from selector in selectors
                     from definition in Definitions
                     where definition.SupportsMimeType(selector)
@@ -729,7 +729,7 @@ namespace VDS.RDF
 
                 var output = new StringBuilder();
 
-                foreach (var definition in Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf)
                     {
@@ -756,7 +756,7 @@ namespace VDS.RDF
 
                 var output = new StringBuilder();
 
-                foreach (var definition in Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseSparqlResults)
                     {
@@ -782,7 +782,7 @@ namespace VDS.RDF
 
                 var output = new StringBuilder();
 
-                foreach (var definition in Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf || definition.CanParseSparqlResults)
                     {
@@ -808,7 +808,7 @@ namespace VDS.RDF
 
                 var output = new StringBuilder();
 
-                foreach (var definition in Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdfDatasets)
                     {
@@ -833,7 +833,7 @@ namespace VDS.RDF
 
                 var output = new StringBuilder();
 
-                foreach (var definition in Definitions)
+                foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf || definition.CanParseRdfDatasets)
                     {
@@ -903,8 +903,8 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
-            var requiredType = parser.GetType();
-            foreach (var definition in Definitions)
+            Type requiredType = parser.GetType();
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfParserType))
                 {
@@ -923,8 +923,8 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
-            var requiredType = parser.GetType();
-            foreach (var definition in Definitions)
+            Type requiredType = parser.GetType();
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfDatasetParserType))
                 {
@@ -944,8 +944,8 @@ namespace VDS.RDF
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (!_init) Init();
-            var requiredType = writer.GetType();
-            foreach (var definition in Definitions)
+            Type requiredType = writer.GetType();
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType == definition.RdfWriterType)
                 {
@@ -1047,7 +1047,7 @@ namespace VDS.RDF
             var filter = string.Empty;
             var exts = new List<string>();
 
-            foreach (var def in Definitions)
+            foreach (MimeTypeDefinition def in Definitions)
             {
                 if ((rdf && (def.CanParseRdf || def.CanWriteRdf)) 
                     || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets)) 
@@ -1149,12 +1149,12 @@ namespace VDS.RDF
             if (ctypes != null)
             {
                 // See if there are any MIME Type Definitions for the given MIME Types
-                foreach (var definition in GetDefinitions(ctypes))
+                foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
                 {
                     // If so return the Writer from the first match found
                     if (definition.CanWriteRdf)
                     {
-                        var writer = definition.GetRdfWriter();
+                        IRdfWriter writer = definition.GetRdfWriter();
                         ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                         contentType = definition.CanonicalMimeType;
                         return writer;
@@ -1262,12 +1262,12 @@ namespace VDS.RDF
             if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File extension cannot be null");
 
             // See if there are any MIME Type Definition for the file extension
-            foreach (var definition in GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition definition in GetDefinitionsByFileExtension(fileExt))
             {
                 // If so return the Writer from the first match found
                 if (definition.CanWriteRdf)
                 {
-                    var writer = definition.GetRdfWriter();
+                    IRdfWriter writer = definition.GetRdfWriter();
                     ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     contentType = definition.CanonicalMimeType;
                     return writer;
@@ -1289,11 +1289,11 @@ namespace VDS.RDF
         {
             if (ctypes != null)
             {
-                foreach (var definition in GetDefinitions(ctypes))
+                foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
                 {
                     if (definition.CanParseRdf)
                     {
-                        var parser = definition.GetRdfParser();
+                        IRdfReader parser = definition.GetRdfParser();
                         ApplyParserOptions(parser, tokenQueueMode);
                         return parser;
                     }
@@ -1323,13 +1323,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfReader GetParserByFileExtension(string fileExt, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
         {
-            if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File extension cannot be null");
 
-            foreach (var def in GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanParseRdf)
                 {
-                    var parser = def.GetRdfParser();
+                    IRdfReader parser = def.GetRdfParser();
                     ApplyParserOptions(parser, tokenQueueMode);
                     return parser;
                 }
@@ -1346,11 +1346,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(IEnumerable<string> ctypes, bool allowPlainTextResults)
         {
-            foreach (var definition in GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
             {
                 if (definition.CanParseSparqlResults)
                 {
-                    var parser = definition.GetSparqlResultsParser();
+                    ISparqlResultsReader parser = definition.GetSparqlResultsParser();
                     return parser;
                 }
             }
@@ -1395,13 +1395,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParserByFileExtension(string fileExt)
         {
-            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-            foreach (var def in GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanParseSparqlResults)
                 {
-                    var parser = def.GetSparqlResultsParser();
+                    ISparqlResultsReader parser = def.GetSparqlResultsParser();
                     return parser;
                 }
             }
@@ -1441,12 +1441,12 @@ namespace VDS.RDF
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<string> ctypes, out string contentType)
         {
-            foreach (var definition in GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
             {
                 if (definition.CanWriteSparqlResults)
                 {
                     contentType = definition.CanonicalMimeType;
-                    var writer = definition.GetSparqlResultsWriter();
+                    ISparqlResultsWriter writer = definition.GetSparqlResultsWriter();
                     return writer;
                 }
             }
@@ -1527,13 +1527,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsWriter GetSparqlWriterByFileExtension(string fileExt, out string contentType)
         {
-            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-            foreach (var def in GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanWriteSparqlResults)
                 {
-                    var writer = def.GetSparqlResultsWriter();
+                    ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
                     contentType = def.CanonicalMimeType;
                     return writer;
                 }
@@ -1550,11 +1550,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreReader GetStoreParser(IEnumerable<string> ctypes, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
         {
-            foreach (var def in GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition def in GetDefinitions(ctypes))
             {
                 if (def.CanParseRdfDatasets)
                 {
-                    var parser = def.GetRdfDatasetParser();
+                    IStoreReader parser = def.GetRdfDatasetParser();
                     ApplyParserOptions(parser, tokenQueueMode);
                     return parser;
                 }
@@ -1583,13 +1583,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreReader GetStoreParserByFileExtension(string fileExt, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
         {
-            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-            foreach (var def in GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanParseRdfDatasets)
                 {
-                    var parser = def.GetRdfDatasetParser();
+                    IStoreReader parser = def.GetRdfDatasetParser();
                     ApplyParserOptions(parser, tokenQueueMode);
                     return parser;
                 }
@@ -1632,12 +1632,12 @@ namespace VDS.RDF
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<string> ctypes, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
-            foreach (var definition in GetDefinitions(ctypes))
+            foreach (MimeTypeDefinition definition in GetDefinitions(ctypes))
             {
                 if (definition.CanWriteRdfDatasets)
                 {
                     contentType = definition.CanonicalMimeType;
-                    var writer = definition.GetRdfDatasetWriter();
+                    IStoreWriter writer = definition.GetRdfDatasetWriter();
                     ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     return writer;
                 }
@@ -1695,11 +1695,11 @@ namespace VDS.RDF
         /// <param name="fileExt">File Extension.</param>
         /// <param name="compressionLevel">The compression level to apply to the writer if it implements the <see cref="ICompressingWriter"/> interface.</param>
         /// <param name="useDtd">Whether or not the writer should use the DTD to compress output if it implements the <see cref="IDtdWriter"/> interface.</param>
+        /// <param name="useMultipleThreads">Whether or not the writer should use multiple threads when writing output if it implements the <see cref="IMultiThreadedWriter"/> interface.</param>
         /// <returns></returns>
         public static IStoreWriter GetStoreWriterByFileExtension(string fileExt, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
-            string temp;
-            return GetStoreWriterByFileExtension(fileExt, out temp, compressionLevel, useDtd, useMultipleThreads);
+            return GetStoreWriterByFileExtension(fileExt, out _, compressionLevel, useDtd, useMultipleThreads);
         }
 
         /// <summary>
@@ -1713,13 +1713,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreWriter GetStoreWriterByFileExtension(string fileExt, out string contentType, int compressionLevel = WriterCompressionLevel.More, bool useDtd = true, bool useMultipleThreads = false)
         {
-            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException(nameof(fileExt), "File Extension cannot be null");
 
-            foreach (var def in GetDefinitionsByFileExtension(fileExt))
+            foreach (MimeTypeDefinition def in GetDefinitionsByFileExtension(fileExt))
             {
                 if (def.CanWriteRdfDatasets)
                 {
-                    var writer = def.GetRdfDatasetWriter();
+                    IStoreWriter writer = def.GetRdfDatasetWriter();
                     ApplyWriterOptions(writer, compressionLevel, useDtd, useMultipleThreads);
                     contentType = def.CanonicalMimeType;
                     return writer;
@@ -1738,7 +1738,7 @@ namespace VDS.RDF
         public static string GetMimeType(string fileExt)
         {
             if (!_init) Init();
-            foreach (var definition in Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsFileExtension(fileExt))
                 {
@@ -1760,7 +1760,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             var types = new List<string>();
-            foreach (var definition in Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsFileExtension(fileExt))
                 {
@@ -1782,7 +1782,7 @@ namespace VDS.RDF
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This is an alternative to using <see cref="System.IO.Path.GetExtension(String)"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example. <strong>.gz</strong>
+        /// This is an alternative to using <see cref="System.IO.Path.GetExtension(string)"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example. <strong>.gz</strong>
         /// </para>
         /// <para>
         /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.
@@ -1856,7 +1856,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
             var selector = MimeTypeSelector.Create(mimeType, 1);
-            foreach (var definition in Definitions)
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (definition.SupportsMimeType(selector))
                 {
@@ -1875,8 +1875,8 @@ namespace VDS.RDF
         public static string GetFileExtension(IRdfWriter writer)
         {
             if (!_init) Init();
-            var requiredType = writer.GetType();
-            foreach (var definition in Definitions)
+            Type requiredType = writer.GetType();
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfWriterType))
                 {
@@ -1895,8 +1895,8 @@ namespace VDS.RDF
         public static string GetFileExtension(IStoreWriter writer)
         {
             if (!_init) Init();
-            var requiredType = writer.GetType();
-            foreach (var definition in Definitions)
+            Type requiredType = writer.GetType();
+            foreach (MimeTypeDefinition definition in Definitions)
             {
                 if (requiredType.Equals(definition.RdfDatasetWriterType))
                 {

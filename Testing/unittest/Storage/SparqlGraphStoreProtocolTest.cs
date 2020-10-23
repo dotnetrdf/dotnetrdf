@@ -56,7 +56,7 @@ namespace VDS.RDF.Storage
             {
                 SetUriLoaderCaching(false);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
@@ -66,13 +66,13 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
 
                 //Now retrieve Graph from SPARQL Uniform Protocol
-                Graph h = new Graph();
+                var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 GraphDiffReport diff = g.Difference(h);
@@ -83,12 +83,12 @@ namespace VDS.RDF.Storage
                     Console.WriteLine("Added Triples");
                     foreach (Triple t in diff.AddedTriples)
                     {
-                        Console.WriteLine(t.ToString(this._formatter));
+                        Console.WriteLine(t.ToString(_formatter));
                     }
                     Console.WriteLine("Removed Triples");
                     foreach (Triple t in diff.RemovedTriples)
                     {
-                        Console.WriteLine(t.ToString(this._formatter));
+                        Console.WriteLine(t.ToString(_formatter));
                     }
 
                     Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage
             {
                 SetUriLoaderCaching(false);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparql#test");
 
@@ -120,13 +120,13 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
 
                 //Now retrieve Graph from SPARQL Uniform Protocol
-                Graph h = new Graph();
+                var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparql#test");
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 GraphDiffReport diff = g.Difference(h);
@@ -137,12 +137,12 @@ namespace VDS.RDF.Storage
                     Console.WriteLine("Added Triples");
                     foreach (Triple t in diff.AddedTriples)
                     {
-                        Console.WriteLine(t.ToString(this._formatter));
+                        Console.WriteLine(t.ToString(_formatter));
                     }
                     Console.WriteLine("Removed Triples");
                     foreach (Triple t in diff.RemovedTriples)
                     {
-                        Console.WriteLine(t.ToString(this._formatter));
+                        Console.WriteLine(t.ToString(_formatter));
                     }
 
                     Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
@@ -166,20 +166,20 @@ namespace VDS.RDF.Storage
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Try to load the relevant Graph back from the Store
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
 
-                Graph h = new Graph();
+                var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
                 Console.WriteLine();
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 GraphDiffReport diff = g.Difference(h);
@@ -190,12 +190,12 @@ namespace VDS.RDF.Storage
                     Console.WriteLine("Added Triples");
                     foreach (Triple t in diff.AddedTriples)
                     {
-                        Console.WriteLine(t.ToString(this._formatter));
+                        Console.WriteLine(t.ToString(_formatter));
                     }
                     Console.WriteLine("Removed Triples");
                     foreach (Triple t in diff.RemovedTriples)
                     {
-                        Console.WriteLine(t.ToString(this._formatter));
+                        Console.WriteLine(t.ToString(_formatter));
                     }
 
                     Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (added)");
@@ -245,7 +245,7 @@ namespace VDS.RDF.Storage
 
                 try
                 {
-                    Graph g = new Graph();
+                    var g = new Graph();
                     sparql.LoadGraph(g, "http://example.org/sparqlTest");
 
                     //If we do get here without erroring then the Graph should be empty
@@ -272,19 +272,19 @@ namespace VDS.RDF.Storage
 
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
-                Graph g = new Graph();
+                var g = new Graph();
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
 
-                Graph h = new Graph();
+                var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    Console.WriteLine(t.ToString(_formatter));
                 }
 
                 Assert.True(g.IsSubGraphOf(h), "Retrieved Graph should have the added Triples as a Sub Graph");
@@ -301,7 +301,7 @@ namespace VDS.RDF.Storage
             try
             {
                 SetUriLoaderCaching(false);
-                Graph g = new Graph();
+                var g = new Graph();
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 try
@@ -333,32 +333,32 @@ namespace VDS.RDF.Storage
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
+            var request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
             request.Method = "POST";
             request.ContentType = "application/rdf+xml";
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            using (var writer = new StreamWriter(request.GetRequestStream()))
             {
-                RdfXmlWriter rdfxmlwriter = new RdfXmlWriter();
+                var rdfxmlwriter = new RdfXmlWriter();
                 rdfxmlwriter.Save(g, writer);
                 writer.Close();
             }
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 //Should get a 201 Created response
                 if (response.StatusCode == HttpStatusCode.Created)
                 {
                     if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
-                    Uri graphUri = new Uri(response.Headers["Location"]);
+                    var graphUri = new Uri(response.Headers["Location"]);
 
                     Console.WriteLine("New Graph URI is " + graphUri.ToString());
 
                     Console.WriteLine("Now attempting to retrieve this Graph from the Store");
-                    Graph h = new Graph();
+                    var h = new Graph();
                     connector.LoadGraph(h, graphUri);
 
                     TestTools.ShowGraph(h);
@@ -378,36 +378,36 @@ namespace VDS.RDF.Storage
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            List<Uri> uris = new List<Uri>();
-            for (int i = 0; i < 10; i++)
+            var uris = new List<Uri>();
+            for (var i = 0; i < 10; i++)
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
+                var request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
                 request.Method = "POST";
                 request.ContentType = "application/rdf+xml";
 
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                using (var writer = new StreamWriter(request.GetRequestStream()))
                 {
-                    RdfXmlWriter rdfxmlwriter = new RdfXmlWriter();
+                    var rdfxmlwriter = new RdfXmlWriter();
                     rdfxmlwriter.Save(g, writer);
                     writer.Close();
                 }
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     //Should get a 201 Created response
                     if (response.StatusCode == HttpStatusCode.Created)
                     {
                         if (response.Headers["Location"] == null) Assert.True(false, "A Location: Header containing the URI of the newly created Graph should have been returned");
-                        Uri graphUri = new Uri(response.Headers["Location"]);
+                        var graphUri = new Uri(response.Headers["Location"]);
                         uris.Add(graphUri);
 
                         Console.WriteLine("New Graph URI is " + graphUri.ToString());
 
                         Console.WriteLine("Now attempting to retrieve this Graph from the Store");
-                        Graph h = new Graph();
+                        var h = new Graph();
                         connector.LoadGraph(h, graphUri);
 
                         Assert.Equal(g, h);

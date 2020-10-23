@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Returns an empty enumeration as a match guarantees all variables are bound.
         /// </summary>
-        public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<String>(); } }
+        public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
 
         /// <summary>
         /// Returns whether the Triple Pattern is an accept all.
@@ -268,12 +268,12 @@ namespace VDS.RDF.Query.Patterns
             // Stuff for more precise indexing
             IEnumerable<INode> values = null;
             IEnumerable<ISet> valuePairs = null;
-            String subjVar = _subj.VariableName;
-            String predVar = _pred.VariableName;
-            String objVar = _obj.VariableName;
-            bool boundSubj = (subjVar != null && context.InputMultiset.ContainsVariable(subjVar));
-            bool boundPred = (predVar != null && context.InputMultiset.ContainsVariable(predVar));
-            bool boundObj = (objVar != null && context.InputMultiset.ContainsVariable(objVar));
+            var subjVar = _subj.VariableName;
+            var predVar = _pred.VariableName;
+            var objVar = _obj.VariableName;
+            var boundSubj = (subjVar != null && context.InputMultiset.ContainsVariable(subjVar));
+            var boundPred = (predVar != null && context.InputMultiset.ContainsVariable(predVar));
+            var boundObj = (objVar != null && context.InputMultiset.ContainsVariable(objVar));
 
             switch (_indexType)
             {
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Patterns
                         {
                             valuePairs = (from set in context.InputMultiset.Sets
                                           where set.ContainsVariable(predVar) && set.ContainsVariable(objVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new String[] { predVar, objVar }));
+                                          select set).Distinct(new SetDistinctnessComparer(new string[] { predVar, objVar }));
                             return (from set in valuePairs
                                     where set[predVar] != null && set[objVar] != null
                                     select CreateTriple(subj, set[predVar], set[objVar])).Where(t => context.Data.ContainsTriple(t));
@@ -360,7 +360,7 @@ namespace VDS.RDF.Query.Patterns
                         {
                             valuePairs = (from set in context.InputMultiset.Sets
                                           where set.ContainsVariable(subjVar) && set.ContainsVariable(objVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, objVar }));
+                                          select set).Distinct(new SetDistinctnessComparer(new string[] { subjVar, objVar }));
                             return (from set in valuePairs
                                     where set[subjVar] != null && set[objVar] != null
                                     select CreateTriple(set[subjVar], pred, set[objVar])).Where(t => context.Data.ContainsTriple(t));
@@ -417,7 +417,7 @@ namespace VDS.RDF.Query.Patterns
                         {
                             valuePairs = (from set in context.InputMultiset.Sets
                                           where set.ContainsVariable(subjVar) && set.ContainsVariable(predVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, predVar }));
+                                          select set).Distinct(new SetDistinctnessComparer(new string[] { subjVar, predVar }));
                             return (from set in valuePairs
                                     where set[subjVar] != null && set[predVar] != null
                                     select CreateTriple(set[subjVar], set[predVar], obj)).Where(t => context.Data.ContainsTriple(t));
@@ -559,7 +559,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public ISet CreateResult(Triple t)
         {
-            Set s = new Set();
+            var s = new Set();
             if (_subj.VariableName != null)
             {
                 s.Add(_subj.VariableName, t.Subject);

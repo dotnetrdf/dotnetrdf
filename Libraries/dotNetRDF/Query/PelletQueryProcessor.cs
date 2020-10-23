@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="server">Pellet Server.</param>
         /// <param name="kbName">Knowledge Base Name.</param>
-        public PelletQueryProcessor(PelletServer server, String kbName)
+        public PelletQueryProcessor(PelletServer server, string kbName)
         {
             if (server.HasKnowledgeBase(kbName))
             {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="serverUri">Pellet Server URI.</param>
         /// <param name="kbName">Knowledge Base Name.</param>
-        public PelletQueryProcessor(Uri serverUri, String kbName)
+        public PelletQueryProcessor(Uri serverUri, string kbName)
             : this(new PelletServer(serverUri), kbName) { }
 
         ///<summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                Object temp = _svc.Query(query.ToString());
+                var temp = _svc.Query(query.ToString());
                 return temp;
             }
             finally
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query
         /// <param name="rdfCallback">Callback for queries that return a Graph.</param>
         /// <param name="resultsCallback">Callback for queries that return a Result Set.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, object state)
         {
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, object state)
         {
             query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;

@@ -291,14 +291,14 @@ namespace VDS.RDF.Update
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             if (_baseUri != null)
             {
                 output.AppendLine("BASE <" + _baseUri.AbsoluteUri.Replace(">", "\\>") + ">");
             }
 
-            foreach (String prefix in _nsmap.Prefixes)
+            foreach (var prefix in _nsmap.Prefixes)
             {
                 output.Append("PREFIX ");
                 output.Append(prefix);
@@ -307,7 +307,7 @@ namespace VDS.RDF.Update
                 output.AppendLine(">");
             }
 
-            for (int i = 0; i < _commands.Count; i++)
+            for (var i = 0; i < _commands.Count; i++)
             {
                 output.Append(_commands[i].ToString());
                 if (i < _commands.Count - 1)

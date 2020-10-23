@@ -36,7 +36,7 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SparqlVariable
     {
-        private String _name;
+        private string _name;
         private bool _isResultVar;
         private ISparqlAggregate _aggregate = null;
         private ISparqlExpression _expr = null;
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="name">Variable Name.</param>
         /// <param name="isResultVar">Does this Variable appear in the Result Set?.</param>
-        public SparqlVariable(String name, bool isResultVar) {
+        public SparqlVariable(string name, bool isResultVar) {
             _name = name;
             _isResultVar = isResultVar;
 
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
         /// Creates a new Sparql Variable.
         /// </summary>
         /// <param name="name">Variable Name (with leading ?/$ removed).</param>
-        public SparqlVariable(String name) 
+        public SparqlVariable(string name) 
             : this(name, false) { }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
         /// <param name="name">Variable Name (with leading ?/$ removed).</param>
         /// <param name="aggregate">Aggregate Function.</param>
         /// <remarks>All Aggregate Variables are automatically considered as Result Variables.</remarks>
-        public SparqlVariable(String name, ISparqlAggregate aggregate)
+        public SparqlVariable(string name, ISparqlAggregate aggregate)
             : this(name, true)
         {
             _aggregate = aggregate;
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="name">Variable Name (with leading ?/$ removed).</param>
         /// <param name="expr">Projection Expression.</param>
-        public SparqlVariable(String name, ISparqlExpression expr)
+        public SparqlVariable(string name, ISparqlExpression expr)
             : this(name, true)
         {
             _expr = expr;
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Variable Name.
         /// </summary>
-        public String Name
+        public string Name
         {
             get
             {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_aggregate != null)
             {
                 output.Append('(');

@@ -66,7 +66,7 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
-            using var stream = File.Open(filename, FileMode.Create);
+            using FileStream stream = File.Open(filename, FileMode.Create);
             Save(results, new StreamWriter(stream, fileEncoding));
         }
 
@@ -94,8 +94,8 @@ namespace VDS.RDF.Writing
         /// <param name="output"></param>
         private void GenerateOutput(SparqlResultSet results, TextWriter output)
         {
-            HtmlTextWriter writer = new HtmlTextWriter(output);
-            QNameOutputMapper qnameMapper = new QNameOutputMapper(DefaultNamespaces != null ? DefaultNamespaces : new NamespaceMapper(true));
+            var writer = new HtmlTextWriter(output);
+            var qnameMapper = new QNameOutputMapper(DefaultNamespaces != null ? DefaultNamespaces : new NamespaceMapper(true));
 
             // Page Header
             writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -128,7 +128,7 @@ namespace VDS.RDF.Writing
                 writer.RenderBeginTag(HtmlTextWriterTag.Thead);
                 writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
-                foreach (string var in results.Variables)
+                foreach (var var in results.Variables)
                 {
                     writer.RenderBeginTag(HtmlTextWriterTag.Th);
                     writer.WriteEncodedText(var);
@@ -148,7 +148,7 @@ namespace VDS.RDF.Writing
                     // Start Row
                     writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
-                    foreach (string var in results.Variables)
+                    foreach (var var in results.Variables)
                     {
                         // Start Column
                         writer.RenderBeginTag(HtmlTextWriterTag.Td);
@@ -169,7 +169,7 @@ namespace VDS.RDF.Writing
                                         break;
 
                                     case NodeType.Literal:
-                                        ILiteralNode lit = (ILiteralNode)value;
+                                        var lit = (ILiteralNode)value;
                                         writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassLiteral);
                                         writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                         if (lit.DataType != null)

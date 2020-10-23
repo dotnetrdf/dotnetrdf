@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Namespace Uri for SPARQL Built In Functions Namespace.
         /// </summary>
-        public const String SparqlFunctionsNamespace = "http://www.w3.org/ns/sparql#";
+        public const string SparqlFunctionsNamespace = "http://www.w3.org/ns/sparql#";
 
         /// <summary>
         /// Tries to create a SPARQL Function expression if the function Uri correseponds to a supported SPARQL Function.
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Expressions
         /// <returns>Whether an expression was successfully generated.</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
         {
-            String func = u.ToString();
+            var func = u.ToString();
             if (func.StartsWith(SparqlFunctionsNamespace))
             {
                 func = func.Substring(SparqlFunctionsNamespace.Length);

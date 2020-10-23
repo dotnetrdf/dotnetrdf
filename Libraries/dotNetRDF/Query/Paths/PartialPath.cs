@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Paths
         {
             if (obj is PotentialPath)
             {
-                PotentialPath other = (PotentialPath)obj;
+                var other = (PotentialPath)obj;
                 return (_start.Equals(other.Start) && _current.Equals(other.Current));
             }
             else

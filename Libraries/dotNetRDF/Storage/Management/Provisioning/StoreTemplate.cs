@@ -41,8 +41,8 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// Creates a new template.
         /// </summary>
         /// <param name="id">Store ID.</param>
-        public StoreTemplate(String id)
-            : this(id, "Unknown", String.Empty) { }
+        public StoreTemplate(string id)
+            : this(id, "Unknown", string.Empty) { }
 
         /// <summary>
         /// Creates a new template.
@@ -50,7 +50,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <param name="id">Store ID.</param>
         /// <param name="name">Template Name.</param>
         /// <param name="description">Template Description.</param>
-        public StoreTemplate(String id, String name, String description)
+        public StoreTemplate(string id, string name, string description)
         {
             ID = id;
             TemplateName = name;
@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// Gets/Sets the Store ID.
         /// </summary>
         [Category("Basic"), Description("The ID of the Store")]
-        public String ID
+        public string ID
         {
             get;
             set;
@@ -71,7 +71,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// Gets the name of the type of store the template will create.
         /// </summary>
         [Category("Basic"), Description("Name of the type of store the template will create"), ReadOnly(true)]
-        public String TemplateName
+        public string TemplateName
         {
             get;
             protected set;
@@ -81,7 +81,7 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// Gets the description of the type of store the template will create.
         /// </summary>
         [Category("Basic"), Description("Description of the type of store the template will create"), ReadOnly(true)]
-        public String TemplateDescription
+        public string TemplateDescription
         {
             get;
             protected set;
@@ -94,9 +94,9 @@ namespace VDS.RDF.Storage.Management.Provisioning
         /// <remarks>
         /// This default implementation does no validation, derived classes must override this to add their required validation.
         /// </remarks>
-        public virtual IEnumerable<String> Validate()
+        public virtual IEnumerable<string> Validate()
         {
-            return Enumerable.Empty<String>();
+            return Enumerable.Empty<string>();
         }
 
         /// <summary>

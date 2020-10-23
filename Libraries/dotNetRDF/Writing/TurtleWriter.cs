@@ -129,7 +129,7 @@ namespace VDS.RDF.Writing
                 // Writes everything as individual Triples
                 RaiseWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
                 context.NodeFormatter = new UncompressedTurtleFormatter();
-                foreach (var t in context.Graph.Triples)
+                foreach (Triple t in context.Graph.Triples)
                 {
                     context.Output.Write(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
                     context.Output.Write(" ");
@@ -143,7 +143,7 @@ namespace VDS.RDF.Writing
             {
 
                 // Get the Triples as a Sorted List
-                var ts = WriterHelper.GetTriplesSortedBySubjectPredicate(context.Graph);
+                List<Triple> ts = WriterHelper.GetTriplesSortedBySubjectPredicate(context.Graph);
 
                 // Variables we need to track our writing
                 INode lastSubj, lastPred;
@@ -153,7 +153,7 @@ namespace VDS.RDF.Writing
 
                 for (var i = 0; i < ts.Count; i++)
                 {
-                    var t = ts[i];
+                    Triple t = ts[i];
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
                         // Terminate previous Triples
@@ -265,7 +265,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
-            var d = Warning;
+            RdfWriterWarning d = Warning;
             if (d != null)
             {
                 d(message);

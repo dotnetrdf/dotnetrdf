@@ -40,13 +40,13 @@ namespace VDS.RDF.Query.Algebra
     public class NullOperator 
         : ISparqlAlgebra, ITerminalOperator
     {
-        private List<String> _vars = new List<string>();
+        private List<string> _vars = new List<string>();
 
         /// <summary>
         /// Creates a new Null Operator.
         /// </summary>
         /// <param name="variables">Variables in the algebra that this null is replacing.</param>
-        public NullOperator(IEnumerable<String> variables)
+        public NullOperator(IEnumerable<string> variables)
         {
             _vars.AddRange(variables);
         }
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<string> FixedVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<string> FloatingVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>

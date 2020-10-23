@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                 {
                     if (temp.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode lit = (ILiteralNode)temp;
+                        var lit = (ILiteralNode)temp;
 
                         if (lit.DataType == null)
                         {

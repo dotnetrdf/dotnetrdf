@@ -63,12 +63,12 @@ new line",
 
         private void TestEscaping<T>(T formatter, IRdfReader parser) where T : INodeFormatter, ITripleFormatter
         {
-            Graph g = new Graph();
+            var g = new Graph();
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
             IUriNode pred2 = g.CreateUriNode(new Uri("http://example.org/predicate2"));
 
-            foreach (String value in this._values)
+            foreach (var value in _values)
             {
                 //Do Escaping and Checking
                 Console.WriteLine("Original Value - " + value);
@@ -79,8 +79,8 @@ new line",
                 if (parser != null)
                 {
                     //Now generate a Triple, save in a String and then re-parse to check for round trip value equality
-                    Triple tOrig = new Triple(subj, pred, obj);
-                    System.IO.StringWriter writer = new System.IO.StringWriter();
+                    var tOrig = new Triple(subj, pred, obj);
+                    var writer = new System.IO.StringWriter();
                     writer.WriteLine(formatter.Format(tOrig));
 
                     Console.WriteLine("Serialized Output");
@@ -102,55 +102,55 @@ new line",
         [Fact]
         public void WritingStringBackslashEscapingNTriples1()
         {
-            this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Original), new NTriplesParser());
+            TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Original), new NTriplesParser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingNTriples2()
         {
-            this.TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Rdf11), new NTriplesParser());
+            TestEscaping<NTriplesFormatter>(new NTriplesFormatter(NTriplesSyntax.Rdf11), new NTriplesParser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingTurtle1()
         {
-            this.TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser());
+            TestEscaping<TurtleFormatter>(new TurtleFormatter(), new TurtleParser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingTurtle2()
         {
-            this.TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
+            TestEscaping<UncompressedTurtleFormatter>(new UncompressedTurtleFormatter(), new TurtleParser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingTurtle3()
         {
-            this.TestEscaping<TurtleW3CFormatter>(new TurtleW3CFormatter(), new TurtleParser());
+            TestEscaping<TurtleW3CFormatter>(new TurtleW3CFormatter(), new TurtleParser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingNotation3_1()
         {
-            this.TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser());
+            TestEscaping<Notation3Formatter>(new Notation3Formatter(), new Notation3Parser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingNotation3_2()
         {
-            this.TestEscaping<UncompressedNotation3Formatter>(new UncompressedNotation3Formatter(), new Notation3Parser());
+            TestEscaping<UncompressedNotation3Formatter>(new UncompressedNotation3Formatter(), new Notation3Parser());
         }
 
         [Fact]
         public void WritingStringBackslashEscapingSparql()
         {
-            this.TestEscaping<SparqlFormatter>(new SparqlFormatter(), null);
+            TestEscaping<SparqlFormatter>(new SparqlFormatter(), null);
         }
 
         [Fact]
         public void WritingStringBackslashEscapingTsv()
         {
-            this.TestEscaping<TsvFormatter>(new TsvFormatter(), null);
+            TestEscaping<TsvFormatter>(new TsvFormatter(), null);
         }
     }
 }

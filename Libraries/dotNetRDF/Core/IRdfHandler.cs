@@ -53,7 +53,7 @@ namespace VDS.RDF
         /// <param name="prefix">Namespace Prefix.</param>
         /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted.</returns>
-        bool HandleNamespace(String prefix, Uri namespaceUri);
+        bool HandleNamespace(string prefix, Uri namespaceUri);
 
         /// <summary>
         /// Handles a Base URI Definition.

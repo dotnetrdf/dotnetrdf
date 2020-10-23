@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Builder
             var graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
 
             // then
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 Assert.Single(graphPattern.ChildGraphPatterns);
                 graphPattern = graphPattern.ChildGraphPatterns.Single();

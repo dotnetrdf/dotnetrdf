@@ -46,7 +46,7 @@ namespace VDS.RDF.Configuration
         /// The Factory should not throw an error if some required configuration is missing as another factory further down the processing chain may still be able to create the object.  If the factory encounters errors and all the required configuration information is present then that error should be thrown i.e. class instantiation throws an error or a call to load an object that this object requires fails.
         /// </para>
         /// </remarks>
-        bool TryLoadObject(IGraph g, INode objNode, Type targetType, out Object obj);
+        bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj);
 
         /// <summary>
         /// Returns whether this Factory is capable of creating objects of the given type.
@@ -78,6 +78,6 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="path">Path.</param>
         /// <returns></returns>
-        String ResolvePath(String path);
+        string ResolvePath(string path);
     }
 }

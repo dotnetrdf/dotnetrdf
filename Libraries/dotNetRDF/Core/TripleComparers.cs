@@ -69,7 +69,7 @@ namespace VDS.RDF
 
             if (x is IVirtualIdComparable && y is IVirtualIdComparable)
             {
-                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out int result))
+                if ((x as IVirtualIdComparable).TryCompareVirtualId(y, out var result))
                 {
                     return result;
                 }
@@ -83,15 +83,15 @@ namespace VDS.RDF
                 // Sort order for literals is as follows
                 // plain literals < language spec'd literals < typed literals
                 // Within a category ordering is lexical on modifier, then lexical on lexical value
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                var a = (ILiteralNode)x;
+                var b = (ILiteralNode)y;
 
                 if (a.DataType != null)
                 {
                     if (b.DataType != null)
                     {
                         // Compare datatypes
-                        int c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
+                        var c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
                         if (c == 0)
                         {
                             // Same datatype so compare lexical values
@@ -111,7 +111,7 @@ namespace VDS.RDF
                     if (!b.Language.Equals(string.Empty))
                     {
                         // Compare language specifiers
-                        int c = a.Language.CompareTo(b.Language);
+                        var c = a.Language.CompareTo(b.Language);
                         if (c == 0)
                         {
                             // Same language so compare lexical values
@@ -200,15 +200,15 @@ namespace VDS.RDF
                 // Sort order for literals is as follows
                 // plain literals < language spec'd literals < typed literals
                 // Within a category ordering is lexical on modifier, then lexical on lexical value
-                ILiteralNode a = (ILiteralNode)x;
-                ILiteralNode b = (ILiteralNode)y;
+                var a = (ILiteralNode)x;
+                var b = (ILiteralNode)y;
 
                 if (a.DataType != null)
                 {
                     if (b.DataType != null)
                     {
                         // Compare datatypes
-                        int c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
+                        var c = ComparisonHelper.CompareUris(a.DataType, b.DataType);
                         if (c == 0)
                         {
                             // Same datatype so compare lexical values
@@ -228,7 +228,7 @@ namespace VDS.RDF
                     if (!b.Language.Equals(string.Empty))
                     {
                         // Compare language specifiers
-                        int c = a.Language.CompareTo(b.Language);
+                        var c = a.Language.CompareTo(b.Language);
                         if (c == 0)
                         {
                             // Same language so compare lexical values
@@ -360,7 +360,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = _nodeComparer.Compare(x.Subject, y.Subject);
+            var c = _nodeComparer.Compare(x.Subject, y.Subject);
             if (c == 0)
             {
                 c = _nodeComparer.Compare(x.Predicate, y.Predicate);
@@ -494,7 +494,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = _nodeComparer.Compare(x.Subject, y.Subject);
+            var c = _nodeComparer.Compare(x.Subject, y.Subject);
             if (c == 0)
             {
                 c = _nodeComparer.Compare(x.Predicate, y.Predicate);
@@ -530,7 +530,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = _nodeComparer.Compare(x.Subject, y.Subject);
+            var c = _nodeComparer.Compare(x.Subject, y.Subject);
             if (c == 0)
             {
                 c = _nodeComparer.Compare(x.Object, y.Object);
@@ -566,7 +566,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = _nodeComparer.Compare(x.Predicate, y.Predicate);
+            var c = _nodeComparer.Compare(x.Predicate, y.Predicate);
             if (c == 0)
             {
                 c = _nodeComparer.Compare(x.Object, y.Object);
@@ -601,7 +601,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int Compare(Triple x, Triple y)
         {
-            int c = _nodeComparer.Compare(x.Object, y.Object);
+            var c = _nodeComparer.Compare(x.Object, y.Object);
             if (c == 0)
             {
                 c = _nodeComparer.Compare(x.Subject, y.Subject);

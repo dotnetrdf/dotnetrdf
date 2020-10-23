@@ -63,7 +63,7 @@ namespace VDS.RDF.Writing
         /// <param name="fileEncoding">The text encoding to use for the file.</param>
         public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
-            using var stream = File.Open(filename, FileMode.Create);
+            using FileStream stream = File.Open(filename, FileMode.Create);
             Save(results, new StreamWriter(stream, fileEncoding));
         }
 
@@ -87,13 +87,13 @@ namespace VDS.RDF.Writing
                     }
                     output.Write('\n');
 
-                    foreach (var result in results)
+                    foreach (SparqlResult result in results)
                     {
                         for (var i = 0; i < vars.Length; i++)
                         {
                             if (result.HasValue(vars[i]))
                             {
-                                var temp = result[vars[i]];
+                                INode temp = result[vars[i]];
                                 if (temp != null)
                                 {
                                     switch (temp.NodeType)
@@ -142,7 +142,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
-            var d = Warning;
+            SparqlWarning d = Warning;
             if (d != null)
             {
                 d(message);

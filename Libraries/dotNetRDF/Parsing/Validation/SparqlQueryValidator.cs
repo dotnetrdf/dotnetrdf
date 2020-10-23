@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <returns></returns>
         public ISyntaxValidationResults Validate(string data)
         {
-            String message;
+            string message;
             try
             {
                 SparqlQuery q = _parser.ParseFromString(data);

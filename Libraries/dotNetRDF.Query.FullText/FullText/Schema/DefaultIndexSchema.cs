@@ -51,12 +51,12 @@ namespace VDS.RDF.Query.FullText.Schema
         /// </summary>
         public DefaultIndexSchema()
         {
-            this.IndexField = DefaultIndexField;
-            this.GraphField = DefaultGraphField;
-            this.HashField = DefaultHashField;
-            this.NodeMetaField = DefaultNodeMetaField;
-            this.NodeTypeField = DefaultNodeTypeField;
-            this.NodeValueField = DefaultNodeValueField;
+            IndexField = DefaultIndexField;
+            GraphField = DefaultGraphField;
+            HashField = DefaultHashField;
+            NodeMetaField = DefaultNodeMetaField;
+            NodeTypeField = DefaultNodeTypeField;
+            NodeValueField = DefaultNodeValueField;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.FullText.Schema
 
             INode schemaObj = context.NextSubject;
             context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassSchema)));
-            context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
         }
     }
 }

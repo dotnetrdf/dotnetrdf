@@ -146,7 +146,7 @@ namespace VDS.RDF.Query
 
                 SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
                 SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
-                SparqlNumericType numtype = (SparqlNumericType) Math.Max((int) xnumtype, (int) ynumtype);
+                var numtype = (SparqlNumericType) Math.Max((int) xnumtype, (int) ynumtype);
                 if (numtype != SparqlNumericType.NaN)
                 {
                     if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query
                     }
                 }
 
-                string commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                var commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
                 if (commontype.Equals(string.Empty))
                 {
                     // Use Node ordering
@@ -266,7 +266,7 @@ namespace VDS.RDF.Query
                     // Both have known types
                     SparqlNumericType xnumtype = x.NumericType;
                     SparqlNumericType ynumtype = y.NumericType;
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                    var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
                         if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
@@ -310,7 +310,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        string commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                        var commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
                         if (commontype.Equals(string.Empty))
                         {
                             // Use Node ordering
@@ -474,7 +474,7 @@ namespace VDS.RDF.Query
                 // For Local times we normalize to UTC
 
                 // Compare on the Unspecified/UTC form as appropriate
-                int res = c.Year.CompareTo(d.Year);
+                var res = c.Year.CompareTo(d.Year);
                 if (res == 0)
                 {
                     res = c.Month.CompareTo(d.Month);
@@ -499,7 +499,10 @@ namespace VDS.RDF.Query
     public class SparqlOrderingComparer 
         : SparqlNodeComparer
     {
-
+        /// <summary>
+        /// Create a new comparer that uses the same culture and comparison options as the specified node comparer.
+        /// </summary>
+        /// <param name="nodeComparer">The node comparer whose culture and comparison options are to be used.</param>
         public SparqlOrderingComparer(ISparqlNodeComparer nodeComparer):base(nodeComparer?.Culture ?? CultureInfo.InvariantCulture, nodeComparer?.Options ?? CompareOptions.Ordinal) {}
 
         /// <summary>
@@ -580,7 +583,7 @@ namespace VDS.RDF.Query
 
                     SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
                     SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
-                    SparqlNumericType numtype = (SparqlNumericType) Math.Max((int) xnumtype, (int) ynumtype);
+                    var numtype = (SparqlNumericType) Math.Max((int) xnumtype, (int) ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
                         if (xnumtype == SparqlNumericType.NaN)
@@ -705,7 +708,7 @@ namespace VDS.RDF.Query
                         // Both have known types
                         SparqlNumericType xnumtype = x.NumericType;
                         SparqlNumericType ynumtype = y.NumericType;
-                        SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                        var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                         if (numtype != SparqlNumericType.NaN)
                         {
                             if (xnumtype == SparqlNumericType.NaN)
@@ -754,7 +757,7 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            string commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                            var commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
                             if (commontype.Equals(string.Empty))
                             {
                                 // Use Node ordering

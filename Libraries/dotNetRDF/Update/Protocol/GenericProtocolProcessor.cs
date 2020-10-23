@@ -62,11 +62,11 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessGet(IHttpContext context)
         {
-            var graphUri = ResolveGraphUri(context);
+            Uri graphUri = ResolveGraphUri(context);
             try
             {
                 // Send the Graph to the user
-                var g = GetGraph(graphUri);
+                IGraph g = GetGraph(graphUri);
                 SendResultsToClient(context, g);
             }
             catch
@@ -110,7 +110,7 @@ namespace VDS.RDF.Update.Protocol
             {
                 // If the Manager does not support update we attempt to get around this by loading the Graph
                 // appending the additions to it (via merging) and then saving it back to the Store
-                Graph current = new Graph();
+                var current = new Graph();
                 _manager.LoadGraph(current, graphUri);
                 current.Merge(g);
                 _manager.SaveGraph(current);
@@ -243,11 +243,11 @@ namespace VDS.RDF.Update.Protocol
 
             try
             {
-                bool exists = HasGraph(graphUri);
+                var exists = HasGraph(graphUri);
                 if (exists)
                 {
                     // Send the Content Type we'd select based on the Accept header to the user
-                    var writer = MimeTypesHelper.GetWriter(context.GetAcceptTypes(), out var ctype);
+                    IRdfWriter writer = MimeTypesHelper.GetWriter(context.GetAcceptTypes(), out var ctype);
                     context.Response.ContentType = ctype;
                 }
                 else
@@ -280,20 +280,20 @@ namespace VDS.RDF.Update.Protocol
                 {
                     // Try and parse the SPARQL Update
                     // No error handling here as we assume the calling IHttpHandler does that
-                    String patchData;
-                    using (StreamReader reader = new StreamReader(context.Request.InputStream))
+                    string patchData;
+                    using (var reader = new StreamReader(context.Request.InputStream))
                     {
                         patchData = reader.ReadToEnd();
                         reader.Close();
                     }
-                    SparqlUpdateParser parser = new SparqlUpdateParser();
+                    var parser = new SparqlUpdateParser();
                     SparqlUpdateCommandSet cmds = parser.ParseFromString(patchData);
 
                     // Assuming that we've got here i.e. the SPARQL Updates are parseable then
                     // we need to check that they actually affect the relevant Graph
                     if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphUri)))
                     {
-                        GenericUpdateProcessor processor = new GenericUpdateProcessor(_manager);
+                        var processor = new GenericUpdateProcessor(_manager);
                         processor.ProcessCommandSet(cmds);
                         processor.Flush();
                     }
@@ -327,7 +327,7 @@ namespace VDS.RDF.Update.Protocol
         /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             _manager.LoadGraph(g, graphUri);
             return g;
         }
@@ -342,7 +342,7 @@ namespace VDS.RDF.Update.Protocol
             if (_manager is IQueryableStorage)
             {
                 // Generate an ASK query based on this
-                SparqlParameterizedString ask = new SparqlParameterizedString();
+                var ask = new SparqlParameterizedString();
                 if (graphUri != null)
                 {
                     ask.CommandText = "ASK WHERE { GRAPH @graph { ?s ?p ?o . } }";
@@ -353,7 +353,7 @@ namespace VDS.RDF.Update.Protocol
                     ask.CommandText = "ASK WHERE { ?s ?p ?o }";
                 }
 
-                Object results = ((IQueryableStorage)_manager).Query(ask.ToString());
+                var results = ((IQueryableStorage)_manager).Query(ask.ToString());
                 if (results is SparqlResultSet)
                 {
                     return ((SparqlResultSet)results).Result;

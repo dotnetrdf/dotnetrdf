@@ -56,7 +56,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameSaveLoad()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/SesameTest");
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Storage
             //Options.HttpDebugging = true;
             //Options.HttpFullDebugging = true;
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, "http://example.org/SesameTest");
             Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
@@ -76,13 +76,13 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameSaveEmptyGraph1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/Sesame/empty");
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             sesame.SaveGraph(g);
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, "http://example.org/Sesame/empty");
             Assert.True(h.IsEmpty, "Graph should be empty after loading");
 
@@ -93,20 +93,20 @@ namespace VDS.RDF.Storage
         public void StorageSesameSaveEmptyGraph2()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            Uri graphUri = new Uri("http://example.org/Sesame/empty2");
+            var graphUri = new Uri("http://example.org/Sesame/empty2");
             Console.WriteLine("Deleting any existing graph");
             sesame.DeleteGraph(graphUri);
             Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = graphUri;
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
             Console.WriteLine("Saving non-empty graph");
             sesame.SaveGraph(g);
             Console.WriteLine("Non-empty graph saved");
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, graphUri);
             Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
@@ -136,14 +136,14 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = graphUri;
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
             Console.WriteLine("Saving non-empty graph");
             sesame.SaveGraph(g);
             Console.WriteLine("Non-empty graph saved");
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, graphUri);
             Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
@@ -166,7 +166,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameDeleteTriples1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/SesameTest");
 
@@ -179,13 +179,13 @@ namespace VDS.RDF.Storage
             //Delete all Triples about the Ford Fiesta
             sesame.UpdateGraph(g.BaseUri, null, g.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
 
-            Object results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
+            var results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet) results).Result, "There should no longer be any triples about the Ford Fiesta present");
             }
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, g.BaseUri);
 
             Console.WriteLine("Graph after deletion");
@@ -199,7 +199,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameDeleteTriples2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/SesameTest/Delete2");
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/ns#"));
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), g.CreateUriNode("ex:obj"));
@@ -213,13 +213,13 @@ namespace VDS.RDF.Storage
             //Delete the single triple
             sesame.UpdateGraph(g.BaseUri, null, g.Triples);
 
-            Object results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest/Delete2> { <http://example.org/ns#subj> ?p ?o } }");
+            var results = sesame.Query("ASK WHERE { GRAPH <http://example.org/SesameTest/Delete2> { <http://example.org/ns#subj> ?p ?o } }");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet) results).Result, "There should no longer be any triples present in the graph");
             }
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, g.BaseUri);
 
             Console.WriteLine("Graph after deletion");
@@ -233,14 +233,14 @@ namespace VDS.RDF.Storage
         public void StorageSesameDeleteTriples3()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/chinese");
             FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
-            String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
+            var ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
-            Object results = sesame.Query(ask);
+            var results = sesame.Query(ask);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -265,15 +265,15 @@ namespace VDS.RDF.Storage
         public void StorageSesameDeleteGraph1()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            Uri graphUri = new Uri("http://example.org/Sesame/delete");
+            var graphUri = new Uri("http://example.org/Sesame/delete");
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = graphUri;
 
             sesame.SaveGraph(g);
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, graphUri);
             Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
@@ -293,13 +293,13 @@ namespace VDS.RDF.Storage
             Uri graphUri = null;
             sesame.DeleteGraph(graphUri);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = graphUri;
 
             sesame.SaveGraph(g);
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, graphUri);
             Assert.False(h.IsEmpty, "Graph should not be empty after loading");
 
@@ -316,14 +316,14 @@ namespace VDS.RDF.Storage
         public void StorageSesameCyrillic()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
             FileLoader.Load(g, @"..\\resources\cyrillic.rdf");
             sesame.SaveGraph(g);
 
-            String ask = "ASK WHERE { GRAPH <http://example.org/sesame/cyrillic> { ?s ?p 'литерал' } }";
+            var ask = "ASK WHERE { GRAPH <http://example.org/sesame/cyrillic> { ?s ?p 'литерал' } }";
 
-            Object results = sesame.Query(ask);
+            var results = sesame.Query(ask);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -336,14 +336,14 @@ namespace VDS.RDF.Storage
         public void StorageSesameChinese()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/chinese");
             FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
-            String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
+            var ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
-            Object results = sesame.Query(ask);
+            var results = sesame.Query(ask);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -357,9 +357,9 @@ namespace VDS.RDF.Storage
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
-            String ask = "ASK WHERE { ?s ?p ?o }";
+            var ask = "ASK WHERE { ?s ?p ?o }";
 
-            Object results = sesame.Query(ask);
+            var results = sesame.Query(ask);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -372,9 +372,9 @@ namespace VDS.RDF.Storage
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
-            String describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
+            var describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
 
-            Object results = sesame.Query(describe);
+            var results = sesame.Query(describe);
             Assert.IsAssignableFrom<IGraph>(results);
             if (results is IGraph)
             {
@@ -396,12 +396,12 @@ DELETE WHERE
   { ?s <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long ; <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat }
 }");
 
-            Graph orig = new Graph();
+            var orig = new Graph();
             orig.LoadFromUri(new Uri("http://dbpedia.org/resource/Ilkeston"));
             orig.Retract(orig.GetTriplesWithPredicate(new Uri("http://www.w3.org/2003/01/geo/wgs84_pos#long")).ToList());
             orig.Retract(orig.GetTriplesWithPredicate(new Uri("http://www.w3.org/2003/01/geo/wgs84_pos#lat")).ToList());
 
-            Graph actual = new Graph();
+            var actual = new Graph();
             sesame.LoadGraph(actual, "http://example.org/sparqlUpdateLoad");
 
             GraphDiffReport diff = orig.Difference(actual);
@@ -417,14 +417,14 @@ DELETE WHERE
         public void StorageSesameSparqlUpdate2()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/sparqlUpdateDeleteWhere");
             sesame.SaveGraph(g);
 
             sesame.Update("WITH <http://example.org/sparqlUpdateDeleteWhere> DELETE { ?s a ?type } WHERE { ?s a ?type }");
 
-            Graph h = new Graph();
+            var h = new Graph();
             sesame.LoadGraph(h, "http://example.org/sparqlUpdateDeleteWhere");
             INode rdfType = h.CreateUriNode("rdf:type");
             Assert.False(h.GetTriplesWithPredicate(rdfType).Any(), "Should not be any rdf:type triples after SPARQL Update operation");
@@ -436,15 +436,15 @@ DELETE WHERE
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
             // Ensure required graph is present
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/sesame/chinese");
             FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
-            String ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
+            var ask = "ASK WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
 
             // Issue query to validate data was added
-            Object results = sesame.Query(ask);
+            var results = sesame.Query(ask);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -453,7 +453,7 @@ DELETE WHERE
             }
 
             // Issue a DELETE for the Chinese literal
-            String update = "DELETE WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
+            var update = "DELETE WHERE { GRAPH <http://example.org/sesame/chinese> { ?s ?p '例子' } }";
             sesame.Update(update);
 
             // Re-issue query to validate triple was deleted
@@ -473,7 +473,7 @@ DELETE WHERE
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
             // Insert the Data
-            StringBuilder updates = new StringBuilder();
+            var updates = new StringBuilder();
             using (StreamReader reader = File.OpenText(@"..\\resources\core-374.ru"))
             {
                 updates.Append(reader.ReadToEnd());
@@ -481,10 +481,10 @@ DELETE WHERE
             }
             sesame.Update(updates.ToString());
 
-            String ask = "ASK WHERE { GRAPH <http://example.org/sesame/core-374> { ?s ?p 'République du Niger'@fr } }";
+            var ask = "ASK WHERE { GRAPH <http://example.org/sesame/core-374> { ?s ?p 'République du Niger'@fr } }";
 
             // Issue query to validate data was added
-            Object results = sesame.Query(ask);
+            var results = sesame.Query(ask);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {

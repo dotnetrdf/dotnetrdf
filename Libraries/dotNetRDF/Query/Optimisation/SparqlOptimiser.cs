@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <summary>
         /// Namespace URI for the Optimiser Statistics vocabulary.
         /// </summary>
-        public const String OptimiserStatsNamespace = "http://www.dotnetrdf.org/optimiserStats#";
+        public const string OptimiserStatsNamespace = "http://www.dotnetrdf.org/optimiserStats#";
 
         /// <summary>
         /// Gets/Sets the global Query Optimiser that is used by default.

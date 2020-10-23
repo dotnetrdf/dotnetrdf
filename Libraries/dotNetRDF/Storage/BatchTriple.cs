@@ -35,14 +35,14 @@ namespace VDS.RDF.Storage
     public struct BatchTriple
     {
         private Triple _t;
-        private String _graphID;
+        private string _graphID;
 
         /// <summary>
         /// Creates a new Batch Triple.
         /// </summary>
         /// <param name="t">Triple.</param>
         /// <param name="graphID">Graph ID to store Triple for.</param>
-        public BatchTriple(Triple t, String graphID)
+        public BatchTriple(Triple t, string graphID)
         {
             _t = t;
             _graphID = graphID;
@@ -62,7 +62,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Graph ID.
         /// </summary>
-        public String GraphID
+        public string GraphID
         {
             get
             {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Storage
         {
             if (obj is BatchTriple)
             {
-                BatchTriple other = (BatchTriple)obj;
+                var other = (BatchTriple)obj;
                 return _graphID == other.GraphID && _t.Equals(other.Triple);
             }
             else

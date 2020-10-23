@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Inference
         /// The <paramref name="mode">mode</paramref> permits for the specification of an extraction mode for reasoners that can extract specific subsets of reasoning.  Where this is not supported the reasoner should simply extract all triples that can be inferred by reasoning.
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
-        IEnumerable<Triple> Extract(String mode);
+        IEnumerable<Triple> Extract(string mode);
 
         /// <summary>
         /// Extracts all possible triples using the given extraction modes.
@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Inference
         /// The <paramref name="modes">modes</paramref> permits for the specification of an extraction mode for reasoners that can extract specific subsets of reasoning.  Where this is not supported the reasoner should simply extract all triples that can be inferred by reasoning.
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
-        IEnumerable<Triple> Extract(IEnumerable<String> modes);
+        IEnumerable<Triple> Extract(IEnumerable<string> modes);
 
         /// <summary>
         /// Extracts the triples which comprise the class hierarchy.
@@ -135,6 +135,6 @@ namespace VDS.RDF.Query.Inference
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">May be thrown if the Reasoner does not support such an operation.</exception>
-        Object ExecuteQuery(String sparqlQuery);
+        object ExecuteQuery(string sparqlQuery);
     }
 }

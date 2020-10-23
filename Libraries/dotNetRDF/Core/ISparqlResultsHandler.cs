@@ -56,7 +56,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="var">Variable Name.</param>
         /// <returns></returns>
-        bool HandleVariable(String var);
+        bool HandleVariable(string var);
 
         /// <summary>
         /// Handles a SPARQL Result.

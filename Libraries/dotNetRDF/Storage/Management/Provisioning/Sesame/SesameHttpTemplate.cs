@@ -60,14 +60,14 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Creates a new Template.
         /// </summary>
         /// <param name="id">Store ID.</param>
-        public SesameHttpTemplate(String id)
+        public SesameHttpTemplate(string id)
             : base(id, "Remote Sesame Store", "A remote Sesame store is any Sesame store not residing on this Sesame server accessible via the Sesame HTTP protocol") { }
 
         /// <summary>
         /// Gets/Sets the remote Sesame server to connect to.
         /// </summary>
         [Category("Sesame Configuration"), Description("The Base URL of the remote Sesame server the remote store resides upon")]
-        public String RemoteServer
+        public string RemoteServer
         {
             get;
             set;
@@ -77,7 +77,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Gets/Sets the ID of the remote repository to connect to.
         /// </summary>
         [Category("Sesame Configuration"), Description("The ID of the remote repository")]
-        public String RemoteRepositoryID
+        public string RemoteRepositoryID
         {
             get;
             set;
@@ -94,7 +94,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             g.Assert(ContextNode, g.CreateUriNode("rep:repositoryImpl"), impl);
             g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:HTTPRepository"));
 
-            String url = RemoteServer;
+            var url = RemoteServer;
             if (!url.EndsWith("/")) url += "/";
             url += "repositories/";
             url += RemoteRepositoryID;

@@ -38,7 +38,12 @@ namespace VDS.RDF.Query.Expressions
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Allows for users of the Library to implement and register Custom Expression Factories which can generate Expressions for their own Extension functions which they wish to use in their SPARQL queries.   Custom factories may be globally scoped by registering them with the <see cref="SparqlExpressionFactory.AddCustomFactory">AddCustomFactory()</see> method or locally by passing them to the three argument constructor of the <see cref="SparqlExpressionFactory.CreateExpression(Uri, System.Collections.Generic.List{VDS.RDF.Query.Expressions.ISparqlExpression}, IEnumerable{ISparqlCustomExpressionFactory})">CreateExpression()</see> method.
+    /// Allows for users of the Library to implement and register Custom Expression Factories which
+    /// can generate Expressions for their own Extension functions which they wish to use in their
+    /// SPARQL queries.  Custom factories may be globally scoped by registering them with the
+    /// <see cref="AddCustomFactory">AddCustomFactory()</see> method or
+    /// locally by passing them to the four argument constructor of the
+    /// <see cref="CreateExpression(Uri, List{ISparqlExpression}, IEnumerable{ISparqlCustomExpressionFactory}, bool)">CreateExpression()</see> method.
     /// </para>
     /// </remarks>
     public static class SparqlExpressionFactory
@@ -89,7 +94,7 @@ namespace VDS.RDF.Query.Expressions
         /// </remarks>
         public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories, bool allowUnknownFunctions)
         {
-            return CreateExpression(u, args, new Dictionary<String, ISparqlExpression>(), factories, allowUnknownFunctions);
+            return CreateExpression(u, args, new Dictionary<string, ISparqlExpression>(), factories, allowUnknownFunctions);
         }
 
         /// <summary>
@@ -106,7 +111,7 @@ namespace VDS.RDF.Query.Expressions
         /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used.
         /// </para>
         /// </remarks>
-        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories, bool allowUnknownFunctions)
+        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories, bool allowUnknownFunctions)
         {
             if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.AbsoluteUri))
             {
@@ -118,7 +123,7 @@ namespace VDS.RDF.Query.Expressions
 
                 // One of the Supported XPath Cast functions
                 ISparqlExpression arg = args[0];
-                String cast = u.AbsoluteUri;
+                var cast = u.AbsoluteUri;
                 if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                 {
                     return new BooleanCast(arg);

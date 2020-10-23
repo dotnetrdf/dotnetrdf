@@ -40,14 +40,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     public class SearchService
         : PelletService
     {
-        private String _searchUri;
+        private string _searchUri;
 
         /// <summary>
         /// Creates a new Search Service.
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal SearchService(String name, JObject obj)
+        internal SearchService(string name, JObject obj)
             : base(name, obj) 
         {
             _searchUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf('{'));
@@ -58,17 +58,17 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="text">Search Term.</param>
         /// <returns>A list of Search Results representing Nodes in the Knowledge Base that match the search term.</returns>
-        public List<SearchServiceResult> Search(String text)
+        public List<SearchServiceResult> Search(string text)
         {
-            String search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
+            var search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
+            var request = (HttpWebRequest)WebRequest.Create(search);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
-            String jsonText;
+            string jsonText;
             JArray json;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
                 jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                 json = JArray.Parse(jsonText);
@@ -79,22 +79,22 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             // Parse the Response into Search Results
             try
             {
-                List<SearchServiceResult> results = new List<SearchServiceResult>();
+                var results = new List<SearchServiceResult>();
 
                 foreach (JToken result in json.Children())
                 {
                     JToken hit = result.SelectToken("hit");
-                    String type = (String)hit.SelectToken("type");
+                    var type = (string)hit.SelectToken("type");
                     INode node;
                     if (type.ToLower().Equals("uri"))
                     {
-                        node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
+                        node = new UriNode(null, UriFactory.Create((string)hit.SelectToken("value")));
                     }
                     else
                     {
-                        node = new BlankNode(null, (String)hit.SelectToken("value"));
+                        node = new BlankNode(null, (string)hit.SelectToken("value"));
                     }
-                    double score = (double)result.SelectToken("score");
+                    var score = (double)result.SelectToken("score");
 
                     results.Add(new SearchServiceResult(node, score));
                 }
@@ -124,23 +124,23 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Search(String text, PelletSearchServiceCallback callback, Object state)
+        public void Search(string text, PelletSearchServiceCallback callback, object state)
         {
-            String search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
+            var search = _searchUri + "?search=" + HttpUtility.UrlEncode(text);
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
+            var request = (HttpWebRequest)WebRequest.Create(search);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
             try
             {
-                String jsonText;
+                string jsonText;
                 JArray json;
                 request.BeginGetResponse(result =>
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                                 json = JArray.Parse(jsonText);
@@ -149,22 +149,22 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
                                 // Parse the Response into Search Results
 
-                                List<SearchServiceResult> results = new List<SearchServiceResult>();
+                                var results = new List<SearchServiceResult>();
 
                                 foreach (JToken res in json.Children())
                                 {
                                     JToken hit = res.SelectToken("hit");
-                                    String type = (String) hit.SelectToken("type");
+                                    var type = (string) hit.SelectToken("type");
                                     INode node;
                                     if (type.ToLower().Equals("uri"))
                                     {
-                                        node = new UriNode(null, UriFactory.Create((String) hit.SelectToken("value")));
+                                        node = new UriNode(null, UriFactory.Create((string) hit.SelectToken("value")));
                                     }
                                     else
                                     {
-                                        node = new BlankNode(null, (String) hit.SelectToken("value"));
+                                        node = new BlankNode(null, (string) hit.SelectToken("value"));
                                     }
-                                    double score = (double) res.SelectToken("score");
+                                    var score = (double) res.SelectToken("score");
 
                                     results.Add(new SearchServiceResult(node, score));
                                 }

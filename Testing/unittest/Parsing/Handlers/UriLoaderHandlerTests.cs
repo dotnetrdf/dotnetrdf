@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderGraphHandlerImplicit()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"));
 
             TestTools.ShowGraph(g);
@@ -51,8 +51,8 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact(Skip="Remote configuration is not currently available")]
         public void ParsingUriLoaderGraphHandlerExplicit()
         {
-            Graph g = new Graph();
-            GraphHandler handler = new GraphHandler(g);
+            var g = new Graph();
+            var handler = new GraphHandler(g);
             UriLoader.Load(handler, new Uri("http://www.dotnetrdf.org/configuration#"));
 
             TestTools.ShowGraph(g);
@@ -62,10 +62,10 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingUriLoaderCountHandler()
         {
-            Graph orig = new Graph();
+            var orig = new Graph();
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            CountHandler handler = new CountHandler();
+            var handler = new CountHandler();
             EmbeddedResourceLoader.Load(handler, "VDS.RDF.Configuration.configuration.ttl");
 
             Assert.Equal(orig.Triples.Count, handler.Count);

@@ -114,12 +114,12 @@ namespace VDS.RDF.Update
                     if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                     // Load Source Graph
-                    Graph source = new Graph();
+                    var source = new Graph();
                     _manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;
 
                     // Load Destination Graph
-                    Graph dest = new Graph();
+                    var dest = new Graph();
                     _manager.LoadGraph(dest, cmd.DestinationUri);
                     dest.BaseUri = cmd.DestinationUri;
 
@@ -188,8 +188,8 @@ namespace VDS.RDF.Update
 
                             if (_manager.ListGraphsSupported)
                             {
-                                List<Uri> graphs = _manager.ListGraphs().ToList();
-                                foreach (var u in graphs)
+                                var graphs = _manager.ListGraphs().ToList();
+                                foreach (Uri u in graphs)
                                 {
                                     if ((u == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                                     {
@@ -249,7 +249,7 @@ namespace VDS.RDF.Update
                     IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                     if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
-                    Graph source = new Graph();
+                    var source = new Graph();
                     _manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;
 
@@ -267,7 +267,7 @@ namespace VDS.RDF.Update
                     }
 
                     // Load Destination Graph and ensure it is empty
-                    Graph dest = new Graph();
+                    var dest = new Graph();
                     _manager.LoadGraph(dest, cmd.DestinationUri);
                     dest.BaseUri = cmd.DestinationUri;
                     dest.Clear();
@@ -303,7 +303,7 @@ namespace VDS.RDF.Update
             }
             else
             {
-                Graph g = new Graph {BaseUri = cmd.TargetUri};
+                var g = new Graph {BaseUri = cmd.TargetUri};
 
                 try
                 {
@@ -401,7 +401,7 @@ namespace VDS.RDF.Update
                 }
                 else
                 {
-                    for (int i = 0; i < commands.CommandCount; i++)
+                    for (var i = 0; i < commands.CommandCount; i++)
                     {
                         ProcessCommand(commands[i]);
                     }
@@ -453,8 +453,8 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
-                    SparqlQueryParser parser = new SparqlQueryParser();
+                    var queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    var parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
                     if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
                     foreach (Uri u in cmd.UsingUris)
@@ -466,21 +466,21 @@ namespace VDS.RDF.Update
                         query.AddNamedGraph(u);
                     }
 
-                    Object results = ((IQueryableStorage)_manager).Query(query.ToString());
+                    var results = ((IQueryableStorage)_manager).Query(query.ToString());
                     if (results is SparqlResultSet)
                     {
                         // Now need to transform the Result Set back to a Multiset
-                        Multiset mset = new Multiset((SparqlResultSet)results);
+                        var mset = new Multiset((SparqlResultSet)results);
 
                         // Generate the Triples for each Solution
-                        List<Triple> deletedTriples = new List<Triple>();
-                        Dictionary<String, List<Triple>> deletedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var deletedTriples = new List<Triple>();
+                        var deletedGraphTriples = new Dictionary<string, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
-                            List<Triple> tempDeletedTriples = new List<Triple>();
+                            var tempDeletedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                var context = new ConstructContext(null, s, true);
                                 foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -507,14 +507,14 @@ namespace VDS.RDF.Update
                                 tempDeletedTriples.Clear();
                                 try
                                 {
-                                    String graphUri;
+                                    string graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
                                             graphUri = gp.GraphSpecifier.Value;
                                             break;
                                         case Token.VARIABLE:
-                                            String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                            var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
                                                 INode temp = s[graphVar];
@@ -544,7 +544,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    var context = new ConstructContext(null, s, true);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -571,19 +571,19 @@ namespace VDS.RDF.Update
                         if (_manager.UpdateSupported)
                         {
                             _manager.UpdateGraph(cmd.GraphUri, Enumerable.Empty<Triple>(), deletedTriples);
-                            foreach (KeyValuePair<String, List<Triple>> graphDeletion in deletedGraphTriples)
+                            foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 _manager.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
                             }
                         }
                         else
                         {
-                            Graph g = new Graph();
+                            var g = new Graph();
                             _manager.LoadGraph(g, cmd.GraphUri);
                             g.Retract(deletedTriples);
                             _manager.SaveGraph(g);
 
-                            foreach (KeyValuePair<String, List<Triple>> graphDeletion in deletedGraphTriples)
+                            foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 g = new Graph();
                                 _manager.LoadGraph(g, graphDeletion.Key);
@@ -636,7 +636,7 @@ namespace VDS.RDF.Update
                 }
 
                 // Split the Pattern into the set of Graph Patterns
-                List<GraphPattern> patterns = new List<GraphPattern>();
+                var patterns = new List<GraphPattern>();
                 if (cmd.DataPattern.IsGraph)
                 {
                     patterns.Add(cmd.DataPattern);
@@ -675,7 +675,7 @@ namespace VDS.RDF.Update
                         }
                     }
 
-                    Graph g = new Graph();
+                    var g = new Graph();
                     if (!_manager.UpdateSupported)
                     {
                         // If the Graph to be deleted from is empty then can skip as will have no affect on the Graph
@@ -687,7 +687,7 @@ namespace VDS.RDF.Update
 
                     // Delete the actual Triples
                     INode subj, pred, obj;
-                    ConstructContext context = new ConstructContext(g, null, false);
+                    var context = new ConstructContext(g, null, false);
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         subj = p.Subject.Construct(context);
@@ -768,7 +768,7 @@ namespace VDS.RDF.Update
                         case ClearMode.Named:
                             if (_manager.ListGraphsSupported)
                             {
-                                List<Uri> graphs = _manager.ListGraphs().ToList();
+                                var graphs = _manager.ListGraphs().ToList();
                                 foreach (Uri u in graphs)
                                 {
                                     if (_manager.DeleteSupported)
@@ -848,8 +848,8 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
-                    SparqlQueryParser parser = new SparqlQueryParser();
+                    var queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    var parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
                     if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
                     foreach (Uri u in cmd.UsingUris)
@@ -861,21 +861,21 @@ namespace VDS.RDF.Update
                         query.AddNamedGraph(u);
                     }
 
-                    Object results = ((IQueryableStorage)_manager).Query(query.ToString());
+                    var results = ((IQueryableStorage)_manager).Query(query.ToString());
                     if (results is SparqlResultSet)
                     {
                         // Now need to transform the Result Set back to a Multiset
-                        Multiset mset = new Multiset((SparqlResultSet)results);
+                        var mset = new Multiset((SparqlResultSet)results);
 
                         // Generate the Triples for each Solution
-                        List<Triple> insertedTriples = new List<Triple>();
-                        Dictionary<String, List<Triple>> insertedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var insertedTriples = new List<Triple>();
+                        var insertedGraphTriples = new Dictionary<string, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
-                            List<Triple> tempInsertedTriples = new List<Triple>();
+                            var tempInsertedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                var context = new ConstructContext(null, s, true);
                                 foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -902,14 +902,14 @@ namespace VDS.RDF.Update
                                 tempInsertedTriples.Clear();
                                 try
                                 {
-                                    String graphUri;
+                                    string graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
                                             graphUri = gp.GraphSpecifier.Value;
                                             break;
                                         case Token.VARIABLE:
-                                            String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                            var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
                                                 INode temp = s[graphVar];
@@ -939,7 +939,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    var context = new ConstructContext(null, s, true);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -966,19 +966,19 @@ namespace VDS.RDF.Update
                         if (_manager.UpdateSupported)
                         {
                             _manager.UpdateGraph(cmd.GraphUri, insertedTriples, Enumerable.Empty<Triple>());
-                            foreach (KeyValuePair<String, List<Triple>> graphInsertion in insertedGraphTriples)
+                            foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 _manager.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
                             }
                         }
                         else
                         {
-                            Graph g = new Graph();
+                            var g = new Graph();
                             _manager.LoadGraph(g, cmd.GraphUri);
                             g.Assert(insertedTriples);
                             _manager.SaveGraph(g);
 
-                            foreach (KeyValuePair<String, List<Triple>> graphInsertion in insertedGraphTriples)
+                            foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 g = new Graph();
                                 _manager.LoadGraph(g, graphInsertion.Key);
@@ -1031,7 +1031,7 @@ namespace VDS.RDF.Update
                 }
 
                 // Split the Pattern into the set of Graph Patterns
-                List<GraphPattern> patterns = new List<GraphPattern>();
+                var patterns = new List<GraphPattern>();
                 if (cmd.DataPattern.IsGraph)
                 {
                     patterns.Add(cmd.DataPattern);
@@ -1070,12 +1070,12 @@ namespace VDS.RDF.Update
                         }
                     }
 
-                    Graph g = new Graph();
+                    var g = new Graph();
                     if (!_manager.UpdateSupported) _manager.LoadGraph(g, graphUri);
 
                     // Insert the actual Triples
                     INode subj, pred, obj;
-                    ConstructContext context = new ConstructContext(g, null, false);
+                    var context = new ConstructContext(g, null, false);
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         subj = p.Subject.Construct(context);
@@ -1128,7 +1128,7 @@ namespace VDS.RDF.Update
                         if ((_manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
 
-                    Graph g = new Graph();
+                    var g = new Graph();
                     if (!_manager.UpdateSupported) _manager.LoadGraph(g, cmd.TargetUri);
                     Loader.LoadGraph(g, cmd.SourceUri);
                     g.BaseUri = cmd.TargetUri;
@@ -1200,8 +1200,8 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
-                    SparqlQueryParser parser = new SparqlQueryParser();
+                    var queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    var parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
                     if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
                     foreach (Uri u in cmd.UsingUris)
@@ -1213,21 +1213,21 @@ namespace VDS.RDF.Update
                         query.AddNamedGraph(u);
                     }
 
-                    Object results = ((IQueryableStorage)_manager).Query(query.ToString());
+                    var results = ((IQueryableStorage)_manager).Query(query.ToString());
                     if (results is SparqlResultSet)
                     {
                         // Now need to transform the Result Set back to a Multiset
-                        Multiset mset = new Multiset((SparqlResultSet)results);
+                        var mset = new Multiset((SparqlResultSet)results);
 
                         // Generate the Triples for each Solution
-                        List<Triple> deletedTriples = new List<Triple>();
-                        Dictionary<String, List<Triple>> deletedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var deletedTriples = new List<Triple>();
+                        var deletedGraphTriples = new Dictionary<string, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
-                            List<Triple> tempDeletedTriples = new List<Triple>();
+                            var tempDeletedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                var context = new ConstructContext(null, s, true);
                                 foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -1254,14 +1254,14 @@ namespace VDS.RDF.Update
                                 tempDeletedTriples.Clear();
                                 try
                                 {
-                                    String graphUri;
+                                    string graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
                                             graphUri = gp.GraphSpecifier.Value;
                                             break;
                                         case Token.VARIABLE:
-                                            String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                            var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
                                                 INode temp = s[graphVar];
@@ -1291,7 +1291,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    var context = new ConstructContext(null, s, true);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -1315,14 +1315,14 @@ namespace VDS.RDF.Update
                         }
 
                         // Generate the Triples for each Solution
-                        List<Triple> insertedTriples = new List<Triple>();
-                        Dictionary<String, List<Triple>> insertedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var insertedTriples = new List<Triple>();
+                        var insertedGraphTriples = new Dictionary<string, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
-                            List<Triple> tempInsertedTriples = new List<Triple>();
+                            var tempInsertedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                var context = new ConstructContext(null, s, true);
                                 foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -1349,14 +1349,14 @@ namespace VDS.RDF.Update
                                 tempInsertedTriples.Clear();
                                 try
                                 {
-                                    String graphUri;
+                                    string graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
                                             graphUri = gp.GraphSpecifier.Value;
                                             break;
                                         case Token.VARIABLE:
-                                            String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                            var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
                                                 INode temp = s[graphVar];
@@ -1386,7 +1386,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    var context = new ConstructContext(null, s, true);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -1416,23 +1416,23 @@ namespace VDS.RDF.Update
                             // We do these two operations sequentially even if in some cases they could be combined to ensure that the underlying
                             // Manager doesn't do any optimisations which would have the result of our updates not being properly applied
                             // e.g. ignoring Triples which are both asserted and retracted in one update
-                            foreach (KeyValuePair<String, List<Triple>> graphDeletion in deletedGraphTriples)
+                            foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 _manager.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
                             }
-                            foreach (KeyValuePair<String, List<Triple>> graphInsertion in insertedGraphTriples)
+                            foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 _manager.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
                             }
                         }
                         else
                         {
-                            Graph g = new Graph();
+                            var g = new Graph();
                             _manager.LoadGraph(g, cmd.GraphUri);
                             g.Retract(deletedTriples);
                             _manager.SaveGraph(g);
 
-                            foreach (String graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
+                            foreach (var graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
                             {
                                 g = new Graph();
                                 _manager.LoadGraph(g, graphUri);
@@ -1479,7 +1479,7 @@ namespace VDS.RDF.Update
                     IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                     if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
-                    Graph source = new Graph();
+                    var source = new Graph();
                     _manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;
 
@@ -1497,7 +1497,7 @@ namespace VDS.RDF.Update
                     }
 
                     // Load Destination Graph and ensure it is empty
-                    Graph dest = new Graph();
+                    var dest = new Graph();
                     _manager.LoadGraph(dest, cmd.DestinationUri);
                     dest.BaseUri = cmd.DestinationUri;
                     dest.Clear();

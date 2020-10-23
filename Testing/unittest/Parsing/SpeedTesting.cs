@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(10000, watch);
+            CalculateSpeed(10000, watch);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(100000, watch);
+            CalculateSpeed(100000, watch);
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(500000, watch);
+            CalculateSpeed(500000, watch);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(10000, watch);
+            CalculateSpeed(10000, watch);
 
             Assert.Equal(10000, handler.Count);
         }
@@ -159,7 +159,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(100000, watch);
+            CalculateSpeed(100000, watch);
 
             Assert.Equal(100000, handler.Count);
         }
@@ -178,7 +178,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(10000, watch);
+            CalculateSpeed(10000, watch);
         }
 
         [Fact]
@@ -195,7 +195,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(100000, watch);
+            CalculateSpeed(100000, watch);
         }
 
         [Fact]
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(500000, watch);
+            CalculateSpeed(500000, watch);
         }
 
         [SkippableFact(typeof(OutOfMemoryException))]
@@ -230,7 +230,7 @@ namespace VDS.RDF.Parsing
             watch.Stop();
 
             _testOutputHelper.WriteLine(watch.Elapsed.ToString());
-            this.CalculateSpeed(1000000, watch);
+            CalculateSpeed(1000000, watch);
         }
     }
 }

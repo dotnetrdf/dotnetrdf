@@ -82,7 +82,7 @@ namespace VDS.RDF.Ontology
             IUriNode rdfType = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType));
             foreach (Triple t in _graph.GetTriplesWithSubjectPredicate(_resource, rdfType))
             {
-                OntologyClass c = new OntologyClass(t.Object, _graph);
+                var c = new OntologyClass(t.Object, _graph);
                 _classes.Add(c);
             }
         }

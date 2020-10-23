@@ -60,14 +60,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="file">Filename.</param>
         /// <returns></returns>
-        T ParseFromFile(String file);
+        T ParseFromFile(string file);
 
         /// <summary>
         /// Parses an Object from a String.
         /// </summary>
         /// <param name="data">String.</param>
         /// <returns></returns>
-        T ParseFromString(String data);
+        T ParseFromString(string data);
 
         /// <summary>
         /// Parses an Object from a Parameterized String.

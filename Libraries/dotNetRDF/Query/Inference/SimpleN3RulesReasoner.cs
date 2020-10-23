@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Inference
     /// </remarks>
     public class SimpleN3RulesReasoner : IInferenceEngine
     {
-        private List<String[]> _rules = new List<String[]>();
+        private List<string[]> _rules = new List<string[]>();
         private SparqlUpdateValidator _validator = new SparqlUpdateValidator();
         private SparqlFormatter _formatter = new SparqlFormatter();
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Output Graph.</param>
         public void Apply(IGraph input, IGraph output)
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(input);
             if (!ReferenceEquals(input, output))
             {
@@ -90,10 +90,10 @@ namespace VDS.RDF.Query.Inference
             }
 
             // Apply each rule in turn
-            foreach (String[] rule in _rules)
+            foreach (var rule in _rules)
             {
                 // Build the final version of the rule text for the given input and output
-                StringBuilder ruleText = new StringBuilder();
+                var ruleText = new StringBuilder();
 
                 // If there's a Base URI on the Output Graph need a WITH clause
                 if (output.BaseUri != null)
@@ -139,13 +139,13 @@ namespace VDS.RDF.Query.Inference
         /// <param name="t">Triple.</param>
         private void TryCreateRule(Triple t)
         {
-            String[] rule = new String[2];
-            Dictionary<INode, INode> variableMap = new Dictionary<INode, INode>();
-            int nextVarID = 1;
+            var rule = new string[2];
+            var variableMap = new Dictionary<INode, INode>();
+            var nextVarID = 1;
             VariableContext vars = null;
             if (t.Context != null && t.Context is VariableContext) vars = (VariableContext)t.Context;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             // Generate the INSERT part of the Command
             output.AppendLine("INSERT");

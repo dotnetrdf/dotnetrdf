@@ -57,17 +57,17 @@ namespace VDS.RDF.Writing
 
         private void CheckRoundTrip(IGraph g, IEnumerable<Type> exceptions)
         {
-            foreach (IRdfWriter writer in this._writers)
+            foreach (IRdfWriter writer in _writers)
             {
                 _output.WriteLine("Checking round trip with " + writer.GetType().Name);
-                System.IO.StringWriter strWriter = new System.IO.StringWriter();
+                var strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
                 _output.WriteLine(string.Empty);
 
-                Graph h = new Graph();
+                var h = new Graph();
                 try
                 {
-                    this._parser.Load(h, new StringReader(strWriter.ToString()));
+                    _parser.Load(h, new StringReader(strWriter.ToString()));
                     _output.WriteLine("Output was parsed OK");
                 }
                 catch
@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing
 
         private void CheckRoundTrip(IGraph g)
         {
-            this.CheckRoundTrip(g, Enumerable.Empty<Type>());
+            CheckRoundTrip(g, Enumerable.Empty<Type>());
         }
 
         private void CheckFailure(IGraph g)
@@ -109,17 +109,17 @@ namespace VDS.RDF.Writing
             _output.WriteLine("Original Triples:");
             foreach (Triple t in g.Triples)
             {
-                _output.WriteLine(t.ToString(this._formatter));
+                _output.WriteLine(t.ToString(_formatter));
             }
             _output.WriteLine(string.Empty);
 
-            foreach (IRdfWriter writer in this._writers)
+            foreach (IRdfWriter writer in _writers)
             {
                 _output.WriteLine("Checking for Failure with " + writer.GetType().Name);
-                bool failed = false;
+                var failed = false;
                 try
                 {
-                    System.IO.StringWriter sw = new System.IO.StringWriter();
+                    var sw = new System.IO.StringWriter();
                     writer.Save(g, sw);
 
                     _output.WriteLine("Produced Output when failure was expected:");
@@ -139,91 +139,91 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingRdfXmlLiteralsWithLanguageTags()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateLiteralNode("string", "en");
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlLiteralsWithReservedCharacters()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateLiteralNode("<tag>");
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlLiteralsWithReservedCharacters2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateLiteralNode("&lt;tag>");
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g, new Type[] { typeof(PrettyRdfXmlWriter) });
+            CheckRoundTrip(g, new Type[] { typeof(PrettyRdfXmlWriter) });
         }
 
         [Fact]
         public void WritingRdfXmlLiteralsWithReservedCharacters3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateLiteralNode("string", new Uri("http://example.org/object?a=b&c=d"));
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlLiterals()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateLiteralNode("<tag />", new Uri(RdfSpecsHelper.RdfXmlLiteral));
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlLiterals2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateLiteralNode("<tag>this &amp; that</tag>", new Uri(RdfSpecsHelper.RdfXmlLiteral));
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlUrisWithReservedCharacters()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateUriNode(new Uri("http://example.org/object?a=b&c=d"));
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlBNodes1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateBlankNode();
@@ -235,23 +235,23 @@ namespace VDS.RDF.Writing
 
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlBNodes2()
         {
-            String data = "@prefix : <http://example.org/>. [a :bNode ; :connectsTo [a :bNode ; :connectsTo []]] a [] .";
-            Graph g = new Graph();
+            var data = "@prefix : <http://example.org/>. [a :bNode ; :connectsTo [a :bNode ; :connectsTo []]] a [] .";
+            var g = new Graph();
             g.LoadFromString(data, new TurtleParser());
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlBNodes3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
             INode p = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode o = g.CreateBlankNode("foo");
@@ -263,67 +263,67 @@ namespace VDS.RDF.Writing
 
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlSimpleBNodeCollection()
         {
-            String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ].";
+            var fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ].";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(fragment);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlSimpleBNodeCollection2()
         {
-            String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ; :another :thing ].";
+            var fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ; :another :thing ].";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(fragment);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlSimpleBNodeCollection3()
         {
-            String fragment = "@prefix : <http://example.org/>. :subj :pred [ a :BNode ; :another :thing ].";
+            var fragment = "@prefix : <http://example.org/>. :subj :pred [ a :BNode ; :another :thing ].";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(fragment);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlInvalidPredicates1()
         {
-            String fragment = "@prefix ex: <http://example.org/>. ex:subj ex:123 ex:object .";
-            Graph g = new Graph();
+            var fragment = "@prefix ex: <http://example.org/>. ex:subj ex:123 ex:object .";
+            var g = new Graph();
             g.LoadFromString(fragment);
 
-            this.CheckFailure(g);
+            CheckFailure(g);
         }
 
         [Fact]
         public void WritingRdfXmlPrettySubjectCollection1()
         {
-            String graph = @"@prefix ex: <http://example.com/>. (1) ex:someProp ""Value"".";
-            Graph g = new Graph();
+            var graph = @"@prefix ex: <http://example.com/>. (1) ex:someProp ""Value"".";
+            var g = new Graph();
             g.LoadFromString(graph, new TurtleParser());
 
-            PrettyRdfXmlWriter writer = new PrettyRdfXmlWriter();
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            var writer = new PrettyRdfXmlWriter();
+            var strWriter = new System.IO.StringWriter();
             writer.Save(g, strWriter);
 
             _output.WriteLine(strWriter.ToString());
             _output.WriteLine(string.Empty);
 
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromString(strWriter.ToString(), new RdfXmlParser());
 
             Assert.Equal(g, h);
@@ -333,12 +333,12 @@ namespace VDS.RDF.Writing
         public void WritingRdfXmlEntityCompactionLeadingDigits()
         {
             const String data = "@prefix ex: <http://example.org/> . ex:1s ex:p ex:2o .";
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, new TurtleParser());
 
-            RdfXmlWriter writer = new RdfXmlWriter();
+            var writer = new RdfXmlWriter();
             writer.CompressionLevel = WriterCompressionLevel.High;
-            String outData = StringWriter.Write(g, writer);
+            var outData = StringWriter.Write(g, writer);
 
             Assert.Contains("rdf:about=\"&ex;1s\"", outData);
             Assert.Contains("rdf:resource=\"&ex;2o\"", outData);
@@ -365,33 +365,33 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingRdfXmlSimpleCollection()
         {
-            String fragment = "@prefix : <http://example.org/>. :subj :pred ( 1 2 3 ).";
+            var fragment = "@prefix : <http://example.org/>. :subj :pred ( 1 2 3 ).";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(fragment);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         [Trait("Coverage", "Skip")]
         public void WritingRdfXmlComplex()
         {
-            Graph g = new Graph();
-            TurtleParser parser = new TurtleParser();
+            var g = new Graph();
+            var parser = new TurtleParser();
             parser.Load(new PagingHandler(new GraphHandler(g), 1000), "resources\\chado-in-owl.ttl");
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
 
         [Fact]
         public void WritingRdfXmlWithDtds()
         {
-            String fragment = "@prefix xsd: <" + NamespaceMapper.XMLSCHEMA + ">. @prefix : <http://example.org/>. :subj a :obj ; :has \"string\"^^xsd:string ; :has 23 .";
-            Graph g = new Graph();
+            var fragment = "@prefix xsd: <" + NamespaceMapper.XMLSCHEMA + ">. @prefix : <http://example.org/>. :subj a :obj ; :has \"string\"^^xsd:string ; :has 23 .";
+            var g = new Graph();
             g.LoadFromString(fragment);
 
-            this.CheckRoundTrip(g);
+            CheckRoundTrip(g);
         }
     }
 }

@@ -231,7 +231,7 @@ namespace VDS.RDF.Parsing
         {
             if (nsMapper.HasNamespace(e.Namespace))
             {
-                var nsUri = nsMapper.GetNamespaceUri(e.Namespace);
+                Uri nsUri = nsMapper.GetNamespaceUri(e.Namespace);
                 // Not allowed to be a Core Syntax Term, rdf:Description or an Old Syntax Term
                 if (IsCoreSyntaxTerm(nsUri, e.LocalName) ||
                     IsOldTerm(nsUri, e.LocalName) ||
@@ -345,7 +345,7 @@ namespace VDS.RDF.Parsing
         {
             if (qname.Contains(":"))
             {
-                string[] parts = qname.Split(':');
+                var parts = qname.Split(':');
                 if (parts[0].Length == 0)
                 {
                     // Empty Prefix is permitted
@@ -689,8 +689,8 @@ namespace VDS.RDF.Parsing
         public static bool IsRdfUriReference(string value)
         {
             // OPT: Add Some more validation of Uri References here?
-            char[] cs = value.ToCharArray();
-            foreach (char c in cs)
+            var cs = value.ToCharArray();
+            foreach (var c in cs)
             {
                 if ((c >= 0x00 && c <= 0x1f) || (c >= 0x7f && c <= 0x9f))
                 {

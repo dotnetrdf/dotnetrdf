@@ -42,14 +42,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Pattern for Valid QNames that use only the Latin Alphabet.
         /// </summary>
-        public const String ValidQNamesPattern = "^(([_A-Za-z])|([_A-Za-z][\\w\\-]*))?:?[_A-Za-z][\\w\\-]*$";
+        public const string ValidQNamesPattern = "^(([_A-Za-z])|([_A-Za-z][\\w\\-]*))?:?[_A-Za-z][\\w\\-]*$";
         /// <summary>
         /// Patter for Valid Variable Names.
         /// </summary>
-        public const String ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
+        public const string ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
 
         private ParsingTextReader _in;
-        private List<String> _keywords = new List<string>();
+        private List<string> _keywords = new List<string>();
         private bool _keywordsmode = false;
         private Regex _isValidQName = new Regex(ValidQNamesPattern);
         private Regex _isValidVarName = new Regex(ValidVarNamesPattern);
@@ -140,10 +140,10 @@ namespace VDS.RDF.Parsing.Tokens
                         }
 
                         // Get the Next Character
-                        char next = Peek();
+                        var next = Peek();
 
                         // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && _in.EndOfStream)
+                        if (next == char.MaxValue && _in.EndOfStream)
                         {
                             if (Length == 0)
                             {
@@ -158,17 +158,17 @@ namespace VDS.RDF.Parsing.Tokens
                             }
                         }
 
-                        if (Char.IsWhiteSpace(next))
+                        if (char.IsWhiteSpace(next))
                         {
                             // Discard White Space when not in a Token
                             DiscardWhiteSpace();
                         }
-                        else if (Char.IsDigit(next) || next == '-' || next == '+')
+                        else if (char.IsDigit(next) || next == '-' || next == '+')
                         {
                             // Start of a Numeric Plain Literal
                             return TryGetNumericLiteral();
                         }
-                        else if (Char.IsLetter(next))
+                        else if (char.IsLetter(next))
                         {
                             // Start of a Plain Literal
                             return TryGetPlainLiteralOrQName();
@@ -191,7 +191,7 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     // Dot Terminator
                                     ConsumeCharacter();
-                                    if (!_in.EndOfStream && Char.IsDigit(Peek()))
+                                    if (!_in.EndOfStream && char.IsDigit(Peek()))
                                     {
                                         return TryGetNumericLiteral();
                                     }
@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 default:
                                     // Unexpected Character
-                                    throw UnexpectedCharacter(next, String.Empty);
+                                    throw UnexpectedCharacter(next, string.Empty);
                             }
                         }
 
@@ -316,7 +316,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetCommentToken()
         {
-            char next = Peek();
+            var next = Peek();
 
             // Grab characters until we hit the new line
             while (next != '\n' && next != '\r')
@@ -326,22 +326,22 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             // Discard New line and reset position
-            CommentToken comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+            var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
             ConsumeNewLine(false, true);
             return comment;
         }
 
         private IToken TryGetNumericLiteral()
         {
-            bool dotoccurred = false;
-            bool expoccurred = false;
-            bool signoccurred = false;
+            var dotoccurred = false;
+            var expoccurred = false;
+            var signoccurred = false;
 
             if (Length == 1) dotoccurred = true;
 
-            char next = Peek();
+            var next = Peek();
 
-            while (Char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || next == 'E' || (next == '.' && !dotoccurred))
+            while (char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || next == 'E' || (next == '.' && !dotoccurred))
             {
                 // Consume the Character
                 ConsumeCharacter();
@@ -350,7 +350,7 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     if (signoccurred || expoccurred) 
                     {
-                        char last = Value[Value.Length-2];
+                        var last = Value[Value.Length-2];
                         if (expoccurred)
                         {
                             if (last != 'e' && last != 'E')
@@ -417,15 +417,15 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetPlainLiteralOrQName()
         {
-            char next = Peek();
+            var next = Peek();
 
             if (!_keywordsmode)
             {
                 #region Non-Keywords Mode
 
                 // Not in Keywords Mode
-                bool colonoccurred = false;
-                while (Char.IsLetterOrDigit(next) || next == ':' || next == '-' || next == '_')
+                var colonoccurred = false;
+                while (char.IsLetterOrDigit(next) || next == ':' || next == '-' || next == '_')
                 {
                     // Consume Character
                     ConsumeCharacter();
@@ -447,7 +447,7 @@ namespace VDS.RDF.Parsing.Tokens
                 }
 
                 // Validate
-                String value = Value;
+                var value = Value;
 
                 // If it ends in a trailing . then we need to backtrack
                 if (value.EndsWith("."))
@@ -513,9 +513,9 @@ namespace VDS.RDF.Parsing.Tokens
                 // Since we're in Keywords Mode this is actually a QName
                 // UNLESS it's in the Keywords list
 
-                bool colonoccurred = false;
+                var colonoccurred = false;
 
-                while (Char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == ':')
+                while (char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == ':')
                 {
                     // Consume
                     ConsumeCharacter();
@@ -537,7 +537,7 @@ namespace VDS.RDF.Parsing.Tokens
                 }
 
                 // Validate
-                String value = Value;
+                var value = Value;
 
                 // If it ends in a trailing . then we need to backtrack
                 if (value.EndsWith("."))
@@ -590,8 +590,8 @@ namespace VDS.RDF.Parsing.Tokens
                 SkipCharacter();
 
                 // Get the Specifier
-                char next = Peek();
-                while (Char.IsLetterOrDigit(next) || next == '-')
+                var next = Peek();
+                while (char.IsLetterOrDigit(next) || next == '-')
                 {
                     ConsumeCharacter();
                     next = Peek();
@@ -621,15 +621,15 @@ namespace VDS.RDF.Parsing.Tokens
                 SkipCharacter();
 
                 // Consume until we hit White Space
-                char next = Peek();
-                while (!Char.IsWhiteSpace(next) && next != '.')
+                var next = Peek();
+                while (!char.IsWhiteSpace(next) && next != '.')
                 {
                     ConsumeCharacter();
                     next = Peek();
                 }
 
                 // Now check we get something that's an actual Keyword/Directive
-                String value = Value;
+                var value = Value;
                 if (value.Equals("keywords", StringComparison.OrdinalIgnoreCase))
                 {
                     // Keywords Directive
@@ -704,9 +704,9 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetKeywordDefinition()
         {
-            char next = Peek();
+            var next = Peek();
 
-            while (Char.IsWhiteSpace(next))
+            while (char.IsWhiteSpace(next))
             {
                 // Discard white space we don't want
                 if (next == '\n' || next == '\r')
@@ -733,7 +733,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                while (!Char.IsWhiteSpace(next) && next != '.')
+                while (!char.IsWhiteSpace(next) && next != '.')
                 {
                     // Consume
                     ConsumeCharacter();
@@ -754,10 +754,10 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetPrefix()
         {
-            char next = Peek();
+            var next = Peek();
 
             // Drop leading white space
-            while (Char.IsWhiteSpace(next))
+            while (char.IsWhiteSpace(next))
             {
                 // If we hit a New Line then Error
                 if (next == '\n' || next == '\r')
@@ -773,7 +773,7 @@ namespace VDS.RDF.Parsing.Tokens
             StartNewToken();
 
             // Get the Prefix Characters
-            while (!Char.IsWhiteSpace(next) && next != '<')
+            while (!char.IsWhiteSpace(next) && next != '<')
             {
                 ConsumeCharacter();
                 if (next == ':') break;
@@ -794,13 +794,13 @@ namespace VDS.RDF.Parsing.Tokens
             // Consume first thing which must be a <
             ConsumeCharacter();
 
-            char next = Peek();
+            var next = Peek();
             if (next == '=')
             {
                 // Might be a reverse implies
                 ConsumeCharacter();
                 next = Peek();
-                if (Char.IsWhiteSpace(next))
+                if (char.IsWhiteSpace(next))
                 {
                     // A Reverse Implies
                     LastTokenType = Token.IMPLIEDBY;
@@ -818,7 +818,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                 while (next != '>')
                 {
-                    if (Char.IsWhiteSpace(next))
+                    if (char.IsWhiteSpace(next))
                     {
                         // Discard White Space inside URIs
                         DiscardWhiteSpace();
@@ -847,10 +847,10 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetQName()
         {
-            char next = Peek();
-            bool colonoccurred = false;
+            var next = Peek();
+            var colonoccurred = false;
 
-            while (Char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == ':')
+            while (char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == ':')
             {
                 // Consume
                 ConsumeCharacter();
@@ -871,7 +871,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = Peek();
             }
 
-            String value = Value;
+            var value = Value;
 
             // If it ends in a trailing . then we need to backtrack
             if (value.EndsWith("."))
@@ -923,7 +923,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             // Consume first character which must be a "
             ConsumeCharacter();
-            char next = Peek();
+            var next = Peek();
 
             if (next == '"')
             {
@@ -1045,7 +1045,7 @@ namespace VDS.RDF.Parsing.Tokens
             ConsumeCharacter();
 
             // Take a look at the next Character to determine if this is a DataType specifier or a Path specifier
-            char next = Peek();
+            var next = Peek();
             if (next == '^')
             {
                 ConsumeCharacter();
@@ -1078,7 +1078,7 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetDataType()
         {
             // Expect to either see a start of a Uri or QName
-            char next = Peek();
+            var next = Peek();
 
             if (next == '<')
             {
@@ -1087,7 +1087,7 @@ namespace VDS.RDF.Parsing.Tokens
                 LastTokenType = Token.DATATYPE;
                 return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition, temp.EndPosition);
             }
-            else if (Char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_')
+            else if (char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_')
             {
                 // QName specified Data Type
                 IToken temp = TryGetQName();
@@ -1114,7 +1114,7 @@ namespace VDS.RDF.Parsing.Tokens
             ConsumeCharacter();
 
             // See what the next character is
-            char next = Peek();
+            var next = Peek();
 
             if (next != '>')
             {
@@ -1135,8 +1135,8 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetFormula()
         {
-            int openBrackets = 0;
-            int closeBrackets = 0;
+            var openBrackets = 0;
+            var closeBrackets = 0;
             char next;
 
             // Continue consuming characters accounting for nesting as appropriate
@@ -1180,15 +1180,15 @@ namespace VDS.RDF.Parsing.Tokens
             ConsumeCharacter();
 
             // Consume other valid Characters
-            char next = Peek();
-            while (Char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || next == '-' || next == '_')
+            var next = Peek();
+            while (char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || next == '-' || next == '_')
             {
                 ConsumeCharacter();
                 next = Peek();
             }
 
             // Validate
-            String value = Value;
+            var value = Value;
             if (IsValidVarName(value))
             {
                 return new VariableToken(value, CurrentLine, StartPosition, EndPosition);
@@ -1230,7 +1230,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
         }
 
-        private bool IsValidQName(String value)
+        private bool IsValidQName(string value)
         {
             if (_isValidQName.IsMatch(value))
             {
@@ -1239,17 +1239,17 @@ namespace VDS.RDF.Parsing.Tokens
             else
             {
                 // Have to validate Character by Character
-                char[] cs = value.ToCharArray();
-                char first = cs[0];
+                var cs = value.ToCharArray();
+                var first = cs[0];
 
                 // First character must be an underscore, colon or letter
-                if (first == '_' || first == ':' || Char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
+                if (first == '_' || first == ':' || char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
                 {
                     // Remaining Characters must be underscores, colons, letters, numbers or hyphens
-                    for (int i = 1; i < cs.Length; i++)
+                    for (var i = 1; i < cs.Length; i++)
                     {
-                        char c = cs[i];
-                        if (c == '_' || c == ':' || c == '-' || Char.IsLetterOrDigit(c) || UnicodeSpecsHelper.IsLetterOrDigit(c))
+                        var c = cs[i];
+                        if (c == '_' || c == ':' || c == '-' || char.IsLetterOrDigit(c) || UnicodeSpecsHelper.IsLetterOrDigit(c))
                         {
                             // OK
                         }
@@ -1271,7 +1271,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
         }
 
-        private bool IsValidVarName(String value)
+        private bool IsValidVarName(string value)
         {
             if (_isValidVarName.IsMatch(value))
             {
@@ -1280,17 +1280,17 @@ namespace VDS.RDF.Parsing.Tokens
             else
             {
                 // Have to validate Character by Character
-                char[] cs = value.ToCharArray();
-                char first = cs[0];
+                var cs = value.ToCharArray();
+                var first = cs[0];
 
                 // First character must be an underscore or letter
-                if (first == '_' || Char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
+                if (first == '_' || char.IsLetter(first) || UnicodeSpecsHelper.IsLetter(first))
                 {
                     // Remaining Characters must be underscores, letters, numbers or hyphens
-                    for (int i = 1; i < cs.Length; i++)
+                    for (var i = 1; i < cs.Length; i++)
                     {
-                        char c = cs[i];
-                        if (c == '_' || c == '-' || Char.IsLetterOrDigit(c) || UnicodeSpecsHelper.IsLetterOrDigit(c))
+                        var c = cs[i];
+                        if (c == '_' || c == '-' || char.IsLetterOrDigit(c) || UnicodeSpecsHelper.IsLetterOrDigit(c))
                         {
                             // OK
                         }

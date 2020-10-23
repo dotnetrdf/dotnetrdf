@@ -42,7 +42,7 @@ namespace VDS.RDF.Update.Protocol
         /// <summary>
         /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed.
         /// </summary>
-        public const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
+        public const string DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
         /// <summary>
         /// Get or set the default compression to use when serializing a response using a writer that implements the <see cref="ICompressingWriter"/> interface.
@@ -187,7 +187,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         protected virtual Uri MintGraphUri(IHttpContext context, IGraph g)
         {
-            String graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfffffffK");
+            var graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfffffffK");
             graphID = graphID.GetSha256Hash();
 
             Uri baseUri = UriFactory.Create(context.Request.Url.AbsoluteUri);
@@ -217,7 +217,7 @@ namespace VDS.RDF.Update.Protocol
         {
             if (context.Request.ContentLength == 0) return null;
 
-            Graph g = new Graph();
+            var g = new Graph();
             IRdfReader parser = MimeTypesHelper.GetParser(context.Request.ContentType);
             parser.Load(g, new StreamReader(context.Request.InputStream));
             g.NamespaceMap.Clear();
@@ -233,7 +233,7 @@ namespace VDS.RDF.Update.Protocol
         protected void SendResultsToClient(IHttpContext context, IGraph g)
         {
             IRdfWriter writer;
-            String ctype;
+            string ctype;
 
             // Look up the MIME Type Definition - if none use GetWriter instead
             MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.GetAcceptTypes()).FirstOrDefault(d => d.CanWriteRdf);

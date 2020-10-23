@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
         {
-            decimal seconds = Convert.ToDecimal(dateTime.Second);
+            var seconds = Convert.ToDecimal(dateTime.Second);
             seconds += ((decimal)dateTime.Millisecond) / 1000m;
 
             return new DecimalNode(null, seconds);

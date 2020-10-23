@@ -218,7 +218,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, Syntax), TokenQueueMode, TraceParsing, TraceTokeniser);
+                var context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, Syntax), TokenQueueMode, TraceParsing, TraceTokeniser);
                 Parse(context);
             }
             catch
@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -385,7 +385,7 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     return TryParseUri(context, objToken.Value);
                 case Token.LITERALWITHDT:
-                    String dt = ((LiteralWithDataTypeToken) objToken).DataType;
+                    var dt = ((LiteralWithDataTypeToken) objToken).DataType;
                     dt = dt.Substring(1, dt.Length - 2);
                     return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, dt)).Uri);
                 case Token.LITERALWITHLANG:
@@ -433,7 +433,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Context.</param>
         /// <param name="uri">URI.</param>
         /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(TokenisingParserContext context, String uri)
+        private static INode TryParseUri(TokenisingParserContext context, string uri)
         {
             try
             {
@@ -454,9 +454,9 @@ namespace VDS.RDF.Parsing
         /// <param name="msg">The Error Message.</param>
         /// <param name="t">The Token that is the cause of the Error.</param>
         /// <returns></returns>
-        private static RdfParseException Error(String msg, IToken t)
+        private static RdfParseException Error(string msg, IToken t)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("[");
             output.Append(t.GetType().Name);
             output.Append(" at Line ");
@@ -477,7 +477,7 @@ namespace VDS.RDF.Parsing
         /// Internal Helper method which raises the Warning event if an event handler is registered to it.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             if (Warning != null)
             {

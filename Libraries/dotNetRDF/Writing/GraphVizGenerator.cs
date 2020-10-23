@@ -38,15 +38,15 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class GraphVizGenerator
     {
-        private String _format = "svg";
-        private String _graphvizdir = String.Empty;
+        private string _format = "svg";
+        private string _graphvizdir = string.Empty;
 
         /// <summary>
         /// Creates a new GraphVizGenerator.
         /// </summary>
         /// <param name="format">Format for the Output (svg is default).</param>
         /// <remarks>Only use this form if you're certain that dot.exe is in your PATH otherwise the code will throw an error.</remarks>
-        public GraphVizGenerator(String format)
+        public GraphVizGenerator(string format)
         {
             LocateGraphViz();
             _format = format;
@@ -57,7 +57,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">Format for the Output.</param>
         /// <param name="gvdir">Directory in which GraphViz is installed.</param>
-        public GraphVizGenerator(String format, String gvdir)
+        public GraphVizGenerator(string format, string gvdir)
             : this(format)
         {
             if (gvdir.LastIndexOf('\\') != gvdir.Length)
@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Gets/Sets the Format for the Output.
         /// </summary>
-        public String Format
+        public string Format
         {
             get
             {
@@ -91,11 +91,11 @@ namespace VDS.RDF.Writing
         /// <param name="g">Graph to generated GraphViz Output for.</param>
         /// <param name="filename">File you wish to save the Output to.</param>
         /// <param name="open">Whether you want to open the Output in the default application (according to OS settings) for the filetype after it is Created.</param>
-        public void Generate(IGraph g, String filename, bool open)
+        public void Generate(IGraph g, string filename, bool open)
         {
             // Prepare the Process
-            ProcessStartInfo start = new ProcessStartInfo();
-            if (!_graphvizdir.Equals(String.Empty)) {
+            var start = new ProcessStartInfo();
+            if (!_graphvizdir.Equals(string.Empty)) {
                 start.FileName = _graphvizdir + "dot.exe";
             } else {
                 start.FileName = "dot.exe";
@@ -106,11 +106,11 @@ namespace VDS.RDF.Writing
             start.RedirectStandardOutput = true;
 
             // Prepare the GraphVizWriter and Streams
-            GraphVizWriter gvzwriter = new GraphVizWriter();
-            using (BinaryWriter writer = new BinaryWriter(new FileStream(filename, FileMode.Create)))
+            var gvzwriter = new GraphVizWriter();
+            using (var writer = new BinaryWriter(new FileStream(filename, FileMode.Create)))
             {
                 // Start the Process
-                Process gvz = new Process();
+                var gvz = new Process();
                 gvz.StartInfo = start;
                 gvz.Start();
 
@@ -118,12 +118,12 @@ namespace VDS.RDF.Writing
                 gvzwriter.Save(g, gvz.StandardInput);
 
                 // Read the Standard Output
-                byte[] buffer = new byte[4096];
-                using (BinaryReader reader = new BinaryReader(gvz.StandardOutput.BaseStream))
+                var buffer = new byte[4096];
+                using (var reader = new BinaryReader(gvz.StandardOutput.BaseStream))
                 {
                     while (true)
                     {
-                        int read = reader.Read(buffer, 0, buffer.Length);
+                        var read = reader.Read(buffer, 0, buffer.Length);
                         if (read == 0) break;
                         writer.Write(buffer, 0, read);
                     }
@@ -145,9 +145,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         private void LocateGraphViz()
         {
-            String path = Environment.GetEnvironmentVariable("path");
-            String[] folders = path.Split(';');
-            foreach (String folder in folders)
+            var path = Environment.GetEnvironmentVariable("path");
+            var folders = path.Split(';');
+            foreach (var folder in folders)
             {
                 if (File.Exists(folder + "dot.exe"))
                 {

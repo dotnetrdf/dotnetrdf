@@ -45,7 +45,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Gives the Value of the Token.
         /// </summary>
-        String Value
+        string Value
         {
             get;
         }

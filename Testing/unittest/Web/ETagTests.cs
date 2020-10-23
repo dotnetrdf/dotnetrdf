@@ -39,11 +39,11 @@ namespace VDS.RDF.Web
         [Fact]
         public void WebETagComputation()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
-            String etag = g.GetETag();
+            var etag = g.GetETag();
             timer.Stop();
             Console.WriteLine("ETag is " + etag);
             Console.WriteLine(etag.Length);
@@ -55,7 +55,7 @@ namespace VDS.RDF.Web
 
             timer.Reset();
             timer.Start();
-            String etag2 = g.GetETag();
+            var etag2 = g.GetETag();
             timer.Stop();
             Console.WriteLine("ETag is " + etag2);
             Console.WriteLine("Took " + timer.Elapsed + " to calculate");
@@ -67,7 +67,7 @@ namespace VDS.RDF.Web
             g.Retract(g.Triples.First());
             timer.Reset();
             timer.Start();
-            String etag3 = g.GetETag();
+            var etag3 = g.GetETag();
             timer.Stop();
             Console.WriteLine("Graph has now been altered so ETag should change");
             Console.WriteLine("ETag is " + etag3);

@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Algebra
 
             // First check what variables are present, we need this if we have to create
             // a new multiset
-            IEnumerable<String> vars;
+            IEnumerable<string> vars;
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
                 vars = (context.Query != null) ? context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name) : context.InputMultiset.Variables;
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         // Otherwise discard the relevant number of Bindings
-                        foreach (int id in context.InputMultiset.SetIDs.Take(offset).ToList())
+                        foreach (var id in context.InputMultiset.SetIDs.Take(offset).ToList())
                         {
                             context.InputMultiset.Remove(id);
                         }
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         // If the number of results is greater than the limit remove the extraneous
                         // results
-                        foreach (int id in context.InputMultiset.SetIDs.Skip(limit).ToList())
+                        foreach (var id in context.InputMultiset.SetIDs.Skip(limit).ToList())
                         {
                             context.InputMultiset.Remove(id);
                         }
@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -160,12 +160,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Limit in use (-1 indicates no Limit).

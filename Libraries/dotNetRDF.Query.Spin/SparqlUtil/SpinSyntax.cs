@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Spin
 
         public static IGraph ToSpinRdf(this SparqlQuery query)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("spin", UriFactory.Create(SPIN.NS_URI));
             g.NamespaceMap.AddNamespace("sp", UriFactory.Create(SP.NS_URI));
             query.ToSpinRdf(g);
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this SparqlQuery query, IGraph g)
         {
             INode root = g.CreateBlankNode();
-            SpinVariableTable varTable = new SpinVariableTable(g);
+            var varTable = new SpinVariableTable(g);
 
             //Ensure the Query is optimised so that all the elements are placed in Graph Patterns
             //so we can serialized them OK
@@ -113,9 +113,9 @@ namespace VDS.RDF.Query.Spin
                         g.Assert(root, SP.PropertyResultVariables, vars);
 
                         //Get the Variables and generate the Nodes we'll use to help represent them
-                        List<SparqlVariable> vs = query.Variables.Where(v => v.IsResultVariable).ToList();
+                        var vs = query.Variables.Where(v => v.IsResultVariable).ToList();
 
-                        for (int i = 0; i < vs.Count; i++)
+                        for (var i = 0; i < vs.Count; i++)
                         {
                             SparqlVariable v = vs[i];
                             INode var = varTable[v.Name];
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query.Spin
 
         public static IGraph ToSpinRdf(this SparqlUpdateCommand query)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("spin", UriFactory.Create(SPIN.NS_URI));
             g.NamespaceMap.AddNamespace("sp", UriFactory.Create(SP.NS_URI));
             query.ToSpinRdf(g);
@@ -210,13 +210,13 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this SparqlUpdateCommand query, IGraph g)
         {
             INode root = g.CreateBlankNode();
-            SpinVariableTable varTable = new SpinVariableTable(g);
+            var varTable = new SpinVariableTable(g);
 
             switch (query.CommandType)
             {
                 case SparqlUpdateCommandType.Add:
                     g.Assert(root, RDF.PropertyType, SP.ClassAdd);
-                    AddCommand add = (AddCommand)query;
+                    var add = (AddCommand)query;
                     if (add.SourceUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -247,7 +247,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Copy:
                     g.Assert(root, RDF.PropertyType, SP.ClassCopy);
-                    CopyCommand copy = (CopyCommand)query;
+                    var copy = (CopyCommand)query;
                     if (copy.SourceUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -267,7 +267,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Create:
                     g.Assert(root, RDF.PropertyType, SP.ClassCreate);
-                    CreateCommand create = (CreateCommand)query;
+                    var create = (CreateCommand)query;
                     if (create.TargetUri== null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -279,7 +279,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Delete:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
-                    DeleteCommand delete = (DeleteCommand)query;
+                    var delete = (DeleteCommand)query;
                     if (delete.GraphUri != null)
                     {
                         g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(delete.GraphUri));
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Drop:
                     g.Assert(root, RDF.PropertyType, SP.ClassDrop);
-                    DropCommand drop = (DropCommand)query;
+                    var drop = (DropCommand)query;
                     if (drop.TargetUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -307,7 +307,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Insert:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
-                    InsertCommand insert = (InsertCommand)query;
+                    var insert = (InsertCommand)query;
                     if (insert.GraphUri != null)
                     {
                         g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(insert.GraphUri));
@@ -321,7 +321,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Load:
                     g.Assert(root, RDF.PropertyType, SP.ClassLoad);
-                    LoadCommand load = (LoadCommand)query;
+                    var load = (LoadCommand)query;
                     if (load.SourceUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Modify:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
-                    ModifyCommand modify = (ModifyCommand)query;
+                    var modify = (ModifyCommand)query;
                     if (modify.GraphUri != null)
                     {
                         g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(modify.GraphUri));
@@ -358,7 +358,7 @@ namespace VDS.RDF.Query.Spin
                     break;
                 case SparqlUpdateCommandType.Move:
                     g.Assert(root, RDF.PropertyType, SP.ClassMove);
-                    MoveCommand move = (MoveCommand)query;
+                    var move = (MoveCommand)query;
                     if (move.SourceUri == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
@@ -447,7 +447,7 @@ namespace VDS.RDF.Query.Spin
             if (!pattern.IsEmpty)
             {
                 //First output Triple Patterns
-                for (int i = 0; i < pattern.TriplePatterns.Count; i++)
+                for (var i = 0; i < pattern.TriplePatterns.Count; i++)
                 {
                     INode current = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
                     if (i == 0)
@@ -472,7 +472,7 @@ namespace VDS.RDF.Query.Spin
             //Then output Graph Patterns
             if (pattern.HasChildGraphPatterns)
             {
-                for (int i = 0; i < pattern.ChildGraphPatterns.Count; i++)
+                for (var i = 0; i < pattern.ChildGraphPatterns.Count; i++)
                 {
                     INode current = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
                     if (pattern.TriplePatterns.Count == 0 && i == 0)
@@ -499,7 +499,7 @@ namespace VDS.RDF.Query.Spin
 
             if (pattern is TriplePattern)
             {
-                TriplePattern tp = (TriplePattern)pattern;
+                var tp = (TriplePattern)pattern;
                 g.Assert(p, RDF.PropertyType, SP.ClassTriplePattern);
                 g.Assert(p, SP.PropertySubject, tp.Subject.ToSpinRdf(g, varTable));
                 g.Assert(p, SP.PropertyPredicate, tp.Predicate.ToSpinRdf(g, varTable));
@@ -517,7 +517,7 @@ namespace VDS.RDF.Query.Spin
             }
             else if (pattern is PropertyPathPattern)
             {
-                PropertyPathPattern pp = (PropertyPathPattern)pattern;
+                var pp = (PropertyPathPattern)pattern;
                 g.Assert(p, RDF.PropertyType, SP.ClassTriplePath);
                 g.Assert(p, SP.PropertySubject, pp.Subject.ToSpinRdf(g, varTable));
                 g.Assert(p, SP.PropertyPath, pp.Path.ToSpinRdf(g, varTable));

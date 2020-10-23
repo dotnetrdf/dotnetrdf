@@ -54,7 +54,7 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
-            using (var stream = File.Open(filename, FileMode.Create))
+            using (FileStream stream = File.Open(filename, FileMode.Create))
             {
                 Save(results, new StreamWriter(stream, fileEncoding));
             }
@@ -72,8 +72,8 @@ namespace VDS.RDF.Writing
                 if (results.ResultsType == SparqlResultsType.VariableBindings)
                 {
                     // Output Variables first
-                    String[] vars = results.Variables.ToArray();
-                    for (int i = 0; i < vars.Length; i++)
+                    var vars = results.Variables.ToArray();
+                    for (var i = 0; i < vars.Length; i++)
                     {
                         output.Write(vars[i]);
                         if (i < vars.Length - 1) output.Write(',');
@@ -82,7 +82,7 @@ namespace VDS.RDF.Writing
 
                     foreach (SparqlResult result in results)
                     {
-                        for (int i = 0; i < vars.Length; i++)
+                        for (var i = 0; i < vars.Length; i++)
                         {
                             if (result.HasValue(vars[i]))
                             {
@@ -133,7 +133,7 @@ namespace VDS.RDF.Writing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// </summary>
     public class KnowledgeBase
     {
-        private String _name;
+        private string _name;
         private List<PelletService> _services = new List<PelletService>();
 
         /// <summary>
@@ -45,10 +45,10 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <param name="t">JSON Token for the Object that represents the Service.</param>
         internal KnowledgeBase(JToken t)
         {
-            _name = (String)t.SelectToken("name");
+            _name = (string)t.SelectToken("name");
             foreach (JToken svc in t.SelectToken("kb-services").Children())
             {
-                PelletService s = PelletService.CreateService(svc);
+                var s = PelletService.CreateService(svc);
                 if (s != null) _services.Add(s);
             }
         }
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <summary>
         /// Gets the Name of the Knowledge Base.
         /// </summary>
-        public String Name
+        public string Name
         {
             get
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <returns></returns>
-        public bool SupportsService(String name)
+        public bool SupportsService(string name)
         {
             return _services.Any(s => s.Name.Equals(name));
         }
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <returns>
         /// Either the Service or a Null if the Knowledge Base does not expose a Service with the given name.
         /// </returns>
-        public PelletService GetService(String name)
+        public PelletService GetService(string name)
         {
             return _services.FirstOrDefault(s => s.Name.Equals(name));
         }
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <returns></returns>
-        public IEnumerable<PelletService> GetServices(String name)
+        public IEnumerable<PelletService> GetServices(string name)
         {
             return _services.Where(s => s.Name.Equals(name));
         }

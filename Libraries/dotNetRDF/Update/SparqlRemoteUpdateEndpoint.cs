@@ -57,7 +57,7 @@ namespace VDS.RDF.Update
         /// Creates a new SPARQL Update Endpoint for the given URI.
         /// </summary>
         /// <param name="endpointUri">Endpoint URI.</param>
-        public SparqlRemoteUpdateEndpoint(String endpointUri)
+        public SparqlRemoteUpdateEndpoint(string endpointUri)
             : this(UriFactory.Create(endpointUri)) { }
 
         /// <summary>
@@ -89,18 +89,18 @@ namespace VDS.RDF.Update
         /// Makes an update request to the remote endpoint.
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update.</param>
-        public void Update(String sparqlUpdate)
+        public void Update(string sparqlUpdate)
         {
             try
             {
                 // Build the Request URI and POST Data
-                StringBuilder requestUri = new StringBuilder();
+                var requestUri = new StringBuilder();
                 requestUri.Append(Uri.AbsoluteUri);
-                StringBuilder postData = new StringBuilder();
-                bool longUpdate = false;
+                var postData = new StringBuilder();
+                var longUpdate = false;
                 if (!HttpMode.Equals("POST") && sparqlUpdate.Length <= LongUpdateLength)
                 {
-                    if (!Uri.Query.Equals(String.Empty))
+                    if (!Uri.Query.Equals(string.Empty))
                     {
                         requestUri.Append("&update=");
                     }
@@ -118,13 +118,13 @@ namespace VDS.RDF.Update
                 }
 
                 // Make the request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
+                var request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
                 ApplyRequestOptions(request);
                 if (longUpdate)
                 {
                     request.Method = "POST";
                     request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
+                    using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                     {
                         writer.Write(postData);
                         writer.Close();
@@ -135,7 +135,7 @@ namespace VDS.RDF.Update
                     request.Method = HttpMode;
                 }
                 request.Accept = MimeTypesHelper.Any;
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // If we don't get an error then we should be fine
                     response.Close();
@@ -159,9 +159,9 @@ namespace VDS.RDF.Update
         /// <param name="sparqlUpdate">SPARQL Update.</param>
         /// <param name="callback">Callback to invoke when the update completes.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public void Update(String sparqlUpdate, UpdateCallback callback, Object state)
+        public void Update(string sparqlUpdate, UpdateCallback callback, object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.Any;
@@ -174,7 +174,7 @@ namespace VDS.RDF.Update
                         try
                         {
                             Stream stream = request.EndGetRequestStream(result);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write("update=");
                                 writer.Write(HttpUtility.UrlEncode(sparqlUpdate));
@@ -186,7 +186,7 @@ namespace VDS.RDF.Update
                                 {
                                     try
                                     {
-                                        using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(innerResult))
+                                        using (var response = (HttpWebResponse) request.EndGetResponse(innerResult))
                                         {
                                             response.Close();
                                             callback(state);

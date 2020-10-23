@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Skos
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
     /// Represents a SKOS concept.
     /// </summary>
@@ -47,7 +47,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConceptSchemes(SkosHelper.InScheme);
+                return GetConceptSchemes(SkosHelper.InScheme);
             }
         }
 
@@ -58,7 +58,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConceptSchemes(SkosHelper.TopConceptOf);
+                return GetConceptSchemes(SkosHelper.TopConceptOf);
             }
         }
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetLiterals(SkosHelper.PrefLabel);
+                return GetLiterals(SkosHelper.PrefLabel);
             }
         }
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetLiterals(SkosHelper.AltLabel);
+                return GetLiterals(SkosHelper.AltLabel);
             }
         }
 
@@ -91,7 +91,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetLiterals(SkosHelper.HiddenLabel);
+                return GetLiterals(SkosHelper.HiddenLabel);
             }
         }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetLiterals(SkosHelper.Notation);
+                return GetLiterals(SkosHelper.Notation);
             }
         }
 
@@ -113,7 +113,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.Note);
+                return GetObjects(SkosHelper.Note);
             }
         }
 
@@ -124,7 +124,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.ChangeNote);
+                return GetObjects(SkosHelper.ChangeNote);
             }
         }
 
@@ -135,7 +135,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.Definition);
+                return GetObjects(SkosHelper.Definition);
             }
         }
 
@@ -146,7 +146,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.EditorialNote);
+                return GetObjects(SkosHelper.EditorialNote);
             }
         }
 
@@ -157,7 +157,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.Example);
+                return GetObjects(SkosHelper.Example);
             }
         }
 
@@ -168,7 +168,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.HistoryNote);
+                return GetObjects(SkosHelper.HistoryNote);
             }
         }
 
@@ -179,7 +179,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetObjects(SkosHelper.ScopeNote);
+                return GetObjects(SkosHelper.ScopeNote);
             }
         }
 
@@ -190,7 +190,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.SemanticRelation);
+                return GetConcepts(SkosHelper.SemanticRelation);
             }
         }
 
@@ -201,7 +201,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.Broader);
+                return GetConcepts(SkosHelper.Broader);
             }
         }
 
@@ -212,7 +212,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.Narrower);
+                return GetConcepts(SkosHelper.Narrower);
             }
         }
 
@@ -223,7 +223,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.Related);
+                return GetConcepts(SkosHelper.Related);
             }
         }
 
@@ -234,7 +234,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.BroaderTransitive);
+                return GetConcepts(SkosHelper.BroaderTransitive);
             }
         }
 
@@ -245,7 +245,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.NarrowerTransitive);
+                return GetConcepts(SkosHelper.NarrowerTransitive);
             }
         }
 
@@ -256,7 +256,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.MappingRelation);
+                return GetConcepts(SkosHelper.MappingRelation);
             }
         }
 
@@ -267,7 +267,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.CloseMatch);
+                return GetConcepts(SkosHelper.CloseMatch);
             }
         }
 
@@ -278,7 +278,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.ExactMatch);
+                return GetConcepts(SkosHelper.ExactMatch);
             }
         }
 
@@ -289,7 +289,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.BroadMatch);
+                return GetConcepts(SkosHelper.BroadMatch);
             }
         }
 
@@ -300,7 +300,7 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.NarrowMatch);
+                return GetConcepts(SkosHelper.NarrowMatch);
             }
         }
 
@@ -311,21 +311,21 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return this.GetConcepts(SkosHelper.RelatedMatch);
+                return GetConcepts(SkosHelper.RelatedMatch);
             }
         }
 
         private IEnumerable<SkosConceptScheme> GetConceptSchemes(string predicateUri)
         {
-            return this
-                .GetObjects(predicateUri)
+            return 
+                GetObjects(predicateUri)
                 .Select(o => new SkosConceptScheme(o));
         }
 
         private IEnumerable<ILiteralNode> GetLiterals(string predicateUri)
         {
-            return this
-                .GetObjects(predicateUri)
+            return 
+                GetObjects(predicateUri)
                 .Cast<ILiteralNode>();
         }
     }

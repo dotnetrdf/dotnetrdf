@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public List<IArgument> getArguments(bool ordered)
         {
-            List<IArgument> results = new List<IArgument>();
+            var results = new List<IArgument>();
             IEnumerator<Triple> it = null;
             //JenaUtil.setGraphReadOptimization(true);
             try
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public Dictionary<String, IArgument> getArgumentsMap()
         {
-            Dictionary<String, IArgument> results = new Dictionary<String, IArgument>();
+            var results = new Dictionary<String, IArgument>();
             foreach (IArgument argument in getArguments(false))
             {
                 IResource property = argument.getPredicate();

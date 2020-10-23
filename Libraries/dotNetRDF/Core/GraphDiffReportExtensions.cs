@@ -53,30 +53,30 @@ namespace VDS.RDF
             var where = new GraphPatternBuilder();
 
             // Removed ground triples are added as is to both delete and where clauses
-            foreach (var t in diff.RemovedTriples)
+            foreach (Triple t in diff.RemovedTriples)
             {
                 delete.AddTriplePattern(t);
                 where.AddTriplePattern(t);
             }
 
-            foreach (var g in diff.RemovedMSGs)
+            foreach (IGraph g in diff.RemovedMSGs)
             {
                 // Blank nodes in removed non-ground triples are converted to variables and added to both delete and where clauses
-                foreach (var t in g.Triples)
+                foreach (Triple t in g.Triples)
                 {
                     delete.AddVariablePattern(t);
                     where.AddVariablePattern(t);
                 }
 
                 // An ISBLANK filter is added for each blank node in removed non-ground triples
-                foreach (var n in g.BlankNodes())
+                foreach (IBlankNode n in g.BlankNodes())
                 {
                     where.AddBlankNodeFilter(n);
                 }
             }
 
             // Added triples (ground or not) are added as is to the insert clause
-            foreach (var t in diff.AllAddedTriples())
+            foreach (Triple t in diff.AllAddedTriples())
             {
                 insert.AddTriplePattern(t);
             }

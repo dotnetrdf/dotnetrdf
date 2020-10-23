@@ -46,9 +46,9 @@ namespace VDS.RDF.Parsing
 
         public GZipTests()
         {
-            this._g = new Graph();
-            this._g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            this._results = this._g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
+            _g = new Graph();
+            _g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            _results = _g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
             NormalizeDatatypes(_g);
 
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
@@ -60,35 +60,35 @@ namespace VDS.RDF.Parsing
                 {
                     IRdfWriter writer = def.GetRdfWriter();
 
-                    bool isManual = !def.CanonicalFileExtension.EndsWith(".gz");
-                    String filename = "gzip-tests" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
+                    var isManual = !def.CanonicalFileExtension.EndsWith(".gz");
+                    var filename = "gzip-tests" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
 
                     if (isManual)
                     {
-                        using (StreamWriter output = new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)))
+                        using (var output = new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)))
                         {
-                            writer.Save(this._g, output);
+                            writer.Save(_g, output);
                             output.Close();
                         }
 
-                        this._manualTestFiles.Add(filename);
+                        _manualTestFiles.Add(filename);
                     }
                     else
                     {
-                        writer.Save(this._g, filename);
+                        writer.Save(_g, filename);
 
-                        this._autoTestFiles.Add(filename);
+                        _autoTestFiles.Add(filename);
                     }
                 }
                 else if (def.CanParseRdfDatasets && def.CanWriteRdfDatasets)
                 {
                     IStoreWriter writer = def.GetRdfDatasetWriter();
 
-                    bool isManual = !def.CanonicalFileExtension.EndsWith(".gz");
-                    String filename = "gzip-tests-datasets" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
+                    var isManual = !def.CanonicalFileExtension.EndsWith(".gz");
+                    var filename = "gzip-tests-datasets" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
 
-                    TripleStore store = new TripleStore();
-                    store.Add(this._g);
+                    var store = new TripleStore();
+                    store.Add(_g);
 
                     if (isManual)
                     {
@@ -98,37 +98,37 @@ namespace VDS.RDF.Parsing
                             output.Close();
                         }
 
-                        this._manualDatasetTestFiles.Add(filename);
+                        _manualDatasetTestFiles.Add(filename);
                     }
                     else
                     {
                         writer.Save(store, new StreamWriter(new FileStream(filename, FileMode.Create, FileAccess.Write)));
 
-                        this._autoDatasetTestFiles.Add(filename);
+                        _autoDatasetTestFiles.Add(filename);
                     }
                 }
                 else if (def.CanParseSparqlResults && def.CanWriteSparqlResults)
                 {
                     ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
 
-                    bool isManual = !def.CanonicalFileExtension.EndsWith(".gz");
-                    String filename = "gzip-tests-results" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
+                    var isManual = !def.CanonicalFileExtension.EndsWith(".gz");
+                    var filename = "gzip-tests-results" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
 
                     if (isManual)
                     {
-                        using (StreamWriter output = new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)))
+                        using (var output = new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)))
                         {
-                            writer.Save(this._results, output);
+                            writer.Save(_results, output);
                             output.Close();
                         }
 
-                        this._manualResultsTestFiles.Add(filename);
+                        _manualResultsTestFiles.Add(filename);
                     }
                     else
                     {
-                        writer.Save(this._results, new StreamWriter(File.OpenWrite(filename)));
+                        writer.Save(_results, new StreamWriter(File.OpenWrite(filename)));
 
-                        this._autoResultsTestFiles.Add(filename);
+                        _autoResultsTestFiles.Add(filename);
                     }
                 }
             }
@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingGZipExtensionDetectionNaive()
         {
-            List<String> filenames = new List<String>()
+            var filenames = new List<String>()
             {
                 "example.nt.gz",
                 "example.ttl.gz",
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing
                 "example.rj.gz"
             };
 
-            foreach (String filename in filenames)
+            foreach (var filename in filenames)
             {
                 Console.WriteLine(filename + " => " + Path.GetExtension(filename));
                 Assert.Equal(".gz", Path.GetExtension(filename));
@@ -156,7 +156,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingGZipExtensionDetectionNonStackable()
         {
-            List<String> filenames = new List<String>()
+            var filenames = new List<String>()
             {
                 "example.nt.abc",
                 "example.ttl.def",
@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing
                 "example.rj.ttl"
             };
 
-            foreach (String filename in filenames)
+            foreach (var filename in filenames)
             {
                 Console.WriteLine(filename + " => " + MimeTypesHelper.GetTrueFileExtension(filename));
                 Assert.Equal(Path.GetExtension(filename), MimeTypesHelper.GetTrueFileExtension(filename));
@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingGZipExtensionDetectionTrue()
         {
-            List<String> filenames = new List<String>()
+            var filenames = new List<String>()
             {
                 "example.nt.gz",
                 "example.ttl.gz",
@@ -186,10 +186,10 @@ namespace VDS.RDF.Parsing
                 "example"
             };
 
-            foreach (String filename in filenames)
+            foreach (var filename in filenames)
             {
-                String expectedExt = (filename.Contains('.') ? filename.Substring(filename.IndexOf('.')) : String.Empty);
-                String realExt = MimeTypesHelper.GetTrueFileExtension(filename);
+                var expectedExt = (filename.Contains('.') ? filename.Substring(filename.IndexOf('.')) : String.Empty);
+                var realExt = MimeTypesHelper.GetTrueFileExtension(filename);
                 Console.WriteLine(filename + " => " + realExt);
 
                 Assert.Equal(expectedExt, realExt);
@@ -199,11 +199,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingGZipDatasetByStreamManual()
         {
-            foreach (String filename in this._manualDatasetTestFiles)
+            foreach (var filename in _manualDatasetTestFiles)
             {
-                TripleStore store = new TripleStore();
+                var store = new TripleStore();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -212,18 +212,18 @@ namespace VDS.RDF.Parsing
                 reader.Load(store, new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read)));
 
                 NormalizeDatatypes(store.Graphs.First());
-                Assert.Equal(this._g, store.Graphs.First());
+                Assert.Equal(_g, store.Graphs.First());
             }
         }
 
         [Fact]
         public void ParsingGZipDatasetByGZipStreamManual()
         {
-            foreach (String filename in this._manualDatasetTestFiles)
+            foreach (var filename in _manualDatasetTestFiles)
             {
-                TripleStore store = new TripleStore();
+                var store = new TripleStore();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -231,18 +231,18 @@ namespace VDS.RDF.Parsing
                 IStoreReader reader = def.GetRdfDatasetParser();
                 reader.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.Equal(this._g, store.Graphs.First());
+                Assert.Equal(_g, store.Graphs.First());
             }
         }
 
         [Fact]
         public void ParsingGZipDatasetByStreamAuto()
         {
-            foreach (String filename in this._autoDatasetTestFiles)
+            foreach (var filename in _autoDatasetTestFiles)
             {
-                TripleStore store = new TripleStore();
+                var store = new TripleStore();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -251,18 +251,18 @@ namespace VDS.RDF.Parsing
                 reader.Load(store, new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read)));
 
                 NormalizeDatatypes(store.Graphs.First());
-                Assert.Equal(this._g, store.Graphs.First());
+                Assert.Equal(_g, store.Graphs.First());
             }
         }
 
         [Fact]
         public void ParsingGZipDatasetByGZipStreamAuto()
         {
-            foreach (String filename in this._autoDatasetTestFiles)
+            foreach (var filename in _autoDatasetTestFiles)
             {
-                TripleStore store = new TripleStore();
+                var store = new TripleStore();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -271,18 +271,18 @@ namespace VDS.RDF.Parsing
                 reader.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
                 NormalizeDatatypes(store.Graphs.First());
-                Assert.Equal(this._g, store.Graphs.First());
+                Assert.Equal(_g, store.Graphs.First());
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByFilenameManual()
         {
-            foreach (String filename in this._manualResultsTestFiles)
+            foreach (var filename in _manualResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -290,18 +290,18 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, filename);
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByStreamManual()
         {
-            foreach (String filename in this._manualResultsTestFiles)
+            foreach (var filename in _manualResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -309,18 +309,18 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, File.OpenText(filename));
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByGZipStreamManual()
         {
-            foreach (String filename in this._manualResultsTestFiles)
+            foreach (var filename in _manualResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -328,18 +328,18 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByFilenameAuto1()
         {
-            foreach (String filename in this._autoResultsTestFiles)
+            foreach (var filename in _autoResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -347,32 +347,32 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, filename);
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByFilenameAuto2()
         {
-            foreach (String filename in this._autoResultsTestFiles)
+            foreach (var filename in _autoResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
                 ISparqlResultsReader reader = MimeTypesHelper.GetSparqlParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
                 reader.Load(results, filename);
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByStreamAuto()
         {
-            foreach (String filename in this._autoResultsTestFiles)
+            foreach (var filename in _autoResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -380,18 +380,18 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, File.OpenText(filename));
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipResultsByGZipStreamAuto()
         {
-            foreach (String filename in this._autoResultsTestFiles)
+            foreach (var filename in _autoResultsTestFiles)
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -399,18 +399,18 @@ namespace VDS.RDF.Parsing
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
                 reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.True(this._results.Equals(results), "Result Sets for file " + filename + " were not equal");
+                Assert.True(_results.Equals(results), "Result Sets for file " + filename + " were not equal");
             }
         }
 
         [Fact]
         public void ParsingGZipByFilenameManual1()
         {
-            foreach (String filename in this._manualTestFiles)
+            foreach (var filename in _manualTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -418,44 +418,44 @@ namespace VDS.RDF.Parsing
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, filename);
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByFilenameManual2()
         {
-            foreach (String filename in this._manualTestFiles)
+            foreach (var filename in _manualTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
                 IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
                 reader.Load(g, filename);
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByFilenameManual3()
         {
-            foreach (String filename in this._manualTestFiles)
+            foreach (var filename in _manualTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.LoadFromFile(filename);
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByStreamManual()
         {
-            foreach (String filename in this._manualTestFiles)
+            foreach (var filename in _manualTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -463,18 +463,18 @@ namespace VDS.RDF.Parsing
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, File.OpenText(filename));
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByGZipStreamManual()
         {
-            foreach (String filename in this._manualTestFiles)
+            foreach (var filename in _manualTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -482,18 +482,18 @@ namespace VDS.RDF.Parsing
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByFilenameAuto1()
         {
-            foreach (String filename in this._autoTestFiles)
+            foreach (var filename in _autoTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -501,44 +501,44 @@ namespace VDS.RDF.Parsing
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, filename);
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByFilenameAuto2()
         {
-            foreach (String filename in this._autoTestFiles)
+            foreach (var filename in _autoTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
                 IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
                 reader.Load(g, filename);
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByFilenameAuto3()
         {
-            foreach (String filename in this._autoTestFiles)
+            foreach (var filename in _autoTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.LoadFromFile(filename);
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByStreamAuto()
         {
-            foreach (String filename in this._autoTestFiles)
+            foreach (var filename in _autoTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -546,18 +546,18 @@ namespace VDS.RDF.Parsing
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, File.OpenText(filename));
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 
         [Fact]
         public void ParsingGZipByGZipStreamAuto()
         {
-            foreach (String filename in this._autoTestFiles)
+            foreach (var filename in _autoTestFiles)
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
                 MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 Assert.NotNull(def);
@@ -565,7 +565,7 @@ namespace VDS.RDF.Parsing
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
-                Assert.Equal(this._g, g);
+                Assert.Equal(_g, g);
             }
         }
 

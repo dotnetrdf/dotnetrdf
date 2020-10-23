@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Diagnostics;
+using VDS.RDF.Nodes;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Diagnostics;
-    using VDS.RDF.Nodes;
-
     internal abstract class Boolean : Constraint
     {
         [DebuggerStepThrough]

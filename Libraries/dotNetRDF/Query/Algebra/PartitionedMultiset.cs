@@ -40,10 +40,10 @@ namespace VDS.RDF.Query.Algebra
     {
         private int _partitionSize, _numPartitions, _counter = -1;
         private List<Dictionary<int, ISet>> _partitions;
-        private List<HashSet<String>> _variables;
-        private List<String> _orderedVariables;
+        private List<HashSet<string>> _variables;
+        private List<string> _orderedVariables;
 
-        private Dictionary<String, HashSet<INode>> _containsCache;
+        private Dictionary<string, HashSet<INode>> _containsCache;
         private bool _cacheInvalid = true;
 
         /// <summary>
@@ -53,11 +53,11 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="partitionSize">Partition Size.</param>
         public PartitionedMultiset(int numPartitions, int partitionSize)
         {
-            this._numPartitions = numPartitions;
-            this._partitionSize = partitionSize;
-            this._partitions = new List<Dictionary<int, ISet>>(this._numPartitions);
-            this._variables = new List<HashSet<string>>(this._numPartitions);
-            this._counter -= this._partitionSize;
+            _numPartitions = numPartitions;
+            _partitionSize = partitionSize;
+            _partitions = new List<Dictionary<int, ISet>>(_numPartitions);
+            _variables = new List<HashSet<string>>(_numPartitions);
+            _counter -= _partitionSize;
         }
 
         /// <summary>
@@ -67,13 +67,13 @@ namespace VDS.RDF.Query.Algebra
         public int GetNextBaseID()
         {
             int baseID;
-            lock (this._partitions)
+            lock (_partitions)
             {
-                this._partitions.Add(new Dictionary<int, ISet>());
+                _partitions.Add(new Dictionary<int, ISet>());
                 // We don't always need to create a new variable partition as in some cases there may be one already (if AddVariable() got called first)
-                if (this._variables.Count < this._partitions.Count) this._variables.Add(new HashSet<string>());
-                this._counter += this._partitionSize;
-                baseID = this._counter;
+                if (_variables.Count < _partitions.Count) _variables.Add(new HashSet<string>());
+                _counter += _partitionSize;
+                baseID = _counter;
             }
             return baseID;
         }
@@ -89,8 +89,8 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return this;
             if (other.IsEmpty) return this;
 
-            Multiset m = new Multiset();
-            foreach (ISet s in this.Sets)
+            var m = new Multiset();
+            foreach (ISet s in Sets)
             {
                 m.Add(s.Copy());
             }
@@ -107,21 +107,21 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable.</param>
         /// <param name="n">Value.</param>
         /// <returns></returns>
-        public override bool ContainsValue(String var, INode n)
+        public override bool ContainsValue(string var, INode n)
         {
-            if (this.ContainsVariable(var))
+            if (ContainsVariable(var))
             {
                 // Create the Cache if necessary and reset it when necessary
-                if (this._containsCache == null || this._cacheInvalid)
+                if (_containsCache == null || _cacheInvalid)
                 {
-                    this._containsCache = new Dictionary<string, HashSet<INode>>();
-                    this._cacheInvalid = false;
+                    _containsCache = new Dictionary<string, HashSet<INode>>();
+                    _cacheInvalid = false;
                 }
-                if (!this._containsCache.ContainsKey(var))
+                if (!_containsCache.ContainsKey(var))
                 {
-                    this._containsCache.Add(var, new HashSet<INode>(this.Sets.Select(s => s[var])));
+                    _containsCache.Add(var, new HashSet<INode>(Sets.Select(s => s[var])));
                 }
-                return this._containsCache[var].Contains(n);
+                return _containsCache[var].Contains(n);
             }
             else
             {
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override bool ContainsVariable(string var)
         {
-            return this._variables.Any(v => v.Contains(var));
+            return _variables.Any(v => v.Contains(var));
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (other is IdentityMultiset || other is NullMultiset) return false;
 
-            return this.Variables.All(v => !other.ContainsVariable(v));
+            return Variables.All(v => !other.ContainsVariable(v));
         }
 
         /// <summary>
@@ -161,13 +161,13 @@ namespace VDS.RDF.Query.Algebra
         public override void Add(ISet s)
         {
             // Compute which partition based on the ID
-            int p = s.ID / this._partitionSize;
-            this._partitions[p].Add(s.ID, s);
-            this._cacheInvalid = true;
+            var p = s.ID / _partitionSize;
+            _partitions[p].Add(s.ID, s);
+            _cacheInvalid = true;
 
-            foreach (String var in s.Variables)
+            foreach (var var in s.Variables)
             {
-                this._variables[p].Add(var);
+                _variables[p].Add(var);
             }
         }
 
@@ -177,10 +177,10 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variable">Variable.</param>
         public override void AddVariable(string variable)
         {
-            if (this._variables.Count == 0) this._variables.Add(new HashSet<string>());
-            this._variables[0].Add(variable);
-            if (this._orderedVariables == null) this._orderedVariables = new List<string>(this.Variables);
-            if (!this._orderedVariables.Contains(variable)) this._orderedVariables.Add(variable);
+            if (_variables.Count == 0) _variables.Add(new HashSet<string>());
+            _variables[0].Add(variable);
+            if (_orderedVariables == null) _orderedVariables = new List<string>(Variables);
+            if (!_orderedVariables.Contains(variable)) _orderedVariables.Add(variable);
         }
 
         /// <summary>
@@ -190,22 +190,22 @@ namespace VDS.RDF.Query.Algebra
         public override void SetVariableOrder(IEnumerable<string> variables)
         {
             // Validate that the ordering is applicable
-            HashSet<String> vars = new HashSet<string>();
-            foreach (HashSet<String> varList in this._variables)
+            var vars = new HashSet<string>();
+            foreach (HashSet<string> varList in _variables)
             {
-                foreach (String var in varList)
+                foreach (var var in varList)
                 {
                     vars.Add(var);
                 }
             }
             if (variables.Count() < vars.Count) throw new RdfQueryException("Cannot set a variable ordering that contains less variables then are currently specified");
-            foreach (String var in vars)
+            foreach (var var in vars)
             {
                 if (!variables.Contains(var)) throw new RdfQueryException("Cannot set a variable ordering that omits the variable ?" + var + " currently present in the multiset, use Trim(\"" + var + "\") first to remove this variable");
             }
 
             // Apply ordering
-            this._orderedVariables = new List<string>(vars);
+            _orderedVariables = new List<string>(vars);
         }
 
         /// <summary>
@@ -214,13 +214,13 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="id">Set ID.</param>
         public override void Remove(int id)
         {
-            int p = id / this._partitionSize;
-            this._partitions[p].Remove(id);
-            if (this._orderedIDs != null)
+            var p = id / _partitionSize;
+            _partitions[p].Remove(id);
+            if (_orderedIDs != null)
             {
-                this._orderedIDs.Remove(id);
+                _orderedIDs.Remove(id);
             }
-            this._cacheInvalid = true;
+            _cacheInvalid = true;
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return this._partitions.All(p => p.Count == 0);
+                return _partitions.All(p => p.Count == 0);
             }
         }
 
@@ -241,7 +241,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._partitions.Sum(p => p.Count);
+                return _partitions.Sum(p => p.Count);
             }
         }
 
@@ -252,13 +252,13 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (this._orderedVariables != null)
+                if (_orderedVariables != null)
                 {
-                    return this._orderedVariables;
+                    return _orderedVariables;
                 }
                 else
                 {
-                    return (from vs in this._variables
+                    return (from vs in _variables
                             from v in vs
                             where v != null
                             select v).Distinct();
@@ -273,15 +273,15 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                if (this._orderedIDs == null)
+                if (_orderedIDs == null)
                 {
-                    return (from p in this._partitions
+                    return (from p in _partitions
                             from s in p.Values
                             select s);
                 }
                 else
                 {
-                    return (from id in this._orderedIDs
+                    return (from id in _orderedIDs
                             select this[id]);
                 }
             }
@@ -294,15 +294,15 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                if (this._orderedIDs == null)
+                if (_orderedIDs == null)
                 {
-                    return (from p in this._partitions
+                    return (from p in _partitions
                             from id in p.Keys
                             select id);
                 }
                 else
                 {
-                    return this._orderedIDs;
+                    return _orderedIDs;
                 }
             }
         }
@@ -316,11 +316,11 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                int p = id / this._partitionSize;
-                if (p < this._partitions.Count)
+                var p = id / _partitionSize;
+                if (p < _partitions.Count)
                 {
                     ISet s;
-                    if (this._partitions[p].TryGetValue(id, out s))
+                    if (_partitions[p].TryGetValue(id, out s))
                     {
                         return s;
                     }
@@ -341,24 +341,24 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public override void Trim()
         {
-            List<String> trimVars = this.Variables.Where(v => v.StartsWith("_:")).ToList();
-            foreach (String var in trimVars)
+            var trimVars = Variables.Where(v => v.StartsWith("_:")).ToList();
+            foreach (var var in trimVars)
             {
-                foreach (HashSet<String> vs in this._variables)
+                foreach (HashSet<string> vs in _variables)
                 {
                     vs.Remove(var);
                 }
-                if (this._containsCache != null)
+                if (_containsCache != null)
                 {
-                    this._containsCache.Remove(var);
+                    _containsCache.Remove(var);
                 }
             }
 
             if (UsePLinqEvaluation)
             {
-                this.Sets.AsParallel().ForAll(s =>
+                Sets.AsParallel().ForAll(s =>
                     {
-                        foreach (String var in trimVars)
+                        foreach (var var in trimVars)
                         {
                             s.Remove(var);
                         }
@@ -366,9 +366,9 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                foreach (ISet s in this.Sets)
+                foreach (ISet s in Sets)
                 {
-                    foreach (String var in trimVars)
+                    foreach (var var in trimVars)
                     {
                         s.Remove(var);
                     }
@@ -383,24 +383,24 @@ namespace VDS.RDF.Query.Algebra
         public override void Trim(string variable)
         {
             if (variable == null) return;
-            foreach (HashSet<String> vs in this._variables)
+            foreach (HashSet<string> vs in _variables)
             {
                 vs.Remove(variable);
             }
             if (UsePLinqEvaluation)
             {
-                this.Sets.AsParallel().ForAll(s => s.Remove(variable));
+                Sets.AsParallel().ForAll(s => s.Remove(variable));
             }
             else
             {
-                foreach (ISet s in this.Sets)
+                foreach (ISet s in Sets)
                 {
                     s.Remove(variable);
                 }
             }
-            if (this._containsCache != null)
+            if (_containsCache != null)
             {
-                this._containsCache.Remove(variable);
+                _containsCache.Remove(variable);
             }
         }
     }

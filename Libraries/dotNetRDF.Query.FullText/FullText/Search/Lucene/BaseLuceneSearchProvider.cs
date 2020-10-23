@@ -67,15 +67,15 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="autoSync">Whether the Search Provider should stay in sync with the underlying index.</param>
         public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
         {
-            this._version = ver;
-            this._indexDir = indexDir;
-            this._analyzer = analyzer;
-            this._schema = schema;
-            this._autoSync = autoSync;
+            _version = ver;
+            _indexDir = indexDir;
+            _analyzer = analyzer;
+            _schema = schema;
+            _autoSync = autoSync;
 
             //Create necessary objects
-            this._searcher = new LucSearch.IndexSearcher(this._indexDir, true);
-            this._parser = new QueryParser(this._version, this._schema.IndexField, this._analyzer);
+            _searcher = new LucSearch.IndexSearcher(_indexDir, true);
+            _parser = new QueryParser(_version, _schema.IndexField, _analyzer);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// </summary>
         ~BaseLuceneSearchProvider()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -105,13 +105,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            LucSearch.TopDocs docs = this._searcher.Search(q, limit);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.TopDocs docs = _searcher.Search(q, limit);
 
             return (from doc in docs.ScoreDocs
                     where doc.Score > scoreThreshold
-                    select this._searcher.Doc(doc.Doc).ToResult(doc.Score, this._schema));
+                    select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema));
         }
 
         /// <summary>
@@ -122,12 +122,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            DocCollector collector = new DocCollector(scoreThreshold);
-            this._searcher.Search(q, collector);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector(scoreThreshold);
+            _searcher.Search(q, collector);
             return (from doc in collector.Documents
-                    select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema));
+                    select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema));
         }
 
         /// <summary>
@@ -138,12 +138,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, int limit)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            LucSearch.TopDocs docs = this._searcher.Search(q, limit);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.TopDocs docs = _searcher.Search(q, limit);
 
             return (from doc in docs.ScoreDocs
-                    select this._searcher.Doc(doc.Doc).ToResult(doc.Score, this._schema));
+                    select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema));
         }
 
         /// <summary>
@@ -153,12 +153,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            DocCollector collector = new DocCollector();
-            this._searcher.Search(q, collector);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
             return (from doc in collector.Documents
-                    select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema));
+                    select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema));
         }
 
         /// <summary>
@@ -171,15 +171,15 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            DocCollector collector = new DocCollector();
-            this._searcher.Search(q, collector);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
 
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
                                                          where doc.Value > scoreThreshold
-                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
-            return this.FilterByGraph(graphUris, results).Take(limit);
+                                                         select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results).Take(limit);
         }
 
         /// <summary>
@@ -191,13 +191,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            DocCollector collector = new DocCollector(scoreThreshold);
-            this._searcher.Search(q, collector);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector(scoreThreshold);
+            _searcher.Search(q, collector);
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
-                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
-            return this.FilterByGraph(graphUris, results);
+                                                         select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results);
         }
 
         /// <summary>
@@ -209,14 +209,14 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            DocCollector collector = new DocCollector();
-            this._searcher.Search(q, collector);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
 
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
-                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
-            return this.FilterByGraph(graphUris, results).Take(limit);
+                                                         select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results).Take(limit);
         }
 
         /// <summary>
@@ -227,13 +227,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
         {
-            this.EnsureCurrent();
-            LucSearch.Query q = this._parser.Parse(text);
-            DocCollector collector = new DocCollector();
-            this._searcher.Search(q, collector);
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
-                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
-            return this.FilterByGraph(graphUris, results);
+                                                         select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             }
             else
             {
-                HashSet<Uri> uris = new HashSet<Uri>(graphUris, new UriComparer());
+                var uris = new HashSet<Uri>(graphUris, new UriComparer());
                 if (uris.Count == 0) return results;
                 return results.Where(r => uris.Contains(r.GraphUri));
             }
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             get
             {
-                return this._autoSync;
+                return _autoSync;
             }
         }
 
@@ -272,12 +272,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// </summary>
         private void EnsureCurrent()
         {
-            if (this._autoSync)
+            if (_autoSync)
             {
-                if (!this._searcher.IndexReader.IsCurrent())
+                if (!_searcher.IndexReader.IsCurrent())
                 {
-                    IndexReader oldReader = this._searcher.IndexReader;
-                    this._searcher = new LucSearch.IndexSearcher(oldReader.Reopen());
+                    IndexReader oldReader = _searcher.IndexReader;
+                    _searcher = new LucSearch.IndexSearcher(oldReader.Reopen());
                     oldReader.Dispose();
                 }
             }
@@ -288,7 +288,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
         }
 
         /// <summary>
@@ -299,9 +299,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             if (disposing) GC.SuppressFinalize(this);
 
-            this.DisposeInternal();
+            DisposeInternal();
 
-            if (this._searcher != null) this._searcher.Dispose();
+            if (_searcher != null) _searcher.Dispose();
         }
 
         /// <summary>
@@ -328,20 +328,20 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
 
             //Basic Properties
             context.Graph.Assert(searcherObj, rdfType, searcherClass);
-            context.Graph.Assert(searcherObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(searcherObj, dnrType, context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
             //Serialize and link the Index
             INode indexObj = context.Graph.CreateBlankNode();
             context.NextSubject = indexObj;
-            this._indexDir.SerializeConfiguration(context);
+            _indexDir.SerializeConfiguration(context);
             context.Graph.Assert(searcherObj, index, indexObj);
 
             //Serialize and link the Schema
             INode schemaObj = context.Graph.CreateBlankNode();
             context.NextSubject = schemaObj;
-            if (this._schema is IConfigurationSerializable)
+            if (_schema is IConfigurationSerializable)
             {
-                ((IConfigurationSerializable)this._schema).SerializeConfiguration(context);
+                ((IConfigurationSerializable)_schema).SerializeConfiguration(context);
             }
             else
             {
@@ -352,11 +352,11 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             //Serialize and link the Analyzer
             INode analyzerObj = context.Graph.CreateBlankNode();
             context.NextSubject = analyzerObj;
-            this._analyzer.SerializeConfiguration(context);
+            _analyzer.SerializeConfiguration(context);
             context.Graph.Assert(searcherObj, index, analyzerObj);
 
             //Serialize auto-sync settings
-            context.Graph.Assert(searcherObj, indexSync, this._autoSync.ToLiteral(context.Graph));
+            context.Graph.Assert(searcherObj, indexSync, _autoSync.ToLiteral(context.Graph));
         }
     }
 }

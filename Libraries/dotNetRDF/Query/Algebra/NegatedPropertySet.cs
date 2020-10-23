@@ -118,8 +118,8 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             IEnumerable<Triple> ts;
-            String subjVar = _start.VariableName;
-            String objVar = _end.VariableName;
+            var subjVar = _start.VariableName;
+            var objVar = _end.VariableName;
             if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
             {
                 if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Algebra
             // Q: Should this not go at the start of evaluation?
             if (_inverse)
             {
-                String temp = objVar;
+                var temp = objVar;
                 objVar = subjVar;
                 subjVar = temp;
             }
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (!_properties.Contains(t.Predicate))
                 {
-                    Set s = new Set();
+                    var s = new Set();
                     if (subjVar != null) s.Add(subjVar, t.Subject);
                     if (objVar != null) s.Add(objVar, t.Object);
                     context.OutputMultiset.Add(s);
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    return Enumerable.Empty<String>();
+                    return Enumerable.Empty<string>();
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get { return Variables; }
         }
@@ -224,9 +224,9 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             return q;
         }
@@ -246,7 +246,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             PropertyPathPattern pp;
             if (_inverse)
             {
@@ -266,11 +266,11 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("NegatedPropertySet(");
             output.Append(_start.ToString());
             output.Append(", {");
-            for (int i = 0; i < _properties.Count; i++)
+            for (var i = 0; i < _properties.Count; i++)
             {
                 output.Append(_properties[i].ToString());
                 if (i < _properties.Count - 1)

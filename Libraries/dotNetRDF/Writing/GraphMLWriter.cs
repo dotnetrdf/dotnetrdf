@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace VDS.RDF.Writing
@@ -45,8 +44,9 @@ namespace VDS.RDF.Writing
         /// Event raised when there is ambiguity in the syntax being producing
         /// </summary>
         /// <remarks>This class doesn't raise this event</remarks>
+#pragma warning disable CS0067
         public override event StoreWriterWarning Warning;
-
+#pragma warning restore CS0067
 
         /// <summary>
         /// Saves a triple store to a text writer in GraphML format.
@@ -67,20 +67,20 @@ namespace VDS.RDF.Writing
         /// <param name="output">The target XML writer.</param>
         public void Save(ITripleStore store, XmlWriter output)
         {
-            GraphMLWriter.WriteGraphML(output, store, this.CollapseLiterals);
+            WriteGraphML(output, store, CollapseLiterals);
         }
 
         private static void WriteGraphML(XmlWriter writer, ITripleStore store, bool collapseLiterals)
         {
             writer.WriteStartElement(GraphMLSpecsHelper.GraphML, GraphMLSpecsHelper.NS);
 
-            GraphMLWriter.WriteKey(writer, GraphMLSpecsHelper.EdgeLabel, GraphMLSpecsHelper.Edge);
-            GraphMLWriter.WriteKey(writer, GraphMLSpecsHelper.NodeLabel, GraphMLSpecsHelper.Node);
+            WriteKey(writer, GraphMLSpecsHelper.EdgeLabel, GraphMLSpecsHelper.Edge);
+            WriteKey(writer, GraphMLSpecsHelper.NodeLabel, GraphMLSpecsHelper.Node);
             WriteKey(writer, GraphMLSpecsHelper.GraphLabel, GraphMLSpecsHelper.Graph);
 
-            foreach (var graph in store.Graphs)
+            foreach (IGraph graph in store.Graphs)
             {
-                GraphMLWriter.WriteGraph(writer, graph, collapseLiterals);
+                WriteGraph(writer, graph, collapseLiterals);
             }
 
             writer.WriteEndElement();
@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing
                 WriteData(writer, GraphMLSpecsHelper.GraphLabel, graph.BaseUri.AbsoluteUri);
             }
 
-            GraphMLWriter.WriteTriples(writer, graph, collapseLiterals);
+            WriteTriples(writer, graph, collapseLiterals);
 
             writer.WriteEndElement();
         }
@@ -110,20 +110,20 @@ namespace VDS.RDF.Writing
         {
             var nodesAlreadyWritten = new HashSet<object>();
 
-            foreach (var triple in graph.Triples)
+            foreach (Triple triple in graph.Triples)
             {
-                foreach (var node in new[] { triple.Subject, triple.Object })
+                foreach (INode node in new[] { triple.Subject, triple.Object })
                 {
-                    var id = GraphMLWriter.CalculateNodeId(node, triple, collapseLiterals);
+                    object id = CalculateNodeId(node, triple, collapseLiterals);
 
                     // Skip if already written
                     if (nodesAlreadyWritten.Add(id))
                     {
-                        GraphMLWriter.WriteNode(writer, id.GetHashCode().ToString(), node.ToString());
+                        WriteNode(writer, id.GetHashCode().ToString(), node.ToString());
                     }
                 }
 
-                GraphMLWriter.WriteEdge(writer, triple, collapseLiterals);
+                WriteEdge(writer, triple, collapseLiterals);
             }
         }
 
@@ -134,10 +134,10 @@ namespace VDS.RDF.Writing
 
             writer.WriteStartAttribute(GraphMLSpecsHelper.Target);
 
-            var id = GraphMLWriter.CalculateNodeId(triple.Object, triple, collapseLiterals);
+            var id = CalculateNodeId(triple.Object, triple, collapseLiterals);
             writer.WriteString(id.GetHashCode().ToString());
 
-            GraphMLWriter.WriteData(writer, GraphMLSpecsHelper.EdgeLabel, triple.Predicate.ToString());
+            WriteData(writer, GraphMLSpecsHelper.EdgeLabel, triple.Predicate.ToString());
 
             writer.WriteEndElement();
         }
@@ -156,7 +156,7 @@ namespace VDS.RDF.Writing
             writer.WriteStartElement(GraphMLSpecsHelper.Node);
             writer.WriteAttributeString(GraphMLSpecsHelper.Id, id);
 
-            GraphMLWriter.WriteData(writer, GraphMLSpecsHelper.NodeLabel, label);
+            WriteData(writer, GraphMLSpecsHelper.NodeLabel, label);
 
             writer.WriteEndElement();
         }

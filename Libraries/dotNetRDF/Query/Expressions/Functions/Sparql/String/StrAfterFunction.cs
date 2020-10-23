@@ -65,12 +65,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             if (!IsValidArgumentPair(input, starts)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
 
             Uri datatype = input.DataType;//(input.DataType != null ? input.DataType : starts.DataType);
-            string lang = input.Language;//(!input.Language.Equals(string.Empty) ? input.Language : starts.Language);
+            var lang = input.Language;//(!input.Language.Equals(string.Empty) ? input.Language : starts.Language);
 
             if (input.Value.Contains(starts.Value))
             {
-                int startIndex = input.Value.IndexOf(starts.Value) + starts.Value.Length;
-                string resultValue = (startIndex >= input.Value.Length ? string.Empty : input.Value.Substring(startIndex));
+                var startIndex = input.Value.IndexOf(starts.Value) + starts.Value.Length;
+                var resultValue = (startIndex >= input.Value.Length ? string.Empty : input.Value.Substring(startIndex));
 
                 if (datatype != null)
                 {
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    var lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))

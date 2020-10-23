@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
             }
 
             // Queue the Graphs to be written
-            foreach (var g in context.Store.Graphs)
+            foreach (IGraph g in context.Store.Graphs)
             {
                 context.Add(g.BaseUri);
             }
@@ -94,7 +94,7 @@ namespace VDS.RDF.Writing
             }
             catch (AggregateException ex)
             {
-                foreach (var innerEx in ex.InnerExceptions)
+                foreach (Exception innerEx in ex.InnerExceptions)
                 {
                     outputEx.AddException(innerEx);
                 }
@@ -117,10 +117,10 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                while (globalContext.TryGetNextUri(out var u))
+                while (globalContext.TryGetNextUri(out Uri u))
                 {
                     // Get the Graph from the Store
-                    var g = globalContext.Store.Graphs[u];
+                    IGraph g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
                     var context = new BaseWriterContext(g, new System.IO.StringWriter());
@@ -158,7 +158,7 @@ namespace VDS.RDF.Writing
             if (context.Graph.BaseUri != null)
             {
                 // Named Graphs have a fourth context field added
-                foreach (var t in context.Graph.Triples)
+                foreach (Triple t in context.Graph.Triples)
                 {
                     GenerateNodeOutput(context, t.Subject);
                     context.Output.Write('\t');
@@ -175,7 +175,7 @@ namespace VDS.RDF.Writing
             else
             {
                 // Default Graph has an empty field added
-                foreach (var t in context.Graph.Triples)
+                foreach (Triple t in context.Graph.Triples)
                 {
                     GenerateNodeOutput(context, t.Subject);
                     context.Output.Write('\t');
@@ -214,7 +214,10 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if the Writer detects a non-fatal error with the RDF being output
         /// </summary>
+        /// <remarks>This class does not raise this event.</remarks>
+#pragma warning disable CS0067
         public override event StoreWriterWarning Warning;
+#pragma warning restore CS0067
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.

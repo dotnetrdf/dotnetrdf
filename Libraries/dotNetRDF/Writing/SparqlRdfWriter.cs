@@ -116,7 +116,7 @@ namespace VDS.RDF.Writing
             if (results.ResultsType == SparqlResultsType.VariableBindings)
             {
                 // Assert a Triple for each Result Variable
-                foreach (String v in results.Variables)
+                foreach (var v in results.Variables)
                 {
                     g.Assert(new Triple(rset, resultVariable, g.CreateLiteralNode(v)));
                 }
@@ -127,7 +127,7 @@ namespace VDS.RDF.Writing
                     IBlankNode sln = g.CreateBlankNode();
                     g.Assert(new Triple(rset, solution, sln));
 
-                    foreach (String v in results.Variables)
+                    foreach (var v in results.Variables)
                     {
                         // Only define Bindings if there is a value and it is non-null
                         if (r.HasValue(v) && r[v] != null)
@@ -138,7 +138,7 @@ namespace VDS.RDF.Writing
                             switch (r[v].NodeType) 
                             {
                                 case NodeType.Blank:
-                                    IBlankNode b = (IBlankNode)r[v];
+                                    var b = (IBlankNode)r[v];
                                     IBlankNode bMapped;
                                     if (b.GraphUri == null)
                                     {
@@ -176,7 +176,7 @@ namespace VDS.RDF.Writing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

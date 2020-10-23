@@ -40,10 +40,10 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlExistsSimple1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            String query = @"SELECT *
+            var query = @"SELECT *
 WHERE
 {
   ?s ?p ?o .
@@ -52,7 +52,7 @@ WHERE
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            var results = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.False(results.IsEmpty);
         }
@@ -60,11 +60,11 @@ WHERE
         [Fact]
         public void SparqlExistsSimple2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            int expected = g.GetTriplesWithObject(g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler))).Count();
+            var expected = g.GetTriplesWithObject(g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler))).Count();
 
-            String query = @"SELECT *
+            var query = @"SELECT *
 WHERE
 {
   ?s ?p ?o .
@@ -73,7 +73,7 @@ WHERE
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
 
-            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            var results = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.False(results.IsEmpty);
             Assert.True(expected < results.Count, "Should be more triples found that just those matched by the EXISTS clause");

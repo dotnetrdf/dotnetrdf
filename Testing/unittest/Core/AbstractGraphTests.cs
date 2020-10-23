@@ -49,14 +49,14 @@ namespace VDS.RDF
         [Fact]
         public void GraphIsEmpty01()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = GetInstance();
             Assert.True(g.IsEmpty);
         }
 
         [Fact]
         public void GraphIsEmpty02()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = GetInstance();
 
             g.Assert(new Triple(g.CreateBlankNode(), g.CreateBlankNode(), g.CreateBlankNode()));
             Assert.False(g.IsEmpty);
@@ -65,10 +65,10 @@ namespace VDS.RDF
         [Fact]
         public void GraphAssert01()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = GetInstance();
             g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
 
-            Triple t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
+            var t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
             Assert.False(g.IsEmpty);
             Assert.True(g.ContainsTriple(t));
@@ -77,10 +77,10 @@ namespace VDS.RDF
         [Fact]
         public void GraphRetract01()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = GetInstance();
             g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
 
-            Triple t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
+            var t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
             Assert.False(g.IsEmpty);
             Assert.True(g.ContainsTriple(t));
@@ -93,7 +93,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphRetract02()
         {
-            IGraph g = this.GetInstance();
+            IGraph g = GetInstance();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             Assert.False(g.IsEmpty);
@@ -415,13 +415,13 @@ namespace VDS.RDF
             var graph = GetInstance();
             graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
-            for (int i1 = 0; i1 < GetNodeTestGraphSize; i1++)
+            for (var i1 = 0; i1 < GetNodeTestGraphSize; i1++)
             {
                 graph.Assert(graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"), graph.CreateUriNode("ex:p"), graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"));
             }
 
             // when
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var stopwatch = Stopwatch.StartNew();
                 graph.GetUriNode(new Uri($"http://example.org/{random.Next(GetNodeTestGraphSize)}"));
@@ -441,13 +441,13 @@ namespace VDS.RDF
             var graph = GetInstance();
             graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
-            for (int i1 = 0; i1 < GetNodeTestGraphSize; i1++)
+            for (var i1 = 0; i1 < GetNodeTestGraphSize; i1++)
             {
                 graph.Assert(graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"), graph.CreateUriNode("ex:p"), graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"));
             }
 
             // when
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var stopwatch = Stopwatch.StartNew();
                 graph.GetUriNode(new Uri("http://example.org/not/in/graph"));
@@ -467,13 +467,13 @@ namespace VDS.RDF
             var graph = GetInstance();
             graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
-            for (int i1 = 0; i1 < GetNodeTestGraphSize; i1++)
+            for (var i1 = 0; i1 < GetNodeTestGraphSize; i1++)
             {
                 graph.Assert(graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"), graph.CreateUriNode("ex:p"), graph.CreateLiteralNode($"test {random.Next(GetNodeTestGraphSize)}"));
             }
 
             // when
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var stopwatch = Stopwatch.StartNew();
                 graph.GetLiteralNode($"test {random.Next(GetNodeTestGraphSize)}");
@@ -493,13 +493,13 @@ namespace VDS.RDF
             var graph = GetInstance();
             graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
-            for (int i1 = 0; i1 < GetNodeTestGraphSize; i1++)
+            for (var i1 = 0; i1 < GetNodeTestGraphSize; i1++)
             {
                 graph.Assert(graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"), graph.CreateUriNode("ex:p"), graph.CreateLiteralNode($"test {random.Next(GetNodeTestGraphSize)}"));
             }
 
             // when
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var stopwatch = Stopwatch.StartNew();
                 graph.GetLiteralNode("x y z");
@@ -519,13 +519,13 @@ namespace VDS.RDF
             var graph = GetInstance();
             graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
-            for (int i1 = 0; i1 < GetNodeTestGraphSize; i1++)
+            for (var i1 = 0; i1 < GetNodeTestGraphSize; i1++)
             {
                 graph.Assert(graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"), graph.CreateUriNode("ex:p"), graph.CreateBlankNode($"{random.Next(GetNodeTestGraphSize)}"));
             }
 
             // when
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var stopwatch = Stopwatch.StartNew();
                 graph.GetBlankNode($"{random.Next(GetNodeTestGraphSize)}");
@@ -545,13 +545,13 @@ namespace VDS.RDF
             var graph = GetInstance();
             graph.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
 
-            for (int i1 = 0; i1 < GetNodeTestGraphSize; i1++)
+            for (var i1 = 0; i1 < GetNodeTestGraphSize; i1++)
             {
                 graph.Assert(graph.CreateUriNode($"ex:{random.Next(GetNodeTestGraphSize)}"), graph.CreateUriNode("ex:p"), graph.CreateBlankNode($"{random.Next(GetNodeTestGraphSize)}"));
             }
 
             // when
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var stopwatch = Stopwatch.StartNew();
                 graph.GetBlankNode("other_blank_id");

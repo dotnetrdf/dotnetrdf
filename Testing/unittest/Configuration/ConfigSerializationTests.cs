@@ -43,7 +43,7 @@ namespace VDS.RDF.Configuration
         [Fact]
         public void ConfigurationSerializationOperators()
         {
-            List<ISparqlOperator> ops = new List<ISparqlOperator>()
+            var ops = new List<ISparqlOperator>()
             {
                 new AdditionOperator(),
                 new DateTimeAddition(),
@@ -56,9 +56,9 @@ namespace VDS.RDF.Configuration
                 new TimeSpanSubtraction()
             };
 
-            Graph g = new Graph();
-            ConfigurationSerializationContext context = new ConfigurationSerializationContext(g);
-            List<INode> nodes = new List<INode>();
+            var g = new Graph();
+            var context = new ConfigurationSerializationContext(g);
+            var nodes = new List<INode>();
 
             foreach (ISparqlOperator op in ops)
             {
@@ -69,10 +69,10 @@ namespace VDS.RDF.Configuration
                 ((IConfigurationSerializable)op).SerializeConfiguration(context);
             }
 
-            for (int i = 0; i < ops.Count; i++)
+            for (var i = 0; i < ops.Count; i++)
             {
                 INode opNode = nodes[i];
-                ISparqlOperator resultOp = ConfigurationLoader.LoadObject(g, opNode) as ISparqlOperator;
+                var resultOp = ConfigurationLoader.LoadObject(g, opNode) as ISparqlOperator;
                 Assert.NotNull(resultOp);
                 Assert.Equal(ops[i].GetType(), resultOp.GetType());
             }

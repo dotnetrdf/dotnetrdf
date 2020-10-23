@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public int? getArgIndex()
         {
-            String varName = getVarName();
+            var varName = getVarName();
             if (varName != null)
             {
                 return SP.getArgPropertyIndex(varName);

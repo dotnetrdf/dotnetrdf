@@ -56,8 +56,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 if (temp.NodeType == NodeType.Uri)
                 {
-                    IUriNode u = (IUriNode)temp;
-                    if (!u.Uri.Fragment.Equals(String.Empty))
+                    var u = (IUriNode)temp;
+                    if (!u.Uri.Fragment.Equals(string.Empty))
                     {
                         return new StringNode(null, u.Uri.Fragment.Substring(1));
                     }

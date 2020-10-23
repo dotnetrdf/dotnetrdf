@@ -112,9 +112,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("CALL(");
-            for (int i = 0; i < _args.Count; i++)
+            for (var i = 0; i < _args.Count; i++)
             {
                 output.Append(_args[i].ToString());
                 if (i < _args.Count - 1)

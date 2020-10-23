@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            ILiteralNode input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
+            var input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
             IValuedNode start = CheckArgument(_start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
             if (_length != null)
@@ -80,8 +80,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 try
                 {
-                    int s = Convert.ToInt32(start.AsInteger());
-                    int l = Convert.ToInt32(length.AsInteger());
+                    var s = Convert.ToInt32(start.AsInteger());
+                    var l = Convert.ToInt32(length.AsInteger());
 
                     if (s < 1) s = 1;
                     if (l < 1)
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 try
                 {
-                    int s = Convert.ToInt32(start.AsInteger());
+                    var s = Convert.ToInt32(start.AsInteger());
                     if (s < 1) s = 1;
 
                     if (input.DataType != null)
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    var lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))

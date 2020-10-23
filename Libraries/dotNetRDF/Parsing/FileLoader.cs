@@ -54,7 +54,7 @@ namespace VDS.RDF.Parsing
         /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
-        public static void Load(IGraph g, String filename)
+        public static void Load(IGraph g, string filename)
         {
             Load(g, filename, null);
         }
@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing
         /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
-        public static void Load(IGraph g, String filename, IRdfReader parser)
+        public static void Load(IGraph g, string filename, IRdfReader parser)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing
         /// Should this fail then the contents of the file will be read into a String, the <see cref="StringParser">StringParser</see> is then used to attempt to parse it.  The <see cref="StringParser">StringParser</see> uses some simple rules to guess which format the input is likely to be and chooses a parser based on it's guess.
         /// </para>
         /// </remarks>
-        public static void Load(IRdfHandler handler, String filename)
+        public static void Load(IRdfHandler handler, string filename)
         {
             Load(handler, filename, (IRdfReader)null);
         }
@@ -138,7 +138,7 @@ namespace VDS.RDF.Parsing
         /// If a File URI is assigned it will always be an absolute URI for the file.
         /// </para>
         /// </remarks>
-        public static void Load(IRdfHandler handler, String filename, IRdfReader parser)
+        public static void Load(IRdfHandler handler, string filename, IRdfReader parser)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -148,7 +148,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                    var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                     parser = MimeTypesHelper.GetParserByFileExtension(ext);
                 }
                 catch (RdfParserSelectionException)
@@ -163,8 +163,8 @@ namespace VDS.RDF.Parsing
                 // Unable to determine format from File Extension
                 // Read file in locally and use the StringParser to select a parser
                 RaiseWarning("Attempting to select parser based on analysis of the data file, this requires loading the file into memory");
-                StreamReader reader = new StreamReader(File.OpenRead(filename));
-                String data = reader.ReadToEnd();
+                var reader = new StreamReader(File.OpenRead(filename));
+                var data = reader.ReadToEnd();
                 reader.Close();
                 parser = StringParser.GetParser(data);
                 RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing
         /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, String filename, IStoreReader parser)
+        public static void Load(ITripleStore store, string filename, IStoreReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF Dataset into a null Store");
             Load(new StoreHandler(store), filename, parser);
@@ -206,7 +206,7 @@ namespace VDS.RDF.Parsing
         /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, String filename)
+        public static void Load(ITripleStore store, string filename)
         {
             Load(store, filename, null);
         }
@@ -222,7 +222,7 @@ namespace VDS.RDF.Parsing
         /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
         /// </para>
         /// </remarks>
-        public static void Load(IRdfHandler handler, String filename, IStoreReader parser)
+        public static void Load(IRdfHandler handler, string filename, IStoreReader parser)
         {
             if (handler == null) throw new RdfParseException("Cannot read a RDF Dataset using a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read a RDF Dataset from a null File");
@@ -234,7 +234,7 @@ namespace VDS.RDF.Parsing
 
             if (parser == null)
             {
-                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 try
                 {
                     parser = MimeTypesHelper.GetStoreParserByFileExtension(ext);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         IRdfReader rdfParser = MimeTypesHelper.GetParserByFileExtension(ext);
-                        Graph g = new Graph();
+                        var g = new Graph();
                         rdfParser.Load(handler, filename);
                         return;
                     }
@@ -262,8 +262,8 @@ namespace VDS.RDF.Parsing
             {
                 // Unable to determine format from File Extension
                 // Read file in locally and use the StringParser to select a parser
-                StreamReader reader = new StreamReader(File.OpenRead(filename));
-                String data = reader.ReadToEnd();
+                var reader = new StreamReader(File.OpenRead(filename));
+                var data = reader.ReadToEnd();
                 reader.Close();
                 parser = StringParser.GetDatasetParser(data);
                 RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing
         /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
         /// </para>
         /// </remarks>
-        public static void LoadDataset(IRdfHandler handler, String filename)
+        public static void LoadDataset(IRdfHandler handler, string filename)
         {
             Load(handler, filename, (IStoreReader)null);
         }
@@ -296,7 +296,7 @@ namespace VDS.RDF.Parsing
         /// Raises warning messages.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        static void RaiseWarning(String message)
+        static void RaiseWarning(string message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)
@@ -309,7 +309,7 @@ namespace VDS.RDF.Parsing
         /// Raises Store Warning messages.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        static void RaiseStoreWarning(String message)
+        static void RaiseStoreWarning(string message)
         {
             StoreReaderWarning d = StoreWarning;
             if (d != null)

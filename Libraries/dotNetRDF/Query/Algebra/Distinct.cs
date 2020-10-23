@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -105,12 +105,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra.
@@ -239,7 +239,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -250,12 +250,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra.

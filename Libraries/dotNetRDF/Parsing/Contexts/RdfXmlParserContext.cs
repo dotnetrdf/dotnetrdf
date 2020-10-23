@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Contexts
     public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXmlEvent>
     {
         private IEventQueue<IRdfXmlEvent> _queue;
-        private Dictionary<String, List<INode>> _usedIDs = new Dictionary<String, List<INode>>();
+        private Dictionary<string, List<INode>> _usedIDs = new Dictionary<string, List<INode>>();
 
         /// <summary>
         /// Creates a new Parser Context.
@@ -148,7 +148,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Mapping of in-use IDs.
         /// </summary>
-        public Dictionary<String, List<INode>> IDs
+        public Dictionary<string, List<INode>> IDs
         {
             get
             {

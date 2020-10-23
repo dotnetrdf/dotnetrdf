@@ -112,7 +112,7 @@ namespace VDS.RDF.Writing
                 if (UseMultiThreadedWriting)
                 {
                     // Queue the Graphs to be written
-                    foreach (var g in context.Store.Graphs)
+                    foreach (IGraph g in context.Store.Graphs)
                     {
                         context.Add(g.BaseUri);
                     }
@@ -133,7 +133,7 @@ namespace VDS.RDF.Writing
                     {
                         var outputException =
                             new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
-                        foreach (var innerException in ex.InnerExceptions)
+                        foreach (Exception innerException in ex.InnerExceptions)
                         {
                             outputException.AddException(innerException);
                         }
@@ -145,10 +145,10 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    foreach (var g in context.Store.Graphs)
+                    foreach (IGraph g in context.Store.Graphs)
                     {
                         var graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(Syntax));
-                        foreach (var t in g.Triples)
+                        foreach (Triple t in g.Triples)
                         {
                             context.Output.WriteLine(TripleToNQuads(graphContext, t, g.BaseUri));
                         }
@@ -183,7 +183,7 @@ namespace VDS.RDF.Writing
             {
                 context.Output.WriteLine("# Graph: " + context.Graph.BaseUri.AbsoluteUri);
             }
-            foreach (var t in context.Graph.Triples)
+            foreach (Triple t in context.Graph.Triples)
             {
                 context.Output.WriteLine(TripleToNQuads(context, t, context.Graph.BaseUri));
             }
@@ -256,15 +256,15 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                while (globalContext.TryGetNextUri(out var u))
+                while (globalContext.TryGetNextUri(out Uri u))
                 {
                     // Get the Graph from the Store
-                    var g = globalContext.Store.Graphs[u];
+                    IGraph g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
                     var context = new NTriplesWriterContext(g, new System.IO.StringWriter(), NQuadsParser.AsNTriplesSyntax(Syntax), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     var graphContent = GraphToNQuads(globalContext, context);
-                    if (!graphContent.Equals(String.Empty))
+                    if (!graphContent.Equals(string.Empty))
                     {
                         try
                         {

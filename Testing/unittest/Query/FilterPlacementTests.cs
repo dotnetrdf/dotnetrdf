@@ -39,17 +39,17 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlFilterOptionalNotBound()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            SparqlParameterizedString query = new SparqlParameterizedString();
+            var query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
             query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
             query.CommandText = "SELECT * WHERE { ?property a rdf:Property . OPTIONAL { ?property rdfs:range ?range } FILTER (!BOUND(?range)) }";
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
-            SparqlResultSet results = g.ExecuteQuery(q) as SparqlResultSet;
+            var results = g.ExecuteQuery(q) as SparqlResultSet;
             if (results != null)
             {
                 TestTools.ShowResults(results);

@@ -61,12 +61,12 @@ namespace VDS.RDF.Query.Optimisation
                 }
                 else if (algebra is IUnion)
                 {
-                    IUnion join = (IUnion)algebra;
+                    var join = (IUnion)algebra;
                     temp = new LazyUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
                 }
                 else if (algebra is IJoin)
                 {
-                    IJoin join = (IJoin)algebra;
+                    var join = (IJoin)algebra;
                     if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                     {
                         // If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Optimisation
                 }
                 else if (algebra is Algebra.Graph || algebra is Select || algebra is Slice || algebra is OrderBy)
                 {
-                    IUnaryOperator op = (IUnaryOperator)algebra;
+                    var op = (IUnaryOperator)algebra;
                     temp = op.Transform(this);
                 }
                 else
@@ -162,12 +162,12 @@ namespace VDS.RDF.Query.Optimisation
                 }
                 else if (algebra is IUnion)
                 {
-                    IUnion join = (IUnion)algebra;
+                    var join = (IUnion)algebra;
                     temp = new AskUnion(OptimiseInternal(join.Lhs, depth + 1), OptimiseInternal(join.Rhs, depth + 1));
                 }
                 else if (algebra is IJoin)
                 {
-                    IJoin join = (IJoin)algebra;
+                    var join = (IJoin)algebra;
                     if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                     {
                         // If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     // Algebra.Graph g = (Algebra.Graph)algebra;
                     // temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
-                    IUnaryOperator op = (IUnaryOperator)algebra;
+                    var op = (IUnaryOperator)algebra;
                     temp = op.Transform(this);
                 }
                 else

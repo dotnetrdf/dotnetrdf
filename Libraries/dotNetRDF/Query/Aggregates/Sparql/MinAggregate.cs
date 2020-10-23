@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class MinAggregate 
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new MIN Aggregate.
@@ -92,8 +92,8 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
             }
 
-            List<IValuedNode> values = new List<IValuedNode>();
-            foreach (int id in bindingIDs)
+            var values = new List<IValuedNode>();
+            foreach (var id in bindingIDs)
             {
                 try
                 {
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("MIN(");
             if (_distinct) output.Append("DISTINCT ");
             output.Append(_expr.ToString() + ")");

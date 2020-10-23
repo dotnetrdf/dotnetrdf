@@ -24,17 +24,17 @@
 // </copyright>
 */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Patterns;
+using VDS.RDF.Shacl.Paths;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Query;
-    using VDS.RDF.Query.Builder;
-    using VDS.RDF.Query.Patterns;
-    using VDS.RDF.Shacl.Paths;
-
     /// <summary>
     /// Represents a SHACL property path.
     /// </summary>
@@ -66,7 +66,7 @@ namespace VDS.RDF.Shacl
                 return new Sequence(value);
             }
 
-            var predicate = value.Graph.GetTriplesWithSubject(value).Single().Predicate;
+            INode predicate = value.Graph.GetTriplesWithSubject(value).Single().Predicate;
 
             switch (predicate)
             {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Shacl
         internal IEnumerable<INode> SelectValueNodes(INode focusNode)
         {
             const string value = "value";
-            var query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), this.SparqlPath, new VariablePattern(value))).BuildQuery();
+            SparqlQuery query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), SparqlPath, new VariablePattern(value))).BuildQuery();
             var results = focusNode.Graph.ExecuteQuery(query);
 
             return ((SparqlResultSet)results).Select(result => result[value]);

@@ -108,32 +108,32 @@ namespace VDS.RDF.Storage
         public VirtuosoManager(String server, int port, String db, String user, String password, int timeout)
         {
             //Set the Connection Properties
-            this._dbserver = server;
-            this._dbname = db;
-            this._dbuser = user;
-            this._dbpwd = password;
-            this._dbport = port;
-            this._timeout = timeout;
+            _dbserver = server;
+            _dbname = db;
+            _dbuser = user;
+            _dbpwd = password;
+            _dbport = port;
+            _timeout = timeout;
 
-            StringBuilder connString = new StringBuilder();
+            var connString = new StringBuilder();
             connString.Append("Server=");
-            connString.Append(this._dbserver);
+            connString.Append(_dbserver);
             connString.Append(":");
-            connString.Append(this._dbport);
+            connString.Append(_dbport);
             connString.Append(";Database=");
-            connString.Append(this._dbname);
+            connString.Append(_dbname);
             connString.Append(";uid=");
-            connString.Append(this._dbuser);
+            connString.Append(_dbuser);
             connString.Append(";pwd=");
-            connString.Append(this._dbpwd);
+            connString.Append(_dbpwd);
             connString.Append(";Charset=utf-8");
-            if (this._timeout > 0)
+            if (_timeout > 0)
             {
-                connString.Append(";Connection Timeout=" + this._timeout);
+                connString.Append(";Connection Timeout=" + _timeout);
             }
 
             //Create the Connection Object
-            this._db = new VirtuosoConnection(connString.ToString());
+            _db = new VirtuosoConnection(connString.ToString());
         }
 
         /// <summary>
@@ -187,8 +187,8 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public VirtuosoManager(String connectionString)
         {
-            this._db = new VirtuosoConnection(connectionString);
-            this._customConnString = true;
+            _db = new VirtuosoConnection(connectionString);
+            _customConnString = true;
         }
 
         #endregion
@@ -206,7 +206,7 @@ namespace VDS.RDF.Storage
             {
                 g.BaseUri = graphUri;
             }
-            this.LoadGraph(new GraphHandler(g), graphUri);
+            LoadGraph(new GraphHandler(g), graphUri);
         }
 
         /// <summary>
@@ -224,9 +224,9 @@ namespace VDS.RDF.Storage
 
                 //Need to keep Database Open as Literals require extra trips to the Database to get additional
                 //information about Language and Type
-                this.Open(false);
+                Open(false);
 
-                DataTable data = this.LoadTriples(graphUri);
+                DataTable data = LoadTriples(graphUri);
 
                 foreach (DataRow row in data.Rows)
                 {
@@ -239,25 +239,25 @@ namespace VDS.RDF.Storage
                     o = row["O"];
 
                     //Create Nodes
-                    subj = this.LoadNode(handler, s);
-                    pred = this.LoadNode(handler, p);
-                    obj = this.LoadNode(handler, o);
+                    subj = LoadNode(handler, s);
+                    pred = LoadNode(handler, p);
+                    obj = LoadNode(handler, o);
 
                     //Assert Triple
                     if (!handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                 }
                 handler.EndRdf(true);
-                this.Close(false);
+                Close(false);
             }
             catch (RdfParsingTerminatedException)
             {
                 handler.EndRdf(true);
-                this.Close(false);
+                Close(false);
             }
             catch
             {
                 handler.EndRdf(false);
-                this.Close(true);
+                Close(true);
                 throw;
             }
         }
@@ -271,11 +271,11 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(g, (Uri) null);
+                LoadGraph(g, (Uri) null);
             }
             else
             {
-                this.LoadGraph(g, UriFactory.Create(graphUri));
+                LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -288,11 +288,11 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                this.LoadGraph(handler, (Uri) null);
+                LoadGraph(handler, (Uri) null);
             }
             else
             {
-                this.LoadGraph(handler, UriFactory.Create(graphUri));
+                LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -306,22 +306,22 @@ namespace VDS.RDF.Storage
         /// </remarks>
         private DataTable LoadTriples(Uri graphUri)
         {
-            DataTable dt = new DataTable();
+            var dt = new DataTable();
             String getTriples;
             if (graphUri != null)
             {
-                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + this.UnmarshalUri(graphUri) + "> WHERE {?s ?p ?o}";
+                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + UnmarshalUri(graphUri) + "> WHERE {?s ?p ?o}";
             }
             else
             {
                 getTriples = "SPARQL define output:format '_JAVA_' SELECT * WHERE {?s ?p ?o}";
             }
 
-            VirtuosoCommand cmd = this._db.CreateCommand();
-            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+            VirtuosoCommand cmd = _db.CreateCommand();
+            cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
             cmd.CommandText = getTriples;
 
-            VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+            var adapter = new VirtuosoDataAdapter(cmd);
 
             dt.Columns.Add("S", typeof (System.Object));
             dt.Columns.Add("P", typeof (System.Object));
@@ -342,7 +342,7 @@ namespace VDS.RDF.Storage
             INode temp;
             if (n is SqlExtendedString)
             {
-                SqlExtendedString iri = (SqlExtendedString) n;
+                var iri = (SqlExtendedString) n;
                 if (iri.IriType == SqlExtendedStringType.BNODE)
                 {
                     //Blank Node
@@ -356,7 +356,7 @@ namespace VDS.RDF.Storage
                 else if (iri.IriType == SqlExtendedStringType.IRI)
                 {
                     //Uri
-                    Uri u = this.MarshalUri(n.ToString());
+                    Uri u = MarshalUri(n.ToString());
                     temp = factory.CreateUriNode(u);
                 }
                 else
@@ -367,7 +367,7 @@ namespace VDS.RDF.Storage
             }
             else if (n is SqlRdfBox)
             {
-                SqlRdfBox lit = (SqlRdfBox) n;
+                var lit = (SqlRdfBox) n;
                 if (lit.StrLang != null)
                 {
                     //Language Specified Literal
@@ -376,7 +376,7 @@ namespace VDS.RDF.Storage
                 else if (lit.StrType != null)
                 {
                     //Data Typed Literal
-                    temp = factory.CreateLiteralNode(n.ToString(), this.MarshalUri(lit.StrType));
+                    temp = factory.CreateLiteralNode(n.ToString(), MarshalUri(lit.StrType));
                 }
                 else
                 {
@@ -386,7 +386,7 @@ namespace VDS.RDF.Storage
             }
             else if (n is String)
             {
-                String s = n.ToString();
+                var s = n.ToString();
                 if (s.StartsWith("nodeID://"))
                 {
                     //Blank Node
@@ -438,15 +438,15 @@ namespace VDS.RDF.Storage
             else if (n is VirtuosoDateTime)
             {
                 //New type in Virtuoso 7
-                VirtuosoDateTime vDateTime = (VirtuosoDateTime)n;
-                DateTime dateTime = new DateTime(vDateTime.Year, vDateTime.Month, vDateTime.Day, vDateTime.Hour, vDateTime.Minute, vDateTime.Second, vDateTime.Millisecond, vDateTime.Kind);
+                var vDateTime = (VirtuosoDateTime)n;
+                var dateTime = new DateTime(vDateTime.Year, vDateTime.Month, vDateTime.Day, vDateTime.Hour, vDateTime.Minute, vDateTime.Second, vDateTime.Millisecond, vDateTime.Kind);
                 return dateTime.ToLiteral(factory);
             }
             else if (n is VirtuosoDateTimeOffset)
             {
                 //New type in Virtuoso 7
-                VirtuosoDateTimeOffset vDateTimeOffset = (VirtuosoDateTimeOffset)n;
-                DateTimeOffset dateTimeOffset = new DateTimeOffset(vDateTimeOffset.Year, vDateTimeOffset.Month, vDateTimeOffset.Day, vDateTimeOffset.Hour, vDateTimeOffset.Minute, vDateTimeOffset.Second, vDateTimeOffset.Millisecond, vDateTimeOffset.Offset);
+                var vDateTimeOffset = (VirtuosoDateTimeOffset)n;
+                var dateTimeOffset = new DateTimeOffset(vDateTimeOffset.Year, vDateTimeOffset.Month, vDateTimeOffset.Day, vDateTimeOffset.Hour, vDateTimeOffset.Minute, vDateTimeOffset.Second, vDateTimeOffset.Millisecond, vDateTimeOffset.Offset);
                 return dateTimeOffset.ToLiteral(factory);
             }
             else
@@ -458,7 +458,7 @@ namespace VDS.RDF.Storage
 
         private Uri MarshalUri(String uriData)
         {
-            Uri u = new Uri(uriData, UriKind.RelativeOrAbsolute);
+            var u = new Uri(uriData, UriKind.RelativeOrAbsolute);
             if (!u.IsAbsoluteUri)
             {
                 // As of VIRT-375 we marshal this to a form we can round trip later rather than erroring as we did previously
@@ -500,30 +500,30 @@ namespace VDS.RDF.Storage
 
             try
             {
-                this.Open(false);
+                Open(false);
 
                 //Delete the existing Graph (if it exists)
-                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + this.UnmarshalUri(g.BaseUri) + "')");
+                ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + UnmarshalUri(g.BaseUri) + "')");
 
                 //Make a call to the TTLP() Virtuoso function
-                VirtuosoCommand cmd = new VirtuosoCommand();
-                cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                var cmd = new VirtuosoCommand();
+                cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                 cmd.Parameters.Add("data", VirtDbType.VarChar);
                 cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
-                String baseUri = this.UnmarshalUri(g.BaseUri);
+                var baseUri = UnmarshalUri(g.BaseUri);
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
                 cmd.Parameters.Add("graph", VirtDbType.VarChar);
                 cmd.Parameters["base"].Value = baseUri;
                 cmd.Parameters["graph"].Value = baseUri;
-                cmd.Connection = this._db;
-                int result = cmd.ExecuteNonQuery();
+                cmd.Connection = _db;
+                var result = cmd.ExecuteNonQuery();
 
-                this.Close(false);
+                Close(false);
             }
             catch
             {
-                this.Close(true);
+                Close(true);
                 throw;
             }
         }
@@ -557,7 +557,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                this.Open(true);
+                Open(true);
                 int r;
 
                 //Build the Delete Data Command
@@ -570,9 +570,9 @@ namespace VDS.RDF.Storage
                         //We use the VirtuosoFormatter as our formatter which formats Blank Nodes as calls to the
                         //bif:rdf_make_iid_of_qname('nodeID://bnode') function which works if the blank node originates from Virtuoso
 
-                        VirtuosoCommand deleteCmd = new VirtuosoCommand();
-                        deleteCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : deleteCmd.CommandTimeout);
-                        StringBuilder delete = new StringBuilder();
+                        var deleteCmd = new VirtuosoCommand();
+                        deleteCmd.CommandTimeout = (_timeout > 0 ? _timeout : deleteCmd.CommandTimeout);
+                        var delete = new StringBuilder();
                         if (removals.All(t => t.IsGroundTriple))
                         {
                             delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE DATA");
@@ -585,7 +585,7 @@ namespace VDS.RDF.Storage
                         }
                         if (graphUri != null)
                         {
-                            delete.AppendLine(" FROM <" + this.UnmarshalUri(graphUri) + ">");
+                            delete.AppendLine(" FROM <" + UnmarshalUri(graphUri) + ">");
                         }
                         else
                         {
@@ -594,7 +594,7 @@ namespace VDS.RDF.Storage
                         delete.AppendLine("{");
                         foreach (Triple t in removals)
                         {
-                            delete.AppendLine(t.ToString(this._formatter));
+                            delete.AppendLine(t.ToString(_formatter));
                         }
                         delete.AppendLine("}");
 
@@ -607,8 +607,8 @@ namespace VDS.RDF.Storage
 
                         //Run the Delete
                         deleteCmd.CommandText = delete.ToString();
-                        deleteCmd.Connection = this._db;
-                        deleteCmd.Transaction = this._dbtrans;
+                        deleteCmd.Connection = _db;
+                        deleteCmd.Transaction = _dbtrans;
 
                         r = deleteCmd.ExecuteNonQuery();
                         if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when deleting Triples");
@@ -622,13 +622,13 @@ namespace VDS.RDF.Storage
                     {
                         if (additions.All(t => t.IsGroundTriple))
                         {
-                            VirtuosoCommand insertCmd = new VirtuosoCommand();
-                            insertCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : insertCmd.CommandTimeout);
-                            StringBuilder insert = new StringBuilder();
+                            var insertCmd = new VirtuosoCommand();
+                            insertCmd.CommandTimeout = (_timeout > 0 ? _timeout : insertCmd.CommandTimeout);
+                            var insert = new StringBuilder();
                             insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
                             if (graphUri != null)
                             {
-                                insert.AppendLine(" INTO <" + this.UnmarshalUri(graphUri) + ">");
+                                insert.AppendLine(" INTO <" + UnmarshalUri(graphUri) + ">");
                             }
                             else
                             {
@@ -637,12 +637,12 @@ namespace VDS.RDF.Storage
                             insert.AppendLine("{");
                             foreach (Triple t in additions)
                             {
-                                insert.AppendLine(t.ToString(this._formatter));
+                                insert.AppendLine(t.ToString(_formatter));
                             }
                             insert.AppendLine("}");
                             insertCmd.CommandText = insert.ToString();
-                            insertCmd.Connection = this._db;
-                            insertCmd.Transaction = this._dbtrans;
+                            insertCmd.Connection = _db;
+                            insertCmd.Transaction = _dbtrans;
 
                             r = insertCmd.ExecuteNonQuery();
                             if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when inserting Triples");
@@ -651,30 +651,30 @@ namespace VDS.RDF.Storage
                         {
                             //When data to be inserted contains Blank Nodes we must make a call to the TTLP() Virtuoso function
                             //instead of using INSERT DATA
-                            Graph g = new Graph();
+                            var g = new Graph();
                             g.Assert(additions);
-                            VirtuosoCommand cmd = new VirtuosoCommand();
-                            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                            var cmd = new VirtuosoCommand();
+                            cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
                             cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                             cmd.Parameters.Add("data", VirtDbType.VarChar);
                             cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
-                            String baseUri = this.UnmarshalUri(graphUri);
+                            var baseUri = UnmarshalUri(graphUri);
                             if (String.IsNullOrEmpty(baseUri)) throw new RdfStorageException("Cannot updated an unnamed Graph in Virtuoso using this method - you must specify the URI of a Graph to Update");
                             cmd.Parameters.Add("base", VirtDbType.VarChar);
                             cmd.Parameters.Add("graph", VirtDbType.VarChar);
                             cmd.Parameters["base"].Value = baseUri;
                             cmd.Parameters["graph"].Value = baseUri;
-                            cmd.Connection = this._db;
-                            int result = cmd.ExecuteNonQuery();
+                            cmd.Connection = _db;
+                            var result = cmd.ExecuteNonQuery();
                         }
                     }
                 }
 
-                this.Close(false);
+                Close(false);
             }
             catch
             {
-                this.Close(true, true);
+                Close(true, true);
                 throw;
             }
         }
@@ -688,7 +688,7 @@ namespace VDS.RDF.Storage
         public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             Uri u = (graphUri.Equals(String.Empty)) ? null : UriFactory.Create(graphUri);
-            this.UpdateGraph(u, additions, removals);
+            UpdateGraph(u, additions, removals);
         }
 
         /// <summary>
@@ -738,9 +738,9 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query.</exception>
         public Object Query(String sparqlQuery)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
-            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+            var g = new Graph();
+            var results = new SparqlResultSet();
+            Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
             {
@@ -773,7 +773,7 @@ namespace VDS.RDF.Storage
             {
                 if (resultsHandler != null) resultsHandler.StartResults();
 
-                DataTable results = new DataTable();
+                var results = new DataTable();
                 results.Columns.CollectionChanged += Columns_CollectionChanged;
 
                 //See if the query can be parsed into a SparqlQuery object
@@ -785,7 +785,7 @@ namespace VDS.RDF.Storage
                     //handle the potential results in the catch branch if a valid SPARQL 1.0 query
                     //cannot be parsed
                     //Change made in response to a bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
-                    SparqlQueryParser parser = new SparqlQueryParser();
+                    var parser = new SparqlQueryParser();
                     parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
                     SparqlQuery query;
                     try
@@ -822,13 +822,13 @@ namespace VDS.RDF.Storage
                     {
                         #region Valid SPARQL Query Handling
 
-                        this.Open(false);
+                        Open(false);
 
                         //Make the Query against Virtuoso
-                        VirtuosoCommand cmd = this._db.CreateCommand();
-                        cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                        VirtuosoCommand cmd = _db.CreateCommand();
+                        cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
                         cmd.CommandText = "SPARQL " + sparqlQuery;
-                        VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+                        var adapter = new VirtuosoDataAdapter(cmd);
                         adapter.Fill(results);
 
                         //Decide how to process the results based on the return type
@@ -879,8 +879,8 @@ namespace VDS.RDF.Storage
                                     try
                                     {
                                         //Use StringParser to parse
-                                        String data = results.Rows[0][0].ToString();
-                                        TurtleParser ttlparser = new TurtleParser();
+                                        var data = results.Rows[0][0].ToString();
+                                        var ttlparser = new TurtleParser();
                                         ttlparser.Load(rdfHandler, new StringReader(data));
                                     }
                                     catch (RdfParseException parseEx)
@@ -895,9 +895,9 @@ namespace VDS.RDF.Storage
                                     {
                                         foreach (DataRow row in results.Rows)
                                         {
-                                            INode s = this.LoadNode(rdfHandler, row[0]);
-                                            INode p = this.LoadNode(rdfHandler, row[1]);
-                                            INode o = this.LoadNode(rdfHandler, row[2]);
+                                            INode s = LoadNode(rdfHandler, row[0]);
+                                            INode p = LoadNode(rdfHandler, row[1]);
+                                            INode o = LoadNode(rdfHandler, row[2]);
                                             if (!rdfHandler.HandleTriple(new Triple(s, p, o))) break;
                                         }
                                         rdfHandler.EndRdf(true);
@@ -924,22 +924,22 @@ namespace VDS.RDF.Storage
                                 if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL Results with a null Results Handler");
 
                                 //Get Result Variables
-                                List<SparqlVariable> resultVars = query.Variables.Where(v => v.IsResultVariable).ToList();
+                                var resultVars = query.Variables.Where(v => v.IsResultVariable).ToList();
                                 foreach (SparqlVariable var in resultVars)
                                 {
                                     if (!resultsHandler.HandleVariable(var.Name)) ParserHelper.Stop();
                                 }
-                                Graph temp = new Graph();
+                                var temp = new Graph();
 
                                 //Convert each solution into a SPARQLResult
                                 foreach (DataRow r in results.Rows)
                                 {
-                                    Set s = new Set();
+                                    var s = new Set();
                                     foreach (SparqlVariable var in resultVars)
                                     {
                                         if (r[var.Name] != null)
                                         {
-                                            s.Add(var.Name, this.LoadNode(temp, r[var.Name]));
+                                            s.Add(var.Name, LoadNode(temp, r[var.Name]));
                                         }
                                     }
                                     if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
@@ -950,7 +950,7 @@ namespace VDS.RDF.Storage
                                 throw new RdfQueryException("Unable to process the Results of an Unknown query type");
                         }
 
-                        this.Close(false);
+                        Close(false);
 
                         #endregion
                     }
@@ -969,13 +969,13 @@ namespace VDS.RDF.Storage
                     {
                         #region Potentially Invalid SPARQL Query Handling
 
-                        this.Open(false);
+                        Open(false);
 
                         //Make the Query against Virtuoso
-                        VirtuosoCommand cmd = this._db.CreateCommand();
-                        cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                        VirtuosoCommand cmd = _db.CreateCommand();
+                        cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
                         cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/+ sparqlQuery;
-                        VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+                        var adapter = new VirtuosoDataAdapter(cmd);
                         adapter.Fill(results);
 
                         //Try to detect the return type based on the DataTable configuration
@@ -993,9 +993,9 @@ namespace VDS.RDF.Storage
                             {
                                 foreach (DataRow row in results.Rows)
                                 {
-                                    INode s = this.LoadNode(rdfHandler, row[0]);
-                                    INode p = this.LoadNode(rdfHandler, row[1]);
-                                    INode o = this.LoadNode(rdfHandler, row[2]);
+                                    INode s = LoadNode(rdfHandler, row[0]);
+                                    INode p = LoadNode(rdfHandler, row[1]);
+                                    INode o = LoadNode(rdfHandler, row[2]);
                                     if (!rdfHandler.HandleTriple(new Triple(s, p, o))) break;
                                 }
                                 rdfHandler.EndRdf(true);
@@ -1043,7 +1043,7 @@ namespace VDS.RDF.Storage
 
                                 //Parseable Integer so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                                Set s = new Set();
+                                var s = new Set();
                                 s.Add("Result", r.ToLiteral(resultsHandler));
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
@@ -1053,7 +1053,7 @@ namespace VDS.RDF.Storage
 
                                 //Parseable Single so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                                Set s = new Set();
+                                var s = new Set();
                                 s.Add("Result", rflt.ToLiteral(resultsHandler));
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
@@ -1063,7 +1063,7 @@ namespace VDS.RDF.Storage
 
                                 //Parseable Double so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                                Set s = new Set();
+                                var s = new Set();
                                 s.Add("Result", rdbl.ToLiteral(resultsHandler));
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
@@ -1073,7 +1073,7 @@ namespace VDS.RDF.Storage
 
                                 //Parseable Decimal so Aggregate SELECT Query Results
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
-                                Set s = new Set();
+                                var s = new Set();
                                 s.Add("Result", rdec.ToLiteral(resultsHandler));
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
@@ -1083,8 +1083,8 @@ namespace VDS.RDF.Storage
                                 try
                                 {
                                     //Use StringParser to parse
-                                    String data = results.Rows[0][0].ToString();
-                                    TurtleParser ttlparser = new TurtleParser();
+                                    var data = results.Rows[0][0].ToString();
+                                    var ttlparser = new TurtleParser();
                                     ttlparser.Load(rdfHandler, new StringReader(data));
                                 }
                                 catch (RdfParseException)
@@ -1094,8 +1094,8 @@ namespace VDS.RDF.Storage
                                     //If it failed to parse then it might be the result of one of the aggregate
                                     //functions that Virtuoso extends Sparql with
                                     if (!resultsHandler.HandleVariable(results.Columns[0].ColumnName)) ParserHelper.Stop();
-                                    Set s = new Set();
-                                    s.Add(results.Columns[0].ColumnName, this.LoadNode(resultsHandler, results.Rows[0][0]));
+                                    var s = new Set();
+                                    s.Add(results.Columns[0].ColumnName, LoadNode(resultsHandler, results.Rows[0][0]));
                                     //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
                                     if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                                 }
@@ -1109,7 +1109,7 @@ namespace VDS.RDF.Storage
                             if (resultsHandler == null) throw new ArgumentNullException("resultsHandler", "Cannot handle SPARQL results with a null Results Handler");
 
                             //Get Result Variables
-                            List<String> vars = new List<string>();
+                            var vars = new List<string>();
                             foreach (DataColumn col in results.Columns)
                             {
                                 vars.Add(col.ColumnName);
@@ -1119,41 +1119,41 @@ namespace VDS.RDF.Storage
                             //Convert each solution into a SPARQLResult
                             foreach (DataRow r in results.Rows)
                             {
-                                Set s = new Set();
-                                foreach (String var in vars)
+                                var s = new Set();
+                                foreach (var var in vars)
                                 {
                                     if (r[var] != null)
                                     {
-                                        s.Add(var, this.LoadNode(resultsHandler, r[var]));
+                                        s.Add(var, LoadNode(resultsHandler, r[var]));
                                     }
                                 }
                                 if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                             }
                         }
-                        this.Close(false);
+                        Close(false);
 
                         #endregion
                     }
                     catch
                     {
-                        this.Close(true, true);
+                        Close(true, true);
                         throw;
                     }
                 }
 
                 if (resultsHandler != null) resultsHandler.EndResults(true);
-                this.Close(false);
+                Close(false);
             }
             catch (RdfParsingTerminatedException)
             {
                 if (resultsHandler != null) resultsHandler.EndResults(true);
-                this.Close(false);
+                Close(false);
             }
             catch
             {
-                this.Close(true);
+                Close(true);
                 if (resultsHandler != null) resultsHandler.EndResults(false);
-                this.Close(false);
+                Close(false);
                 throw;
             }
         }
@@ -1162,7 +1162,7 @@ namespace VDS.RDF.Storage
         {
             Type reqType = typeof (Object);
             if (e.Action != System.ComponentModel.CollectionChangeAction.Add) return;
-            DataColumn column = (DataColumn) e.Element;
+            var column = (DataColumn) e.Element;
             if (!column.DataType.Equals(reqType))
             {
                 column.DataType = reqType;
@@ -1186,51 +1186,51 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                this.Open(true);
+                Open(true);
 
                 //Try and parse the SPARQL Update String
-                SparqlUpdateParser parser = new SparqlUpdateParser();
+                var parser = new SparqlUpdateParser();
                 SparqlUpdateCommandSet commands = parser.ParseFromString(sparqlUpdate);
 
                 //Process each Command individually
                 foreach (SparqlUpdateCommand command in commands.Commands)
                 {
                     //Make the Update against Virtuoso
-                    VirtuosoCommand cmd = this._db.CreateCommand();
-                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                    VirtuosoCommand cmd = _db.CreateCommand();
+                    cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
                     cmd.CommandText = "SPARQL " + command.ToString();
                     cmd.ExecuteNonQuery();
                 }
 
-                this.Close(true);
+                Close(true);
             }
             catch (RdfParseException)
             {
                 try
                 {
                     //Ignore failed parsing and attempt to execute anyway
-                    VirtuosoCommand cmd = this._db.CreateCommand();
-                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                    VirtuosoCommand cmd = _db.CreateCommand();
+                    cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
                     cmd.CommandText = "SPARQL " + sparqlUpdate;
 
                     cmd.ExecuteNonQuery();
-                    this.Close(true);
+                    Close(true);
                 }
                 catch (Exception ex)
                 {
-                    this.Close(true, true);
+                    Close(true, true);
                     throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso historically has primarily supported SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands may not be supported by Virtuoso", ex);
                 }
             }
             catch (SparqlUpdateException)
             {
-                this.Close(true, true);
+                Close(true, true);
                 throw;
             }
             catch (Exception ex)
             {
                 //Wrap in a SPARQL Update Exception
-                this.Close(true, true);
+                Close(true, true);
                 throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso historically has primarily supported SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands may not be supported by Virtuoso if you are not using a recent version.", ex);
             }
         }
@@ -1243,7 +1243,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete.</param>
         public override void DeleteGraph(Uri graphUri)
         {
-            this.DeleteGraph(this.UnmarshalUri(graphUri));
+            DeleteGraph(UnmarshalUri(graphUri));
         }
 
         /// <summary>
@@ -1257,13 +1257,13 @@ namespace VDS.RDF.Storage
 
             try
             {
-                this.Open(false);
-                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + graphUri + "')");
-                this.Close(false);
+                Open(false);
+                ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + graphUri + "')");
+                Close(false);
             }
             catch
             {
-                this.Close(true, true);
+                Close(true, true);
                 throw;
             }
         }
@@ -1284,10 +1284,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
-                    List<Uri> graphs = new List<Uri>();
+                    var graphs = new List<Uri>();
                     foreach (SparqlResult r in ((SparqlResultSet) results))
                     {
                         if (r.HasValue("g"))
@@ -1341,7 +1341,7 @@ namespace VDS.RDF.Storage
         /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started.</param>
         private void Open(bool keepOpen)
         {
-            this.Open(keepOpen, IsolationLevel.ReadCommitted);
+            Open(keepOpen, IsolationLevel.ReadCommitted);
         }
 
         /// <summary>
@@ -1351,20 +1351,20 @@ namespace VDS.RDF.Storage
         /// <param name="level">Isolation Level to use.</param>
         private void Open(bool keepOpen, IsolationLevel level)
         {
-            switch (this._db.State)
+            switch (_db.State)
             {
                 case ConnectionState.Broken:
                 case ConnectionState.Closed:
-                    this._db.Open();
+                    _db.Open();
 
                     //Start a Transaction
-                    if (this._dbtrans == null)
+                    if (_dbtrans == null)
                     {
-                        this._dbtrans = this._db.BeginTransaction(level);
+                        _dbtrans = _db.BeginTransaction(level);
                     }
                     break;
             }
-            if (keepOpen) this._keepOpen = true;
+            if (keepOpen) _keepOpen = true;
         }
 
         /// <summary>
@@ -1373,7 +1373,7 @@ namespace VDS.RDF.Storage
         /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened.</param>
         private void Close(bool forceClose)
         {
-            this.Close(forceClose, false);
+            Close(forceClose, false);
         }
 
         /// <summary>
@@ -1384,33 +1384,33 @@ namespace VDS.RDF.Storage
         private void Close(bool forceClose, bool rollbackTrans)
         {
             //Don't close if we're keeping open and not forcing Close or rolling back a Transaction
-            if (this._keepOpen && !forceClose && !rollbackTrans)
+            if (_keepOpen && !forceClose && !rollbackTrans)
             {
                 return;
             }
 
-            switch (this._db.State)
+            switch (_db.State)
             {
                 case ConnectionState.Open:
                     //Finish the Transaction if exists
-                    if (this._dbtrans != null)
+                    if (_dbtrans != null)
                     {
                         if (!rollbackTrans)
                         {
                             //Commit normally
-                            this._dbtrans.Commit();
+                            _dbtrans.Commit();
                         }
                         else
                         {
                             //Want to Rollback
-                            this._dbtrans.Rollback();
+                            _dbtrans.Rollback();
                         }
-                        this._dbtrans = null;
+                        _dbtrans = null;
 
-                        this._db.Close();
+                        _db.Close();
                     }
 
-                    this._keepOpen = false;
+                    _keepOpen = false;
                     break;
             }
         }
@@ -1422,12 +1422,12 @@ namespace VDS.RDF.Storage
         private void ExecuteNonQuery(string sqlCmd)
         {
             //Create the SQL Command
-            VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
-            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
-            if (this._dbtrans != null)
+            var cmd = new VirtuosoCommand(sqlCmd, _db);
+            cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
+            if (_dbtrans != null)
             {
                 //Add to the Transaction if required
-                cmd.Transaction = this._dbtrans;
+                cmd.Transaction = _dbtrans;
             }
 
             //Execute
@@ -1442,17 +1442,17 @@ namespace VDS.RDF.Storage
         private DataTable ExecuteQuery(string sqlCmd)
         {
             //Create the SQL Command
-            VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
-            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
-            if (this._dbtrans != null)
+            var cmd = new VirtuosoCommand(sqlCmd, _db);
+            cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
+            if (_dbtrans != null)
             {
                 //Add to the Transaction if required
-                cmd.Transaction = this._dbtrans;
+                cmd.Transaction = _dbtrans;
             }
 
             //Execute the Query
-            VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
-            DataTable results = new DataTable();
+            var adapter = new VirtuosoDataAdapter(cmd);
+            var results = new DataTable();
             adapter.Fill(results);
 
             return results;
@@ -1466,12 +1466,12 @@ namespace VDS.RDF.Storage
         private object ExecuteScalar(string sqlCmd)
         {
             //Create the SQL Command
-            VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
-            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
-            if (this._dbtrans != null)
+            var cmd = new VirtuosoCommand(sqlCmd, _db);
+            cmd.CommandTimeout = (_timeout > 0 ? _timeout : cmd.CommandTimeout);
+            if (_dbtrans != null)
             {
                 //Add to the Transaction if required
-                cmd.Transaction = this._dbtrans;
+                cmd.Transaction = _dbtrans;
             }
 
             //Execute the Scalar
@@ -1483,7 +1483,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public bool HasOpenConnection
         {
-            get { return this._db.State != ConnectionState.Broken && this._db.State != ConnectionState.Closed; }
+            get { return _db.State != ConnectionState.Broken && _db.State != ConnectionState.Closed; }
         }
 
         /// <summary>
@@ -1491,7 +1491,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public bool HasActiveTransaction
         {
-            get { return !ReferenceEquals(this._dbtrans, null); }
+            get { return !ReferenceEquals(_dbtrans, null); }
         }
 
         #endregion
@@ -1503,7 +1503,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public override void Dispose()
         {
-            this.Close(true, false);
+            Close(true, false);
         }
 
         #endregion
@@ -1514,11 +1514,11 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._customConnString)
+            if (_customConnString)
             {
                 return "[Virtuoso] Custom Connection String";
             }
-            return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
+            return "[Virtuoso] " + _dbserver + ":" + _dbport;
         }
 
         /// <summary>
@@ -1527,7 +1527,7 @@ namespace VDS.RDF.Storage
         /// <param name="context">Configuration Serialization Context.</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            if (this._customConnString)
+            if (_customConnString)
             {
                 throw new DotNetRdfConfigurationException("Cannot serialize the configuration of a VirtuosoManager which was created with a custom connection string");
             }
@@ -1544,31 +1544,31 @@ namespace VDS.RDF.Storage
             INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
-            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Data.Virtuoso")));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._dbserver)));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Data.Virtuoso")));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_dbserver)));
 
-            if (this._dbport != DefaultPort)
+            if (_dbport != DefaultPort)
             {
                 INode port = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPort));
-                context.Graph.Assert(new Triple(manager, port, this._dbport.ToLiteral(context.Graph)));
+                context.Graph.Assert(new Triple(manager, port, _dbport.ToLiteral(context.Graph)));
             }
-            if (!this._dbname.Equals(DefaultDB))
+            if (!_dbname.Equals(DefaultDB))
             {
                 INode db = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDatabase));
-                context.Graph.Assert(new Triple(manager, db, context.Graph.CreateLiteralNode(this._dbname)));
+                context.Graph.Assert(new Triple(manager, db, context.Graph.CreateLiteralNode(_dbname)));
             }
-            if (this._timeout > 0)
+            if (_timeout > 0)
             {
                 INode timeout = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout));
-                context.Graph.Assert(new Triple(manager, timeout, this._timeout.ToLiteral(context.Graph)));
+                context.Graph.Assert(new Triple(manager, timeout, _timeout.ToLiteral(context.Graph)));
             }
-            if (this._dbuser != null && this._dbpwd != null)
+            if (_dbuser != null && _dbpwd != null)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._dbuser)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._dbpwd)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_dbuser)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_dbpwd)));
             }
         }
     }

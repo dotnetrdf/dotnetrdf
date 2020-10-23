@@ -226,7 +226,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handle to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -373,7 +373,7 @@ namespace VDS.RDF.Parsing
                         try
                         {
                             Uri nsUri = UriFactory.Create(Tools.ResolveUri(ns.Value, context.BaseUri.ToSafeString()));
-                            String nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length - 1) : String.Empty;
+                            var nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length - 1) : string.Empty;
                             context.Namespaces.AddNamespace(nsPrefix, nsUri);
                             if (!context.Handler.HandleNamespace(nsPrefix, nsUri)) ParserHelper.Stop();
                         }
@@ -877,7 +877,7 @@ namespace VDS.RDF.Parsing
         private INode TryParseLiteral(TurtleParserContext context, IToken lit)
         {
             IToken next;
-            String dturi;
+            string dturi;
 
             switch (lit.TokenType)
             {
@@ -919,7 +919,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 case Token.LITERALWITHDT:
-                    LiteralWithDataTypeToken litdt = (LiteralWithDataTypeToken)lit;
+                    var litdt = (LiteralWithDataTypeToken)lit;
                     try
                     {
                         if (litdt.DataType.StartsWith("<"))
@@ -939,7 +939,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 case Token.LITERALWITHLANG:
-                    LiteralWithLanguageSpecifierToken langlit = (LiteralWithLanguageSpecifierToken)lit;
+                    var langlit = (LiteralWithLanguageSpecifierToken)lit;
                     return context.Handler.CreateLiteralNode(langlit.Value, langlit.Language);
 
                 case Token.PLAINLITERAL:
@@ -976,7 +976,7 @@ namespace VDS.RDF.Parsing
         /// Helper method which raises the Warning event if there is an event handler registered.
         /// </summary>
         /// <param name="message"></param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

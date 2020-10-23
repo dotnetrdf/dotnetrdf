@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Contexts
         : IResultsParserContext
     {
         private ISparqlResultsHandler _handler;
-        private List<String> _variables = new List<string>();
+        private List<string> _variables = new List<string>();
         /// <summary>
         /// Controls parser tracing behaviour.
         /// </summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Variables that have been seen.
         /// </summary>
-        public List<String> Variables
+        public List<string> Variables
         {
             get
             {

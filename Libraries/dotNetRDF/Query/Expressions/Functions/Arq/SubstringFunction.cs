@@ -69,30 +69,30 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            ILiteralNode input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
+            var input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
             IValuedNode start = CheckArgument(_start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
             if (_end != null)
             {
                 IValuedNode end = CheckArgument(_end, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
-                if (input.Value.Equals(String.Empty)) return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 try
                 {
-                    int s = Convert.ToInt32(start.AsInteger());
-                    int e = Convert.ToInt32(end.AsInteger());
+                    var s = Convert.ToInt32(start.AsInteger());
+                    var e = Convert.ToInt32(end.AsInteger());
 
                     if (s < 0) s = 0;
                     if (e < s)
                     {
                         // If no/negative characters are being selected the empty string is returned
-                        return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                        return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else if (s > input.Value.Length)
                     {
                         // If the start is after the end of the string the empty string is returned
-                        return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                        return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else
                     {
@@ -115,11 +115,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
             else
             {
-                if (input.Value.Equals(String.Empty)) return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 try
                 {
-                    int s = Convert.ToInt32(start.AsInteger());
+                    var s = Convert.ToInt32(start.AsInteger());
                     if (s < 0) s = 0;
 
                     return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
@@ -143,7 +143,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)temp;
+                    var lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))
@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public String Functor
+        public string Functor
         {
             get
             {

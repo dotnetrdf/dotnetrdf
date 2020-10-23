@@ -66,7 +66,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// Creates a new memory store template.
         /// </summary>
         /// <param name="id">Store ID.</param>
-        public SesameMemTemplate(String id)
+        public SesameMemTemplate(string id)
             : base(id, "Sesame Memory", "A Sesame memory store is stored fully in-memory and may be persisted to/from disk") 
         {
             Persist = true;

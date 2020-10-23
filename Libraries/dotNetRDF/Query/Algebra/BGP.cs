@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (_triplePatterns.Count > 0)
             {
-                for (int i = 0; i < _triplePatterns.Count; i++)
+                for (var i = 0; i < _triplePatterns.Count; i++)
                 {
                     if (i == 0)
                     {
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -193,10 +193,10 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those declared as floating by triple patterns minus those that are declared as fixed by the triple patterns
-                IEnumerable<String> floating = from tp in _triplePatterns
+                IEnumerable<string> floating = from tp in _triplePatterns
                     from v in tp.FloatingVariables
                     select v;
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v)).Distinct();
             }
         }
@@ -222,9 +222,9 @@ namespace VDS.RDF.Query.Algebra
                 case 1:
                     return "BGP(" + _triplePatterns[0].ToString() + ")";
                 default:
-                    StringBuilder builder = new StringBuilder();
+                    var builder = new StringBuilder();
                     builder.Append("BGP(");
-                    for (int i = 0; i < _triplePatterns.Count; i++)
+                    for (var i = 0; i < _triplePatterns.Count; i++)
                     {
                         builder.Append(_triplePatterns[i].ToString());
                         if (i < _triplePatterns.Count - 1) builder.Append(", ");
@@ -254,7 +254,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public virtual GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern();
+            var p = new GraphPattern();
             foreach (ITriplePattern tp in _triplePatterns)
             {
                 p.AddTriplePattern(tp);

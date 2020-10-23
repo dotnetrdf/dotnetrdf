@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <summary>
         /// Gets the variables used in the function.
         /// </summary>
-        IEnumerable<String> Variables
+        IEnumerable<string> Variables
         {
             get;
         }

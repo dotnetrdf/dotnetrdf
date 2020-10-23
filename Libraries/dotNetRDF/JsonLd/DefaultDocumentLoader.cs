@@ -38,6 +38,14 @@ namespace VDS.RDF.JsonLd
     /// </summary>
     public static class DefaultDocumentLoader
     {
+        /// <summary>
+        /// Attempt to retrieve a JSON-LD document following the standard rules for following Link headers.
+        /// </summary>
+        /// <param name="remoteRef">The remote document reference to be resolved.</param>
+        /// <param name="loaderOptions">Options to apply to the loading process.</param>
+        /// <returns>The loaded remote document.</returns>
+        /// <exception cref="JsonLdProcessorException">Raised if the remote reference could not be de-referenced to a processable JSON document.</exception>
+        /// <exception cref="WebException">Raised if an error was encountered when retrieving content from the remote server.</exception>
         public static RemoteDocument LoadJson(Uri remoteRef, JsonLdLoaderOptions loaderOptions)
         {
             var client = new RedirectingWebClient();
@@ -45,7 +53,7 @@ namespace VDS.RDF.JsonLd
 
             var responseString = client.DownloadString(remoteRef);
             var contentType = client.ResponseHeaders.GetValues("Content-Type");
-            bool matchesContentType =
+            var matchesContentType =
                 contentType != null &&
                 contentType.Any(x => x.Contains("application/json") ||
                                      (x.Contains("application/ld+json") &&
@@ -54,12 +62,11 @@ namespace VDS.RDF.JsonLd
                                       !string.IsNullOrEmpty(loaderOptions.RequestProfile) &&
                                       x.Contains(loaderOptions.RequestProfile)) ||
                                      x.Contains("+json"));
-            var documentUrl = client.ResponseUri;
             string contextLink = null;
             if (!matchesContentType)
             {
-                var contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"));
-                var alternateLink = contextLinks.FirstOrDefault(link =>
+                IEnumerable<WebLink> contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"));
+                WebLink alternateLink = contextLinks.FirstOrDefault(link =>
                     link.RelationTypes.Contains("alternate") && link.MediaTypes.Contains("application/ld+json"));
                 if (alternateLink != null)
                 {
@@ -98,7 +105,7 @@ namespace VDS.RDF.JsonLd
         {
             foreach (var linkHeaderValue in linkHeaderValues)
             {
-                if (WebLink.TryParse(linkHeaderValue, out var link)) yield return link;
+                if (WebLink.TryParse(linkHeaderValue, out WebLink link)) yield return link;
             }
         }
 
@@ -108,7 +115,7 @@ namespace VDS.RDF.JsonLd
 
             protected override WebResponse GetWebResponse(WebRequest request)
             {
-                var webResponse = base.GetWebResponse(request);
+                WebResponse webResponse = base.GetWebResponse(request);
                 ResponseUri = webResponse?.ResponseUri;
                 return webResponse;
             }

@@ -365,7 +365,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">QName.</param>
         /// <returns></returns>
-        Uri ResolveQName(String qname);
+        Uri ResolveQName(string qname);
 
         #endregion
 

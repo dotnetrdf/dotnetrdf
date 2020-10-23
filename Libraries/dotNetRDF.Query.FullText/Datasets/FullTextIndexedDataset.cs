@@ -51,15 +51,15 @@ namespace VDS.RDF.Query.Datasets
         public FullTextIndexedDataset(ISparqlDataset dataset, IFullTextIndexer indexer, bool indexNow)
             : base(dataset)
         {
-            this._indexer = indexer;
+            _indexer = indexer;
 
             //Index Now if requested
-            this._indexNow = indexNow;
+            _indexNow = indexNow;
             if (indexNow)
             {
-                foreach (IGraph g in this.Graphs)
+                foreach (IGraph g in Graphs)
                 {
-                    this._indexer.Index(g);
+                    _indexer.Index(g);
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph to add.</param>
         public override bool AddGraph(IGraph g)
         {
-            this._indexer.Index(g);
+            _indexer.Index(g);
             return base.AddGraph(g);
         }
 
@@ -91,9 +91,9 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">URI of the Graph to remove.</param>
         public override bool RemoveGraph(Uri graphUri)
         {
-            if (this.HasGraph(graphUri))
+            if (HasGraph(graphUri))
             {
-                this._indexer.Unindex(this[graphUri]);
+                _indexer.Unindex(this[graphUri]);
             }
             return base.RemoveGraph(graphUri);
         }
@@ -109,8 +109,8 @@ namespace VDS.RDF.Query.Datasets
             //because writing a Graph wrapper for this seems like overkill when
             //there are just events we can hook into
             IGraph g = base.GetModifiableGraph(graphUri);
-            g.TripleAsserted += new TripleEventHandler(this.HandleTripleAdded);
-            g.TripleRetracted += new TripleEventHandler(this.HandleTripleRemoved);
+            g.TripleAsserted += new TripleEventHandler(HandleTripleAdded);
+            g.TripleRetracted += new TripleEventHandler(HandleTripleRemoved);
             return g;
         }
 
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="args">Event Arguments.</param>
         private void HandleTripleAdded(Object sender, TripleEventArgs args)
         {
-            this._indexer.Index(args.Triple);
+            _indexer.Index(args.Triple);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="args">Event Arguments.</param>
         private void HandleTripleRemoved(Object sender, TripleEventArgs args)
         {
-            this._indexer.Unindex(args.Triple);
+            _indexer.Unindex(args.Triple);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Datasets
         public override void Flush()
         {
             //Always flush the index in Flush because triple level index changes don't cause an automatic Flush()
-            this._indexer.Flush();
+            _indexer.Flush();
             base.Flush();
         }
 
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.Datasets
         public override void Discard()
         {
             //Always flush the index in Discard because triple level index changes don't cause an automatic Flush()
-            this._indexer.Flush();
+            _indexer.Flush();
             base.Discard();
         }
 
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="context">Serialization Context.</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            if (this._dataset is IConfigurationSerializable)
+            if (_dataset is IConfigurationSerializable)
             {
                 context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
@@ -171,13 +171,13 @@ namespace VDS.RDF.Query.Datasets
                 base.SerializeConfiguration(context);
 
                 //Then add additional configuration to the serialization
-                if (this._indexer is IConfigurationSerializable)
+                if (_indexer is IConfigurationSerializable)
                 {
                     INode indexer = context.NextSubject;
                     context.NextSubject = indexer;
                     context.Graph.Assert(dataset, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexer)), indexer);
-                    context.Graph.Assert(dataset, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexNow)), this._indexNow.ToLiteral(context.Graph));
-                    ((IConfigurationSerializable)this._indexer).SerializeConfiguration(context);
+                    context.Graph.Assert(dataset, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexNow)), _indexNow.ToLiteral(context.Graph));
+                    ((IConfigurationSerializable)_indexer).SerializeConfiguration(context);
                 }
                 else
                 {

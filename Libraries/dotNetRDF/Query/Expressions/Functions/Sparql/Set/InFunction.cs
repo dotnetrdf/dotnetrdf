@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 
                 // Have to use SPARQL Value Equality here
                 // If any expressions error and nothing in the set matches then an error is thrown
-                bool errors = false;
+                var errors = false;
                 foreach (ISparqlExpression expr in _expressions)
                 {
                     try
@@ -106,12 +106,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
             output.Append(_expr.ToString());
             if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
             output.Append(" IN (");
-            for (int i = 0; i < _expressions.Count; i++)
+            for (var i = 0; i < _expressions.Count; i++)
             {
                 output.Append(_expressions[i].ToString());
                 if (i < _expressions.Count - 1)

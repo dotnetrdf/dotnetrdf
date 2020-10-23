@@ -57,10 +57,10 @@ namespace VDS.RDF.Parsing.Validation
         /// <returns></returns>
         public virtual ISyntaxValidationResults Validate(string data)
         {
-            String message;
+            string message;
             try
             {
-                CountHandler handler = new CountHandler();
+                var handler = new CountHandler();
                 _parser.Load(handler, new StringReader(data));
 
                 message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
@@ -90,7 +90,7 @@ namespace VDS.RDF.Parsing.Validation
     public class RdfStrictSyntaxValidator : RdfSyntaxValidator
     {
         private bool _gotWarning = false;
-        private List<String> _messages = new List<string>();
+        private List<string> _messages = new List<string>();
 
         /// <summary>
         /// Creates a new Strict RDF Syntax Validator.
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing.Validation
             parser.Warning += OnWarning;
         }
 
-        private void OnWarning(String message)
+        private void OnWarning(string message)
         {
             _gotWarning = true;
             _messages.Add(message);
@@ -115,12 +115,12 @@ namespace VDS.RDF.Parsing.Validation
         /// <returns></returns>
         public override ISyntaxValidationResults Validate(string data)
         {
-            String message;
+            string message;
             try
             {
                 _gotWarning = false;
                 _messages.Clear();
-                CountHandler handler = new CountHandler();
+                var handler = new CountHandler();
                 _parser.Load(handler, new StringReader(data));
 
                 if (!_gotWarning)
@@ -131,8 +131,8 @@ namespace VDS.RDF.Parsing.Validation
                 else
                 {
                     message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name + " - " + _messages.Count + " Warnings";
-                    int i = 1;
-                    foreach (String m in _messages)
+                    var i = 1;
+                    foreach (var m in _messages)
                     {
                         message += "\n" + i + " - " + m;
                         i++;

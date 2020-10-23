@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
 
         private ISparqlAlgebra GetAlgebraUntransformed(ISparqlPath path)
         {
-            return this.GetAlgebraUntransformed(path, null, null);
+            return GetAlgebraUntransformed(path, null, null);
         }
 
         private ISparqlAlgebra GetAlgebraUntransformed(ISparqlPath path, INode start, INode end)
@@ -104,13 +104,13 @@ namespace VDS.RDF.Query
 
         private void EnsureTestData()
         {
-            if (this._data == null)
+            if (_data == null)
             {
                 var store = new TripleStore();
                 var g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
-                this._data = new InMemoryDataset(store, g.BaseUri);
+                _data = new InMemoryDataset(store, g.BaseUri);
             }
         }
 
@@ -120,9 +120,9 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             var path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            var algebra = this.GetAlgebra(path);
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+                new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            var algebra = GetAlgebra(path);
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -136,10 +136,10 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             var path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            INode rdfsClass = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
-            var algebra = this.GetAlgebra(path, null, rdfsClass);
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+                new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            INode rdfsClass = _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
+            var algebra = GetAlgebra(path, null, rdfsClass);
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -155,11 +155,11 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             var path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            var algebra = this.GetAlgebra(path,
+                new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            var algebra = GetAlgebra(path,
                                                      new Graph().CreateUriNode(
                                                          UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -173,12 +173,12 @@ namespace VDS.RDF.Query
             EnsureTestData();
 
             var path =
-                new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            var algebra = this.GetAlgebra(path,
+                new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
+            var algebra = GetAlgebra(path,
                                                      new Graph().CreateUriNode(
                                                          UriFactory.Create(ConfigurationLoader.ClassHttpHandler)),
-                                                     this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+                                                     _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -194,10 +194,10 @@ namespace VDS.RDF.Query
 
             var path =
                 new NegatedSet(
-                    new Property[] {new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
+                    new Property[] {new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))},
                     Enumerable.Empty<Property>());
-            var algebra = this.GetAlgebra(path);
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var algebra = GetAlgebra(path);
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -214,10 +214,10 @@ namespace VDS.RDF.Query
                                              new Property[]
                                                  {
                                                      new Property(
-                                                 this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))
+                                                 _factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)))
                                                  });
-            var algebra = this.GetAlgebra(path);
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var algebra = GetAlgebra(path);
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -230,12 +230,12 @@ namespace VDS.RDF.Query
         {
             EnsureTestData();
 
-            INode a = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode b = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+            INode a = _factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode b = _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
             var path = new SequencePath(new AlternativePath(new Property(a), new Property(b)),
                                                  new AlternativePath(new Property(a), new Property(a)));
-            var algebra = this.GetAlgebraUntransformed(path);
-            var context = new SparqlEvaluationContext(null, this._data, new LeviathanQueryOptions());
+            var algebra = GetAlgebraUntransformed(path);
+            var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
@@ -253,8 +253,8 @@ namespace VDS.RDF.Query
             var dataset = new InMemoryDataset(store, g.BaseUri);
 
             var path =
-                new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            var algebra = this.GetAlgebra(path);
+                new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            var algebra = GetAlgebra(path);
             var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
@@ -272,9 +272,9 @@ namespace VDS.RDF.Query
             var dataset = new InMemoryDataset(store, g.BaseUri);
 
             var path =
-                new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
-            var algebra = this.GetAlgebra(path, sportsCar, null);
+                new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode sportsCar = _factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
+            var algebra = GetAlgebra(path, sportsCar, null);
             var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
@@ -292,9 +292,9 @@ namespace VDS.RDF.Query
             var dataset = new InMemoryDataset(store, g.BaseUri);
 
             var path =
-                new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
-            var algebra = this.GetAlgebra(path, null, airVehicle);
+                new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode airVehicle = _factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
+            var algebra = GetAlgebra(path, null, airVehicle);
             var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
@@ -312,8 +312,8 @@ namespace VDS.RDF.Query
             var dataset = new InMemoryDataset(store, g.BaseUri);
 
             var path =
-                new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            var algebra = this.GetAlgebra(path);
+                new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            var algebra = GetAlgebra(path);
             var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
@@ -331,9 +331,9 @@ namespace VDS.RDF.Query
             var dataset = new InMemoryDataset(store);
 
             var path =
-                new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
-            var algebra = this.GetAlgebra(path, sportsCar, null);
+                new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode sportsCar = _factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
+            var algebra = GetAlgebra(path, sportsCar, null);
             var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);
@@ -351,9 +351,9 @@ namespace VDS.RDF.Query
             var dataset = new InMemoryDataset(store);
 
             var path =
-                new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
-            INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
-            var algebra = this.GetAlgebra(path, null, airVehicle);
+                new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode airVehicle = _factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
+            var algebra = GetAlgebra(path, null, airVehicle);
             var results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset, new LeviathanQueryOptions()));
 
             TestTools.ShowMultiset(results);

@@ -55,8 +55,8 @@ namespace VDS.RDF
         [Fact]
         public void NodesDistinct()
         {
-            Graph g = new Graph();
-            List<INode> test = new List<INode>()
+            var g = new Graph();
+            var test = new List<INode>()
             {
                 g.CreateUriNode("rdf:type"),
                 g.CreateUriNode(new Uri("http://example.org")),
@@ -90,7 +90,7 @@ namespace VDS.RDF
         public void GraphCreation1()
         {
             //Create a new Empty Graph
-            Graph g = new Graph();
+            var g = new Graph();
             Assert.NotNull(g);
 
             //Define Namespaces
@@ -177,7 +177,7 @@ namespace VDS.RDF
         public void GraphCreation2()
         {
             //Create a new Empty Graph
-            Graph g = new Graph();
+            var g = new Graph();
             Assert.NotNull(g);
 
             //Define Namespaces
@@ -237,13 +237,13 @@ namespace VDS.RDF
                                     new String[] {"http://www.bbc.co.uk/test2.txt","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2/subdir","http://www.bbc.co.uk/test2","http://www.bbc.co.uk/test.txt#fragment2"}
                                   };
 
-            for (int i = 0; i < baseUris.Length; i++)
+            for (var i = 0; i < baseUris.Length; i++)
             {
                 Console.WriteLine("Resolving against Base URI " + baseUris[i]);
 
-                Uri baseUri = new Uri(baseUris[i]);
+                var baseUri = new Uri(baseUris[i]);
 
-                for (int j = 0; j < uriRefs.Length; j++)
+                for (var j = 0; j < uriRefs.Length; j++)
                 {
                     Console.WriteLine("Resolving " + uriRefs[j]);
 
@@ -260,9 +260,9 @@ namespace VDS.RDF
                 Console.WriteLine();
             }
 
-            Uri mailto = new Uri("mailto:example@example.org");
-            Uri rel = new Uri("/some/folder", UriKind.Relative);
-            Uri res = new Uri(mailto, rel);
+            var mailto = new Uri("mailto:example@example.org");
+            var rel = new Uri("/some/folder", UriKind.Relative);
+            var res = new Uri(mailto, rel);
             Console.WriteLine(res.ToString());
         }
 
@@ -272,7 +272,7 @@ namespace VDS.RDF
             IGraph g = new Graph();
             g.BaseUri = new Uri("http://example.org/");
 
-            Uri expected = new Uri("http://example.org/relative/path");
+            var expected = new Uri("http://example.org/relative/path");
             IUriNode actual = g.CreateUriNode(new Uri("relative/path", UriKind.Relative));
             Assert.Equal(expected, actual.Uri);
         }
@@ -290,9 +290,9 @@ namespace VDS.RDF
         public void UriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
-            Uri test1 = new Uri("http://example.org/test#one");
-            Uri test2 = new Uri("http://example.org/test#two");
-            Uri test3 = new Uri("http://example.org/test#three");
+            var test1 = new Uri("http://example.org/test#one");
+            var test2 = new Uri("http://example.org/test#two");
+            var test3 = new Uri("http://example.org/test#three");
 
             Console.WriteLine("Three identical URIs with different Fragment IDs, .Net ignores the Fragments in creating Hash Codes");
             Console.WriteLine("URI 1 has Hash Code " + test1.GetHashCode());
@@ -311,7 +311,7 @@ namespace VDS.RDF
             Console.WriteLine();
 
             //Create the Nodes
-            Graph g = new Graph();
+            var g = new Graph();
             IUriNode u = g.CreateUriNode(new Uri("http://www.google.com"));
             ILiteralNode l = g.CreateLiteralNode("http://www.google.com/");
 
@@ -392,7 +392,7 @@ namespace VDS.RDF
         public void NodesUriNodeEquality()
         {
             //Create the Nodes
-            Graph g = new Graph();
+            var g = new Graph();
             Console.WriteLine("Creating two URIs referring to google - one lowercase, one uppercase - which should be equivalent");
             IUriNode a = g.CreateUriNode(new Uri("http://www.google.com"));
             IUriNode b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
@@ -429,11 +429,11 @@ namespace VDS.RDF
         [Fact]
         public void NodesBlankNodeEquality()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/BlankNodeEquality");
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/BlankNodeEqualityTwo");
-            Graph i = new Graph();
+            var i = new Graph();
             i.BaseUri = new Uri("http://example.org/BlankNodeEquality");
 
             Console.WriteLine("Doing some Blank Node Equality Testing");
@@ -472,7 +472,7 @@ namespace VDS.RDF
         {
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
 
                 //Strict Mode Tests
                 Console.WriteLine("Doing a load of Strict Literal Equality Tests");
@@ -508,8 +508,8 @@ namespace VDS.RDF
                 Assert.NotEqual(plain3, plain4);
 
                 //Typed Literals
-                Uri intType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
-                Uri boolType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
+                var intType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
+                var boolType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
 
                 ILiteralNode one1, one2, one3, one4;
                 one1 = g.CreateLiteralNode("1");
@@ -565,12 +565,12 @@ namespace VDS.RDF
             Console.WriteLine();
 
             //Create a Graph
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/");
             g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
 
             //Create a list of various Nodes
-            List<INode> nodes = new List<INode>();
+            var nodes = new List<INode>();
             nodes.Add(g.CreateUriNode(":someUri"));
             nodes.Add(g.CreateBlankNode());
             nodes.Add(null);
@@ -604,7 +604,7 @@ namespace VDS.RDF
             nodes.Add(g.CreateLiteralNode("false", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
             nodes.Add(g.CreateLiteralNode("invalid-value", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
 
-            for (int i = 0; i < 32; i++)
+            for (var i = 0; i < 32; i++)
             {
                 nodes.Add(g.CreateLiteralNode(i.ToString("x"), new Uri(XmlSpecsHelper.XmlSchemaDataTypeHexBinary)));
             }
@@ -660,12 +660,12 @@ namespace VDS.RDF
             Console.WriteLine();
 
             //Create a Graph
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/");
             g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
 
             //Create a list of various Nodes
-            List<INode> nodes = new List<INode>();
+            var nodes = new List<INode>();
             nodes.Add(g.CreateUriNode(":someUri"));
             nodes.Add(g.CreateBlankNode());
             nodes.Add(null);
@@ -741,7 +741,7 @@ namespace VDS.RDF
             LiteralNode nullLiteral = null;
             BlankNode nullBNode = null;
 
-            Graph g = new Graph();
+            var g = new Graph();
             IUriNode someUri = g.CreateUriNode(new Uri("http://example.org"));
             ILiteralNode someLiteral = g.CreateLiteralNode("A Literal");
             IBlankNode someBNode = g.CreateBlankNode();
@@ -793,9 +793,9 @@ namespace VDS.RDF
         public void GraphMerging()
         {
             //Load the Test RDF
-            TurtleParser ttlparser = new TurtleParser();
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var ttlparser = new TurtleParser();
+            var g = new Graph();
+            var h = new Graph();
             Assert.NotNull(g);
             Assert.NotNull(h);
             ttlparser.Load(g, "resources\\MergePart1.ttl");
@@ -833,7 +833,7 @@ namespace VDS.RDF
             //Same merge into an Empty Graph
             Console.WriteLine();
             Console.WriteLine("Combining the two Graphs with two Merge operations into an Empty Graph");
-            Graph i = new Graph();
+            var i = new Graph();
 
             //Need to reload g from disk
             g = new Graph();
@@ -856,8 +856,8 @@ namespace VDS.RDF
         public void GraphTripleCreation()
         {
             //Create two Graphs
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             h.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
@@ -875,10 +875,10 @@ namespace VDS.RDF
         [Fact]
         public void UriPathAndQuery()
         {
-            Uri u = new Uri("http://example.org/some/path/with?query=some&param=values");
+            var u = new Uri("http://example.org/some/path/with?query=some&param=values");
 
-            String pathAndQuery = u.PathAndQuery;
-            String absPathPlusQuery = u.AbsolutePath + u.Query;
+            var pathAndQuery = u.PathAndQuery;
+            var absPathPlusQuery = u.AbsolutePath + u.Query;
 
             Console.WriteLine("PathAndQuery - " + pathAndQuery);
             Console.WriteLine("AbsolutePath + Query - " + absPathPlusQuery);
@@ -889,8 +889,8 @@ namespace VDS.RDF
         [Fact]
         public void UriQuery()
         {
-            Uri withQuery = new Uri("http://example.org/with?some=query");
-            Uri withoutQuery = new Uri("http://example.org/without");
+            var withQuery = new Uri("http://example.org/with?some=query");
+            var withoutQuery = new Uri("http://example.org/without");
 
             Assert.NotEqual(String.Empty, withQuery.Query);
             Assert.Equal(String.Empty, withoutQuery.Query);

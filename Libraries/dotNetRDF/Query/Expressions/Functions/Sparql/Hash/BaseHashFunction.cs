@@ -88,13 +88,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         protected virtual string Hash(string input)
         {
-            Byte[] inputBytes, hashBytes;
-            StringBuilder output = new StringBuilder();
+            byte[] inputBytes, hashBytes;
+            var output = new StringBuilder();
 
             inputBytes = Encoding.UTF8.GetBytes(input);
             hashBytes = _crypto.ComputeHash(inputBytes);
 
-            for (int i = 0; i < hashBytes.Length; i++)
+            for (var i = 0; i < hashBytes.Length; i++)
             {
                 output.Append(hashBytes[i].ToString("x2"));
             }

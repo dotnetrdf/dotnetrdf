@@ -56,16 +56,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             switch (temp.NumericType)
             {
                 case SparqlNumericType.Integer:
-                    long l = temp.AsInteger();
+                    var l = temp.AsInteger();
                     return new LongNode(null, l * l);
                 case SparqlNumericType.Decimal:
-                    decimal d = temp.AsDecimal();
+                    var d = temp.AsDecimal();
                     return new DecimalNode(null, d * d);
                 case SparqlNumericType.Float:
-                    float f = temp.AsFloat();
+                    var f = temp.AsFloat();
                     return new FloatNode(null, f * f);
                 case SparqlNumericType.Double:
-                    double dbl = temp.AsDouble();
+                    var dbl = temp.AsDouble();
                     return new DoubleNode(null, Math.Pow(dbl, 2));
                 case SparqlNumericType.NaN:
                 default:

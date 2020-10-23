@@ -24,18 +24,18 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Paths;
+using VDS.RDF.Query.Patterns;
+using VDS.RDF.Shacl.Paths;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Query;
-    using VDS.RDF.Query.Paths;
-    using VDS.RDF.Query.Patterns;
-    using VDS.RDF.Shacl.Paths;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Select : Sparql
     {
         [DebuggerStepThrough]
@@ -81,12 +81,12 @@ namespace VDS.RDF.Shacl.Constraints
                 return false;
             }
 
-            foreach (var solution in solutions)
+            foreach (SparqlResult solution in solutions)
             {
                 var result = Result.Create(report.Graph);
                 result.FocusNode = solution["this"];
 
-                if (solution.TryGetBoundValue("path", out var pathValue) && pathValue.NodeType == NodeType.Uri)
+                if (solution.TryGetBoundValue("path", out INode pathValue) && pathValue.NodeType == NodeType.Uri)
                 {
                     result.ResultPath = new Predicate(pathValue);
                 }
@@ -138,12 +138,12 @@ namespace VDS.RDF.Shacl.Constraints
                 }
             }
 
-            foreach (var subPattern in pattern.ChildGraphPatterns)
+            foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
             {
                 BindPath(subPattern, path);
             }
 
-            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+            foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
             {
                 BindPath(subQueryPattern.SubQuery.RootGraphPattern, path);
             }

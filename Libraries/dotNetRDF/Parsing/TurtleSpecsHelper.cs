@@ -80,12 +80,12 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Pattern for Valid Integers in Turtle.
         /// </summary>
-        public const String ValidIntegerPattern = "^(\\+|-)?\\d+$";
+        public const string ValidIntegerPattern = "^(\\+|-)?\\d+$";
 
         /// <summary>
         /// Pattern for Valid Decimals in Turtle.
         /// </summary>
-        public const String ValidDecimalPattern = "^(\\+|-)?(\\d+\\.\\d*|\\.\\d+|\\d+)$";
+        public const string ValidDecimalPattern = "^(\\+|-)?(\\d+\\.\\d*|\\.\\d+|\\d+)$";
 
         // DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
         // EXPONENT  ::= [eE] [+-]? [0-9]+
@@ -93,13 +93,13 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Pattern for Valid Doubles in Turtle.
         /// </summary>
-        public const String ValidDoublePattern = "^(\\+|-)?(\\d+\\.\\d*[eE](\\+|-)?\\d+|\\.\\d+[eE](\\+|-)?\\d+|\\d+[eE](\\+|-)?\\d+)$";
+        public const string ValidDoublePattern = "^(\\+|-)?(\\d+\\.\\d*[eE](\\+|-)?\\d+|\\.\\d+[eE](\\+|-)?\\d+|\\d+[eE](\\+|-)?\\d+)$";
 
 
         /// <summary>
         /// Pattern for determining whether a given String should be serialized as a Long Literal.
         /// </summary>
-        public const String LongLiteralsPattern = "[\n\r\t\"]";
+        public const string LongLiteralsPattern = "[\n\r\t\"]";
 
         private static Regex _validInteger = new Regex(ValidIntegerPattern);
         private static Regex _validDecimal = new Regex(ValidDecimalPattern);
@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing
         /// <param name="value">String to test.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
-        public static bool IsValidPlainLiteral(String value, TurtleSyntax syntax)
+        public static bool IsValidPlainLiteral(string value, TurtleSyntax syntax)
         {
             StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
             if (value.Equals("true", comparison) || value.Equals("false", comparison))
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
         /// <param name="dt">Datatype.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
-        public static bool IsValidPlainLiteral(String value, Uri dt, TurtleSyntax syntax)
+        public static bool IsValidPlainLiteral(string value, Uri dt, TurtleSyntax syntax)
         {
             StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
             if ((value.Equals("true", comparison) || value.Equals("false", comparison)) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
@@ -162,7 +162,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">String to test.</param>
         /// <returns></returns>
-        public static bool IsValidInteger(String value)
+        public static bool IsValidInteger(string value)
         {
             return _validInteger.IsMatch(value);
         }
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">String to test.</param>
         /// <returns></returns>
-        public static bool IsValidDecimal(String value)
+        public static bool IsValidDecimal(string value)
         {
             return _validDecimal.IsMatch(value);
         }
@@ -182,7 +182,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">String to test.</param>
         /// <returns></returns>
-        public static bool IsValidDouble(String value)
+        public static bool IsValidDouble(string value)
         {
             // W3C:
             // DOUBLE	::=	[+-]? ([0-9]+ '.' [0-9]* EXPONENT | '.' [0-9]+ EXPONENT | [0-9]+ EXPONENT)
@@ -199,7 +199,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">QName.</param>
         /// <returns></returns>
-        public static bool IsValidQName(String value)
+        public static bool IsValidQName(string value)
         {
             return IsValidQName(value, TurtleSyntax.Original);
         }
@@ -210,7 +210,7 @@ namespace VDS.RDF.Parsing
         /// <param name="value">Value.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
-        public static bool IsValidPrefix(String value, TurtleSyntax syntax)
+        public static bool IsValidPrefix(string value, TurtleSyntax syntax)
         {
             // W3C Standard Turtle
             // PNAME_NS	::=	PN_PREFIX? ':'
@@ -219,7 +219,7 @@ namespace VDS.RDF.Parsing
             // qname	::=	prefixName? ':' name?
 
             // The productions are identical for our purposes
-            if (value.Equals(String.Empty)) return false;
+            if (value.Equals(string.Empty)) return false;
             if (!value.EndsWith(":")) return false;
             if (value.Equals(":")) return true;
 
@@ -233,10 +233,10 @@ namespace VDS.RDF.Parsing
         /// <param name="value">Value.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
-        public static bool IsPNPrefix(String value, TurtleSyntax syntax)
+        public static bool IsPNPrefix(string value, TurtleSyntax syntax)
         {
-            char[] cs = value.ToCharArray();
-            int start = 1;
+            var cs = value.ToCharArray();
+            var start = 1;
             switch (syntax)
             {
                 case TurtleSyntax.W3C:
@@ -261,7 +261,7 @@ namespace VDS.RDF.Parsing
                     if (cs.Length == start) return true;
 
                     // Intermediate characters must be a '.' or in PN_CHARS
-                    for (int i = start; i < cs.Length - 1; i++)
+                    for (var i = start; i < cs.Length - 1; i++)
                     {
                         if (cs[i] != '.' && !IsPNChars(cs[i]))
                         {
@@ -308,7 +308,7 @@ namespace VDS.RDF.Parsing
                     if (cs.Length == start) return true;
 
                     // Subsequent characters must be in nameChar
-                    for (int i = start; i < cs.Length; i++)
+                    for (var i = start; i < cs.Length; i++)
                     {
                         if (!IsNameChar(cs[i]))
                         {
@@ -334,9 +334,9 @@ namespace VDS.RDF.Parsing
         /// <param name="value">Value.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
-        public static bool IsValidLocalName(String value, TurtleSyntax syntax)
+        public static bool IsValidLocalName(string value, TurtleSyntax syntax)
         {
-            char[] cs = value.ToCharArray();
+            var cs = value.ToCharArray();
 
             // Empty local names are valid
             if (cs.Length == 0) return true;
@@ -348,7 +348,7 @@ namespace VDS.RDF.Parsing
                     // PNAME_NS	::=	PN_PREFIX? ':'
 
                     // Local name is a syntax of namespace segments
-                    String[] portions = value.Split(':');
+                    var portions = value.Split(':');
 
                     // Each non-final portion conforms to the PNAME_NS production
                     // This is a PN_PREFIX followed by a ':' so we can call IsPNPrefix() directly
@@ -359,16 +359,16 @@ namespace VDS.RDF.Parsing
                         if (portions[p].Length == 0) continue;
 
                         // If we see any of the escape sequence starters or a leading digit then this must be the start of the local name
-                        if (portions[p].Contains("%") || portions[p].Contains("\\") || Char.IsDigit(portions[p][0])) break;
+                        if (portions[p].Contains("%") || portions[p].Contains("\\") || char.IsDigit(portions[p][0])) break;
 
                         // Otherwise must be a valid prefix
                         if (!IsPNPrefix(portions[p], syntax)) return false;
                     }
 
-                    String final = portions[portions.Length - 1];
+                    var final = portions[portions.Length - 1];
                     if (p < portions.Length - 1)
                     {
-                        final = String.Join(":", portions, p, portions.Length - p);
+                        final = string.Join(":", portions, p, portions.Length - p);
                     }
 
                     // Final portion may be empty which is valid because a portion may consist solely of a : which would result in this scenario
@@ -380,7 +380,7 @@ namespace VDS.RDF.Parsing
                 default:
                     // name	::=	nameStartChar nameChar*
 
-                    int start = 1;
+                    var start = 1;
 
                     // Validate first character is a nameStartChar
                     if (!IsNameStartChar(cs[0]))
@@ -399,7 +399,7 @@ namespace VDS.RDF.Parsing
                     if (cs.Length == start) return true;
 
                     // Further characters must be nameChar
-                    for (int i = start; i < cs.Length; i++)
+                    for (var i = start; i < cs.Length; i++)
                     {
                         if (!IsNameChar(cs[i]))
                         {
@@ -423,15 +423,15 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">Value.</param>
         /// <returns></returns>
-        public static bool IsPNLocal(String value)
+        public static bool IsPNLocal(string value)
         {
             // PN_LOCAL	::=	(PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
 
-            char[] cs = value.ToCharArray();
+            var cs = value.ToCharArray();
             int start = 1, temp = 0;
 
             // Validate first character
-            if (cs[0] != ':' && !Char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
+            if (cs[0] != ':' && !char.IsDigit(cs[0]) && !IsPLX(cs, 0, out temp) && !IsPNCharsU(cs[0]))
             {
                 // Handle surrogate pairs for UTF-32 characters
                 if (UnicodeSpecsHelper.IsHighSurrogate(cs[0]) && cs.Length > 1)
@@ -450,9 +450,9 @@ namespace VDS.RDF.Parsing
             if (start >= cs.Length) return true;
 
             // Intermediate characters can be PN_CHARS, a '.', a ':' or a PLX
-            for (int i = start; i < cs.Length - 1; i++)
+            for (var i = start; i < cs.Length - 1; i++)
             {
-                int j = i;
+                var j = i;
                 if (cs[i] != '.' && cs[i] != ':' && !IsPNChars(cs[i]) && !IsPLX(cs, i, out j))
                 {
                     // Handle surrogate pairs for UTF-32 characters
@@ -505,8 +505,8 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    char a = cs[startIndex + 1];
-                    char b = cs[startIndex + 2];
+                    var a = cs[startIndex + 1];
+                    var b = cs[startIndex + 2];
                     if (IsHex(a) && IsHex(b))
                     {
                         // Valid % encoding
@@ -528,7 +528,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    char c = cs[startIndex + 1];
+                    var c = cs[startIndex + 1];
                     switch (c)
                     {
                         case '_':
@@ -572,7 +572,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsHex(char c)
         {
-            if (Char.IsDigit(c))
+            if (char.IsDigit(c))
             {
                 return true;
             }
@@ -604,11 +604,11 @@ namespace VDS.RDF.Parsing
         /// <param name="value">String to test.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <returns></returns>
-        public static bool IsValidQName(String value, TurtleSyntax syntax)
+        public static bool IsValidQName(string value, TurtleSyntax syntax)
         {
             if (!value.Contains(":")) return false;
-            String prefix = value.Substring(0, value.IndexOf(':') + 1);
-            String lname = prefix.Length < value.Length ? value.Substring(prefix.Length) : String.Empty;
+            var prefix = value.Substring(0, value.IndexOf(':') + 1);
+            var lname = prefix.Length < value.Length ? value.Substring(prefix.Length) : string.Empty;
             return IsValidPrefix(prefix, syntax) && IsValidLocalName(lname, syntax);
         }
 
@@ -617,7 +617,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">QName.</param>
         /// <returns>Unescaped QName.</returns>
-        public static String UnescapeQName(String value)
+        public static string UnescapeQName(string value)
         {
             return SparqlSpecsHelper.UnescapeQName(value);
         }
@@ -627,7 +627,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">String to test.</param>
         /// <returns></returns>
-        public static bool IsLongLiteral(String value)
+        public static bool IsLongLiteral(string value)
         {
             return _isLongLiteral.IsMatch(value);
         }
@@ -640,7 +640,7 @@ namespace VDS.RDF.Parsing
         /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal.</returns>
         public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
         {
-            String value = p.Value;
+            var value = p.Value;
             StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
             if (value.Equals("true", comparison) || value.Equals("false", comparison))
@@ -716,7 +716,7 @@ namespace VDS.RDF.Parsing
         {
             if (UnicodeSpecsHelper.IsHighSurrogate(c) && UnicodeSpecsHelper.IsLowSurrogate(d))
             {
-                int codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
+                var codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
@@ -737,7 +737,7 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (Char.IsDigit(c))
+            else if (char.IsDigit(c))
             {
                 return true;
             }
@@ -852,7 +852,7 @@ namespace VDS.RDF.Parsing
         {
             if (UnicodeSpecsHelper.IsHighSurrogate(c) && UnicodeSpecsHelper.IsLowSurrogate(d))
             {
-                int codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
+                var codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
             else
@@ -873,7 +873,7 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (Char.IsDigit(c))
+            else if (char.IsDigit(c))
             {
                 return true;
             }

@@ -13,7 +13,7 @@ namespace VDS.RDF.Parsing
 
         private void CheckVariables(SparqlResultSet results, params String[] vars)
         {
-            foreach (String var in vars)
+            foreach (var var in vars)
             {
                 Assert.True(results.Variables.Contains(var), "Missing variable ?" + var);
             }
@@ -25,8 +25,8 @@ namespace VDS.RDF.Parsing
             const String data = "?x\t?y\n"
                                 + "<http://x>\t<http://y>\n";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             TestTools.ShowResults(results);
 
@@ -43,9 +43,9 @@ namespace VDS.RDF.Parsing
             const String data = "?x\t?y\n"
                                 + "<http://x>\t<y>\n";
 
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -55,9 +55,9 @@ namespace VDS.RDF.Parsing
             const String data = "?x\t?y\n"
                                 + "<http://x a bad uri>\t<y>\n";
 
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
     }
 }

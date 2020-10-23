@@ -187,7 +187,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public SparqlQuery Copy()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q._baseUri = _baseUri;
             q._defaultGraphs = new List<Uri>(_defaultGraphs);
             q._namedGraphs = new List<Uri>(_namedGraphs);
@@ -615,7 +615,7 @@ namespace VDS.RDF.Query
         /// <param name="isResultVar">Does the Variable occur in the Output Result Set/Graph.</param>
         internal void AddVariable(string name, bool isResultVar)
         {
-            string var = name.Substring(1);
+            var var = name.Substring(1);
             if ((int)_type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
             if (!_vars.Any(v => v.Name.Equals(var)))
@@ -733,8 +733,8 @@ namespace VDS.RDF.Query
         /// <remarks>This method may not return a complete representation of the Query depending on the Query it is called on as not all the classes which can be included in a Sparql query currently implement ToString methods.</remarks>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
-            StringBuilder from = new StringBuilder();
+            var output = new StringBuilder();
+            var from = new StringBuilder();
 
             // Output the Base and Prefix Directives if not a sub-query
             if (!_subquery)
@@ -743,7 +743,7 @@ namespace VDS.RDF.Query
                 {
                     output.AppendLine("BASE <" + _baseUri.AbsoluteUri + ">");
                 }
-                foreach (string prefix in _nsmapper.Prefixes)
+                foreach (var prefix in _nsmapper.Prefixes)
                 {
                     output.AppendLine("PREFIX " + prefix + ": <" + _nsmapper.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
@@ -899,7 +899,7 @@ namespace VDS.RDF.Query
             if (_having != null)
             {
                 output.Append("HAVING ");
-                string having = _having.ToString();
+                var having = _having.ToString();
                 output.Append(having.Substring(7, having.Length - 8));
                 output.Append(' ');
             }
@@ -924,12 +924,12 @@ namespace VDS.RDF.Query
                 output.AppendLine(_bindings.ToString());
             }
 
-            string preOutput = output.ToString();
+            var preOutput = output.ToString();
             if (_nsmapper.Prefixes.Any())
             {
-                foreach (string prefix in _nsmapper.Prefixes)
+                foreach (var prefix in _nsmapper.Prefixes)
                 {
-                    string uri = _nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
+                    var uri = _nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
                     if (preOutput.Contains("<" + uri))
                     {
                         preOutput = Regex.Replace(preOutput, "<" + uri + "([^/#>]+)>\\.", prefix + ":$1 .");

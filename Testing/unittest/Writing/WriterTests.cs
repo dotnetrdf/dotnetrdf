@@ -47,7 +47,7 @@ namespace VDS.RDF.Writing
             //Create a Graph and add a couple of Triples which when serialized have
             //potentially colliding IDs
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org"));
             IUriNode subj = g.CreateUriNode("ex:subject");
             IUriNode pred = g.CreateUriNode("ex:predicate");
@@ -63,8 +63,8 @@ namespace VDS.RDF.Writing
             var ttlwriter = new CompressingTurtleWriter();
             ttlwriter.Save(g, "bnode-output-test.ttl");
 
-            TurtleParser ttlparser = new TurtleParser();
-            Graph h = new Graph();
+            var ttlparser = new TurtleParser();
+            var h = new Graph();
             ttlparser.Load(h, "bnode-output-test.ttl");
 
             Assert.Equal(g.Triples.Count, h.Triples.Count);
@@ -73,13 +73,13 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingOwlCharEscaping()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\charescaping.owl");
 
             var ttlwriter = new CompressingTurtleWriter();
-            String serialized = VDS.RDF.Writing.StringWriter.Write(g, ttlwriter);
+            var serialized = VDS.RDF.Writing.StringWriter.Write(g, ttlwriter);
 
-            Graph h = new Graph();
+            var h = new Graph();
             StringParser.Parse(h, serialized);
 
             Assert.Equal(g, h);
@@ -88,18 +88,18 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingHtmlWriter()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            HtmlWriter writer = new HtmlWriter();
-            String data = VDS.RDF.Writing.StringWriter.Write(g, writer);
+            var writer = new HtmlWriter();
+            var data = VDS.RDF.Writing.StringWriter.Write(g, writer);
 
             Console.WriteLine("Serialized as XHTML+RDFa");
             Console.WriteLine(data);
 
             Console.WriteLine();
 
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org");
             StringParser.Parse(h, data, new RdfAParser());
 
@@ -115,16 +115,16 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingRdfCollections()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\swrc.owl");
-            CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+            var ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
             ttlwriter.Save(g, Console.Out);
         }
 
         [Fact]
         public void WritingXmlAmpersandEscaping()
         {
-            List<String> inputs = new List<string>()
+            var inputs = new List<string>()
             {
                 "&value",
                 "&amp;",
@@ -134,7 +134,7 @@ namespace VDS.RDF.Writing
                 new String('&', 1000)
             };
 
-            List<String> outputs = new List<string>()
+            var outputs = new List<string>()
             {
                 "&amp;value",
                 "&amp;",
@@ -142,14 +142,14 @@ namespace VDS.RDF.Writing
                 "&amp;value&amp;next",
                 "&amp; &squot; &lt; &gt; &apos; &quot;"
             };
-            StringBuilder temp = new StringBuilder();
-            for (int i = 0; i < 1000; i++)
+            var temp = new StringBuilder();
+            for (var i = 0; i < 1000; i++)
             {
                 temp.Append("&amp;");
             }
             outputs.Add(temp.ToString());
 
-            for (int i = 0; i < inputs.Count; i++)
+            for (var i = 0; i < inputs.Count; i++)
             {
                 Console.WriteLine("Input: " + inputs[i] + " - Expected Output: " + outputs[i] + " - Actual Output: " + WriterHelper.EncodeForXml(inputs[i]));
                 Assert.Equal(outputs[i], WriterHelper.EncodeForXml(inputs[i]));
@@ -160,7 +160,7 @@ namespace VDS.RDF.Writing
         [MemberData(nameof(RoundTripTestData), Formats.All ^ Formats.RdfXml)]
         public void WritingI18NCharacters(IRdfWriter writer, IRdfReader parser)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/植物");
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/植物"));
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/植物/名=しそ;使用部=葉"));
@@ -176,7 +176,7 @@ namespace VDS.RDF.Writing
         [MemberData(nameof(RoundTripTestData))]
         public void WritingUriEscaping(IRdfWriter writer, IRdfReader parser)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/space in/base");
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/space in/namespace"));
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
@@ -192,7 +192,7 @@ namespace VDS.RDF.Writing
 
         private void RoundTripTest(Graph original, IRdfWriter writer, IRdfReader parser)
         {
-            NTriplesFormatter formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
 
             _output.WriteLine("Input Data:");
             foreach (Triple t in original.Triples)
@@ -202,13 +202,13 @@ namespace VDS.RDF.Writing
             _output.WriteLine("");
 
             _output.WriteLine("Serialized Data:");
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            var strWriter = new System.IO.StringWriter();
             writer.Save(original, strWriter);
             _output.WriteLine(strWriter.ToString());
             _output.WriteLine("");
             Console.Out.Flush();
 
-            Graph parsed = new Graph(true);
+            var parsed = new Graph(true);
             parser.Load(parsed, new StringReader(strWriter.ToString()));
             _output.WriteLine("Parsed Data:");
             foreach (Triple t in parsed.Triples)
@@ -233,11 +233,11 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingQNameValidation()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
             INode subj = g.CreateUriNode("ex:subject");
             INode pred = g.CreateUriNode("ex:predicate");
-            List<INode> objects = new List<INode>()
+            var objects = new List<INode>()
             {
                 g.CreateUriNode("ex:123"),
                 g.CreateBlankNode("a_blank_node"),
@@ -252,7 +252,7 @@ namespace VDS.RDF.Writing
                 g.Assert(subj, pred, obj);
             }
 
-            this.CheckCompressionRoundTrip(g);
+            CheckCompressionRoundTrip(g);
         }
 
         [Theory]

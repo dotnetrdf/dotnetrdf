@@ -73,13 +73,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     if (n is FloatNode) return n;
                     // See if the value can be cast
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
                         {
                             float f;
-                            if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
+                            if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
                                 // Parsed OK
                                 return new FloatNode(lit.Graph, f);
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         else
                         {
                             float f;
-                            if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
+                            if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
                                 // Parsed OK
                                 return new FloatNode(lit.Graph, f);
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     else
                     {
                         float f;
-                        if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
+                        if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                         {
                             // Parsed OK
                             return new FloatNode(lit.Graph, f);

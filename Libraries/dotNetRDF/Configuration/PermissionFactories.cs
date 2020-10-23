@@ -37,7 +37,7 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class PermissionFactory : IObjectFactory
     {
-        private const String Permission = "VDS.RDF.Configuration.Permissions.Permission",
+        private const string Permission = "VDS.RDF.Configuration.Permissions.Permission",
                              PermissionSet = "VDS.RDF.Configuration.Permissions.PermissionSet";
 
         /// <summary>
@@ -56,12 +56,12 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case Permission:
-                    String action = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAction)));
+                    var action = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAction)));
                     result = new Permission(action);
                     break;
 
                 case PermissionSet:
-                    IEnumerable<String> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAction)))
+                    IEnumerable<string> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAction)))
                                                   where n.NodeType == NodeType.Literal
                                                   select ((ILiteralNode)n).Value;
                     result = new PermissionSet(actions);
@@ -95,7 +95,7 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class UserGroupFactory : IObjectFactory
     {
-        private const String UserGroup = "VDS.RDF.Configuration.Permissions.UserGroup";
+        private const string UserGroup = "VDS.RDF.Configuration.Permissions.UserGroup";
 
         /// <summary>
         /// Tries to load a User Group based on information from the Configuration Graph.
@@ -119,7 +119,7 @@ namespace VDS.RDF.Configuration
                     IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyMember)));
                     foreach (INode member in members)
                     {
-                        String username, password;
+                        string username, password;
                         ConfigurationLoader.GetUsernameAndPassword(g, member, true, out username, out password);
                         if (username != null && password != null)
                         {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Configuration
                     IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAllow)));
                     foreach (INode allow in allowed)
                     {
-                        Object temp = ConfigurationLoader.LoadObject(g, allow);
+                        var temp = ConfigurationLoader.LoadObject(g, allow);
                         if (temp is IPermission)
                         {
                             result.AddAllowedAction((IPermission)temp);
@@ -150,7 +150,7 @@ namespace VDS.RDF.Configuration
                     IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDeny)));
                     foreach (INode deny in denied)
                     {
-                        Object temp = ConfigurationLoader.LoadObject(g, deny);
+                        var temp = ConfigurationLoader.LoadObject(g, deny);
                         if (temp is IPermission)
                         {
                             result.AddDeniedAction((IPermission)temp);
@@ -165,7 +165,7 @@ namespace VDS.RDF.Configuration
                     result.AllowGuests = !ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyRequiresAuthentication)), true);
 
                     // Is there a permission model specified?
-                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
+                    var mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
                     if (mode != null)
                     {
                         result.PermissionModel = (PermissionModel)Enum.Parse(typeof(PermissionModel), mode);

@@ -76,8 +76,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     // Try to parse as a Regular Expression
                     try
                     {
-                        string p = ((ILiteralNode)n).Value;
-                        Regex temp = new Regex(p);
+                        var p = ((ILiteralNode)n).Value;
+                        var temp = new Regex(p);
 
                         // It's a Valid Pattern
                         _fixedPattern = true;
@@ -129,8 +129,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    string ops = ((ILiteralNode)n).Value;
-                    foreach (char c in ops.ToCharArray())
+                    var ops = ((ILiteralNode)n).Value;
+                    foreach (var c in ops.ToCharArray())
                     {
                         switch (c)
                         {
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             if (textNode.NodeType == NodeType.Literal)
             {
                 // Execute
-                string text = textNode.AsString();
+                var text = textNode.AsString();
                 if (_regex != null)
                 {
                     return new BooleanNode(null, _regex.IsMatch(text));
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("REGEX(");
             output.Append(_textExpr.ToString());
             output.Append(",");
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                List<string> vs = new List<string>();
+                var vs = new List<string>();
                 if (_textExpr != null) vs.AddRange(_textExpr.Variables);
                 if (_patternExpr != null) vs.AddRange(_patternExpr.Variables);
                 if (_optionExpr != null) vs.AddRange(_optionExpr.Variables);

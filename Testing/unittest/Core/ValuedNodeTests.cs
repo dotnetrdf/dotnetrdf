@@ -88,8 +88,8 @@ namespace VDS.RDF
         [Fact]
         public void NodeDateTimeParsing()
         {
-            String input = "2013-06-19T09:58:00";
-            DateTime dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
+            var input = "2013-06-19T09:58:00";
+            var dt = DateTime.Parse(input, null, DateTimeStyles.AdjustToUniversal);
             Assert.Equal(DateTimeKind.Unspecified, dt.Kind);
 
             input = "2013-06-19T09:58:00-07:00";

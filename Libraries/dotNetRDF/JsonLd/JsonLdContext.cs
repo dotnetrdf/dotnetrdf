@@ -126,12 +126,12 @@ namespace VDS.RDF.JsonLd
         /// <summary>
         /// Get the inverse context for this context.
         /// </summary>
-        public JObject InverseContext => _inverseContext ?? (_inverseContext = CreateInverseContext());
+        public JObject InverseContext => _inverseContext ??= CreateInverseContext();
 
         /// <summary>
         /// Remove the base IRI from this context.
         /// </summary>
-        /// <remarks>Sets <see cref="Base"/> to null and <see cref="HasBase"/> to false.</remarks>
+        /// <remarks>Sets <see cref="Base"/> to null.</remarks>
         public void RemoveBase()
         {
             Base = null;
@@ -152,7 +152,7 @@ namespace VDS.RDF.JsonLd
                 PreviousContext = PreviousContext,
                 Vocab = Vocab,
             };
-            foreach(var termDefEntry in _termDefinitions)
+            foreach(KeyValuePair<string, JsonLdTermDefinition> termDefEntry in _termDefinitions)
             {
                 clone.AddTerm(termDefEntry.Key, termDefEntry.Value.Clone());
             }
@@ -176,7 +176,7 @@ namespace VDS.RDF.JsonLd
         /// <returns>The removed term definition, or null if the term was not defined in this context.</returns>
         public JsonLdTermDefinition RemoveTerm(string term)
         {
-            if (!_termDefinitions.TryGetValue(term, out var termDefinition)) return null;
+            if (!_termDefinitions.TryGetValue(term, out JsonLdTermDefinition termDefinition)) return null;
             _termDefinitions.Remove(term);
             return termDefinition;
 
@@ -190,7 +190,7 @@ namespace VDS.RDF.JsonLd
         /// <returns>The term definition found for the specified key or a default empty term definition if there is no term definition defined for that key.</returns>
         public JsonLdTermDefinition GetTerm(string term, bool includeAliases = false)
         {
-            if (_termDefinitions.TryGetValue(term, out var ret)) return ret;
+            if (_termDefinitions.TryGetValue(term, out JsonLdTermDefinition ret)) return ret;
             return includeAliases ? _termDefinitions.Values.FirstOrDefault(td => td.IriMapping.Equals(term)) : null;
         }
 
@@ -265,7 +265,7 @@ namespace VDS.RDF.JsonLd
                 if (!containerMap.ContainsKey(container)) continue;
 
                 // 4.2 - Initialize type/language map to the value associated with the container entry in container map.
-                var typeLanguageMap = containerMap[container];
+                JToken typeLanguageMap = containerMap[container];
 
                 // 4.3 - Initialize value map to the value associated with type/language entry in type/language map.
                 var valueMap = typeLanguageMap[typeLanguage] as JObject;
@@ -295,7 +295,7 @@ namespace VDS.RDF.JsonLd
             // 3. For each key term and value term definition in the active context, ordered by shortest term first (breaking ties by choosing the lexicographically least term):
             foreach (var term in Terms.OrderBy(t => t.Length).ThenBy(t => t))
             {
-                var termDefinition = GetTerm(term);
+                JsonLdTermDefinition termDefinition = GetTerm(term);
                 // 3.1 - If the term definition is null, term cannot be selected during compaction, so continue to the next term.
                 // KA: Term definitions with a null IriMapping are not used for IRI expansion (or compaction) so they should be skipped too.
                 if (termDefinition?.IriMapping == null)

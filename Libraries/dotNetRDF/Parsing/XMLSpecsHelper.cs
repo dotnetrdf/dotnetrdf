@@ -50,15 +50,15 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Namespace for XML.
         /// </summary>
-        public const String NamespaceXml = "http://www.w3.org/XML/1998/namespace";
+        public const string NamespaceXml = "http://www.w3.org/XML/1998/namespace";
         /// <summary>
         /// Namespace for XML Namespaces.
         /// </summary>
-        public const String NamespaceXmlNamespaces = "http://www.w3.org/2000/xmlns/";
+        public const string NamespaceXmlNamespaces = "http://www.w3.org/2000/xmlns/";
         /// <summary>
         /// Namespace for XML Schema.
         /// </summary>
-        public const String NamespaceXmlSchema = "http://www.w3.org/2001/XMLSchema#";
+        public const string NamespaceXmlSchema = "http://www.w3.org/2001/XMLSchema#";
 
         /// <summary>
         /// Date Time Formatting string which meets the specified format for xsd:dateTime.
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
-        public const String XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ss.ffffffK";
+        public const string XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ss.ffffffK";
 
         /// <summary>
         /// Date Time Formatting string which meets the specified format for xsd:dateTime, this formatting string is imprecise in the sense that it does not preserve the fractional seconds.
@@ -74,7 +74,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
-        public const String XmlSchemaDateTimeFormatImprecise = "yyyy-MM-dd\\THH:mm:ssK";
+        public const string XmlSchemaDateTimeFormatImprecise = "yyyy-MM-dd\\THH:mm:ssK";
 
         /// <summary>
         /// Date Time Formatting string which meets the specified format for xsd:date.
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
-        public const String XmlSchemaDateFormat = "yyyy-MM-ddK";
+        public const string XmlSchemaDateFormat = "yyyy-MM-ddK";
 
         /// <summary>
         /// Date Time Formatting string which meets the the specified format for xsd:time.
@@ -90,7 +90,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
-        public const String XmlSchemaTimeFormat = "HH:mm:ss.ffffffK";
+        public const string XmlSchemaTimeFormat = "HH:mm:ss.ffffffK";
 
         /// <summary>
         /// Date Time Formatting string which meets the the specified format for xsd:time, this formatting string is imprecise in the sense that it does not preserve the fractional seconds.
@@ -98,14 +98,14 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format.
         /// </remarks>
-        public const String XmlSchemaTimeFormatImprecise = "HH:mm:ssK";
+        public const string XmlSchemaTimeFormatImprecise = "HH:mm:ssK";
 
 
 
         /// <summary>
         /// Data Type Uri Constants for XML Schema Data Types.
         /// </summary>
-        public const String XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
+        public const string XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
                             XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
                             XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
                             XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method.
         /// </summary>
-        public static String[] SupportedTypes = new String[] {
+        public static string[] SupportedTypes = new string[] {
             XmlSchemaDataTypeAnyUri,
             XmlSchemaDataTypeBase64Binary,
             XmlSchemaDataTypeBoolean,
@@ -172,10 +172,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="name">String to test.</param>
         /// <returns></returns>
-        public static bool IsName(String name)
+        public static bool IsName(string name)
         {
             // Get the Characters
-            char[] cs = name.ToCharArray();
+            var cs = name.ToCharArray();
 
             if (cs.Length == 0) return false;
 
@@ -188,7 +188,7 @@ namespace VDS.RDF.Parsing
             // Check rest of Characters
             if (cs.Length > 1)
             {
-                for (int i = 1; i < cs.Length; i++)
+                for (var i = 1; i < cs.Length; i++)
                 {
                     // Must be a valid NCNameChar
                     if (!IsNameChar(cs[i]))
@@ -208,7 +208,7 @@ namespace VDS.RDF.Parsing
         /// <param name="name">String to test.</param>
         /// <returns></returns>
         /// <see>http://www.w3.org/TR/REC-xml-names/#NT-NCName.</see>
-        public static bool IsNCName(String name)
+        public static bool IsNCName(string name)
         {
             return IsName(name) && !name.Contains(":");
         }
@@ -226,7 +226,7 @@ namespace VDS.RDF.Parsing
                 // NameStartChar's allowed
                 return true;
             }
-            else if (Char.IsDigit(c))
+            else if (char.IsDigit(c))
             {
                 // Digits allowed
                 return true;
@@ -296,7 +296,7 @@ namespace VDS.RDF.Parsing
             else
             {
                 // Have to cast to an Integer because the next Hex Range is out of the range of Character
-                int i = (int)c;
+                var i = (int)c;
                 if (i >= 0x10000 && i <= 0xEFFFF)
                 {
                     // This Hex Range is also allowed
@@ -314,7 +314,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="type">Data Type Uri.</param>
         /// <returns></returns>
-        public static bool IsSupportedType(String type)
+        public static bool IsSupportedType(string type)
         {
             return SupportedTypes.Contains(type);
         }
@@ -343,7 +343,7 @@ namespace VDS.RDF.Parsing
         /// The function only returns the Data Type Uri (as a String) if the Data Type of the Literal is one of the supported Data Types.
         /// </para>
         /// </remarks>
-        public static String GetSupportedDataType(INode n)
+        public static string GetSupportedDataType(INode n)
         {
             if (n == null) throw new RdfException("Data Type cannot be determined for Nulls");
 
@@ -354,10 +354,10 @@ namespace VDS.RDF.Parsing
                 case NodeType.Uri:
                     throw new RdfException("Data Type cannot be determined for non-Literal Nodes");
                 case NodeType.Literal:
-                    ILiteralNode l = (ILiteralNode)n;
+                    var l = (ILiteralNode)n;
                     if (l.DataType == null)
                     {
-                        if (!l.Language.Equals(String.Empty))
+                        if (!l.Language.Equals(string.Empty))
                         {
                             throw new RdfException("Literals with Language Specifiers do not have a Data Type");
                         }
@@ -368,14 +368,14 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        String type = l.DataType.AbsoluteUri;
+                        var type = l.DataType.AbsoluteUri;
                         if (IsSupportedType(type))
                         {
                             return type;
                         }
                         else
                         {
-                            return String.Empty;
+                            return string.Empty;
                         }
                     }
                 default:
@@ -395,7 +395,7 @@ namespace VDS.RDF.Parsing
         /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
-        public static String GetCompatibleSupportedDataType(INode x, INode y, bool widen)
+        public static string GetCompatibleSupportedDataType(INode x, INode y, bool widen)
         {
             return GetCompatibleSupportedDataType(GetSupportedDataType(x), GetSupportedDataType(y), widen);
         }
@@ -411,7 +411,7 @@ namespace VDS.RDF.Parsing
         /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
-        public static String GetCompatibleSupportedDataType(INode x, INode y)
+        public static string GetCompatibleSupportedDataType(INode x, INode y)
         {
             return GetCompatibleSupportedDataType(GetSupportedDataType(x), GetSupportedDataType(y), false);
         }
@@ -427,7 +427,7 @@ namespace VDS.RDF.Parsing
         /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
-        public static String GetCompatibleSupportedDataType(String type1, String type2)
+        public static string GetCompatibleSupportedDataType(string type1, string type2)
         {
             return GetCompatibleSupportedDataType(type1, type2, false);
         }
@@ -444,7 +444,7 @@ namespace VDS.RDF.Parsing
         /// Currently this is only immplemented sufficiently for the types it needs to know are compatible for implementing SPARQL equality and ordering semantics.
         /// </para>
         /// </remarks>
-        public static String GetCompatibleSupportedDataType(String type1, String type2, bool widen)
+        public static string GetCompatibleSupportedDataType(string type1, string type2, bool widen)
         {
             if (!SupportedTypes.Contains(type1) || !SupportedTypes.Contains(type2))
             {
@@ -457,10 +457,10 @@ namespace VDS.RDF.Parsing
             }
 
             // TODO: This is enough for our specific ordering needs, but could maybe be broken down further for more general usage?
-            var numericType1 = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(type1);
+            SparqlNumericType numericType1 = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(type1);
             if (numericType1 != SparqlNumericType.NaN)
             {
-                var numericType2 = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(type2);
+                SparqlNumericType numericType2 = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(type2);
                 if (numericType2 != SparqlNumericType.NaN)
                 {
                     var compatibleType = (SparqlNumericType)Math.Max((int)numericType1, (int)numericType2);

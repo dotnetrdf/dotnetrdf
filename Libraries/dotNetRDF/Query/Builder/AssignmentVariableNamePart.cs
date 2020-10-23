@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Builder
         protected TExpression BuildAssignmentExpression(INamespaceMapper prefixes)
         {
             var expressionBuilder = new ExpressionBuilder(prefixes);
-            var assignment = _buildAssignmentExpression(expressionBuilder);
+            PrimaryExpression<TExpression> assignment = _buildAssignmentExpression(expressionBuilder);
             return assignment.Expression;
         }
     }

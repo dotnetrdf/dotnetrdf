@@ -10,38 +10,38 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra1()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsGraph = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsType<Graph>(algebra);
 
-            Graph g = (Graph) algebra;
+            var g = (Graph) algebra;
             Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
         }
 
         [Fact]
         public void SparqlGraphPatternToAlgebra2()
         {
-            GraphPattern up = new GraphPattern();
+            var up = new GraphPattern();
             up.IsUnion = true;
 
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsGraph = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
             up.AddGraphPattern(gp);
 
-            GraphPattern empty = new GraphPattern();
+            var empty = new GraphPattern();
             up.AddGraphPattern(empty);
 
             ISparqlAlgebra algebra = up.ToAlgebra();
             Assert.IsType<Union>(algebra);
-            Union u = (Union) algebra;
+            var u = (Union) algebra;
 
             Assert.IsType<Graph>(u.Lhs);
 
-            Graph g = (Graph)u.Lhs;
+            var g = (Graph)u.Lhs;
             Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             Assert.IsAssignableFrom<IBgp>(u.Rhs);
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra3()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsService = true;
             gp.GraphSpecifier = new UriToken("<http://example.org/sparql>", 0, 0, 0);
 
@@ -61,20 +61,20 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra4()
         {
-            GraphPattern up = new GraphPattern();
+            var up = new GraphPattern();
             up.IsUnion = true;
 
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsService = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
             up.AddGraphPattern(gp);
 
-            GraphPattern empty = new GraphPattern();
+            var empty = new GraphPattern();
             up.AddGraphPattern(empty);
 
             ISparqlAlgebra algebra = up.ToAlgebra();
             Assert.IsType<Union>(algebra);
-            Union u = (Union)algebra;
+            var u = (Union)algebra;
 
             Assert.IsType<Service>(u.Lhs);
 
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra5()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsGraph = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
             gp.AddInlineData(new BindingsPattern());
@@ -92,10 +92,10 @@ namespace VDS.RDF.Query.Algebra
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsAssignableFrom<IJoin>(algebra);
 
-            IJoin join = (IJoin) algebra;
+            var join = (IJoin) algebra;
 
             Assert.IsType<Graph>(join.Lhs);
-            Graph g = (Graph)join.Lhs;
+            var g = (Graph)join.Lhs;
             Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             Assert.IsAssignableFrom<Bindings>(join.Rhs);
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra6()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsService = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
             gp.AddInlineData(new BindingsPattern());
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsAssignableFrom<IJoin>(algebra);
 
-            IJoin join = (IJoin)algebra;
+            var join = (IJoin)algebra;
             Assert.IsType<Service>(join.Lhs);
             Assert.IsType<Bindings>(join.Rhs);
         }
@@ -120,18 +120,18 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra7()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsGraph = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsType<Graph>(algebra);
 
-            Graph g = (Graph)algebra;
+            var g = (Graph)algebra;
             Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             // Nest in another graph pattern with same specifier
-            GraphPattern parent = new GraphPattern();
+            var parent = new GraphPattern();
             parent.IsGraph = true;
             parent.GraphSpecifier = gp.GraphSpecifier;
             parent.AddGraphPattern(gp);
@@ -147,18 +147,18 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra8()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsGraph = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsType<Graph>(algebra);
 
-            Graph g = (Graph)algebra;
+            var g = (Graph)algebra;
             Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             // Nest in another graph pattern with different specifier
-            GraphPattern parent = new GraphPattern();
+            var parent = new GraphPattern();
             parent.IsGraph = true;
             parent.GraphSpecifier = new UriToken("<http://example.org>", 0, 0, 0);
             parent.AddGraphPattern(gp);
@@ -179,18 +179,18 @@ namespace VDS.RDF.Query.Algebra
         [Fact]
         public void SparqlGraphPatternToAlgebra9()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.IsGraph = true;
             gp.GraphSpecifier = new VariableToken("g", 0, 0, 1);
 
             ISparqlAlgebra algebra = gp.ToAlgebra();
             Assert.IsType<Graph>(algebra);
 
-            Graph g = (Graph)algebra;
+            var g = (Graph)algebra;
             Assert.IsAssignableFrom<IBgp>(g.InnerAlgebra);
 
             // Nest in another graph pattern with same specifier but also with another BGP
-            GraphPattern parent = new GraphPattern();
+            var parent = new GraphPattern();
             parent.IsGraph = true;
             parent.GraphSpecifier = gp.GraphSpecifier;
             parent.AddGraphPattern(gp);
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query.Algebra
 
             Assert.IsType<Join>(g.InnerAlgebra);
 
-            Join join = (Join) g.InnerAlgebra;
+            var join = (Join) g.InnerAlgebra;
             Assert.IsType<Graph>(join.Lhs);
 
             g = (Graph)join.Lhs;

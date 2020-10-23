@@ -146,7 +146,7 @@ namespace VDS.RDF.Writing
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
             g.NamespaceMap.Import(_defaultNamespaces);
-            CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, CompressionLevel, _prettyprint, _allowHiSpeed);
+            var context = new CompressingTurtleWriterContext(g, output, CompressionLevel, _prettyprint, _allowHiSpeed);
             context.NodeFormatter = new Notation3Formatter(g);
             GenerateOutput(context);
         }
@@ -164,25 +164,25 @@ namespace VDS.RDF.Writing
                 context.Output.WriteLine();
             }
             // Prefix Directives
-            foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
+            foreach (var prefix in context.Graph.NamespaceMap.Prefixes)
             {
                 if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
                 {
-                    if (!prefix.Equals(String.Empty))
+                    if (!prefix.Equals(string.Empty))
                     {
                         context.Output.WriteLine("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
                     }
                     else
                     {
-                        context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(String.Empty)) + ">.");
+                        context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(string.Empty)) + ">.");
                     }
                 }
             }
             context.Output.WriteLine();
 
             // Decide on the Write Mode to use
-            bool hiSpeed = false;
-            bool contextWritten = false;
+            var hiSpeed = false;
+            var contextWritten = false;
             double subjNodes = context.Graph.Triples.SubjectNodes.Count();
             double triples = context.Graph.Triples.Count;
             if ((subjNodes / triples) > 0.75) hiSpeed = true;
@@ -197,7 +197,7 @@ namespace VDS.RDF.Writing
                 {
                     if (!contextWritten && t.Context != null && t.Context is VariableContext)
                     {
-                        VariableContext varContext = (VariableContext)t.Context;
+                        var varContext = (VariableContext)t.Context;
                         contextWritten = GenerateVariableQuantificationOutput(context, varContext);
                     }
                     context.Output.WriteLine(GenerateTripleOutput(context, t));
@@ -211,16 +211,16 @@ namespace VDS.RDF.Writing
                 }
 
                 // Get the Triples as a Sorted List
-                List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
+                var ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
                 ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
                 // Variables we need to track our writing
                 INode lastSubj, lastPred;
                 lastSubj = lastPred = null;
                 int subjIndent = 0, predIndent = 0;
-                String temp;
+                string temp;
 
-                for (int i = 0; i < ts.Count; i++)
+                for (var i = 0; i < ts.Count; i++)
                 {
                     Triple t = ts[i];
 
@@ -232,7 +232,7 @@ namespace VDS.RDF.Writing
                         // If there's a Variable Context insert the @forAll and @forSome
                         if (!contextWritten && t.Context != null && t.Context is VariableContext)
                         {
-                            VariableContext varContext = (VariableContext)t.Context;
+                            var varContext = (VariableContext)t.Context;
                             contextWritten = GenerateVariableQuantificationOutput(context, varContext);
                         }
 
@@ -262,7 +262,7 @@ namespace VDS.RDF.Writing
                         // Terminate previous Predicate Object list
                         context.Output.WriteLine(";");
 
-                        if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
+                        if (context.PrettyPrint) context.Output.Write(new string(' ', subjIndent));
 
                         // Write the next Predicate
                         temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
@@ -276,7 +276,7 @@ namespace VDS.RDF.Writing
                         // Continue Object List
                         context.Output.WriteLine(",");
 
-                        if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent + predIndent));
+                        if (context.PrettyPrint) context.Output.Write(new string(' ', subjIndent + predIndent));
                     }
 
                     // Write the Object
@@ -298,9 +298,9 @@ namespace VDS.RDF.Writing
         /// <param name="t">Triple to output.</param>
         /// <returns></returns>
         /// <remarks>Used only in High Speed Write Mode.</remarks>
-        private String GenerateTripleOutput(CompressingTurtleWriterContext context, Triple t)
+        private string GenerateTripleOutput(CompressingTurtleWriterContext context, Triple t)
         {
-            StringBuilder temp = new StringBuilder();
+            var temp = new StringBuilder();
             temp.Append(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0));
             temp.Append(' ');
             temp.Append(GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, 0));
@@ -319,9 +319,9 @@ namespace VDS.RDF.Writing
         /// <param name="segment">Segment of the Triple being output.</param>
         /// <param name="indent">Indent to use for pretty printing.</param>
         /// <returns></returns>
-        private String GenerateNodeOutput(CompressingTurtleWriterContext context, INode n, TripleSegment segment, int indent)
+        private string GenerateNodeOutput(CompressingTurtleWriterContext context, INode n, TripleSegment segment, int indent)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             switch (n.NodeType)
             {
@@ -340,12 +340,12 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable("Notation 3"));
 
                     output.Append("{");
-                    IGraphLiteralNode glit = (IGraphLiteralNode)n;
+                    var glit = (IGraphLiteralNode)n;
 
-                    StringBuilder temp = new StringBuilder();
-                    CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, new System.IO.StringWriter(temp));
+                    var temp = new StringBuilder();
+                    var subcontext = new CompressingTurtleWriterContext(glit.SubGraph, new System.IO.StringWriter(temp));
                     subcontext.NodeFormatter = context.NodeFormatter;
-                    bool contextWritten = false;
+                    var contextWritten = false;
 
                     // Write Triples 1 at a Time on a single line
                     foreach (Triple t in subcontext.Graph.Triples) 
@@ -391,10 +391,10 @@ namespace VDS.RDF.Writing
         /// <param name="c">Collection to convert.</param>
         /// <param name="indent">Indent to use for pretty printing.</param>
         /// <returns></returns>
-        private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRdfCollection c, int indent)
+        private string GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRdfCollection c, int indent)
         {
-            StringBuilder output = new StringBuilder();
-            bool first = true;
+            var output = new StringBuilder();
+            var first = true;
 
             if (!c.IsExplicit)
             {
@@ -402,7 +402,7 @@ namespace VDS.RDF.Writing
 
                 while (c.Triples.Count > 0)
                 {
-                    if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
+                    if (context.PrettyPrint && !first) output.Append(new string(' ', indent));
                     first = false;
                     output.Append(GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent));
                     c.Triples.RemoveAt(0);
@@ -428,9 +428,9 @@ namespace VDS.RDF.Writing
 
                     while (c.Triples.Count > 0)
                     {
-                        if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
+                        if (context.PrettyPrint && !first) output.Append(new string(' ', indent));
                         first = false;
-                        String temp = GenerateNodeOutput(context, c.Triples.First().Predicate, TripleSegment.Predicate, indent);
+                        var temp = GenerateNodeOutput(context, c.Triples.First().Predicate, TripleSegment.Predicate, indent);
                         output.Append(temp);
                         output.Append(' ');
                         int addIndent;
@@ -490,7 +490,7 @@ namespace VDS.RDF.Writing
         /// Helper method for generating Parser Warning Events.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfWriterWarning d = Warning;
             if (d != null)

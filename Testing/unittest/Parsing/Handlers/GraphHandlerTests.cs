@@ -36,10 +36,10 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerImplicitTurtle()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (Triple t in g.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -53,15 +53,15 @@ namespace VDS.RDF.Parsing.Handlers
 
         protected void ParsingUsingGraphHandlerExplicitTest(String tempFile, IRdfReader parser, bool nsCheck)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile(tempFile);
 
-            Graph h = new Graph();
-            GraphHandler handler = new GraphHandler(h);
+            var h = new Graph();
+            var handler = new GraphHandler(h);
             parser.Load(handler, tempFile);
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -77,31 +77,31 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitNTriples()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.nt", new NTriplesParser(), false);
+            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.nt", new NTriplesParser(), false);
         }
 
         [Fact]
         public void ParsingGraphHandlerExplicitTurtle()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.ttl", new TurtleParser(), true);
+            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.ttl", new TurtleParser(), true);
         }
 
         [Fact]
         public void ParsingGraphHandlerExplicitNotation3()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.n3", new Notation3Parser(), true);
+            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.n3", new Notation3Parser(), true);
         }
 
         [Fact]
         public void ParsingGraphHandlerExplicitRdfA()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
+            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.html", new RdfAParser(), false);
         }
 
         [Fact]
         public void ParsingGraphHandlerExplicitRdfJson()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.json", new RdfJsonParser(), false);
+            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.json", new RdfJsonParser(), false);
         }
 
         #endregion
@@ -109,14 +109,14 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitMerging()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile("graph_handler_tests_temp.ttl");
 
-            Graph h = new Graph();
-            GraphHandler handler = new GraphHandler(h);
+            var h = new Graph();
+            var handler = new GraphHandler(h);
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(handler, "graph_handler_tests_temp.ttl");
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -129,7 +129,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
             Assert.NotEqual(g, h);
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -139,13 +139,13 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerImplicitMerging()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
             g.SaveToFile("graph_handler_tests_temp.ttl");
 
-            Graph h = new Graph();
+            var h = new Graph();
 
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(h, "graph_handler_tests_temp.ttl");
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(g.Triples.Count + 2, h.Triples.Count);
             Assert.NotEqual(g, h);
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples.Where(x => !x.IsGroundTriple))
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -168,11 +168,11 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerImplicitInitialBaseUri()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/");
 
-            String fragment = "<subject> <predicate> <object> .";
-            TurtleParser parser = new TurtleParser();
+            var fragment = "<subject> <predicate> <object> .";
+            var parser = new TurtleParser();
             parser.Load(g, new StringReader(fragment));
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -182,12 +182,12 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitInitialBaseUri()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/");
 
-            String fragment = "<subject> <predicate> <object> .";
-            TurtleParser parser = new TurtleParser();
-            GraphHandler handler = new GraphHandler(g);
+            var fragment = "<subject> <predicate> <object> .";
+            var parser = new TurtleParser();
+            var handler = new GraphHandler(g);
             parser.Load(handler, new StringReader(fragment));
 
             Assert.False(g.IsEmpty, "Graph should not be empty");
@@ -201,9 +201,9 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 UriLoader.CacheEnabled = false;
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
                 foreach (Triple t in g.Triples)
                 {
                     Console.WriteLine(t.ToString());
@@ -222,10 +222,10 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 UriLoader.CacheEnabled = false;
 
-                Graph g = new Graph();
+                var g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
                 foreach (Triple t in g.Triples)
                 {
                     Console.WriteLine(t.ToString());
@@ -240,7 +240,7 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitRdfXml()
         {
-            this.ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
+            ParsingUsingGraphHandlerExplicitTest("graph_handler_tests_temp.rdf", new RdfXmlParser(), true);
         }
     }
 }

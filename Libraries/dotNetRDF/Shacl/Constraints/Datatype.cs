@@ -24,19 +24,19 @@
 // </copyright>
 */
 
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Schema;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Xml;
-    using System.Xml.Linq;
-    using System.Xml.Schema;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Parsing;
-    using VDS.RDF.Query;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Datatype : Constraint
     {
         [DebuggerStepThrough]
@@ -65,7 +65,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 where IsInvalid(valueNode)
                 select valueNode;
@@ -81,11 +81,11 @@ namespace VDS.RDF.Shacl.Constraints
             }
 
             var literal = (ILiteralNode)n;
-            var xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+            Uri xsd_string = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
 
-            var rdf_langString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
-            var stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
-            var datatype = literal.DataType ?? stringDatatype;
+            Uri rdf_langString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
+            Uri stringDatatype = string.IsNullOrEmpty(literal.Language) ? xsd_string : rdf_langString;
+            Uri datatype = literal.DataType ?? stringDatatype;
 
             if (!EqualityHelper.AreUrisEqual(datatype, DataTypeParameter))
             {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Shacl.Constraints
                 return false;
             }
 
-            var supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(SparqlSpecsHelper.IntegerDataTypes);
+            IEnumerable<string> supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(SparqlSpecsHelper.IntegerDataTypes);
 
             if (!supportedDatatypes.Contains(literal.DataType.AbsoluteUri))
             {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Shacl.Constraints
         private static bool IsIllformed(ILiteralNode literal)
         {
             var type = literal.DataType.AbsoluteUri.Replace(XmlSpecsHelper.NamespaceXmlSchema, string.Empty);
-            var schemas = GenerateSchema(type);
+            XmlSchemaSet schemas = GenerateSchema(type);
 
             var isIllformed = false;
             void handler(object sender, ValidationEventArgs e)

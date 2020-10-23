@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public HashSet<ITriplePattern> getTriplePatterns()
         {
-            HashSet<ITriplePattern> results = new HashSet<ITriplePattern>();
+            var results = new HashSet<ITriplePattern>();
             addTriplePatterns(SP.PropertySubject, results);
             addTriplePatterns(SP.PropertyPredicate, results);
             addTriplePatterns(SP.PropertyObject, results);
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public bool isBlankNodeVar()
         {
-            String name = getName();
+            var name = getName();
             if (name != null)
             {
                 return name.StartsWith("?");
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         override public void Print(ISparqlPrinter p)
         {
-            String name = getName();
+            var name = getName();
             if (name.StartsWith("?"))
             {
                 p.print("_:");

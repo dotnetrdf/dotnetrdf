@@ -144,14 +144,14 @@ namespace VDS.RDF.Query.Algebra
                 {
                     // Apply Filter over LHS Results only - defer evaluation to filter implementation
                     context.InputMultiset = lhsResults;
-                    UnaryExpressionFilter filter = new UnaryExpressionFilter(_expr);
+                    var filter = new UnaryExpressionFilter(_expr);
                     filter.Evaluate(context);
                     context.OutputMultiset = lhsResults;
                 }
                 else
                 {
                     // Calculate the product applying the filter as we go
-                    if (context.Options.UsePLinqEvaluation && this._expr.CanParallelise)
+                    if (context.Options.UsePLinqEvaluation && _expr.CanParallelise)
                     {
                         PartitionedMultiset partitionedSet;
                         SparqlResultBinder binder = context.Binder;
@@ -159,13 +159,13 @@ namespace VDS.RDF.Query.Algebra
                         {
                             partitionedSet = new PartitionedMultiset(lhsResults.Count, rhsResults.Count);
                             context.Binder = new LeviathanLeftJoinBinder(partitionedSet);
-                            lhsResults.Sets.AsParallel().ForAll(x => this.EvalFilteredProduct(context, x, rhsResults, partitionedSet));
+                            lhsResults.Sets.AsParallel().ForAll(x => EvalFilteredProduct(context, x, rhsResults, partitionedSet));
                         }
                         else
                         {
                             partitionedSet = new PartitionedMultiset(rhsResults.Count, lhsResults.Count);
                             context.Binder = new LeviathanLeftJoinBinder(partitionedSet);
-                            rhsResults.Sets.AsParallel().ForAll(y => this.EvalFilteredProduct(context, y, lhsResults, partitionedSet));
+                            rhsResults.Sets.AsParallel().ForAll(y => EvalFilteredProduct(context, y, lhsResults, partitionedSet));
                         }
 
                         context.Binder = binder;
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Algebra
 
         private void EvalFilteredProduct(SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
         {
-            int id = partitionedSet.GetNextBaseID();
+            var id = partitionedSet.GetNextBaseID();
             foreach (ISet y in other.Sets)
             {
                 id++;
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Algebra
                 partitionedSet.Add(z);
                 try
                 {
-                    if (!this._expr.Evaluate(context, z.ID).AsSafeBoolean())
+                    if (!_expr.Evaluate(context, z.ID).AsSafeBoolean())
                     {
                         // Means the expression evaluates to false so we discard the solution
                         partitionedSet.Remove(z.ID);
@@ -248,13 +248,13 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those floating on either side which are not fixed
-                IEnumerable<String> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -262,7 +262,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {

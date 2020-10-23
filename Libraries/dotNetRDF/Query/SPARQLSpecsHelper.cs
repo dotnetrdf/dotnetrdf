@@ -48,16 +48,16 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Namespace Uri for SPARQL Namespace.
         /// </summary>
-        public const String SparqlNamespace = "http://www.w3.org/2005/sparql-results#";
+        public const string SparqlNamespace = "http://www.w3.org/2005/sparql-results#";
         /// <summary>
         /// Namespace Uri for the RDF serialization of a SPARQL Result Set.
         /// </summary>
-        public const String SparqlRdfResultsNamespace = "http://www.w3.org/2001/sw/DataAccess/tests/result-set#";
+        public const string SparqlRdfResultsNamespace = "http://www.w3.org/2001/sw/DataAccess/tests/result-set#";
 
         /// <summary>
         /// Keywords in Sparql.
         /// </summary>
-        public const String SparqlKeywordBase = "BASE",
+        public const string SparqlKeywordBase = "BASE",
                       SparqlKeywordPrefix = "PREFIX",
                       SparqlKeywordSelect = "SELECT",
                       SparqlKeywordConstruct = "CONSTRUCT",
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Non-Query Keywords.
         /// </summary>
-        public static String[] NonQueryKeywords = {   
+        public static string[] NonQueryKeywords = {   
                                                       SparqlKeywordOrder, 
                                                       SparqlKeywordBy, 
                                                       SparqlKeywordLimit, 
@@ -223,7 +223,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Function Keywords.
         /// </summary>
-        public static String[] FunctionKeywords = {   
+        public static string[] FunctionKeywords = {   
                                                       SparqlKeywordAbs,
                                                       SparqlKeywordBNode,
                                                       SparqlKeywordBound,
@@ -287,7 +287,7 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// Unlike <see cref="SparqlSpecsHelper.AggregateFunctionKeywords">AggregateFunctionKeywords[]</see> this includes keywords related to aggregates (like DISTINCT) and those for Leviathan extension aggregates which are not standard SPARQL 1.1 syntax.
         /// </remarks>
-        public static String[] AggregateKeywords = {   
+        public static string[] AggregateKeywords = {   
                                                        SparqlKeywordAll,
                                                        SparqlKeywordAny,
                                                        SparqlKeywordAvg, 
@@ -310,7 +310,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are built in SPARQL Aggregate Functions.
         /// </summary>
-        public static String[] AggregateFunctionKeywords = {
+        public static string[] AggregateFunctionKeywords = {
                                                                 SparqlKeywordAvg,
                                                                 SparqlKeywordCount,
                                                                 SparqlKeywordGroupConcat,
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL.
         /// </summary>
-        public static String[] IntegerDataTypes = {   
+        public static string[] IntegerDataTypes = {   
                                                       XmlSpecsHelper.XmlSchemaDataTypeByte, 
                                                       XmlSpecsHelper.XmlSchemaDataTypeInt,
                                                       XmlSpecsHelper.XmlSchemaDataTypeInteger, 
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of IRIs for supported Cast Functions.
         /// </summary>
-        public static String[] SupportedCastFunctions = {   
+        public static string[] SupportedCastFunctions = {   
                                                             XmlSpecsHelper.XmlSchemaDataTypeBoolean, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeDateTime, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeDecimal, 
@@ -354,7 +354,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of Keywords for SPARQL Query 1.0.
         /// </summary>
-        public static String[] SparqlQuery10Keywords = {
+        public static string[] SparqlQuery10Keywords = {
                                                         SparqlKeywordAsc,
                                                         SparqlKeywordAsk,
                                                         SparqlKeywordBase,
@@ -394,7 +394,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of additional Keywords for SPARQL Query 1.1.
         /// </summary>
-        public static String[] SparqlQuery11Keywords = {
+        public static string[] SparqlQuery11Keywords = {
                                                         SparqlKeywordAbs,
                                                         SparqlKeywordAs,
                                                         SparqlKeywordAvg,
@@ -462,7 +462,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Update Keywords.
         /// </summary>
-        public static String[] UpdateKeywords = {   
+        public static string[] UpdateKeywords = {   
                                                     SparqlKeywordAdd,
                                                     SparqlKeywordAll,
                                                     SparqlKeywordClear,
@@ -485,7 +485,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of Keywords for SPARQL Update 1.1.
         /// </summary>
-        public static String[] SparqlUpdate11Keywords = {
+        public static string[] SparqlUpdate11Keywords = {
                                                           SparqlKeywordAdd,
                                                           SparqlKeywordAll,
                                                           SparqlKeywordBase,
@@ -532,7 +532,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
-        public static bool IsQueryKeyword(String keyword)
+        public static bool IsQueryKeyword(string keyword)
         {
             keyword = keyword.ToUpper();
             if (keyword.Equals(SparqlKeywordAsk) || keyword.Equals(SparqlKeywordConstruct) || keyword.Equals(SparqlKeywordDescribe) || keyword.Equals(SparqlKeywordSelect))
@@ -550,7 +550,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
-        public static bool IsNonQueryKeyword(String keyword)
+        public static bool IsNonQueryKeyword(string keyword)
         {
             return NonQueryKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
@@ -560,7 +560,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
-        public static bool IsFunctionKeyword(String keyword)
+        public static bool IsFunctionKeyword(string keyword)
         {
             return FunctionKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
@@ -570,7 +570,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
-        public static bool IsFunctionKeyword11(String keyword)
+        public static bool IsFunctionKeyword11(string keyword)
         {
             return IsFunctionKeyword(keyword) && SparqlQuery11Keywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
@@ -580,7 +580,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
-        public static bool IsAggregateKeyword(String keyword)
+        public static bool IsAggregateKeyword(string keyword)
         {
             return AggregateKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
@@ -590,7 +590,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check.</param>
         /// <returns></returns>
-        public static bool IsAggregateFunctionKeyword(String keyword)
+        public static bool IsAggregateFunctionKeyword(string keyword)
         {
             return AggregateFunctionKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
@@ -600,7 +600,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
-        public static bool IsUpdateKeyword(String keyword)
+        public static bool IsUpdateKeyword(string keyword)
         {
             return UpdateKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
@@ -615,7 +615,7 @@ namespace VDS.RDF.Query
         /// <param name="value">QName to check.</param>
         /// <param name="syntax">SPARQL Syntax.</param>
         /// <returns></returns>
-        public static bool IsValidQName(String value, SparqlQuerySyntax syntax)
+        public static bool IsValidQName(string value, SparqlQuerySyntax syntax)
         {
             if (!value.Contains(':')) 
             {
@@ -625,13 +625,13 @@ namespace VDS.RDF.Query
             else
             {
                 // Split into Prefix and Local Name
-                String[] parts = value.Split(':');
+                var parts = value.Split(':');
 
                 // If SPARQL 1.0 then can only have two sections
                 if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
 
                 // All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
-                for (int i = 0; i < parts.Length - 1; i++)
+                for (var i = 0; i < parts.Length - 1; i++)
                 {
                     if (!IsPNPrefix(parts[i].ToCharArray())) return false;
                 }
@@ -645,9 +645,9 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Variable Name to check.</param>
         /// <returns></returns>
-        public static bool IsValidVarName(String value)
+        public static bool IsValidVarName(string value)
         {
-            char[] cs = value.ToCharArray(1,value.Length-1);
+            var cs = value.ToCharArray(1,value.Length-1);
 
             // Variable Names can't be empty
             if (cs.Length == 0)
@@ -656,12 +656,12 @@ namespace VDS.RDF.Query
             }
 
             // First Character must be from PN_CHARS_U or a digit
-            char first = cs[0];
-            if (Char.IsDigit(first) || IsPNCharsU(first))
+            var first = cs[0];
+            if (char.IsDigit(first) || IsPNCharsU(first))
             {
                 if (cs.Length > 1)
                 {
-                    for (int i = 1; i < cs.Length; i++)
+                    for (var i = 1; i < cs.Length; i++)
                     {
                         if (i < cs.Length - 1)
                         {
@@ -688,7 +688,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Prefix declaration.</param>
         /// <returns></returns>
-        public static bool IsValidPrefix(String value)
+        public static bool IsValidPrefix(string value)
         {
             // Empty string is not a valid prefix
             if (value.Length == 0) return false;
@@ -706,23 +706,23 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Value.</param>
         /// <returns></returns>
-        public static bool IsValidBNode(String value)
+        public static bool IsValidBNode(string value)
         {
             // Must be at least 3 characters
             if (value.Length < 3) return false;
             // Must start with _:
             if (!value.StartsWith("_:")) return false;
 
-            char[] cs = value.Substring(2).ToCharArray();
+            var cs = value.Substring(2).ToCharArray();
 
             // First character must be PN_CHARS_U or digit
-            if (!Char.IsDigit(cs[0]) && !IsPNCharsU(cs[0])) return false;
+            if (!char.IsDigit(cs[0]) && !IsPNCharsU(cs[0])) return false;
 
             // If only one character it's a valid identifier since we've validated the first character
             if (cs.Length == 1) return true;
 
             // Otherwise we need to validate the rest of the identifier
-            for (int i = 1; i < cs.Length; i++)
+            for (var i = 1; i < cs.Length; i++)
             {
                 if (i < cs.Length - 1)
                 {
@@ -792,7 +792,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsPNChars(char c)
         {
-            if (c == '-' || Char.IsDigit(c))
+            if (c == '-' || char.IsDigit(c))
             {
                 return true;
             }
@@ -830,9 +830,9 @@ namespace VDS.RDF.Query
             }
 
             // First character must be a digit or from PN_CHARS_U
-            char first = cs[0];
-            int start = 0;
-            if (Char.IsDigit(first) || IsPNCharsU(first) ||
+            var first = cs[0];
+            var start = 0;
+            if (char.IsDigit(first) || IsPNCharsU(first) ||
                 (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, 0, out start)))
             {
                 if (start > 0)
@@ -851,12 +851,12 @@ namespace VDS.RDF.Query
                 // Check the rest of the characters
                 if (cs.Length > start)
                 {
-                    for (int i = start; i < cs.Length; i++)
+                    for (var i = start; i < cs.Length; i++)
                     {
                         if (i < cs.Length - 1)
                         {
                             // Middle characters may be from PN_CHARS or '.'
-                            int j = i;
+                            var j = i;
                             if (!(cs[i] == '.' || IsPNChars(cs[i]) || 
                                   (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, i, out j))
                                 ))
@@ -904,12 +904,12 @@ namespace VDS.RDF.Query
             if (cs.Length == 0) return true;
 
             // First character must be from PN_CHARS_BASE
-            char first = cs[0];
+            var first = cs[0];
             if (IsPNCharsBase(first))
             {
                 if (cs.Length > 1)
                 {
-                    for (int i = 1; i < cs.Length; i++)
+                    for (var i = 1; i < cs.Length; i++)
                     {
                         if (i < cs.Length - 1)
                         {
@@ -959,8 +959,8 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    char a = cs[startIndex + 1];
-                    char b = cs[startIndex + 2];
+                    var a = cs[startIndex + 1];
+                    var b = cs[startIndex + 2];
                     if (IsHex(a) && IsHex(b))
                     {
                         // Valid % encoding
@@ -982,7 +982,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    char c = cs[startIndex + 1];
+                    var c = cs[startIndex + 1];
                     switch (c)
                     {
                         case '_':
@@ -1026,7 +1026,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsHex(char c)
         {
-            if (Char.IsDigit(c))
+            if (char.IsDigit(c))
             {
                 return true;
             }
@@ -1057,19 +1057,19 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Value to unescape.</param>
         /// <returns></returns>
-        public static String UnescapeQName(String value)
+        public static string UnescapeQName(string value)
         {
             if (value.Contains('\\') || value.Contains('%'))
             {
-                StringBuilder output = new StringBuilder();
+                var output = new StringBuilder();
                 output.Append(value.Substring(0, value.IndexOf(':')));
-                char[] cs = value.ToCharArray();
-                for (int i = output.Length; i < cs.Length; i++)
+                var cs = value.ToCharArray();
+                for (var i = output.Length; i < cs.Length; i++)
                 {
                     if (cs[i] == '\\')
                     {
                         if (i == cs.Length - 1) throw new RdfParseException("Invalid backslash to start an escape at the end of the Local Name, expecting a single character after the backslash");
-                        char esc = cs[i + 1];
+                        var esc = cs[i + 1];
                         switch (esc)
                         {
                             case '_':
@@ -1142,7 +1142,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Value to test.</param>
         /// <returns></returns>
-        public static bool IsValidNumericLiteral(String value)
+        public static bool IsValidNumericLiteral(string value)
         {
             return (SparqlInteger.IsMatch(value) || SparqlDecimal.IsMatch(value) || SparqlDouble.IsMatch(value));
         }
@@ -1152,7 +1152,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Value to test.</param>
         /// <returns></returns>
-        public static bool IsInteger(String value)
+        public static bool IsInteger(string value)
         {
             return SparqlInteger.IsMatch(value);
         }
@@ -1162,7 +1162,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Value to test.</param>
         /// <returns></returns>
-        public static bool IsDecimal(String value)
+        public static bool IsDecimal(string value)
         {
             return SparqlDecimal.IsMatch(value) || SparqlInteger.IsMatch(value);
         }
@@ -1172,7 +1172,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsFloat(String value)
+        public static bool IsFloat(string value)
         {
             return IsDouble(value);
         }
@@ -1182,7 +1182,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">Value to test.</param>
         /// <returns></returns>
-        public static bool IsDouble(String value)
+        public static bool IsDouble(string value)
         {
             return SparqlDouble.IsMatch(value) || SparqlDecimal.IsMatch(value) || SparqlInteger.IsMatch(value);
         }
@@ -1206,7 +1206,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="dtUri">Data Type Uri as a String.</param>
         /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(String dtUri)
+        public static SparqlNumericType GetNumericTypeFromDataTypeUri(string dtUri)
         {
             if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
             {
@@ -1248,11 +1248,11 @@ namespace VDS.RDF.Query
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
 
                     if (lit.DataType == null)
                     {
-                        if (lit.Value == String.Empty)
+                        if (lit.Value == string.Empty)
                         {
                             // Empty String Literals have EBV of False
                             return false;
@@ -1266,12 +1266,12 @@ namespace VDS.RDF.Query
                     else
                     {
                         // EBV is dependent on the Data Type for Typed Literals
-                        String dt = lit.DataType.ToString();
+                        var dt = lit.DataType.ToString();
 
                         if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                         {
                             // Boolean Typed Literal
-                            if (Boolean.TryParse(lit.Value, out var b))
+                            if (bool.TryParse(lit.Value, out var b))
                             {
                                 // Valid Booleans have EBV of their value
                                 return b;
@@ -1282,7 +1282,7 @@ namespace VDS.RDF.Query
                         else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
                             // String Typed Literal
-                            if (lit.Value == String.Empty)
+                            if (lit.Value == string.Empty)
                             {
                                 // Empty String Literals have EBV of False
                                 return false;
@@ -1301,10 +1301,10 @@ namespace VDS.RDF.Query
                             {
                                 case SparqlNumericType.Decimal:
                                     // Should be a decimal
-                                    Decimal dec;
-                                    if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
+                                    decimal dec;
+                                    if (decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                     {
-                                        if (dec == Decimal.Zero)
+                                        if (dec == decimal.Zero)
                                         {
                                             // Zero gives EBV of false
                                             return false;
@@ -1324,10 +1324,10 @@ namespace VDS.RDF.Query
                                 case SparqlNumericType.Float:
                                 case SparqlNumericType.Double:
                                     // Should be a double
-                                    Double dbl;
-                                    if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
+                                    double dbl;
+                                    if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                     {
-                                        if (dbl == 0.0d || Double.IsNaN(dbl))
+                                        if (dbl == 0.0d || double.IsNaN(dbl))
                                         {
                                             // Zero/NaN gives EBV of false
                                             return false;
@@ -1347,7 +1347,7 @@ namespace VDS.RDF.Query
                                 case SparqlNumericType.Integer:
                                     // Should be an Integer
                                     long l;
-                                    if (Int64.TryParse(lit.Value, out l))
+                                    if (long.TryParse(lit.Value, out l))
                                     {
                                         if (l == 0)
                                         {
@@ -1429,7 +1429,7 @@ namespace VDS.RDF.Query
             else if (x.NodeType == NodeType.Literal)
             {
                 // Do they have supported Data Types?
-                String xtype, ytype;
+                string xtype, ytype;
                 try 
                 {
                     xtype = XmlSpecsHelper.GetSupportedDataType(x);
@@ -1441,7 +1441,7 @@ namespace VDS.RDF.Query
                     return x.Equals(y);
                 }
 
-                if (xtype.Equals(String.Empty) || ytype.Equals(String.Empty))
+                if (xtype.Equals(string.Empty) || ytype.Equals(string.Empty))
                 {
                     // One/both has an unknown type
                     if (x.Equals(y))
@@ -1458,7 +1458,7 @@ namespace VDS.RDF.Query
                 else
                 {
                     // Both have known types
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
+                    var numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
                     if (numtype != SparqlNumericType.NaN)
                     {
                         // Both are Numeric so use Numeric equality
@@ -1496,8 +1496,8 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
-                        if (commontype.Equals(String.Empty))
+                        var commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
+                        if (commontype.Equals(string.Empty))
                         {
                             return false;
                         }
@@ -1542,7 +1542,7 @@ namespace VDS.RDF.Query
             else if (x.NodeType == NodeType.Literal)
             {
                 // Do they have supported Data Types?
-                String xtype, ytype;
+                string xtype, ytype;
                 try
                 {
                     xtype = XmlSpecsHelper.GetSupportedDataType(x);
@@ -1554,7 +1554,7 @@ namespace VDS.RDF.Query
                     return !x.Equals(y);
                 }
 
-                if (xtype.Equals(String.Empty) || ytype.Equals(String.Empty))
+                if (xtype.Equals(string.Empty) || ytype.Equals(string.Empty))
                 {
                     // One/both has an unknown type
                     if (x.Equals(y))
@@ -1573,7 +1573,7 @@ namespace VDS.RDF.Query
                     // Both have known types
                     SparqlNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
                     SparqlNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                    var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
                         if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
@@ -1639,8 +1639,8 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
-                        if (commontype.Equals(String.Empty))
+                        var commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
+                        if (commontype.Equals(string.Empty))
                         {
                             return true;
                         }
@@ -1773,7 +1773,7 @@ namespace VDS.RDF.Query
                 IValuedNode a = x.AsValuedNode();
                 IValuedNode b = y.AsValuedNode();
 
-                bool strictEquals = (a.EffectiveType != b.EffectiveType);
+                var strictEquals = (a.EffectiveType != b.EffectiveType);
 
                 DateTime c = a.AsDateTime();
                 DateTime d = b.AsDateTime();
@@ -1826,8 +1826,8 @@ namespace VDS.RDF.Query
                 var a = (ILiteralNode)x;
                 var b = (ILiteralNode)y;
 
-                var c = a.AsValuedNode().AsTimeSpan();
-                var d = b.AsValuedNode().AsTimeSpan();
+                TimeSpan c = a.AsValuedNode().AsTimeSpan();
+                TimeSpan d = b.AsValuedNode().AsTimeSpan();
 
                 return c.Equals(d);
             }
@@ -1843,10 +1843,10 @@ namespace VDS.RDF.Query
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsDecimal() instead", true)]
-        public static Decimal ToDecimal(ILiteralNode n)
+        public static decimal ToDecimal(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Decimal");
-            return Decimal.Parse(n.Value);
+            return decimal.Parse(n.Value);
         }
 
         /// <summary>
@@ -1855,10 +1855,10 @@ namespace VDS.RDF.Query
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsDouble() instead", true)]
-        public static Double ToDouble(ILiteralNode n)
+        public static double ToDouble(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Double");
-            return Double.Parse(n.Value);
+            return double.Parse(n.Value);
         }
 
         /// <summary>
@@ -1867,10 +1867,10 @@ namespace VDS.RDF.Query
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsFloat() instead", true)]
-        public static Single ToFloat(ILiteralNode n)
+        public static float ToFloat(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Float");
-            return Single.Parse(n.Value);
+            return float.Parse(n.Value);
         }
 
         /// <summary>
@@ -1879,10 +1879,10 @@ namespace VDS.RDF.Query
         /// <param name="n">Literal Node.</param>
         /// <returns></returns>
         [Obsolete("Use AsValuedNode().AsInteger() instead", true)]
-        public static Int64 ToInteger(ILiteralNode n)
+        public static long ToInteger(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to an Integer");
-            return Int64.Parse(n.Value);
+            return long.Parse(n.Value);
         }
 
         /// <summary>

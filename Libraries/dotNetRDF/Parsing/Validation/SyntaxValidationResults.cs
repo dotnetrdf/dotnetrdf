@@ -35,17 +35,17 @@ namespace VDS.RDF.Parsing.Validation
     public class SyntaxValidationResults : ISyntaxValidationResults
     {
         private bool _valid;
-        private String _message;
-        private List<String> _warnings = new List<string>();
+        private string _message;
+        private List<string> _warnings = new List<string>();
         private Exception _error;
-        private Object _result;
+        private object _result;
 
         /// <summary>
         /// Creates new Syntax Validation Results.
         /// </summary>
         /// <param name="valid">Whether the Syntax was valid.</param>
         /// <param name="message">Validation Message.</param>
-        public SyntaxValidationResults(bool valid, String message)
+        public SyntaxValidationResults(bool valid, string message)
         {
             _valid = valid;
             _message = message;
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="valid">Whether the Syntax was valid.</param>
         /// <param name="message">Validation Message.</param>
         /// <param name="result">Results Object.</param>
-        public SyntaxValidationResults(bool valid, String message, Object result)
+        public SyntaxValidationResults(bool valid, string message, object result)
             : this(valid, message)
         {
             _result = result;
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="message">Validation Message.</param>
         /// <param name="result">Results Object.</param>
         /// <param name="warnings">Enumeration of Warnings.</param>
-        public SyntaxValidationResults(bool valid, String message, Object result, IEnumerable<String> warnings)
+        public SyntaxValidationResults(bool valid, string message, object result, IEnumerable<string> warnings)
             : this(valid, message, result)
         {
             _warnings.AddRange(warnings);
@@ -84,7 +84,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="result">Results Object.</param>
         /// <param name="warnings">Enumeration of Warnings.</param>
         /// <param name="error">Error that occurred.</param>
-        public SyntaxValidationResults(bool valid, String message, Object result, IEnumerable<String> warnings, Exception error)
+        public SyntaxValidationResults(bool valid, string message, object result, IEnumerable<string> warnings, Exception error)
             : this(valid, message, result, warnings)
         {
             _error = error;
@@ -96,7 +96,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <param name="valid">Whether the Syntax was valid.</param>
         /// <param name="message">Validation Message.</param>
         /// <param name="error">Error that occurred.</param>
-        public SyntaxValidationResults(bool valid, String message, Exception error)
+        public SyntaxValidationResults(bool valid, string message, Exception error)
             : this(valid, message)
         {
             _error = error;
@@ -107,7 +107,7 @@ namespace VDS.RDF.Parsing.Validation
         /// </summary>
         /// <param name="message">Validation Message.</param>
         /// <param name="error">Error that occurred.</param>
-        public SyntaxValidationResults(String message, Exception error)
+        public SyntaxValidationResults(string message, Exception error)
             : this(error == null, message, error) { }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace VDS.RDF.Parsing.Validation
         /// <summary>
         /// Gets the Result Object that was produced.
         /// </summary>
-        public Object Result
+        public object Result
         {
             get
             {

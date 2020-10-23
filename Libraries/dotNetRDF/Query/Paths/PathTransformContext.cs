@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.Paths
         {
             if (path is Property)
             {
-                NodeMatchPattern nodeMatch = new NodeMatchPattern(((Property)path).Predicate, true);
+                var nodeMatch = new NodeMatchPattern(((Property)path).Predicate, true);
                 return new TriplePattern(subj, nodeMatch, obj);
             }
             else

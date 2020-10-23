@@ -45,18 +45,18 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Leviathan Function Namespace.
         /// </summary>
-        public const String LeviathanFunctionsNamespace = "http://www.dotnetrdf.org/leviathan#";
+        public const string LeviathanFunctionsNamespace = "http://www.dotnetrdf.org/leviathan#";
 
         /// <summary>
         /// Constants for Leviathan String Functions.
         /// </summary>
-        public const String MD5Hash = "md5hash",
+        public const string MD5Hash = "md5hash",
                             Sha256Hash = "sha256hash";
 
         /// <summary>
         /// Constants for Leviathan Numeric Functions.
         /// </summary>
-        public const String Random = "rnd",
+        public const string Random = "rnd",
                             TrigSin = "sin",
                             TrigSinInv = "sin-1",
                             TrigCos = "cos",
@@ -88,26 +88,26 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Constants for Leviathan Boolean Aggregates.
         /// </summary>
-        public const String All = "all",
+        public const string All = "all",
                             Any = "any",
                             None = "none";
 
         /// <summary>
         /// Constants for Leviathan Numeric Aggregates.
         /// </summary>
-        public const String NumericMin = "nmin",
+        public const string NumericMin = "nmin",
                             NumericMax = "nmax";
 
         /// <summary>
         /// Constants for other Leviathan Aggregate.
         /// </summary>
-        public const String Mode = "mode",
+        public const string Mode = "mode",
                             Median = "median";
 
         /// <summary>
         /// Array of Extension Function URIs.
         /// </summary>
-        private String[] FunctionUris = {
+        private string[] FunctionUris = {
                                             MD5Hash,
                                             Sha256Hash,
                                             Random,
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Array of Extension Aggregate URIs.
         /// </summary>
-        private String[] AggregateUris = {
+        private string[] AggregateUris = {
                                              All,
                                              Any,
                                              None,
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="scalarArgs">Scalar Arguments.</param>
         /// <param name="expr">Generated Expression.</param>
         /// <returns>Whether an expression was successfully generated.</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             // If any Scalar Arguments are present then can't possibly be a Leviathan Function
             if (scalarArgs.Count > 0)
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.Expressions
                 return false;
             }
 
-            String func = u.ToString();
+            var func = u.ToString();
             if (func.StartsWith(LeviathanFunctionsNamespace))
             {
                 func = func.Substring(LeviathanFunctionsNamespace.Length);

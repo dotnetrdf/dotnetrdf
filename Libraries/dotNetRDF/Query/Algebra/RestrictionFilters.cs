@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
         : IFilter
     {
         private readonly ISparqlAlgebra _pattern;
-        private readonly String _var;
+        private readonly string _var;
         private readonly ISparqlFilter _filter;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Algebra the filter applies over.</param>
         /// <param name="var">Variable to restrict on.</param>
         /// <param name="filter">Filter to use.</param>
-        public VariableRestrictionFilter(ISparqlAlgebra pattern, String var, ISparqlFilter filter)
+        public VariableRestrictionFilter(ISparqlAlgebra pattern, string var, ISparqlFilter filter)
         {
             _pattern = pattern;
             _var = var;
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variable that this filter restricts the value of.
         /// </summary>
-        public String RestrictionVariable
+        public string RestrictionVariable
         {
             get
             {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -92,12 +92,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used.
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            String filter = _filter.ToString();
+            var filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
             return GetType().Name + "(" + _pattern.ToString() + ", " + filter + ")";
         }
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -150,8 +150,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _pattern.ToGraphPattern();
-            GraphPattern f = new GraphPattern();
+            var p = _pattern.ToGraphPattern();
+            var f = new GraphPattern();
             f.AddFilter(_filter);
             p.AddGraphPattern(f);
             return p;
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable to restrict on.</param>
         /// <param name="term">Value to restrict to.</param>
         /// <param name="filter">Filter to use.</param>
-        public SingleValueRestrictionFilter(ISparqlAlgebra pattern, String var, ConstantTerm term, ISparqlFilter filter)
+        public SingleValueRestrictionFilter(ISparqlAlgebra pattern, string var, ConstantTerm term, ISparqlFilter filter)
             : base(pattern, var, filter)
         {
             _term = term;
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Algebra
                 // If the Input is Identity switch the input to be a Multiset containing a single Set
                 // where the variable is bound to the term
                 context.InputMultiset = new Multiset();
-                Set s = new Set();
+                var s = new Set();
                 s.Add(RestrictionVariable, term);
                 context.InputMultiset.Add(s);
             }
@@ -227,7 +227,7 @@ namespace VDS.RDF.Query.Algebra
                 if (context.InputMultiset.ContainsVariable(RestrictionVariable))
                 {
                     // If the Input Multiset contains the variable then pre-filter
-                    foreach (int id in context.InputMultiset.SetIDs.ToList())
+                    foreach (var id in context.InputMultiset.SetIDs.ToList())
                     {
                         ISet x = context.InputMultiset[id];
                         try
@@ -264,7 +264,7 @@ namespace VDS.RDF.Query.Algebra
             if (results is NullMultiset || results is IdentityMultiset) return results;
 
             // Filter the results to ensure that the variable is indeed bound to the term
-            foreach (int id in results.SetIDs.ToList())
+            foreach (var id in results.SetIDs.ToList())
             {
                 ISet x = results[id];
                 try
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Algebra the Filter applies over.</param>
         /// <param name="var">Variable to restrict on.</param>
         /// <param name="term">Expression Term.</param>
-        public IdentityFilter(ISparqlAlgebra pattern, String var, ConstantTerm term)
+        public IdentityFilter(ISparqlAlgebra pattern, string var, ConstantTerm term)
             : base(pattern, var, term, new UnaryExpressionFilter(new EqualsExpression(new VariableTerm(var), term))) { }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Algebra the Filter applies over.</param>
         /// <param name="var">Variable to restrict on.</param>
         /// <param name="term">Expression Term.</param>
-        public SameTermFilter(ISparqlAlgebra pattern, String var, ConstantTerm term)
+        public SameTermFilter(ISparqlAlgebra pattern, string var, ConstantTerm term)
             : base(pattern, var, term, new UnaryExpressionFilter(new SameTermFunction(new VariableTerm(var), term))) { }
 
         /// <summary>

@@ -58,10 +58,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             string langTag = null;
-            bool allString = true;
-            bool allSameTag = true;
+            var allString = true;
+            var allSameTag = true;
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             foreach (ISparqlExpression expr in _exprs)
             {
                 INode temp = expr.Evaluate(context, bindingID);
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     case NodeType.Literal:
                         // Check whether the Language Tags and Types are the same
                         // We need to do this so that we can produce the appropriate output
-                        ILiteralNode lit = (ILiteralNode)temp;
+                        var lit = (ILiteralNode)temp;
                         if (langTag == null)
                         {
                             langTag = lit.Language;
@@ -150,10 +150,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(SparqlSpecsHelper.SparqlKeywordConcat);
             output.Append('(');
-            for (int i = 0; i < _exprs.Count; i++)
+            for (var i = 0; i < _exprs.Count; i++)
             {
                 output.Append(_exprs[i].ToString());
                 if (i < _exprs.Count - 1) output.Append(", ");

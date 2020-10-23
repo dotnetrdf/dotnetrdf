@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.Options);
+                var subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.Options);
 
                 // Add any Named Graphs to the subquery
                 if (context.Query != null)
@@ -122,12 +122,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
 
         /// <summary>
         /// Converts the algebra back into a Query.
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             return q;
         }
@@ -146,7 +146,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = new GraphPattern();
+            var gp = new GraphPattern();
             gp.TriplePatterns.Add(new SubQueryPattern(_subquery));
             return gp;
         }

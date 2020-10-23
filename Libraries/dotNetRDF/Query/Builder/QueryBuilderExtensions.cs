@@ -36,6 +36,9 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public static class QueryBuilderExtensions
     {
+        /// <summary>
+        /// See <see cref="IGraphPatternBuilder.Bind"/>.
+        /// </summary>
         public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IQueryBuilder describeBuilder, Func<INonAggregateExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return describeBuilder.Bind(buildAssignmentExpression);
@@ -122,7 +125,7 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
-        /// See <see cref="IGraphPatternBuilder.Graph(String, Action{IGraphPatternBuilder})"/>.
+        /// See <see cref="IGraphPatternBuilder.Graph(string, Action{IGraphPatternBuilder})"/>.
         /// </summary>
         public static IQueryBuilder Graph(this IQueryBuilder queryBuilder, string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
         {

@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
             }
 
             // Queue the Graphs to be written
-            foreach (var g in context.Store.Graphs)
+            foreach (IGraph g in context.Store.Graphs)
             {
                 context.Add(g.BaseUri);
             }
@@ -94,7 +94,7 @@ namespace VDS.RDF.Writing
             }
             catch (AggregateException ex)
             {
-                foreach (var innerEx in ex.InnerExceptions)
+                foreach (Exception innerEx in ex.InnerExceptions)
                 {
                     outputEx.AddException(innerEx);
                 }
@@ -124,8 +124,8 @@ namespace VDS.RDF.Writing
                     IGraph g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
-                    BaseWriterContext context = new BaseWriterContext(g, new System.IO.StringWriter());
-                    String graphContent = GenerateGraphOutput(globalContext, context);
+                    var context = new BaseWriterContext(g, new System.IO.StringWriter());
+                    var graphContent = GenerateGraphOutput(globalContext, context);
                     try
                     {
                         Monitor.Enter(globalContext.Output);
@@ -154,7 +154,7 @@ namespace VDS.RDF.Writing
         /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
-        private String GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
+        private string GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
         {
             if (context.Graph.BaseUri != null)
             {
@@ -230,6 +230,15 @@ namespace VDS.RDF.Writing
         public override event StoreWriterWarning Warning;
 
         /// <summary>
+        /// Raise a warning event.
+        /// </summary>
+        /// <param name="message">The message assocaited with the warning event.</param>
+        protected virtual void RaiseWarning(string message)
+        {
+            Warning?.Invoke(message);
+        }
+
+        /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.
         /// </summary>
         /// <returns></returns>
@@ -237,5 +246,6 @@ namespace VDS.RDF.Writing
         {
             return "CSV";
         }
+
     }
 }

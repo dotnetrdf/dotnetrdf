@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the enumeration of variables that are used in the the aggregate expression.
         /// </summary>
-        public override IEnumerable<String> Variables
+        public override IEnumerable<string> Variables
         {
             get
             {

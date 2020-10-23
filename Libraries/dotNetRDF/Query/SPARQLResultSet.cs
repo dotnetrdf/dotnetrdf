@@ -27,14 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing;
-using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF.Query
 {
@@ -101,7 +95,7 @@ namespace VDS.RDF.Query
             else if (context.OutputMultiset is IdentityMultiset)
             {
                 _result = true;
-                foreach (string var in context.OutputMultiset.Variables)
+                foreach (var var in context.OutputMultiset.Variables)
                 {
                     _variables.Add(var);
                 }
@@ -109,7 +103,7 @@ namespace VDS.RDF.Query
             else
             {
                 _result = true;
-                foreach (string var in context.OutputMultiset.Variables)
+                foreach (var var in context.OutputMultiset.Variables)
                 {
                     _variables.Add(var);
                 }
@@ -300,9 +294,9 @@ namespace VDS.RDF.Query
                 if (Count == 0 && results.Count == 0) return true;
 
                 // All Ground Results from the Result Set must appear in the Other Result Set
-                List<SparqlResult> otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
-                List<SparqlResult> localResults = new List<SparqlResult>();
-                int grCount = 0;
+                var otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
+                var localResults = new List<SparqlResult>();
+                var grCount = 0;
                 foreach (SparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
                 {
                     if (result.IsGroundResult)
@@ -325,9 +319,9 @@ namespace VDS.RDF.Query
                 if (otherResults.Any(r => r.IsGroundResult)) return false;
 
                 // Create Graphs of the two sets of non-Ground Results
-                SparqlResultSet local = new SparqlResultSet();
-                SparqlResultSet other = new SparqlResultSet();
-                foreach (string var in _variables)
+                var local = new SparqlResultSet();
+                var other = new SparqlResultSet();
+                foreach (var var in _variables)
                 {
                     local.AddVariable(var);
                     other.AddVariable(var);
@@ -342,15 +336,13 @@ namespace VDS.RDF.Query
                 }
 
                 // Compare the two Graphs for equality
-                SparqlRdfWriter writer = new SparqlRdfWriter();
+                var writer = new SparqlRdfWriter();
                 IGraph g = writer.GenerateOutput(local);
                 IGraph h = writer.GenerateOutput(other);
                 return g.Equals(h);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing.Suites
         [Fact]
         public void ParsingNTriplesUnicodeEscapes1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt", Parser);
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
 <http://s> <http://p> _:node.id.";
 
-            Graph g = new Graph();
+            var g = new Graph();
             Assert.Throws<RdfParseException>(() => g.LoadFromString(data, Parser));
         }
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             Assert.Throws<RdfParseException>(() => g.LoadFromString(data, Parser));
         }
 
@@ -91,7 +91,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteNTriples11()
         {
             //Nodes for positive and negative tests
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
             INode posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing.Suites
             const String data = @"_:node-id.complex_id.blah <http://p> <http://o> .
 <http://s> <http://p> _:node.id.";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, Parser);
             Assert.False(g.IsEmpty);
             Assert.Equal(2, g.Triples.Count);
@@ -148,7 +148,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             const String data = @"<http://s> <http://p> ""literal\'quote"" .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);
@@ -160,7 +160,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             const String data = @"<http://s> <http://p> ""literal\""quote"" .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(data, Parser);
 
             Assert.False(g.IsEmpty);

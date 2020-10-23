@@ -24,17 +24,17 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Patterns;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Query;
-    using VDS.RDF.Query.Expressions.Primary;
-    using VDS.RDF.Query.Patterns;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Ask : Sparql
     {
         [DebuggerStepThrough]
@@ -55,7 +55,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
         {
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 let q = BindValue(query, valueNode)
                 let result = ((SparqlResultSet)focusNode.Graph.ExecuteQuery(q)).Result
@@ -67,7 +67,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         private static SparqlQuery BindValue(SparqlQuery query, INode valueNode)
         {
-            var q = query.Copy();
+            SparqlQuery q = query.Copy();
             q.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("value", new ConstantTerm(valueNode)));
 
             return q;

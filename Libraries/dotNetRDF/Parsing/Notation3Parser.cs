@@ -49,11 +49,11 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// The Uri for log:implies.
         /// </summary>
-        private const String ImpliesUri = "http://www.w3.org/2000/10/swap/log#implies";
+        private const string ImpliesUri = "http://www.w3.org/2000/10/swap/log#implies";
         /// <summary>
         /// The Uri for owl:sameAs.
         /// </summary>
-        private const String SameAsUri = "http://www.w3.org/2002/07/owl#sameAs";
+        private const string SameAsUri = "http://www.w3.org/2002/07/owl#sameAs";
 
         /// <summary>
         /// Creates a new Notation 3 Parser.
@@ -175,7 +175,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), TokenQueueMode, _traceParsing, _traceTokeniser);
+                var context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), TokenQueueMode, _traceParsing, _traceTokeniser);
                 Parse(context);
 
                 input.Close();
@@ -199,7 +199,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
@@ -335,7 +335,7 @@ namespace VDS.RDF.Parsing
                     {
                         // Register a Namespace resolving the Namespace Uri against the Base Uri
                         Uri nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns, true)).Uri;
-                        String nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length-1) : String.Empty;
+                        var nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length-1) : string.Empty;
                         context.Namespaces.AddNamespace(nsPrefix, nsUri);
                         if (!context.Handler.HandleNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsUri)) ParserHelper.Stop();
                     }
@@ -597,7 +597,7 @@ namespace VDS.RDF.Parsing
         {
             IToken predToken, next;
             INode pred = null;
-            bool reverse = false;
+            var reverse = false;
 
             do
             {
@@ -1123,7 +1123,7 @@ namespace VDS.RDF.Parsing
             // Watch out for nesting
             // This counter starts as zero since the last right curly bracket will be discarded by the 
             // parser when it stops parsing the Graph Literal in one of the other functions
-            int nesting = 1;
+            var nesting = 1;
             IToken next = context.Tokens.Peek();
             while (next.TokenType == Token.LEFTCURLYBRACKET)
             {
@@ -1180,7 +1180,7 @@ namespace VDS.RDF.Parsing
         {
             IToken next;
             INode secondItem;
-            bool forward = (context.Tokens.LastTokenType == Token.EXCLAMATION);
+            var forward = (context.Tokens.LastTokenType == Token.EXCLAMATION);
 
             // Actual path is represented by a new Blank Node
             INode path = context.Handler.CreateBlankNode();
@@ -1243,7 +1243,7 @@ namespace VDS.RDF.Parsing
         private INode TryParseLiteral(Notation3ParserContext context, IToken lit)
         {
             IToken next;
-            String dturi;
+            string dturi;
 
             switch (lit.TokenType)
             {
@@ -1295,7 +1295,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 case Token.LITERALWITHDT:
-                    LiteralWithDataTypeToken litdt = (LiteralWithDataTypeToken)lit;
+                    var litdt = (LiteralWithDataTypeToken)lit;
                     try
                     {
                         if (litdt.DataType.StartsWith("<"))
@@ -1315,7 +1315,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 case Token.LITERALWITHLANG:
-                    LiteralWithLanguageSpecifierToken langlit = (LiteralWithLanguageSpecifierToken)lit;
+                    var langlit = (LiteralWithLanguageSpecifierToken)lit;
                     return context.Handler.CreateLiteralNode(langlit.Value, langlit.Language);
 
                 case Token.PLAINLITERAL:
@@ -1352,7 +1352,7 @@ namespace VDS.RDF.Parsing
         /// Helper method which raises the Warning event if there is an event handler registered.
         /// </summary>
         /// <param name="message"></param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)

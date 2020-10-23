@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Stores the list of variables that are used in the Pattern.
         /// </summary>
-        protected List<String> _vars = new List<string>();
+        protected List<string> _vars = new List<string>();
 
         /// <summary>
         /// Evaluates the Triple Pattern in the given Evaluation Context.
@@ -79,12 +79,12 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the enumeration of floating variables in the pattern i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public abstract IEnumerable<String> FloatingVariables { get; }
+        public abstract IEnumerable<string> FloatingVariables { get; }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the pattern i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public abstract IEnumerable<String> FixedVariables { get; }
+        public abstract IEnumerable<string> FixedVariables { get; }
 
         /// <summary>
         /// Compares a Triple Pattern to another Triple Pattern.
@@ -120,9 +120,9 @@ namespace VDS.RDF.Query.Patterns
             // Order of these patterns has no effect
             if (_vars.Count <= 0) return 0;
 
-            for (int i = 0; i < _vars.Count; i++)
+            for (var i = 0; i < _vars.Count; i++)
             {
-                int c = String.Compare(_vars[i], other.Variables[i], StringComparison.Ordinal);
+                var c = string.Compare(_vars[i], other.Variables[i], StringComparison.Ordinal);
                 if (c < 0)
                 {
                     // Our variables occur alphabetically sooner than the other patterns so we go before the other pattern
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Patterns
 
             // If we reach this point then we contain the same variables
             // Now we order based on our Index Types
-            TriplePatternTypeComparer sorter = new TriplePatternTypeComparer();
+            var sorter = new TriplePatternTypeComparer();
             return sorter.Compare(PatternType, other.PatternType);
         }
 

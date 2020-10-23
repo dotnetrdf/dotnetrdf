@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Ordering
         /// <summary>
         /// Gets all the Variables used in the Ordering.
         /// </summary>
-        IEnumerable<String> Variables
+        IEnumerable<string> Variables
         {
             get;
         }

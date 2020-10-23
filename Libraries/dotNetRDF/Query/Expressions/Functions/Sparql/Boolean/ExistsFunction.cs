@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         private BaseMultiset _result;
         private int? _lastInput;
         private int _lastCount = 0;
-        private List<System.String> _joinVars;
+        private List<string> _joinVars;
         private HashSet<int> _exists;
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
             ISet x = context.InputMultiset[bindingID];
 
-            bool exists = _exists.Contains(x.ID);
+            var exists = _exists.Contains(x.ID);
             if (_mustExist)
             {
                 // If an EXISTS then return the value of exists i.e. are there any compatible solutions
@@ -143,9 +143,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             _joinVars = origContext.InputMultiset.Variables.Where(v => _result.Variables.Contains(v)).ToList();
             if (_joinVars.Count == 0) return;
 
-            List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
-            List<List<int>> nulls = new List<List<int>>();
-            foreach (System.String var in _joinVars)
+            var values = new List<MultiDictionary<INode, List<int>>>();
+            var nulls = new List<List<int>>();
+            foreach (var var in _joinVars)
             {
                 values.Add(new MultiDictionary<INode, List<int>>(new FastVirtualNodeComparer()));
                 nulls.Add(new List<int>());
@@ -154,8 +154,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             // First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in origContext.InputMultiset.Sets)
             {
-                int i = 0;
-                foreach (System.String var in _joinVars)
+                var i = 0;
+                foreach (var var in _joinVars)
                 {
                     INode value = x[var];
                     if (value != null)
@@ -183,8 +183,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             foreach (ISet y in _result.Sets)
             {
                 IEnumerable<int> possMatches = null;
-                int i = 0;
-                foreach (System.String var in _joinVars)
+                var i = 0;
+                foreach (var var in _joinVars)
                 {
                     INode value = y[var];
                     if (value != null)
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
                 // Look at possible matches, if is a valid match then mark the set as having an existing match
                 // Don't reconsider sets which have already been marked as having an existing match
-                foreach (int poss in possMatches)
+                foreach (var poss in possMatches)
                 {
                     if (_exists.Contains(poss)) continue;
                     if (origContext.InputMultiset[poss].IsCompatibleWith(y, _joinVars))
@@ -251,7 +251,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_mustExist)
             {
                 output.Append("EXISTS ");

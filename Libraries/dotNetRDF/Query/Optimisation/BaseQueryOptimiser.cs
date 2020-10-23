@@ -49,11 +49,11 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         /// <param name="gp">Graph Pattern.</param>
         /// <param name="variables">Variables that have occurred prior to this Pattern.</param>
-        public void Optimise(GraphPattern gp, IEnumerable<String> variables)
+        public void Optimise(GraphPattern gp, IEnumerable<string> variables)
         {
             // Our Variables is initially only those in our Triple Patterns since
             // anything else is considered to be out of scope
-            List<String> ourVariables = (from tp in gp.TriplePatterns
+            var ourVariables = (from tp in gp.TriplePatterns
                                          from v in tp.Variables
                                          select v).Distinct().ToList();
 
@@ -74,9 +74,9 @@ namespace VDS.RDF.Query.Optimisation
                         // No previously occurring variables so must be the first Graph Pattern
                         if (gp.TriplePatterns.Count > 1)
                         {
-                            HashSet<String> currVariables = new HashSet<String>();
+                            var currVariables = new HashSet<string>();
                             gp.TriplePatterns[0].Variables.ForEach(v => currVariables.Add(v));
-                            for (int i = 1; i < gp.TriplePatterns.Count - 1; i++)
+                            for (var i = 1; i < gp.TriplePatterns.Count - 1; i++)
                             {
                                 if (currVariables.Count == 0)
                                 {
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     // Need to ensure that we sort Assignments
                     // This way those that use fewer variables get placed first
-                    List<IAssignmentPattern> ps = gp.UnplacedAssignments.OrderBy(x => x).ToList();
+                    var ps = gp.UnplacedAssignments.OrderBy(x => x).ToList();
 
                     // This next bit goes in a do loop as we want to keep attempting to place assignments while
                     // we are able to do so.  If the count of unplaced assignments has decreased but is not
@@ -133,7 +133,7 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         c = ps.Count;
 
-                        int i = 0;
+                        var i = 0;
                         while (i < ps.Count)
                         {
                             if (TryPlaceAssignment(gp, ps[i]))
@@ -174,16 +174,16 @@ namespace VDS.RDF.Query.Optimisation
                         if (ShouldSplitFilters)
                         {
                             // See whether we can split any/all of the Unplaced Filters
-                            List<ISparqlFilter> fs = gp.UnplacedFilters.ToList();
-                            for (int i = 0; i < fs.Count; i++)
+                            var fs = gp.UnplacedFilters.ToList();
+                            for (var i = 0; i < fs.Count; i++)
                             {
                                 ISparqlFilter f = fs[i];
                                 if (f.Expression is AndExpression)
                                 {
                                     // Split the And
                                     // Note that multiple nested And's are handled by the fact that we will continue working through the list until it is finished
-                                    UnaryExpressionFilter lhs = new UnaryExpressionFilter(f.Expression.Arguments.First());
-                                    UnaryExpressionFilter rhs = new UnaryExpressionFilter(f.Expression.Arguments.Last());
+                                    var lhs = new UnaryExpressionFilter(f.Expression.Arguments.First());
+                                    var rhs = new UnaryExpressionFilter(f.Expression.Arguments.Last());
                                     fs.RemoveAt(i);
                                     fs.Add(lhs);
                                     fs.Add(rhs);
@@ -291,16 +291,16 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="desiredVariables">Variables that are desired.</param>
         /// <param name="start">Point at which to start looking for better matches.</param>
         /// <param name="end">Point at which to move the better match to.</param>
-        private void TryReorderPatterns(GraphPattern gp, List<String> desiredVariables, int start, int end)
+        private void TryReorderPatterns(GraphPattern gp, List<string> desiredVariables, int start, int end)
         {
             if (end > start) return;
 
             // Find the first pattern which does contain a pre-existing variable
-            for (int i = start; i < gp.TriplePatterns.Count; i++)
+            for (var i = start; i < gp.TriplePatterns.Count; i++)
             {
                 if (gp.TriplePatterns[i].Variables.Any(v => desiredVariables.Contains(v)))
                 {
-                    int newEnd = i;
+                    var newEnd = i;
                     desiredVariables.AddRange(gp.TriplePatterns[i].Variables.Where(v => desiredVariables.Contains(v)));
                     while (i > end)
                     {
@@ -322,16 +322,16 @@ namespace VDS.RDF.Query.Optimisation
         private bool TryPlaceFilter(GraphPattern gp, ISparqlFilter filter)
         {
             // Firstly we need to find out what variables are needed in the Filter
-            List<String> variablesNeeded = filter.Variables.Distinct().ToList();
+            var variablesNeeded = filter.Variables.Distinct().ToList();
 
             // Then we need to move through the Triple Patterns and find the first place at which all the
             // Variables used in the Filter have been used in ordinary Triple Patterns
-            List<String> variablesUsed = new List<string>();
-            for (int p = 0; p < gp.TriplePatterns.Count; p++)
+            var variablesUsed = new List<string>();
+            for (var p = 0; p < gp.TriplePatterns.Count; p++)
             {
                 if (gp.TriplePatterns[p].PatternType == TriplePatternType.Match || gp.TriplePatterns[p].PatternType == TriplePatternType.BindAssignment || gp.TriplePatterns[p].PatternType == TriplePatternType.LetAssignment)
                 {
-                    foreach (String var in gp.TriplePatterns[p].Variables)
+                    foreach (var var in gp.TriplePatterns[p].Variables)
                     {
                         if (!variablesUsed.Contains(var)) variablesUsed.Add(var);
                     }
@@ -363,7 +363,7 @@ namespace VDS.RDF.Query.Optimisation
         {
             // Firstly we need to find out what variables are needed in the Assignment
             // The Variables property will include the variable that the Assignment assigns to so we can safely remove this
-            List<String> variablesNeeded = assignment.Variables.Distinct().ToList();
+            var variablesNeeded = assignment.Variables.Distinct().ToList();
             variablesNeeded.Remove(assignment.VariableName);
 
             // If there are no Variables Needed we can just place the assignment at the start
@@ -376,12 +376,12 @@ namespace VDS.RDF.Query.Optimisation
 
             // Then we need to move through the Triple Patterns and find the first place at which all the
             // Variables used in the Assignment have been used in ordinary Triple Patterns
-            List<String> variablesUsed = new List<string>();
-            for (int p = 0; p < gp.TriplePatterns.Count; p++)
+            var variablesUsed = new List<string>();
+            for (var p = 0; p < gp.TriplePatterns.Count; p++)
             {
                 if (gp.TriplePatterns[p].PatternType == TriplePatternType.Match || gp.TriplePatterns[p].PatternType == TriplePatternType.BindAssignment || gp.TriplePatterns[p].PatternType == TriplePatternType.LetAssignment)
                 {
-                    foreach (String var in gp.TriplePatterns[p].Variables)
+                    foreach (var var in gp.TriplePatterns[p].Variables)
                     {
                         if (!variablesUsed.Contains(var)) variablesUsed.Add(var);
                     }

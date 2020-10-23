@@ -57,14 +57,14 @@ namespace VDS.RDF
         {
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            String assm = Assembly.GetAssembly(factoryType).FullName;
+            var assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
-            SparqlParameterizedString factoryCheck = new SparqlParameterizedString();
+            var factoryCheck = new SparqlParameterizedString();
             factoryCheck.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
-            SparqlResultSet rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
+            var rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
             if (!rset.Result)
             {
                 INode factory = context.Graph.CreateBlankNode();

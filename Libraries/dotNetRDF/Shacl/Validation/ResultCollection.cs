@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
 namespace VDS.RDF.Shacl.Validation
 {
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-
     /// <summary>
     /// Represents a collection of SHACL validation results.
     /// </summary>
@@ -77,7 +77,7 @@ namespace VDS.RDF.Shacl.Validation
 
         void ICollection<Result>.Clear()
         {
-            foreach (var result in Results.ToList())
+            foreach (Result result in Results.ToList())
             {
                 ((ICollection<Result>)this).Remove(result);
             }

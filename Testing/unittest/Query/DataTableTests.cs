@@ -37,20 +37,20 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable()
         {
-            String query = "SELECT * WHERE {?s ?p ?o}";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE {?s ?p ?o}";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
-                DataTable table = new DataTable();
-                foreach (String var in rset.Variables)
+                var table = new DataTable();
+                foreach (var var in rset.Variables)
                 {
                     table.Columns.Add(new DataColumn(var, typeof(INode)));
                 }
@@ -59,7 +59,7 @@ namespace VDS.RDF.Query
                 {
                     DataRow row = table.NewRow();
 
-                    foreach (String var in rset.Variables)
+                    foreach (var var in rset.Variables)
                     {
                         if (r.HasValue(var))
                         {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
+                        var temp = row[col];
                         Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
                     Console.WriteLine();
@@ -95,20 +95,20 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable2()
         {
-            String query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
-                DataTable table = new DataTable();
-                foreach (String var in rset.Variables)
+                var table = new DataTable();
+                foreach (var var in rset.Variables)
                 {
                     table.Columns.Add(new DataColumn(var, typeof(INode)));
                 }
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query
                 {
                     DataRow row = table.NewRow();
 
-                    foreach (String var in rset.Variables)
+                    foreach (var var in rset.Variables)
                     {
                         if (r.HasValue(var))
                         {
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
+                        var temp = row[col];
                         Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
                     Console.WriteLine();
@@ -153,19 +153,19 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable3()
         {
-            String query = "SELECT * WHERE {?s ?p ?o}";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE {?s ?p ?o}";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
-                DataTable table = rset.ToDataTable();
+                var table = rset.ToDataTable();
 
                 Assert.Equal(rset.Variables.Count(), table.Columns.Count);
                 Assert.Equal(rset.Count, table.Rows.Count);
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
+                        var temp = row[col];
                         Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
                     Console.WriteLine();
@@ -189,19 +189,19 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable4()
         {
-            String query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE {?s a ex:Car . OPTIONAL { ?s ex:Speed ?speed }}";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
-                DataTable table = rset.ToDataTable();
+                var table = rset.ToDataTable();
 
                 Assert.Equal(rset.Variables.Count(), table.Columns.Count);
                 Assert.Equal(rset.Count, table.Rows.Count);
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
+                        var temp = row[col];
                         Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
                     Console.WriteLine();
@@ -225,19 +225,19 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable5()
         {
-            String query = "ASK WHERE {?s ?p ?o}";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "ASK WHERE {?s ?p ?o}";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
-                DataTable table = rset.ToDataTable();
+                var table = rset.ToDataTable();
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
                 Assert.Single(table.Columns);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
+                        var temp = row[col];
                         Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
                     Console.WriteLine();
@@ -263,19 +263,19 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable6()
         {
-            String query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
 
-                DataTable table = rset.ToDataTable();
+                var table = rset.ToDataTable();
 
                 Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
                 Assert.Single(table.Columns);
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (DataColumn col in table.Columns)
                     {
-                        Object temp = row[col];
+                        var temp = row[col];
                         Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                     }
                     Console.WriteLine();
@@ -301,9 +301,9 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable7()
         {
-            SparqlResultSet rset = new SparqlResultSet(true);
+            var rset = new SparqlResultSet(true);
 
-            DataTable table = rset.ToDataTable();
+            var table = rset.ToDataTable();
 
             Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
             Assert.Single(table.Columns);
@@ -314,7 +314,7 @@ namespace VDS.RDF.Query
             {
                 foreach (DataColumn col in table.Columns)
                 {
-                    Object temp = row[col];
+                    var temp = row[col];
                     Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                 }
                 Console.WriteLine();
@@ -324,9 +324,9 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable8()
         {
-            SparqlResultSet rset = new SparqlResultSet(false);
+            var rset = new SparqlResultSet(false);
 
-            DataTable table = rset.ToDataTable();
+            var table = rset.ToDataTable();
 
             Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
             Assert.Single(table.Columns);
@@ -337,7 +337,7 @@ namespace VDS.RDF.Query
             {
                 foreach (DataColumn col in table.Columns)
                 {
-                    Object temp = row[col];
+                    var temp = row[col];
                     Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
                 }
                 Console.WriteLine();
@@ -347,10 +347,10 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlResultSetToDataTable9()
         {
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
             try
             {
-                DataTable table = results.ToDataTable();
+                var table = results.ToDataTable();
                 Assert.True(false, "Should have thrown an InvalidCastException");
             }
             catch (InvalidCastException ex)

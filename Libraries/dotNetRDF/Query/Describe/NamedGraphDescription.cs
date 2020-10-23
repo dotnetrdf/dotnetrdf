@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Describe
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results
-            Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
+            var bnodeMapping = new Dictionary<string, INode>();
 
             foreach (INode n in nodes)
             {

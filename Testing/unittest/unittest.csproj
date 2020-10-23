@@ -62,8 +62,6 @@
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj" />
-    <PackageReference Include="System.Data.Common" Version="4.3.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">

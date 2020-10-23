@@ -37,7 +37,7 @@ namespace VDS.RDF
         [Fact]
         public void TripleCollectionInstantiation1()
         {
-            TreeIndexedTripleCollection collection = new TreeIndexedTripleCollection();
+            var collection = new TreeIndexedTripleCollection();
         }
 
         [Fact]

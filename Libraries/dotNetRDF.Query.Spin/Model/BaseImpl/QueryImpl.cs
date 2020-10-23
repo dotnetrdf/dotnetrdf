@@ -73,8 +73,8 @@ namespace VDS.RDF.Query.Spin.Model
 
         private List<String> getStringList(INode predicate)
         {
-            List<String> results = new List<String>();
-            IEnumerator<Triple> it = this.listProperties(predicate).GetEnumerator();
+            var results = new List<String>();
+            IEnumerator<Triple> it = listProperties(predicate).GetEnumerator();
             while (it.MoveNext())
             {
                 INode node = it.Current.Object;
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         override public void Print(ISparqlPrinter p)
         {
-            String text = getString(SP.PropertyText);
+            var text = getString(SP.PropertyText);
             if (text != null)
             {
                 if (p.hasInitialBindings())
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Spin.Model
                     }
                 }
             }
-            long? limit = getLimit();
+            var limit = getLimit();
             if (limit != null)
             {
                 context.println();
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Spin.Model
                 context.printKeyword("LIMIT");
                 context.print(" " + limit);
             }
-            long? offset = getOffset();
+            var offset = getOffset();
             if (offset != null)
             {
                 context.println();
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Spin.Model
             // TODO check for real test
             if (node is INode)
             {
-                IResource resource = (IResource)node;
+                var resource = (IResource)node;
                 IFunctionCall call = SPINFactory.asFunctionCall(resource);
                 if (call != null)
                 {

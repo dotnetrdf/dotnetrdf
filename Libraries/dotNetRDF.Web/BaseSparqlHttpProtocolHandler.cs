@@ -75,22 +75,22 @@ namespace VDS.RDF.Web
         /// </remarks>
         public virtual void ProcessRequest(HttpContext context)
         {
-            this._config = this.LoadConfig(context, out this._basePath);
-            WebContext webContext = new WebContext(context);
+            _config = LoadConfig(context, out _basePath);
+            var webContext = new WebContext(context);
 
             // Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(webContext, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, _config);
 
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 // OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath));
-                HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath));
+                HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                 return;
             }
 
             // Check whether we need to use authentication
-            if (!HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, context.Request.HttpMethod)) return;
+            if (!HandlerHelper.IsAuthenticated(webContext, _config.UserGroups, context.Request.HttpMethod)) return;
 
             try
             {
@@ -98,43 +98,43 @@ namespace VDS.RDF.Web
                 switch (context.Request.HttpMethod)
                 {
                     case "GET":
-                        this._config.Processor.ProcessGet(webContext);
+                        _config.Processor.ProcessGet(webContext);
                         break;
                     case "PUT":
-                        this._config.Processor.ProcessPut(webContext);
+                        _config.Processor.ProcessPut(webContext);
                         break;
                     case "POST":
-                        Uri serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath);
+                        var serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath);
                         if (context.Request.Url.AbsoluteUri.Equals(serviceUri.AbsoluteUri))
                         {
                             // If there is a ?graph parameter or ?default parameter then this is a normal Post
                             // Otherwise it is a PostCreate
                             if (context.Request.QueryString["graph"] != null)
                             {
-                                this._config.Processor.ProcessPost(webContext);
+                                _config.Processor.ProcessPost(webContext);
                             }
                             else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), BaseProtocolProcessor.DefaultParameterPattern))
                             {
-                                this._config.Processor.ProcessPost(webContext);
+                                _config.Processor.ProcessPost(webContext);
                             }
                             else
                             {
-                                this._config.Processor.ProcessPostCreate(webContext);
+                                _config.Processor.ProcessPostCreate(webContext);
                             }
                         }
                         else
                         {
-                            this._config.Processor.ProcessPost(webContext);
+                            _config.Processor.ProcessPost(webContext);
                         }
                         break;
                     case "DELETE":
-                        this._config.Processor.ProcessDelete(webContext);
+                        _config.Processor.ProcessDelete(webContext);
                         break;
                     case "HEAD":
-                        this._config.Processor.ProcessHead(webContext);
+                        _config.Processor.ProcessHead(webContext);
                         break;
                     case "PATCH":
-                        this._config.Processor.ProcessPatch(webContext);
+                        _config.Processor.ProcessPatch(webContext);
                         break;
                     default:
                         // For any other HTTP Verb we send a 405 Method Not Allowed
@@ -143,7 +143,7 @@ namespace VDS.RDF.Web
                 }
 
                 // Update the Cache as the request may have changed the endpoint
-                this.UpdateConfig(context);
+                UpdateConfig(context);
             }
             catch (SparqlHttpProtocolUriResolutionException)
             {

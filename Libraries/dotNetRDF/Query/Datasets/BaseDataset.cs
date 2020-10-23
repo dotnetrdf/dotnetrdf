@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Datasets
 
         private Stack<IEnumerable<Uri>> InitDefaultGraphUriStack()
         {
-            Stack<IEnumerable<Uri>> s = new Stack<IEnumerable<Uri>>();
+            var s = new Stack<IEnumerable<Uri>>();
             if (!_unionDefaultGraph)
             {
                 s.Push(new Uri[] { _defaultGraphUri });
@@ -187,7 +187,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 // Multiple Graph URIs
                 // Build a merged Graph of all the Graph URIs
-                Graph g = new Graph();
+                var g = new Graph();
                 foreach (Uri u in graphUris)
                 {
                     if (HasGraph(u))
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 // Multiple Graph URIs
                 // Build a merged Graph of all the Graph URIs
-                Graph g = new Graph();
+                var g = new Graph();
                 foreach (Uri u in graphUris)
                 {
                     if (HasGraph(u))
@@ -867,7 +867,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (HasGraph(g.BaseUri))
             {
-                ITransactionalGraph existing = (ITransactionalGraph)GetModifiableGraph(g.BaseUri);
+                var existing = (ITransactionalGraph)GetModifiableGraph(g.BaseUri);
                 _actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
             }
             else
@@ -893,7 +893,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 if (InternalDefaultGraph != null)
                 {
-                    GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(InternalDefaultGraph);
+                    var wrapper = new GraphPersistenceWrapper(InternalDefaultGraph);
                     wrapper.Clear();
                     _actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
                     return true;
@@ -966,7 +966,7 @@ namespace VDS.RDF.Query.Datasets
                 }
                 graphUri = current.BaseUri;
             }
-            ITransactionalGraph existing = (ITransactionalGraph)_modifiableGraphs[graphUri];
+            var existing = (ITransactionalGraph)_modifiableGraphs[graphUri];
             _actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
             return existing;
         }
@@ -986,7 +986,7 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         public sealed override void Flush()
         {
-            int i = 0;
+            var i = 0;
             while (i < _actions.Count)
             {
                 GraphPersistenceAction action = _actions[i];
@@ -1026,8 +1026,8 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         public sealed override void Discard()
         {
-            int i = _actions.Count - 1;
-            int total = _actions.Count;
+            var i = _actions.Count - 1;
+            var total = _actions.Count;
             while (i >= 0)
             {
                 GraphPersistenceAction action = _actions[i];
@@ -1043,7 +1043,7 @@ namespace VDS.RDF.Query.Datasets
                     case GraphPersistenceActionType.Deleted:
                         // If a Graph was deleted we must now add it back again
                         // Don't add the full Graph only an empty Graph with the given URI
-                        Graph g = new Graph();
+                        var g = new Graph();
                         g.BaseUri = action.Graph.BaseUri;
                         AddGraphInternal(g);
                         break;

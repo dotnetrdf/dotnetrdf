@@ -58,7 +58,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uriref">URI Reference.</param>
         /// <returns></returns>
-        static String FixMalformedUriStrings(String uriref)
+        static string FixMalformedUriStrings(string uriref)
         {
             if (uriref.StartsWith("file:/"))
             {
@@ -87,13 +87,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static Uri StripUriFragment(Uri u)
         {
-            if (u.Fragment.Equals(String.Empty))
+            if (u.Fragment.Equals(string.Empty))
             {
                 return u;
             }
             else
             {
-                String temp = u.AbsoluteUri;
+                var temp = u.AbsoluteUri;
                 temp = temp.Substring(0, temp.Length - u.Fragment.Length);
                 return UriFactory.Create(temp);
             }
@@ -107,11 +107,11 @@ namespace VDS.RDF
         /// <returns>Resolved Uri as a String.</returns>
         /// <exception cref="RdfParseException">RDF Parse Exception if the Uri cannot be resolved for a know reason.</exception>
         /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed.</exception>
-        public static String ResolveUri(String uriref, String baseUri)
+        public static string ResolveUri(string uriref, string baseUri)
         {
-            if (!baseUri.Equals(String.Empty))
+            if (!baseUri.Equals(string.Empty))
             {
-                if (uriref.Equals(String.Empty))
+                if (uriref.Equals(string.Empty))
                 {
                     // Empty Uri reference refers to the Base Uri
                     return UriFactory.Create(FixMalformedUriStrings(baseUri)).AbsoluteUri;
@@ -119,7 +119,7 @@ namespace VDS.RDF
                 else
                 {
                     // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    Uri u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
+                    var u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
                     if (u.IsAbsoluteUri) 
                     {
                         // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
@@ -149,7 +149,7 @@ namespace VDS.RDF
             }
             else
             {
-                if (uriref.Equals(String.Empty))
+                if (uriref.Equals(string.Empty))
                 {
                     throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
                 }
@@ -174,7 +174,7 @@ namespace VDS.RDF
         /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed.</exception>
         public static Uri ResolveUri(Uri uriref, Uri baseUri)
         {
-            Uri result = new Uri(baseUri, uriref);
+            var result = new Uri(baseUri, uriref);
             return result;
         }
 
@@ -185,7 +185,7 @@ namespace VDS.RDF
         /// <param name="nsmap">Namespace Map to resolve against.</param>
         /// <param name="baseUri">Base Uri to resolve against.</param>
         /// <returns></returns>
-        public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri)
+        public static string ResolveQName(string qname, INamespaceMapper nsmap, Uri baseUri)
         {
             return ResolveQName(qname, nsmap, baseUri, false);
         }
@@ -198,17 +198,17 @@ namespace VDS.RDF
         /// <param name="baseUri">Base Uri to resolve against.</param>
         /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to Base URI.</param>
         /// <returns></returns>
-        public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri, bool allowDefaultPrefixFallback)
+        public static string ResolveQName(string qname, INamespaceMapper nsmap, Uri baseUri, bool allowDefaultPrefixFallback)
         {
-            String output;
+            string output;
 
             if (qname.StartsWith(":"))
             {
                 // QName in Default Namespace
-                if (nsmap.HasNamespace(String.Empty))
+                if (nsmap.HasNamespace(string.Empty))
                 {
                     // Default Namespace Defined
-                    output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + qname.Substring(1);
+                    output = nsmap.GetNamespaceUri(string.Empty).AbsoluteUri + qname.Substring(1);
                 }
                 else if (allowDefaultPrefixFallback)
                 {
@@ -240,10 +240,10 @@ namespace VDS.RDF
             else
             {
                 // QName in some other Namespace
-                String[] parts = qname.Split(new char[] { ':' }, 2);
+                var parts = qname.Split(new char[] { ':' }, 2);
                 if (parts.Length == 1)
                 {
-                    output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + parts[0];
+                    output = nsmap.GetNamespaceUri(string.Empty).AbsoluteUri + parts[0];
                 }
                 else
                 {
@@ -261,7 +261,7 @@ namespace VDS.RDF
         /// <param name="nsmap">Namespace Map to resolve against.</param>
         /// <param name="baseUri">Base Uri to resolve against.</param>
         /// <returns></returns>
-        public static String ResolveUriOrQName(IToken t, INamespaceMapper nsmap, Uri baseUri)
+        public static string ResolveUriOrQName(IToken t, INamespaceMapper nsmap, Uri baseUri)
         {
             if (t.TokenType == Token.QNAME)
             {
@@ -269,7 +269,7 @@ namespace VDS.RDF
             }
             else if (t.TokenType == Token.URI)
             {
-                String uriBase = (baseUri == null) ? String.Empty : baseUri.AbsoluteUri;
+                var uriBase = (baseUri == null) ? string.Empty : baseUri.AbsoluteUri;
                 return ResolveUri(t.Value, uriBase);
             }
             else
@@ -323,16 +323,16 @@ namespace VDS.RDF
 
             if (original.NodeType == NodeType.Uri)
             {
-                IUriNode u = (IUriNode)original;
+                var u = (IUriNode)original;
                 IUriNode u2 = new UriNode(target, u.Uri);
 
                 return u2;
             }
             else if (original.NodeType == NodeType.Literal)
             {
-                ILiteralNode l = (ILiteralNode)original;
+                var l = (ILiteralNode)original;
                 ILiteralNode l2;
-                if (l.Language.Equals(String.Empty))
+                if (l.Language.Equals(string.Empty))
                 {
                     if (!(l.DataType == null))
                     {
@@ -352,7 +352,7 @@ namespace VDS.RDF
             }
             else if (original.NodeType == NodeType.Blank)
             {
-                IBlankNode b = (IBlankNode)original;
+                var b = (IBlankNode)original;
                 IBlankNode b2;
 
                 b2 = new BlankNode(target, b.InternalID);
@@ -360,7 +360,7 @@ namespace VDS.RDF
             }
             else if (original.NodeType == NodeType.Variable)
             {
-                IVariableNode v = (IVariableNode)original;
+                var v = (IVariableNode)original;
                 return new VariableNode(target, v.VariableName);
             }
             else
@@ -391,12 +391,12 @@ namespace VDS.RDF
                 case NodeType.GraphLiteral:
                     return target.CreateGraphLiteralNode(((IGraphLiteralNode)original).SubGraph);
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)original;
+                    var lit = (ILiteralNode)original;
                     if (lit.DataType != null)
                     {
                         return target.CreateLiteralNode(lit.Value, lit.DataType);
                     }
-                    else if (!lit.Language.Equals(String.Empty))
+                    else if (!lit.Language.Equals(string.Empty))
                     {
                         return target.CreateLiteralNode(lit.Value, lit.Language);
                     }
@@ -452,9 +452,9 @@ namespace VDS.RDF
         /// <param name="x">First Object.</param>
         /// <param name="y">Second Object.</param>
         /// <returns></returns>
-        public static int CombineHashCodes(Object x, Object y)
+        public static int CombineHashCodes(object x, object y)
         {
-            int hash = 17;
+            var hash = 17;
             hash = hash * 31 + x.GetHashCode();
             hash = hash * 31 + y.GetHashCode();
             return hash;

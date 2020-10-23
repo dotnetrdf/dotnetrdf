@@ -73,15 +73,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     // See if the value can be cast
                     if (n is LongNode) return n;
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
-                        string dt = lit.DataType.AbsoluteUri;
+                        var dt = lit.DataType.AbsoluteUri;
                         if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
                         {
                             // Already a integer type so valid as a xsd:integer
                             long i;
-                            if (Int64.TryParse(lit.Value, out i))
+                            if (long.TryParse(lit.Value, out i))
                             {
                                 return new LongNode(lit.Graph, i);
                             }
@@ -97,8 +97,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         }
                         else
                         {
-                            Int64 i;
-                            if (Int64.TryParse(lit.Value, out i))
+                            long i;
+                            if (long.TryParse(lit.Value, out i))
                             {
                                 // Parsed OK
                                 return new LongNode(lit.Graph, i);
@@ -111,8 +111,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     }
                     else
                     {
-                        Int64 i;
-                        if (Int64.TryParse(lit.Value, out i))
+                        long i;
+                        if (long.TryParse(lit.Value, out i))
                         {
                             // Parsed OK
                             return new LongNode(lit.Graph, i);

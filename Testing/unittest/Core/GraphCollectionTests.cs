@@ -38,8 +38,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphCollectionBasic1()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             store.Add(g);
 
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
@@ -49,8 +49,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphCollectionBasic2()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
 
@@ -61,8 +61,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphCollectionBasic3()
         {
-            GraphCollection collection = new GraphCollection();
-            Graph g = new Graph();
+            var collection = new GraphCollection();
+            var g = new Graph();
             collection.Add(g, true);
 
             Assert.True(collection.Contains(g.BaseUri));
@@ -71,8 +71,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphCollectionBasic4()
         {
-            GraphCollection collection = new GraphCollection();
-            Graph g = new Graph();
+            var collection = new GraphCollection();
+            var g = new Graph();
             collection.Add(g, true);
 
             Assert.True(collection.Contains(g.BaseUri));
@@ -82,8 +82,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphCollectionDiskDemand1()
         {
-            TripleStore store = new TripleStore(new DiskDemandGraphCollection());
-            Graph g = new Graph();
+            var store = new TripleStore(new DiskDemandGraphCollection());
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
@@ -95,13 +95,13 @@ namespace VDS.RDF
         public void GraphCollectionDiskDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
-            TripleStore store = new TripleStore(new DiskDemandGraphCollection());
+            var store = new TripleStore(new DiskDemandGraphCollection());
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
-            Graph empty = new Graph();
+            var empty = new Graph();
             empty.BaseUri = g.BaseUri;
             store.Add(empty);
 
@@ -112,9 +112,9 @@ namespace VDS.RDF
         [Fact(Skip="Remote configuration file is not currently available")]
         public void GraphCollectionWebDemand1()
         {
-            TripleStore store = new TripleStore(new WebDemandGraphCollection());
-            Graph g = new Graph();
-            Uri u = new Uri("http://www.dotnetrdf.org/configuration#");
+            var store = new TripleStore(new WebDemandGraphCollection());
+            var g = new Graph();
+            var u = new Uri("http://www.dotnetrdf.org/configuration#");
             g.LoadFromUri(u);
             g.BaseUri = u; 
 
@@ -126,14 +126,14 @@ namespace VDS.RDF
         public void GraphCollectionWebDemand2()
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
-            TripleStore store = new TripleStore(new WebDemandGraphCollection());
+            var store = new TripleStore(new WebDemandGraphCollection());
 
-            Graph g = new Graph();
-            Uri u = new Uri("http://www.dotnetrdf.org/configuration#");
+            var g = new Graph();
+            var u = new Uri("http://www.dotnetrdf.org/configuration#");
             g.LoadFromUri(u);
             g.BaseUri = u;
 
-            Graph empty = new Graph();
+            var empty = new Graph();
             empty.BaseUri = g.BaseUri;
             store.Add(empty);
 

@@ -68,14 +68,14 @@ namespace VDS.RDF.Configuration
             var g = new Graph();
             INode configure = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyConfigure));
             g.Assert(g.CreateUriNode(option), configure, g.CreateLiteralNode(value));
-            this.ApplyStaticOptionsConfigure(g);
+            ApplyStaticOptionsConfigure(g);
         }
 
         private void ApplyStaticOptionsConfigure(IGraph g, Uri option, INode value)
         {
             INode configure = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyConfigure));
             g.Assert(g.CreateUriNode(option), configure, value);
-            this.ApplyStaticOptionsConfigure(g);
+            ApplyStaticOptionsConfigure(g);
         }
 
         private void ApplyStaticOptionsConfigure(IGraph g)
@@ -88,7 +88,7 @@ namespace VDS.RDF.Configuration
         {
             var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph");
 
-            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
+            Assert.Throws<DotNetRdfConfigurationException>(() => ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace VDS.RDF.Configuration
         {
             var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.NoSuchClass#Property");
 
-            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
+            Assert.Throws<DotNetRdfConfigurationException>(() => ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace VDS.RDF.Configuration
         {
             var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#NoSuchProperty");
 
-            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, ""));
+            Assert.Throws<DotNetRdfConfigurationException>(() => ApplyStaticOptionsConfigure(optionUri, ""));
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace VDS.RDF.Configuration
         {
             var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.Graph#BaseUri");
 
-            Assert.Throws<DotNetRdfConfigurationException>(() => this.ApplyStaticOptionsConfigure(optionUri, "http://example.org"));
+            Assert.Throws<DotNetRdfConfigurationException>(() => ApplyStaticOptionsConfigure(optionUri, "http://example.org"));
         }
 
         [Fact]
@@ -124,7 +124,7 @@ namespace VDS.RDF.Configuration
                 Assert.Equal(current, EqualityHelper.LiteralEqualityMode);
 
                 var optionUri = new Uri("dotnetrdf-configure:VDS.RDF.EqualityHelper#LiteralEqualityMode");
-                this.ApplyStaticOptionsConfigure(optionUri, "Loose");
+                ApplyStaticOptionsConfigure(optionUri, "Loose");
 
                 Assert.Equal(LiteralEqualityMode.Loose, EqualityHelper.LiteralEqualityMode);
             }

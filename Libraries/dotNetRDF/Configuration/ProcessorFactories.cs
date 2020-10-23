@@ -73,7 +73,7 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class QueryProcessorFactory : IObjectFactory
     {
-        private const String LeviathanQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor",
+        private const string LeviathanQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor",
                              SimpleQueryProcessor = "VDS.RDF.Query.SimpleQueryProcessor",
                              GenericQueryProcessor = "VDS.RDF.Query.GenericQueryProcessor",
                              RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor",
@@ -92,7 +92,7 @@ namespace VDS.RDF.Configuration
             obj = null;
             ISparqlQueryProcessor processor = null;
             INode storeObj;
-            Object temp;
+            object temp;
 
             INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
@@ -173,9 +173,9 @@ namespace VDS.RDF.Configuration
 
 
                 case PelletQueryProcessor:
-                    String server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
+                    var server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
                     if (server == null) return false;
-                    String kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
+                    var kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
                     if (kb == null) return false;
 
                     processor = new PelletQueryProcessor(UriFactory.Create(server), kb);
@@ -213,7 +213,7 @@ namespace VDS.RDF.Configuration
     public class UpdateProcessorFactory
         : IObjectFactory
     {
-        private const String LeviathanUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
+        private const string LeviathanUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
                              SimpleUpdateProcessor = "VDS.RDF.Update.SimpleUpdateProcessor",
                              GenericUpdateProcessor = "VDS.RDF.Update.GenericUpdateProcessor";
 
@@ -230,7 +230,7 @@ namespace VDS.RDF.Configuration
             obj = null;
             ISparqlUpdateProcessor processor = null;
             INode storeObj;
-            Object temp;
+            object temp;
 
             INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
@@ -325,7 +325,7 @@ namespace VDS.RDF.Configuration
     public class ProtocolProcessorFactory
         : IObjectFactory
     {
-        private const String ProtocolToUpdateProcessor = "VDS.RDF.Update.Protocol.ProtocolToUpdateProcessor",
+        private const string ProtocolToUpdateProcessor = "VDS.RDF.Update.Protocol.ProtocolToUpdateProcessor",
                              LeviathanProtocolProcessor = "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor",
                              GenericProtocolProcessor = "VDS.RDF.Update.Protocol.GenericProtocolProcessor";
 
@@ -341,7 +341,7 @@ namespace VDS.RDF.Configuration
         {
             obj = null;
             ISparqlHttpProtocolProcessor processor = null;
-            Object temp;
+            object temp;
 
             INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
@@ -352,8 +352,8 @@ namespace VDS.RDF.Configuration
                     INode uNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
                     if (qNode == null || uNode == null) return false;
 
-                    Object queryProc = ConfigurationLoader.LoadObject(g, qNode);
-                    Object updateProc = ConfigurationLoader.LoadObject(g, uNode);
+                    var queryProc = ConfigurationLoader.LoadObject(g, qNode);
+                    var updateProc = ConfigurationLoader.LoadObject(g, uNode);
 
                     if (queryProc is ISparqlQueryProcessor)
                     {
@@ -392,7 +392,7 @@ namespace VDS.RDF.Configuration
                         INode storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                         if (storeNode == null) return false;
 
-                        Object store = ConfigurationLoader.LoadObject(g, storeNode);
+                        var store = ConfigurationLoader.LoadObject(g, storeNode);
 
                         if (store is IInMemoryQueryableStore)
                         {

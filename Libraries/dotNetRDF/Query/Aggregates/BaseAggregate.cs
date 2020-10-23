@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Aggregates
         /// <summary>
         /// Gets the Functor of the Aggregate.
         /// </summary>
-        public abstract String Functor
+        public abstract string Functor
         {
             get;
         }

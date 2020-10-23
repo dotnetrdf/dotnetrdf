@@ -134,6 +134,6 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the set of BNodes used in INSERT DATA commands so far.
         /// </summary>
-        public HashSet<String> DataBNodes { get; } = new HashSet<string>();
+        public HashSet<string> DataBNodes { get; } = new HashSet<string>();
     }
 }

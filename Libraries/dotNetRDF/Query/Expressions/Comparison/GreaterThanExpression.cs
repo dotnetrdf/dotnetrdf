@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
 
             if (a == null) throw new RdfQueryException("Cannot evaluate a > when one argument is Null");
 
-            int compare = context.NodeComparer.Compare(a, b);//a.CompareTo(b);
+            var compare = context.NodeComparer.Compare(a, b);//a.CompareTo(b);
             return new BooleanNode(null, compare > 0);
         }
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + _leftExpr.ToString() + ")");

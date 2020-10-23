@@ -51,9 +51,9 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public WebContext(HttpContext context)
         {
-            this._context = context;
-            this._request = new WebRequest(context);
-            this._response = new WebResponse(context);
+            _context = context;
+            _request = new WebRequest(context);
+            _response = new WebResponse(context);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._request;
+                return _request;
             }
         }
 
@@ -74,7 +74,7 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._response;
+                return _response;
             }
         }
 
@@ -85,7 +85,7 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._context.User;
+                return _context.User;
             }
         }
     }
@@ -100,14 +100,14 @@ namespace VDS.RDF.Web
 
         public WebRequest(HttpContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public String[] AcceptTypes
         {
             get
             {
-                return this._context.Request.AcceptTypes;
+                return _context.Request.AcceptTypes;
             }
         }
 
@@ -115,7 +115,7 @@ namespace VDS.RDF.Web
         {
             get 
             {
-                return this._context.Request.ContentLength; 
+                return _context.Request.ContentLength; 
             }
         }
 
@@ -123,7 +123,7 @@ namespace VDS.RDF.Web
         {
             get 
             {
-                return this._context.Request.ContentType;
+                return _context.Request.ContentType;
             }
         }
 
@@ -131,7 +131,7 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._context.Request.Headers;
+                return _context.Request.Headers;
             }
         }
 
@@ -139,7 +139,7 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._context.Request.HttpMethod;
+                return _context.Request.HttpMethod;
             }
         }
 
@@ -147,7 +147,7 @@ namespace VDS.RDF.Web
         {
             get 
             { 
-                return this._context.Request.InputStream;
+                return _context.Request.InputStream;
             }
         }
 
@@ -155,7 +155,7 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._context.Request.QueryString;
+                return _context.Request.QueryString;
             }
         }
 
@@ -163,7 +163,7 @@ namespace VDS.RDF.Web
         {
             get 
             {
-                return this._context.Request.Url;
+                return _context.Request.Url;
             }
         }
 
@@ -171,7 +171,7 @@ namespace VDS.RDF.Web
         {
             get 
             {
-                return this._context.Request.UserHostAddress; 
+                return _context.Request.UserHostAddress; 
             }
         }
     }
@@ -186,33 +186,33 @@ namespace VDS.RDF.Web
 
         public WebResponse(HttpContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public void AddHeader(string header, string value)
         {
-            this._context.Response.AddHeader(header, value);
+            _context.Response.AddHeader(header, value);
         }
 
         public void Clear()
         {
-            this._context.Response.Clear();
+            _context.Response.Clear();
         }
 
         public void Write(String data)
         {
-            this._context.Response.Write(data);
+            _context.Response.Write(data);
         }
 
         public Encoding ContentEncoding
         {
             get
             {
-                return this._context.Response.ContentEncoding;
+                return _context.Response.ContentEncoding;
             }
             set
             {
-                this._context.Response.ContentEncoding = value;
+                _context.Response.ContentEncoding = value;
             }
         }
 
@@ -220,11 +220,11 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._context.Response.ContentType;
+                return _context.Response.ContentType;
             }
             set
             {
-                this._context.Response.ContentType = value;
+                _context.Response.ContentType = value;
             }
         }
 
@@ -232,7 +232,7 @@ namespace VDS.RDF.Web
         {
             get 
             { 
-                return this._context.Response.Headers;    
+                return _context.Response.Headers;    
             }
         }
 
@@ -240,7 +240,7 @@ namespace VDS.RDF.Web
         {
             get 
             {
-                return this._context.Response.OutputStream;
+                return _context.Response.OutputStream;
             }
         }
 
@@ -248,11 +248,11 @@ namespace VDS.RDF.Web
         {
             get
             {
-                return this._context.Response.StatusCode;
+                return _context.Response.StatusCode;
             }
             set
             {
-                this._context.Response.StatusCode = value;
+                _context.Response.StatusCode = value;
             }
         }
     }

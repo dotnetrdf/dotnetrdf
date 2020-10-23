@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets an enumeration of all the Variables used in this expression.
         /// </summary>
-        public virtual IEnumerable<String> Variables
+        public virtual IEnumerable<string> Variables
         {
             get
             {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public abstract String Functor
+        public abstract string Functor
         {
             get;
         }
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets an enumeration of all the Variables used in this expression.
         /// </summary>
-        public virtual IEnumerable<String> Variables
+        public virtual IEnumerable<string> Variables
         {
             get
             {
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public abstract String Functor
+        public abstract string Functor
         {
             get;
         }

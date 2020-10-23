@@ -51,21 +51,21 @@ namespace VDS.RDF.Storage.Management
         /// Gets the list of available stores.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<String> ListStores();
+        IEnumerable<string> ListStores();
 
         /// <summary>
         /// Gets a default template for creating a store with the given ID.
         /// </summary>
         /// <param name="id">ID.</param>
         /// <returns></returns>
-        IStoreTemplate GetDefaultTemplate(String id);
+        IStoreTemplate GetDefaultTemplate(string id);
 
         /// <summary>
         /// Gets all possible templates for creating a store with the given ID.
         /// </summary>
         /// <param name="id">ID.</param>
         /// <returns></returns>
-        IEnumerable<IStoreTemplate> GetAvailableTemplates(String id);
+        IEnumerable<IStoreTemplate> GetAvailableTemplates(string id);
 
         /// <summary>
         /// Creates a new Store with the given ID.
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void ListStores(AsyncStorageCallback callback, Object state);
+        void ListStores(AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Gets a default template for creating a store with the given ID.
@@ -119,7 +119,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
-        void GetDefaultTemplate(String id, AsyncStorageCallback callback, Object state);
+        void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Gets all available templates for creating a store with the given ID.
@@ -127,7 +127,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="id">ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state);
+        void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Creates a store asynchronously.
@@ -138,7 +138,7 @@ namespace VDS.RDF.Storage.Management
         /// <remarks>
         /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments.
         /// </remarks>
-        void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, Object state);
+        void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Deletes a store asynchronously.
@@ -146,7 +146,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="storeID">ID of the store to delete.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void DeleteStore(String storeID, AsyncStorageCallback callback, Object state);
+        void DeleteStore(string storeID, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Gets a store asynchronously.
@@ -154,6 +154,6 @@ namespace VDS.RDF.Storage.Management
         /// <param name="storeID">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void GetStore(String storeID, AsyncStorageCallback callback, Object state);
+        void GetStore(string storeID, AsyncStorageCallback callback, object state);
     }
 }

@@ -50,8 +50,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         protected override IValuedNode ValueInternal(ILiteralNode stringLit)
         {
-            string temp = stringLit.Value.Trim();
-            Regex normalizeSpace = new Regex("\\s{2,}");
+            var temp = stringLit.Value.Trim();
+            var normalizeSpace = new Regex("\\s{2,}");
             temp = normalizeSpace.Replace(temp, " ");
 
             return new StringNode(null, temp, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));

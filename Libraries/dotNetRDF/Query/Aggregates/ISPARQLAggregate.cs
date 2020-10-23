@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Aggregates
         /// <summary>
         /// Gets the URI/Keyword of the Aggregate.
         /// </summary>
-        String Functor
+        string Functor
         {
             get;
         }

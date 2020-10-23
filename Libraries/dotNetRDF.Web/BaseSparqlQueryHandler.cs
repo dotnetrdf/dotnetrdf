@@ -67,17 +67,17 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessRequest(HttpContext context)
         {
-            this._config = this.LoadConfig(context);
-            WebContext webContext = new WebContext(context);
+            _config = LoadConfig(context);
+            var webContext = new WebContext(context);
 
             // Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(webContext, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, _config);
 
             // Options we need to determine based on the HTTP Method used
             String[] queries;
             String queryText = null;
-            List<String> userDefaultGraphs = new List<String>();
-            List<String> userNamedGraphs = new List<String>();
+            var userDefaultGraphs = new List<String>();
+            var userNamedGraphs = new List<String>();
 
             try
             {
@@ -86,8 +86,8 @@ namespace VDS.RDF.Web
                 {
                     case "OPTIONS":
                         // OPTIONS requests always result in the Service Description document
-                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
-                        HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
+                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                        HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                         return;
 
                     case "HEAD":
@@ -115,11 +115,11 @@ namespace VDS.RDF.Web
                                 if (definition != null)
                                 {
                                     IRdfWriter writer = definition.GetRdfWriter();
-                                    if (!this._config.ShowQueryForm || !(writer is IHtmlWriter))
+                                    if (!_config.ShowQueryForm || !(writer is IHtmlWriter))
                                     {
                                         // If not a HTML Writer selected OR not showing Query Form then show the Service Description Graph
                                         // unless an error occurs creating it
-                                        IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                                        IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                                         context.Response.ContentType = definition.CanonicalMimeType;
                                         context.Response.ContentEncoding = definition.Encoding;
                                         writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
@@ -133,9 +133,9 @@ namespace VDS.RDF.Web
                             }
 
                             // Otherwise we'll either show the Query Form or return a 400 Bad Request
-                            if (this._config.ShowQueryForm)
+                            if (_config.ShowQueryForm)
                             {
-                                this.ShowQueryForm(context);
+                                ShowQueryForm(context);
                             }
                             else
                             {
@@ -160,7 +160,7 @@ namespace VDS.RDF.Web
                         // POST requires a valid content type
                         if (context.Request.ContentType != null)
                         {
-                            MimeTypeSelector contentType = MimeTypeSelector.Create(context.Request.ContentType, 0);
+                            var contentType = MimeTypeSelector.Create(context.Request.ContentType, 0);
                             if (contentType.Type.Equals(MimeTypesHelper.WWWFormURLEncoded))
                             {
                                 // Form URL Encoded was declared type so expect a query parameter in the Form parameters
@@ -190,7 +190,7 @@ namespace VDS.RDF.Web
                                 if (contentType.Charset != null && !contentType.Charset.ToLower().Equals(MimeTypesHelper.CharsetUtf8)) throw new ArgumentException("HTTP POST request was received with a " + MimeTypesHelper.SparqlQuery + " Content-Type but a non UTF-8 charset parameter");
 
                                 // Read the query from the request body
-                                using (StreamReader reader = new StreamReader(context.Request.InputStream))
+                                using (var reader = new StreamReader(context.Request.InputStream))
                                 {
                                     queryText = reader.ReadToEnd();
                                     reader.Close();
@@ -223,21 +223,21 @@ namespace VDS.RDF.Web
 
                 // Get non-standard options associated with the query
                 long timeout = 0;
-                bool partialResults = this._config.DefaultPartialResults;
+                var partialResults = _config.DefaultPartialResults;
 
                 // Get Timeout setting (if any)
                 if (context.Request.QueryString["timeout"] != null)
                 {
                     if (!Int64.TryParse(context.Request.QueryString["timeout"], out timeout))
                     {
-                        timeout = this._config.DefaultTimeout;
+                        timeout = _config.DefaultTimeout;
                     }
                 }
                 else if (context.Request.Form["timeout"] != null)
                 {
                     if (!Int64.TryParse(context.Request.Form["timeout"], out timeout))
                     {
-                        timeout = this._config.DefaultTimeout;
+                        timeout = _config.DefaultTimeout;
                     }
                 }
                 // Get Partial Results Setting (if any);
@@ -245,44 +245,44 @@ namespace VDS.RDF.Web
                 {
                     if (!Boolean.TryParse(context.Request.QueryString["partialResults"], out partialResults))
                     {
-                        partialResults = this._config.DefaultPartialResults;
+                        partialResults = _config.DefaultPartialResults;
                     }
                 }
                 else if (context.Request.Form["partialResults"] != null)
                 {
                     if (!Boolean.TryParse(context.Request.Form["partialResults"], out partialResults))
                     {
-                        partialResults = this._config.DefaultPartialResults;
+                        partialResults = _config.DefaultPartialResults;
                     }
                 }
 
                 // Now we're going to parse the Query
-                SparqlQueryParser parser = new SparqlQueryParser(this._config.Syntax);
+                var parser = new SparqlQueryParser(_config.Syntax);
                 parser.DefaultBaseUri = context.Request.Url;
-                parser.ExpressionFactories = this._config.ExpressionFactories;
-                parser.QueryOptimiser = this._config.QueryOptimiser;
+                parser.ExpressionFactories = _config.ExpressionFactories;
+                parser.QueryOptimiser = _config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);
-                query.AlgebraOptimisers = this._config.AlgebraOptimisers;
-                query.PropertyFunctionFactories = this._config.PropertyFunctionFactories;
+                query.AlgebraOptimisers = _config.AlgebraOptimisers;
+                query.PropertyFunctionFactories = _config.PropertyFunctionFactories;
 
                 // Check whether we need to use authentication
                 // If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
                 bool isAuth = true, requireActionAuth = false;
-                if (this._config.UserGroups.Any())
+                if (_config.UserGroups.Any())
                 {
                     // If we have user
-                    isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
+                    isAuth = HandlerHelper.IsAuthenticated(webContext, _config.UserGroups);
                     requireActionAuth = true;
                 }
                 if (!isAuth) return;
 
                 // Is this user allowed to make this kind of query?
-                if (requireActionAuth) HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, this.GetPermissionAction(query));
+                if (requireActionAuth) HandlerHelper.IsAuthenticated(webContext, _config.UserGroups, GetPermissionAction(query));
 
                 // Clear query dataset if there is a protocol defined one
                 userDefaultGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
                 userNamedGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
-                bool isProtocolDataset = false;
+                var isProtocolDataset = false;
                 if (userDefaultGraphs.Count > 0 || userNamedGraphs.Count > 0)
                 {
                     query.ClearDefaultGraphs();
@@ -293,18 +293,18 @@ namespace VDS.RDF.Web
                 // Set the Default Graph URIs (if any)
                 if (isProtocolDataset)
                 {
-                    foreach (String userDefaultGraph in userDefaultGraphs)
+                    foreach (var userDefaultGraph in userDefaultGraphs)
                     {
                         query.AddDefaultGraph(UriFactory.Create(userDefaultGraph));
                     }
                 }
-                else if (!this._config.DefaultGraphURI.Equals(String.Empty))
+                else if (!_config.DefaultGraphURI.Equals(String.Empty))
                 {
                     // Only applies if the Query doesn't specify any Default Graph and there wasn't a protocol defined
                     // dataset present
                     if (!query.DefaultGraphs.Any())
                     {
-                        query.AddDefaultGraph(UriFactory.Create(this._config.DefaultGraphURI));
+                        query.AddDefaultGraph(UriFactory.Create(_config.DefaultGraphURI));
                     }
                 }
 
@@ -312,7 +312,7 @@ namespace VDS.RDF.Web
                 if (isProtocolDataset)
                 {
                     query.ClearNamedGraphs();
-                    foreach (String userNamedGraph in userNamedGraphs)
+                    foreach (var userNamedGraph in userNamedGraphs)
                     {
                         query.AddNamedGraph(UriFactory.Create(userNamedGraph));
                     }
@@ -325,21 +325,21 @@ namespace VDS.RDF.Web
                 }
                 else
                 {
-                    query.Timeout = this._config.DefaultTimeout;
+                    query.Timeout = _config.DefaultTimeout;
                 }
 
                 // Set Partial Results Setting                 
                 query.PartialResultsOnTimeout = partialResults;
 
                 // Set Describe Algorithm
-                query.Describer = this._config.DescribeAlgorithm;
+                query.Describer = _config.DescribeAlgorithm;
 
                 // Now we can finally make the query and return the results
-                Object result = this.ProcessQuery(query);
-                this.ProcessResults(context, result);
+                var result = ProcessQuery(query);
+                ProcessResults(context, result);
 
                 // Update the Cache as the request may have changed the endpoint
-                this.UpdateConfig(context);
+                UpdateConfig(context);
             }
             catch (RdfParseException parseEx)
             {
@@ -394,7 +394,7 @@ namespace VDS.RDF.Web
         /// </remarks>
         protected virtual Object ProcessQuery(SparqlQuery query)
         {
-            return this._config.Processor.ProcessQuery(query);
+            return _config.Processor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -409,7 +409,7 @@ namespace VDS.RDF.Web
         /// </remarks>
         protected virtual void ProcessResults(HttpContext context, Object result)
         {
-            HandlerHelper.SendToClient(new WebContext(context), result, this._config);
+            HandlerHelper.SendToClient(new WebContext(context), result, _config);
         }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace VDS.RDF.Web
         /// <param name="ex">Error</param>
         protected virtual void HandleErrors(HttpContext context, String title, String query, Exception ex)
         {
-            HandlerHelper.HandleQueryErrors(new WebContext(context), this._config, title, query, ex, (int)HttpStatusCode.InternalServerError);
+            HandlerHelper.HandleQueryErrors(new WebContext(context), _config, title, query, ex, (int)HttpStatusCode.InternalServerError);
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace VDS.RDF.Web
         /// <param name="statusCode">HTTP Status Code to return</param>
         protected virtual void HandleErrors(HttpContext context, String title, String query, Exception ex, int statusCode)
         {
-            HandlerHelper.HandleQueryErrors(new WebContext(context), this._config, title, query, ex, statusCode);
+            HandlerHelper.HandleQueryErrors(new WebContext(context), _config, title, query, ex, statusCode);
         }
 
         /// <summary>
@@ -457,7 +457,7 @@ namespace VDS.RDF.Web
             context.Response.ContentType = "text/html";
 
             // Get a HTML Text Writer
-            HtmlTextWriter output = new HtmlTextWriter(new StreamWriter(context.Response.OutputStream));
+            var output = new HtmlTextWriter(new StreamWriter(context.Response.OutputStream));
 
             // Page Header
             output.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -467,9 +467,9 @@ namespace VDS.RDF.Web
             output.WriteEncodedText("SPARQL Query Interface");
             output.RenderEndTag();
             // Add Stylesheet
-            if (!this._config.Stylesheet.Equals(String.Empty))
+            if (!_config.Stylesheet.Equals(String.Empty))
             {
-                output.AddAttribute(HtmlTextWriterAttribute.Href, this._config.Stylesheet);
+                output.AddAttribute(HtmlTextWriterAttribute.Href, _config.Stylesheet);
                 output.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
                 output.AddAttribute(HtmlTextWriterAttribute.Rel, "stylesheet");
                 output.RenderBeginTag(HtmlTextWriterTag.Link);
@@ -490,10 +490,10 @@ namespace VDS.RDF.Web
             output.AddAttribute("action", context.Request.Path);
             output.RenderBeginTag(HtmlTextWriterTag.Form);
 
-            if (!this._config.IntroductionText.Equals(String.Empty))
+            if (!_config.IntroductionText.Equals(String.Empty))
             {
                 output.RenderBeginTag(HtmlTextWriterTag.P);
-                output.Write(this._config.IntroductionText);
+                output.Write(_config.IntroductionText);
                 output.RenderEndTag();
             }
 
@@ -503,7 +503,7 @@ namespace VDS.RDF.Web
             output.AddAttribute(HtmlTextWriterAttribute.Rows, "15");
             output.AddAttribute(HtmlTextWriterAttribute.Cols, "100");
             output.RenderBeginTag(HtmlTextWriterTag.Textarea);
-            output.WriteEncodedText(this._config.DefaultQuery);
+            output.WriteEncodedText(_config.DefaultQuery);
             output.RenderEndTag();
             output.WriteBreak();
 
@@ -511,28 +511,28 @@ namespace VDS.RDF.Web
             output.AddAttribute(HtmlTextWriterAttribute.Name, "default-graph-uri");
             output.AddAttribute(HtmlTextWriterAttribute.Type, "text");
             output.AddAttribute(HtmlTextWriterAttribute.Size, "100");
-            output.AddAttribute(HtmlTextWriterAttribute.Value, this._config.DefaultGraphURI);
+            output.AddAttribute(HtmlTextWriterAttribute.Value, _config.DefaultGraphURI);
             output.RenderBeginTag(HtmlTextWriterTag.Input);
             output.RenderEndTag();
             output.WriteBreak();
 
-            if (this._config.SupportsTimeout)
+            if (_config.SupportsTimeout)
             {
                 output.WriteEncodedText("Timeout: ");
                 output.AddAttribute(HtmlTextWriterAttribute.Name, "timeout");
                 output.AddAttribute(HtmlTextWriterAttribute.Type, "text");
-                output.AddAttribute(HtmlTextWriterAttribute.Value, this._config.DefaultTimeout.ToString());
+                output.AddAttribute(HtmlTextWriterAttribute.Value, _config.DefaultTimeout.ToString());
                 output.RenderBeginTag(HtmlTextWriterTag.Input);
                 output.RenderEndTag();
                 output.WriteEncodedText(" Milliseconds");
                 output.WriteBreak();
             }
 
-            if (this._config.SupportsPartialResults)
+            if (_config.SupportsPartialResults)
             {
                 output.AddAttribute(HtmlTextWriterAttribute.Name, "partialResults");
                 output.AddAttribute(HtmlTextWriterAttribute.Type, "checkbox");
-                if (this._config.DefaultPartialResults) output.AddAttribute(HtmlTextWriterAttribute.Checked, "checked");
+                if (_config.DefaultPartialResults) output.AddAttribute(HtmlTextWriterAttribute.Checked, "checked");
                 output.AddAttribute(HtmlTextWriterAttribute.Value, "true");
                 output.RenderBeginTag(HtmlTextWriterTag.Input);
                 output.RenderEndTag();

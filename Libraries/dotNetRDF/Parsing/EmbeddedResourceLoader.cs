@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing
 #if NETCORE
         private static string _currAsmName = GetAssemblyName(typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly);
 #else
-        private static String _currAsmName = GetAssemblyName(Assembly.GetExecutingAssembly());
+        private static string _currAsmName = GetAssemblyName(Assembly.GetExecutingAssembly());
 #endif
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing
         /// <param name="g">Graph to load into.</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
         /// <param name="parser">Parser to use (leave null for auto-selection).</param>
-        public static void Load(IGraph g, String resource, IRdfReader parser)
+        public static void Load(IGraph g, string resource, IRdfReader parser)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             Load(new GraphHandler(g), resource, (IRdfReader)null);
@@ -61,19 +61,19 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
         /// <param name="parser">Parser to use (leave null for auto-selection).</param>
-        public static void Load(IRdfHandler handler, String resource, IRdfReader parser)
+        public static void Load(IRdfHandler handler, string resource, IRdfReader parser)
         {
             if (resource == null) throw new RdfParseException("Cannot read RDF from a null Resource");
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null Handler");
 
             try
             {
-                String resourceName = resource;
+                var resourceName = resource;
 
                 if (resource.Contains(','))
                 {
                     // Resource is an external assembly
-                    String assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
+                    var assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     // Try to load this assembly
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
-        public static void Load(IRdfHandler handler, String resource)
+        public static void Load(IRdfHandler handler, string resource)
         {
             Load(handler, resource, (IRdfReader)null);
         }
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Parser will be auto-selected.
         /// </remarks>
-        public static void Load(IGraph g, String resource)
+        public static void Load(IGraph g, string resource)
         {
             Load(g, resource, null);
         }
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
         /// <param name="asm">Assembly to get the resource stream from.</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name).</param>
         /// <param name="parser">Parser to use (if null then will be auto-selected).</param>
-        private static void LoadGraphInternal(IRdfHandler handler, Assembly asm, String resource, IRdfReader parser)
+        private static void LoadGraphInternal(IRdfHandler handler, Assembly asm, string resource, IRdfReader parser)
         {
             // Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
@@ -166,7 +166,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         // Need to select a Parser or use StringParser
-                        String ext = MimeTypesHelper.GetTrueResourceExtension(resource);
+                        var ext = MimeTypesHelper.GetTrueResourceExtension(resource);
                         MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                         if (def != null)
                         {
@@ -178,8 +178,8 @@ namespace VDS.RDF.Parsing
                         {
                             // Resource did not have a file extension or we didn't have a parser associated with the extension
                             // Try using StringParser instead
-                            String data;
-                            using (StreamReader reader = new StreamReader(s))
+                            string data;
+                            using (var reader = new StreamReader(s))
                             {
                                 data = reader.ReadToEnd();
                                 reader.Close();
@@ -198,7 +198,7 @@ namespace VDS.RDF.Parsing
         /// <param name="store">Store to load into.</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
         /// <param name="parser">Parser to use (leave null for auto-selection).</param>
-        public static void Load(ITripleStore store, String resource, IStoreReader parser)
+        public static void Load(ITripleStore store, string resource, IStoreReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read RDF Dataset into a null Store");
             Load(new StoreHandler(store), resource, parser);
@@ -212,7 +212,7 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Parser will be auto-selected.
         /// </remarks>
-        public static void Load(ITripleStore store, String resource)
+        public static void Load(ITripleStore store, string resource)
         {
             Load(store, resource, null);
         }
@@ -223,19 +223,19 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
         /// <param name="parser">Parser to use (leave null for auto-selection).</param>
-        public static void Load(IRdfHandler handler, String resource, IStoreReader parser)
+        public static void Load(IRdfHandler handler, string resource, IStoreReader parser)
         {
             if (resource == null) throw new RdfParseException("Cannot read a RDF Dataset from a null Resource");
             if (handler == null) throw new RdfParseException("Cannot read a RDF Dataset using a null Handler");
 
             try
             {
-                String resourceName = resource;
+                var resourceName = resource;
 
                 if (resource.Contains(','))
                 {
                     // Resource is an external assembly
-                    String assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
+                    var assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     // Try to load this assembly
@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing
                         ? typeof(EmbeddedResourceLoader).GetTypeInfo().Assembly
                         : Assembly.Load(new AssemblyName(assemblyName));
 #else
-                    Assembly asm = (assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName)) as Assembly;
+                    var asm = (assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName)) as Assembly;
 #endif
                     if (asm != null)
                     {
@@ -282,7 +282,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load.</param>
-        public static void LoadDataset(IRdfHandler handler, String resource)
+        public static void LoadDataset(IRdfHandler handler, string resource)
         {
             Load(handler, resource, (IStoreReader)null);
         }
@@ -294,7 +294,7 @@ namespace VDS.RDF.Parsing
         /// <param name="asm">Assembly to get the resource stream from.</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name).</param>
         /// <param name="parser">Parser to use (if null will be auto-selected).</param>
-        private static void LoadDatasetInternal(IRdfHandler handler, Assembly asm, String resource, IStoreReader parser)
+        private static void LoadDatasetInternal(IRdfHandler handler, Assembly asm, string resource, IStoreReader parser)
         {
             // Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
@@ -315,7 +315,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         // Need to select a Parser or use StringParser
-                        String ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
+                        var ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
                         MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
                         if (def != null)
                         {
@@ -336,8 +336,8 @@ namespace VDS.RDF.Parsing
                             {
                                 // Resource did not have a file extension or we didn't have a parser associated with the extension
                                 // Try using StringParser instead
-                                String data;
-                                using (StreamReader reader = new StreamReader(s))
+                                string data;
+                                using (var reader = new StreamReader(s))
                                 {
                                     data = reader.ReadToEnd();
                                     reader.Close();

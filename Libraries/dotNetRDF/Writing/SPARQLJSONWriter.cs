@@ -61,7 +61,7 @@ namespace VDS.RDF.Writing
         /// <param name="fileEncoding">The text encoding to use for the output file.</param>
         public void Save(SparqlResultSet results, string filename, Encoding fileEncoding)
         {
-            using var stream = File.Open(filename, FileMode.Create);
+            using FileStream stream = File.Open(filename, FileMode.Create);
             Save(results, new StreamWriter(stream, fileEncoding));
         }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to.</param>
         private void GenerateOutput(SparqlResultSet results, TextWriter output)
         {
-            JsonTextWriter writer = new JsonTextWriter(output);
+            var writer = new JsonTextWriter(output);
             writer.Formatting = Newtonsoft.Json.Formatting.Indented;
 
             // Start a Json Object for the Result Set
@@ -115,7 +115,7 @@ namespace VDS.RDF.Writing
                 // Create the Variables Object
                 writer.WritePropertyName("vars");
                 writer.WriteStartArray();
-                foreach (String var in results.Variables)
+                foreach (var var in results.Variables)
                 {
                     writer.WriteValue(var);
                 }
@@ -134,7 +134,7 @@ namespace VDS.RDF.Writing
                 {
                     // Create a Binding Object
                     writer.WriteStartObject();
-                    foreach (String var in results.Variables)
+                    foreach (var var in results.Variables)
                     {
                         if (!result.HasValue(var)) continue; //No output for unbound variables
 
@@ -152,7 +152,7 @@ namespace VDS.RDF.Writing
                                 // Blank Node
                                 writer.WriteValue("bnode");
                                 writer.WritePropertyName("value");
-                                String id = ((IBlankNode)value).InternalID;
+                                var id = ((IBlankNode)value).InternalID;
                                 id = id.Substring(id.IndexOf(':') + 1);
                                 writer.WriteValue(id);
                                 break;
@@ -163,7 +163,7 @@ namespace VDS.RDF.Writing
 
                             case NodeType.Literal:
                                 // Literal
-                                ILiteralNode lit = (ILiteralNode)value;
+                                var lit = (ILiteralNode)value;
                                 if (lit.DataType != null)
                                 {
                                     writer.WriteValue("typed-literal");
@@ -175,7 +175,7 @@ namespace VDS.RDF.Writing
                                 writer.WritePropertyName("value");
 
                                 writer.WriteValue(lit.Value);
-                                if (!lit.Language.Equals(String.Empty))
+                                if (!lit.Language.Equals(string.Empty))
                                 {
                                     writer.WritePropertyName("xml:lang");
                                     writer.WriteValue(lit.Language);
@@ -230,7 +230,7 @@ namespace VDS.RDF.Writing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

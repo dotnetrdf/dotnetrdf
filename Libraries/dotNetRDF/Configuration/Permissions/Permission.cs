@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// </summary>
         /// <param name="action">Action.</param>
         /// <returns></returns>
-        bool IsPermissionFor(String action);
+        bool IsPermissionFor(string action);
     }
 
     /// <summary>
@@ -71,13 +71,13 @@ namespace VDS.RDF.Configuration.Permissions
     /// </summary>
     public class Permission : IPermission
     {
-        private String _action;
+        private string _action;
 
         /// <summary>
         /// Creates a new Permission for the given Action.
         /// </summary>
         /// <param name="action">Action.</param>
-        public Permission(String action)
+        public Permission(string action)
         {
             _action = action;
         }
@@ -87,7 +87,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// </summary>
         /// <param name="action">Action.</param>
         /// <returns></returns>
-        public bool IsPermissionFor(String action)
+        public bool IsPermissionFor(string action)
         {
             return _action.Equals(action);
         }
@@ -98,13 +98,13 @@ namespace VDS.RDF.Configuration.Permissions
     /// </summary>
     public class PermissionSet : IPermission
     {
-        private List<String> _actions = new List<string>();
+        private List<string> _actions = new List<string>();
 
         /// <summary>
         /// Creates a new Permissions Set.
         /// </summary>
         /// <param name="action">Action.</param>
-        public PermissionSet(String action)
+        public PermissionSet(string action)
         {
             _actions.Add(action);
         }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// Creates a new Permissions Set.
         /// </summary>
         /// <param name="actions">Actions.</param>
-        public PermissionSet(IEnumerable<String> actions)
+        public PermissionSet(IEnumerable<string> actions)
         {
             _actions.AddRange(actions);
         }
@@ -123,7 +123,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// </summary>
         /// <param name="action">Action.</param>
         /// <returns></returns>
-        public bool IsPermissionFor(String action)
+        public bool IsPermissionFor(string action)
         {
             return _actions.Any(a => a.Equals(action));
         }

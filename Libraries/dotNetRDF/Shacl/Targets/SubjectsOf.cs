@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
 namespace VDS.RDF.Shacl.Targets
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-
     internal class SubjectsOf : Target
     {
         [DebuggerStepThrough]

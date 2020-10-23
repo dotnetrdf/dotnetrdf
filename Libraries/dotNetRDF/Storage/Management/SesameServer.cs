@@ -50,20 +50,20 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// System Repository ID.
         /// </summary>
-        public const String SystemRepositoryID = "SYSTEM";
+        public const string SystemRepositoryID = "SYSTEM";
 
         /// <summary>
         /// Base Uri for the Server.
         /// </summary>
-        protected String _baseUri;
+        protected string _baseUri;
         /// <summary>
         /// Username for accessing the Server.
         /// </summary>
-        protected String _username;
+        protected string _username;
         /// <summary>
         /// Password for accessing the Server.
         /// </summary>
-        protected String _pwd;
+        protected string _pwd;
         /// <summary>
         /// Whether the User has provided credentials for accessing the Server using authentication.
         /// </summary>
@@ -72,7 +72,7 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Repositories Prefix.
         /// </summary>
-        protected String _repositoriesPrefix = "repositories/";
+        protected string _repositoriesPrefix = "repositories/";
 
         private SesameHttpProtocolConnector _sysConnection;
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store.</param>
-        public SesameServer(String baseUri)
+        public SesameServer(string baseUri)
             : this(baseUri, null, null) { }
 
         /// <summary>
@@ -99,13 +99,13 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public SesameServer(String baseUri, String username, String password)
+        public SesameServer(string baseUri, string username, string password)
         {
             _baseUri = baseUri;
             if (!_baseUri.EndsWith("/")) _baseUri += "/";
             _username = username;
             _pwd = password;
-            _hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+            _hasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameServer(String baseUri, IWebProxy proxy)
+        public SesameServer(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy) { }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameServer(String baseUri, String username, String password, IWebProxy proxy)
+        public SesameServer(string baseUri, string username, string password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
             Proxy = proxy;
@@ -160,7 +160,7 @@ namespace VDS.RDF.Storage.Management
         {
             var templates = new List<IStoreTemplate>();
             object[] args = { id };
-            foreach (var t in TemplateTypes)
+            foreach (Type t in TemplateTypes)
             {
                 try
                 {
@@ -196,11 +196,11 @@ namespace VDS.RDF.Storage.Management
                     var createParams = new Dictionary<string, string>();
                     var sesameTemplate = (BaseSesameTemplate)template;
                     if (template.Validate().Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    var g = sesameTemplate.GetTemplateGraph();
+                    IGraph g = sesameTemplate.GetTemplateGraph();
 
                     // Firstly we need to save the Repository Template as a new Context to Sesame
                     createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+                    HttpWebRequest request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
                     request.ContentType = MimeTypesHelper.NTriples[0];
                     var ntwriter = new NTriplesWriter();
@@ -215,7 +215,7 @@ namespace VDS.RDF.Storage.Management
                     // Then we need to declare that said Context is of type rep:RepositoryContext
                     var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
                     EnsureSystemConnection();
-                    _sysConnection.UpdateGraph(String.Empty, repoType.AsEnumerable(), null);
+                    _sysConnection.UpdateGraph(string.Empty, repoType.AsEnumerable(), null);
 
                     return true;
                 }
@@ -247,11 +247,11 @@ namespace VDS.RDF.Storage.Management
         /// <remarks>
         /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation.
         /// </remarks>
-        public virtual void DeleteStore(String storeID)
+        public virtual void DeleteStore(string storeID)
         {
             try
             {
-                var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+                HttpWebRequest request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
 
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
@@ -269,11 +269,11 @@ namespace VDS.RDF.Storage.Management
         /// Gets the list of available stores.
         /// </summary>
         /// <returns></returns>
-        public virtual IEnumerable<String> ListStores()
+        public virtual IEnumerable<string> ListStores()
         {
             try
             {
-                var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+                HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
 
                 var handler = new ListStringsHandler("id");
                 using (var response = (HttpWebResponse)request.GetResponse())
@@ -313,7 +313,7 @@ namespace VDS.RDF.Storage.Management
         {
             var templates = new List<IStoreTemplate>();
             object[] args = { id };
-            foreach (var t in TemplateTypes)
+            foreach (Type t in TemplateTypes)
             {
                 try
                 {
@@ -354,9 +354,9 @@ namespace VDS.RDF.Storage.Management
                     return;
                 }
 
-                var g = sesameTemplate.GetTemplateGraph();
+                IGraph g = sesameTemplate.GetTemplateGraph();
                 createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                var request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+                HttpWebRequest request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
                 request.ContentType = MimeTypesHelper.NTriples[0];
                 var ntwriter = new NTriplesWriter();
@@ -368,7 +368,7 @@ namespace VDS.RDF.Storage.Management
                     {
                         // Then we need to declare that said Context is of type rep:RepositoryContext
                         var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
-                        _sysConnection.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
+                        _sysConnection.UpdateGraph(string.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
                         {
                             if (args.WasSuccessful)
                             {
@@ -421,11 +421,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="storeID">ID of the store to delete.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public virtual void DeleteStore(String storeID, AsyncStorageCallback callback, Object state)
+        public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             try
             {
-                var request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+                HttpWebRequest request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
 
                 request.BeginGetResponse(r =>
                 {
@@ -460,9 +460,9 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public virtual void ListStores(AsyncStorageCallback callback, Object state)
+        public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
-            var request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
             var handler = new ListStringsHandler("id");
             try
             {
@@ -504,7 +504,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="method">HTTP Method.</param>
         /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
-        protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
+        protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
             // Build the Request Uri
             var requestUri = _baseUri + servicePath;
@@ -562,7 +562,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            var manager = context.NextSubject;
+            INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));

@@ -105,9 +105,9 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <returns>The virtualized Triple. Itself, if it was already virtual.</returns>
         protected Triple VirtualizeTriple(Triple t)
         {
-            var s = VirtualizeNode(t.Subject);
-            var p = VirtualizeNode(t.Predicate);
-            var o = VirtualizeNode(t.Object);
+            INode s = VirtualizeNode(t.Subject);
+            INode p = VirtualizeNode(t.Predicate);
+            INode o = VirtualizeNode(t.Object);
             if (ReferenceEquals(s, t.Subject) && ReferenceEquals(p, t.Predicate) && ReferenceEquals(o, t.Object)) 
             {
                 return t;

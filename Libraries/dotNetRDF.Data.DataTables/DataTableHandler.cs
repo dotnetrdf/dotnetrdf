@@ -58,10 +58,10 @@ namespace VDS.RDF.Data.DataTables
         /// <param name="objColName">Object Column Name</param>
         public DataTableHandler(DataTable table, String subjColName, String predColName, String objColName)
         {
-            this._table = table;
-            this._subjCol = subjColName;
-            this._predCol = predColName;
-            this._objCol = objColName;            
+            _table = table;
+            _subjCol = subjColName;
+            _predCol = predColName;
+            _objCol = objColName;            
         }
 
         /// <summary>
@@ -81,11 +81,11 @@ namespace VDS.RDF.Data.DataTables
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
-            DataRow row = this._table.NewRow();
-            row[this._subjCol] = t.Subject;
-            row[this._predCol] = t.Predicate;
-            row[this._objCol] = t.Object;
-            this._table.Rows.Add(row);
+            DataRow row = _table.NewRow();
+            row[_subjCol] = t.Subject;
+            row[_predCol] = t.Predicate;
+            row[_objCol] = t.Object;
+            _table.Rows.Add(row);
             return true;
         }
 

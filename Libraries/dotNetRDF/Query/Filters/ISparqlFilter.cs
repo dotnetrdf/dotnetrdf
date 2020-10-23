@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Filters
         /// <summary>
         /// Gets the enumeration of Variables that are used in the Filter.
         /// </summary>
-        IEnumerable<String> Variables
+        IEnumerable<string> Variables
         {
             get;
         }

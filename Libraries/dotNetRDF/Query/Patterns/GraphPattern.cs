@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    GraphPattern breakPattern = new GraphPattern();
+                    var breakPattern = new GraphPattern();
                     breakPattern.AddTriplePattern(p);
                     _graphPatterns.Add(breakPattern);
                 }
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    GraphPattern p = new GraphPattern();
+                    var p = new GraphPattern();
                     p.AddInlineData(data);
                     _graphPatterns.Add(p);
                 }
@@ -272,7 +272,7 @@ namespace VDS.RDF.Query.Patterns
         {
             if (!_unplacedFilters.Contains(filter)) throw new RdfQueryException("Cannot Insert a Filter that is not currentlyy an unplaced Filter in this Graph Pattern");
             _unplacedFilters.Remove(filter);
-            FilterPattern p = new FilterPattern(filter);
+            var p = new FilterPattern(filter);
             _triplePatterns.Insert(i, p);
         }
 
@@ -560,7 +560,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Variables used in the Pattern.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -608,7 +608,7 @@ namespace VDS.RDF.Query.Patterns
         public void Optimise(IQueryOptimiser optimiser)
         {
             if (_isOptimised) return;
-            optimiser.Optimise(this, Enumerable.Empty<String>());
+            optimiser.Optimise(this, Enumerable.Empty<string>());
         }
 
         /// <summary>
@@ -628,7 +628,7 @@ namespace VDS.RDF.Query.Patterns
         /// The <paramref name="vars">vars</paramref> parameter contains Variables mentioned in the parent Graph Pattern (if any) that can be used to guide optimisation of child graph patterns.
         /// </para>
         /// </remarks>
-        public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
+        public void Optimise(IQueryOptimiser optimiser, IEnumerable<string> vars)
         {
             if (_isOptimised) return;
             optimiser.Optimise(this, vars);
@@ -644,18 +644,18 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
-            String indent = String.Empty;
+            var output = new StringBuilder();
+            var indent = string.Empty;
 
             if (_isUnion)
             {
-                indent = new String(' ', 2);
-                for (int i = 0; i < _graphPatterns.Count; i++)
+                indent = new string(' ', 2);
+                for (var i = 0; i < _graphPatterns.Count; i++)
                 {
                     GraphPattern gp = _graphPatterns[i];
 
                     if (i > 0) output.Append(indent);
-                    String temp = gp.ToString();
+                    var temp = gp.ToString();
                     if (!temp.Contains('\n'))
                     {
                         if (gp.HasModifier) temp = "{ " + temp + " }";
@@ -724,21 +724,21 @@ namespace VDS.RDF.Query.Patterns
             }
 
             output.Append("{ ");
-            bool linebreaks = ((_triplePatterns.Count + _graphPatterns.Count + _unplacedAssignments.Count) > 1) || _isFiltered;
+            var linebreaks = ((_triplePatterns.Count + _graphPatterns.Count + _unplacedAssignments.Count) > 1) || _isFiltered;
             if (linebreaks)
             {
                 output.AppendLine();
-                indent = new String(' ', 2);
+                indent = new string(' ', 2);
             }
             // Triple Patterns
             foreach (ITriplePattern tp in _triplePatterns)
             {
-                String temp = tp.ToString();
+                var temp = tp.ToString();
                 output.Append(indent);
                 if (temp.Contains('\n'))
                 {
-                    String[] lines = temp.Split('\n');
-                    for (int i = 0; i < lines.Length; i++)
+                    var lines = temp.Split('\n');
+                    for (var i = 0; i < lines.Length; i++)
                     {
                         if (i > 0) output.Append(indent);
                         if (i > 0 && i < lines.Length - 1) output.Append(' ');
@@ -764,15 +764,15 @@ namespace VDS.RDF.Query.Patterns
             if (HasInlineData)
             {
                 output.Append(indent);
-                String temp = _data.ToString();
+                var temp = _data.ToString();
                 if (!temp.Contains('\n'))
                 {
                     output.Append(temp + " ");
                 }
                 else
                 {
-                    String[] lines = temp.Split('\n');
-                    for (int i = 0; i < lines.Length; i++)
+                    var lines = temp.Split('\n');
+                    for (var i = 0; i < lines.Length; i++)
                     {
                         if (i > 0) output.Append(indent);
                         output.Append(lines[i]);
@@ -785,15 +785,15 @@ namespace VDS.RDF.Query.Patterns
             foreach (GraphPattern gp in _graphPatterns)
             {
                 output.Append(indent);
-                String temp = gp.ToString();
+                var temp = gp.ToString();
                 if (!temp.Contains('\n'))
                 {
                     output.Append(temp + " ");
                 }
                 else
                 {
-                    String[] lines = temp.Split('\n');
-                    for (int i = 0; i < lines.Length; i++)
+                    var lines = temp.Split('\n');
+                    for (var i = 0; i < lines.Length; i++)
                     {
                         if (i > 0) output.Append(indent);
                         output.Append(lines[i]);
@@ -832,7 +832,7 @@ namespace VDS.RDF.Query.Patterns
                 ISparqlAlgebra union = new Union(_graphPatterns[0].ToAlgebra(), _graphPatterns[1].ToAlgebra());
                 if (_graphPatterns.Count > 2)
                 {
-                    for (int i = 2; i < _graphPatterns.Count; i++)
+                    for (var i = 2; i < _graphPatterns.Count; i++)
                     {
                         union = new Union(union, _graphPatterns[i].ToAlgebra());
                     }

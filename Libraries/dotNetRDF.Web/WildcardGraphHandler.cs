@@ -67,16 +67,16 @@ namespace VDS.RDF.Web
         protected override BaseGraphHandlerConfiguration LoadConfig(HttpContext context)
         {
             // Check the Configuration File is specified
-            String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
+            var configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
             if (configFile == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the Web.Config file does not specify a 'dotNetRDFConfig' AppSetting to specify the RDF configuration file to use");
             IGraph g = WebConfigurationLoader.LoadConfigurationGraph(context, configFile);
 
             // Then check there is configuration associated with the expected URI
-            INode objNode = WebConfigurationLoader.FindObject(g, context.Request.Url, out this._cachePath);
+            INode objNode = WebConfigurationLoader.FindObject(g, context.Request.Url, out _cachePath);
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the RDF configuration file does not have any configuration associated with an appropriate wildcard URI");
 
             // Is our Configuration already cached?
-            Object temp = context.Cache[this._cachePath];
+            var temp = context.Cache[_cachePath];
             if (temp != null)
             {
                 if (temp is BaseGraphHandlerConfiguration)
@@ -85,20 +85,20 @@ namespace VDS.RDF.Web
                 }
                 else
                 {
-                    context.Cache.Remove(this._cachePath);
+                    context.Cache.Remove(_cachePath);
                 }
             }
 
-            GraphHandlerConfiguration config = new GraphHandlerConfiguration(new WebContext(context), g, objNode);
+            var config = new GraphHandlerConfiguration(new WebContext(context), g, objNode);
 
             // Finally cache the Configuration before returning it
             if (config.CacheSliding)
             {
-                context.Cache.Add(this._cachePath, config, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                context.Cache.Add(_cachePath, config, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
             }
             else
             {
-                context.Cache.Add(this._cachePath, config, new System.Web.Caching.CacheDependency(configFile), DateTime.Now.AddMinutes(config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                context.Cache.Add(_cachePath, config, new System.Web.Caching.CacheDependency(configFile), DateTime.Now.AddMinutes(config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }
             return config;
         }
@@ -109,9 +109,9 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         protected override void UpdateConfig(HttpContext context)
         {
-            if (this._config.CacheDuration == 0)
+            if (_config.CacheDuration == 0)
             {
-                if (context.Cache[this._cachePath] != null) context.Cache.Remove(this._cachePath);
+                if (context.Cache[_cachePath] != null) context.Cache.Remove(_cachePath);
             }
         }
     }

@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             // Ensure expected variables are present
-            HashSet<SparqlVariable> vars = new HashSet<SparqlVariable>(_variables);
+            var vars = new HashSet<SparqlVariable>(_variables);
             if (context.InputMultiset is NullMultiset)
             {
                 context.InputMultiset = new Multiset(vars.Select(v => v.Name));
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
             // Trim Variables that aren't being SELECTed
             if (!IsSelectAll)
             {
-                foreach (String var in context.InputMultiset.Variables.ToList())
+                foreach (var var in context.InputMultiset.Variables.ToList())
                 {
                     if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
                     {
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
@@ -168,7 +168,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {

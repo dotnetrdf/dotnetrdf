@@ -58,24 +58,24 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Base Uri for the Store.
         /// </summary>
-        protected String _baseUri;
+        protected string _baseUri;
         /// <summary>
         /// Store ID.
         /// </summary>
-        protected String _store;
+        protected string _store;
 
         /// <summary>
         /// Repositories Prefix.
         /// </summary>
-        protected String _repositoriesPrefix = "repositories/";
+        protected string _repositoriesPrefix = "repositories/";
         /// <summary>
         /// Query Path Prefix.
         /// </summary>
-        protected String _queryPath = String.Empty;
+        protected string _queryPath = string.Empty;
         /// <summary>
         /// Update Path Prefix.
         /// </summary>
-        protected String _updatePath = "/statements";
+        protected string _updatePath = "/statements";
         /// <summary>
         /// Whether to do full encoding of contexts.
         /// </summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
-        public BaseSesameHttpProtocolConnector(String baseUri, String storeID)
+        public BaseSesameHttpProtocolConnector(string baseUri, string storeID)
             : this(baseUri, storeID, null, null) { }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
+        public BaseSesameHttpProtocolConnector(string baseUri, string storeID, string username, string password)
             : base()
         {
             _baseUri = baseUri;
@@ -128,7 +128,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, IWebProxy proxy)
+        public BaseSesameHttpProtocolConnector(string baseUri, string storeID, IWebProxy proxy)
             : this(baseUri, storeID, null, null, proxy) { }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, String username, String password, IWebProxy proxy)
+        public BaseSesameHttpProtocolConnector(string baseUri, string storeID, string username, string password, IWebProxy proxy)
             : this(baseUri, storeID, username, password)
         {
             Proxy = proxy;
@@ -149,7 +149,7 @@ namespace VDS.RDF.Storage
         /// Gets the Base URI to the repository.
         /// </summary>
         [Description("The Base URI for requests made to the store.")]
-        public String BaseUri
+        public string BaseUri
         {
             get
             {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Storage
         /// Gets the Repository Name that is in use.
         /// </summary>
         [Description("The Repository to which this is a connection.")]
-        public String RepositoryName
+        public string RepositoryName
         {
             get
             {
@@ -251,10 +251,10 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public virtual object Query(String sparqlQuery)
+        public virtual object Query(string sparqlQuery)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
@@ -274,12 +274,12 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
             {
                 // Pre-parse the query to determine what the Query Type is
-                bool isAsk = false;
+                var isAsk = false;
                 SparqlQuery q = null;
                 try
                 {
@@ -293,7 +293,7 @@ namespace VDS.RDF.Storage
                 }
 
                 // Select Accept Header
-                String accept;
+                string accept;
                 if (q != null)
                 {
                     accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader);
@@ -307,25 +307,25 @@ namespace VDS.RDF.Storage
 
                 // Create the Request
                 // For Sesame we always POST queries because using GET doesn't always work (CORE-374)
-                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                var queryParams = new Dictionary<string, string>();
                 request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept, "POST", queryParams);
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
+                var postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
+                using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                 {
                     writer.Write(postData);
                     writer.Close();
                 }
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
-                    StreamReader data = new StreamReader(response.GetResponseStream());
-                    String ctype = response.ContentType;
+                    var data = new StreamReader(response.GetResponseStream());
+                    var ctype = response.ContentType;
                     try
                     {
                         // Is the Content Type referring to a Sparql Result Set format?
@@ -356,7 +356,7 @@ namespace VDS.RDF.Storage
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                         if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
                         {
-                            SparqlRdfParser resreader = new SparqlRdfParser(rdfreader);
+                            var resreader = new SparqlRdfParser(rdfreader);
                             resreader.Load(resultsHandler, data);
                         }
                         else
@@ -378,13 +378,13 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="query">Query.</param>
         /// <returns></returns>
-        protected virtual String EscapeQuery(String query)
+        protected virtual string EscapeQuery(string query)
         {
-            StringBuilder output = new StringBuilder();
-            char[] cs = query.ToCharArray();
-            for (int i = 0; i < cs.Length; i++)
+            var output = new StringBuilder();
+            var cs = query.ToCharArray();
+            for (var i = 0; i < cs.Length; i++)
             {
-                char c = cs[i];
+                var c = cs[i];
                 if (c <= 127)
                 {
                     output.Append(c);
@@ -445,9 +445,9 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to load into.</param>
         /// <param name="graphUri">Uri of the Graph to load.</param>
         /// <remarks>If a Null/Empty Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded.</remarks>
-        public virtual void LoadGraph(IGraph g, String graphUri)
+        public virtual void LoadGraph(IGraph g, string graphUri)
         {
-            if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
+            if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
@@ -460,15 +460,15 @@ namespace VDS.RDF.Storage
         /// <param name="handler">RDF Handler.</param>
         /// <param name="graphUri">Uri of the Graph to load.</param>
         /// <remarks>If a Null/Empty Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded.</remarks>
-        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, string graphUri)
         {
             try
             {
                 HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                var serviceParams = new Dictionary<string, string>();
 
-                String requestUri = _repositoriesPrefix + _store + "/statements";
-                if (!graphUri.Equals(String.Empty))
+                var requestUri = _repositoriesPrefix + _store + "/statements";
+                if (!graphUri.Equals(string.Empty))
                 {
                     serviceParams.Add("context", "<" + graphUri + ">");
                 }
@@ -479,7 +479,7 @@ namespace VDS.RDF.Storage
 
                 request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     parser.Load(handler, new StreamReader(response.GetResponseStream()));
@@ -504,7 +504,7 @@ namespace VDS.RDF.Storage
             try
             {
                 HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                var serviceParams = new Dictionary<string, string>();
 
                 if (g.BaseUri != null)
                 {
@@ -527,7 +527,7 @@ namespace VDS.RDF.Storage
                 IRdfWriter rdfWriter = CreateRdfWriter();
                 rdfWriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // If we get then it was OK
                     response.Close();
@@ -556,16 +556,16 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
         /// <param name="removals">Triples to be removed.</param>
-        public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
             {
                 HttpWebRequest request;
                 HttpWebResponse response;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                var serviceParams = new Dictionary<string, string>();
                 IRdfWriter rdfWriter = CreateRdfWriter();
 
-                if (!graphUri.Equals(String.Empty))
+                if (!graphUri.Equals(string.Empty))
                 {
                     serviceParams.Add("context", "<" + graphUri + ">");
                 }
@@ -608,7 +608,7 @@ namespace VDS.RDF.Storage
                     {
                         // Add the new Triples
                         request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", "POST", serviceParams);
-                        Graph h = new Graph();
+                        var h = new Graph();
                         h.Assert(additions);
                         request.ContentType = GetSaveContentType();
                         rdfWriter.Save(h, new StreamWriter(request.GetRequestStream()));
@@ -640,14 +640,14 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Sesame store.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete.</param>
-        public virtual void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(string graphUri)
         {
             try
             {
                 HttpWebResponse response;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                var serviceParams = new Dictionary<string, string>();
 
-                if (!graphUri.Equals(String.Empty))
+                if (!graphUri.Equals(string.Empty))
                 {
                     serviceParams.Add("context", "<" + graphUri + ">");
                 }
@@ -678,10 +678,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
-                    List<Uri> graphs = new List<Uri>();
+                    var graphs = new List<Uri>();
                     foreach (SparqlResult r in ((SparqlResultSet)results))
                     {
                         if (r.HasValue("g"))
@@ -726,7 +726,7 @@ namespace VDS.RDF.Storage
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             HttpWebRequest request;
-            Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+            var serviceParams = new Dictionary<string, string>();
 
             if (g.BaseUri != null)
             {
@@ -761,10 +761,10 @@ namespace VDS.RDF.Storage
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             HttpWebRequest request;
-            Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+            var serviceParams = new Dictionary<string, string>();
 
-            String requestUri = _repositoriesPrefix + _store + "/statements";
-            if (!graphUri.Equals(String.Empty))
+            var requestUri = _repositoriesPrefix + _store + "/statements";
+            if (!graphUri.Equals(string.Empty))
             {
                 serviceParams.Add("context", "<" + graphUri + ">");
             }
@@ -785,7 +785,7 @@ namespace VDS.RDF.Storage
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             HttpWebRequest request;
-            Dictionary<String, String> serviceParams;
+            Dictionary<string, string> serviceParams;
             IRdfWriter rdfWriter = CreateRdfWriter();
 
             if (removals != null)
@@ -793,14 +793,14 @@ namespace VDS.RDF.Storage
                 if (removals.Any())
                 {
                     // For Async deletes we need to build up a sequence of requests to send
-                    Queue<HttpWebRequest> requests = new Queue<HttpWebRequest>();
+                    var requests = new Queue<HttpWebRequest>();
 
                     // Have to do a DELETE for each individual Triple
                     foreach (Triple t in removals.Distinct())
                     {
                         // Prep Service Params
-                        serviceParams = new Dictionary<String, String>();
-                        if (!graphUri.Equals(String.Empty))
+                        serviceParams = new Dictionary<string, string>();
+                        if (!graphUri.Equals(string.Empty))
                         {
                             serviceParams.Add("context", "<" + graphUri + ">");
                         }
@@ -835,7 +835,7 @@ namespace VDS.RDF.Storage
                                     {
                                         // Prep Service Params
                                         serviceParams = new Dictionary<string, string>();
-                                        if (!graphUri.Equals(String.Empty))
+                                        if (!graphUri.Equals(string.Empty))
                                         {
                                             serviceParams.Add("context", "<" + graphUri + ">");
                                         }
@@ -846,7 +846,7 @@ namespace VDS.RDF.Storage
 
                                         // Add the new Triples
                                         request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", "POST", serviceParams);
-                                        Graph h = new Graph();
+                                        var h = new Graph();
                                         h.Assert(additions);
                                         request.ContentType = GetSaveContentType();
 
@@ -875,7 +875,7 @@ namespace VDS.RDF.Storage
                 {
                     // Prep Service Params
                     serviceParams = new Dictionary<string, string>();
-                    if (!graphUri.Equals(String.Empty))
+                    if (!graphUri.Equals(string.Empty))
                     {
                         serviceParams.Add("context", "<" + graphUri + ">");
                     }
@@ -886,7 +886,7 @@ namespace VDS.RDF.Storage
 
                     // Add the new Triples
                     request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", "POST", serviceParams);
-                    Graph h = new Graph();
+                    var h = new Graph();
                     h.Assert(additions);
                     request.ContentType = GetSaveContentType();
 
@@ -912,9 +912,9 @@ namespace VDS.RDF.Storage
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             HttpWebRequest request;
-            Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+            var serviceParams = new Dictionary<string, string>();
 
-            if (!graphUri.Equals(String.Empty))
+            if (!graphUri.Equals(string.Empty))
             {
                 serviceParams.Add("context", "<" + graphUri + ">");
             }
@@ -936,8 +936,8 @@ namespace VDS.RDF.Storage
         /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query.</returns>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
                 {
                     if (results.ResultsType != SparqlResultsType.Unknown)
@@ -964,7 +964,7 @@ namespace VDS.RDF.Storage
             try
             {
                 // Pre-parse the query to determine what the Query Type is
-                bool isAsk = false;
+                var isAsk = false;
                 SparqlQuery q = null;
                 try
                 {
@@ -978,7 +978,7 @@ namespace VDS.RDF.Storage
                 }
 
                 // Select Accept Header
-                String accept;
+                string accept;
                 if (q != null)
                 {
                     accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader);
@@ -991,7 +991,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request, for simplicity async requests are always POST
-                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                var queryParams = new Dictionary<string, string>();
                 request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept, "POST", queryParams);
 
                 // Build the Post Data and add to the Request Body
@@ -1004,10 +1004,10 @@ namespace VDS.RDF.Storage
                         {
                             Stream stream = request.EndGetRequestStream(r);
 
-                            StringBuilder postData = new StringBuilder();
+                            var postData = new StringBuilder();
                             postData.Append("query=");
                             postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write(postData);
                                 writer.Close();
@@ -1017,9 +1017,9 @@ namespace VDS.RDF.Storage
                                 {
                                     try
                                     {
-                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-                                        StreamReader data = new StreamReader(response.GetResponseStream());
-                                        String ctype = response.ContentType;
+                                        var response = (HttpWebResponse)request.EndGetResponse(r2);
+                                        var data = new StreamReader(response.GetResponseStream());
+                                        var ctype = response.ContentType;
                                         try
                                         {
                                             // Is the Content Type referring to a Sparql Result Set format?
@@ -1052,7 +1052,7 @@ namespace VDS.RDF.Storage
                                             IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
                                             if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
                                             {
-                                                SparqlRdfParser resreader = new SparqlRdfParser(rdfreader);
+                                                var resreader = new SparqlRdfParser(rdfreader);
                                                 resreader.Load(resultsHandler, data);
                                             }
                                             else
@@ -1105,16 +1105,16 @@ namespace VDS.RDF.Storage
         /// <param name="method">HTTP Method.</param>
         /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
-        protected virtual HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
+        protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
             // Build the Request Uri
-            String requestUri = _baseUri + servicePath;
+            var requestUri = _baseUri + servicePath;
             if (queryParams != null)
             {
                 if (queryParams.Count > 0)
                 {
                     requestUri += "?";
-                    foreach (String p in queryParams.Keys)
+                    foreach (var p in queryParams.Keys)
                     {
                         requestUri += p + "=" + HttpUtility.UrlEncode(queryParams[p]) + "&";
                     }
@@ -1123,7 +1123,7 @@ namespace VDS.RDF.Storage
             }
 
             // Create our Request
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            var request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
 
@@ -1193,7 +1193,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
-        public SesameHttpProtocolConnector(String baseUri, String storeID)
+        public SesameHttpProtocolConnector(string baseUri, string storeID)
             : base(baseUri, storeID) { }
 
         /// <summary>
@@ -1203,7 +1203,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public SesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
+        public SesameHttpProtocolConnector(string baseUri, string storeID, string username, string password)
             : base(baseUri, storeID, username, password) { }
 
         /// <summary>
@@ -1212,7 +1212,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameHttpProtocolConnector(String baseUri, String storeID, IWebProxy proxy)
+        public SesameHttpProtocolConnector(string baseUri, string storeID, IWebProxy proxy)
             : base(baseUri, storeID, proxy) { }
 
         /// <summary>
@@ -1223,7 +1223,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameHttpProtocolConnector(String baseUri, String storeID, String username, String password, IWebProxy proxy)
+        public SesameHttpProtocolConnector(string baseUri, string storeID, string username, string password, IWebProxy proxy)
             : base(baseUri, storeID, username, password, proxy) { }
     }
 
@@ -1238,7 +1238,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
-        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID)
+        public SesameHttpProtocolVersion5Connector(string baseUri, string storeID)
             : base(baseUri, storeID) { }
 
         /// <summary>
@@ -1248,7 +1248,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, String username, String password)
+        public SesameHttpProtocolVersion5Connector(string baseUri, string storeID, string username, string password)
             : base(baseUri, storeID, username, password) { }
 
         /// <summary>
@@ -1257,7 +1257,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, IWebProxy proxy)
+        public SesameHttpProtocolVersion5Connector(string baseUri, string storeID, IWebProxy proxy)
             : base(baseUri, storeID, proxy) { }
 
         /// <summary>
@@ -1268,7 +1268,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, String username, String password, IWebProxy proxy)
+        public SesameHttpProtocolVersion5Connector(string baseUri, string storeID, string username, string password, IWebProxy proxy)
             : base(baseUri, storeID, username, password, proxy) { }
 
     }
@@ -1284,7 +1284,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
-        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID)
+        public SesameHttpProtocolVersion6Connector(string baseUri, string storeID)
             : base(baseUri, storeID) { }
 
         /// <summary>
@@ -1294,7 +1294,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, String username, String password)
+        public SesameHttpProtocolVersion6Connector(string baseUri, string storeID, string username, string password)
             : base(baseUri, storeID, username, password) { }
 
         /// <summary>
@@ -1303,7 +1303,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, IWebProxy proxy)
+        public SesameHttpProtocolVersion6Connector(string baseUri, string storeID, IWebProxy proxy)
             : base(baseUri, storeID, proxy) { }
 
         /// <summary>
@@ -1314,7 +1314,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, String username, String password, IWebProxy proxy)
+        public SesameHttpProtocolVersion6Connector(string baseUri, string storeID, string username, string password, IWebProxy proxy)
             : base(baseUri, storeID, username, password, proxy) { }
 
         /// <summary>
@@ -1328,21 +1328,21 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request
-                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
+                var postData = new StringBuilder();
                 postData.Append("update=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
+                using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                 {
                     writer.Write(postData);
                     writer.Close();
                 }
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // If we get here it completed OK
                     response.Close();
@@ -1360,18 +1360,18 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public virtual void Update(string sparqlUpdate, AsyncStorageCallback callback, Object state)
+        public virtual void Update(string sparqlUpdate, AsyncStorageCallback callback, object state)
         {
             try
             {
                 HttpWebRequest request;
 
                 // Create the Request
-                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
+                var postData = new StringBuilder();
                 postData.Append("update=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
 
@@ -1380,7 +1380,7 @@ namespace VDS.RDF.Storage
                         try
                         {
                             Stream stream = request.EndGetRequestStream(r);
-                            using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                             {
                                 writer.Write(postData);
                                 writer.Close();
@@ -1391,7 +1391,7 @@ namespace VDS.RDF.Storage
                                  {
                                      try
                                      {
-                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                         var response = (HttpWebResponse)request.EndGetResponse(r2);
                                          // If we get here it completed OK
                                          response.Close();
                                          callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);

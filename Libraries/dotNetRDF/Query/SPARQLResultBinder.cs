@@ -62,7 +62,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the Variables that the Binder stores Bindings for.
         /// </summary>
-        public abstract IEnumerable<String> Variables
+        public abstract IEnumerable<string> Variables
         {
             get;
         }
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query
         /// <param name="name">Variable Name.</param>
         /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
-        public abstract INode Value(String name, int bindingID);
+        public abstract INode Value(string name, int bindingID);
 
         /// <summary>
         /// Gets the Group referred to by the given ID.
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query
         {
             if (_context.InputMultiset is GroupMultiset)
             {
-                GroupMultiset groupSet = (GroupMultiset)_context.InputMultiset;
+                var groupSet = (GroupMultiset)_context.InputMultiset;
                 return groupSet.Group(groupID);
             }
             else if (_groupSet != null)

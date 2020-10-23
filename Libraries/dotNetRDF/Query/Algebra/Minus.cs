@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get { return _lhs.FloatingVariables; }
         }
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get { return _lhs.FixedVariables; }
         }
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -169,8 +169,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = _lhs.ToGraphPattern();
-            GraphPattern opt = _rhs.ToGraphPattern();
+            var p = _lhs.ToGraphPattern();
+            var opt = _rhs.ToGraphPattern();
             if (!opt.HasModifier)
             {
                 opt.IsMinus = true;
@@ -178,7 +178,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                GraphPattern parent = new GraphPattern();
+                var parent = new GraphPattern();
                 parent.AddGraphPattern(opt);
                 parent.IsMinus = true;
                 p.AddGraphPattern(parent);

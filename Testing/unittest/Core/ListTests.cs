@@ -36,23 +36,23 @@ namespace VDS.RDF
     {
         private INode TestListsBasic(IGraph g)
         {
-            List<INode> items = Enumerable.Range(1, 10).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
+            var items = Enumerable.Range(1, 10).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
             INode listRoot = g.AssertList(items);
 
             TestTools.ShowGraph(g);
 
             Assert.Equal(items.Count * 2, g.Triples.Count);
-            List<INode> listItems = g.GetListItems(listRoot).ToList();
+            var listItems = g.GetListItems(listRoot).ToList();
             Assert.Equal(items.Count, listItems.Count);
 
-            for (int i = 0; i < items.Count; i++)
+            for (var i = 0; i < items.Count; i++)
             {
                 Assert.Equal(items[i], listItems[i]);
             }
 
             Assert.True(listRoot.IsListRoot(g), "Should be considered a list root");
 
-            List<INode> listNodes = g.GetListNodes(listRoot).Skip(1).ToList();
+            var listNodes = g.GetListNodes(listRoot).Skip(1).ToList();
             foreach (INode n in listNodes)
             {
                 Assert.False(n.IsListRoot(g), "Should not be considered a list root");
@@ -64,8 +64,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphLists1()
         {
-            Graph g = new Graph();
-            INode listRoot = this.TestListsBasic(g);
+            var g = new Graph();
+            INode listRoot = TestListsBasic(g);
 
             g.RetractList(listRoot);
             Assert.Equal(0, g.Triples.Count);
@@ -74,19 +74,19 @@ namespace VDS.RDF
         [Fact]
         public void GraphLists2()
         {
-            Graph g = new Graph();
-            INode listRoot = this.TestListsBasic(g);
+            var g = new Graph();
+            INode listRoot = TestListsBasic(g);
 
             //Try extending the list
-            List<INode> items = Enumerable.Range(11, 10).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
+            var items = Enumerable.Range(11, 10).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
             g.AddToList(listRoot, items);
             TestTools.ShowGraph(g);
 
             Assert.Equal(items.Count * 4, g.Triples.Count);
-            List<INode> listItems = g.GetListItems(listRoot).ToList();
+            var listItems = g.GetListItems(listRoot).ToList();
             Assert.Equal(items.Count * 2, listItems.Count);
 
-            for (int i = 0; i < items.Count; i++)
+            for (var i = 0; i < items.Count; i++)
             {
                 Assert.Equal(items[i], listItems[i + 10]);
             }
@@ -98,19 +98,19 @@ namespace VDS.RDF
         [Fact]
         public void GraphLists3()
         {
-            Graph g = new Graph();
-            INode listRoot = this.TestListsBasic(g);
+            var g = new Graph();
+            INode listRoot = TestListsBasic(g);
 
             //Try removing items from the list
-            List<INode> items = Enumerable.Range(1, 10).Where(i => i % 2 == 0).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
+            var items = Enumerable.Range(1, 10).Where(i => i % 2 == 0).Select(i => i.ToLiteral(g)).OfType<INode>().ToList();
             g.RemoveFromList(listRoot, items);
             TestTools.ShowGraph(g);
 
             Assert.Equal(items.Count * 2, g.Triples.Count);
-            List<INode> listItems = g.GetListItems(listRoot).ToList();
+            var listItems = g.GetListItems(listRoot).ToList();
             Assert.Equal(items.Count * 2, listItems.Count * 2);
 
-            for (int i = 0; i < items.Count; i++)
+            for (var i = 0; i < items.Count; i++)
             {
                 Assert.False(listItems.Contains(items[i]), "Item " + items[i].ToString() + " which should have been removed from the list is still present");
             }
@@ -122,21 +122,21 @@ namespace VDS.RDF
         [Fact]
         public void GraphLists4()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
         [Fact]
         public void GraphLists5()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.AddToList(g.CreateBlankNode(), Enumerable.Empty<INode>());
         }
 
         [Fact]
         public void GraphListsError1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             Assert.Throws<RdfException>(() => g.GetListItems(g.CreateBlankNode()));
         }
@@ -144,7 +144,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphListsError2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             Assert.Throws<RdfException>(() => g.GetListAsTriples(g.CreateBlankNode()));
         }
@@ -152,7 +152,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphListsError3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             Assert.Throws<RdfException>(() => g.RetractList(g.CreateBlankNode()));
         }
@@ -160,7 +160,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphListsError4()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             Assert.Throws<RdfException>(() => g.AddToList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g)));
         }
@@ -168,7 +168,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphListsError5()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             Assert.Throws<RdfException>(() => g.RemoveFromList<int>(g.CreateBlankNode(), Enumerable.Range(1, 10), i => i.ToLiteral(g)));
         }

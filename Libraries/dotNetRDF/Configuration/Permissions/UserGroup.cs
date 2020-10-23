@@ -124,7 +124,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// </summary>
         /// <param name="username">Username.</param>
         /// <returns></returns>
-        public bool HasMember(String username)
+        public bool HasMember(string username)
         {
             return _users.Any(u => u.UserName.Equals(username));
         }
@@ -135,7 +135,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <returns></returns>
-        public bool HasMember(String username, String password)
+        public bool HasMember(string username, string password)
         {
             return _users.Any(u => u.UserName.Equals(username) && u.Password.Equals(password));
         }
@@ -145,7 +145,7 @@ namespace VDS.RDF.Configuration.Permissions
         /// </summary>
         /// <param name="action">Action.</param>
         /// <returns></returns>
-        public bool IsActionPermitted(String action)
+        public bool IsActionPermitted(string action)
         {
             if (_mode == PermissionModel.AllowAny) return true;
             if (_mode == PermissionModel.DenyAny) return false;

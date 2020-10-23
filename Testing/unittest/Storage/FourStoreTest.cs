@@ -54,14 +54,14 @@ namespace VDS.RDF.Storage
 
         public void StorageFourStoreSaveGraph()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.SaveGraph(g);
 
-            Graph h = new Graph();
+            var h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/4storeTest");
 
             Assert.Equal(g, h);
@@ -72,13 +72,13 @@ namespace VDS.RDF.Storage
         {
             StorageFourStoreSaveGraph();
 
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
 
-            Graph h = new Graph();
+            var h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/4storeTest");
 
             Assert.Equal(g, h);
@@ -92,7 +92,7 @@ namespace VDS.RDF.Storage
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.DeleteGraph("http://example.org/4storeTest");
 
-            Graph g = new Graph();
+            var g = new Graph();
             fourstore.LoadGraph(g, "http://example.org/4storeTest");
 
             Assert.True(g.IsEmpty, "Graph should be empty as it was deleted from 4store");
@@ -104,8 +104,8 @@ namespace VDS.RDF.Storage
             StorageFourStoreDeleteGraph();
             StorageFourStoreSaveGraph();
 
-            Graph g = new Graph();
-            List<Triple> ts = new List<Triple>();
+            var g = new Graph();
+            var ts = new List<Triple>();
             ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
@@ -121,8 +121,8 @@ namespace VDS.RDF.Storage
         {
             StorageFourStoreAddTriples();
 
-            Graph g = new Graph();
-            List<Triple> ts = new List<Triple>();
+            var g = new Graph();
+            var ts = new List<Triple>();
             ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
@@ -141,13 +141,13 @@ namespace VDS.RDF.Storage
             FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.Update("CREATE SILENT GRAPH <http://example.org/update>; INSERT DATA { GRAPH <http://example.org/update> { <http://example.org/subject> <http://example.org/predicate> <http://example.org/object> } }");
 
-            Graph g = new Graph();
+            var g = new Graph();
             fourstore.LoadGraph(g, "http://example.org/update");
 
             Assert.Equal(1, g.Triples.Count);
 
             fourstore.Update("DROP SILENT GRAPH <http://example.org/update>");
-            Graph h = new Graph();
+            var h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/update");
 
             Assert.True(h.IsEmpty, "Graph should be empty after the DROP GRAPH update was issued");

@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfXmlNamespaces()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             try
             {
                 g.LoadFromFile("resources\\rdfxml-namespaces.rdf");

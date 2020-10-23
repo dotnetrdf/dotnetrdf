@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Describe
         /// <returns></returns>
         public IGraph Describe(SparqlEvaluationContext context)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             Describe(new GraphHandler(g), context);
             return g;
         }
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Describe
                     {
                         if (!handler.HandleBaseUri(context.Query.BaseUri)) ParserHelper.Stop();
                     }
-                    foreach (String prefix in context.Query.NamespaceMap.Prefixes)
+                    foreach (var prefix in context.Query.NamespaceMap.Prefixes)
                     {
                         if (!handler.HandleNamespace(prefix, context.Query.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                     }
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Describe
             Uri baseUri = (context.Query != null ? context.Query.BaseUri : null);
 
             // Build a list of INodes to describe
-            List<INode> nodes = new List<INode>();
+            var nodes = new List<INode>();
             foreach (IToken t in context.Query.DescribeVariables)
             {
                 switch (t.TokenType)
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Describe
 
                     case Token.VARIABLE:
                         // Get Variable Values
-                        String var = t.Value.Substring(1);
+                        var var = t.Value.Substring(1);
                         if (context.OutputMultiset.ContainsVariable(var))
                         {
                             foreach (ISet s in context.OutputMultiset.Sets)
@@ -156,10 +156,10 @@ namespace VDS.RDF.Query.Describe
         /// <param name="mapping">Mapping of IDs to new Blank Nodes.</param>
         /// <param name="factory">Factory to create Nodes in.</param>
         /// <returns></returns>
-        protected Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, INodeFactory factory)
+        protected Triple RewriteDescribeBNodes(Triple t, Dictionary<string, INode> mapping, INodeFactory factory)
         {
             INode s, p, o;
-            String id;
+            string id;
 
             if (t.Subject.NodeType == NodeType.Blank)
             {

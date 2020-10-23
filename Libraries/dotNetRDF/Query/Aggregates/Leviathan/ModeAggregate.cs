@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class ModeAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new MODE Aggregate.
@@ -91,9 +91,9 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 }
             }
 
-            Dictionary<IValuedNode, int> values = new Dictionary<IValuedNode, int>();
-            int nullCount = 0;
-            foreach (int id in bindingIDs)
+            var values = new Dictionary<IValuedNode, int>();
+            var nullCount = 0;
+            foreach (var id in bindingIDs)
             {
                 try
                 {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 }
             }
 
-            int mostPopular = values.Values.Max();
+            var mostPopular = values.Values.Max();
             if (mostPopular > nullCount)
             {
                 return values.FirstOrDefault(p => p.Value == mostPopular).Key;
@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.Mode);

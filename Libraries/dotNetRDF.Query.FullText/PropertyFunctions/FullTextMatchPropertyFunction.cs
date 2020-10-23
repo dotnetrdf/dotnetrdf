@@ -56,20 +56,20 @@ namespace VDS.RDF.Query.PropertyFunctions
         public FullTextMatchPropertyFunction(PropertyFunctionInfo info)
         {
             if (info == null) throw new ArgumentNullException("info");
-            if (!EqualityHelper.AreUrisEqual(info.FunctionUri, this.FunctionUri)) throw new ArgumentException("Property Function information is not valid for this function");
+            if (!EqualityHelper.AreUrisEqual(info.FunctionUri, FunctionUri)) throw new ArgumentException("Property Function information is not valid for this function");
 
             //Get basic arguments
-            this._matchVar = info.SubjectArgs[0];
-            if (this._matchVar.VariableName != null) this._vars.Add(this._matchVar.VariableName);
+            _matchVar = info.SubjectArgs[0];
+            if (_matchVar.VariableName != null) _vars.Add(_matchVar.VariableName);
             if (info.SubjectArgs.Count == 2)
             {
-                this._scoreVar = info.SubjectArgs[1];
-                if (this._scoreVar.VariableName != null) this._vars.Add(this._scoreVar.VariableName);
+                _scoreVar = info.SubjectArgs[1];
+                if (_scoreVar.VariableName != null) _vars.Add(_scoreVar.VariableName);
             }
 
             //Check extended arguments
-            this._searchVar = info.ObjectArgs[0];
-            if (this._searchVar.VariableName != null) this._vars.Add(this._searchVar.VariableName);
+            _searchVar = info.ObjectArgs[0];
+            if (_searchVar.VariableName != null) _vars.Add(_searchVar.VariableName);
             switch (info.ObjectArgs.Count)
             {
                 case 1:
@@ -81,12 +81,12 @@ namespace VDS.RDF.Query.PropertyFunctions
                     switch (n.NumericType)
                     {
                         case SparqlNumericType.Integer:
-                            this._limit = (int)n.AsInteger();
+                            _limit = (int)n.AsInteger();
                             break;
                         case SparqlNumericType.Decimal:
                         case SparqlNumericType.Double:
                         case SparqlNumericType.Float:
-                            this._threshold = n.AsDouble();
+                            _threshold = n.AsDouble();
                             break;
                         default:
                             throw new RdfQueryException("Cannot use a non-numeric constant as the limit/score threshold for full text queries, must use a numeric constant");
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                         case SparqlNumericType.NaN:
                             throw new RdfQueryException("Cannot use a non-numeric constant as the score threshold for full text queries, must use a numeric constant");
                         default:
-                            this._threshold = n1.AsDouble();
+                            _threshold = n1.AsDouble();
                             break;
                     }
                     IValuedNode n2 = ((NodeMatchPattern)arg2).Node.AsValuedNode();
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                         case SparqlNumericType.NaN:
                             throw new RdfQueryException("Cannot use a non-numeric constant as the limit for full text queries, must use a numeric constant");
                         default:
-                            this._limit = (int)n2.AsInteger();
+                            _limit = (int)n2.AsInteger();
                             break;
                     }
                     break;
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         {
             get
             {
-                return this._vars;
+                return _vars;
             }
         }
 
@@ -153,28 +153,28 @@ namespace VDS.RDF.Query.PropertyFunctions
             if (context.InputMultiset.IsEmpty) return context.InputMultiset; //Can abort evaluation if input is null
 
             //Then we need to retrieve the full text search provider
-            IFullTextSearchProvider provider = context[FullTextHelper.ContextKey] as IFullTextSearchProvider;
+            var provider = context[FullTextHelper.ContextKey] as IFullTextSearchProvider;
             if (provider == null) throw new FullTextQueryException("No Full Text Search Provider is available, please ensure you attach a FullTextQueryOptimiser to your query");
 
             //First determine whether we can apply the limit when talking to the provider
             //Essentially as long as the Match Variable (the one we'll bind results to) is not already
             //bound AND we are actually using a limit
-            bool applyLimitDirect = this._limit.HasValue && this._limit.Value > -1 && this._matchVar.VariableName != null && !context.InputMultiset.ContainsVariable(this._matchVar.VariableName);
+            var applyLimitDirect = _limit.HasValue && _limit.Value > -1 && _matchVar.VariableName != null && !context.InputMultiset.ContainsVariable(_matchVar.VariableName);
 
             //Is there a constant for the Match Item?  If so extract it now
             //Otherwise are we needing to check against existing bindings
             INode matchConstant = null;
-            bool checkExisting = false;
+            var checkExisting = false;
             HashSet<INode> existing = null;
-            if (this._matchVar.VariableName == null)
+            if (_matchVar.VariableName == null)
             {
-                matchConstant = ((NodeMatchPattern)this._matchVar).Node;
+                matchConstant = ((NodeMatchPattern)_matchVar).Node;
             }
-            else if (this._matchVar.VariableName != null && context.InputMultiset.ContainsVariable(this._matchVar.VariableName))
+            else if (_matchVar.VariableName != null && context.InputMultiset.ContainsVariable(_matchVar.VariableName))
             {
                 checkExisting = true;
                 existing = new HashSet<INode>();
-                foreach (INode n in context.InputMultiset.Sets.Select(s => s[this._matchVar.VariableName]).Where(s => s != null))
+                foreach (INode n in context.InputMultiset.Sets.Select(s => s[_matchVar.VariableName]).Where(s => s != null))
                 {
                     existing.Add(n);
                 }
@@ -182,27 +182,27 @@ namespace VDS.RDF.Query.PropertyFunctions
 
             //Then check that the score variable is not already bound, if so error
             //If a Score Variable is provided and it is OK then we'll bind scores at a later stage
-            if (this._scoreVar != null)
+            if (_scoreVar != null)
             {
-                if (this._scoreVar.VariableName == null) throw new FullTextQueryException("Queries using full text search that wish to return result scores must provide a variable");
-                if (this._scoreVar.VariableName != null && context.InputMultiset.ContainsVariable(this._scoreVar.VariableName)) throw new FullTextQueryException("Queries using full text search that wish to return result scores must use an unbound variable to do so");
+                if (_scoreVar.VariableName == null) throw new FullTextQueryException("Queries using full text search that wish to return result scores must provide a variable");
+                if (_scoreVar.VariableName != null && context.InputMultiset.ContainsVariable(_scoreVar.VariableName)) throw new FullTextQueryException("Queries using full text search that wish to return result scores must use an unbound variable to do so");
             }
 
             //Next ensure that the search text is a node and not a variable
-            if (this._searchVar.VariableName != null) throw new FullTextQueryException("Queries using full text search must provide a constant value for the search term");
-            INode searchNode = ((NodeMatchPattern)this._searchVar).Node;
+            if (_searchVar.VariableName != null) throw new FullTextQueryException("Queries using full text search must provide a constant value for the search term");
+            INode searchNode = ((NodeMatchPattern)_searchVar).Node;
             if (searchNode.NodeType != NodeType.Literal) throw new FullTextQueryException("Queries using full text search must use a literal value for the search term");
-            String search = ((ILiteralNode)searchNode).Value;
+            var search = ((ILiteralNode)searchNode).Value;
 
             //Determine which graphs we are operating over
             IEnumerable<Uri> graphUris = context.Data.ActiveGraphUris;
 
             //Now we can use the full text search provider to start getting results
             context.OutputMultiset = new Multiset();
-            IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? this.GetResults(graphUris, provider, search, this._limit.Value) : this.GetResults(graphUris, provider, search);
-            int r = 0;
-            String matchVar = this._matchVar.VariableName;
-            String scoreVar = this._scoreVar != null ? this._scoreVar.VariableName : null;
+            IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? GetResults(graphUris, provider, search, _limit.Value) : GetResults(graphUris, provider, search);
+            var r = 0;
+            var matchVar = _matchVar.VariableName;
+            var scoreVar = _scoreVar != null ? _scoreVar.VariableName : null;
             foreach (IFullTextSearchResult result in results)
             {
                 if (matchConstant != null)
@@ -231,7 +231,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                 }
 
                 //Apply the limit locally if necessary
-                if (!applyLimitDirect && this._limit > -1 && r >= this._limit) break;
+                if (!applyLimitDirect && _limit > -1 && r >= _limit) break;
             }
 
             return context.OutputMultiset;
@@ -246,10 +246,10 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <returns></returns>
         protected IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search)
         {
-            if (this._threshold.HasValue)
+            if (_threshold.HasValue)
             {
                 //Use a Score Threshold
-                return provider.Match(graphUris, search, this._threshold.Value);
+                return provider.Match(graphUris, search, _threshold.Value);
             }
             else
             {
@@ -267,10 +267,10 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <returns></returns>
         protected virtual IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search, int limit)
         {
-            if (this._threshold.HasValue)
+            if (_threshold.HasValue)
             {
                 //Use a Score Threshold
-                return provider.Match(graphUris, search, this._threshold.Value, limit);
+                return provider.Match(graphUris, search, _threshold.Value, limit);
             }
             else
             {

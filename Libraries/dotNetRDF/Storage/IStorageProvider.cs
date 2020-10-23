@@ -146,7 +146,7 @@ namespace VDS.RDF.Storage
         /// Behaviour of this method with regards to non-existent Graphs is up to the implementor, an empty Graph may be returned or an error thrown.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
         /// </para>
         /// </remarks>
-        void LoadGraph(IGraph g, String graphUri);
+        void LoadGraph(IGraph g, string graphUri);
 
         /// <summary>
         /// Loads a Graph from the Store using the RDF Handler.
@@ -170,7 +170,7 @@ namespace VDS.RDF.Storage
         /// Behaviour of this method with regards to non-existent Graphs is up to the implementor, an empty Graph may be returned or an error thrown.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
         /// </para>
         /// </remarks>
-        void LoadGraph(IRdfHandler handler, String graphUri);
+        void LoadGraph(IRdfHandler handler, string graphUri);
 
         /// <summary>
         /// Saves a Graph to the Store.
@@ -223,7 +223,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level.</exception>
         /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level or if some error occurs while attempting the Update.</exception>
-        void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
+        void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
         /// <summary>
         /// Deletes a Graph from the Store.
@@ -249,7 +249,7 @@ namespace VDS.RDF.Storage
         /// <strong>Note:</strong> Not all Stores are capable of Deleting a Graph so it is acceptable for such a Store to throw a <see cref="NotSupportedException">NotSupportedException</see> or an <see cref="RdfStorageException">RdfStorageException</see> if the Store cannot provide this functionality.
         /// </para>
         /// </remarks>
-        void DeleteGraph(String graphUri);
+        void DeleteGraph(string graphUri);
 
         /// <summary>
         /// Gets a List of Graph URIs for the graphs in the store.
@@ -278,7 +278,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        Object Query(String sparqlQuery);
+        object Query(string sparqlQuery);
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying store processing the resulting Graph/Result Set with a handler of your choice.
@@ -290,7 +290,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery);
+        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery);
     }
 
     /// <summary>
@@ -309,7 +309,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        Object Query(String sparqlQuery, bool reasoning);
+        object Query(string sparqlQuery, bool reasoning);
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying store processing the resulting Graph/Result Set with a handler of your choice.
@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, bool reasoning
+        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, bool reasoning
             );
     }
 
@@ -337,7 +337,7 @@ namespace VDS.RDF.Storage
         /// Processes a SPARQL Update command against the underlying Store.
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update.</param>
-        void Update(String sparqlUpdate);
+        void Update(string sparqlUpdate);
     }
 
     /// <summary>
@@ -369,7 +369,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state);
+        void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Loads a Graph from the Store asynchronously.
@@ -378,7 +378,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state);
+        void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Loads a Graph from the Store asynchronously.
@@ -387,7 +387,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state);
+        void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Loads a Graph from the Store asynchronously.
@@ -396,7 +396,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state);
+        void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Saves a Graph to the Store asynchronously.
@@ -404,7 +404,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state);
+        void SaveGraph(IGraph g, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Updates a Graph in the Store asychronously.
@@ -414,7 +414,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
+        void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Updates a Graph in the Store asychronously.
@@ -424,7 +424,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
+        void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Deletes a Graph from the Store.
@@ -432,7 +432,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, Object state);
+        void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Deletes a Graph from the Store.
@@ -440,14 +440,14 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state);
+        void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Lists the Graphs in the Store asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void ListGraphs(AsyncStorageCallback callback, Object state);
+        void ListGraphs(AsyncStorageCallback callback, object state);
     }
 
     /// <summary>
@@ -466,7 +466,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        void Query(String sparqlQuery, AsyncStorageCallback callback, Object state);
+        void Query(string sparqlQuery, AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Queries the store asynchronously.
@@ -480,7 +480,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
-        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state);
+        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state);
     }
 
     /// <summary>
@@ -495,7 +495,7 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdates">SPARQL Update.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void Update(String sparqlUpdates, AsyncStorageCallback callback, Object state);
+        void Update(string sparqlUpdates, AsyncStorageCallback callback, object state);
     }
 
     /// <summary>
@@ -534,20 +534,20 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void Begin(AsyncStorageCallback callback, Object state);
+        void Begin(AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Commits a transaction asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void Commit(AsyncStorageCallback callback, Object state);
+        void Commit(AsyncStorageCallback callback, object state);
 
         /// <summary>
         /// Rolls back a transaction asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void Rollback(AsyncStorageCallback callback, Object state);
+        void Rollback(AsyncStorageCallback callback, object state);
     }
 }

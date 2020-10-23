@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using VDS.RDF.Shacl.Targets;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using VDS.RDF.Shacl.Targets;
-
     internal abstract class Target : WrapperNode
     {
         [DebuggerStepThrough]

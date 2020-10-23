@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.FullText
     {
         private IGraph GetTestData()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             return g;
         }
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
                 foreach (IFullTextSearchResult result in provider.Match("http"))
                 {
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -100,9 +100,9 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
-                int i = 0;
+                var i = 0;
                 foreach (IFullTextSearchResult result in provider.Match("http", 5))
                 {
                     i++;
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
                 foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
                 {
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -168,9 +168,9 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
-                int i = 0;
+                var i = 0;
                 foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
                 {
                     i++;
@@ -194,7 +194,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
                 foreach (IFullTextSearchResult result in provider.Match("http"))
                 {
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -236,9 +236,9 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
-                int i = 0;
+                var i = 0;
                 foreach (IFullTextSearchResult result in provider.Match("http", 5))
                 {
                     i++;
@@ -261,7 +261,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
                 foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
                 {
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -304,9 +304,9 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
-                int i = 0;
+                var i = 0;
                 foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
                 {
                     i++;
@@ -330,7 +330,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -340,7 +340,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
                 foreach (IFullTextSearchResult result in provider.Match("http"))
                 {
@@ -362,7 +362,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -372,9 +372,9 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
-                int i = 0;
+                var i = 0;
                 foreach (IFullTextSearchResult result in provider.Match("http", 5))
                 {
                     i++;
@@ -397,7 +397,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -407,7 +407,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
                 foreach (IFullTextSearchResult result in provider.Match("http", 0.75d))
                 {
@@ -430,7 +430,7 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
-                indexer.Index(this.GetTestData());
+                indexer.Index(GetTestData());
             }
             finally
             {
@@ -440,9 +440,9 @@ namespace VDS.RDF.Query.FullText
             try
             {
                 provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
-                NTriplesFormatter formatter = new NTriplesFormatter();
+                var formatter = new NTriplesFormatter();
 
-                int i = 0;
+                var i = 0;
                 foreach (IFullTextSearchResult result in provider.Match("http", 1.0d, 5))
                 {
                     i++;

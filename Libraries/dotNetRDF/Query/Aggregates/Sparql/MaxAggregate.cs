@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class MaxAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new MAX Aggregate.
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            List<IValuedNode> values = new List<IValuedNode>();
+            var values = new List<IValuedNode>();
 
             if (_varname != null)
             {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
             }
 
-            foreach (int id in bindingIDs)
+            foreach (var id in bindingIDs)
             {
                 try
                 {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("MAX(");
             if (_distinct) output.Append("DISTINCT ");
             output.Append(_expr.ToString() + ")");

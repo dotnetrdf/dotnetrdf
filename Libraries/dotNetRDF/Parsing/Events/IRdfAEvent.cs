@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the attributes of the event i.e. the attributes of the source element.
         /// </summary>
-        IEnumerable<KeyValuePair<String, String>> Attributes
+        IEnumerable<KeyValuePair<string, string>> Attributes
         {
             get;
         }
@@ -48,14 +48,14 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
-        bool HasAttribute(String name);
+        bool HasAttribute(string name);
 
         /// <summary>
         /// Gets the value of a specific attribute.
         /// </summary>
         /// <param name="name">Attribute Name.</param>
         /// <returns></returns>
-        String this[String name]
+        string this[string name]
         {
             get;
         }

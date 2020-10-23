@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(ISparqlResultsHandler handler, String filename)
+        public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             Load(handler, new StreamReader(File.OpenRead(filename)));
@@ -199,10 +199,10 @@ namespace VDS.RDF.Parsing
         {
             // Can we read the Head Property
             if (!context.Input.Read()) throw new RdfParseException("Unexpected End of Input while trying to parse the Head property of the JSON Result Set Object");
-            if (context.Input.TokenType != JsonToken.PropertyName) throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, the 'head'" + (bodySeen ? String.Empty : "'results'/'boolean'") + " property of the JSON Result Set Object was expected");
+            if (context.Input.TokenType != JsonToken.PropertyName) throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, the 'head'" + (bodySeen ? string.Empty : "'results'/'boolean'") + " property of the JSON Result Set Object was expected");
 
             // Check the Property Name is head/results/boolean
-            String propName = context.Input.Value.ToString();
+            var propName = context.Input.Value.ToString();
             switch (propName)
             {
                 case "head":
@@ -256,7 +256,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         private void ParseHeaderProperties(SparqlJsonParserContext context, bool bodySeen)
         {
-            bool varsSeen = false;
+            var varsSeen = false;
 
             // Can we read the Header properties
             if (context.Input.Read())
@@ -266,7 +266,7 @@ namespace VDS.RDF.Parsing
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
                         // Only expecting Property Name Tokens
-                        String propName = context.Input.Value.ToString();
+                        var propName = context.Input.Value.ToString();
 
                         if (propName.Equals("vars"))
                         {
@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
                 if (context.Input.TokenType == JsonToken.StartArray)
                 {
                     context.Input.Read();
-                    List<String> vars = new List<string>();
+                    var vars = new List<string>();
                     while (context.Input.TokenType != JsonToken.EndArray)
                     {
                         if (context.Input.TokenType == JsonToken.String)
@@ -340,11 +340,11 @@ namespace VDS.RDF.Parsing
 
                     // If we've already seen the body check for variable conflicts
                     if (!bodySeen) return;
-                    foreach (String var in context.Variables)
+                    foreach (var var in context.Variables)
                     {
                         if (!vars.Contains(var)) throw new RdfParseException("Unable to Parse a SPARQL Result Set since a Binding Object binds a value to the variable '" + var + "' which is not defined in the Header Object in the value for the 'vars' property!");
                     }
-                    foreach (String var in context.Variables)
+                    foreach (var var in context.Variables)
                     {
                         if (!context.Handler.HandleVariable(var)) ParserHelper.Stop();
                     }
@@ -393,7 +393,7 @@ namespace VDS.RDF.Parsing
                 if (context.Input.TokenType == JsonToken.PropertyName)
                 {
                     // Check the Property Name is head
-                    String propName = context.Input.Value.ToString();
+                    var propName = context.Input.Value.ToString();
                     if (propName.Equals("results"))
                     {
                         ParseResults(context, true);
@@ -433,7 +433,7 @@ namespace VDS.RDF.Parsing
                     context.Input.Read();
                     if (context.Input.TokenType == JsonToken.PropertyName)
                     {
-                        String propName = context.Input.Value.ToString();
+                        var propName = context.Input.Value.ToString();
 
                         // Wait till we get the bindings property
                         // There's a couple of deprecated properties we need to support
@@ -536,7 +536,7 @@ namespace VDS.RDF.Parsing
             // Can we read some properties
             if (context.Input.Read())
             {
-                SparqlResult result = new SparqlResult();
+                var result = new SparqlResult();
                 while (context.Input.TokenType != JsonToken.EndObject)
                 {
                     if (context.Input.TokenType == JsonToken.PropertyName)
@@ -557,7 +557,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Check that all Variables are bound for a given result binding nulls where appropriate
-                foreach (String v in context.Variables)
+                foreach (var v in context.Variables)
                 {
                     if (!result.HasValue(v))
                     {
@@ -584,8 +584,8 @@ namespace VDS.RDF.Parsing
         /// <param name="headSeen"></param>
         private void ParseBoundVariable(SparqlJsonParserContext context, string var, SparqlResult r, bool headSeen)
         {
-            String nodeType, nodeLang, nodeDatatype;
-            string nodeValue = nodeType = nodeLang = nodeDatatype = null;
+            string nodeType, nodeLang, nodeDatatype;
+            var nodeValue = nodeType = nodeLang = nodeDatatype = null;
 
             // Can we read the start of an Object
             if (context.Input.Read())
@@ -596,7 +596,7 @@ namespace VDS.RDF.Parsing
 
                     while (context.Input.TokenType != JsonToken.EndObject)
                     {
-                        String token = context.Input.Value.ToString().ToLower();
+                        var token = context.Input.Value.ToString().ToLower();
 
                         // Check that we get a Property Value as a String
                         context.Input.Read();
@@ -735,7 +735,7 @@ namespace VDS.RDF.Parsing
             {
                 if (context.Input.TokenType == JsonToken.Boolean)
                 {
-                    Boolean result = Boolean.Parse(context.Input.Value.ToString());
+                    var result = bool.Parse(context.Input.Value.ToString());
                     context.Handler.HandleBooleanResult(result);
                 }
                 else
@@ -778,7 +778,7 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Found extra JSON property " + context.Input.Value + " which will be ignored and discarded");
             }
 
-            int depth = 1;
+            var depth = 1;
             while (depth > 0)
             {
                 // Try to read next token
@@ -841,7 +841,7 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Found extra JSON array which will be ignored and discarded");
             }
 
-            int depth = 1;
+            var depth = 1;
             while (depth > 0)
             {
                 // Try to read next token
@@ -903,9 +903,9 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context.</param>
         /// <param name="message">Error Message.</param>
         /// <returns></returns>
-        private static RdfParseException Error(SparqlJsonParserContext context, String message)
+        private static RdfParseException Error(SparqlJsonParserContext context, string message)
         {
-            StringBuilder error = new StringBuilder();
+            var error = new StringBuilder();
             if (context.Input.HasLineInfo())
             {
                 error.Append("[Line " + context.Input.LineNumber + " Column " + context.Input.LinePosition + "] ");
@@ -923,7 +923,7 @@ namespace VDS.RDF.Parsing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

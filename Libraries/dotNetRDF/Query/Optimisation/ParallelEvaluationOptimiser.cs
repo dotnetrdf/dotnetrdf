@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Optimisation
             {
                 if (algebra is Join)
                 {
-                    Join join = (Join)algebra;
+                    var join = (Join)algebra;
                     if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
                     {
                         return new ParallelJoin(Optimise(join.Lhs), Optimise(join.Rhs));
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Optimisation
                 }
                 else if (algebra is Union)
                 {
-                    Union u = (Union)algebra;
+                    var u = (Union)algebra;
                     return new ParallelUnion(Optimise(u.Lhs), Optimise(u.Rhs));
                 }
                 else

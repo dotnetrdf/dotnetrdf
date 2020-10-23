@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern) _builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern) _builder.Patterns.Single();
             Assert.True(pattern.Subject is VariablePattern);
             Assert.Equal("s", pattern.Subject.VariableName);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is VariablePattern);
             Assert.Equal("s", pattern.Subject.VariableName);
             Assert.True(pattern.Predicate is NodeMatchPattern);
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is NodeMatchPattern);
             Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Subject).Node.Uri);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is VariablePattern);
             Assert.Equal("s", pattern.Subject.VariableName);
             Assert.True(pattern.Predicate is NodeMatchPattern);
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is NodeMatchPattern);
             Assert.Equal(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Subject).Node.Uri);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Predicate is VariablePattern);
             Assert.Equal("p", pattern.Predicate.VariableName);
             Assert.True(pattern.Subject is VariablePattern);
@@ -175,7 +175,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is VariablePattern);
             Assert.Equal("s", pattern.Subject.VariableName);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is VariablePattern);
             Assert.Equal("s", pattern.Subject.VariableName);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is BlankNodePattern);
             Assert.Equal("_:s", ((BlankNodePattern)pattern.Subject).ID);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is NodeMatchPattern);
             Assert.Same(node, ((NodeMatchPattern)pattern.Subject).Node);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Subject is VariablePattern);
             Assert.Equal("s", pattern.Subject.VariableName);
             Assert.True(pattern.Predicate is NodeMatchPattern);
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Same(node, ((NodeMatchPattern)pattern.Object).Node);
             Assert.True(pattern.Predicate is VariablePattern);
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(((dynamic)pattern.Object).Node.DataType.AbsoluteUri, XmlSpecsHelper.XmlSchemaDataTypeString);
@@ -301,7 +301,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger), ((dynamic)pattern.Object).Node.DataType);
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(((dynamic)pattern.Object).Node.DataType.AbsoluteUri, RdfSpecsHelper.RdfLangString);
@@ -330,7 +330,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("42", ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(((dynamic)pattern.Object).Node.DataType.AbsoluteUri, RdfSpecsHelper.RdfLangString);
@@ -348,7 +348,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(((dynamic)pattern.Object).Node.DataType.AbsoluteUri, XmlSpecsHelper.XmlSchemaDataTypeString);
@@ -366,7 +366,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(((dynamic)pattern.Object).Node.DataType.AbsoluteUri, XmlSpecsHelper.XmlSchemaDataTypeString);
@@ -384,7 +384,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.True(pattern.Object is NodeMatchPattern);
             Assert.Equal("2012-10-13T20:35:10.000000+01:30", ((dynamic)pattern.Object).Node.Value);
             Assert.Equal(((dynamic)pattern.Object).Node.DataType.AbsoluteUri, XmlSpecsHelper.XmlSchemaDataTypeString);
@@ -404,7 +404,7 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Single(_builder.Patterns);
-            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            var pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.Same(s, pattern.Subject);
             Assert.Same(p, pattern.Predicate);
             Assert.Same(o, pattern.Object);

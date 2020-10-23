@@ -154,15 +154,15 @@ namespace VDS.RDF.Parsing.Tokens
                 #endregion
 
                 // Local Buffer and Tokenising options
-                bool newlineallowed = false;
-                bool anycharallowed = false;
-                bool whitespaceallowed = false;
-                bool whitespaceignored = true;
-                bool rightangleallowed = true;
-                bool quotemarksallowed = true;
-                bool altquotemarksallowed = true;
-                bool longliteral = false;
-                bool altlongliteral = false;
+                var newlineallowed = false;
+                var anycharallowed = false;
+                var whitespaceallowed = false;
+                var whitespaceignored = true;
+                var rightangleallowed = true;
+                var quotemarksallowed = true;
+                var altquotemarksallowed = true;
+                var longliteral = false;
+                var altlongliteral = false;
 
                 try
                 {
@@ -185,10 +185,10 @@ namespace VDS.RDF.Parsing.Tokens
                         }
 
                         // Get the Next Character
-                        char next = Peek();
+                        var next = Peek();
 
                         // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && _in.EndOfStream)
+                        if (next == char.MaxValue && _in.EndOfStream)
                         {
                             if (Length == 0)
                             {
@@ -203,7 +203,7 @@ namespace VDS.RDF.Parsing.Tokens
                             }
                         }
 
-                        if (Char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || UnicodeSpecsHelper.IsLetterModifier(next) || TurtleSpecsHelper.IsPNCharsBase(next) || UnicodeSpecsHelper.IsHighSurrogate(next) || UnicodeSpecsHelper.IsLowSurrogate(next))
+                        if (char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || UnicodeSpecsHelper.IsLetterModifier(next) || TurtleSpecsHelper.IsPNCharsBase(next) || UnicodeSpecsHelper.IsHighSurrogate(next) || UnicodeSpecsHelper.IsLowSurrogate(next))
                         {
                             // Alphanumeric Character Handling
                             if (anycharallowed || !quotemarksallowed)
@@ -216,7 +216,7 @@ namespace VDS.RDF.Parsing.Tokens
                                 return TryGetQNameToken();                                
                             }
                         }
-                        else if (Char.IsDigit(next) && !anycharallowed)
+                        else if (char.IsDigit(next) && !anycharallowed)
                         {
                             // Must be a plain literal
                             return TryGetNumericLiteralToken();
@@ -311,7 +311,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         ConsumeCharacter();
 
                                         // Watch out for plain literals
-                                        if (!_in.EndOfStream && Char.IsDigit(Peek()))
+                                        if (!_in.EndOfStream && char.IsDigit(Peek()))
                                         {
                                             return TryGetNumericLiteralToken();
                                         }
@@ -416,7 +416,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                 quotemarksallowed = true;
                                                 longliteral = true;
                                             }
-                                            else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
+                                            else if (char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                             {
                                                 // Empty String
                                                 LastTokenType = Token.LITERAL;
@@ -504,7 +504,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                     altquotemarksallowed = true;
                                                     altlongliteral = true;
                                                 }
-                                                else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
+                                                else if (char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
                                                 {
                                                     // Empty String
                                                     LastTokenType = Token.LITERAL;
@@ -633,7 +633,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         SkipCharacter();
                                         next = Peek();
 
-                                        if (Char.IsWhiteSpace(next))
+                                        if (char.IsWhiteSpace(next))
                                         {
                                             // Equality
                                             throw Error("Unexpected = Character, this appears to be an attempt to use Equality which is not valid in Turtle");
@@ -793,7 +793,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             next = Peek();
 
                                             // Need to confirm that white space follows the <= so it's a distinct token
-                                            if (Char.IsWhiteSpace(next))
+                                            if (char.IsWhiteSpace(next))
                                             {
                                                 // Definitely a use of <=
                                                 throw Error("Unexpected <=, this appears to be an attempt to use Implied By which is not valid in Turtle");
@@ -823,7 +823,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else if (!anycharallowed)
                                     {
                                         // Raise an Error
-                                        throw UnexpectedCharacter(next, String.Empty);
+                                        throw UnexpectedCharacter(next, string.Empty);
                                     }
                                     break;
 
@@ -858,7 +858,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else
                                     {
                                         // Raise an Error
-                                        throw UnexpectedCharacter(next, String.Empty);
+                                        throw UnexpectedCharacter(next, string.Empty);
                                     }
                                     break;
 
@@ -895,11 +895,11 @@ namespace VDS.RDF.Parsing.Tokens
         private IToken TryGetDirectiveToken()
         {
             // Buffers
-            char next = Peek();
+            var next = Peek();
 
             // Which directive do we expect?
             // 1 = Prefix, 2 = Base
-            int directiveExpected = -1;
+            var directiveExpected = -1;
 
             do {
                 switch (directiveExpected)
@@ -982,10 +982,10 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetPrefixToken()
         {
-            char next = Peek();
+            var next = Peek();
 
             // Drop leading white space
-            while (Char.IsWhiteSpace(next))
+            while (char.IsWhiteSpace(next))
             {
                 // If we hit a New Line then Error
                 if (next == '\n' || next == '\r') 
@@ -1001,7 +1001,7 @@ namespace VDS.RDF.Parsing.Tokens
             StartNewToken();
 
             // Get the Prefix Characters
-            while (!Char.IsWhiteSpace(next) && next != '<')
+            while (!char.IsWhiteSpace(next) && next != '<')
             {
                 ConsumeCharacter();
                 if (next == ':') break;
@@ -1028,14 +1028,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function.</remarks>
         private IToken TryGetQNameToken()
         {
-            char next = Peek();
-            bool colonoccurred = false;
+            var next = Peek();
+            var colonoccurred = false;
             StringComparison comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
             StartNewToken();
 
             // Grab all the Characters in the QName
-            while (!Char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax == TurtleSyntax.W3C))
+            while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax == TurtleSyntax.W3C))
             {
                 // Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)
@@ -1076,7 +1076,7 @@ namespace VDS.RDF.Parsing.Tokens
             if (colonoccurred)
             {
                 // A QName must contain a Colon at some point
-                String qname = Value;
+                var qname = Value;
 
                 // Was this a Blank Node
                 if (qname.StartsWith("_:"))
@@ -1119,7 +1119,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 // If we don't see a Colon then have to assume a Plain Literal
                 // BUT we also need to check it's not a keyword
-                String value = Value;
+                var value = Value;
 
                 if (value.Equals("a"))
                 {
@@ -1162,9 +1162,9 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetNumericLiteralToken()
         {
-            bool dotoccurred = false;
-            bool signoccurred = false;
-            bool expoccurred = false;
+            var dotoccurred = false;
+            var signoccurred = false;
+            var expoccurred = false;
 
             if (Length == 1)
             {
@@ -1189,9 +1189,9 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             // Find acceptable characters
-            char next = Peek();
-            bool exit = false;
-            while (Char.IsDigit(next) || next == '.' || next == '+' || next == '-' || next == 'e' || next == 'E')
+            var next = Peek();
+            var exit = false;
+            while (char.IsDigit(next) || next == '.' || next == '+' || next == '-' || next == 'e' || next == 'E')
             {
                 switch (next)
                 {
@@ -1244,10 +1244,10 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetLanguageSpecToken()
         {
-            char next = Peek();
+            var next = Peek();
 
             // Consume Letter Characters
-            while (Char.IsLetterOrDigit(next) || next == '-')
+            while (char.IsLetterOrDigit(next) || next == '-')
             {
                 ConsumeCharacter();
                 next = Peek();
@@ -1278,7 +1278,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetDataTypeToken()
         {
-            char next = Peek();
+            var next = Peek();
 
             if (next == '<')
             {
@@ -1331,7 +1331,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         private IToken TryGetCommentToken()
         {
-            char next = Peek();
+            var next = Peek();
 
             // Grab characters until we hit the new line
             while (next != '\n' && next != '\r')
@@ -1341,7 +1341,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             // Discard New line and reset position
-            CommentToken comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+            var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
             ConsumeNewLine(false, true);
             return comment;
         }

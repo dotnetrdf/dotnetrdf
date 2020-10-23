@@ -66,12 +66,12 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// <param name="mode">Indexing Mode.</param>
         public BaseSimpleLuceneIndexer(Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, IndexingMode mode)
         {
-            if (this._mode == IndexingMode.Custom) throw new ArgumentException("Cannot use IndexingMode.Custom with the BaseSimpleLuceneIndexer");
-            this._mode = mode;
-            this._indexDir = indexDir;
-            this._analyzer = analyzer;
-            this._schema = schema;
-            this._writer = new IndexWriter(indexDir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+            if (_mode == IndexingMode.Custom) throw new ArgumentException("Cannot use IndexingMode.Custom with the BaseSimpleLuceneIndexer");
+            _mode = mode;
+            _indexDir = indexDir;
+            _analyzer = analyzer;
+            _schema = schema;
+            _writer = new IndexWriter(indexDir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
         }
 
         /// <summary>
@@ -81,48 +81,48 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         {
             get
             {
-                return this._mode;
+                return _mode;
             }
         }
 
         private void EnsureWriterOpen()
         {
-            if (this._writer == null)
+            if (_writer == null)
             {
-                this._writer = new IndexWriter(this._indexDir, this._analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+                _writer = new IndexWriter(_indexDir, _analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
             }
         }
 
         private void EnsureWriterClosed()
         {
-            if (this._writer != null)
+            if (_writer != null)
             {
-                this._writer.Commit();
-                this._writer.Dispose();
-                this._writer = null;
+                _writer.Commit();
+                _writer.Dispose();
+                _writer = null;
             }
         }
 
         private void EnsureReaderOpen()
         {
-            if (this._reader == null)
+            if (_reader == null)
             {
-                this._reader = IndexReader.Open(this._indexDir, false);
+                _reader = IndexReader.Open(_indexDir, false);
             }
-            else if (!this._reader.IsCurrent())
+            else if (!_reader.IsCurrent())
             {
-                this._reader.Dispose();
-                this._reader = IndexReader.Open(this._indexDir, false);
+                _reader.Dispose();
+                _reader = IndexReader.Open(_indexDir, false);
             }
         }
 
         private void EnsureReaderClosed()
         {
-            if (this._reader != null)
+            if (_reader != null)
             {
-                this._reader.Commit();
-                this._reader.Dispose();
-                this._reader = null;
+                _reader.Commit();
+                _reader.Dispose();
+                _reader = null;
             }
         }
 
@@ -134,10 +134,10 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// <param name="text">Full Text.</param>
         protected override void Index(String graphUri, INode n, string text)
         {
-            Document doc = this.CreateDocument(graphUri, n, text);
-            this.EnsureReaderClosed();
-            this.EnsureWriterOpen();
-            this._writer.AddDocument(doc);
+            Document doc = CreateDocument(graphUri, n, text);
+            EnsureReaderClosed();
+            EnsureWriterOpen();
+            _writer.AddDocument(doc);
         }
 
         /// <summary>
@@ -148,21 +148,21 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// <param name="text">Full Text.</param>
         protected override void Unindex(String graphUri, INode n, string text)
         {
-            TermQuery query = new TermQuery(new Term(this._schema.HashField, this.GetHash(graphUri, n, text)));
+            var query = new TermQuery(new Term(_schema.HashField, GetHash(graphUri, n, text)));
 
             //Close the existing writer
-            this.EnsureWriterClosed();
+            EnsureWriterClosed();
 
             //Create a read/write Index Reader to modify the index
-            this.EnsureReaderOpen();
-            IndexSearcher searcher = new IndexSearcher(this._reader);
-            DocCollector collector = new DocCollector();
+            EnsureReaderOpen();
+            var searcher = new IndexSearcher(_reader);
+            var collector = new DocCollector();
             searcher.Search(query, collector);
 
             //Delete at most one instance
             if (collector.Count > 0)
             {
-                this._reader.DeleteDocument(collector.Documents.First().Key);
+                _reader.DeleteDocument(collector.Documents.First().Key);
             }
         }
 
@@ -178,33 +178,33 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// </remarks>
         protected virtual Document CreateDocument(String graphUri, INode n, String text)
         {
-            Document doc = new Document();
+            var doc = new Document();
 
             //Create the Fields that represent the Node associated with the Indexed Text
-            Field nodeTypeField = new Field(this._schema.NodeTypeField, n.NodeType.ToLuceneFieldValue(), Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
+            var nodeTypeField = new Field(_schema.NodeTypeField, n.NodeType.ToLuceneFieldValue(), Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
             doc.Add(nodeTypeField);
-            Field nodeValueField = new Field(this._schema.NodeValueField, n.ToLuceneFieldValue(), Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
+            var nodeValueField = new Field(_schema.NodeValueField, n.ToLuceneFieldValue(), Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
             doc.Add(nodeValueField);
-            String meta = n.ToLuceneFieldMeta();
+            var meta = n.ToLuceneFieldMeta();
             if (meta != null)
             {
-                Field nodeMetaField = new Field(this._schema.NodeMetaField, meta, Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
+                var nodeMetaField = new Field(_schema.NodeMetaField, meta, Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
                 doc.Add(nodeMetaField);
             }
 
             //Add the field for the Indexed Text
-            Field indexField = new Field(this._schema.IndexField, text, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO);
+            var indexField = new Field(_schema.IndexField, text, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.NO);
             doc.Add(indexField);
 
             //Add the field for the Graph URI if applicable
             if (!String.IsNullOrEmpty(graphUri))
             {
-                Field graphField = new Field(this._schema.GraphField, graphUri, Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
+                var graphField = new Field(_schema.GraphField, graphUri, Field.Store.YES, Field.Index.NO, Field.TermVector.NO);
                 doc.Add(graphField);
             }
 
             //Create the hash field which we use for Unindexing things
-            Field hashField = new Field(this._schema.HashField, this.GetHash(graphUri, n, text), Field.Store.NO, Field.Index.NOT_ANALYZED, Field.TermVector.NO);
+            var hashField = new Field(_schema.HashField, GetHash(graphUri, n, text), Field.Store.NO, Field.Index.NOT_ANALYZED, Field.TermVector.NO);
             doc.Add(hashField);
 
             return doc;
@@ -219,8 +219,8 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// <returns></returns>
         protected String GetHash(String graphUri, INode n, String text)
         {
-            String hashInput = this._formatter.FormatUri(graphUri);
-            hashInput += this._formatter.Format(n);
+            var hashInput = _formatter.FormatUri(graphUri);
+            hashInput += _formatter.Format(n);
             hashInput += text;
             return hashInput.GetSha256Hash();
         }
@@ -230,13 +230,13 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// </summary>
         public override void Flush()
         {
-            if (this._writer != null)
+            if (_writer != null)
             {
-                this._writer.Commit();
+                _writer.Commit();
             }
-            else if (this._reader != null)
+            else if (_reader != null)
             {
-                this._reader.Commit();
+                _reader.Commit();
             }
         }
 
@@ -245,10 +245,10 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// </summary>
         protected override void DisposeInternal()
         {
-            if (this._writer != null)
+            if (_writer != null)
             {
-                this._writer.Commit();
-                if (this._indexDir.isOpen_ForNUnit) this._writer.Dispose();
+                _writer.Commit();
+                if (_indexDir.isOpen_ForNUnit) _writer.Dispose();
             }
         }
 
@@ -270,20 +270,20 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
 
             //Basic Properties
             context.Graph.Assert(indexerObj, rdfType, indexerClass);
-            context.Graph.Assert(indexerObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(indexerObj, dnrType, context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
             //Serialize and link the Index
             INode indexObj = context.Graph.CreateBlankNode();
             context.NextSubject = indexObj;
-            this._indexDir.SerializeConfiguration(context);
+            _indexDir.SerializeConfiguration(context);
             context.Graph.Assert(indexerObj, index, indexObj);
 
             //Serialize and link the Schema
             INode schemaObj = context.Graph.CreateBlankNode();
             context.NextSubject = schemaObj;
-            if (this._schema is IConfigurationSerializable)
+            if (_schema is IConfigurationSerializable)
             {
-                ((IConfigurationSerializable)this._schema).SerializeConfiguration(context);
+                ((IConfigurationSerializable)_schema).SerializeConfiguration(context);
             }
             else
             {
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             //Serialize and link the Analyzer
             INode analyzerObj = context.Graph.CreateBlankNode();
             context.NextSubject = analyzerObj;
-            this._analyzer.SerializeConfiguration(context);
+            _analyzer.SerializeConfiguration(context);
             context.Graph.Assert(indexerObj, index, analyzerObj);
         }
     }

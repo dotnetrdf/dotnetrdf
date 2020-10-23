@@ -41,7 +41,7 @@ namespace VDS.RDF
         : BaseTripleCollection
     {
         // Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
+        private MultiDictionary<Triple, object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Simple Indexes
         private MultiDictionary<INode, HashSet<Triple>> _s, _p, _o;
         // Compound Indexes

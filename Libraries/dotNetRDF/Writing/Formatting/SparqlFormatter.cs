@@ -119,14 +119,14 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
-        public virtual String Format(SparqlQuery query)
+        public virtual string Format(SparqlQuery query)
         {
             if (query == null) throw new ArgumentNullException("Cannot format a null SPARQL Query as a String");
 
             try
             {
                 _tempBaseUri = query.BaseUri;
-                StringBuilder output = new StringBuilder();
+                var output = new StringBuilder();
 
                 // Base and Prefix Declarations if not a sub-query
                 if (!query.IsSubQuery)
@@ -135,7 +135,7 @@ namespace VDS.RDF.Writing.Formatting
                     {
                         output.AppendLine("BASE <" + FormatUri(query.BaseUri.AbsoluteUri) + ">");
                     }
-                    foreach (String prefix in _qnameMapper.Prefixes)
+                    foreach (var prefix in _qnameMapper.Prefixes)
                     {
                         output.AppendLine("PREFIX " + prefix + ": <" + FormatUri(_qnameMapper.GetNamespaceUri(prefix).AbsoluteUri) + ">");
                     }
@@ -285,20 +285,20 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="gp">Graph Pattern.</param>
         /// <returns></returns>
-        public virtual String Format(GraphPattern gp)
+        public virtual string Format(GraphPattern gp)
         {
             if (gp == null) throw new RdfOutputException("Cannot format a null Graph Pattern as a String");
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             if (gp.IsUnion)
             {
-                for (int i = 0; i < gp.ChildGraphPatterns.Count; i++)
+                for (var i = 0; i < gp.ChildGraphPatterns.Count; i++)
                 {
                     GraphPattern cgp = gp.ChildGraphPatterns[i];
                     if (cgp.HasModifier)
                     {
-                        String formatted = Format(cgp);
+                        var formatted = Format(cgp);
                         formatted = formatted.TrimEnd(new char[] { '\n', '\r' });
                         if (formatted.Contains("\n"))
                         {
@@ -339,7 +339,7 @@ namespace VDS.RDF.Writing.Formatting
                     case Token.QNAME:
                         try
                         {
-                            String uri = Tools.ResolveQName(gp.GraphSpecifier.Value, _qnameMapper, _tempBaseUri);
+                            var uri = Tools.ResolveQName(gp.GraphSpecifier.Value, _qnameMapper, _tempBaseUri);
                             // If the QName resolves OK in the context of the Namespace Map we're using to format this then we
                             // can print the QName as-is
                             output.Append(gp.GraphSpecifier.Value);
@@ -466,13 +466,13 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="tp">Triple Pattern.</param>
         /// <returns></returns>
-        public virtual String Format(ITriplePattern tp)
+        public virtual string Format(ITriplePattern tp)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             switch (tp.PatternType)
             {
                 case TriplePatternType.Match:
-                    IMatchTriplePattern match = (IMatchTriplePattern)tp;
+                    var match = (IMatchTriplePattern)tp;
                     output.Append(Format(match.Subject, TripleSegment.Subject));
                     output.Append(' ');
                     output.Append(Format(match.Predicate, TripleSegment.Predicate));
@@ -481,19 +481,19 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append(" .");
                     break;
                 case TriplePatternType.Filter:
-                    IFilterPattern filter = (IFilterPattern)tp;
+                    var filter = (IFilterPattern)tp;
                     output.Append("FILTER(");
                     output.Append(FormatExpression(filter.Filter.Expression));
                     output.Append(")");
                     break;
                 case TriplePatternType.SubQuery:
-                    ISubQueryPattern subquery = (ISubQueryPattern)tp;
+                    var subquery = (ISubQueryPattern)tp;
                     output.AppendLine("{");
                     output.AppendLineIndented(Format(subquery.SubQuery), 2);
                     output.AppendLine("}");
                     break;
                 case TriplePatternType.Path:
-                    IPropertyPathPattern path = (IPropertyPathPattern)tp;
+                    var path = (IPropertyPathPattern)tp;
                     output.Append(Format(path.Subject, TripleSegment.Subject));
                     output.Append(' ');
                     output.Append(FormatPath(path.Path));
@@ -502,7 +502,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append(" .");
                     break;
                 case TriplePatternType.LetAssignment:
-                    IAssignmentPattern let = (IAssignmentPattern)tp;
+                    var let = (IAssignmentPattern)tp;
                     output.Append("LET(?");
                     output.Append(let.VariableName);
                     output.Append(" := ");
@@ -510,7 +510,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append(")");
                     break;
                 case TriplePatternType.BindAssignment:
-                    IAssignmentPattern bind = (IAssignmentPattern)tp;
+                    var bind = (IAssignmentPattern)tp;
                     output.Append("BIND (");
                     output.Append(FormatExpression(bind.AssignExpression));
                     output.Append(" AS ?");
@@ -518,7 +518,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append(")");
                     break;
                 case TriplePatternType.PropertyFunction:
-                    IPropertyFunctionPattern propFunc = (IPropertyFunctionPattern)tp;
+                    var propFunc = (IPropertyFunctionPattern)tp;
                     if (propFunc.SubjectArgs.Count() > 1)
                     {
                         output.Append("( ");
@@ -565,7 +565,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="item">Pattern Item.</param>
         /// <param name="segment">Triple Pattern Segment.</param>
         /// <returns></returns>
-        public virtual String Format(PatternItem item, TripleSegment? segment)
+        public virtual string Format(PatternItem item, TripleSegment? segment)
         {
             if (item is VariablePattern)
             {
@@ -573,7 +573,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (item is NodeMatchPattern)
             {
-                NodeMatchPattern match = (NodeMatchPattern)item;
+                var match = (NodeMatchPattern)item;
                 return Format(match.Node, segment);
             }
             else if (item is FixedBlankNodePattern)
@@ -602,14 +602,14 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="vars">Variables.</param>
         /// <returns></returns>
-        protected virtual String FormatVariablesList(IEnumerable<SparqlVariable> vars)
+        protected virtual string FormatVariablesList(IEnumerable<SparqlVariable> vars)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            List<SparqlVariable> varList = vars.Where(v => v.IsResultVariable).ToList();
+            var varList = vars.Where(v => v.IsResultVariable).ToList();
 
-            int onLine = 0;
-            for (int i = 0; i < varList.Count; i++)
+            var onLine = 0;
+            for (var i = 0; i < varList.Count; i++)
             {
                 SparqlVariable v = varList[i];
                 if (v.IsAggregate)
@@ -655,14 +655,14 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="q">SPARQL Query.</param>
         /// <returns></returns>
-        protected virtual String FormatDescribeVariablesList(SparqlQuery q)
+        protected virtual string FormatDescribeVariablesList(SparqlQuery q)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            List<IToken> tokenList = q.DescribeVariables.ToList();
+            var tokenList = q.DescribeVariables.ToList();
 
-            int onLine = 0;
-            for (int i = 0; i < tokenList.Count; i++)
+            var onLine = 0;
+            for (var i = 0; i < tokenList.Count; i++)
             {
                 IToken t = tokenList[i];
 
@@ -681,7 +681,7 @@ namespace VDS.RDF.Writing.Formatting
                     case Token.QNAME:
                         // If the QName has the same Namespace URI in this Formatter as in the Query then format
                         // as a QName otherwise expand to a full URI
-                        String prefix = t.Value.Substring(0, t.Value.IndexOf(':'));
+                        var prefix = t.Value.Substring(0, t.Value.IndexOf(':'));
                         if (_qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri.Equals(_qnameMapper.GetNamespaceUri(prefix).AbsoluteUri))
                         {
                             output.AppendLine(t.Value);
@@ -721,9 +721,9 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="expr">SPARQL Expression.</param>
         /// <returns></returns>
-        protected virtual String FormatExpression(ISparqlExpression expr)
+        protected virtual string FormatExpression(ISparqlExpression expr)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             try
             {
@@ -732,7 +732,7 @@ namespace VDS.RDF.Writing.Formatting
                     case SparqlExpressionType.Aggregate:
                         if (expr is AggregateTerm)
                         {
-                            AggregateTerm agg = (AggregateTerm)expr;
+                            var agg = (AggregateTerm)expr;
                             output.Append(FormatAggregate(agg.Aggregate));
                         }
                         else
@@ -780,7 +780,7 @@ namespace VDS.RDF.Writing.Formatting
                         }
                         else
                         {
-                            String funcQname;
+                            string funcQname;
                             if (_qnameMapper.ReduceToQName(expr.Functor, out funcQname))
                             {
                                 output.Append(funcQname);
@@ -795,8 +795,8 @@ namespace VDS.RDF.Writing.Formatting
 
                         // Add Arguments list
                         output.Append('(');
-                        List<ISparqlExpression> args = expr.Arguments.ToList();
-                        for (int i = 0; i < args.Count; i++)
+                        var args = expr.Arguments.ToList();
+                        for (var i = 0; i < args.Count; i++)
                         {
                             output.Append(FormatExpression(args[i]));
                             if (i < args.Count - 1)
@@ -811,9 +811,9 @@ namespace VDS.RDF.Writing.Formatting
                         output.Append(expr.Functor);
                         output.Append(' ');
 
-                        List<ISparqlExpression> gArgs = expr.Arguments.ToList();
+                        var gArgs = expr.Arguments.ToList();
                         if (gArgs.Count > 1) throw new RdfOutputException("Error Formatting SPARQL Expression - Expressions of type GraphOperator are only allowed a single argument");
-                        for (int i = 0; i < gArgs.Count; i++)
+                        for (var i = 0; i < gArgs.Count; i++)
                         {
                             output.Append(FormatExpression(gArgs[i]));
                             if (i < gArgs.Count - 1)
@@ -827,12 +827,12 @@ namespace VDS.RDF.Writing.Formatting
                         // If Node/Numeric Term then use Node Formatting otherwise use ToString() on the expression
                         if (expr is ConstantTerm)
                         {
-                            ConstantTerm nodeTerm = (ConstantTerm)expr;
+                            var nodeTerm = (ConstantTerm)expr;
                             output.Append(Format(nodeTerm.Evaluate(null, 0)));
                         }
                         else if (expr is GraphPatternTerm)
                         {
-                            GraphPatternTerm gp = (GraphPatternTerm)expr;
+                            var gp = (GraphPatternTerm)expr;
                             output.Append(Format(gp.Pattern));
                         }
                         else
@@ -849,8 +849,8 @@ namespace VDS.RDF.Writing.Formatting
 
                         // Add Set
                         output.Append(" (");
-                        List<ISparqlExpression> set = expr.Arguments.Skip(1).ToList();
-                        for (int i = 0; i < set.Count; i++)
+                        var set = expr.Arguments.Skip(1).ToList();
+                        for (var i = 0; i < set.Count; i++)
                         {
                             output.Append(FormatExpression(set[i]));
                             if (i < set.Count - 1)
@@ -885,16 +885,16 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="agg">SPARQL Aggregate.</param>
         /// <returns></returns>
-        protected virtual String FormatAggregate(ISparqlAggregate agg)
+        protected virtual string FormatAggregate(ISparqlAggregate agg)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (SparqlSpecsHelper.IsAggregateFunctionKeyword(agg.Functor))
             {
                 output.Append(agg.Functor);
             }
             else
             {
-                String aggQName;
+                string aggQName;
                 if (_qnameMapper.ReduceToQName(agg.Functor, out aggQName))
                 {
                     output.Append(aggQName);
@@ -908,8 +908,8 @@ namespace VDS.RDF.Writing.Formatting
             }
 
             output.Append('(');
-            List<ISparqlExpression> args = agg.Arguments.ToList();
-            for (int i = 0; i < args.Count; i++)
+            var args = agg.Arguments.ToList();
+            for (var i = 0; i < args.Count; i++)
             {
                 output.Append(FormatExpression(args[i]));
                 if (i < args.Count - 1 && !(args[i] is DistinctModifier))
@@ -927,13 +927,13 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="path">SPARQL Property Path.</param>
         /// <returns></returns>
-        protected virtual String FormatPath(ISparqlPath path)
+        protected virtual string FormatPath(ISparqlPath path)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             if (path is AlternativePath)
             {
-                AlternativePath alt = (AlternativePath)path;
+                var alt = (AlternativePath)path;
                 output.Append('(');
                 output.Append(FormatPath(alt.LhsPath));
                 output.Append(" | ");
@@ -942,7 +942,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is FixedCardinality)
             {
-                FixedCardinality card = (FixedCardinality)path;
+                var card = (FixedCardinality)path;
                 if (card.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(card.Path));
                 if (card.Path is BaseBinaryPath) output.Append(')');
@@ -952,7 +952,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is InversePath)
             {
-                InversePath inv = (InversePath)path;
+                var inv = (InversePath)path;
                 output.Append('^');
                 if (inv.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(inv.Path));
@@ -960,7 +960,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is NOrMore)
             {
-                NOrMore nOrMore = (NOrMore)path;
+                var nOrMore = (NOrMore)path;
                 if (nOrMore.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(nOrMore.Path));
                 if (nOrMore.Path is BaseBinaryPath) output.Append(')');
@@ -970,7 +970,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is NToM)
             {
-                NToM nToM = (NToM)path;
+                var nToM = (NToM)path;
                 if (nToM.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(nToM.Path));
                 if (nToM.Path is BaseBinaryPath) output.Append(')');
@@ -982,7 +982,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is OneOrMore)
             {
-                OneOrMore oneOrMore = (OneOrMore)path;
+                var oneOrMore = (OneOrMore)path;
                 if (oneOrMore.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(oneOrMore.Path));
                 if (oneOrMore.Path is BaseBinaryPath) output.Append(')');
@@ -990,19 +990,19 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is Property)
             {
-                Property prop = (Property)path;
+                var prop = (Property)path;
                 output.Append(Format(prop.Predicate, TripleSegment.Predicate));
             }
             else if (path is SequencePath)
             {
-                SequencePath seq = (SequencePath)path;
+                var seq = (SequencePath)path;
                 output.Append(FormatPath(seq.LhsPath));
                 output.Append(" / ");
                 output.Append(FormatPath(seq.RhsPath));
             }
             else if (path is ZeroOrMore)
             {
-                ZeroOrMore zeroOrMore = (ZeroOrMore)path;
+                var zeroOrMore = (ZeroOrMore)path;
                 if (zeroOrMore.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(zeroOrMore.Path));
                 if (zeroOrMore.Path is BaseBinaryPath) output.Append(')');
@@ -1010,7 +1010,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is ZeroOrOne)
             {
-                ZeroOrOne zeroOrOne = (ZeroOrOne)path;
+                var zeroOrOne = (ZeroOrOne)path;
                 if (zeroOrOne.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(zeroOrOne.Path));
                 if (zeroOrOne.Path is BaseBinaryPath) output.Append(')');
@@ -1018,7 +1018,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is ZeroToN)
             {
-                ZeroToN zeroToN = (ZeroToN)path;
+                var zeroToN = (ZeroToN)path;
                 if (zeroToN.Path is BaseBinaryPath) output.Append('(');
                 output.Append(FormatPath(zeroToN.Path));
                 if (zeroToN.Path is BaseBinaryPath) output.Append(')');
@@ -1028,7 +1028,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is NegatedSet)
             {
-                NegatedSet negSet = (NegatedSet)path;
+                var negSet = (NegatedSet)path;
                 output.Append('!');
                 if (negSet.Properties.Count() + negSet.InverseProperties.Count() > 1) output.Append('(');
                 foreach (Property p in negSet.Properties)
@@ -1057,11 +1057,11 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="groupBy">GROUP BY Clause.</param>
         /// <returns></returns>
-        protected virtual String FormatGroupBy(ISparqlGroupBy groupBy)
+        protected virtual string FormatGroupBy(ISparqlGroupBy groupBy)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
-            bool isAssignment = groupBy.AssignVariable != null && (groupBy.Expression.Variables.Count() != 1 || !groupBy.AssignVariable.Equals(groupBy.Expression.Variables.FirstOrDefault()));
+            var isAssignment = groupBy.AssignVariable != null && (groupBy.Expression.Variables.Count() != 1 || !groupBy.AssignVariable.Equals(groupBy.Expression.Variables.FirstOrDefault()));
 
             if (isAssignment)
             {
@@ -1089,9 +1089,9 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="orderBy">ORDER BY Clause.</param>
         /// <returns></returns>
-        protected virtual String FormatOrderBy(ISparqlOrderBy orderBy)
+        protected virtual string FormatOrderBy(ISparqlOrderBy orderBy)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             if (orderBy.Descending)
             {
@@ -1120,11 +1120,11 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="data">Inline Data.</param>
         /// <returns></returns>
-        protected virtual String FormatInlineData(BindingsPattern data)
+        protected virtual string FormatInlineData(BindingsPattern data)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("VALUES ( ");
-            foreach (String var in data.Variables)
+            foreach (var var in data.Variables)
             {
                 output.Append("?" + var);
                 output.Append(' ');
@@ -1132,7 +1132,7 @@ namespace VDS.RDF.Writing.Formatting
             output.Append(')');
             if (data.Variables.Any()) output.AppendLine();
             output.Append('{');
-            bool multipleTuples = data.Tuples.Count() > 1;
+            var multipleTuples = data.Tuples.Count() > 1;
             if (multipleTuples) output.AppendLine();
             foreach (BindingTuple tuple in data.Tuples)
             {
@@ -1157,7 +1157,7 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     output.Append("(");
                 }
-                foreach (String var in data.Variables)
+                foreach (var var in data.Variables)
                 {
                     output.Append(' ');
                     if (tuple[var] == null)
@@ -1193,7 +1193,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
-        public override String Format(SparqlResult result)
+        public override string Format(SparqlResult result)
         {
             return result.ToString(this);
         }
@@ -1203,7 +1203,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">Boolean Result.</param>
         /// <returns></returns>
-        public override String FormatBooleanResult(bool result)
+        public override string FormatBooleanResult(bool result)
         {
             return result.ToString().ToLower();
         }

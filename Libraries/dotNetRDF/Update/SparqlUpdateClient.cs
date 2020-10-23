@@ -77,7 +77,7 @@ namespace VDS.RDF.Update
             var content = new FormUrlEncodedContent(
                 new[] {new KeyValuePair<string, string>("update", sparqlUpdate)}
             );
-            var response = await _httpClient.PostAsync(EndpointUri, content, cancellationToken);
+            HttpResponseMessage response = await _httpClient.PostAsync(EndpointUri, content, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 throw new SparqlUpdateException($"Server returned {(int)response.StatusCode}: {response.ReasonPhrase}");

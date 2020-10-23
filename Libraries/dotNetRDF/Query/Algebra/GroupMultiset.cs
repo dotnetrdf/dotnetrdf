@@ -84,8 +84,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="group"></param>
         public void AddGroup(BindingGroup group)
         {
-            Set s = new Set();
-            foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+            var s = new Set();
+            foreach (KeyValuePair<string, INode> assignment in group.Assignments)
             {
                 s.Add(assignment.Key, assignment.Value);
             }

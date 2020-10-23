@@ -68,7 +68,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         protected sealed override void OnMaterialise()
         {
-            ILiteralNode temp = (ILiteralNode)_value;
+            var temp = (ILiteralNode)_value;
             _litValue = temp.Value;
             _lang = temp.Language;
             _datatype = temp.DataType;

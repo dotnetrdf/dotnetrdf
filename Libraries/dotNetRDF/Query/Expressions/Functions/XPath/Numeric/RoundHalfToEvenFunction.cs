@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             IValuedNode a = _expr.Evaluate(context, bindingID);
             if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
 
-            int p = 0;
+            var p = 0;
             if (_precision != null)
             {
                 IValuedNode precision = _precision.Evaluate(context, bindingID);

@@ -25,12 +25,11 @@
 */
 
 using System.Globalization;
+using System.Diagnostics;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Diagnostics;
-    using VDS.RDF.Query;
-
     internal abstract class Compare : Constraint
     {
         /// <summary>

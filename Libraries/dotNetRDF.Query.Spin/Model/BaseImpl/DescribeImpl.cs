@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public List<IResource> getResultNodes()
         {
-            List<IResource> results = new List<IResource>();
+            var results = new List<IResource>();
             foreach (IResource node in getList(SP.PropertyResultNodes))
             {
                 IVariable variable = SPINFactory.asVariable(node);

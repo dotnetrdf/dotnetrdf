@@ -41,26 +41,26 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlXmlWriter()
         {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
 
-                Object results = g.ExecuteQuery("SELECT * WHERE {?s ?p ?o}");
+                var results = g.ExecuteQuery("SELECT * WHERE {?s ?p ?o}");
                 if (results is SparqlResultSet)
                 {
                     TestTools.ShowResults(results);
                 }
 
-                StringBuilder output = new StringBuilder();
-                System.IO.StringWriter writer = new System.IO.StringWriter(output);
-                SparqlXmlWriter sparqlWriter = new SparqlXmlWriter();
+                var output = new StringBuilder();
+                var writer = new System.IO.StringWriter(output);
+                var sparqlWriter = new SparqlXmlWriter();
                 sparqlWriter.Save((SparqlResultSet)results, writer);
 
                 Console.WriteLine();
                 Console.WriteLine(output.ToString());
                 Console.WriteLine();
 
-                SparqlXmlParser parser = new SparqlXmlParser();
-                SparqlResultSet results2 = new SparqlResultSet();
+                var parser = new SparqlXmlParser();
+                var results2 = new SparqlResultSet();
                 StringParser.ParseResultSet(results2, output.ToString());
 
                 Assert.Equal(((SparqlResultSet)results).Count, results2.Count);

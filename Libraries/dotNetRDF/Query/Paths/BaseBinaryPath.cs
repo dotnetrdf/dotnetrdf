@@ -83,6 +83,6 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of the Path.
         /// </summary>
         /// <returns></returns>
-        public abstract override String ToString();
+        public abstract override string ToString();
     }
 }

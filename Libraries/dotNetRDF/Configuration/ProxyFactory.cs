@@ -52,12 +52,12 @@ namespace VDS.RDF.Configuration
             WebProxy proxy = null;
 
             // Can we create a Proxy?
-            String server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
+            var server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
             if (server == null) return false;
             proxy = new WebProxy(server);
 
             // Does the proxy have credentials attached?
-            String user, pwd;
+            string user, pwd;
             ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
             if (user != null && pwd != null)
             {

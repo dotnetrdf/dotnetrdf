@@ -35,11 +35,11 @@ namespace VDS.RDF
     /// </summary>
     public class BlankNodeMapper
     {
-        private Dictionary<String, BlankNodeIDAssigment> _idmap = new Dictionary<string, BlankNodeIDAssigment>();
-        private Dictionary<String, String> _remappings = new Dictionary<string, string>();
+        private Dictionary<string, BlankNodeIDAssigment> _idmap = new Dictionary<string, BlankNodeIDAssigment>();
+        private Dictionary<string, string> _remappings = new Dictionary<string, string>();
         private static long _nextid = 0;
         private static long _nextremap = 0;
-        private String _prefix = "autos";
+        private string _prefix = "autos";
 
         /// <summary>
         /// Creates a new Blank Node Mapper.
@@ -51,9 +51,9 @@ namespace VDS.RDF
         /// Creates a new Blank Node Mapper that uses a custom Prefix.
         /// </summary>
         /// <param name="prefix">Prefix.</param>
-        public BlankNodeMapper(String prefix)
+        public BlankNodeMapper(string prefix)
         {
-            if (prefix == null || prefix.EndsWith(String.Empty)) prefix = "autos";
+            if (prefix == null || prefix.EndsWith(string.Empty)) prefix = "autos";
             _prefix = prefix;
         }
 
@@ -61,9 +61,9 @@ namespace VDS.RDF
         /// Gets the next available auto-assigned Blank Node ID.
         /// </summary>
         /// <returns></returns>
-        public String GetNextID()
+        public string GetNextID()
         {
-            String id = _prefix + Interlocked.Increment(ref _nextid);
+            var id = _prefix + Interlocked.Increment(ref _nextid);
 
             // Check it's not in use
             while (_idmap.ContainsKey(id))
@@ -84,7 +84,7 @@ namespace VDS.RDF
         /// <remarks>
         /// If the ID is not known it is added to the ID maps.  If the ID is known but is user-assigned then this can be used fine.  If the ID is known and was auto-assigned then it has to be remapped to a different ID.
         /// </remarks>
-        public void CheckID(ref String id)
+        public void CheckID(ref string id)
         {
             if (_remappings.ContainsKey(id))
             {
@@ -97,7 +97,7 @@ namespace VDS.RDF
                 if (idinfo.AutoAssigned)
                 {
                     // This ID has been auto-assigned so remap to something else
-                    String newid = "remapped" + Interlocked.Increment(ref _nextremap);
+                    var newid = "remapped" + Interlocked.Increment(ref _nextremap);
                     while (_idmap.ContainsKey(newid))
                     {
                         newid = "remapped" + Interlocked.Increment(ref _nextremap);
@@ -126,15 +126,15 @@ namespace VDS.RDF
     /// </remarks>
     public class BlankNodeOutputMapper
     {
-        private Func<String, bool> _validator;
-        private Dictionary<String, BlankNodeIDAssigment> _remappings = new Dictionary<string, BlankNodeIDAssigment>();
+        private Func<string, bool> _validator;
+        private Dictionary<string, BlankNodeIDAssigment> _remappings = new Dictionary<string, BlankNodeIDAssigment>();
         private int _nextid = 1;
 
         /// <summary>
         /// Creates a new Blank Node ID mapper.
         /// </summary>
         /// <param name="validator">Function which determines whether IDs are valid or not.</param>
-        public BlankNodeOutputMapper(Func<String, bool> validator)
+        public BlankNodeOutputMapper(Func<string, bool> validator)
         {
             _validator = validator;
         }
@@ -144,7 +144,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="id">ID to map.</param>
         /// <returns></returns>
-        public String GetOutputID(String id)
+        public string GetOutputID(string id)
         {
             if (_validator(id))
             {
@@ -161,7 +161,7 @@ namespace VDS.RDF
                     else
                     {
                         // Our ID has already been remapped from another ID so we need to remap ourselves
-                        String remappedID = GetNextID();
+                        var remappedID = GetNextID();
                         _remappings.Add(id, new BlankNodeIDAssigment(remappedID, false));
                         return remappedID;
                     }
@@ -180,7 +180,7 @@ namespace VDS.RDF
             else
             {
                 // Not valid for outputting so need to remap
-                String remappedID = GetNextID();
+                var remappedID = GetNextID();
                 _remappings.Add(id, new BlankNodeIDAssigment(remappedID, true));
                 return remappedID;
             }
@@ -190,9 +190,9 @@ namespace VDS.RDF
         /// Internal Helper function which generates the new IDs.
         /// </summary>
         /// <returns></returns>
-        private String GetNextID()
+        private string GetNextID()
         {
-            String nextID = "autos" + _nextid;
+            var nextID = "autos" + _nextid;
             while (_remappings.ContainsKey(nextID))
             {
                 _nextid++;
@@ -209,7 +209,7 @@ namespace VDS.RDF
     /// </summary>
     struct BlankNodeIDAssigment
     {
-        private String _id;
+        private string _id;
         private bool _auto;
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="id">ID to assign.</param>
         /// <param name="auto">Was the ID auto-assigned.</param>
-        public BlankNodeIDAssigment(String id, bool auto)
+        public BlankNodeIDAssigment(string id, bool auto)
         {
             _id = id;
             _auto = auto;
@@ -226,7 +226,7 @@ namespace VDS.RDF
         /// <summary>
         /// Assigned ID.
         /// </summary>
-        public String ID
+        public string ID
         {
             get
             {

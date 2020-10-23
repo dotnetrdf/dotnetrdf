@@ -166,7 +166,7 @@ namespace VDS.RDF.Update
                 }
                 else
                 {
-                    long timeout = UpdateTimeout - UpdateTime;
+                    var timeout = UpdateTimeout - UpdateTime;
                     if (timeout <= 0)
                     {
                         return 1;

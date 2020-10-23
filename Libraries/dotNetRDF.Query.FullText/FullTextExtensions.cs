@@ -48,7 +48,7 @@ namespace VDS.RDF.Query
 
         internal static ISet ToSet(this IFullTextSearchResult result, String matchVar, String scoreVar)
         {
-            Set s = new Set();
+            var s = new Set();
             if (matchVar != null) s.Add(matchVar, result.Node);
             if (scoreVar != null) s.Add(scoreVar, result.Score.ToLiteral(_factory));
             return s;
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
             //Then get the node value
             Field nodeValueField = doc.GetField(schema.NodeValueField);
             if (nodeValueField == null) throw new RdfQueryException("Node Value field " + schema.NodeValueField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
-            String nodeValue = nodeValueField.StringValue;
+            var nodeValue = nodeValueField.StringValue;
 
             //Then depending on the Node Type determine whether we need to obtain the Meta Field as well
             switch (nodeType)
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        String nodeMeta = nodeMetaField.StringValue;
+                        var nodeMeta = nodeMetaField.StringValue;
                         if (nodeMeta.StartsWith("@"))
                         {
                             //Language Specified literal
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query
                     return null;
 
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         return lit.DataType.ToString();
@@ -178,11 +178,11 @@ namespace VDS.RDF.Query
             //Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
-            Byte[] input = Encoding.UTF8.GetBytes(s);
-            Byte[] output = _sha256.ComputeHash(input);
+            var input = Encoding.UTF8.GetBytes(s);
+            var output = _sha256.ComputeHash(input);
 
-            StringBuilder hash = new StringBuilder();
-            foreach (Byte b in output)
+            var hash = new StringBuilder();
+            foreach (var b in output)
             {
                 hash.Append(b.ToString("x2"));
             }
@@ -266,14 +266,14 @@ namespace VDS.RDF.Query
         {
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            String assm = Assembly.GetAssembly(factoryType).FullName;
+            var assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
-            SparqlParameterizedString factoryCheck = new SparqlParameterizedString();
+            var factoryCheck = new SparqlParameterizedString();
             factoryCheck.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
-            SparqlResultSet rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
+            var rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
             if (!rset.Result)
             {
                 INode factory = context.Graph.CreateBlankNode();

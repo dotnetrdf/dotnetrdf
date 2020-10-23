@@ -88,7 +88,7 @@ HAVING (COUNT(?p) = 1)
             store.Add(graph);
             IQueryableStorage storage = new InMemoryManager(store);
 
-            using (SparqlResultSet resultSet = (SparqlResultSet) storage.Query(query))
+            using (var resultSet = (SparqlResultSet) storage.Query(query))
             {
                 TestTools.ShowResults(resultSet);
                 Assert.Equal(1, resultSet.Count);

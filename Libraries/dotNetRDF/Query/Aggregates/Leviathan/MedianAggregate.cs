@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class MedianAggregate 
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new MEDIAN Aggregate.
@@ -92,10 +92,10 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 }
             }
 
-            List<IValuedNode> values = new List<IValuedNode>();
-            HashSet<IValuedNode> distinctValues = new HashSet<IValuedNode>();
-            bool nullSeen = false;
-            foreach (int id in bindingIDs)
+            var values = new List<IValuedNode>();
+            var distinctValues = new HashSet<IValuedNode>();
+            var nullSeen = false;
+            foreach (var id in bindingIDs)
             {
                 try
                 {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
 
             // Find the middle value and return
             values.Sort();
-            int skip = values.Count / 2;
+            var skip = values.Count / 2;
             return values.Skip(skip).First();
         }
 
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.Median);

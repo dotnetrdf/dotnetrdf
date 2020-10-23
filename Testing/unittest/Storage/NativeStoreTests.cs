@@ -46,14 +46,14 @@ namespace VDS.RDF
         public void StorageNativeGraph()
         {
             //Load in our Test Graph
-            TurtleParser ttlparser = new TurtleParser();
-            Graph g = new Graph();
+            var ttlparser = new TurtleParser();
+            var g = new Graph();
             ttlparser.Load(g, "resources\\Turtle.ttl");
 
             Assert.False(g.IsEmpty, "Test Graph should be non-empty");
 
             //Create our Native Managers
-            List<IStorageProvider> managers = new List<IStorageProvider>() {
+            var managers = new List<IStorageProvider>() {
                 new InMemoryManager(),
 #if NET40
                 VirtuosoTest.GetConnection()
@@ -69,7 +69,7 @@ namespace VDS.RDF
             //Load Back from each Manager
             foreach (IStorageProvider manager in managers)
             {
-                StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
+                var native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
                 Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");
                 Assert.Equal(g.Triples.Count, native.Triples.Count);
                 native.Dispose();

@@ -54,7 +54,7 @@ namespace VDS.RDF.Writing
 
         protected void CheckCompressionRoundTrip(IGraph g)
         {
-            foreach (KeyValuePair<IRdfWriter, IRdfReader> kvp in this._compressers)
+            foreach (KeyValuePair<IRdfWriter, IRdfReader> kvp in _compressers)
             {
 
                 IRdfWriter writer = kvp.Key;
@@ -66,14 +66,14 @@ namespace VDS.RDF.Writing
                 {
                     ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
                 }
-                System.IO.StringWriter strWriter = new System.IO.StringWriter();
+                var strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
 
                 _output.WriteLine("Compressed Output using " + kvp.Key.GetType().Name);
                 _output.WriteLine(strWriter.ToString());
                 _output.WriteLine("");
 
-                Graph h = new Graph();
+                var h = new Graph();
                 StringParser.Parse(h, strWriter.ToString(), kvp.Value);
 
                 GraphDiffReport report = g.Difference(h);

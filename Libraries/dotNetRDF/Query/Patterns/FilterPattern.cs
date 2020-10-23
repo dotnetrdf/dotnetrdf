@@ -132,13 +132,13 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>
         /// Returns the empty enumerable as don't know which variables will be bound.
         /// </summary>
-        public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<String>(); } }
+        public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
 
         /// <summary>
         /// Gets whether the Pattern uses the Default Dataset.

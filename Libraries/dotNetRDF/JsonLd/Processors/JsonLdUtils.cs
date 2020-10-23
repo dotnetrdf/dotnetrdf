@@ -268,7 +268,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns>True if <paramref name="value"/> can be parsed as an absolute IRI, false otherwise.</returns>
         public static bool IsAbsoluteIri(string value)
         {
-            return Uri.TryCreate(value, UriKind.Absolute, out var _) && Uri.EscapeUriString(value).Equals(value);
+            return Uri.TryCreate(value, UriKind.Absolute, out Uri _) && Uri.EscapeUriString(value).Equals(value);
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace VDS.RDF.JsonLd.Processors
             if (value is JArray valueArray)
             {
                 // Call this method to add each individual item
-                foreach (var item in valueArray)
+                foreach (JToken item in valueArray)
                 {
                     AddValue(o, entry, item, asArray);
                 }
@@ -444,7 +444,7 @@ namespace VDS.RDF.JsonLd.Processors
                 default:
                 {
                     var array = new JArray();
-                    foreach (var v in values) array.Add(v);
+                    foreach (JToken v in values) array.Add(v);
                     subject[property] = array;
                     break;
                 }
@@ -460,10 +460,10 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns></returns>
         public static JArray ConcatenateValues(JToken token1, JToken token2)
         {
-            var result = EnsureArray(token1);
+            JArray result = EnsureArray(token1);
             if (token2 is JArray)
             {
-                foreach (var c in token2.Children()) result.Add(c);
+                foreach (JToken c in token2.Children()) result.Add(c);
             }
             else
             {
@@ -483,7 +483,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns>The property value if found, null otherwise.</returns>
         public static JToken GetPropertyValue(JsonLdContext activeContext, JObject parent, string propertyName)
         {
-            if (parent.TryGetValue(propertyName, out var ret)) return ret;
+            if (parent.TryGetValue(propertyName, out JToken ret)) return ret;
             foreach (var alias in activeContext.GetAliases(propertyName))
             {
                 if (parent.TryGetValue(alias, out ret)) return ret;

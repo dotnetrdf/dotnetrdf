@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Variable containg the value of the Token.
         /// </summary>
-        protected String _value;
+        protected string _value;
 
         /// <summary>
         /// Creates a Token and fills in its Values.
@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="startPos">Column at which the Token starts.</param>
         /// <param name="endPos">Column at which the Token ends.</param>
         /// <remarks>All the derived classes use this Constructor to fill in the basic values of a Token.</remarks>
-        protected internal BaseToken(int tokenType, String value, int startLine, int endLine, int startPos, int endPos)
+        protected internal BaseToken(int tokenType, string value, int startLine, int endLine, int startPos, int endPos)
         {
             _tokentype = tokenType;
             _value = value;

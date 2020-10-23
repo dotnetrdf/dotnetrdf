@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Spin.Util
         internal static List<Uri> getDatatypeURIs()
         {
             Initialize();
-            List<Uri> list = new List<Uri>();
+            var list = new List<Uri>();
             list.AddRange(otherDatatypeURIs);
             list.AddRange(numericDatatypeURIs);
             list.Add(RDF.ClassPlainLiteral.Uri);

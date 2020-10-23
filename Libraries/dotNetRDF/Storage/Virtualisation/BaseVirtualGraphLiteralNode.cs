@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         protected sealed override void OnMaterialise()
         {
-            IGraphLiteralNode temp = (IGraphLiteralNode)_value;
+            var temp = (IGraphLiteralNode)_value;
             _subgraph = temp.SubGraph;
         }
 

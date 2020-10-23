@@ -60,12 +60,12 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
-            String value = l.Value;
+            var value = l.Value;
             if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
             {
                 return '"' + value.Replace("\"", "\"\"") + '"';
             }
-            else if (value.Equals(String.Empty))
+            else if (value.Equals(string.Empty))
             {
                 return "\"\"";
             }

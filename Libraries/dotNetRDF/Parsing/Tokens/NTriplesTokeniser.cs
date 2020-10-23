@@ -139,10 +139,10 @@ namespace VDS.RDF.Parsing.Tokens
                         throw UnexpectedEndOfInput("Token");
                     }
 
-                    char next = Peek();
+                    var next = Peek();
 
                     // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == Char.MaxValue && _in.EndOfStream)
+                    if (next == char.MaxValue && _in.EndOfStream)
                     {
                         if (Length == 0)
                         {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Parsing.Tokens
                         throw UnexpectedEndOfInput("Token");
                     }
 
-                    if (Char.IsWhiteSpace(next))
+                    if (char.IsWhiteSpace(next))
                     {
                         // Discard white space between Tokens
                         DiscardWhiteSpace();
@@ -205,7 +205,7 @@ namespace VDS.RDF.Parsing.Tokens
                             default:
                                 // Unexpected Character
                                 if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-                                throw UnexpectedCharacter(next, String.Empty);
+                                throw UnexpectedCharacter(next, string.Empty);
                         }
                     }
                 } while (true);
@@ -230,7 +230,7 @@ namespace VDS.RDF.Parsing.Tokens
             ConsumeCharacter();
 
             // Consume everything up till we hit the new line
-            char next = Peek();
+            var next = Peek();
             while (next != '\n' && next != '\r')
             {
                 if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
@@ -240,7 +240,7 @@ namespace VDS.RDF.Parsing.Tokens
 
             // Create the Token, discard the new line and return
             LastTokenType = Token.COMMENT;
-            CommentToken comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
+            var comment = new CommentToken(Value, CurrentLine, StartPosition, EndPosition);
             ConsumeNewLine(false, true);
             return comment;
         }
@@ -251,8 +251,8 @@ namespace VDS.RDF.Parsing.Tokens
             SkipCharacter();
 
             // Consume characters which can be in the keyword or Language Specifier
-            char next = Peek();
-            while (Char.IsLetterOrDigit(next) || next == '-')
+            var next = Peek();
+            while (char.IsLetterOrDigit(next) || next == '-')
             {
                 if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
                 ConsumeCharacter();
@@ -260,7 +260,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             // Check the output to see if it's valid
-            String output = Value;
+            var output = Value;
             if (RdfSpecsHelper.IsValidLangSpecifier(output))
             {
                 LastTokenType = Token.LANGSPEC;
@@ -305,13 +305,13 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetBlankNode()
         {
-            bool colonoccurred = false;
+            var colonoccurred = false;
 
             // Consume the opening underscore
             ConsumeCharacter();
 
             // Then expect a :
-            char next = Peek();
+            var next = Peek();
             if (next != ':') throw Error("Expected a colon after a _ to start a Blank Node ID but got a " + next + " (code " + (int) next + ")");
             ConsumeCharacter();
             next = Peek();
@@ -321,7 +321,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 case NTriplesSyntax.Original:
                     // Original NTriples only allows very simple Node IDs
-                    while (Char.IsLetterOrDigit(next))
+                    while (char.IsLetterOrDigit(next))
                     {
                         if (next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
                         ConsumeCharacter();
@@ -330,7 +330,7 @@ namespace VDS.RDF.Parsing.Tokens
                     break;
                 default:
                     // RDF 1.1 Triples allows much more complex Node IDs more similar to Turtle
-                    while (Char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '.')
+                    while (char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == '.')
                     {
                         ConsumeCharacter();
                         if (next == ':')
@@ -365,7 +365,7 @@ namespace VDS.RDF.Parsing.Tokens
             ConsumeCharacter();
 
             // Check if this is an empty literal
-            char next = Peek();
+            var next = Peek();
             if (next == '"')
             {
                 ConsumeCharacter();
@@ -405,7 +405,7 @@ namespace VDS.RDF.Parsing.Tokens
 
         private IToken TryGetDataType()
         {
-            char next = Peek();
+            var next = Peek();
             if (next == '<')
             {
                 // Uri for Data Type

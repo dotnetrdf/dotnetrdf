@@ -39,12 +39,12 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Template for posting form data as part of a HTTP multipart request.
         /// </summary>
-        public const String HttpMultipartContentTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+        public const string HttpMultipartContentTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
 
         /// <summary>
         /// Gets a new unique boundary for HTTP mutlipart requests.
         /// </summary>
-        public static String HttpMultipartBoundary
+        public static string HttpMultipartBoundary
         {
             get
             {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Storage
         /// <param name="webEx">HTTP Error.</param>
         /// <param name="action">Action being performed.</param>
         /// <returns></returns>
-        public static RdfStorageException HandleHttpError(WebException webEx, String action)
+        public static RdfStorageException HandleHttpError(WebException webEx, string action)
         {
             return HandleHttpError<RdfStorageException>(webEx, action, (msg, ex) => new RdfStorageException(msg, ex));
         }
@@ -87,14 +87,14 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Adapted from Ron Michael's Zettlemoyer's original patch for this in Stardog to use it across all operations as far as possible.
         /// </remarks>
-        public static T HandleHttpError<T>(WebException webEx, String action, Func<String, Exception, T> errorProvider)
+        public static T HandleHttpError<T>(WebException webEx, string action, Func<string, Exception, T> errorProvider)
             where T : Exception
         {
             if (webEx.Response != null)
             {
                 if (webEx.Response.ContentLength > 0)
                 {
-                    String responseText = "";
+                    var responseText = "";
                     try
                     {
                         responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
@@ -115,18 +115,18 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="webEx">Web exception.</param>
         /// <returns>Status line if available, empty string otherwise.</returns>
-        private static String GetStatusLine(WebException webEx)
+        private static string GetStatusLine(WebException webEx)
         {
             if (webEx.Response != null)
             {
-                HttpWebResponse httpResponse = webEx.Response as HttpWebResponse;
+                var httpResponse = webEx.Response as HttpWebResponse;
                 if (httpResponse != null)
                 {
                     return "(HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription + ")";
                 }
                 return webEx.Status.ToSafeString();
             }
-            return String.Empty;
+            return string.Empty;
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace VDS.RDF.Storage
         /// <param name="ex">Error.</param>
         /// <param name="action">Action being performed.</param>
         /// <returns></returns>
-        public static RdfStorageException HandleError(Exception ex, String action)
+        public static RdfStorageException HandleError(Exception ex, string action)
         {
             if (ex is WebException)
             {
@@ -172,7 +172,7 @@ namespace VDS.RDF.Storage
         /// <param name="action">Action being performed.</param>
         /// <param name="errorProvider">Function that generates the actual errors.</param>
         /// <returns></returns>
-        public static T HandleError<T>(Exception ex, String action, Func<String, Exception, T> errorProvider)
+        public static T HandleError<T>(Exception ex, string action, Func<string, Exception, T> errorProvider)
             where T : Exception
         {
             return errorProvider("An unexpected error occurred while " + action + " the Store. See inner exception for further details", ex);

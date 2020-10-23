@@ -187,10 +187,10 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
@@ -210,14 +210,14 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             if (!_skipLocalParsing)
             {
                 // Parse the query locally to validate it and so we can decide what to do
                 // when we receive the Response more easily as we'll know the query type
                 // This also saves us wasting a HttpWebRequest on a malformed query
-                SparqlQueryParser qparser = new SparqlQueryParser();
+                var qparser = new SparqlQueryParser();
                 SparqlQuery q = qparser.ParseFromString(sparqlQuery);
 
                 switch (q.QueryType)
@@ -296,9 +296,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public virtual void LoadGraph(IGraph g, String graphUri)
+        public virtual void LoadGraph(IGraph g, string graphUri)
         {
-            if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
+            if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
@@ -310,11 +310,11 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            String query;
+            string query;
 
-            if (graphUri.Equals(String.Empty))
+            if (graphUri.Equals(string.Empty))
             {
                 if (_mode == SparqlConnectorLoadMethod.Describe)
                 {
@@ -381,7 +381,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="additions">Triples to be added.</param>
         /// <param name="removals">Triples to be removed.</param>
-        public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
@@ -412,7 +412,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="graphUri">URI of this Graph to delete.</param>
         /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it.</exception>
-        public virtual void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(string graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
@@ -438,10 +438,10 @@ namespace VDS.RDF.Storage
             {
                 // Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
                 // won't interpret GRAPH ?g { } correctly
-                Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
-                    List<Uri> graphs = new List<Uri>();
+                    var graphs = new List<Uri>();
                     foreach (SparqlResult r in ((SparqlResultSet)results))
                     {
                         if (r.HasValue("g"))
@@ -561,11 +561,11 @@ namespace VDS.RDF.Storage
                 INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
                 
                 context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
-                foreach (String u in _endpoint.DefaultGraphs)
+                foreach (var u in _endpoint.DefaultGraphs)
                 {
                     context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
                 }
-                foreach (String u in _endpoint.NamedGraphs)
+                foreach (var u in _endpoint.NamedGraphs)
                 {
                     context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
                 }
@@ -731,7 +731,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save.</param>
         public override void SaveGraph(IGraph g)
         {
-            StringBuilder updates = new StringBuilder();
+            var updates = new StringBuilder();
 
             // Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
             if (g.BaseUri == null)
@@ -784,7 +784,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to remove.</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            StringBuilder updates = new StringBuilder();
+            var updates = new StringBuilder();
 
             if (additions != null)
             {
@@ -854,7 +854,7 @@ namespace VDS.RDF.Storage
             {
                 // Parse the update locally to validate it
                 // This also saves us wasting a HttpWebRequest on a malformed update
-                SparqlUpdateParser uparser = new SparqlUpdateParser();
+                var uparser = new SparqlUpdateParser();
                 uparser.ParseFromString(sparqlUpdate);
 
                 _updateEndpoint.Update(sparqlUpdate);

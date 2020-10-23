@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class SumAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new SUM Aggregate.
@@ -84,14 +84,14 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
             // Prep Variables
             long lngtotal = 0;
-            decimal dectotal = 0.0m;
-            float flttotal = 0.0f;
-            double dbltotal = 0.0d;
+            var dectotal = 0.0m;
+            var flttotal = 0.0f;
+            var dbltotal = 0.0d;
             SparqlNumericType maxtype = SparqlNumericType.NaN;
             SparqlNumericType numtype;
-            HashSet<IValuedNode> values = new HashSet<IValuedNode>();
+            var values = new HashSet<IValuedNode>();
 
-            foreach (int id in bindingIDs)
+            foreach (var id in bindingIDs)
             {
                 IValuedNode temp;
                 try
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("SUM(");
             if (_distinct) output.Append("DISTINCT ");
             output.Append(_expr.ToString() + ")");

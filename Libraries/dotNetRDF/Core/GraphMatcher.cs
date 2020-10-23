@@ -140,9 +140,9 @@ namespace VDS.RDF
                 return false;
             }
 
-            int gtCount = 0;
-            Dictionary<INode, int> gNodes = new Dictionary<INode, int>();
-            Dictionary<INode, int> hNodes = new Dictionary<INode, int>();
+            var gtCount = 0;
+            var gNodes = new Dictionary<INode, int>();
+            var hNodes = new Dictionary<INode, int>();
             _targetTriples = new HashSet<Triple>(h.Triples);
             foreach (Triple t in g.Triples)
             {
@@ -263,9 +263,9 @@ namespace VDS.RDF
             Debug.WriteLine("Both graphs contain " + gNodes.Count + " unique blank nodes");
 
             // Then we sub-classify by the number of Blank Nodes with each degree classification
-            Dictionary<int, int> gDegrees = new Dictionary<int, int>();
-            Dictionary<int, int> hDegrees = new Dictionary<int, int>();
-            foreach (int degree in gNodes.Values)
+            var gDegrees = new Dictionary<int, int>();
+            var hDegrees = new Dictionary<int, int>();
+            foreach (var degree in gNodes.Values)
             {
                 if (gDegrees.ContainsKey(degree))
                 {
@@ -276,7 +276,7 @@ namespace VDS.RDF
                     gDegrees.Add(degree, 1);
                 }
             }
-            foreach (int degree in hNodes.Values)
+            foreach (var degree in hNodes.Values)
             {
                 if (hDegrees.ContainsKey(degree))
                 {
@@ -339,12 +339,12 @@ namespace VDS.RDF
                                                       select t);
 
             // First thing consider the trivial mapping
-            Dictionary<INode, INode> trivialMapping = new Dictionary<INode, INode>();
+            var trivialMapping = new Dictionary<INode, INode>();
             foreach (INode n in gNodes.Keys)
             {
                 trivialMapping.Add(n, n);
             }
-            HashSet<Triple> targets = new HashSet<Triple>(_targetTriples);
+            var targets = new HashSet<Triple>(_targetTriples);
             if (_sourceTriples.All(t => targets.Remove(t.MapTriple(h, trivialMapping))))
             {
                 _mapping = trivialMapping;
@@ -398,7 +398,7 @@ namespace VDS.RDF
 
             // Map any Nodes of unique degree next
             Debug.WriteLine("Trying to map unique blank nodes");
-            int mappedSoFar = _mapping.Count;
+            var mappedSoFar = _mapping.Count;
             foreach (KeyValuePair<int, int> degreeClass in gDegrees)
             {
                 if (degreeClass.Key > 1 && degreeClass.Value == 1)
@@ -438,7 +438,7 @@ namespace VDS.RDF
 
                     // Are there any possible matches?
                     // We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
-                    List<Triple> possibles = new List<Triple>(_targetTriples.Where(x => x.Subject.NodeType == NodeType.Blank && x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object)).Take(2));
+                    var possibles = new List<Triple>(_targetTriples.Where(x => x.Subject.NodeType == NodeType.Blank && x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object)).Take(2));
                     if (possibles.Count == 1)
                     {
                         // Precisely one possible match so map
@@ -463,7 +463,7 @@ namespace VDS.RDF
 
                     // Are there any possible matches?
                     // We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
-                    List<Triple> possibles = new List<Triple>(_targetTriples.Where(x => x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) && x.Object.NodeType == NodeType.Blank).Take(2));
+                    var possibles = new List<Triple>(_targetTriples.Where(x => x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) && x.Object.NodeType == NodeType.Blank).Take(2));
                     if (possibles.Count == 1)
                     {
                         // Precisely one possible match so map
@@ -482,7 +482,7 @@ namespace VDS.RDF
             // By this we mean any Nodes which appear with other Nodes in a Triple
             // If multiple nodes appear together we can use this information to restrict
             // the possible mappings we generate
-            List<MappingPair> sourceDependencies = new List<MappingPair>();
+            var sourceDependencies = new List<MappingPair>();
             foreach (Triple t in _sourceTriples)
             {
                 if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank)
@@ -503,7 +503,7 @@ namespace VDS.RDF
                 }
             }
             sourceDependencies = sourceDependencies.Distinct().ToList();
-            List<MappingPair> targetDependencies = new List<MappingPair>();
+            var targetDependencies = new List<MappingPair>();
             foreach (Triple t in _targetTriples)
             {
                 if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank)
@@ -526,10 +526,10 @@ namespace VDS.RDF
             targetDependencies = targetDependencies.Distinct().ToList();
 
             // Once we know of dependencies we can then map independent nodes
-            List<INode> sourceIndependents = (from n in gNodes.Keys
+            var sourceIndependents = (from n in gNodes.Keys
                                               where !sourceDependencies.Any(p => p.Contains(n))
                                               select n).ToList();
-            List<INode> targetIndependents = (from n in hNodes.Keys
+            var targetIndependents = (from n in hNodes.Keys
                                               where !targetDependencies.Any(p => p.Contains(n))
                                               select n).ToList();
 
@@ -547,7 +547,7 @@ namespace VDS.RDF
                 // They may already be mapped as they may be single use Triples
                 if (_mapping.ContainsKey(x)) continue;
 
-                List<Triple> xs = _sourceTriples.Where(t => t.Involves(x)).ToList();
+                var xs = _sourceTriples.Where(t => t.Involves(x)).ToList();
                 foreach (INode y in targetIndependents)
                 {
                     if (gNodes[x] != hNodes[y]) continue;
@@ -555,7 +555,7 @@ namespace VDS.RDF
                     _mapping.Add(x, y);
 
                     // Test the mapping
-                    HashSet<Triple> ys = new HashSet<Triple>(_targetTriples.Where(t => t.Involves(y)));
+                    var ys = new HashSet<Triple>(_targetTriples.Where(t => t.Involves(y)));
                     if (xs.All(t => ys.Remove(t.MapTriple(h, _mapping))))
                     {
                         // This is a valid mapping
@@ -578,7 +578,7 @@ namespace VDS.RDF
 
             // Want to save our mapping so far here as if the mapping we produce using the dependency information
             // is flawed then we'll have to attempt brute force
-            Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>(_mapping);
+            var baseMapping = new Dictionary<INode, INode>(_mapping);
 
             Debug.WriteLine("Using dependency information to try and map more blank nodes");
 
@@ -590,7 +590,7 @@ namespace VDS.RDF
 
                 // Get all the Triples with this Pair in them
                 List<Triple> xs;
-                bool canonical = false;
+                var canonical = false;
                 switch (dependency.Type)
                 {
                     case TripleIndexType.SubjectPredicate:
@@ -631,8 +631,8 @@ namespace VDS.RDF
                         throw new RdfException("Unknown exception occurred while trying to generate a Mapping between the two Graphs");
                 }
 
-                bool xbound = _mapping.ContainsKey(dependency.X);
-                bool ybound = _mapping.ContainsKey(dependency.Y);
+                var xbound = _mapping.ContainsKey(dependency.X);
+                var ybound = _mapping.ContainsKey(dependency.Y);
 
                 // Look at all the possible Target Dependencies we could map to
                 foreach (MappingPair target in targetDependencies)
@@ -714,7 +714,7 @@ namespace VDS.RDF
             if (_mapping.Count == gNodes.Count)
             {
                 // Need to check we found a valid mapping
-                List<Triple> ys = new List<Triple>(_targetTriples);
+                var ys = new List<Triple>(_targetTriples);
                 if (_sourceTriples.All(t => ys.Remove(t.MapTriple(h, _mapping))))
                 {
                     Debug.WriteLine("[EQUAL] Generated a rules based mapping successfully");
@@ -751,17 +751,17 @@ namespace VDS.RDF
 
             // Need to try and split the BNodes into MSGs
             // Firstly we need a copy of the unassigned triples
-            HashSet<Triple> gUnassigned = new HashSet<Triple>(_sourceTriples);
-            HashSet<Triple> hUnassigned = new HashSet<Triple>(_targetTriples);
+            var gUnassigned = new HashSet<Triple>(_sourceTriples);
+            var hUnassigned = new HashSet<Triple>(_targetTriples);
 
             // Remove already mapped nodes
             gUnassigned.RemoveWhere(t => _mapping != null && _mapping.Keys.Any(n => t.Involves(n)));
             hUnassigned.RemoveWhere(t => _mapping != null && _mapping.Any(kvp => t.Involves(kvp.Value)));
 
             // Compute MSGs
-            List<IGraph> gMsgs = new List<IGraph>();
+            var gMsgs = new List<IGraph>();
             GraphDiff.ComputeMSGs(g, gUnassigned, gMsgs);
-            List<IGraph> hMsgs = new List<IGraph>();
+            var hMsgs = new List<IGraph>();
             GraphDiff.ComputeMSGs(h, hUnassigned, hMsgs);
 
             if (gMsgs.Count != hMsgs.Count)
@@ -780,13 +780,13 @@ namespace VDS.RDF
             // Sort sub-graphs by triple count
             gMsgs.Sort(new GraphSizeComparer());
             hMsgs.Sort(new GraphSizeComparer());
-            bool retry = true;
-            int retryCount = 1;
+            var retry = true;
+            var retryCount = 1;
 
             while (retry)
             {
-                int found = 0;
-                List<IGraph> lhsMsgs = new List<IGraph>(gMsgs);
+                var found = 0;
+                var lhsMsgs = new List<IGraph>(gMsgs);
                 if (lhsMsgs.Count == 0) break;
 
                 Debug.WriteLine("Divide and conquer attempt #" + retryCount);
@@ -797,7 +797,7 @@ namespace VDS.RDF
                     lhsMsgs.RemoveAt(0);
 
                     // Find possible matches
-                    List<IGraph> possibles = new List<IGraph>(hMsgs.Where(graph => graph.Triples.Count == lhs.Triples.Count));
+                    var possibles = new List<IGraph>(hMsgs.Where(graph => graph.Triples.Count == lhs.Triples.Count));
 
                     if (possibles.Count == 0)
                     {
@@ -807,13 +807,13 @@ namespace VDS.RDF
                     }
 
                     // Check each possible match
-                    List<Dictionary<INode, INode>> partialMappings = new List<Dictionary<INode, INode>>();
-                    List<IGraph> partialMappingSources = new List<IGraph>();
+                    var partialMappings = new List<Dictionary<INode, INode>>();
+                    var partialMappingSources = new List<IGraph>();
                     Debug.WriteLine("Dividing and conquering on isolated sub-graph with " + lhs.Triples.Count + " triples...");
 #if !NETCORE
                     Debug.Indent();
 #endif
-                    int i = 1;
+                    var i = 1;
                     foreach (IGraph rhs in possibles)
                     {
                         Debug.WriteLine("Testing possiblity " + i + " of " + possibles.Count);
@@ -891,7 +891,7 @@ namespace VDS.RDF
             if (_mapping.Count == gNodes.Count)
             {
                 // Need to check we found a valid mapping
-                List<Triple> ys = new List<Triple>(_targetTriples);
+                var ys = new List<Triple>(_targetTriples);
                 if (_sourceTriples.All(t => ys.Remove(t.MapTriple(h, _mapping))))
                 {
                     Debug.WriteLine("[EQUAL] Generated a divide and conquer based mapping successfully");
@@ -925,7 +925,7 @@ namespace VDS.RDF
         /// <returns></returns>
         private bool TryBruteForceMapping(IGraph g, IGraph h, Dictionary<INode, int> gNodes, Dictionary<INode, int> hNodes, List<MappingPair> sourceDependencies, List<MappingPair> targetDependencies)
         {
-            Dictionary<INode, List<INode>> possibleMappings = new Dictionary<INode, List<INode>>();
+            var possibleMappings = new Dictionary<INode, List<INode>>();
 
             // Populate possibilities for each Node
             foreach (KeyValuePair<INode, int> gPair in gNodes)
@@ -933,7 +933,7 @@ namespace VDS.RDF
                 if (!_mapping.ContainsKey(gPair.Key))
                 {
                     possibleMappings.Add(gPair.Key, new List<INode>());
-                    foreach (var hPair in hNodes)
+                    foreach (KeyValuePair<INode, int> hPair in hNodes)
                     {
                         if (hPair.Value == gPair.Value && !_bound.Contains(hPair.Key))
                         {
@@ -963,13 +963,13 @@ namespace VDS.RDF
 
             // Now start testing the possiblities
             IEnumerable<Dictionary<INode, INode>> possibles = GenerateMappings(new Dictionary<INode, INode>(_mapping), possibleMappings);
-            int count = 0;
+            var count = 0;
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
                 count++;
                 if (mapping.Count != gNodes.Count) continue;
 
-                HashSet<Triple> targets = new HashSet<Triple>(_targetTriples);
+                var targets = new HashSet<Triple>(_targetTriples);
                 if (_sourceTriples.Count != targets.Count) continue;
 
                 // Validate the mapping
@@ -998,9 +998,9 @@ namespace VDS.RDF
         public static IEnumerable<Dictionary<INode, INode>> GenerateMappings(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings)
         {
             // Remove any explicit base mappings from possible mappings
-            foreach (var p in baseMapping)
+            foreach (KeyValuePair<INode, INode> p in baseMapping)
             {
-                if (possibleMappings.TryGetValue(p.Key, out var mappings))
+                if (possibleMappings.TryGetValue(p.Key, out List<INode> mappings))
                 {
                     mappings.Remove(p.Value);
                     if (mappings.Count == 0) possibleMappings.Remove(p.Key);
@@ -1019,18 +1019,19 @@ namespace VDS.RDF
         /// <param name="baseMapping">Base Mapping.</param>
         /// <param name="possibleMappings">Possible Mappings.</param>
         /// <param name="x">Node to consider for mapping.</param>
+        /// <param name="targetCount">Limit on the number of generated mappings.</param>
         /// <returns></returns>
         /// <remarks>
         /// The base mapping contains known good mappings.
         /// </remarks>
-        private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(Dictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x, int targetCount)
+        private static IEnumerable<Dictionary<INode, INode>> GenerateMappingsInternal(IDictionary<INode, INode> baseMapping, Dictionary<INode, List<INode>> possibleMappings, INode x, int targetCount)
         {
             List<INode> possibles = possibleMappings[x];
 
             // For each possiblity build a possible mapping
             foreach (INode y in possibles)
             {
-                Dictionary<INode, INode> test = new Dictionary<INode, INode>(baseMapping);
+                var test = new Dictionary<INode, INode>(baseMapping);
                 if (!test.ContainsKey(x)) test.Add(x, y);
 
                 if (test.Count == targetCount)
@@ -1110,7 +1111,7 @@ namespace VDS.RDF
             if (obj == null) return false;
             if (obj is MappingPair)
             {
-                MappingPair p = (MappingPair)obj;
+                var p = (MappingPair)obj;
                 return (_x.Equals(p.X) && _y.Equals(p.Y) && _type == p.Type);
             }
             else

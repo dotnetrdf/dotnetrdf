@@ -92,7 +92,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="query">SPARQL Query.</param>
         /// <returns></returns>
-        public Object ProcessQuery(SparqlQuery query)
+        public object ProcessQuery(SparqlQuery query)
         {
             switch (query.QueryType)
             {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    SparqlResultSet results = new SparqlResultSet();
+                    var results = new SparqlResultSet();
                     ProcessQuery(null, new ResultSetHandler(results), query);
                     return results;
                 case SparqlQueryType.Construct:
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query
                             {
                                 rdfHandler.StartRdf();
 
-                                foreach (String prefix in query.NamespaceMap.Prefixes)
+                                foreach (var prefix in query.NamespaceMap.Prefixes)
                                 {
                                     if (!rdfHandler.HandleNamespace(prefix, query.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
                                 }
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query
                                     // List<Triple> constructedTriples = new List<Triple>();
                                     try
                                     {
-                                        ConstructContext constructContext = new ConstructContext(rdfHandler, s, false);
+                                        var constructContext = new ConstructContext(rdfHandler, s, false);
                                         foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
                                         {
                                             try
@@ -300,11 +300,11 @@ namespace VDS.RDF.Query
                 {
                     if (antecedent.Exception != null)
                     {
-                        var innerException = antecedent.Exception.InnerExceptions[0];
-                        var queryException = innerException as RdfQueryException ??
-                                             new RdfQueryException(
-                                                 "Unexpected error while making an asynchronous query, see inner exception for details",
-                                                 innerException);
+                        Exception innerException = antecedent.Exception.InnerExceptions[0];
+                        RdfQueryException queryException = innerException as RdfQueryException ??
+                                                           new RdfQueryException(
+                                                               "Unexpected error while making an asynchronous query, see inner exception for details",
+                                                               innerException);
                         rdfCallback?.Invoke(null, new AsyncError(queryException, state));
                         resultsCallback?.Invoke(null, new AsyncError(queryException, state));
                     }
@@ -337,11 +337,11 @@ namespace VDS.RDF.Query
                 {
                     if (antecedent.Exception != null)
                     {
-                        var innerException = antecedent.Exception.InnerExceptions[0];
-                        var queryException = innerException as RdfQueryException ??
-                                             new RdfQueryException(
-                                                 "Unexpected error while making an asynchronous query, see inner exception for details",
-                                                 innerException);
+                        Exception innerException = antecedent.Exception.InnerExceptions[0];
+                        RdfQueryException queryException = innerException as RdfQueryException ??
+                                                           new RdfQueryException(
+                                                               "Unexpected error while making an asynchronous query, see inner exception for details",
+                                                               innerException);
                         callback?.Invoke(rdfHandler, resultsHandler, new AsyncError(queryException, state));
                     }
                     else

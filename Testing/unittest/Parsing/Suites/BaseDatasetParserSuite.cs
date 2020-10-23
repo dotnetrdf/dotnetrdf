@@ -38,15 +38,15 @@ namespace VDS.RDF.Parsing.Suites
 
         protected override TripleStore TryParseTestInput(string file)
         {
-            TripleStore actual = new TripleStore();
-            this.Parser.Load(actual, file);
+            var actual = new TripleStore();
+            Parser.Load(actual, file);
             return actual;
         }
 
         protected override void TryValidateResults(string testName, string resultFile, TripleStore actual)
         {
-            TripleStore expected = new TripleStore();
-            this.ResultsParser.Load(expected, resultFile);
+            var expected = new TripleStore();
+            ResultsParser.Load(expected, resultFile);
 
             if (AreEqual(expected, actual))
             {

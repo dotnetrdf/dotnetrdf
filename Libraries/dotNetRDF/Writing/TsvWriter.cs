@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing
         /// <param name="output">Writer to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            foreach (var t in g.Triples)
+            foreach (Triple t in g.Triples)
             {
                 GenerateNodeOutput(output, t.Subject, TripleSegment.Subject);
                 output.Write('\t');
@@ -81,7 +81,10 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Event which is raised if the Writer detects a non-fatal error with the RDF being output
         /// </summary>
+        /// <remarks>This class does not raise this event.</remarks>
+#pragma warning disable CS0067
         public override event RdfWriterWarning Warning;
+#pragma warning restore CS0067
 
         /// <summary>
         /// Gets the String representation of the writer which is a description of the syntax it produces.

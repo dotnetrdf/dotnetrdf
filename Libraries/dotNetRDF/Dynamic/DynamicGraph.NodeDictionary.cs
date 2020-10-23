@@ -24,14 +24,14 @@
 // </copyright>
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
     public partial class DynamicGraph : IDictionary<INode, object>
     {
         /// <inheritdoc/>
@@ -118,7 +118,7 @@ namespace VDS.RDF.Dynamic
             // so dynamic references are resolved correctly
             // (they depend on node's graph)
             // TODO: Which graph exactly are we copying into?
-            var targetNode = new DynamicNode(subject.CopyNode(this._g), PredicateBaseUri);
+            var targetNode = new DynamicNode(subject.CopyNode(_g), PredicateBaseUri);
 
             foreach (DictionaryEntry entry in ConvertToDictionary(predicateAndObjects))
             {

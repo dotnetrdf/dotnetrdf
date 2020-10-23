@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
         {
             bool halt;
             BaseMultiset results = null;
-            int origRequired = _requiredResults;
+            var origRequired = _requiredResults;
 
             // May need to detect the actual amount of required results if not specified at instantation
             if (_requiredResults < 0)
@@ -123,8 +123,8 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        int limit = context.Query.Limit;
-                        int offset = context.Query.Offset;
+                        var limit = context.Query.Limit;
+                        var offset = context.Query.Offset;
                         if (limit >= 0 && offset >= 0)
                         {
                             // If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
@@ -188,9 +188,9 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset initialInput, localOutput, results = null;
 
             // Determine whether the Pattern modifies the existing Input rather than joining to it
-            bool modifies = (_triplePatterns[pattern].PatternType == TriplePatternType.Filter);
-            bool extended = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
-            bool modified = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
+            var modifies = (_triplePatterns[pattern].PatternType == TriplePatternType.Filter);
+            var extended = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
+            var modified = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
 
             // Set up the Input and Output Multiset appropriately
             switch (pattern)
@@ -243,13 +243,13 @@ namespace VDS.RDF.Query.Algebra
 
             // Get the Triple Pattern we're evaluating
             ITriplePattern temp = _triplePatterns[pattern];
-            int resultsFound = 0;
-            int prevResults = -1;
+            var resultsFound = 0;
+            var prevResults = -1;
 
             if (temp.PatternType == TriplePatternType.Match)
             {
                 // Find the first Triple which matches the Pattern
-                IMatchTriplePattern tp = (IMatchTriplePattern) temp;
+                var tp = (IMatchTriplePattern) temp;
                 IEnumerable<Triple> ts = tp.GetTriples(context);
 
                 // In the case that we're lazily evaluating an optimisable ORDER BY then
@@ -367,7 +367,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (temp.PatternType == TriplePatternType.Filter)
             {
-                IFilterPattern filter = (IFilterPattern) temp;
+                var filter = (IFilterPattern) temp;
                 ISparqlExpression filterExpr = filter.Filter.Expression;
 
                 if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     // Test each solution found so far against the Filter and eliminate those that evalute to false/error
-                    foreach (int id in context.InputMultiset.SetIDs.ToList())
+                    foreach (var id in context.InputMultiset.SetIDs.ToList())
                     {
                         try
                         {
@@ -463,9 +463,9 @@ namespace VDS.RDF.Query.Algebra
             }
             else if (temp is BindPattern)
             {
-                BindPattern bind = (BindPattern) temp;
+                var bind = (BindPattern) temp;
                 ISparqlExpression bindExpr = bind.AssignExpression;
-                String bindVar = bind.VariableName;
+                var bindVar = bind.VariableName;
 
                 if (context.InputMultiset.ContainsVariable(bindVar))
                 {
@@ -629,7 +629,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get { return (_lhs.Variables.Concat(_rhs.Variables)).Distinct(); }
         }
@@ -637,12 +637,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get
             {
                 // Floating variables are those not fixed
-                HashSet<String> fixedVars = new HashSet<string>(FixedVariables);
+                var fixedVars = new HashSet<string>(FixedVariables);
                 return Variables.Where(v => !fixedVars.Contains(v));
             }
         }
@@ -650,7 +650,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get
             {
@@ -690,7 +690,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = new SparqlQuery();
+            var q = new SparqlQuery();
             q.RootGraphPattern = ToGraphPattern();
             q.Optimise();
             return q;
@@ -702,7 +702,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = new GraphPattern();
+            var p = new GraphPattern();
             p.IsUnion = true;
             p.AddGraphPattern(_lhs.ToGraphPattern());
             p.AddGraphPattern(_rhs.ToGraphPattern());

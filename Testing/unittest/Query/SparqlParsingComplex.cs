@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingNestedGraphPatternFirstItem()
         {
-                SparqlQueryParser parser = new SparqlQueryParser();
+                var parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromFile("resources\\childgraphpattern.rq");
 
                 Console.WriteLine(q.ToString());
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingNestedGraphPatternFirstItem2()
         {
-                SparqlQueryParser parser = new SparqlQueryParser();
+                var parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromFile("resources\\childgraphpattern2.rq");
 
                 Console.WriteLine(q.ToString());
@@ -66,17 +66,17 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingSubQueryWithLimitAndOrderBy()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            String query = "SELECT * WHERE { { SELECT * WHERE {?s ?p ?o} ORDER BY ?p ?o LIMIT 2 } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { { SELECT * WHERE {?s ?p ?o} ORDER BY ?p ?o LIMIT 2 } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
 
                 Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o")), "All Results should have had ?s, ?p and ?o variables");
@@ -151,28 +151,28 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingDescribeHangingWhere()
         {
-            List<String> valid = new List<string>()
+            var valid = new List<string>()
             {
                 "DESCRIBE ?s WHERE { ?s a ?type }",
                 "DESCRIBE <http://example.org/>",
                 "PREFIX ex: <http://example.org/> DESCRIBE ex:"
             };
 
-            List<String> invalid = new List<string>()
+            var invalid = new List<string>()
             {
                 "DESCRIBE ?s WHERE"
             };
 
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlFormatter formatter = new SparqlFormatter();
-            foreach (String v in valid)
+            var parser = new SparqlQueryParser();
+            var formatter = new SparqlFormatter();
+            foreach (var v in valid)
             {
                     SparqlQuery q = parser.ParseFromString(v);
                     Console.WriteLine(formatter.Format(q));
                     Console.WriteLine();
             }
 
-            foreach (String iv in invalid)
+            foreach (var iv in invalid)
             {
                 try
                 {
@@ -190,13 +190,13 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingConstructShortForm()
         {
-            List<String> valid = new List<string>()
+            var valid = new List<string>()
             {
                 "CONSTRUCT WHERE {?s ?p ?o }",
                 "CONSTRUCT WHERE {?s a ?type }",
             };
 
-            List<String> invalid = new List<string>()
+            var invalid = new List<string>()
             {
                 "CONSTRUCT {?s ?p ?o}",
                 "CONSTRUCT WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) }",
@@ -206,9 +206,9 @@ namespace VDS.RDF.Query
                 "CONSTRUCT WHERE { {SELECT * WHERE { ?s ?p ?o } } }"
             };
 
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlFormatter formatter = new SparqlFormatter();
-            foreach (String v in valid)
+            var parser = new SparqlQueryParser();
+            var formatter = new SparqlFormatter();
+            foreach (var v in valid)
             {
                 Console.WriteLine("Valid Input: " + v);
                     SparqlQuery q = parser.ParseFromString(v);
@@ -216,7 +216,7 @@ namespace VDS.RDF.Query
                 Console.WriteLine();
             }
 
-            foreach (String iv in invalid)
+            foreach (var iv in invalid)
             {
                 Console.WriteLine("Invalid Input: " + iv);
                 try
@@ -236,14 +236,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlEvaluationMultipleOptionals()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.LoadFromFile("resources\\multiple-options.trig");
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("resources\\multiple-optionals.rq");
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
-            Object results = processor.ProcessQuery(query);
+            var processor = new LeviathanQueryProcessor(store);
+            var results = processor.ProcessQuery(query);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -257,14 +257,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlEvaluationMultipleOptionals2()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.LoadFromFile("resources\\multiple-options.trig");
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("resources\\multiple-optionals-alternate.rq");
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
-            Object results = processor.ProcessQuery(query);
+            var processor = new LeviathanQueryProcessor(store);
+            var results = processor.ProcessQuery(query);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -278,20 +278,20 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingSubqueries1()
         {
-            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
+            var parser = new SparqlQueryParser();
             Assert.Throws<RdfParseException>(() => parser.ParseFromString(query));
         }
 
         [Fact]
         public void SparqlParsingSubqueries2()
         {
-            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
             Console.WriteLine("Parsed original input OK");
 
-            String query2 = q.ToString();
+            var query2 = q.ToString();
             SparqlQuery q2 = parser.ParseFromString(query2);
             Console.WriteLine("Parsed reserialized input OK");
         }
@@ -299,21 +299,21 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParsingSubqueries3()
         {
-            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
+            var parser = new SparqlQueryParser();
             Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
         }
 
         [Fact]
         public void SparqlParsingSubqueries4()
         {
-            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
             Console.WriteLine("Parsed original input OK");
 
-            SparqlFormatter formatter = new SparqlFormatter();
-            String query2 = formatter.Format(q);
+            var formatter = new SparqlFormatter();
+            var query2 = formatter.Format(q);
             SparqlQuery q2 = parser.ParseFromString(query2);
             Console.WriteLine("Parsed reserialized input OK");
         }
@@ -322,7 +322,7 @@ namespace VDS.RDF.Query
         public void SparqlParsingUpdateWithDeleteWhereIllegal()
         {
             const string update = "WITH <http://graph> DELETE WHERE { ?s ?p ?o }";
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var parser = new SparqlUpdateParser();
             Assert.Throws<RdfParseException>(() => parser.ParseFromString(update));
         }
 
@@ -336,9 +336,9 @@ WHERE
   ?s ?p ?o .
   FILTER(?p = rdf:type) 
 }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
-            String output = q.ToString();
+            var output = q.ToString();
             SparqlQuery q2 = parser.ParseFromString(output);
         }
 

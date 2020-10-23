@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         /// </remarks>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            foreach (int id in bindingIDs)
+            foreach (var id in bindingIDs)
             {
                 try
                 {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(LeviathanFunctionFactory.LeviathanFunctionsNamespace);
             output.Append(LeviathanFunctionFactory.Any);

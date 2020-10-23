@@ -38,18 +38,18 @@ namespace VDS.RDF.Query.Spin
 
         public SpinVariableTable(IGraph g)
         {
-            this._g = g;
+            _g = g;
         }
 
         public INode this[String var]
         {
             get
             {
-                if (!this._vars.ContainsKey(var))
+                if (!_vars.ContainsKey(var))
                 {
-                    this._vars.Add(var, this._g.CreateBlankNode());
+                    _vars.Add(var, _g.CreateBlankNode());
                 }
-                return this._vars[var];
+                return _vars[var];
             }
         }
     }

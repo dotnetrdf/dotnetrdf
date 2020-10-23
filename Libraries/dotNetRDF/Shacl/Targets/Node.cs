@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+
 namespace VDS.RDF.Shacl.Targets
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
     internal class Node : Target
     {
         [DebuggerStepThrough]

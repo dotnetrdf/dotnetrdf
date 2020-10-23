@@ -74,15 +74,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 case NodeType.Literal:
                     if (n is DecimalNode) return n;
                     // See if the value can be cast
-                    ILiteralNode lit = (ILiteralNode)n;
+                    var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
-                        string dt = lit.DataType.ToString();
+                        var dt = lit.DataType.ToString();
                         if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
                         {
                             // Already an integer type so valid as a xsd:decimal
                             decimal d;
-                            if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
+                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
                                 return new DecimalNode(lit.Graph, d);
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         else
                         {
                             decimal d;
-                            if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
+                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
                                 return new DecimalNode(lit.Graph, d);
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                     else
                     {
                         decimal d;
-                        if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
+                        if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                         {
                             // Parsed OK
                             return new DecimalNode(lit.Graph, d);

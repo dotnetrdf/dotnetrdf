@@ -27,7 +27,7 @@
 namespace VDS.RDF
 {
     /// <summary>
-    /// An enumeration of the remote access modes supported by the <see cref="Query.SparqlRemoteClient"/> class.
+    /// An enumeration of the remote access modes supported by the <see cref="Query.SparqlQueryClient"/> class.
     /// </summary>
     public enum HttpMode
     {

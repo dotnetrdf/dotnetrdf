@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal NamespaceService(String name, JObject obj)
+        internal NamespaceService(string name, JObject obj)
             : base(name, obj)
         {
 
@@ -55,15 +55,15 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public NamespaceMapper GetNamespaces()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
-            String jsonText;
+            string jsonText;
             JObject json;
             try 
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
@@ -72,10 +72,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }
 
                 // Parse the Response into a NamespaceMapper
-                NamespaceMapper nsmap = new NamespaceMapper(true);
+                var nsmap = new NamespaceMapper(true);
                 foreach (JProperty nsDef in json.Properties())
                 {
-                    nsmap.AddNamespace(nsDef.Name, UriFactory.Create((String)nsDef.Value));
+                    nsmap.AddNamespace(nsDef.Name, UriFactory.Create((string)nsDef.Value));
                 }
 
                 return nsmap;
@@ -102,21 +102,21 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void GetNamespaces(NamespaceCallback callback, Object state)
+        public void GetNamespaces(NamespaceCallback callback, object state)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
+            var request = (HttpWebRequest)WebRequest.Create(Endpoint.Uri);
             request.Method = Endpoint.HttpMethods.First();
             request.Accept = "text/json";
 
             try
             {
-                String jsonText;
+                string jsonText;
                 JObject json;
                 request.BeginGetResponse(result =>
                     {
                         try
                         {
-                            using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                            using (var response = (HttpWebResponse) request.EndGetResponse(result))
                             {
                                 jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                                 json = JObject.Parse(jsonText);
@@ -125,10 +125,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                             }
 
                             // Parse the Response into a NamespaceMapper
-                            NamespaceMapper nsmap = new NamespaceMapper(true);
+                            var nsmap = new NamespaceMapper(true);
                             foreach (JProperty nsDef in json.Properties())
                             {
-                                nsmap.AddNamespace(nsDef.Name, UriFactory.Create((String) nsDef.Value));
+                                nsmap.AddNamespace(nsDef.Name, UriFactory.Create((string) nsDef.Value));
                             }
 
                             callback(nsmap, state);

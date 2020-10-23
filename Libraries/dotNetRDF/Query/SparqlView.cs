@@ -42,7 +42,6 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        /// <param name="withFullIndex">Specifies whether to fully index any graph result views.</param>
         public SparqlView(string sparqlQuery, IInMemoryQueryableStore store)
             : base(sparqlQuery, store) { }
 
@@ -59,7 +58,6 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        /// <param name="withFullIndex">Specifies whether to fully index any graph result views.</param>
         public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store)
             : base(sparqlQuery, store) { }
 
@@ -77,7 +75,7 @@ namespace VDS.RDF.Query
                     // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
                     // This does mean that while the update is occurring the user may be viewing a stale graph
                     DetachEventHandlers(_triples);
-                    TreeIndexedTripleCollection triples = new TreeIndexedTripleCollection(FullTripleIndexing);
+                    var triples = new TreeIndexedTripleCollection(FullTripleIndexing);
                     foreach (Triple t in g.Triples)
                     {
                         triples.Add(t.CopyTriple(this));

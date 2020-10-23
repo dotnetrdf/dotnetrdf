@@ -75,8 +75,8 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\LearningStyles.rdf");
             SparqlQuery query = new SparqlQueryParser().ParseFromFile("resources\\learning-problem.rq");
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
-            SparqlResultSet results = processor.ProcessQuery(query) as SparqlResultSet;
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
+            var results = processor.ProcessQuery(query) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.False(results.IsEmpty);
             Assert.Equal(176, results.Count);

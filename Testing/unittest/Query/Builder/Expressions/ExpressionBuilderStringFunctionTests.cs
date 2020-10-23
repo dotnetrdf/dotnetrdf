@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithVariableAndStringParameters()
         {
             // given
-            VariableExpression var = new VariableExpression("mail");
+            var var = new VariableExpression("mail");
 
             // when
             var regex = Builder.Regex(var, "@gmail.com$").Expression;
@@ -55,8 +55,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithTwoVariableParameters()
         {
             // given
-            VariableExpression text = new VariableExpression("mail");
-            VariableExpression pattern = new VariableExpression("pattern");
+            var text = new VariableExpression("mail");
+            var pattern = new VariableExpression("pattern");
 
             // when
             var regex = Builder.Regex(text, pattern).Expression;
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndStringParameters()
         {
             // given
-            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral(false));
+            var text = new LiteralExpression("mail".ToSimpleLiteral(false));
 
             // when
             var regex = Builder.Regex(text, "@gmail.com$").Expression;
@@ -88,8 +88,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndVariableParameters()
         {
             // given
-            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral(false));
-            VariableExpression pattern = new VariableExpression("pattern");
+            var text = new LiteralExpression("mail".ToSimpleLiteral(false));
+            var pattern = new VariableExpression("pattern");
 
             // when
             var regex = Builder.Regex(text, pattern).Expression;
@@ -105,8 +105,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithTwoLiteralParameters()
         {
             // given
-            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral(false));
-            LiteralExpression pattern = new LiteralExpression("@gmail.com$".ToSimpleLiteral(false));
+            var text = new LiteralExpression("mail".ToSimpleLiteral(false));
+            var pattern = new LiteralExpression("@gmail.com$".ToSimpleLiteral(false));
 
             // when
             var regex = Builder.Regex(text, pattern).Expression;
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithVariableAndStringParametersAndStringFlags()
         {
             // given
-            VariableExpression var = new VariableExpression("mail");
+            var var = new VariableExpression("mail");
 
             // when
             var regex = Builder.Regex(var, "@gmail.com$", "i").Expression;
@@ -139,8 +139,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithTwoVariableParametersAndStringFlags()
         {
             // given
-            VariableExpression text = new VariableExpression("mail");
-            VariableExpression pattern = new VariableExpression("pattern");
+            var text = new VariableExpression("mail");
+            var pattern = new VariableExpression("pattern");
 
             // when
             var regex = Builder.Regex(text, pattern, "i").Expression;
@@ -157,7 +157,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndStringParametersAndStringFlags()
         {
             // given
-            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral(false));
+            var text = new LiteralExpression("mail".ToSimpleLiteral(false));
 
             // when
             var regex = Builder.Regex(text, "@gmail.com$", "i").Expression;
@@ -174,8 +174,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithLiteralAndVariableParametersAndStringFlags()
         {
             // given
-            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral(false));
-            VariableExpression pattern = new VariableExpression("pattern");
+            var text = new LiteralExpression("mail".ToSimpleLiteral(false));
+            var pattern = new VariableExpression("pattern");
 
             // when
             var regex = Builder.Regex(text, pattern, "i").Expression;
@@ -192,8 +192,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingRegexFunctionWithTwoLiteralParametersAndStringFlags()
         {
             // given
-            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral(false));
-            LiteralExpression pattern = new LiteralExpression("@gmail.com$".ToSimpleLiteral(false));
+            var text = new LiteralExpression("mail".ToSimpleLiteral(false));
+            var pattern = new LiteralExpression("@gmail.com$".ToSimpleLiteral(false));
 
             // when
             var regex = Builder.Regex(text, pattern, "i").Expression;
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingCallToStrlenFunctionWithVariableParameter()
         {
             // given
-            VariableExpression var = new VariableExpression("mail");
+            var var = new VariableExpression("mail");
 
             // when
             NumericExpression<int> strlen = Builder.StrLen(var);
@@ -731,7 +731,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             // given
             var languageTag = new VariableExpression("title");
-            VariableExpression languageRange = new VariableExpression("range");
+            var languageRange = new VariableExpression("range");
 
             // when
             BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);

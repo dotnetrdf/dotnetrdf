@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(ITripleStore store, String filename)
+        public void Load(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -157,7 +157,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(IRdfHandler handler, String filename)
+        public void Load(IRdfHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
 
@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Setup Token Queue and Tokeniser
-                NTriplesTokeniser tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax));
+                var tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax));
                 tokeniser.NQuadsMode = true;
                 ITokenQueue tokens;
                 switch (TokenQueueMode)
@@ -471,7 +471,7 @@ namespace VDS.RDF.Parsing
                     obj = handler.CreateLiteralNode(o.Value);
                     break;
                 case Token.LITERALWITHDT:
-                    String dtUri = ((LiteralWithDataTypeToken) o).DataType;
+                    var dtUri = ((LiteralWithDataTypeToken) o).DataType;
                     obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2))).Uri);
                     break;
                 case Token.LITERALWITHLANG:
@@ -493,7 +493,7 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler.</param>
         /// <param name="uri">URI.</param>
         /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(IRdfHandler handler, String uri)
+        private static INode TryParseUri(IRdfHandler handler, string uri)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace VDS.RDF.Parsing
         /// Helper method used to raise the Warning event if there is an event handler registered.
         /// </summary>
         /// <param name="message">Warning message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             StoreReaderWarning d = Warning;
             if (d != null)

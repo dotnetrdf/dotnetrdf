@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(_lhs.ToString());
             output.Append(" / ");
             output.Append(_rhs.ToString());
@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            bool top = context.Top;
+            var top = context.Top;
 
             // The Object becomes a temporary variable then we transform the LHS of the path
             context.Object = context.GetNextTemporaryVariable();

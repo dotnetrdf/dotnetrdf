@@ -41,12 +41,12 @@ namespace VDS.RDF.Query
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } LIMIT 10";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } LIMIT 10";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -62,12 +62,12 @@ namespace VDS.RDF.Query
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } VALUES ?s { <http://dbpedia.org/resource/Southampton> <http://dbpedia.org/resource/Ilkeston> }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } VALUES ?s { <http://dbpedia.org/resource/Southampton> <http://dbpedia.org/resource/Ilkeston> }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -81,14 +81,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlServiceWithNonExistentService()
         {
-            String query = "SELECT * WHERE { SERVICE <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { SERVICE <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore());
             try
             {
-                Object results = processor.ProcessQuery(q);
+                var results = processor.ProcessQuery(q);
                 Assert.True(false, "Should have errored");
             }
             catch (RdfQueryException queryEx)
@@ -101,14 +101,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlServiceWithSilentNonExistentService()
         {
-            String query = "SELECT * WHERE { SERVICE SILENT <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { SERVICE SILENT <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore());
             try
             {
-                Object results = processor.ProcessQuery(q);
+                var results = processor.ProcessQuery(q);
                 Console.WriteLine("Errors were suppressed as expected");
                 TestTools.ShowResults(results);
             }

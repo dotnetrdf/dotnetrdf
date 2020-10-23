@@ -40,7 +40,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="store">Triple Store.</param>
         /// <param name="filename">File to load from.</param>
-        void Load(ITripleStore store, String filename);
+        void Load(ITripleStore store, string filename);
 
         /// <summary>
         /// Loads a RDF dataset into a Triple Store.
@@ -54,7 +54,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="filename">File to load from.</param>
-        void Load(IRdfHandler handler, String filename);
+        void Load(IRdfHandler handler, string filename);
 
         /// <summary>
         /// Loads a RDF dataset using a RDF Handler.

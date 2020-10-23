@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class CountDistinctAggregate
         : BaseAggregate
     {
-        private String _varname;
+        private string _varname;
 
         /// <summary>
         /// Creates a new COUNT(DISTINCT ?x) Aggregate.
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
             int c;
-            HashSet<IValuedNode> values = new HashSet<IValuedNode>();
+            var values = new HashSet<IValuedNode>();
 
             if (_varname != null)
             {
@@ -80,9 +80,9 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
 
                 // Just Count the number of results where the variable is bound
-                VariableTerm varExpr = (VariableTerm)_expr;
+                var varExpr = (VariableTerm)_expr;
 
-                foreach (int id in bindingIDs)
+                foreach (var id in bindingIDs)
                 {
                     IValuedNode temp = varExpr.Evaluate(context, id);
                     if (temp != null)
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             else
             {
                 // Count the distinct non-null results
-                foreach (int id in bindingIDs)
+                foreach (var id in bindingIDs)
                 {
                     try
                     {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("COUNT(DISTINCT " + _expr.ToString() + ")");
             return output.ToString();
         }

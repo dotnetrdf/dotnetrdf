@@ -53,20 +53,20 @@ namespace VDS.RDF.Query
         public void SparqlBgpEvaluation()
         {
             //Prepare the Store
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\Turtle.ttl");
             store.Add(g);
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(@"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             var processor = new LeviathanQueryProcessor(store);
-            Object testResult = processor.ProcessQuery(q);
+            var testResult = processor.ProcessQuery(q);
 
             if (testResult is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)testResult;
+                var rset = (SparqlResultSet)testResult;
                 Console.WriteLine(rset.Count + " Results");
                 foreach (SparqlResult r in rset) 
                 {
@@ -76,23 +76,23 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
 
             //Create some Triple Patterns
-            TriplePattern t1 = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
-            TriplePattern t2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(g.CreateUriNode("rdfs:label")), new VariablePattern("?label"));
-            TriplePattern t3 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
-            TriplePattern t4 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(g.CreateUriNode(":name")), new VariablePattern("?name"));
+            var t1 = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
+            var t2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(g.CreateUriNode("rdfs:label")), new VariablePattern("?label"));
+            var t3 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
+            var t4 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(g.CreateUriNode(":name")), new VariablePattern("?name"));
 
             //Build some BGPs
-            Bgp selectNothing = new Bgp();
-            Bgp selectAll = new Bgp(t1);
-            Bgp selectLabelled = new Bgp(new List<ITriplePattern>() { t1, t2 });
-            Bgp selectAllDisjoint = new Bgp(new List<ITriplePattern>() { t1, t3 });
-            Bgp selectLabels = new Bgp(t2);
-            Bgp selectNames = new Bgp(t4);
+            var selectNothing = new Bgp();
+            var selectAll = new Bgp(t1);
+            var selectLabelled = new Bgp(new List<ITriplePattern>() { t1, t2 });
+            var selectAllDisjoint = new Bgp(new List<ITriplePattern>() { t1, t3 });
+            var selectLabels = new Bgp(t2);
+            var selectNames = new Bgp(t4);
             //LeftJoin selectOptionalNamed = new LeftJoin(selectAll, new Optional(selectNames));
-            LeftJoin selectOptionalNamed = new LeftJoin(selectAll, selectNames);
-            Union selectAllUnion = new Union(selectAll, selectAll);
-            Union selectAllUnion2 = new Union(selectAllUnion, selectAll);
-            Filter selectAllUriObjects = new Filter(selectAll, new UnaryExpressionFilter(new IsUriFunction(new VariableTerm("o"))));
+            var selectOptionalNamed = new LeftJoin(selectAll, selectNames);
+            var selectAllUnion = new Union(selectAll, selectAll);
+            var selectAllUnion2 = new Union(selectAllUnion, selectAll);
+            var selectAllUriObjects = new Filter(selectAll, new UnaryExpressionFilter(new IsUriFunction(new VariableTerm("o"))));
 
             //Test out the BGPs
             //Console.WriteLine("{}");
@@ -113,20 +113,20 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //this.ShowMultiset(selectOptionalNamed.Evaluate(new SparqlEvaluationContext(null, store)));
 
             Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o}}");
-            this.ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
+            ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
 
             Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o} UNION {?s ?p ?o}}");
-            this.ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
+            ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
 
             Console.WriteLine("{?s ?p ?o FILTER (ISURI(?o))}");
-            this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
+            ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
         }
 
         [Fact]
         public void SparqlMultisetLeftJoin()
         {
             //Create a load of Nodes to use in the tests
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace(String.Empty, new Uri("http://example.org"));
             IUriNode s1 = g.CreateUriNode(":s1");
             IUriNode s2 = g.CreateUriNode(":s2");
@@ -137,12 +137,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             ILiteralNode o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
             //Create an ID and Null Multiset
-            IdentityMultiset id = new IdentityMultiset();
-            NullMultiset nullset = new NullMultiset();
+            var id = new IdentityMultiset();
+            var nullset = new NullMultiset();
 
             //Create and Populate a Multiset
-            Multiset m = new Multiset();
-            Set s = new Set();
+            var m = new Multiset();
+            var s = new Set();
             s.Add("s", s1);
             s.Add("p", p1);
             s.Add("o", o1);
@@ -154,14 +154,14 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             m.Add(s);
 
             //Create and Populate another Multiset
-            Multiset n = new Multiset();
+            var n = new Multiset();
             s = new Set();
             s.Add("s", s1);
             s.Add("label", o1);
             n.Add(s);
 
             //Create and Populate another Multiset
-            Multiset d = new Multiset();
+            var d = new Multiset();
             s = new Set();
             s.Add("s1", s1);
             s.Add("p1", p1);
@@ -299,13 +299,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         public void SparqlPropertyPathParser()
         {
             //Load our test data
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
 
-            List<String> testQueries = new List<string>();
-            String rdfsPrefix = "PREFIX rdfs: <" + NamespaceMapper.RDFS + ">\n";
+            var testQueries = new List<string>();
+            var rdfsPrefix = "PREFIX rdfs: <" + NamespaceMapper.RDFS + ">\n";
 
             //Cardinality Paths
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf* <http://example.org/vehicles/Vehicle>}");
@@ -335,9 +335,9 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass (rdfs:subClassOf | a) | rdfs:someProperty <http://example.org/vehicles/Vehicle>}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf | a | rdfs:someProperty <http://example.org/vehicles/Vehicle>}");
 
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
 
-            foreach (String query in testQueries)
+            foreach (var query in testQueries)
             {
                 //Parse the Query and output to console
                 SparqlQuery q = parser.ParseFromString(query);
@@ -347,7 +347,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 try
                 {
                     var processor = new LeviathanQueryProcessor(store);
-                    Object results = processor.ProcessQuery(q);
+                    var results = processor.ProcessQuery(q);
 
                     Console.WriteLine("Evaluated OK");
                     TestTools.ShowResults(results);
@@ -366,8 +366,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         public void SparqlStreamingBgpAskEvaluation()
         {
             //Get the Data we want to query
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
@@ -383,15 +383,15 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
             IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
 
-            TriplePattern allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
-            TriplePattern allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
-            TriplePattern tp1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
-            TriplePattern tp2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(speed), new VariablePattern("?speed"));
-            TriplePattern tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
-            TriplePattern novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
-            TriplePattern novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
-            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("?s"))));
-            List<List<ITriplePattern>> tests = new List<List<ITriplePattern>>()
+            var allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
+            var allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
+            var tp1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
+            var tp2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(speed), new VariablePattern("?speed"));
+            var tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
+            var novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
+            var novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
+            var blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("?s"))));
+            var tests = new List<List<ITriplePattern>>()
             {
                 new List<ITriplePattern>() { },
                 new List<ITriplePattern>() { allTriples },
@@ -419,7 +419,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 ISparqlAlgebra askOptimised = new Ask(new AskBgp(tps));
 
                 //Evaluate with timings
-                Stopwatch timer = new Stopwatch();
+                var timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
                 BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
@@ -443,18 +443,18 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         [Fact]
         public void SparqlEvaluationGraphNonExistentUri()
         {
-            String query = "SELECT * WHERE { GRAPH <http://example.org/noSuchGraph> { ?s ?p ?o } }";
-            TripleStore store = new TripleStore();
+            var query = "SELECT * WHERE { GRAPH <http://example.org/noSuchGraph> { ?s ?p ?o } }";
+            var store = new TripleStore();
             var processor = new LeviathanQueryProcessor(store);
             var parser = new SparqlQueryParser();
             var q = parser.ParseFromString(query);
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
 
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
 
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 Assert.True(rset.IsEmpty, "Result Set should be empty");
                 Assert.Equal(3, rset.Variables.Count());
             }
@@ -467,8 +467,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         [Fact]
         public void SparqlDatasetListGraphs()
         {
-            InMemoryDataset dataset = new InMemoryDataset(new TripleStore());
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var dataset = new InMemoryDataset(new TripleStore());
+            var processor = new LeviathanUpdateProcessor(dataset);
 
             Assert.True(dataset.GraphUris.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
         }
@@ -477,8 +477,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         public void SparqlStreamingBgpSelectEvaluation()
         {
             //Get the Data we want to query
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
             //g = new Graph();
@@ -494,15 +494,15 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
             IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
 
-            TriplePattern allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
-            TriplePattern allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
-            TriplePattern tp1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
-            TriplePattern tp2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(speed), new VariablePattern("?speed"));
-            TriplePattern tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
-            TriplePattern novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
-            TriplePattern novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
-            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("?s"))));
-            List<List<ITriplePattern>> tests = new List<List<ITriplePattern>>()
+            var allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
+            var allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
+            var tp1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
+            var tp2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(speed), new VariablePattern("?speed"));
+            var tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
+            var novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
+            var novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
+            var blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("?s"))));
+            var tests = new List<List<ITriplePattern>>()
             {
                 new List<ITriplePattern>() { },
                 new List<ITriplePattern>() { allTriples },
@@ -530,7 +530,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 ISparqlAlgebra selectOptimised = new LazyBgp(tps, 10);
 
                 //Evaluate with timings
-                Stopwatch timer = new Stopwatch();
+                var timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
                 BaseMultiset results1 = select.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));

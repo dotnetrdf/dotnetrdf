@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of Variables used in the Algebra.
         /// </summary>
-        IEnumerable<String> Variables
+        IEnumerable<string> Variables
         {
             get;
         }
@@ -55,12 +55,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        IEnumerable<String> FloatingVariables { get; }
+        IEnumerable<string> FloatingVariables { get; }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        IEnumerable<String> FixedVariables { get; }
+        IEnumerable<string> FixedVariables { get; }
         
         /// <summary>
         /// Converts the Algebra back to a SPARQL Query.

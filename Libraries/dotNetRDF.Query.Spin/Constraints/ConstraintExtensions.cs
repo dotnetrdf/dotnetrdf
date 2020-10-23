@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Spin.Constraints
         /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
         public static List<ConstraintViolation> CheckConstraints(this SpinWrappedDataset dataset, IEnumerable<INode> resources, List<SPINStatistics> stats, IProgressMonitor monitor)
         {
-            List<ConstraintViolation> results = new List<ConstraintViolation>();
+            var results = new List<ConstraintViolation>();
             //SPINConstraints.addConstraintViolations(this, results, dataset, resource, SPIN.constraint, false, stats, monitor);
             return results;
         }
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Constraints
         /// <returns>a List of ConstraintViolations (empty if all is OK)</returns>
         public static List<ConstraintViolation> CheckConstraints(this SpinWrappedDataset dataset, List<SPINStatistics> stats, IProgressMonitor monitor)
         {
-            List<ConstraintViolation> results = new List<ConstraintViolation>();
+            var results = new List<ConstraintViolation>();
             //SPINConstraints.run(this, dataset, results, stats, monitor);
             return results;
         }

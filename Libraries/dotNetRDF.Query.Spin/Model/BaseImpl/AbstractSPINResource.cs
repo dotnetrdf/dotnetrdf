@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public List<IElement> getElements(INode predicate)
         {
-            List<IElement> results = new List<IElement>();
+            var results = new List<IElement>();
             foreach (IResource node in getList(predicate))
             {
                 if (node != null && !node.isLiteral())
@@ -90,11 +90,11 @@ namespace VDS.RDF.Query.Spin.Model
 
         private String getPrefix(Uri ns, ISparqlPrinter context)
         {
-            String prefix = getSource().Graph.NamespaceMap.GetPrefix(ns);
+            var prefix = getSource().Graph.NamespaceMap.GetPrefix(ns);
             if (prefix == null && context.getUseExtraPrefixes())
             {
                 INamespaceMapper extras = ExtraPrefixes.getExtraPrefixes();
-                foreach (String extraPrefix in extras.Prefixes)
+                foreach (var extraPrefix in extras.Prefixes)
                 {
                     Uri extraNs = extras.GetNamespaceUri(extraPrefix);
                     if (RDFUtil.sameTerm(ns, extraNs))
@@ -114,11 +114,11 @@ namespace VDS.RDF.Query.Spin.Model
 
         protected void printComment(ISparqlPrinter context)
         {
-            String str = getComment();
+            var str = getComment();
             if (str != null)
             {
-                String[] rows = str.Split('\n');
-                for (int i = 0; i < rows.Length; i++)
+                var rows = str.Split('\n');
+                for (var i = 0; i < rows.Length; i++)
                 {
                     context.print("# ");
                     context.print(rows[i]);
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Spin.Model
             IResource elementsRaw = getObject(predicate);
             if (elementsRaw != null)
             {
-                IElementList elements = (IElementList)elementsRaw.As(typeof(ElementListImpl));
+                var elements = (IElementList)elementsRaw.As(typeof(ElementListImpl));
                 p.setIndentation(p.getIndentation() + 1);
                 elements.Print(p);
                 p.setIndentation(p.getIndentation() - 1);

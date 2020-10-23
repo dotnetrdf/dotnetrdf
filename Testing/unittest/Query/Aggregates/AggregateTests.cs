@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Aggregates
         [Fact]
         public void SparqlAggregatesMaxBug1()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.LoadFromFile(@"resources\LearningStyles.rdf");
 
             
@@ -108,7 +108,7 @@ WHERE
         [Fact]
         public void SparqlAggregatesMaxBug2()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.LoadFromFile("resources\\LearningStyles.rdf");
 
             IGraph graph = ExecuteGraphQuery(store, @"prefix sage:
@@ -153,8 +153,8 @@ WHERE
         [Fact]
         public void SparqlAggregatesMaxBug3()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromFile("resources\\LearningStyles.rdf");
             Assert.False(g.IsEmpty);
             g.BaseUri = null;
@@ -196,7 +196,7 @@ WHERE
             graph.BaseUri = new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues");
             store.Add(graph, true);
 
-            SparqlResultSet actualResults = ExecuteQuery(store, @"
+            var actualResults = ExecuteQuery(store, @"
                     PREFIX sage: <http://www.semanticsage.home.lc/LearningStyles.owl#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                     PREFIX : <http://www.semanticsage.home.lc/LearningStyles.rdf#>

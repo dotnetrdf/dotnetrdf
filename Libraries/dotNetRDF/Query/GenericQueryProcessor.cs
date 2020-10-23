@@ -33,7 +33,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IQueryableStorage.Query(String)">Query()</see> method of an <see cref="IQueryableStorage">IQueryableStorage</see>.
+    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IQueryableStorage.Query(string)">Query()</see> method of an <see cref="IQueryableStorage">IQueryableStorage</see>.
     /// </summary>
     public class GenericQueryProcessor 
         : QueryProcessorBase, ISparqlQueryProcessor
@@ -58,14 +58,14 @@ namespace VDS.RDF.Query
         public object ProcessQuery(SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            var start = DateTime.Now;
+            DateTime start = DateTime.Now;
             try
             {
                 return _manager.Query(_formatter.Format(query));
             }
             finally
             {
-                var elapsed = (DateTime.Now - start);
+                TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
             }
         }
@@ -79,14 +79,14 @@ namespace VDS.RDF.Query
         public override void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            var start = DateTime.Now;
+            DateTime start = DateTime.Now;
             try
             {
                 _manager.Query(rdfHandler, resultsHandler, _formatter.Format(query));
             }
             finally
             {
-                var elapsed = (DateTime.Now - start);
+                TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
             }
         }

@@ -151,12 +151,12 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(_funcUri.AbsoluteUri.Replace(">", "\\>"));
             output.Append('>');
             output.Append('(');
-            for (int i = 0; i < _args.Count; i++)
+            for (var i = 0; i < _args.Count; i++)
             {
                 output.Append(_args[i].ToString());
 

@@ -51,13 +51,13 @@ SELECT * WHERE
   ?s rdfs:label ?label .
 }";
 
-                Graph weightings = new Graph();
+                var weightings = new Graph();
                 weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-                SparqlQuery q = this._parser.ParseFromString(query);
+                SparqlQuery q = _parser.ParseFromString(query);
 
-                Console.WriteLine(this._formatter.Format(q));
+                Console.WriteLine(_formatter.Format(q));
 
                 Assert.False(q.RootGraphPattern.TriplePatterns[0].IsAcceptAll, "First Triple Pattern should not be the ?s ?p ?o Pattern");
                 Assert.True(q.RootGraphPattern.TriplePatterns[1].IsAcceptAll, "Second Triple Pattern should be the ?s ?p ?o pattern");
@@ -80,13 +80,13 @@ SELECT * WHERE
   ?s rdfs:comment ?comment .
 }";
 
-                Graph weightings = new Graph();
+                var weightings = new Graph();
                 weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-                SparqlQuery q = this._parser.ParseFromString(query);
+                SparqlQuery q = _parser.ParseFromString(query);
 
-                Console.WriteLine(this._formatter.Format(q));
+                Console.WriteLine(_formatter.Format(q));
 
                 Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("comment"), "First Triple Pattern should contain ?comment");
                 Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("label"), "Second Triple Pattern should contain ?label");
@@ -109,13 +109,13 @@ SELECT * WHERE
   ?s rdfs:label ?label .
 }";
 
-                Graph weightings = new Graph();
+                var weightings = new Graph();
                 weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-                SparqlQuery q = this._parser.ParseFromString(query);
+                SparqlQuery q = _parser.ParseFromString(query);
 
-                Console.WriteLine(this._formatter.Format(q));
+                Console.WriteLine(_formatter.Format(q));
 
                 Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("label"), "First Triple Pattern should contain ?label");
                 Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("type"), "Second Triple Pattern should contain ?type");
@@ -138,13 +138,13 @@ SELECT * WHERE
   ?s rdfs:label 'example' .
 }";
 
-                Graph weightings = new Graph();
+                var weightings = new Graph();
                 weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-                SparqlQuery q = this._parser.ParseFromString(query);
+                SparqlQuery q = _parser.ParseFromString(query);
 
-                Console.WriteLine(this._formatter.Format(q));
+                Console.WriteLine(_formatter.Format(q));
 
                 Assert.True(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Literal, "First Triple Pattern should have object 'example'");
                 Assert.True(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
@@ -168,13 +168,13 @@ SELECT * WHERE
   rdfs:comment rdfs:comment 'Subjects are weighted higher than predicates' .
 }";
 
-                Graph weightings = new Graph();
+                var weightings = new Graph();
                 weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-                SparqlQuery q = this._parser.ParseFromString(query);
+                SparqlQuery q = _parser.ParseFromString(query);
 
-                Console.WriteLine(this._formatter.Format(q));
+                Console.WriteLine(_formatter.Format(q));
 
                 Assert.False(q.RootGraphPattern.TriplePatterns[0].Variables.Contains("s"), "First Triple Pattern should not contain ?s");
                 Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Contains("s"), "Second Triple Pattern should contain ?s");
@@ -190,7 +190,7 @@ SELECT * WHERE
         {
             try
             {
-                String query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                var query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
 {
   ?s <http://weightings/PredicatesLast> ?o .
@@ -198,13 +198,13 @@ SELECT * WHERE
   ?s ?p 'Objects In Middle' .
 }";
 
-                Graph weightings = new Graph();
+                var weightings = new Graph();
                 weightings.LoadFromEmbeddedResource("VDS.RDF.Query.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
-                SparqlQuery q = this._parser.ParseFromString(query);
+                SparqlQuery q = _parser.ParseFromString(query);
 
-                Console.WriteLine(this._formatter.Format(q));
+                Console.WriteLine(_formatter.Format(q));
 
                 Assert.True(q.RootGraphPattern.TriplePatterns[0].Variables.Intersect(new String[] { "p", "o" }).Count() == 2, "First Triple Pattern should contain ?p and ?o");
                 Assert.True(q.RootGraphPattern.TriplePatterns[1].Variables.Intersect(new String[] { "s", "p" }).Count() == 2, "Second Triple Pattern should contain ?s and ?p");

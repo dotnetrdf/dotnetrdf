@@ -19,7 +19,7 @@ namespace VDS.RDF.Parsing
         }
         private void CheckVariables(SparqlResultSet results, params String[] vars)
         {
-            foreach (String var in vars)
+            foreach (var var in vars)
             {
                 Assert.True(results.Variables.Contains(var), "Missing variable ?" + var);
             }
@@ -32,8 +32,8 @@ namespace VDS.RDF.Parsing
 http://x,http://y
 ";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             TestTools.ShowResults(results);
 
@@ -51,8 +51,8 @@ http://x,http://y
 http://x,http://y
 ";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             TestTools.ShowResults(results);
 
@@ -71,8 +71,8 @@ http://x,http://y
 http://x a bad uri,http://y
 ";
 
-            SparqlResultSet results = new SparqlResultSet();
-            this._parser.Load(results, new StringReader(data));
+            var results = new SparqlResultSet();
+            _parser.Load(results, new StringReader(data));
 
             Assert.Equal(SparqlResultsType.VariableBindings, results.ResultsType);
             Assert.Equal(2, results.Variables.Count());

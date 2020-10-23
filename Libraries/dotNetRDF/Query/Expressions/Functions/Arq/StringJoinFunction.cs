@@ -41,7 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         : ISparqlExpression
     {
         private ISparqlExpression _sep;
-        private String _separator;
+        private string _separator;
         private bool _fixedSeparator = false;
         private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
@@ -80,8 +80,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            StringBuilder output = new StringBuilder();
-            for (int i = 0; i < _exprs.Count; i++)
+            var output = new StringBuilder();
+            for (var i = 0; i < _exprs.Count; i++)
             {
                 IValuedNode temp = _exprs[i].Evaluate(context, bindingID);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument evaluates to a Null");
@@ -137,14 +137,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(ArqFunctionFactory.ArqFunctionsNamespace);
             output.Append(ArqFunctionFactory.StrJoin);
             output.Append(">(");
             output.Append(_sep.ToString());
             output.Append(",");
-            for (int i = 0; i < _exprs.Count; i++)
+            for (var i = 0; i < _exprs.Count; i++)
             {
                 output.Append(_exprs[i].ToString());
                 if (i < _exprs.Count - 1) output.Append(',');
@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public String Functor
+        public string Functor
         {
             get
             {

@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public ITriplePatternBuilder Object(SparqlVariable variable)
         {
-            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variable.Name);
             return Object(objectPattern);
         }
 
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public ITriplePatternBuilder Object(string variableName)
         {
-            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
             return Object(objectPattern);
         }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Builder
         /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/> to accept a QName.</remarks>
         public ITriplePatternBuilder Object<TNode>(string @object) where TNode : INode
         {
-            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object, _prefixes);
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object, _prefixes);
             return Object(objectPattern);
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public ITriplePatternBuilder Object(INode objectNode)
         {
-            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectNode);
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectNode);
             return Object(objectPattern);
         }
 

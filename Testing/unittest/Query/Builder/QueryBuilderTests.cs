@@ -86,8 +86,8 @@ namespace VDS.RDF.Query.Builder
         public void CanAddTriplePatternsAsObjects()
         {
             // given
-            TriplePattern p1 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
-            TriplePattern p2 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
+            var p1 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
+            var p2 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
 
             // when
             var q = QueryBuilder.SelectAll().Where(p1, p2).BuildQuery();
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Builder
         public void AddingTriplePatternsCallDelegateOnlyOnce()
         {
             // given
-            int callCount = 0;
+            var callCount = 0;
 
             // when
             QueryBuilder.SelectAll()
@@ -388,7 +388,7 @@ namespace VDS.RDF.Query.Builder
         public void ShouldAllowAddingLimitMultipleTimes()
         {
             // given
-            int limit = 5;
+            var limit = 5;
 
             // when
             SparqlQuery q = QueryBuilder.SelectAll()
@@ -405,7 +405,7 @@ namespace VDS.RDF.Query.Builder
         public void ShouldAllowAddingOffsetMultipleTimes()
         {
             // given
-            int offset = 5;
+            var offset = 5;
 
             // when
             SparqlQuery q = QueryBuilder.SelectAll()
@@ -576,7 +576,7 @@ namespace VDS.RDF.Query.Builder
             // then
             ISparqlOrderBy currentOrdering = sparqlQuery.OrderBy;
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 Assert.NotNull(currentOrdering);
                 currentOrdering = currentOrdering.Child;
@@ -696,10 +696,10 @@ namespace VDS.RDF.Query.Builder
         [Fact]
         public void CanBuildSubQueries()
         {
-            Uri hasSomeValue = new Uri("http://example.org/hasSomeValue");
+            var hasSomeValue = new Uri("http://example.org/hasSomeValue");
 
-            SparqlVariable s = new SparqlVariable("s");
-            SparqlVariable x = new SparqlVariable("x");
+            var s = new SparqlVariable("s");
+            var x = new SparqlVariable("x");
 
             // Valid: SELECT query with one SELECT sub-query.
             IQueryBuilder subSelectBuilder = QueryBuilder
@@ -767,8 +767,8 @@ namespace VDS.RDF.Query.Builder
         public void CanBuildUnionWithGraphPatternBuilders()
         {
             // Define two pattern builders which will be used to generate triple patterns for a UNION expression.
-            GraphPatternBuilder patternBuilder0 = new GraphPatternBuilder();
-            GraphPatternBuilder patternBuilder1 = new GraphPatternBuilder();
+            var patternBuilder0 = new GraphPatternBuilder();
+            var patternBuilder1 = new GraphPatternBuilder();
 
             IQueryBuilder queryBuilder0 = QueryBuilder
                 .Ask()

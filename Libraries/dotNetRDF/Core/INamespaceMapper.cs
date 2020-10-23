@@ -58,7 +58,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Namespace URI to lookup the Prefix for.</param>
         /// <returns>String prefix for the Namespace.</returns>
-        String GetPrefix(Uri uri);
+        string GetPrefix(Uri uri);
 
         /// <summary>
         /// Method which checks whether a given Namespace Prefix is defined.

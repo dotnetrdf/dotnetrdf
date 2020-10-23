@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanApplyNegationToBooleanExpression()
         {
             // given
-            BooleanExpression mail = new BooleanExpression(new VariableTerm("mail"));
+            var mail = new BooleanExpression(new VariableTerm("mail"));
 
             // when
             var negatedBound = (!mail).Expression;
@@ -347,7 +347,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateDatatypeFunctionWithVariableParameter()
         {
             // given
-            VariableExpression literal = new VariableExpression("s");
+            var literal = new VariableExpression("s");
 
             // when
             IriExpression lang = Builder.Datatype(literal);
@@ -375,7 +375,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateOldDatatypeFunctionWithVariableParameter()
         {
             // given
-            VariableExpression literal = new VariableExpression("s");
+            var literal = new VariableExpression("s");
 
             // when
             IriExpression lang = Builder.Datatype(literal);
@@ -414,7 +414,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void CanCreateBNodeFunctionWithSimpleLiteralExpressionParameter()
         {
             // given
-            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
+            var expression = new LiteralExpression(new VariableTerm("S"));
 
             // when
             BlankNodeExpression bnode = Builder.BNode(expression);
@@ -442,7 +442,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndIriExpressionParameters()
         {
             // given
-            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
+            var expression = new LiteralExpression(new VariableTerm("S"));
             var iriExpression = new IriExpression(new Uri("http://example.com"));
 
             // when
@@ -474,7 +474,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndUriParameters()
         {
             // given
-            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
+            var expression = new LiteralExpression(new VariableTerm("S"));
             var iriExpression = new IriExpression(new Uri("http://example.com"));
 
             // when
@@ -538,7 +538,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndVariableExpressionParameters()
         {
             // given
-            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
+            var expression = new LiteralExpression(new VariableTerm("S"));
             var iriExpression = new VariableExpression("var");
 
             // when

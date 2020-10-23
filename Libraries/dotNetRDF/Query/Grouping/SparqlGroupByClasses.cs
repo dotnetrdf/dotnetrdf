@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         protected ISparqlGroupBy _child = null;
 
-        private String _assignVariable;
+        private string _assignVariable;
 
         /// <summary>
         /// Gets/Sets the Child GROUP BY Clause.
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets the Variables involved in this Group By.
         /// </summary>
-        public abstract IEnumerable<String> Variables
+        public abstract IEnumerable<string> Variables
         {
             get;
         }
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
-        public abstract IEnumerable<String> ProjectableVariables
+        public abstract IEnumerable<string> ProjectableVariables
         {
             get;
         }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets/Sets the Variable that the grouped upon value should be assigned to.
         /// </summary>
-        public String AssignVariable
+        public string AssignVariable
         {
             get
             {
@@ -122,13 +122,13 @@ namespace VDS.RDF.Query.Grouping
     public class GroupByVariable
         : BaseGroupBy
     {
-        private String _name;
+        private string _name;
 
         /// <summary>
         /// Creates a new Group By which groups by a given Variable.
         /// </summary>
         /// <param name="name">Variable Name.</param>
-        public GroupByVariable(String name)
+        public GroupByVariable(string name)
         {
             _name = name;
         }
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         /// <param name="name">Variable Name.</param>
         /// <param name="assignVariable">Assign Variable.</param>
-        public GroupByVariable(String name, String assignVariable)
+        public GroupByVariable(string name, string assignVariable)
             : this(name)
         {
             AssignVariable = assignVariable;
@@ -151,10 +151,10 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context)
         {
-            Dictionary<INode, BindingGroup> groups = new Dictionary<INode, BindingGroup>();
-            BindingGroup nulls = new BindingGroup();
+            var groups = new Dictionary<INode, BindingGroup>();
+            var nulls = new BindingGroup();
 
-            foreach (int id in context.Binder.BindingIDs)
+            foreach (var id in context.Binder.BindingIDs)
             {
                 INode value = context.Binder.Value(_name, id);
 
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Grouping
                 }
             }
 
-            List<BindingGroup> outGroups = (from g in groups.Values select g).ToList();
+            var outGroups = (from g in groups.Values select g).ToList();
             if (nulls.Any())
             {
                 outGroups.Add(nulls);
@@ -201,14 +201,14 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
-            List<BindingGroup> outgroups = new List<BindingGroup>();
+            var outgroups = new List<BindingGroup>();
 
             foreach (BindingGroup group in groups)
             {
-                Dictionary<INode, BindingGroup> subgroups = new Dictionary<INode, BindingGroup>();
-                BindingGroup nulls = new BindingGroup(group);
+                var subgroups = new Dictionary<INode, BindingGroup>();
+                var nulls = new BindingGroup(group);
 
-                foreach (int id in group.BindingIDs)
+                foreach (var id in group.BindingIDs)
                 {
                     INode value = context.Binder.Value(_name, id);
 
@@ -273,11 +273,11 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
-        public override IEnumerable<String> ProjectableVariables
+        public override IEnumerable<string> ProjectableVariables
         {
             get
             {
-                List<String> vars = new List<string>();
+                var vars = new List<string>();
                 if (AssignVariable != null) vars.Add(AssignVariable);
                 vars.Add(_name);
 
@@ -303,7 +303,7 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (AssignVariable != null && !AssignVariable.Equals(_name))
             {
                 output.Append('(');
@@ -351,11 +351,11 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context)
         {
-            Dictionary<INode, BindingGroup> groups = new Dictionary<INode, BindingGroup>();
-            BindingGroup error = new BindingGroup();
-            BindingGroup nulls = new BindingGroup();
+            var groups = new Dictionary<INode, BindingGroup>();
+            var error = new BindingGroup();
+            var nulls = new BindingGroup();
 
-            foreach (int id in context.Binder.BindingIDs)
+            foreach (var id in context.Binder.BindingIDs)
             {
                 try
                 {
@@ -387,7 +387,7 @@ namespace VDS.RDF.Query.Grouping
 
             // Build the List of Groups
             // Null and Error Group are included if required
-            List<BindingGroup> parentGroups = (from g in groups.Values select g).ToList();
+            var parentGroups = (from g in groups.Values select g).ToList();
             if (error.BindingIDs.Any())
             {
                 parentGroups.Add(error);
@@ -417,15 +417,15 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
-            List<BindingGroup> outgroups = new List<BindingGroup>();
+            var outgroups = new List<BindingGroup>();
 
             foreach (BindingGroup group in groups)
             {
-                Dictionary<INode, BindingGroup> subgroups = new Dictionary<INode, BindingGroup>();
-                BindingGroup error = new BindingGroup();
-                BindingGroup nulls = new BindingGroup();
+                var subgroups = new Dictionary<INode, BindingGroup>();
+                var error = new BindingGroup();
+                var nulls = new BindingGroup();
 
-                foreach (int id in group.BindingIDs)
+                foreach (var id in group.BindingIDs)
                 {
                     try
                     {
@@ -506,11 +506,11 @@ namespace VDS.RDF.Query.Grouping
         /// <summary>
         /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables.
         /// </summary>
-        public override IEnumerable<String> ProjectableVariables
+        public override IEnumerable<string> ProjectableVariables
         {
             get
             {
-                List<String> vars = new List<string>();
+                var vars = new List<string>();
                 if (AssignVariable != null) vars.Add(AssignVariable);
                 if (_expr is VariableTerm)
                 {
@@ -539,7 +539,7 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('(');
             output.Append(_expr.ToString());
             if (AssignVariable != null)

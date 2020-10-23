@@ -37,15 +37,15 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlSetHashCodes1()
         {
-            INode a = this._factory.CreateLiteralNode("a");
-            INode b = this._factory.CreateLiteralNode("b");
+            INode a = _factory.CreateLiteralNode("a");
+            INode b = _factory.CreateLiteralNode("b");
 
-            Set x = new Set();
+            var x = new Set();
             x.Add("a", a);
             x.Add("b", b);
             Console.WriteLine(x.ToString());
 
-            Set y = new Set();
+            var y = new Set();
             y.Add("b", b);
             y.Add("a", a);
             Console.WriteLine(y.ToString());
@@ -57,14 +57,14 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlSetHashCodes2()
         {
-            INode a = this._factory.CreateLiteralNode("a");
-            INode b = this._factory.CreateLiteralNode("b");
+            INode a = _factory.CreateLiteralNode("a");
+            INode b = _factory.CreateLiteralNode("b");
 
-            Set x = new Set();
+            var x = new Set();
             x.Add("a", a);
             Console.WriteLine(x.ToString());
 
-            Set y = new Set();
+            var y = new Set();
             y.Add("b", b);
             Console.WriteLine(y.ToString());
 
@@ -81,31 +81,31 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlSetDistinct1()
         {
-            INode a = this._factory.CreateBlankNode();
-            INode b1 = (1).ToLiteral(this._factory);
-            INode b2 = (2).ToLiteral(this._factory);
+            INode a = _factory.CreateBlankNode();
+            INode b1 = (1).ToLiteral(_factory);
+            INode b2 = (2).ToLiteral(_factory);
 
-            Set x = new Set();
+            var x = new Set();
             x.Add("a", a);
             x.Add("_:b", b1);
 
-            Set y = new Set();
+            var y = new Set();
             y.Add("a", a);
             y.Add("_:b", b2);
 
             Assert.NotEqual(x, y);
 
-            Multiset data = new Multiset();
+            var data = new Multiset();
             data.Add(x);
             data.Add(y);
             Assert.Equal(2, data.Count);
 
-            Table table = new Table(data);
-            Distinct distinct = new Distinct(table);
+            var table = new Table(data);
+            var distinct = new Distinct(table);
 
             //Distinct should yield a single result since temporary variables
             //are stripped
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
+            var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
             BaseMultiset results = distinct.Evaluate(context);
             Assert.Equal(1, results.Count);
             Assert.False(results.ContainsVariable("_:b"));
@@ -114,31 +114,31 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlSetDistinct2()
         {
-            INode a = this._factory.CreateBlankNode();
-            INode b1 = (1).ToLiteral(this._factory);
-            INode b2 = (2).ToLiteral(this._factory);
+            INode a = _factory.CreateBlankNode();
+            INode b1 = (1).ToLiteral(_factory);
+            INode b2 = (2).ToLiteral(_factory);
 
-            Set x = new Set();
+            var x = new Set();
             x.Add("a", a);
             x.Add("_:b", b1);
 
-            Set y = new Set();
+            var y = new Set();
             y.Add("a", a);
             y.Add("_:b", b2);
 
             Assert.NotEqual(x, y);
 
-            Multiset data = new Multiset();
+            var data = new Multiset();
             data.Add(x);
             data.Add(y);
             Assert.Equal(2, data.Count);
 
-            Table table = new Table(data);
-            Distinct distinct = new Distinct(table, true);
+            var table = new Table(data);
+            var distinct = new Distinct(table, true);
 
             //Distinct should yield two result and temporary variables should still
             //be present
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
+            var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
             BaseMultiset results = distinct.Evaluate(context);
             Assert.Equal(2, results.Count);
             Assert.True(results.ContainsVariable("_:b"));
@@ -148,14 +148,14 @@ namespace VDS.RDF.Query
         public void SparqlSetDistinctnessComparer1()
         {
             ISet x = new Set();
-            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
             ISet y = new Set();
-            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
 
 
-            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
-            int xHash = comparer.GetHashCode(x);
-            int yHash = comparer.GetHashCode(y);
+            var comparer = new SetDistinctnessComparer(new String[] { "a" });
+            var xHash = comparer.GetHashCode(x);
+            var yHash = comparer.GetHashCode(y);
 
             Assert.Equal(xHash, yHash);
             Assert.True(comparer.Equals(x, y));
@@ -165,15 +165,15 @@ namespace VDS.RDF.Query
         public void SparqlSetDistinctnessComparer2()
         {
             ISet x = new Set();
-            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
-            x.Add("b", this._factory.CreateLiteralNode("x"));
+            x.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("b", _factory.CreateLiteralNode("x"));
             ISet y = new Set();
-            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
-            y.Add("b", this._factory.CreateLiteralNode("y"));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("b", _factory.CreateLiteralNode("y"));
             
-            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
-            int xHash = comparer.GetHashCode(x);
-            int yHash = comparer.GetHashCode(y);
+            var comparer = new SetDistinctnessComparer(new String[] { "a" });
+            var xHash = comparer.GetHashCode(x);
+            var yHash = comparer.GetHashCode(y);
 
             Assert.Equal(xHash, yHash);
             Assert.True(comparer.Equals(x, y));
@@ -183,15 +183,15 @@ namespace VDS.RDF.Query
         public void SparqlSetDistinctnessComparer3()
         {
             ISet x = new Set();
-            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
-            x.Add("b", this._factory.CreateLiteralNode("x"));
+            x.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("b", _factory.CreateLiteralNode("x"));
             ISet y = new Set();
-            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
-            y.Add("b", this._factory.CreateLiteralNode("y"));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("b", _factory.CreateLiteralNode("y"));
 
-            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a", "b" });
-            int xHash = comparer.GetHashCode(x);
-            int yHash = comparer.GetHashCode(y);
+            var comparer = new SetDistinctnessComparer(new String[] { "a", "b" });
+            var xHash = comparer.GetHashCode(x);
+            var yHash = comparer.GetHashCode(y);
 
             Assert.NotEqual(xHash, yHash);
             Assert.False(comparer.Equals(x, y));
@@ -202,11 +202,11 @@ namespace VDS.RDF.Query
         {
             ISet x = new Set();
             ISet y = new Set();
-            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
 
-            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
-            int xHash = comparer.GetHashCode(x);
-            int yHash = comparer.GetHashCode(y);
+            var comparer = new SetDistinctnessComparer(new String[] { "a" });
+            var xHash = comparer.GetHashCode(x);
+            var yHash = comparer.GetHashCode(y);
 
             Assert.NotEqual(xHash, yHash);
             Assert.False(comparer.Equals(x, y));

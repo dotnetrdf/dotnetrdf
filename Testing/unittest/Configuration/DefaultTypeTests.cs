@@ -36,68 +36,68 @@ namespace VDS.RDF.Configuration
     {
         private void TestDefaultType(String typeUri, String expectedType)
         {
-            String actualType = ConfigurationLoader.GetDefaultType(typeUri);
+            var actualType = ConfigurationLoader.GetDefaultType(typeUri);
             Assert.Equal(expectedType, actualType);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeGraph()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassGraph, ConfigurationLoader.DefaultTypeGraph);
+            TestDefaultType(ConfigurationLoader.ClassGraph, ConfigurationLoader.DefaultTypeGraph);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeGraphCollection()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassGraphCollection, ConfigurationLoader.DefaultTypeGraphCollection);
+            TestDefaultType(ConfigurationLoader.ClassGraphCollection, ConfigurationLoader.DefaultTypeGraphCollection);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeSparqlHttpProtocolProcessor()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassSparqlHttpProtocolProcessor, ConfigurationLoader.DefaultTypeSparqlHttpProtocolProcessor);
+            TestDefaultType(ConfigurationLoader.ClassSparqlHttpProtocolProcessor, ConfigurationLoader.DefaultTypeSparqlHttpProtocolProcessor);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeSparqlQueryProcessor()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassSparqlQueryProcessor, ConfigurationLoader.DefaultTypeSparqlQueryProcessor);
+            TestDefaultType(ConfigurationLoader.ClassSparqlQueryProcessor, ConfigurationLoader.DefaultTypeSparqlQueryProcessor);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeSparqlUpdateProcessor()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassSparqlUpdateProcessor, ConfigurationLoader.DefaultTypeSparqlUpdateProcessor);
+            TestDefaultType(ConfigurationLoader.ClassSparqlUpdateProcessor, ConfigurationLoader.DefaultTypeSparqlUpdateProcessor);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeTripleCollection()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassTripleCollection, ConfigurationLoader.DefaultTypeTripleCollection);
+            TestDefaultType(ConfigurationLoader.ClassTripleCollection, ConfigurationLoader.DefaultTypeTripleCollection);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeTripleStore()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassTripleStore, ConfigurationLoader.DefaultTypeTripleStore);
+            TestDefaultType(ConfigurationLoader.ClassTripleStore, ConfigurationLoader.DefaultTypeTripleStore);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeUser()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassUser, typeof(System.Net.NetworkCredential).AssemblyQualifiedName);
+            TestDefaultType(ConfigurationLoader.ClassUser, typeof(System.Net.NetworkCredential).AssemblyQualifiedName);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeUserGroup()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassUserGroup, ConfigurationLoader.DefaultTypeUserGroup);
+            TestDefaultType(ConfigurationLoader.ClassUserGroup, ConfigurationLoader.DefaultTypeUserGroup);
         }
 
         [Fact]
         public void ConfigurationDefaultTypeProxy()
         {
-            this.TestDefaultType(ConfigurationLoader.ClassProxy, typeof(System.Net.WebProxy).AssemblyQualifiedName);
+            TestDefaultType(ConfigurationLoader.ClassProxy, typeof(System.Net.WebProxy).AssemblyQualifiedName);
         }
     }
 }

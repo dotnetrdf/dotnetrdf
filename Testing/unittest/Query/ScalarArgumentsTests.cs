@@ -42,46 +42,46 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlScalarArgsGroupBySeparator()
         {
-            String query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; SEPARATOR = \" - \") AS ?concat) WHERE {?s ?p ?o}";
+            var query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; SEPARATOR = \" - \") AS ?concat) WHERE {?s ?p ?o}";
             Console.WriteLine(query);
             Console.WriteLine();
-            this.CheckQueryFailsToParseIn11(query);
-            this.CheckQueryFailsToParseInExtended(query);
+            CheckQueryFailsToParseIn11(query);
+            CheckQueryFailsToParseInExtended(query);
         }
 
         [Fact]
         public void SparqlScalarArgsCountSeparator()
         {
-            String query = "SELECT (COUNT(?s ; SEPARATOR = \" - \") AS ?count) WHERE {?s ?p ?o}";
+            var query = "SELECT (COUNT(?s ; SEPARATOR = \" - \") AS ?count) WHERE {?s ?p ?o}";
             Console.WriteLine(query);
             Console.WriteLine();
-            this.CheckQueryFailsToParseIn11(query);
-            this.CheckQueryFailsToParseInExtended(query);
+            CheckQueryFailsToParseIn11(query);
+            CheckQueryFailsToParseInExtended(query);
         }
 
         [Fact]
         public void SparqlScalarArgsGroupByCustom()
         {
-            String query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; <ex:custom> = \" - \") AS ?concat) WHERE {?s ?p ?o}";
+            var query = "SELECT (GROUP_CONCAT(?s, ?p, ?o ; <ex:custom> = \" - \") AS ?concat) WHERE {?s ?p ?o}";
             Console.WriteLine(query);
             Console.WriteLine();
-            this.CheckQueryFailsToParseIn11(query);
-            this.CheckQueryFailsToParseInExtended(query);
+            CheckQueryFailsToParseIn11(query);
+            CheckQueryFailsToParseInExtended(query);
         }
 
         [Fact]
         public void SparqlScalarArgsCountCustom()
         {
-            String query = "SELECT (COUNT(?s ; <ex:custom> = \" - \") AS ?count) WHERE {?s ?p ?o}";
+            var query = "SELECT (COUNT(?s ; <ex:custom> = \" - \") AS ?count) WHERE {?s ?p ?o}";
             Console.WriteLine(query);
             Console.WriteLine();
-            this.CheckQueryFailsToParseIn11(query);
-            this.CheckQueryParsesInExtended(query);
+            CheckQueryFailsToParseIn11(query);
+            CheckQueryParsesInExtended(query);
         }
 
         private void CheckQueryParsesIn11(String query)
         {
-                SparqlQuery q = this._parser11.ParseFromString(query);
+                SparqlQuery q = _parser11.ParseFromString(query);
                 Console.WriteLine("Query Parses under SPARQL 1.1 as expected");
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                SparqlQuery q = this._parser11.ParseFromString(query);
+                SparqlQuery q = _parser11.ParseFromString(query);
                 Assert.True(false, "Query Parsed under SPARQL 1.1 when it should have failed to parse");
             }
             catch (Exception)
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query
 
         private void CheckQueryParsesInExtended(String query)
         {
-                SparqlQuery q = this._parserExt.ParseFromString(query);
+                SparqlQuery q = _parserExt.ParseFromString(query);
                 Console.WriteLine("Query Parses under SPARQL 1.1 with Extensions as expected");
         }
 
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
         {
             try
             {
-                SparqlQuery q = this._parserExt.ParseFromString(query);
+                SparqlQuery q = _parserExt.ParseFromString(query);
                 Assert.True(false, "Query Parsed under SPARQL 1.1 with Extensions when it should have failed to parse");
             }
             catch (Exception)

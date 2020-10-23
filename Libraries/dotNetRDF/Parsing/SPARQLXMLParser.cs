@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Parse the XML
-                XmlReader reader = XmlReader.Create(input, GetSettings());
+                var reader = XmlReader.Create(input, GetSettings());
                 Parse(new SparqlXmlParserContext(reader, handler));
             }
             catch
@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(ISparqlResultsHandler handler, String filename)
+        public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             Load(handler, new StreamReader(File.OpenRead(filename)));
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         private XmlReaderSettings GetSettings()
         {
-            XmlReaderSettings settings = new XmlReaderSettings();
+            var settings = new XmlReaderSettings();
 #if NETCORE
             settings.DtdProcessing = DtdProcessing.Ignore;
 #elif NET40
@@ -170,10 +170,10 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Go through it's attributes and check the Namespace is specified
-                bool nsfound = false;
+                var nsfound = false;
                 if (context.Input.HasAttributes)
                 {
-                    for (int i = 0; i < context.Input.AttributeCount; i++)
+                    for (var i = 0; i < context.Input.AttributeCount; i++)
                     {
                         context.Input.MoveToNextAttribute();
                         if (context.Input.Name.Equals("xmlns"))
@@ -268,9 +268,9 @@ namespace VDS.RDF.Parsing
                             }
 
                             // Get the values of each Binding
-                            String var;
+                            string var;
                             INode value;
-                            SparqlResult result = new SparqlResult();
+                            var result = new SparqlResult();
                             while (context.Input.Read())
                             {
                                 // Stop reading when we hit the </binding>
@@ -305,7 +305,7 @@ namespace VDS.RDF.Parsing
                             }
 
                             // Check that all Variables are bound for a given result binding nulls where appropriate
-                            foreach (String v in context.Variables)
+                            foreach (var v in context.Variables)
                             {
                                 if (!result.HasValue(v))
                                 {
@@ -340,7 +340,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         // Get the value of the <boolean> element as a Boolean
-                        Boolean b = Boolean.Parse(context.Input.ReadInnerXml());
+                        var b = bool.Parse(context.Input.ReadInnerXml());
                         context.Handler.HandleBooleanResult(b);
                     }
                     catch (Exception)
@@ -387,7 +387,7 @@ namespace VDS.RDF.Parsing
                 }
                 else if (context.Input.AttributeCount >= 1)
                 {
-                    String lang = null;
+                    string lang = null;
                     Uri dt = null;
                     while (context.Input.MoveToNextAttribute())
                     {
@@ -431,7 +431,7 @@ namespace VDS.RDF.Parsing
             }
             else if (context.Input.Name.Equals("bnode"))
             {
-                String bnodeID = context.Input.ReadElementContentAsString();
+                var bnodeID = context.Input.ReadElementContentAsString();
                 if (bnodeID.StartsWith("_:"))
                 {
                     return context.Handler.CreateBlankNode(bnodeID.Substring(2));
@@ -465,7 +465,7 @@ namespace VDS.RDF.Parsing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

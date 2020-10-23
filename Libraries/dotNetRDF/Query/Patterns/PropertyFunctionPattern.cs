@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FixedVariables
         {
-            get { return Enumerable.Empty<String>(); }
+            get { return Enumerable.Empty<string>(); }
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_lhsArgs.Count > 1)
             {
                 output.Append("( ");

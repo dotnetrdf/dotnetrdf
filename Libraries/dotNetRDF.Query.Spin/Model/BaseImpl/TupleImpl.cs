@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Spin.Model
             else
             {
                 //TODO INamespaceMapper pm = p.getUsePrefixes() ? model.getGraph().getPrefixMapping() : SPINExpressions.emptyPrefixMapping;
-                String str = node.getSource().ToString();// TODO is this correct ? // FmtUtils.stringForNode(node, null/*TODO pm*/);
+                var str = node.getSource().ToString();// TODO is this correct ? // FmtUtils.stringForNode(node, null/*TODO pm*/);
                 p.print(str);
             }
         }

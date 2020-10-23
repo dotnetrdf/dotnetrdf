@@ -47,21 +47,21 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingSparqlXmlWithNulls()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(new Graph());
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
 
-            Object results = ExecuteQuery(store, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+            var results = ExecuteQuery(store, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
-                SparqlXmlWriter writer = new SparqlXmlWriter();
+                var rset = (SparqlResultSet)results;
+                var writer = new SparqlXmlWriter();
                 writer.Save(rset, "temp.srx");
 
-                SparqlXmlParser parser = new SparqlXmlParser();
-                SparqlResultSet rset2 = new SparqlResultSet();
+                var parser = new SparqlXmlParser();
+                var rset2 = new SparqlResultSet();
                 parser.Load(rset2, "temp.srx");
 
                 rset.Trim();
@@ -85,9 +85,9 @@ namespace VDS.RDF.Writing
         [Fact]
         public void WritingSparqlXmlWithSpecialCharacters()
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(new Graph());
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
             INode subj = g.CreateBlankNode();
             INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
@@ -97,15 +97,15 @@ namespace VDS.RDF.Writing
             g.Assert(subj, pred, obj2);
             store.Add(g);
 
-            Object results = ExecuteQuery(store, "SELECT * WHERE { ?s ?p ?o }");
+            var results = ExecuteQuery(store, "SELECT * WHERE { ?s ?p ?o }");
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
-                SparqlXmlWriter writer = new SparqlXmlWriter();
+                var rset = (SparqlResultSet)results;
+                var writer = new SparqlXmlWriter();
                 writer.Save(rset, "temp.srx");
 
-                SparqlXmlParser parser = new SparqlXmlParser();
-                SparqlResultSet rset2 = new SparqlResultSet();
+                var parser = new SparqlXmlParser();
+                var rset2 = new SparqlResultSet();
                 parser.Load(rset2, "temp.srx");
 
                 rset.Trim();
@@ -140,9 +140,9 @@ namespace VDS.RDF.Writing
     <result><binding name=""x""><uri>relative</uri></binding></result>
   </results>
 </sparql>";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -159,9 +159,9 @@ namespace VDS.RDF.Writing
     <result><binding name=""x""><literal datatype=""relative"">value</literal></binding></result>
   </results>
 </sparql>";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -178,9 +178,9 @@ namespace VDS.RDF.Writing
     <result><binding name=""x""><uri>http://an invalid uri</uri></binding></result>
   </results>
 </sparql>";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
 
         [Fact]
@@ -197,9 +197,9 @@ namespace VDS.RDF.Writing
     <result><binding name=""x""><literal datatype=""http://an invalid uri"">Literal with invalid datatype URI</literal></binding></result>
   </results>
 </sparql>";
-            SparqlResultSet results = new SparqlResultSet();
+            var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => this._parser.Load(results, new StringReader(data)));
+            Assert.Throws<RdfParseException>(() => _parser.Load(results, new StringReader(data)));
         }
     }
 }

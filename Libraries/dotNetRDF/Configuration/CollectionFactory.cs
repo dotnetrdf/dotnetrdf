@@ -53,7 +53,7 @@ namespace VDS.RDF.Configuration
         {
             obj = null;
             INode wrapsNode;
-            Object wrappedCollection;
+            object wrappedCollection;
             if (_tripleCollectionType.IsAssignableFrom(targetType))
             {
                 wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
@@ -76,7 +76,7 @@ namespace VDS.RDF.Configuration
                     if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection for this collection to wrap");
                     try
                     {
-                        obj = (BaseTripleCollection)Activator.CreateInstance(targetType, new Object[] { wrappedCollection });
+                        obj = (BaseTripleCollection)Activator.CreateInstance(targetType, new object[] { wrappedCollection });
                     }
                     catch
                     {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Configuration
                     if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection for this collection to wrap");
                     try
                     {
-                        obj = (BaseGraphCollection)Activator.CreateInstance(targetType, new Object[] { wrappedCollection });
+                        obj = (BaseGraphCollection)Activator.CreateInstance(targetType, new object[] { wrappedCollection });
                     }
                     catch
                     {

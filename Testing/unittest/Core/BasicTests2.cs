@@ -50,17 +50,17 @@ namespace VDS.RDF
         public void GraphWithBNodeEquality()
         {
             Console.WriteLine("Testing Graph Equality when the Graphs have Blank Nodes");
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
-            TurtleParser ttlparser = new TurtleParser();
+            var ttlparser = new TurtleParser();
             ttlparser.Load(g, "resources\\MergePart1.ttl");
             ttlparser.Load(h, "resources\\MergePart1.ttl");
 
             Assert.Equal(g.BaseUri, h.BaseUri);
             //TestTools.CompareGraphs(g, h, true);
             Dictionary<INode, INode> mapping;
-            bool equals = g.Equals(h, out mapping);
+            var equals = g.Equals(h, out mapping);
             Assert.True(@equals, "Graphs should have been equal");
             if (mapping != null)
             {
@@ -77,7 +77,7 @@ namespace VDS.RDF
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");
 
-            Graph g = new Graph();
+            var g = new Graph();
             IBlankNode a = g.CreateBlankNode();
             IBlankNode b = g.CreateBlankNode();
 
@@ -119,8 +119,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphPersistenceWrapperNodeCreation()
         {
-            Graph g = new Graph();
-            GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(g);
+            var g = new Graph();
+            var wrapper = new GraphPersistenceWrapper(g);
 
             INode s = wrapper.CreateBlankNode();
             INode p = wrapper.CreateUriNode("rdf:type");
@@ -140,9 +140,9 @@ namespace VDS.RDF
                 Console.WriteLine("Going to get two copies of a Graph from DBPedia and compare");
                 Console.WriteLine("Using the DBPedia Graph for Barack Obama");
 
-                Graph g = new Graph();
-                Graph h = new Graph();
-                Uri target = new Uri("http://dbpedia.org/resource/Barack_Obama");
+                var g = new Graph();
+                var h = new Graph();
+                var target = new Uri("http://dbpedia.org/resource/Barack_Obama");
 
                 VDS.RDF.Parsing.UriLoader.Load(g, target);
                 Console.WriteLine("Loaded first copy OK - " + g.Triples.Count + " Triples");
@@ -156,7 +156,7 @@ namespace VDS.RDF
                 Console.WriteLine("Checking the Equality of the Graphs");
                 //TestTools.CompareGraphs(g, h, true);
                 Dictionary<INode, INode> mapping;
-                bool equals = g.Equals(h, out mapping);
+                var equals = g.Equals(h, out mapping);
                 Assert.True(equals, "Graphs should have been equal");
                 if (mapping != null)
                 {
@@ -170,8 +170,8 @@ namespace VDS.RDF
 
                 //Get a third graph of something different
                 Console.WriteLine("Going to get a third Graph of something different and check it is non-equal");
-                Uri target2 = new Uri("http://dbpedia.org/resource/Nottingham");
-                Graph i = new Graph();
+                var target2 = new Uri("http://dbpedia.org/resource/Nottingham");
+                var i = new Graph();
                 VDS.RDF.Parsing.UriLoader.Load(i, target2);
 
                 //Should have different Base URIs and be non-equal
@@ -199,9 +199,9 @@ namespace VDS.RDF
         [Fact]
         public void GraphSubGraphMatching()
         {
-            Graph parent = new Graph();
+            var parent = new Graph();
             FileLoader.Load(parent, "resources\\InferenceTest.ttl");
-            Graph subgraph = new Graph();
+            var subgraph = new Graph();
             subgraph.NamespaceMap.Import(parent.NamespaceMap);
             subgraph.Assert(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")));
 
@@ -248,9 +248,9 @@ namespace VDS.RDF
         [Fact]
         public void GraphSubGraphMatchingWithBNodes()
         {
-            Graph parent = new Graph();
+            var parent = new Graph();
             FileLoader.Load(parent, "resources\\Turtle.ttl");
-            Graph subgraph = new Graph();
+            var subgraph = new Graph();
             subgraph.Assert(parent.Triples.Where(t => !t.IsGroundTriple));
 
             //Check method calls
@@ -285,13 +285,13 @@ namespace VDS.RDF
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = UriLoader.Timeout;
+            var defaultTimeout = UriLoader.Timeout;
             try
             {
                 UriLoader.CacheEnabled = false;
                 UriLoader.Timeout = 45000;
 
-                List<Uri> testUris = new List<Uri>() {
+                var testUris = new List<Uri>() {
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
                     new Uri("http://dbpedia.org/resource/Southampton"),
                     new Uri("file:///resources\\MergePart1.ttl"),
@@ -305,7 +305,7 @@ namespace VDS.RDF
                     Console.WriteLine("# Testing URI '" + u.AbsoluteUri + "'");
 
                     //Load the Test RDF
-                    Graph g = new Graph();
+                    var g = new Graph();
                     Assert.NotNull(g);
                     VDS.RDF.Parsing.UriLoader.Load(g, u);
 
@@ -335,10 +335,10 @@ namespace VDS.RDF
         [Fact]
         public void GraphToDataTable()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            DataTable table = g.ToDataTable();
+            var table = g.ToDataTable();
 
             Assert.Equal(g.Triples.Count, table.Rows.Count);
             Assert.Equal(3, table.Columns.Count);
@@ -356,9 +356,9 @@ namespace VDS.RDF
         [Fact]
         public void GraphToDataTable2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            DataTable table = g.ToDataTable();
+            var table = g.ToDataTable();
 
             Assert.Equal(g.Triples.Count, table.Rows.Count);
             Assert.Equal(3, table.Columns.Count);

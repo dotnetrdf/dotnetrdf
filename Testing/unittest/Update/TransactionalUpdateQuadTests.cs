@@ -43,9 +43,9 @@ namespace VDS.RDF.Update
 
         protected override ISparqlDataset GetNonEmptyDataset()
         {
-            InMemoryQuadDataset dataset = new InMemoryQuadDataset();
+            var dataset = new InMemoryQuadDataset();
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = TestGraphUri;
             dataset.AddGraph(g);
 

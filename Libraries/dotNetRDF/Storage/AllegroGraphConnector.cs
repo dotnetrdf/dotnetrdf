@@ -52,8 +52,8 @@ namespace VDS.RDF.Storage
         : BaseSesameHttpProtocolConnector, IAsyncUpdateableStorage
         , IUpdateableStorage
     {
-        private String _agraphBase;
-        private readonly String _catalog;
+        private string _agraphBase;
+        private readonly string _catalog;
          
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store.
@@ -61,15 +61,15 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base URI for the Store.</param>
         /// <param name="catalogID">Catalog ID.</param>
         /// <param name="storeID">Store ID.</param>
-        public AllegroGraphConnector(String baseUri, String catalogID, String storeID)
-            : this(baseUri, catalogID, storeID, (String)null, (String)null) { }
+        public AllegroGraphConnector(string baseUri, string catalogID, string storeID)
+            : this(baseUri, catalogID, storeID, (string)null, (string)null) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
         /// </summary>
         /// <param name="baseUri">Base Uri for the Store.</param>
         /// <param name="storeID">Store ID.</param>
-        public AllegroGraphConnector(String baseUri, String storeID)
+        public AllegroGraphConnector(string baseUri, string storeID)
             : this(baseUri, null, storeID) { }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
-        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password)
+        public AllegroGraphConnector(string baseUri, string catalogID, string storeID, string username, string password)
             : base(baseUri, storeID, username, password)
         {
             _baseUri = baseUri;
@@ -88,7 +88,7 @@ namespace VDS.RDF.Storage
 #if NETCORE
             this._agraphBase = this._baseUri.Copy();
 #else
-            _agraphBase = String.Copy(_baseUri);
+            _agraphBase = string.Copy(_baseUri);
 #endif
             if (catalogID != null)
             {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Storage
             }
             _store = storeID;
             _catalog = catalogID;
-            _updatePath = String.Empty;
+            _updatePath = string.Empty;
 
             _server = new AllegroGraphServer(_baseUri, _catalog);
         }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
-        public AllegroGraphConnector(String baseUri, String storeID, String username, String password)
+        public AllegroGraphConnector(string baseUri, string storeID, string username, string password)
             : this(baseUri, null, storeID, username, password) { }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace VDS.RDF.Storage
         /// <param name="catalogID">Catalog ID.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, IWebProxy proxy)
+        public AllegroGraphConnector(string baseUri, string catalogID, string storeID, IWebProxy proxy)
             : this(baseUri, catalogID, storeID, null, null, proxy) { }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri for the Store.</param>
         /// <param name="storeID">Store ID.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphConnector(String baseUri, String storeID, IWebProxy proxy)
+        public AllegroGraphConnector(string baseUri, string storeID, IWebProxy proxy)
             : this(baseUri, null, storeID, proxy) { }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password, IWebProxy proxy)
+        public AllegroGraphConnector(string baseUri, string catalogID, string storeID, string username, string password, IWebProxy proxy)
             : this(baseUri, catalogID, storeID, username, password)
         {
             Proxy = proxy;
@@ -153,7 +153,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username for connecting to the Store.</param>
         /// <param name="password">Password for connecting to the Store.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public AllegroGraphConnector(String baseUri, String storeID, String username, String password, IWebProxy proxy)
+        public AllegroGraphConnector(string baseUri, string storeID, string username, string password, IWebProxy proxy)
             : this(baseUri, null, storeID, username, password, proxy) { }
 
         /// <summary>
@@ -173,21 +173,21 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
 
                 // Create the Request
-                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
+                var postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
+                using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
                 {
                     writer.Write(postData);
                     writer.Close();
                 }
 
                 // Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // If we get here it completed OK
                     response.Close();
@@ -205,18 +205,18 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public virtual void Update(string sparqlUpdate, AsyncStorageCallback callback, Object state)
+        public virtual void Update(string sparqlUpdate, AsyncStorageCallback callback, object state)
         {
             try
             {
                 HttpWebRequest request;
 
                 // Create the Request
-                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
 
                 // Build the Post Data and add to the Request Body
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
+                var postData = new StringBuilder();
                 postData.Append("query=");
                 postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
 
@@ -225,7 +225,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write(postData);
                             writer.Close();
@@ -236,7 +236,7 @@ namespace VDS.RDF.Storage
                         {
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+                                var response = (HttpWebResponse)request.EndGetResponse(r2);
                                 // If we get here it completed OK
                                 response.Close();
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
@@ -295,12 +295,12 @@ namespace VDS.RDF.Storage
             // This is a compatability issue with Allegro having a weird custom JSON serialisation
             if (accept.Contains("application/json"))
             {
-                accept = accept.Replace("application/json,", String.Empty);
+                accept = accept.Replace("application/json,", string.Empty);
                 if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
             }
             if (accept.Contains("text/json"))
             {
-                accept = accept.Replace("text/json", String.Empty);
+                accept = accept.Replace("text/json", string.Empty);
                 if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
             }
             if (accept.Contains(",;")) accept = accept.Replace(",;", ",");

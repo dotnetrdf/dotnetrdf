@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public ISelectBuilder And(params SparqlVariable[] variables)
         {
-            foreach (var sparqlVariable in variables)
+            foreach (SparqlVariable sparqlVariable in variables)
             {
                 SparqlVariable variablelocalCopy = sparqlVariable;
                 _buildSelectVariables.Add(prefixes => EnsureIsResultVariable(variablelocalCopy));
@@ -126,9 +126,9 @@ namespace VDS.RDF.Query.Builder
 
         private void BuildReturnVariables(SparqlQuery query)
         {
-            var variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
+            IEnumerable<SparqlVariable> variables = _buildSelectVariables.Select(buildSelectVariable => buildSelectVariable(Prefixes));
 
-            foreach (var selectVariable in variables)
+            foreach (SparqlVariable selectVariable in variables)
             {
                 query.AddVariable(selectVariable);
             }

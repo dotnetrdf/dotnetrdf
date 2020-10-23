@@ -35,7 +35,7 @@ namespace VDS.RDF.Parsing
     {
         private static ITripleStore TestParsing(String data, TriGSyntax syntax, bool shouldParse)
         {
-            TriGParser parser = new TriGParser(syntax);
+            var parser = new TriGParser(syntax);
             ITripleStore store = new TripleStore();
 
             try
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTriGBaseDeclaration1()
         {
-            String fragment = "@base <http://example.org/base/> .";
+            var fragment = "@base <http://example.org/base/> .";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTriGBaseDeclaration2()
         {
-            String fragment = "{ @base <http://example.org/base/> . }";
+            var fragment = "{ @base <http://example.org/base/> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTriGBaseDeclaration3()
         {
-            String fragment = "<http://graph> { @base <http://example.org/base/> . }";
+            var fragment = "<http://graph> { @base <http://example.org/base/> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTriGPrefixDeclaration1()
         {
-            String fragment = "@prefix ex: <http://example.org/> .";
+            var fragment = "@prefix ex: <http://example.org/> .";
             TestParsing(fragment, TriGSyntax.Original, true);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTriGPrefixDeclaration2()
         {
-            String fragment = "{ @prefix ex: <http://example.org/> . }";
+            var fragment = "{ @prefix ex: <http://example.org/> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTriGPrefixDeclaration3()
         {
-            String fragment = "<http://graph> { @prefix ex: <http://example.org/> . }";
+            var fragment = "<http://graph> { @prefix ex: <http://example.org/> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigBaseScope1()
         {
-            String fragment = "@base <http://example.org/base/> . { <subj> <pred> <obj> . }";
+            var fragment = "@base <http://example.org/base/> . { <subj> <pred> <obj> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -111,7 +111,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigBaseScope2()
         {
-            String fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . }";
+            var fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -119,7 +119,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigBaseScope3()
         {
-            String fragment = "{ @base <http://example.org/base/> . } <http://graph> { <subj> <pred> <obj> . }";
+            var fragment = "{ @base <http://example.org/base/> . } <http://graph> { <subj> <pred> <obj> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigBaseScope4()
         {
-            String fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . } <http://graph> { <subj> <pred> <obj> . }";
+            var fragment = "{ @base <http://example.org/base/> . <subj> <pred> <obj> . } <http://graph> { <subj> <pred> <obj> . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigPrefixScope1()
         {
-            String fragment = "@prefix ex: <http://example.org/> . { ex:subj ex:pred ex:obj . }";
+            var fragment = "@prefix ex: <http://example.org/> . { ex:subj ex:pred ex:obj . }";
             TestParsing(fragment, TriGSyntax.Original, true);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -143,7 +143,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigPrefixScope2()
         {
-            String fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . }";
+            var fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, true);
         }
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigPrefixScope3()
         {
-            String fragment = "{ @prefix ex: <http://example.org/> . } <http://graph> { ex:subj ex:pred ex:obj . }";
+            var fragment = "{ @prefix ex: <http://example.org/> . } <http://graph> { ex:subj ex:pred ex:obj . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
@@ -159,7 +159,7 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTrigPrefixScope4()
         {
-            String fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . } <http://graph> { ex:subj ex:pred ex:obj . }";
+            var fragment = "{ @prefix ex: <http://example.org/> . ex:subj ex:pred ex:obj . } <http://graph> { ex:subj ex:pred ex:obj . }";
             TestParsing(fragment, TriGSyntax.Original, false);
             TestParsing(fragment, TriGSyntax.MemberSubmission, false);
         }
@@ -173,8 +173,8 @@ namespace VDS.RDF.Parsing
     :resource :predicate1 ( ""a"" ""b"" ""c"" ).
     :resource :predicate2 ( :a :b :c ).
 }";
-            TriGParser parser = new TriGParser();
-            TripleStore store = new TripleStore();
+            var parser = new TriGParser();
+            var store = new TripleStore();
             parser.Load(store, new StringReader(data));
 
             Assert.Equal(1, store.Graphs.Count);
@@ -190,8 +190,8 @@ namespace VDS.RDF.Parsing
     :resource :predicate1 ( ""a"" ""b""@en ""c""^^:datatype ).
     :resource :predicate2 ( :a :b :c ).
 }";
-            TriGParser parser = new TriGParser();
-            TripleStore store = new TripleStore();
+            var parser = new TriGParser();
+            var store = new TripleStore();
             parser.Load(store, new StringReader(data));
 
             Assert.Equal(1, store.Graphs.Count);
@@ -214,8 +214,8 @@ namespace VDS.RDF.Parsing
                             ) # 4 triples
                           ) . # 8 triples
 }";
-            TriGParser parser = new TriGParser();
-            TripleStore store = new TripleStore();
+            var parser = new TriGParser();
+            var store = new TripleStore();
             parser.Load(store, new StringReader(data));
 
             Assert.Equal(1, store.Graphs.Count);
@@ -230,8 +230,8 @@ namespace VDS.RDF.Parsing
 {
     :resource :predicate1 ( true 1 12.3 123e4 ).
 }";
-            TriGParser parser = new TriGParser();
-            TripleStore store = new TripleStore();
+            var parser = new TriGParser();
+            var store = new TripleStore();
             parser.Load(store, new StringReader(data));
 
             Assert.Equal(1, store.Graphs.Count);

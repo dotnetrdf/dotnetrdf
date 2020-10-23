@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(IGraph g, Uri u, IRdfReader parser, GraphCallback callback, Object state)
+        public static void Load(IGraph g, Uri u, IRdfReader parser, GraphCallback callback, object state)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (u == null) throw new RdfParseException("Cannot read RDF from a null URI");
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(IGraph g, Uri u, GraphCallback callback, Object state)
+        public static void Load(IGraph g, Uri u, GraphCallback callback, object state)
         {
             Load(g, u, null, callback, state);
         }
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(IRdfHandler handler, Uri u, IRdfReader parser, RdfHandlerCallback callback, Object state)
+        public static void Load(IRdfHandler handler, Uri u, IRdfReader parser, RdfHandlerCallback callback, object state)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
@@ -178,7 +178,7 @@ namespace VDS.RDF.Parsing
                 // TODO: Add use of Cache into here, this is tricky because this code is primarily intended for Silverlight where we disable the cache purposefully
 
                 // Setup the Request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u);
+                var request = (HttpWebRequest)WebRequest.Create(u);
 
                 // Want to ask for RDF formats
                 if (parser != null)
@@ -196,7 +196,7 @@ namespace VDS.RDF.Parsing
 #if !NETCORE
                 request.Timeout = Timeout;
 #endif
-                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                if (_userAgent != null && !_userAgent.Equals(string.Empty))
                 {
 #if NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
@@ -211,7 +211,7 @@ namespace VDS.RDF.Parsing
                         {
                             try
                             {
-                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                                using (var response = (HttpWebResponse) request.EndGetResponse(result))
                                 {
                                     // Get a Parser and load the RDF
                                     if (parser == null)
@@ -276,7 +276,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
+        public static void Load(IRdfHandler handler, Uri u, RdfHandlerCallback callback, object state)
         {
             Load(handler, u, (IRdfReader)null, callback, state);
         }
@@ -300,7 +300,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, Uri u, IStoreReader parser, TripleStoreCallback callback, Object state)
+        public static void Load(ITripleStore store, Uri u, IStoreReader parser, TripleStoreCallback callback, object state)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
@@ -322,7 +322,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, Uri u, TripleStoreCallback callback, Object state)
+        public static void Load(ITripleStore store, Uri u, TripleStoreCallback callback, object state)
         {
             Load(store, u, null, callback, state);
         }
@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void Load(IRdfHandler handler, Uri u, IStoreReader parser, RdfHandlerCallback callback, Object state)
+        public static void Load(IRdfHandler handler, Uri u, IStoreReader parser, RdfHandlerCallback callback, object state)
         {
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
             if (handler == null) throw new RdfParseException("Cannot read a RDF dataset using a null RDF handler");
@@ -383,7 +383,7 @@ namespace VDS.RDF.Parsing
                 u = Tools.StripUriFragment(u);
 
                 // Setup the Request
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u);
+                var request = (HttpWebRequest)WebRequest.Create(u);
 
                 // Want to ask for RDF dataset formats
                 if (parser != null)
@@ -401,7 +401,7 @@ namespace VDS.RDF.Parsing
 #if !NETCORE
                 request.Timeout = Timeout;
 #endif
-                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                if (_userAgent != null && !_userAgent.Equals(string.Empty))
                 {
 #if NETCORE
                     request.Headers[HttpRequestHeader.UserAgent] = _userAgent;
@@ -416,7 +416,7 @@ namespace VDS.RDF.Parsing
                         {
                             try
                             {
-                                using (HttpWebResponse response = (HttpWebResponse) request.EndGetResponse(result))
+                                using (var response = (HttpWebResponse) request.EndGetResponse(result))
                                 {
                                     // Get a Parser and load the RDF
                                     if (parser == null)
@@ -440,7 +440,7 @@ namespace VDS.RDF.Parsing
                                             }
                                             catch (RdfParserSelectionException)
                                             {
-                                                String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                                var data = new StreamReader(response.GetResponseStream()).ReadToEnd();
                                                 parser = StringParser.GetDatasetParser(data);
                                                 parser.Warning += RaiseStoreWarning;
                                                 parser.Load(handler, new StringReader(data));
@@ -506,7 +506,7 @@ namespace VDS.RDF.Parsing
         /// If the loading completes normally the callback will be invoked normally, if an error occurs it will be invoked and passed an instance of <see cref="AsyncError"/> as the state which contains details of the error and the original state.
         /// </para>
         /// </remarks>
-        public static void LoadDataset(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
+        public static void LoadDataset(IRdfHandler handler, Uri u, RdfHandlerCallback callback, object state)
         {
             Load(handler, u, (IStoreReader)null, callback, state);
         }

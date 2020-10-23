@@ -24,11 +24,11 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Skos
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
     /// Represents a SKOS resource.
     /// </summary>
@@ -41,25 +41,25 @@ namespace VDS.RDF.Skos
 
         internal SkosResource(INode resource)
         {
-            this.Resource = resource ?? throw new RdfSkosException("Cannot create a SKOS Resource for a null Resource");
+            Resource = resource ?? throw new RdfSkosException("Cannot create a SKOS Resource for a null Resource");
         }
 
         internal IEnumerable<SkosConcept> GetConcepts(string predicateUri)
         {
-            return this
-                .GetObjects(predicateUri)
+            return 
+                GetObjects(predicateUri)
                 .Select(o => new SkosConcept(o));
         }
 
         internal IEnumerable<INode> GetObjects(string predicateUri)
         {
-            var predicate = this.Resource.Graph
+            IUriNode predicate = Resource.Graph
                 .CreateUriNode(
                     UriFactory.Create(
                         predicateUri));
 
-            return this.Resource.Graph
-                .GetTriplesWithSubjectPredicate(this.Resource, predicate)
+            return Resource.Graph
+                .GetTriplesWithSubjectPredicate(Resource, predicate)
                 .Select(t => t.Object);
         }
     }

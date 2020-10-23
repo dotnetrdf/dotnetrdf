@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// Creates a new DOM Based event generator.
         /// </summary>
         /// <param name="file">Input File.</param>
-        public DomBasedEventGenerator(String file)
+        public DomBasedEventGenerator(string file)
         {
             _document = new XmlDocument();
             _document.Load(File.OpenRead(file));
@@ -106,18 +106,18 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             // XmlNode docEl = document.DocumentElement;
 
             // Generate a Root Event and Element Event from it
-            RootEvent root = new RootEvent(docEl.BaseURI, docEl.OuterXml);
-            if (docEl.BaseURI.Equals(String.Empty))
+            var root = new RootEvent(docEl.BaseURI, docEl.OuterXml);
+            if (docEl.BaseURI.Equals(string.Empty))
             {
                 if (context.BaseUri != null)
                 {
                     root.BaseUri = context.BaseUri.AbsoluteUri;
                 }
             }
-            ElementEvent element = new ElementEvent(docEl.LocalName, docEl.Prefix, root.BaseUri, docEl.OuterXml);
+            var element = new ElementEvent(docEl.LocalName, docEl.Prefix, root.BaseUri, docEl.OuterXml);
 
             // Initialise Language Settings
-            root.Language = String.Empty;
+            root.Language = string.Empty;
             element.Language = root.Language;
 
             // Set as Document Element and add as only Child
@@ -132,15 +132,15 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 if (attr.Prefix.Equals("xmlns") || attr.Name == "xmlns")
                 {
                     // Define a Namespace
-                    String prefix = attr.LocalName;
-                    if (prefix.Equals("xmlns")) prefix = String.Empty;
-                    String uri;
+                    var prefix = attr.LocalName;
+                    if (prefix.Equals("xmlns")) prefix = string.Empty;
+                    string uri;
                     if (attr.Value.StartsWith("http://"))
                     {
                         // Absolute Uri
                         uri = attr.Value;
                     }
-                    else if (!root.BaseUri.Equals(String.Empty))
+                    else if (!root.BaseUri.Equals(string.Empty))
                     {
                         // Relative Uri with a Base Uri to resolve against
                         // uri = root.BaseUri + attr.Value;
@@ -156,14 +156,14 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 else if (attr.Name == "xml:base")
                 {
                     // Set the Base Uri
-                    String baseUri = attr.Value;
+                    var baseUri = attr.Value;
 
                     if (RdfXmlSpecsHelper.IsAbsoluteURI(baseUri))
                     {
                         // Absolute Uri
                         root.BaseUri = baseUri;
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!element.BaseUri.Equals(string.Empty))
                     {
                         // Relative Uri with a Base Uri to resolve against
                         // root.BaseUri += baseUri;
@@ -208,22 +208,22 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private ElementEvent GenerateEvents(RdfXmlParserContext context, XmlNode node, IRdfXmlEvent parent)
         {
             // Get the Base Uri
-            String baseUri = String.Empty;
+            var baseUri = string.Empty;
             if (parent is ElementEvent)
             {
                 baseUri = ((ElementEvent)parent).BaseUri;
             }
             // Create an ElementEvent for the Node
-            ElementEvent element = new ElementEvent(node.LocalName, node.Prefix, baseUri, node.OuterXml);
+            var element = new ElementEvent(node.LocalName, node.Prefix, baseUri, node.OuterXml);
 
             // Set the initial Language from the Parent
-            ElementEvent parentEl = (ElementEvent)parent;
+            var parentEl = (ElementEvent)parent;
             element.Language = parentEl.Language;
 
         #region Attribute Processing
 
             // Iterate over Attributes
-            bool parseTypeLiteral = false;
+            var parseTypeLiteral = false;
             foreach (XmlAttribute attr in node.Attributes)
             {
                 // Watch out for special attributes
@@ -241,7 +241,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         // Absolute Uri
                         element.BaseUri = attr.Value;
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!element.BaseUri.Equals(string.Empty))
                     {
                         // Relative Uri with a Base Uri to resolve against
                         // element.BaseUri += attr.Value;
@@ -256,13 +256,13 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 else if (attr.Prefix == "xmlns")
                 {
                     // Register a Namespace
-                    String uri;
+                    string uri;
                     if (attr.Value.StartsWith("http://"))
                     {
                         // Absolute Uri
                         uri = attr.Value;
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!element.BaseUri.Equals(string.Empty))
                     {
                         // Relative Uri with a Base Uri to resolve against
                         // uri = element.BaseUri + attr.Value;
@@ -273,20 +273,20 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         // Relative Uri with no Base Uri
                         throw new RdfParseException("Cannot resolve a Relative Namespace URI since there is no in-scope Base URI");
                     }
-                    NamespaceAttributeEvent ns = new NamespaceAttributeEvent(attr.LocalName, uri, attr.OuterXml);
+                    var ns = new NamespaceAttributeEvent(attr.LocalName, uri, attr.OuterXml);
                     element.NamespaceAttributes.Add(ns);
                 }
-                else if (attr.Prefix == String.Empty && attr.Name == "xmlns")
+                else if (attr.Prefix == string.Empty && attr.Name == "xmlns")
                 {
                     // Register a Default Namespace (Empty Prefix)
-                    String uri;
+                    string uri;
 
                     if (attr.Value.StartsWith("http://"))
                     {
                         // Absolute Uri
                         uri = attr.Value;
                     }
-                    else if (!element.BaseUri.Equals(String.Empty))
+                    else if (!element.BaseUri.Equals(string.Empty))
                     {
                         // Relative Uri with a Base Uri to resolve against
                         // uri = element.BaseUri + attr.Value;
@@ -297,10 +297,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         // Relative Uri with no Base Uri
                         throw new RdfParseException("Cannot resolve a Relative Namespace URI since there is no in-scope Base URI");
                     }
-                    NamespaceAttributeEvent ns = new NamespaceAttributeEvent(String.Empty, uri, attr.OuterXml);
+                    var ns = new NamespaceAttributeEvent(string.Empty, uri, attr.OuterXml);
                     element.NamespaceAttributes.Add(ns);
                 }
-                else if (attr.Prefix == "xml" || (attr.Prefix == String.Empty && attr.LocalName.StartsWith("xml")))
+                else if (attr.Prefix == "xml" || (attr.Prefix == string.Empty && attr.LocalName.StartsWith("xml")))
                 {
                     // Ignore other Reserved XML Names
                 }
@@ -310,7 +310,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     parseTypeLiteral = true;
 
                     // Create the Attribute
-                    AttributeEvent attrEvent = new AttributeEvent(attr.LocalName, attr.Prefix, attr.Value, attr.OuterXml);
+                    var attrEvent = new AttributeEvent(attr.LocalName, attr.Prefix, attr.Value, attr.OuterXml);
                     element.Attributes.Add(attrEvent);
 
                     // Set ParseType property correctly
@@ -321,7 +321,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     // Some other Parse Type
 
                     // Create the Attribute
-                    AttributeEvent attrEvent = new AttributeEvent(attr.LocalName, attr.Prefix, attr.Value, attr.OuterXml);
+                    var attrEvent = new AttributeEvent(attr.LocalName, attr.Prefix, attr.Value, attr.OuterXml);
                     element.Attributes.Add(attrEvent);
 
                     // Set the ParseType property correctly
@@ -347,7 +347,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 else
                 {
                     // Normal Attribute which we generate an Event from
-                    AttributeEvent attrEvent = new AttributeEvent(attr.LocalName, attr.Prefix, attr.Value, attr.OuterXml);
+                    var attrEvent = new AttributeEvent(attr.LocalName, attr.Prefix, attr.Value, attr.OuterXml);
                     element.Attributes.Add(attrEvent);
                 }
             }
@@ -378,7 +378,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             if (parseTypeLiteral)
             {
                 // Generate an XMLLiteral from its Inner Xml (if any)
-                TypedLiteralEvent lit = new TypedLiteralEvent(node.InnerXml.Normalize(), RdfSpecsHelper.RdfXmlLiteral, node.InnerXml);
+                var lit = new TypedLiteralEvent(node.InnerXml.Normalize(), RdfSpecsHelper.RdfXmlLiteral, node.InnerXml);
                 element.Children.Add(lit);
                 return element;
             }
@@ -410,14 +410,14 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     // Single Child which is a Text Node
 
                     // Generate a Text Event
-                    TextEvent text = new TextEvent(node.InnerText.Normalize(), node.OuterXml);
+                    var text = new TextEvent(node.InnerText.Normalize(), node.OuterXml);
                     element.Children.Add(text);
                 }
                 else if (node.ChildNodes[0].NodeType == XmlNodeType.CDATA)
                 {
                     // Single Child which is a CData Node
 
-                    TextEvent text = new TextEvent(node.InnerXml.Normalize(), node.OuterXml);
+                    var text = new TextEvent(node.InnerXml.Normalize(), node.OuterXml);
                     element.Children.Add(text);
                 }
                 else
@@ -474,7 +474,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             // Iterate over Children where present
             if (evt is RootEvent)
             {
-                RootEvent root = (RootEvent)evt;
+                var root = (RootEvent)evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine("");
@@ -489,7 +489,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (evt is ElementEvent)
             {
-                ElementEvent element = (ElementEvent)evt;
+                var element = (ElementEvent)evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine(" " + element.Namespace + ":" + element.LocalName);
@@ -504,7 +504,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (evt is TextEvent)
             {
-                TextEvent text = (TextEvent)evt;
+                var text = (TextEvent)evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine(" " + text.Value);
@@ -515,7 +515,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
             else if (evt is TypedLiteralEvent)
             {
-                TypedLiteralEvent tlit = (TypedLiteralEvent)evt;
+                var tlit = (TypedLiteralEvent)evt;
                 if (context.TraceParsing)
                 {
                     Console.WriteLine();
@@ -526,14 +526,14 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
 
             // Add an End Element Event to the Queue
-            EndElementEvent end = new EndElementEvent();
+            var end = new EndElementEvent();
             context.Events.Enqueue(end);
             if (context.TraceParsing)
             {
-                String endDescrip = String.Empty;
+                var endDescrip = string.Empty;
                 if (evt is ElementEvent)
                 {
-                    ElementEvent temp = (ElementEvent)evt;
+                    var temp = (ElementEvent)evt;
                     endDescrip = " " + temp.QName;
                 }
                 Console.WriteLine(nesting + " " + end.GetType().ToString() + endDescrip);

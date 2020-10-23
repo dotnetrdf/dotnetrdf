@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Dynamic;
-    using System.Linq;
-    using System.Linq.Expressions;
-
     internal class EnumerableMetaObject : DynamicMetaObject
     {
         internal EnumerableMetaObject(Expression parameter, object value)
@@ -40,8 +40,8 @@ namespace VDS.RDF.Dynamic
 
         public override DynamicMetaObject BindInvokeMember(InvokeMemberBinder binder, DynamicMetaObject[] args)
         {
-            var expression = this.FindMethod(binder, args);
-            var restrictions = BindingRestrictions.GetTypeRestriction(this.Expression, this.LimitType);
+            Expression expression = FindMethod(binder, args);
+            var restrictions = BindingRestrictions.GetTypeRestriction(Expression, LimitType);
             var errorSuggestion = new DynamicMetaObject(expression, restrictions);
 
             return binder.FallbackInvokeMember(this, args, errorSuggestion);
@@ -55,9 +55,9 @@ namespace VDS.RDF.Dynamic
             {
                 try
                 {
-                    var arguments = Expression.Convert(this.Expression, this.RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray();
-                    var typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
-                    var expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
+                    Expression[] arguments = Expression.Convert(Expression, RuntimeType).AsEnumerable().Union(args.Select(arg => arg.Expression)).ToArray();
+                    Type[] typeArguments = Enumerable.Repeat(typeof(object), i).ToArray();
+                    MethodCallExpression expression = Expression.Call(typeof(Enumerable), binder.Name, typeArguments, arguments);
 
                     return Expression.Convert(expression, binder.ReturnType);
                 }

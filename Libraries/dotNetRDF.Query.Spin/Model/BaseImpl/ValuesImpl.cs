@@ -46,19 +46,19 @@ namespace VDS.RDF.Query.Spin.Model
         public List<Dictionary<String, IResource>> getBindings()
         {
             List<String> varNames = getVarNames();
-            List<Dictionary<String, IResource>> bindings = new List<Dictionary<String, IResource>>();
+            var bindings = new List<Dictionary<String, IResource>>();
             List<IResource> outerList = getResource(SP.PropertyBindings).AsList();
             if (outerList != null)
             {
                 foreach (IResource innerList in outerList)
                 {
-                    Dictionary<String, IResource> binding = new Dictionary<String, IResource>();
+                    var binding = new Dictionary<String, IResource>();
                     bindings.Add(binding);
                     IEnumerator<String> vars = varNames.GetEnumerator();
                     IEnumerator<IResource> values = innerList.AsList().GetEnumerator();
                     while (vars.MoveNext())
                     {
-                        String varName = vars.Current;
+                        var varName = vars.Current;
                         IResource value = values.Current;
                         if (!RDFUtil.sameTerm(SP.ClassPropertyUndef, value))
                         {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         public List<String> getVarNames()
         {
-            List<String> results = new List<String>();
+            var results = new List<String>();
             List<IResource> list = getResource(SP.PropertyVarNames).AsList();
             foreach (IResource member in list)
             {
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Spin.Model
                 IEnumerator<String> vit = varNames.GetEnumerator();
                 while (vit.MoveNext())
                 {
-                    String varName = vit.Current;
+                    var varName = vit.Current;
                     IResource value = binding[varName];
                     if (value == null)
                     {

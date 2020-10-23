@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Builder
 
         public AggregateExpression Count()
         {
-            var aggregate = _distinctAggregate 
+            ISparqlAggregate aggregate = _distinctAggregate 
                 ? (ISparqlAggregate)new CountAllDistinctAggregate()
                 : new CountAllAggregate();
 
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Builder
 
         public AggregateExpression Count(VariableTerm variable)
         {
-            var aggregate = _distinctAggregate
+            ISparqlAggregate aggregate = _distinctAggregate
                 ? (ISparqlAggregate)new CountDistinctAggregate(variable)
                 : new CountAggregate(variable);
 
@@ -220,7 +220,7 @@ namespace VDS.RDF.Query.Builder
 
         public AggregateExpression Count(SparqlExpression expression)
         {
-            var aggregate = _distinctAggregate
+            ISparqlAggregate aggregate = _distinctAggregate
                 ? (ISparqlAggregate)new CountDistinctAggregate(expression.Expression)
                 : new CountAggregate(expression.Expression);
 

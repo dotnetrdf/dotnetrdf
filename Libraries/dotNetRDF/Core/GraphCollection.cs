@@ -252,7 +252,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
-            bool contains = false;
+            var contains = false;
 
             try
             {
@@ -309,7 +309,7 @@ namespace VDS.RDF
         {
             get
             {
-                int c = 0;
+                var c = 0;
                 try
                 {
                     EnterReadLock();
@@ -329,7 +329,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
-            List<IGraph> graphs = new List<IGraph>();
+            var graphs = new List<IGraph>();
             try
             {
                 EnterReadLock();
@@ -349,7 +349,7 @@ namespace VDS.RDF
         {
             get
             {
-                List<Uri> uris = new List<Uri>();
+                var uris = new List<Uri>();
                 try
                 {
                     EnterReadLock();

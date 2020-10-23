@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Operators.Numeric
             if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply subtraction when any arguments are null");
 
-            SparqlNumericType type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
+            var type = (SparqlNumericType)ns.Max(n => (int)n.NumericType);
 
             switch (type)
             {
@@ -74,9 +74,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private long Subtract(IEnumerable<long> ls)
         {
-            bool first = true;
+            var first = true;
             long total = 0;
-            foreach (long l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {
@@ -93,9 +93,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private decimal Subtract(IEnumerable<decimal> ls)
         {
-            bool first = true;
+            var first = true;
             decimal total = 0;
-            foreach (decimal l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {
@@ -112,9 +112,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private float Subtract(IEnumerable<float> ls)
         {
-            bool first = true;
+            var first = true;
             float total = 0;
-            foreach (float l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {
@@ -131,9 +131,9 @@ namespace VDS.RDF.Query.Operators.Numeric
 
         private double Subtract(IEnumerable<double> ls)
         {
-            bool first = true;
+            var first = true;
             double total = 0;
-            foreach (double l in ls)
+            foreach (var l in ls)
             {
                 if (first)
                 {

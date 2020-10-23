@@ -54,9 +54,9 @@ namespace VDS.RDF.Parsing.Handlers
             _handlers.AddRange(handlers);
 
             // Check there are no identical handlers in the List
-            for (int i = 0; i < _handlers.Count; i++)
+            for (var i = 0; i < _handlers.Count; i++)
             {
-                for (int j = i + 1; j < _handlers.Count; j++)
+                for (var j = i + 1; j < _handlers.Count; j++)
                 {
                     if (ReferenceEquals(_handlers[i], _handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
                 }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="factory">Node Factory to use for this Handler.</param>
         public MultiHandler(IEnumerable<IRdfHandler> handlers, INodeFactory factory) : this(handlers)
         {
-            this.NodeFactory = factory ?? throw new ArgumentNullException("factory");
+            NodeFactory = factory ?? throw new ArgumentNullException("factory");
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            List<bool> results = _handlers.Select(h => h.HandleBaseUri(baseUri)).ToList();
+            var results = _handlers.Select(h => h.HandleBaseUri(baseUri)).ToList();
             return results.All(x => x);
         }
 
@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            List<bool> results = _handlers.Select(h => h.HandleNamespace(prefix, namespaceUri)).ToList();
+            var results = _handlers.Select(h => h.HandleNamespace(prefix, namespaceUri)).ToList();
             return results.All(x => x);
         }
 
@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
-            List<bool> results = _handlers.Select(h => h.HandleTriple(t)).ToList();
+            var results = _handlers.Select(h => h.HandleTriple(t)).ToList();
             return results.All(x => x);
         }
 

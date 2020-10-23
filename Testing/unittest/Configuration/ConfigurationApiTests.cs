@@ -40,13 +40,13 @@ namespace VDS.RDF.Configuration
         [Fact]
         public void ConfigurationCircularReference()
         {
-            String graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:fromGraph _:b .
 _:b a dnr:Graph ;
   dnr:fromGraph _:a .";
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(graph);
 
             Assert.Throws<DotNetRdfConfigurationException>(() => ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")));
@@ -56,13 +56,13 @@ _:b a dnr:Graph ;
         public void ConfigurationImports1()
         {
             //Single Import
-            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports1-b.ttl"" . ";
 
-            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" .";
 
@@ -73,7 +73,7 @@ _:a a dnr:Graph ;
 
             TestTools.ShowGraph(g);
 
-            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
@@ -82,20 +82,20 @@ _:a a dnr:Graph ;
         public void ConfigurationImports2()
         {
             //Chained Import
-            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports2-b.ttl"" . ";
 
-            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
   dnr:usingTripleCollection <ex:innerCollection> .
 
 [] dnr:imports ""ConfigurationImports2-c.ttl"" .";
 
-            String graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:innerCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
 
@@ -107,7 +107,7 @@ _:a a dnr:Graph ;
 
             TestTools.ShowGraph(g);
 
-            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
@@ -116,18 +116,18 @@ _:a a dnr:Graph ;
         public void ConfigurationImports3()
         {
             //Multiple Imports
-            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports3-b.ttl"" , ""ConfigurationImports3-c.ttl"" . ";
 
-            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
   dnr:usingTripleCollection <ex:innerCollection> .";
 
-            String graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:innerCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
 
@@ -139,7 +139,7 @@ _:a a dnr:Graph ;
 
             TestTools.ShowGraph(g);
 
-            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
@@ -148,18 +148,18 @@ _:a a dnr:Graph ;
         public void ConfigurationImports4()
         {
             //Repeated Imports
-            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:Graph ;
   dnr:usingTripleCollection <ex:collection> .
 
 [] dnr:imports ""ConfigurationImports4-b.ttl"" , ""ConfigurationImports4-c.ttl"", ""ConfigurationImports4-c.ttl"" . ";
 
-            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:collection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
   dnr:usingTripleCollection <ex:innerCollection> .";
 
-            String graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            var graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 <ex:innerCollection> a dnr:TripleCollection ;
   dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
 
@@ -171,7 +171,7 @@ _:a a dnr:Graph ;
 
             TestTools.ShowGraph(g);
 
-            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
             Assert.NotNull(result);
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
@@ -179,8 +179,8 @@ _:a a dnr:Graph ;
         [Fact]
         public void ConfigurationImportsCircular1()
         {
-            String graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";
-            String graph2 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-a.ttl"" . ";
+            var graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";
+            var graph2 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-a.ttl"" . ";
 
             File.WriteAllText("ConfigurationImportsCircular1-a.ttl", graph1);
             File.WriteAllText("ConfigurationImportsCircular1-b.ttl", graph2);

@@ -115,7 +115,7 @@ namespace VDS.RDF.Web
 
         private static IGraph GetNewGraph()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("sd", UriFactory.Create(SparqlServiceDescriber.ServiceDescriptionNamespace));
             g.NamespaceMap.AddNamespace("void", UriFactory.Create("http://rdfs.org/ns/void#"));
             g.NamespaceMap.AddNamespace("scovo", UriFactory.Create("http://purl.org/NET/scovo#"));
@@ -316,7 +316,7 @@ namespace VDS.RDF.Web
                 // Add the Top Level Node representing the Service
                 if (descripUri.AbsoluteUri.EndsWith("/description"))
                 {
-                    String actualUri = descripUri.AbsoluteUri;
+                    var actualUri = descripUri.AbsoluteUri;
                     actualUri = actualUri.Substring(0, actualUri.LastIndexOf("/description") + 1);
                     protocolNode = g.CreateUriNode(UriFactory.Create(actualUri));
                 }

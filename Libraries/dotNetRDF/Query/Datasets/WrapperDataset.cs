@@ -376,10 +376,10 @@ namespace VDS.RDF.Query.Datasets
 #if NETCORE
                 String assm = typeof(WrapperDataset).GetTypeInfo().Assembly.FullName;
 #else
-                String assm = Assembly.GetAssembly(GetType()).FullName;
+                var assm = Assembly.GetAssembly(GetType()).FullName;
 #endif
                 if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));
-                String effectiveType = GetType().FullName + (assm.Equals("dotNetRDF") ? String.Empty : ", " + assm);
+                var effectiveType = GetType().FullName + (assm.Equals("dotNetRDF") ? string.Empty : ", " + assm);
 
                 context.Graph.Assert(dataset, rdfType, datasetClass);
                 context.Graph.Assert(dataset, dnrType, context.Graph.CreateLiteralNode(effectiveType));

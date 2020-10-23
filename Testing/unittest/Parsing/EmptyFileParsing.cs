@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
                  temp.Close();
              }
 
-             Graph g = new Graph();
+             var g = new Graph();
              reader.Load(g, "empty.test");
 
              Assert.True(g.IsEmpty, "Graph should be empty");
@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing
                  temp.Close();
              }
 
-             TripleStore store = new TripleStore();
+             var store = new TripleStore();
              reader.Load(store, "empty.test");
 
              Assert.Equal(0, store.Graphs.Count);
@@ -67,31 +67,31 @@ namespace VDS.RDF.Parsing
          [Fact]
          public void ParsingEmptyFileNTriples()
          {
-             this.TestEmptyParsing(new NTriplesParser());
+             TestEmptyParsing(new NTriplesParser());
          }
 
          [Fact]
          public void ParsingEmptyFileTurtle()
          {
-             this.TestEmptyParsing(new TurtleParser());
+             TestEmptyParsing(new TurtleParser());
          }
 
          [Fact]
          public void ParsingEmptyFileNotation3()
          {
-             this.TestEmptyParsing(new Notation3Parser());
+             TestEmptyParsing(new Notation3Parser());
          }
 
          [Fact]
          public void ParsingEmptyFileNQuads()
          {
-             this.TestEmptyDatasetParsing(new NQuadsParser());
+             TestEmptyDatasetParsing(new NQuadsParser());
          }
 
          [Fact]
          public void ParsingEmptyFileTriG()
          {
-             this.TestEmptyDatasetParsing(new TriGParser());
+             TestEmptyDatasetParsing(new TriGParser());
          }
     }
 }

@@ -49,16 +49,16 @@ namespace VDS.RDF.Parsing
 
         private void EnsureTestData(String file)
         {
-            if (this._original == null)
+            if (_original == null)
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123"));
                 g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-gb-us"));
                 g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123-abc"));
-                this._original = g;
+                _original = g;
 
-                this._store = new TripleStore();
-                this._store.Add(this._original);
+                _store = new TripleStore();
+                _store.Add(_original);
             }
 
             if (!File.Exists(file))
@@ -71,11 +71,11 @@ namespace VDS.RDF.Parsing
                     Assert.True(def.CanWriteRdf || def.CanWriteRdfDatasets, "Unable to ensure test data");
                     if (def.CanWriteRdf)
                     {
-                        this._original.SaveToFile(file);
+                        _original.SaveToFile(file);
                     }
                     else if (def.CanWriteRdfDatasets)
                     {
-                        this._store.SaveToFile(file);
+                        _store.SaveToFile(file);
                     }
                 }
             }
@@ -90,7 +90,7 @@ namespace VDS.RDF.Parsing
         [InlineData(NQuadsLangSpec)]
         public void TestLangSpecParsing(String file)
         {
-            this.EnsureTestData(file);
+            EnsureTestData(file);
             var def = MimeTypesHelper.GetDefinitionsByFileExtension(Path.GetExtension(file)).FirstOrDefault();
             //MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(file))).FirstOrDefault();
             Assert.NotNull(def);
@@ -98,17 +98,17 @@ namespace VDS.RDF.Parsing
             {
                 if (def.CanParseRdf)
                 {
-                    Graph g = new Graph();
+                    var g = new Graph();
                     g.LoadFromFile(file);
 
-                    Assert.Equal(this._original, g);
+                    Assert.Equal(_original, g);
                 }
                 else if (def.CanParseRdfDatasets)
                 {
-                    TripleStore store = new TripleStore();
+                    var store = new TripleStore();
                     store.LoadFromFile(file);
 
-                    Assert.Equal(this._original, store.Graphs.First());
+                    Assert.Equal(_original, store.Graphs.First());
                 }
             }
         }

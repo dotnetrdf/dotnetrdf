@@ -38,6 +38,6 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
-        String Format(Triple t);
+        string Format(Triple t);
     }
 }

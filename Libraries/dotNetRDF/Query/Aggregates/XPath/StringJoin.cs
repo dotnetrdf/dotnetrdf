@@ -76,14 +76,14 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            List<int> ids = bindingIDs.ToList();
-            StringBuilder output = new StringBuilder();
-            HashSet<String> values = new HashSet<string>();
-            for (int i = 0; i < ids.Count; i++)
+            var ids = bindingIDs.ToList();
+            var output = new StringBuilder();
+            var values = new HashSet<string>();
+            for (var i = 0; i < ids.Count; i++)
             {
                 try
                 {
-                    String temp = ValueInternal(context, ids[i]);
+                    var temp = ValueInternal(context, ids[i]);
 
                     // Apply DISTINCT modifer if required
                     if (_distinct)
@@ -101,13 +101,13 @@ namespace VDS.RDF.Query.Aggregates.XPath
                 }
                 catch (RdfQueryException)
                 {
-                    output.Append(String.Empty);
+                    output.Append(string.Empty);
                 }
 
                 // Append Separator if required
                 if (i < ids.Count - 1)
                 {
-                    String sep = GetSeparator(context, ids[i]);
+                    var sep = GetSeparator(context, ids[i]);
                     output.Append(sep);
                 }
             }
@@ -121,13 +121,13 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <param name="context">Evaluation Context.</param>
         /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
-        protected virtual String ValueInternal(SparqlEvaluationContext context, int bindingID)
+        protected virtual string ValueInternal(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode temp = _expr.Evaluate(context, bindingID);
             if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
             if (temp.NodeType == NodeType.Literal)
             {
-                ILiteralNode l = (ILiteralNode)temp;
+                var l = (ILiteralNode)temp;
                 if (l.DataType != null)
                 {
                     if (l.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
@@ -156,16 +156,16 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <param name="context">Evaluation Context.</param>
         /// <param name="bindingID">Binding ID.</param>
         /// <returns></returns>
-        private String GetSeparator(SparqlEvaluationContext context, int bindingID)
+        private string GetSeparator(SparqlEvaluationContext context, int bindingID)
         {
             INode temp = _sep.Evaluate(context, bindingID);
             if (temp == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
             else if (temp.NodeType == NodeType.Literal)
             {
-                ILiteralNode l = (ILiteralNode)temp;
+                var l = (ILiteralNode)temp;
                 if (l.DataType != null)
                 {
                     if (l.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
@@ -194,7 +194,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.StringJoin);

@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             foreach (ISparqlExpression expr in _exprs)
             {
                 IValuedNode temp = expr.Evaluate(context, bindingID);
@@ -127,12 +127,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append('<');
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Concat);
             output.Append(">(");
-            for (int i = 0; i < _exprs.Count; i++)
+            for (var i = 0; i < _exprs.Count; i++)
             {
                 output.Append(_exprs[i].ToString());
                 if (i < _exprs.Count - 1) output.Append(", ");

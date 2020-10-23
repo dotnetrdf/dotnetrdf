@@ -34,13 +34,13 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public class FixedBlankNodePattern : PatternItem
     {
-        private String _id;
+        private string _id;
 
         /// <summary>
         /// Creates a new Fixed Blank Node Pattern.
         /// </summary>
         /// <param name="id">ID.</param>
-        public FixedBlankNodePattern(String id)
+        public FixedBlankNodePattern(string id)
         {
             if (id.StartsWith("_:"))
             {
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Blank Node ID.
         /// </summary>
-        public String InternalID
+        public string InternalID
         {
             get
             {

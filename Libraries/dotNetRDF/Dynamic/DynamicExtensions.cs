@@ -25,14 +25,13 @@
 */
 
 using VDS.RDF.Parsing;
+using System;
+using System.Text.RegularExpressions;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Text.RegularExpressions;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Query;
-
     /// <summary>
     /// Contains helper extension methods for dynamic graphs and nodes.
     /// </summary>
@@ -85,8 +84,8 @@ namespace VDS.RDF.Dynamic
         {
             switch (node.AsValuedNode())
             {
-                case IUriNode uriNode:
-                case IBlankNode blankNode:
+                case IUriNode _:
+                case IBlankNode _:
                     return node.AsDynamic(baseUri);
 
                 default:
@@ -104,7 +103,7 @@ namespace VDS.RDF.Dynamic
                 case IUriNode uriNode:
                     return uriNode.Uri;
 
-                case IBlankNode blankNode:
+                case IBlankNode _:
                     return node;
 
                 case DoubleNode doubleNode:
@@ -138,7 +137,7 @@ namespace VDS.RDF.Dynamic
 
         internal static IUriNode AsUriNode(this string key, IGraph graph, Uri baseUri)
         {
-            if (!TryResolveQName(key, graph, out var uri))
+            if (!TryResolveQName(key, graph, out Uri uri))
             {
                 if (!Uri.TryCreate(key, UriKind.RelativeOrAbsolute, out uri))
                 {
@@ -241,7 +240,7 @@ namespace VDS.RDF.Dynamic
 
         internal static string AsName(this IUriNode node, Uri baseUri)
         {
-            var nodeUri = node.Uri;
+            Uri nodeUri = node.Uri;
 
             if (node.Graph.NamespaceMap.ReduceToQName(nodeUri.AbsoluteUri, out var qname))
             {

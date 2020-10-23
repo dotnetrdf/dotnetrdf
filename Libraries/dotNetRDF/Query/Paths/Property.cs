@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Paths
                 if (context.PathStart.VariableName != null)
                 {
                     // Path starts from a Variable
-                    String var = context.PathStart.VariableName;
+                    var var = context.PathStart.VariableName;
                     if (context.SparqlContext.InputMultiset.ContainsVariable(var))
                     {
                         // Path starts from a Variable for which we have existing values
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Paths
                 if (context.Paths.Count == 0) return;
 
                 // For each incomplete path we attempt to extend the Path
-                HashSet<PotentialPath> incomplete = new HashSet<PotentialPath>();
+                var incomplete = new HashSet<PotentialPath>();
                 foreach (PotentialPath p in context.Paths)
                 {
                     // Ignore dead-end paths
@@ -240,8 +240,8 @@ namespace VDS.RDF.Query.Paths
             // If we're the Last thing in the Path we can now mark any completed paths
             if (context.IsLast)
             {
-                bool objVar = (context.PathEnd.VariableName != null);
-                bool objVarBound = (objVar && context.SparqlContext.InputMultiset.ContainsVariable(context.PathEnd.VariableName));
+                var objVar = (context.PathEnd.VariableName != null);
+                var objVarBound = (objVar && context.SparqlContext.InputMultiset.ContainsVariable(context.PathEnd.VariableName));
                 foreach (PotentialPath p in context.Paths)
                 {
                     if (!p.IsDeadEnd && !p.IsComplete && !p.IsPartial)
@@ -304,13 +304,13 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
 
             switch (_predicate.NodeType)
             {
                 case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)_predicate;
-                    bool longlit = (lit.Value.Contains('\n') || lit.Value.Contains('\r') || lit.Value.Contains('"'));
+                    var lit = (ILiteralNode)_predicate;
+                    var longlit = (lit.Value.Contains('\n') || lit.Value.Contains('\r') || lit.Value.Contains('"'));
 
                     if (longlit)
                     {
@@ -332,7 +332,7 @@ namespace VDS.RDF.Query.Paths
                         output.Append("\"");
                     }
 
-                    if (!lit.Language.Equals(String.Empty))
+                    if (!lit.Language.Equals(string.Empty))
                     {
                         output.Append("@");
                         output.Append(lit.Language);
@@ -347,7 +347,7 @@ namespace VDS.RDF.Query.Paths
                     break;
 
                 case NodeType.Uri:
-                    IUriNode uri = (IUriNode)_predicate;
+                    var uri = (IUriNode)_predicate;
                     output.Append('<');
                     output.Append(_predicate.ToString());
                     output.Append('>');

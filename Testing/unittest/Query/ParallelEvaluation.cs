@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             if (_dataset == null)
             {
                 _dataset = new InMemoryDataset();
-                Graph g = new Graph();
+                var g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit).ToList());
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
 
             if (normResults is SparqlResultSet)
             {
-                SparqlResultSet rsetNorm = (SparqlResultSet)normResults;
+                var rsetNorm = (SparqlResultSet)normResults;
                 _output.WriteLine("Normal Evaluation returned " + rsetNorm.Count + " Result(s)");
                 _output.WriteLine(string.Empty);
 
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query
             INode zero = (0).ToLiteral(_factory);
             INode one = (0).ToLiteral(_factory);
 
-            List<INode[]> data = new List<INode[]>()
+            var data = new List<INode[]>()
             {
                 new INode[] { zero, zero, zero },
                 new INode[] { zero, one, zero },
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query
             BaseMultiset multiset = new Multiset();
             foreach (INode[] row in data)
             {
-                Set s = new Set();
+                var s = new Set();
                 s.Add("x", row[0]);
                 s.Add("y", row[1]);
                 s.Add("expected", row[2]);
@@ -159,9 +159,9 @@ namespace VDS.RDF.Query
 
             ISparqlExpression expr = new DivisionExpression(new VariableTerm("x"), new VariableTerm("y"));
 
-            for (int i = 1; i <= 10000; i++)
+            for (var i = 1; i <= 10000; i++)
             {
-                SparqlEvaluationContext context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
+                var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
                 context.InputMultiset = multiset;
                 context.OutputMultiset = new Multiset();
 

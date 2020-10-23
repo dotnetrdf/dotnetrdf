@@ -141,7 +141,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Function for unescaping QNames.
         /// </summary>
-        public Func<String, String> QNameUnescapeFunction
+        public Func<string, string> QNameUnescapeFunction
         {
             get
             {

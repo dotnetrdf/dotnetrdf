@@ -38,12 +38,12 @@ namespace VDS.RDF.Parsing.Handlers
 
         private void EnsureTestData(String testFile)
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://graphs/1");
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://graphs/2");
             store.Add(h);
@@ -62,21 +62,21 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerNQuadsImplicit()
         {
-            this.EnsureTestData("test.nq");
+            EnsureTestData("test.nq");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
 
-            NQuadsParser parser = new NQuadsParser();
+            var parser = new NQuadsParser();
             parser.Load(store, "test.nq");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -86,21 +86,21 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerNQuadsExplicit()
         {
-            this.EnsureTestData("test.nq");
+            EnsureTestData("test.nq");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
 
-            NQuadsParser parser = new NQuadsParser();
+            var parser = new NQuadsParser();
             parser.Load(new StoreHandler(store), "test.nq");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -110,15 +110,15 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerNQuadsCounting()
         {
-            this.EnsureTestData("test.nq");
+            EnsureTestData("test.nq");
 
-            NQuadsParser parser = new NQuadsParser();
-            StoreCountHandler counter = new StoreCountHandler();
+            var parser = new NQuadsParser();
+            var counter = new StoreCountHandler();
             parser.Load(counter, "test.nq");
 
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
@@ -128,14 +128,14 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingFileLoaderStoreHandlerCounting()
         {
-            this.EnsureTestData("test.nq");
+            EnsureTestData("test.nq");
 
-            StoreCountHandler counter = new StoreCountHandler();
+            var counter = new StoreCountHandler();
             FileLoader.LoadDataset(counter, "test.nq");
 
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
@@ -145,19 +145,19 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingFileLoaderStoreHandlerExplicit()
         {
-            this.EnsureTestData("test.nq");
+            EnsureTestData("test.nq");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             FileLoader.LoadDataset(new StoreHandler(store), "test.nq");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -170,21 +170,21 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerTriGImplicit()
         {
-            this.EnsureTestData("test.trig");
+            EnsureTestData("test.trig");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
 
-            TriGParser parser = new TriGParser();
+            var parser = new TriGParser();
             parser.Load(store, "test.trig");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -194,21 +194,21 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerTriGExplicit()
         {
-            this.EnsureTestData("test.trig");
+            EnsureTestData("test.trig");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
 
-            TriGParser parser = new TriGParser();
+            var parser = new TriGParser();
             parser.Load(new StoreHandler(store), "test.trig");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -218,15 +218,15 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerTriGCounting()
         {
-            this.EnsureTestData("test.trig");
+            EnsureTestData("test.trig");
 
-            TriGParser parser = new TriGParser();
-            StoreCountHandler counter = new StoreCountHandler();
+            var parser = new TriGParser();
+            var counter = new StoreCountHandler();
             parser.Load(counter, "test.trig");
 
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
@@ -240,21 +240,21 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerTriXImplicit()
         {
-            this.EnsureTestData("test.xml");
+            EnsureTestData("test.xml");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
 
-            TriXParser parser = new TriXParser();
+            var parser = new TriXParser();
             parser.Load(store, "test.xml");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -264,21 +264,21 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerTriXExplicit()
         {
-            this.EnsureTestData("test.xml");
+            EnsureTestData("test.xml");
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
 
-            TriXParser parser = new TriXParser();
+            var parser = new TriXParser();
             parser.Load(new StoreHandler(store), "test.xml");
 
             Assert.True(store.HasGraph(new Uri("http://graphs/1")), "Configuration Vocab Graph should have been parsed from Dataset");
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             IGraph config = store[new Uri("http://graphs/1")];
             Assert.Equal(configOrig, config);
 
             Assert.True(store.HasGraph(new Uri("http://graphs/2")), "Leviathan Function Library Graph should have been parsed from Dataset");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[new Uri("http://graphs/2")];
             Assert.Equal(lvnOrig, lvn);
@@ -288,15 +288,15 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingStoreHandlerTriXCounting()
         {
-            this.EnsureTestData("test.xml");
+            EnsureTestData("test.xml");
 
-            TriXParser parser = new TriXParser();
-            StoreCountHandler counter = new StoreCountHandler();
+            var parser = new TriXParser();
+            var counter = new StoreCountHandler();
             parser.Load(counter, "test.xml");
 
-            Graph configOrig = new Graph();
+            var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            Graph lvnOrig = new Graph();
+            var lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);

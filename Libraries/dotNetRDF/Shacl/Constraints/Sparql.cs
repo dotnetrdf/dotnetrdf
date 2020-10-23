@@ -24,18 +24,18 @@
 // </copyright>
 */
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Patterns;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Parsing;
-    using VDS.RDF.Query;
-    using VDS.RDF.Query.Expressions.Primary;
-    using VDS.RDF.Query.Patterns;
-    using VDS.RDF.Shacl.Validation;
-
     internal abstract class Sparql : Constraint
     {
         [DebuggerStepThrough]
@@ -83,12 +83,12 @@ namespace VDS.RDF.Shacl.Constraints
         {
             var queryString = new SparqlParameterizedString(Query);
 
-            foreach (var item in Prefixes)
+            foreach (PrefixDeclaration item in Prefixes)
             {
                 queryString.Namespaces.AddNamespace(item.Prefix, item.Namespace);
             }
 
-            var query = new SparqlQueryParser().ParseFromString(queryString);
+            SparqlQuery query = new SparqlQueryParser().ParseFromString(queryString);
 
             Validate(query.RootGraphPattern);
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Shacl.Constraints
                 query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
             }
 
-            foreach (var parameter in Parameters)
+            foreach (KeyValuePair<string, INode> parameter in Parameters)
             {
                 query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
             }
@@ -114,12 +114,12 @@ namespace VDS.RDF.Shacl.Constraints
         {
             pattern.TriplePatterns.Insert(0, new BindPattern("this", new ConstantTerm(focusNode)));
 
-            foreach (var subPattern in pattern.ChildGraphPatterns)
+            foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
             {
                 BindFocusNode(subPattern, focusNode);
             }
 
-            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+            foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
             {
                 BindFocusNode(subQueryPattern.SubQuery.RootGraphPattern, focusNode);
             }
@@ -132,12 +132,12 @@ namespace VDS.RDF.Shacl.Constraints
                 throw new Exception("illegal clauses");
             }
 
-            foreach (var subPattern in pattern.ChildGraphPatterns)
+            foreach (GraphPattern subPattern in pattern.ChildGraphPatterns)
             {
                 Validate(subPattern);
             }
 
-            foreach (var subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
+            foreach (SubQueryPattern subQueryPattern in pattern.TriplePatterns.OfType<SubQueryPattern>())
             {
                 if (!subQueryPattern.Variables.Contains("this"))
                 {

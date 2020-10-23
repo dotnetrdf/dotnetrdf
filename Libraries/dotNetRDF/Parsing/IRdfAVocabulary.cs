@@ -40,28 +40,28 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="term">Term.</param>
         /// <returns></returns>
-        bool HasTerm(String term);
+        bool HasTerm(string term);
 
         /// <summary>
         /// Resolves a Term in the Vocabulary.
         /// </summary>
         /// <param name="term">Term.</param>
         /// <returns></returns>
-        String ResolveTerm(String term);
+        string ResolveTerm(string term);
 
         /// <summary>
         /// Adds a Term to the Vocabulary.
         /// </summary>
         /// <param name="term">Term.</param>
         /// <param name="uri">URI.</param>
-        void AddTerm(String term, String uri);
+        void AddTerm(string term, string uri);
 
         /// <summary>
         /// Adds a Namespace to the Vocabulary.
         /// </summary>
         /// <param name="prefix">Prefix.</param>
         /// <param name="nsUri">Namespace URI.</param>
-        void AddNamespace(String prefix, String nsUri);
+        void AddNamespace(string prefix, string nsUri);
 
         /// <summary>
         /// Merges another Vocabulary into this one.
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the Vocabulary URI.
         /// </summary>
-        String VocabularyUri
+        string VocabularyUri
         {
             get;
             set;
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets the Term Mappings.
         /// </summary>
-        IEnumerable<KeyValuePair<String, String>> Mappings
+        IEnumerable<KeyValuePair<string, string>> Mappings
         {
             get;
         }
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets the Namespace Mappings.
         /// </summary>
-        IEnumerable<KeyValuePair<String, String>> Namespaces
+        IEnumerable<KeyValuePair<string, string>> Namespaces
         {
             get;
         }
@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class XHtmlRdfAVocabulary : IRdfAVocabulary
     {
-        private String[] _terms = new String[]
+        private string[] _terms = new string[]
         {
             "alternate",
             "appendix",
@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="term">Term.</param>
         /// <returns></returns>
-        public bool HasTerm(String term)
+        public bool HasTerm(string term)
         {
             return _terms.Contains(term);
         }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing
         /// <param name="term">Term.</param>
         /// <param name="uri">URI.</param>
         /// <exception cref="NotSupportedException">Thrown since this vocabulary is fixed and cannot be changed.</exception>
-        public void AddTerm(String term, String uri)
+        public void AddTerm(string term, string uri)
         {
             throw new NotSupportedException("Cannot add a term to a fixed vocabulary");
         }
@@ -166,7 +166,7 @@ namespace VDS.RDF.Parsing
         /// <param name="prefix">Prefix.</param>
         /// <param name="nsUri">Namespace URI.</param>
         /// <exception cref="NotSupportedException">Thrown since this vocabulary is fixed and cannot be changed.</exception>
-        public void AddNamespace(String prefix, String nsUri)
+        public void AddNamespace(string prefix, string nsUri)
         {
             throw new NotSupportedException("Cannot add a namespace to a fixed vocabulary");
         }
@@ -184,23 +184,23 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets the Term Mappings.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>> Mappings
+        public IEnumerable<KeyValuePair<string, string>> Mappings
         {
             get
             {
                 return (from t in _terms
-                        select new KeyValuePair<String,String>(t, RdfAParser.XHtmlVocabNamespace + t));
+                        select new KeyValuePair<string, string>(t, RdfAParser.XHtmlVocabNamespace + t));
             }
         }
 
         /// <summary>
         /// Gets the Namespace Mappings.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>> Namespaces
+        public IEnumerable<KeyValuePair<string, string>> Namespaces
         {
             get
             {
-                return Enumerable.Empty<KeyValuePair<String, String>>();
+                return Enumerable.Empty<KeyValuePair<string, string>>();
             }
         }
 
@@ -208,7 +208,7 @@ namespace VDS.RDF.Parsing
         /// Gets/Sets the Vocabulary URI.
         /// </summary>
         /// <exception cref="NotSupportedException">Set throws this since this vocabulary is fixed and cannot be changed.</exception>
-        public String VocabularyUri
+        public string VocabularyUri
         {
             get
             {
@@ -226,9 +226,9 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class TermMappings : IRdfAVocabulary
     {
-        private Dictionary<String, String> _terms = new Dictionary<string, string>();
-        private Dictionary<String, String> _namespaces = new Dictionary<string, string>();
-        private String _vocabUri = String.Empty;
+        private Dictionary<string, string> _terms = new Dictionary<string, string>();
+        private Dictionary<string, string> _namespaces = new Dictionary<string, string>();
+        private string _vocabUri = string.Empty;
 
         /// <summary>
         /// Creates a new set of Term Mappings.
@@ -241,7 +241,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new set of Term Mappings with the given Vocabulary URI.
         /// </summary>
         /// <param name="vocabUri">Vocabulary URI.</param>
-        public TermMappings(String vocabUri)
+        public TermMappings(string vocabUri)
         {
             _vocabUri = vocabUri;
         }
@@ -252,7 +252,7 @@ namespace VDS.RDF.Parsing
         /// <param name="vocab">Vocabulary.</param>
         public TermMappings(IRdfAVocabulary vocab)
         {
-            foreach (KeyValuePair<String,String> term in vocab.Mappings)
+            foreach (KeyValuePair<string, string> term in vocab.Mappings)
             {
                 AddTerm(term.Key, term.Value);
             }
@@ -265,11 +265,11 @@ namespace VDS.RDF.Parsing
         /// <param name="vocab">Vocabulary.</param>
         public void Merge(IRdfAVocabulary vocab)
         {
-            foreach (KeyValuePair<String, String> term in vocab.Mappings)
+            foreach (KeyValuePair<string, string> term in vocab.Mappings)
             {
                 AddTerm(term.Key, term.Value);
             }
-            foreach (KeyValuePair<String, String> ns in vocab.Namespaces)
+            foreach (KeyValuePair<string, string> ns in vocab.Namespaces)
             {
                 AddNamespace(ns.Key, ns.Value);
             }
@@ -281,7 +281,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="term">Term.</param>
         /// <returns></returns>
-        public bool HasTerm(String term)
+        public bool HasTerm(string term)
         {
             return _terms.ContainsKey(term);
         }
@@ -291,13 +291,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="term">Term.</param>
         /// <returns></returns>
-        public string ResolveTerm(String term)
+        public string ResolveTerm(string term)
         {
             if (_terms.ContainsKey(term))
             {
                 return _terms[term];
             }
-            else if (!_vocabUri.Equals(String.Empty))
+            else if (!_vocabUri.Equals(string.Empty))
             {
                 return _vocabUri + term;
             }
@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="prefix">Prefix.</param>
         /// <param name="nsUri">Namespace URI.</param>
-        public void AddNamespace(String prefix, String nsUri)
+        public void AddNamespace(string prefix, string nsUri)
         {
             if (_namespaces.ContainsKey(prefix))
             {
@@ -330,7 +330,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="term">Term.</param>
         /// <param name="uri">URI.</param>
-        public void AddTerm(String term, String uri)
+        public void AddTerm(string term, string uri)
         {
             if (_terms.ContainsKey(term))
             {
@@ -345,7 +345,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets the Term Mappings.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>> Mappings
+        public IEnumerable<KeyValuePair<string, string>> Mappings
         {
             get
             {
@@ -356,7 +356,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets the Namespace Mappings.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, String>> Namespaces
+        public IEnumerable<KeyValuePair<string, string>> Namespaces
         {
             get
             {
@@ -367,7 +367,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the Vocabulary URI.
         /// </summary>
-        public String VocabularyUri
+        public string VocabularyUri
         {
             get
             {

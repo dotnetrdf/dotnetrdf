@@ -38,7 +38,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         /// Creates a new template.
         /// </summary>
         /// <param name="id">Store ID.</param>
-        public StardogDiskTemplate(String id)
+        public StardogDiskTemplate(string id)
             : base(id, "Stardog Disk", "A Stardog Disk based store", BaseStardogServer.DatabaseOptions.DatabaseTypeDisk) { }
     }
 }

@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-
     public partial class DynamicNode : IDictionary<INode, object>
     {
         /// <inheritdoc/>
@@ -46,7 +46,7 @@ namespace VDS.RDF.Dynamic
         {
             get
             {
-                var predicates =
+                IEnumerable<IUriNode> predicates =
                     from t in Graph.GetTriplesWithSubject(this)
                     select (IUriNode)t.Predicate;
 

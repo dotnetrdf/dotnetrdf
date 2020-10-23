@@ -42,12 +42,12 @@ namespace VDS.RDF.Writing
         public void WritingHtmlSchemaWriter()
         {
             //Load the Graph from within the Assembly
-            Graph g = new Graph();
-            TurtleParser parser = new TurtleParser();
+            var g = new Graph();
+            var parser = new TurtleParser();
             parser.Load(g, new StreamReader(typeof(IGraph).GetTypeInfo().Assembly.GetManifestResourceStream("VDS.RDF.Configuration.configuration.ttl"), Encoding.UTF8));
 
             //Now generate the HTML file
-            HtmlSchemaWriter writer = new HtmlSchemaWriter();
+            var writer = new HtmlSchemaWriter();
             writer.Save(g, "configSchema.html");
         }
 
@@ -55,13 +55,13 @@ namespace VDS.RDF.Writing
         public void WritingHtmlSchemaWriterAnonClasses()
         {
             //Create an example Graph
-            Graph g = new Graph();
+            var g = new Graph();
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode("rdfs:class"));
 
             TestTools.ShowGraph(g);
 
-            HtmlSchemaWriter writer = new HtmlSchemaWriter();
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            var writer = new HtmlSchemaWriter();
+            var strWriter = new System.IO.StringWriter();
             writer.Save(g, strWriter);
 
             Console.WriteLine(strWriter.ToString());
@@ -73,7 +73,7 @@ namespace VDS.RDF.Writing
         public void WritingHtmlSchemaWriterUnionOfRanges()
         {
             //Create an example Graph
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/"));
             g.NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
             INode testProperty = g.CreateUriNode("ex:property");
@@ -91,8 +91,8 @@ namespace VDS.RDF.Writing
 
             TestTools.ShowGraph(g);
 
-            HtmlSchemaWriter writer = new HtmlSchemaWriter();
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            var writer = new HtmlSchemaWriter();
+            var strWriter = new System.IO.StringWriter();
             writer.Save(g, strWriter);
 
             Console.WriteLine(strWriter.ToString());

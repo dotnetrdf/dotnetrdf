@@ -40,6 +40,6 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         /// <param name="gp">Graph Pattern.</param>
         /// <param name="vars">Variables that are present prior to the pattern.</param>
-        void Optimise(GraphPattern gp, IEnumerable<String> vars);
+        void Optimise(GraphPattern gp, IEnumerable<string> vars);
     }
 }

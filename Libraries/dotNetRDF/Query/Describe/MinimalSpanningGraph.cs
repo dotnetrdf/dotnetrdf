@@ -46,11 +46,11 @@ namespace VDS.RDF.Query.Describe
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results
-            Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
+            var bnodeMapping = new Dictionary<string, INode>();
 
             // Get Triples for this Subject
-            Queue<INode> bnodes = new Queue<INode>();
-            HashSet<INode> expandedBNodes = new HashSet<INode>();
+            var bnodes = new Queue<INode>();
+            var expandedBNodes = new HashSet<INode>();
             foreach (INode n in nodes)
             {
                 foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())

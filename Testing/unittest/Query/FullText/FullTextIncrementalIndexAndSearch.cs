@@ -76,13 +76,13 @@ namespace VDS.RDF.Query.FullText
                 var targetNode = ts.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http")).Select(t => t.Subject).FirstOrDefault();
                 if (targetNode == null) continue;
 
-                _output.WriteLine("Picked " + targetNode.ToString(this._formatter) + " as search target with search term '" + searchTerm + "'");
+                _output.WriteLine("Picked " + targetNode.ToString(_formatter) + " as search target with search term '" + searchTerm + "'");
 
                 var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
                 var results = searcher.Match(searchTerm).ToList();
                 foreach (var r in results)
                 {
-                    _output.WriteLine("Got result " + r.Node.ToString(this._formatter) + " with score " + r.Score);
+                    _output.WriteLine("Got result " + r.Node.ToString(_formatter) + " with score " + r.Score);
                 }
 
                 Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node in search results");
@@ -121,12 +121,12 @@ namespace VDS.RDF.Query.FullText
                 var targetNode = ts.Where(t => t.Object.NodeType == NodeType.Literal && ((ILiteralNode)t.Object).Value.Contains("http")).Select(t => t.Subject).FirstOrDefault();
                 if (targetNode == null) continue;
 
-                _output.WriteLine("Picked " + targetNode.ToString(this._formatter) + " as search target with search term '" + searchTerm + "'");
+                _output.WriteLine("Picked " + targetNode.ToString(_formatter) + " as search target with search term '" + searchTerm + "'");
 
                 var results = searcher.Match(searchTerm).ToList();
                 foreach (var r in results)
                 {
-                    _output.WriteLine("Got result " + r.Node.ToString(this._formatter) + " with score " + r.Score);
+                    _output.WriteLine("Got result " + r.Node.ToString(_formatter) + " with score " + r.Score);
                 }
 
                 Assert.True(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node in search results");

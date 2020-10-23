@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Handlers
 
         private IStorageProvider _manager;
         private List<Triple> _actions, _bnodeActions;
-        private HashSet<String> _bnodeUris;
+        private HashSet<string> _bnodeUris;
         private Uri _defaultGraphUri, _currGraphUri;
         private int _batchSize;
 
@@ -117,12 +117,12 @@ namespace VDS.RDF.Parsing.Handlers
                 ProcessBatch();
             }
             // Then process each batch of non-ground triples
-            List<Uri> uris = (from u in _bnodeUris
-                              select (u.Equals(String.Empty) ? null : UriFactory.Create(u))).ToList();
+            var uris = (from u in _bnodeUris
+                              select (u.Equals(string.Empty) ? null : UriFactory.Create(u))).ToList();
             foreach (Uri u in uris)
             {
-                List<Triple> batch = new List<Triple>();
-                for (int i = 0; i < _bnodeActions.Count; i++)
+                var batch = new List<Triple>();
+                for (var i = 0; i < _bnodeActions.Count; i++)
                 {
                     if (EqualityHelper.AreUrisEqual(u, _bnodeActions[i].GraphUri))
                     {

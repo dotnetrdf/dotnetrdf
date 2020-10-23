@@ -143,7 +143,7 @@ namespace VDS.RDF.Parsing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Update Commands being parsed is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)
@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Start the actual parsing
-                SparqlUpdateParserContext context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
+                var context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
                 context.AllowUnknownFunctions = AllowUnknownFunctions;
                 return ParseInternal(context);
             }
@@ -216,7 +216,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="file">File.</param>
         /// <returns></returns>
-        public SparqlUpdateCommandSet ParseFromFile(String file)
+        public SparqlUpdateCommandSet ParseFromFile(string file)
         {
             if (file == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null File");
             return Parse(new StreamReader(File.OpenRead(file), Encoding.UTF8));
@@ -227,7 +227,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="updates">SPARQL Update Commands.</param>
         /// <returns></returns>
-        public SparqlUpdateCommandSet ParseFromString(String updates)
+        public SparqlUpdateCommandSet ParseFromString(string updates)
         {
             if (updates == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null String");
             return Parse(new StringReader(updates));
@@ -262,7 +262,7 @@ namespace VDS.RDF.Parsing
             context.Tokens.InitialiseBuffer();
 
             IToken next;
-            bool commandParsed = false;
+            var commandParsed = false;
             do
             {
                 next = context.Tokens.Dequeue();
@@ -386,13 +386,13 @@ namespace VDS.RDF.Parsing
             {
                 if (uri.TokenType == Token.URI)
                 {
-                    String baseUri = (context.BaseUri != null) ? context.BaseUri.AbsoluteUri : String.Empty;
+                    var baseUri = (context.BaseUri != null) ? context.BaseUri.AbsoluteUri : string.Empty;
                     Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                     if (prefix.Value.Length == 1)
                     {
                         // Defining prefix for Default Namespace
-                        context.NamespaceMap.AddNamespace(String.Empty, u);
-                        context.CommandSet.NamespaceMap.AddNamespace(String.Empty, u);
+                        context.NamespaceMap.AddNamespace(string.Empty, u);
+                        context.CommandSet.NamespaceMap.AddNamespace(string.Empty, u);
                     }
                     else
                     {
@@ -415,7 +415,7 @@ namespace VDS.RDF.Parsing
         private void TryParseAddCommand(SparqlUpdateParserContext context)
         {
             // First an Optional SILENT keyword
-            bool silent = false;
+            var silent = false;
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.SILENT)
             {
@@ -432,7 +432,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseClearCommand(SparqlUpdateParserContext context)
         {
-            bool silent = false;
+            var silent = false;
 
             // May possibly have a SILENT Keyword
             IToken next = context.Tokens.Dequeue();
@@ -446,7 +446,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.GRAPH)
             {
                 Uri u = TryParseGraphRef(context);
-                ClearCommand cmd = new ClearCommand(u, ClearMode.Graph, silent);
+                var cmd = new ClearCommand(u, ClearMode.Graph, silent);
                 context.CommandSet.AddCommand(cmd);
             }
             else if (next.TokenType == Token.DEFAULT)
@@ -470,7 +470,7 @@ namespace VDS.RDF.Parsing
         private void TryParseCopyCommand(SparqlUpdateParserContext context)
         {
             // First an Optional SILENT keyword
-            bool silent = false;
+            var silent = false;
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.SILENT)
             {
@@ -487,7 +487,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseCreateCommand(SparqlUpdateParserContext context)
         {
-            bool silent = false;
+            var silent = false;
 
             // May possibly have a SILENT Keyword
             IToken next = context.Tokens.Dequeue();
@@ -505,15 +505,15 @@ namespace VDS.RDF.Parsing
 
             // Then MUST have a URI
             Uri u = TryParseGraphRef(context);
-            CreateCommand cmd = new CreateCommand(u, silent);
+            var cmd = new CreateCommand(u, silent);
             context.CommandSet.AddCommand(cmd);
         }
 
         private SparqlUpdateCommand TryParseDeleteCommand(SparqlUpdateParserContext context, bool allowData)
         {
             IToken next = context.Tokens.Dequeue();
-            List<Uri> usings = new List<Uri>();
-            List<Uri> usingNamed = new List<Uri>();
+            var usings = new List<Uri>();
+            var usingNamed = new List<Uri>();
             if (allowData)
             {
                 // We are allowed to have an DELETE DATA command here so check for it
@@ -556,7 +556,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.WHERE)
             {
                 // Now parse the WHERE pattern
-                SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+                var subContext = new SparqlQueryParserContext(context.Tokens);
                 subContext.Query.BaseUri = context.BaseUri;
                 subContext.Query.NamespaceMap = context.NamespaceMap;
                 subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
@@ -566,15 +566,15 @@ namespace VDS.RDF.Parsing
                 GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
                 // And finally return the command
-                DeleteCommand cmd = new DeleteCommand(deletions, @where);
+                var cmd = new DeleteCommand(deletions, @where);
                 usings.ForEach(u => cmd.AddUsingUri(u));
                 usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
                 return cmd;
             }
             if (next.TokenType == Token.INSERT)
             {
-                InsertCommand insertCmd = (InsertCommand)TryParseInsertCommand(context, false);
-                ModifyCommand cmd = new ModifyCommand(deletions, insertCmd.InsertPattern, insertCmd.WherePattern);
+                var insertCmd = (InsertCommand)TryParseInsertCommand(context, false);
+                var cmd = new ModifyCommand(deletions, insertCmd.InsertPattern, insertCmd.WherePattern);
                 insertCmd.UsingUris.ToList().ForEach(u => cmd.AddUsingUri(u));
                 insertCmd.UsingNamedUris.ToList().ForEach(u => cmd.AddUsingNamedUri(u));
                 return cmd;
@@ -586,7 +586,7 @@ namespace VDS.RDF.Parsing
         {
             DeleteDataCommand cmd;
 
-            SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            var subContext = new SparqlQueryParserContext(context.Tokens);
             subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
@@ -644,7 +644,7 @@ namespace VDS.RDF.Parsing
 
         private void TryParseDropCommand(SparqlUpdateParserContext context)
         {
-            bool silent = false;
+            var silent = false;
 
             // May possibly have a SILENT Keyword
             IToken next = context.Tokens.Dequeue();
@@ -658,7 +658,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.GRAPH)
             {
                 Uri u = TryParseGraphRef(context);
-                DropCommand cmd = new DropCommand(u, ClearMode.Graph, silent);
+                var cmd = new DropCommand(u, ClearMode.Graph, silent);
                 context.CommandSet.AddCommand(cmd);
             }
             else if (next.TokenType == Token.DEFAULT)
@@ -681,8 +681,8 @@ namespace VDS.RDF.Parsing
         
         private SparqlUpdateCommand TryParseInsertCommand(SparqlUpdateParserContext context, bool allowData)
         {
-            List<Uri> usings = new List<Uri>();
-            List<Uri> usingNamed = new List<Uri>();
+            var usings = new List<Uri>();
+            var usingNamed = new List<Uri>();
             IToken next = context.Tokens.Dequeue();
             if (allowData)
             {
@@ -717,7 +717,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
             
             // Now parse the WHERE pattern
-            SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            var subContext = new SparqlQueryParserContext(context.Tokens);
             subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
@@ -727,7 +727,7 @@ namespace VDS.RDF.Parsing
             GraphPattern where = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             // And finally return the command
-            InsertCommand cmd = new InsertCommand(insertions, where);
+            var cmd = new InsertCommand(insertions, where);
             usings.ForEach(u => cmd.AddUsingUri(u));
             usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
             return cmd;
@@ -737,7 +737,7 @@ namespace VDS.RDF.Parsing
         {
             InsertDataCommand cmd;
 
-            SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            var subContext = new SparqlQueryParserContext(context.Tokens);
             subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
@@ -753,7 +753,7 @@ namespace VDS.RDF.Parsing
             if (context.DataBNodes.Count == 0)
             {
                 // First INSERT DATA so simply register all the BNodes
-                foreach (String var in gp.Variables.Where(v => v.StartsWith("_:")))
+                foreach (var var in gp.Variables.Where(v => v.StartsWith("_:")))
                 {
                     context.DataBNodes.Add(var);
                 }
@@ -761,7 +761,7 @@ namespace VDS.RDF.Parsing
             else
             {
                 // Some INSERT DATA commands have already occurred, validate that newly introduced variables are not already present
-                foreach (String var in gp.Variables.Where(v => v.StartsWith("_:")).Distinct())
+                foreach (var var in gp.Variables.Where(v => v.StartsWith("_:")).Distinct())
                 {
                     if (context.DataBNodes.Contains(var))
                     {
@@ -823,10 +823,10 @@ namespace VDS.RDF.Parsing
         private void TryParseLoadCommand(SparqlUpdateParserContext context)
         {
             LoadCommand cmd;
-            String baseUri = context.BaseUri.ToSafeString();
+            var baseUri = context.BaseUri.ToSafeString();
 
             // May optionally have a SILENT keyword
-            bool silent = false;
+            var silent = false;
             if (context.Tokens.Peek().TokenType == Token.SILENT)
             {
                 silent = true;
@@ -875,7 +875,7 @@ namespace VDS.RDF.Parsing
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.INSERT)
             {
-                InsertCommand insertCmd = (InsertCommand)TryParseInsertCommand(context, false);
+                var insertCmd = (InsertCommand)TryParseInsertCommand(context, false);
                 insertCmd.GraphUri = u;
                 context.CommandSet.AddCommand(insertCmd);
             }
@@ -884,7 +884,7 @@ namespace VDS.RDF.Parsing
                 SparqlUpdateCommand deleteCmd = TryParseDeleteCommand(context, false);
                 if (deleteCmd is DeleteCommand)
                 {
-                    DeleteCommand delete = ((DeleteCommand)deleteCmd);
+                    var delete = ((DeleteCommand)deleteCmd);
                     if (ReferenceEquals(delete.DeletePattern, delete.WherePattern))
                     {
                         throw new RdfParseException("The DELETE WHERE { } shorthand syntax cannot be used in conjunction with a WITH clause");
@@ -909,7 +909,7 @@ namespace VDS.RDF.Parsing
 
         private GraphPattern TryParseModifyTemplate(SparqlUpdateParserContext context)
         {
-            SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            var subContext = new SparqlQueryParserContext(context.Tokens);
             subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
@@ -953,7 +953,7 @@ namespace VDS.RDF.Parsing
         private void TryParseMoveCommand(SparqlUpdateParserContext context)
         {
             // First an Optional SILENT keyword
-            bool silent = false;
+            var silent = false;
             IToken next = context.Tokens.Peek();
             if (next.TokenType == Token.SILENT)
             {
@@ -988,9 +988,9 @@ namespace VDS.RDF.Parsing
         {
             if (context.Tokens.Count > 0)
             {
-                String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.AbsoluteUri;
+                var baseUri = (context.BaseUri == null) ? string.Empty : context.BaseUri.AbsoluteUri;
                 IToken next = context.Tokens.Peek();
-                bool named = false;
+                var named = false;
 
                 // While we can see USINGs we'll keep returning USING URIs
                 do
@@ -1100,7 +1100,7 @@ namespace VDS.RDF.Parsing
             return TryParseIriRef(context, "after a GRAPH keyword");
         }
 
-        private Uri TryParseIriRef(SparqlUpdateParserContext context, String expected)
+        private Uri TryParseIriRef(SparqlUpdateParserContext context, string expected)
         {
             IToken next = context.Tokens.Dequeue();
             switch (next.TokenType)

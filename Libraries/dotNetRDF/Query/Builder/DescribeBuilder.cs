@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public IDescribeBuilder And(params Uri[] uris)
         {
-            foreach (var uri in uris)
+            foreach (Uri uri in uris)
             {
                 _describeVariables.Add(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
             }
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Builder
 
         protected override SparqlQuery BuildQuery(SparqlQuery query)
         {
-            foreach (var describeVariable in _describeVariables)
+            foreach (IToken describeVariable in _describeVariables)
             {
                 query.AddDescribeVariable(describeVariable);
             }

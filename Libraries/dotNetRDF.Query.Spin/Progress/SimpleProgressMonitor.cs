@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Spin.Progress
         {
             println("Beginning task " + label + " (" + totalWork + ")");
             this.totalWork = totalWork;
-            this.currentWork = 0;
+            currentWork = 0;
         }
 
 

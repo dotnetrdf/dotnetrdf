@@ -45,14 +45,14 @@ namespace VDS.RDF.Query.Inference
         /// <summary>
         /// Namespace for SKOS.
         /// </summary>
-        public const String SKOSNamespace = "http://www.w3.org/2004/02/skos/core#";
+        public const string SKOSNamespace = "http://www.w3.org/2004/02/skos/core#";
 
         /// <summary>
         /// Creates a new instance of the SKOS Reasoner.
         /// </summary>
         public StaticSkosReasoner()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.NamespaceMap.AddNamespace("skos", UriFactory.Create(SKOSNamespace));
             _rdfType = g.CreateUriNode("rdf:type");
             _skosBroader = g.CreateUriNode("skos:broader");
@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="output">Graph inferred information is output to.</param>
         public virtual void Apply(IGraph input, IGraph output)
         {
-            List<Triple> inferences = new List<Triple>();
+            var inferences = new List<Triple>();
             lock (_conceptMappings)
             {
                 foreach (Triple t in input.Triples)

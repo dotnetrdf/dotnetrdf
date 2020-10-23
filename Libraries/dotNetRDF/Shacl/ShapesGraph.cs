@@ -24,15 +24,15 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Parsing;
-    using VDS.RDF.Query;
-    using VDS.RDF.Shacl.Validation;
-
     /// <summary>
     /// Represents a SHACL shapes graph that acts as a fully compliant SHACL Core and SHACL-SPARQL processor.
     /// </summary>

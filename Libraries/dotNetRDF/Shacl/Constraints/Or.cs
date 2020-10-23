@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-
     internal class Or : Constraint
     {
         [DebuggerStepThrough]
@@ -51,9 +51,9 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var invalidValues =
+            IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
-                from member in this.Graph.GetListItems(this)
+                from member in Graph.GetListItems(this)
                 let shape = Shape.Parse(member)
                 group shape.Validate(valueNode) by valueNode into valid
                 where !valid.Any(isValid => isValid)

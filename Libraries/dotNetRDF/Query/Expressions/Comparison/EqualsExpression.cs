@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + _leftExpr.ToString() + ")");

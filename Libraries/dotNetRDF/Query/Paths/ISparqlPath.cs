@@ -45,6 +45,6 @@ namespace VDS.RDF.Query.Paths
         /// Gets the String representation of a Path.
         /// </summary>
         /// <returns></returns>
-        String ToString();
+        string ToString();
     }
 }

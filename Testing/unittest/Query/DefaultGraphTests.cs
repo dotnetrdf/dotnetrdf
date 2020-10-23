@@ -54,12 +54,12 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDefaultGraphExists()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
 
-            Object results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
+            var results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet)results).Result);
@@ -73,12 +73,12 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDefaultGraphExists2()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
 
-            Object results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
+            var results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet)results).Result);
@@ -92,21 +92,21 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphManagement()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            var dataset = new InMemoryDataset(store);
             dataset.SetDefaultGraph(h.BaseUri);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var processor = new LeviathanQueryProcessor(dataset);
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -121,21 +121,21 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlDatasetDefaultGraphManagement2()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            var dataset = new InMemoryDataset(store);
             dataset.SetDefaultGraph(g.BaseUri);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var processor = new LeviathanQueryProcessor(dataset);
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
 
-            Object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -150,16 +150,16 @@ namespace VDS.RDF.Query
         [Fact(Skip="Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>");
 
             processor.ProcessCommandSet(cmds);
@@ -171,17 +171,17 @@ namespace VDS.RDF.Query
         [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>");
 
             processor.ProcessCommandSet(cmds);
@@ -193,17 +193,17 @@ namespace VDS.RDF.Query
         [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>; LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/someOtherGraph>");
 
             processor.ProcessCommandSet(cmds);
@@ -216,17 +216,17 @@ namespace VDS.RDF.Query
         [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }");
 
             processor.ProcessCommandSet(cmds);
@@ -239,17 +239,17 @@ namespace VDS.RDF.Query
         [Fact(Skip = "Remote configuration is not currently available")]
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
+            var store = new TripleStore();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
-            Graph h = new Graph();
+            var h = new Graph();
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            SparqlUpdateParser parser = new SparqlUpdateParser();
+            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var processor = new LeviathanUpdateProcessor(dataset);
+            var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }; DELETE WHERE { ?s a ?type }");
 
             processor.ProcessCommandSet(cmds);
@@ -262,11 +262,11 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGraphClause()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            InMemoryDataset dataset = new InMemoryDataset();
+            var dataset = new InMemoryDataset();
             IGraph ex = new Graph();
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
@@ -277,11 +277,11 @@ namespace VDS.RDF.Query
 
             dataset.SetDefaultGraph(def.BaseUri);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
                 Assert.Equal(ex.Triples.Count, rset.Count);
             }
@@ -294,11 +294,11 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGraphClause2()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            InMemoryDataset dataset = new InMemoryDataset();
+            var dataset = new InMemoryDataset();
             IGraph ex = new Graph();
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
@@ -307,11 +307,11 @@ namespace VDS.RDF.Query
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
                 Assert.Equal(ex.Triples.Count, rset.Count);
             }
@@ -324,11 +324,11 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGraphClause3()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            InMemoryDataset dataset = new InMemoryDataset(false);
+            var dataset = new InMemoryDataset(false);
             IGraph ex = new Graph();
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
@@ -339,11 +339,11 @@ namespace VDS.RDF.Query
 
             dataset.SetDefaultGraph(def.BaseUri);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
                 Assert.Equal(ex.Triples.Count, rset.Count);
             }
@@ -356,11 +356,11 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGraphClause4()
         {
-            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            InMemoryDataset dataset = new InMemoryDataset(false);
+            var dataset = new InMemoryDataset(false);
             IGraph ex = new Graph();
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/graph");
@@ -369,11 +369,11 @@ namespace VDS.RDF.Query
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
                 Assert.Equal(ex.Triples.Count, rset.Count);
             }
@@ -386,11 +386,11 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGraphClause5()
         {
-            String query = "SELECT * FROM NAMED <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var query = "SELECT * FROM NAMED <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             IGraph ex = new Graph();
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/named");
@@ -400,13 +400,13 @@ namespace VDS.RDF.Query
             ex2.BaseUri = new Uri("http://example.org/other");
             store.Add(ex2);
 
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            var dataset = new InMemoryDataset(store);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
-            Object results = processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(dataset);
+            var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
-                SparqlResultSet rset = (SparqlResultSet)results;
+                var rset = (SparqlResultSet)results;
                 TestTools.ShowResults(rset);
                 Assert.Equal(0, rset.Count);
             }

@@ -38,14 +38,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// </summary>
     public class QueryService : PelletService
     {
-        private readonly String _sparqlUri;
+        private readonly string _sparqlUri;
 
         /// <summary>
         /// Creates a new SPARQL Query Service.
         /// </summary>
         /// <param name="name">Service Name.</param>
         /// <param name="obj">JSON Object.</param>
-        internal QueryService(String name, JObject obj)
+        internal QueryService(string name, JObject obj)
             : base(name, obj)
         {
             _sparqlUri = Endpoint.Uri.Substring(0, Endpoint.Uri.IndexOf('{'));
@@ -56,16 +56,16 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
-        public Object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
+            var endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
             {
                 try
                 {
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    Graph g = new Graph();
+                    var g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 catch (RdfParserSelectionException)
                 {
                     ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                    SparqlResultSet results = new SparqlResultSet();
+                    var results = new SparqlResultSet();
                     sparqlParser.Load(results, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
@@ -89,9 +89,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="rdfHandler">RDF Handler.</param>
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
+            var endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
             {
@@ -119,10 +119,10 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Query(String sparqlQuery, GraphCallback graphCallback, SparqlResultsCallback resultsCallback, Object state)
+        public void Query(string sparqlQuery, GraphCallback graphCallback, SparqlResultsCallback resultsCallback, object state)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
 
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (gh, rh, s) =>
                 {
@@ -156,12 +156,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <remarks>
         /// If the operation succeeds the callback will be invoked normally, if there is an error the callback will be invoked with a instance of <see cref="AsyncError"/> passed as the state which provides access to the error message and the original state passed in.
         /// </remarks>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, QueryCallback callback, Object state)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, QueryCallback callback, object state)
         {
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
+            var endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_sparqlUri));
             switch (q.QueryType)
             {
                 case SparqlQueryType.Ask:

@@ -55,16 +55,16 @@ namespace VDS.RDF
             IGraph g = new Graph();
             IGraph h = new Graph();
 
-            int size = 1 << Dimension;
-            Random rnd = new Random();
+            var size = 1 << Dimension;
+            var rnd = new Random();
 
-            for (int i = 0; i < Runs; i++)
+            for (var i = 0; i < Runs; i++)
             {
-                int a = rnd.Next(size);
+                var a = rnd.Next(size);
 
-                Hypercube hc1 = new Hypercube(Dimension, g);
+                var hc1 = new Hypercube(Dimension, g);
                 hc1 = hc1.Duplicate(a).Duplicate(a).Duplicate(a);
-                Hypercube hc2 = new Hypercube(Dimension, h);
+                var hc2 = new Hypercube(Dimension, h);
                 hc2 = hc2.Duplicate(a).Duplicate(a).Duplicate(a);
 
                 if (i == 0)
@@ -88,16 +88,16 @@ namespace VDS.RDF
             IGraph g = new Graph();
             IGraph h = new Graph();
 
-            int size = 1 << Dimension;
-            Random rnd = new Random();
+            var size = 1 << Dimension;
+            var rnd = new Random();
 
-            for (int i = 0; i < Runs; i++)
+            for (var i = 0; i < Runs; i++)
             {
-                int a = rnd.Next(size);
+                var a = rnd.Next(size);
 
-                DiHypercube hc1 = new DiHypercube(Dimension, g);
+                var hc1 = new DiHypercube(Dimension, g);
                 hc1 = hc1.Duplicate(a).Duplicate(a).Duplicate(a);
-                DiHypercube hc2 = new DiHypercube(Dimension, h);
+                var hc2 = new DiHypercube(Dimension, h);
                 hc2 = hc2.Duplicate(a).Duplicate(a).Duplicate(a);
 
                 if (i == 0)
@@ -118,12 +118,12 @@ namespace VDS.RDF
         [Fact]
         public void GraphHardMatchCyclic()
         {
-            Random rnd = new Random();
+            var rnd = new Random();
 
-            for (int i = 0; i < Runs; i++)
+            for (var i = 0; i < Runs; i++)
             {
-                IGraph g = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
-                IGraph h = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
+                IGraph g = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
+                IGraph h = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
 
                 if (i == 0)
                 {
@@ -139,12 +139,12 @@ namespace VDS.RDF
         [Fact]
         public void GraphHardMatchCyclic2()
         {
-            Random rnd = new Random();
+            var rnd = new Random();
 
-            for (int i = 0; i < Runs; i++)
+            for (var i = 0; i < Runs; i++)
             {
-                IGraph g = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
-                IGraph h = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
+                IGraph g = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
+                IGraph h = GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
 
                 if (i == 0)
                 {
@@ -161,8 +161,8 @@ namespace VDS.RDF
         public void GraphHardMatchCyclic3()
         {
             Console.WriteLine("This test is just to verify that our Cyclic Graph generation is working properly");
-            IGraph g = this.GenerateCyclicGraph(CycleNodes, 74, CycleDropNodes);
-            IGraph h = this.GenerateCyclicGraph(CycleNodes, 90, CycleDropNodes);
+            IGraph g = GenerateCyclicGraph(CycleNodes, 74, CycleDropNodes);
+            IGraph h = GenerateCyclicGraph(CycleNodes, 90, CycleDropNodes);
 
             Assert.Equal(g, h);
         }
@@ -170,10 +170,10 @@ namespace VDS.RDF
         [Fact]
         public void GraphHardMatchStar()
         {
-            for (int i = 0; i < Runs; i++)
+            for (var i = 0; i < Runs; i++)
             {
-                IGraph g = this.GenerateStarGraph(StarNodes);
-                IGraph h = this.GenerateStarGraph(StarNodes);
+                IGraph g = GenerateStarGraph(StarNodes);
+                IGraph h = GenerateStarGraph(StarNodes);
 
                 if (i == 0)
                 {
@@ -191,9 +191,9 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchTrivial1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources/turtle11-unofficial/test-13.ttl");
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromFile("resources/turtle11-unofficial/test-13.out", new NTriplesParser());
 
             GraphDiffReport report = g.Difference(h);
@@ -204,7 +204,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchTrivial2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             IBlankNode a = g.CreateBlankNode("b1");
             IBlankNode b = g.CreateBlankNode("b2");
             IBlankNode c = g.CreateBlankNode("b3");
@@ -217,7 +217,7 @@ namespace VDS.RDF
             g.Assert(c, pred, g.CreateLiteralNode("C"));
             g.Assert(c, pred, a);
 
-            Graph h = new Graph();
+            var h = new Graph();
             IBlankNode a2 = h.CreateBlankNode("b4");
             IBlankNode b2 = h.CreateBlankNode("b5");
             IBlankNode c2 = h.CreateBlankNode("b3");
@@ -238,9 +238,9 @@ namespace VDS.RDF
         [Fact]
         public void GraphHardTrivial3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources/turtle11/first.ttl");
-            Graph h = new Graph();
+            var h = new Graph();
             h.LoadFromFile("resources/turtle11/first.ttl");
 
             Assert.Equal(g, h);
@@ -290,9 +290,9 @@ namespace VDS.RDF
 
         private static void TestGraphMatch(string testGraphName)
         {
-            Graph a = new Graph();
+            var a = new Graph();
             a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
-            Graph b = new Graph();
+            var b = new Graph();
             b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
             Assert.True(a.Equals(b));
@@ -308,19 +308,19 @@ namespace VDS.RDF
         {
             Console.WriteLine("Generating Cyclic Graph - Nodes " + nodes + " - Seed " + seed + " - Drop " + toDrop);
 
-            Graph g = new Graph();
+            var g = new Graph();
             IUriNode rdfValue = g.CreateUriNode("rdf:value");
 
             if (seed >= nodes - toDrop - 1) seed = nodes - toDrop - 2;
 
-            List<IBlankNode> bnodes = new List<IBlankNode>(nodes);
-            for (int i = 0; i < nodes; i++)
+            var bnodes = new List<IBlankNode>(nodes);
+            for (var i = 0; i < nodes; i++)
             {
                 bnodes.Add(g.CreateBlankNode());
             }
 
-            Random rnd = new Random();
-            for (int i = 0; i < toDrop; i++)
+            var rnd = new Random();
+            for (var i = 0; i < toDrop; i++)
             {
                 bnodes.RemoveAt(rnd.Next(bnodes.Count));
             }
@@ -330,7 +330,7 @@ namespace VDS.RDF
             Console.WriteLine("Seed value is " + seed);
 
             //Generate a cycle of Triples starting from the seed
-            int counter = 0;
+            var counter = 0;
             while (counter <= bnodes.Count)
             {
                 g.Assert(bnodes[seed], rdfValue, bnodes[seed + 1]);
@@ -349,18 +349,18 @@ namespace VDS.RDF
 
         private IGraph GenerateStarGraph(int nodes)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             IUriNode rdfValue = g.CreateUriNode("rdf:value");
 
-            List<IBlankNode> bnodes = new List<IBlankNode>();
-            for (int i = 0; i < nodes; i++)
+            var bnodes = new List<IBlankNode>();
+            for (var i = 0; i < nodes; i++)
             {
                 bnodes.Add(g.CreateBlankNode());
             }
 
-            for (int i = 0; i < bnodes.Count; i++)
+            for (var i = 0; i < bnodes.Count; i++)
             {
-                for (int j = 0; j < bnodes.Count; j++)
+                for (var j = 0; j < bnodes.Count; j++)
                 {
                     if (i == j) continue;
                     g.Assert(bnodes[i], rdfValue, bnodes[j]);
@@ -373,17 +373,17 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchBruteForce1()
         {
-            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
-            INode a = this._factory.CreateBlankNode("a");
-            INode b1 = this._factory.CreateBlankNode("b1");
-            INode b2 = this._factory.CreateBlankNode("b2");
+            var empty = new Dictionary<INode, INode>();
+            INode a = _factory.CreateBlankNode("a");
+            INode b1 = _factory.CreateBlankNode("b1");
+            INode b2 = _factory.CreateBlankNode("b2");
 
             //For this test we have a single blank node with two possible mappings
-            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            var possibles = new Dictionary<INode, List<INode>>();
             possibles.Add(a, new List<INode> { b1, b2 });
 
-            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
-            this.PrintMappings(generated);
+            var generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            PrintMappings(generated);
             Assert.Equal(2, generated.Count);
             Assert.True(generated.All(m => m.ContainsKey(a)));
             Assert.False(generated.All(m => m[a].Equals(b1)));
@@ -392,19 +392,19 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchBruteForce2()
         {
-            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
-            INode a1 = this._factory.CreateBlankNode("a1");
-            INode a2 = this._factory.CreateBlankNode("a2");
-            INode b1 = this._factory.CreateBlankNode("b1");
-            INode b2 = this._factory.CreateBlankNode("b2");
+            var empty = new Dictionary<INode, INode>();
+            INode a1 = _factory.CreateBlankNode("a1");
+            INode a2 = _factory.CreateBlankNode("a2");
+            INode b1 = _factory.CreateBlankNode("b1");
+            INode b2 = _factory.CreateBlankNode("b2");
 
             //For this test we have a two blank nodes with two possible mappings
-            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            var possibles = new Dictionary<INode, List<INode>>();
             possibles.Add(a1, new List<INode> { b1, b2 });
             possibles.Add(a2, new List<INode> { b1, b2 });
 
-            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
-            this.PrintMappings(generated);
+            var generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            PrintMappings(generated);
             Assert.Equal(4, generated.Count);
             Assert.True(generated.All(m => m.ContainsKey(a1)));
         }
@@ -412,19 +412,19 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchBruteForce3()
         {
-            Dictionary<INode, INode> empty = new Dictionary<INode, INode>();
-            INode a1 = this._factory.CreateBlankNode("a1");
-            INode a2 = this._factory.CreateBlankNode("a2");
-            INode b1 = this._factory.CreateBlankNode("b1");
-            INode b2 = this._factory.CreateBlankNode("b2");
+            var empty = new Dictionary<INode, INode>();
+            INode a1 = _factory.CreateBlankNode("a1");
+            INode a2 = _factory.CreateBlankNode("a2");
+            INode b1 = _factory.CreateBlankNode("b1");
+            INode b2 = _factory.CreateBlankNode("b2");
 
             //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
-            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            var possibles = new Dictionary<INode, List<INode>>();
             possibles.Add(a1, new List<INode> { b1 });
             possibles.Add(a2, new List<INode> { b1, b2 });
 
-            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
-            this.PrintMappings(generated);
+            var generated = GraphMatcher.GenerateMappings(empty, possibles).ToList();
+            PrintMappings(generated);
             Assert.Equal(2, generated.Count);
             Assert.True(generated.All(m => m.ContainsKey(a1)));
         }
@@ -432,33 +432,33 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchBruteForce4()
         {
-            Dictionary<INode, INode> baseMapping = new Dictionary<INode, INode>();
-            INode a1 = this._factory.CreateBlankNode("a1");
-            INode a2 = this._factory.CreateBlankNode("a2");
-            INode b1 = this._factory.CreateBlankNode("b1");
-            INode b2 = this._factory.CreateBlankNode("b2");
+            var baseMapping = new Dictionary<INode, INode>();
+            INode a1 = _factory.CreateBlankNode("a1");
+            INode a2 = _factory.CreateBlankNode("a2");
+            INode b1 = _factory.CreateBlankNode("b1");
+            INode b2 = _factory.CreateBlankNode("b2");
 
             //For this test we have a two blank nodes where the first has a single mapping and the second two possible mappings
             //Our base mapping also already calls out the confirmed mapping
-            Dictionary<INode, List<INode>> possibles = new Dictionary<INode, List<INode>>();
+            var possibles = new Dictionary<INode, List<INode>>();
             possibles.Add(a1, new List<INode> { b1 });
             possibles.Add(a2, new List<INode> { b1, b2 });
             baseMapping.Add(a1, b1);
 
-            List<Dictionary<INode, INode>> generated = GraphMatcher.GenerateMappings(baseMapping, possibles).ToList();
-            this.PrintMappings(generated);
+            var generated = GraphMatcher.GenerateMappings(baseMapping, possibles).ToList();
+            PrintMappings(generated);
             Assert.Equal(2, generated.Count);
             Assert.True(generated.All(m => m.ContainsKey(a1)));
         }
 
         private void PrintMappings(List<Dictionary<INode, INode>> mappings)
         {
-            for (int i = 0; i < mappings.Count; i++)
+            for (var i = 0; i < mappings.Count; i++)
             {
                 Console.WriteLine("Mapping " + (i + 1) + " of " + mappings.Count);
                 foreach (KeyValuePair<INode, INode> kvp in mappings[i])
                 {
-                    Console.WriteLine(this._formatter.Format(kvp.Key) + " => " + this._formatter.Format(kvp.Value));
+                    Console.WriteLine(_formatter.Format(kvp.Key) + " => " + _formatter.Format(kvp.Value));
                 }
                 Console.WriteLine();
             }
@@ -467,21 +467,21 @@ namespace VDS.RDF
         [Fact]
         public void GraphMatchNull1()
         {
-            GraphMatcher matcher = new GraphMatcher();
+            var matcher = new GraphMatcher();
             Assert.True(matcher.Equals(null, null));
         }
 
         [Fact]
         public void GraphMatchNull2()
         {
-            GraphMatcher matcher = new GraphMatcher();
+            var matcher = new GraphMatcher();
             Assert.False(matcher.Equals(new Graph(), null));
         }
 
         [Fact]
         public void GraphMatchNull3()
         {
-            GraphMatcher matcher = new GraphMatcher();
+            var matcher = new GraphMatcher();
             Assert.False(matcher.Equals(null, new Graph()));
         }
 

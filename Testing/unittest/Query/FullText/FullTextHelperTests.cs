@@ -43,20 +43,20 @@ namespace VDS.RDF.Query.FullText
 
         private void TestExtractPatterns(String query, int expectedPatterns)
         {
-            this.TestExtractPatterns(query, expectedPatterns, 0, 0);
+            TestExtractPatterns(query, expectedPatterns, 0, 0);
         }
 
         private void TestExtractPatterns(String query, int expectedPatterns, int expectedSubjArgs, int expectedObjArgs)
         {
-            FullTextPropertyFunctionFactory factory = new FullTextPropertyFunctionFactory();
+            var factory = new FullTextPropertyFunctionFactory();
             try
             {
                 PropertyFunctionFactory.AddFactory(factory);
 
-                SparqlParameterizedString queryString = new SparqlParameterizedString(query);
+                var queryString = new SparqlParameterizedString(query);
                 queryString.Namespaces.AddNamespace("pf", new Uri(FullTextHelper.FullTextMatchNamespace));
-                SparqlQuery q = this._parser.ParseFromString(queryString);
-                SparqlFormatter formatter = new SparqlFormatter(queryString.Namespaces);
+                SparqlQuery q = _parser.ParseFromString(queryString);
+                var formatter = new SparqlFormatter(queryString.Namespaces);
 
                 Console.WriteLine(formatter.Format(q));
                 Console.WriteLine();
@@ -87,49 +87,49 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextHelperExtractPatterns1()
         {
-            this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' }", 1, 1, 1);
+            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' }", 1, 1, 1);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns2()
         {
-            this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' . ?s2 pf:textMatch 'text2' }", 2, 1, 1);
+            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch 'text' . ?s2 pf:textMatch 'text2' }", 2, 1, 1);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns3()
         {
-            this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' }", 1, 2, 1);
+            TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' }", 1, 2, 1);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns4()
         {
-            this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . ?match2 pf:textMatch 'text2' }", 2, 0, 1);
+            TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . ?match2 pf:textMatch 'text2' }", 2, 0, 1);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns5()
         {
-            this.TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . (?match2 ?score2) pf:textMatch 'text2' }", 2, 2, 1);
+            TestExtractPatterns("SELECT * WHERE { (?match ?score) pf:textMatch 'text' . (?match2 ?score2) pf:textMatch 'text2' }", 2, 2, 1);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns6()
         {
-            this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75) }", 1, 1, 2);
+            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75) }", 1, 1, 2);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns7()
         {
-            this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1, 1, 3);
+            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1, 1, 3);
         }
 
         [Fact]
         public void FullTextHelperExtractPatterns8()
         {
-            this.TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1, 1, 2);
+            TestExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1, 1, 2);
         }
     }
 }

@@ -61,6 +61,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         public bool UseRdfType { get; set; }
 
+        /// <summary>
+        /// Get or set the default processing mode for the writer.
+        /// </summary>
         public JsonLdProcessingMode ProcessingMode { get; set; } = JsonLdProcessingMode.JsonLd11;
 
         /// <summary>

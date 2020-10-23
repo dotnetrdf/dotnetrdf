@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Algebra
         : IUnaryOperator
     {
         private readonly ISparqlAlgebra _inner;
-        private readonly String _var;
+        private readonly string _var;
         private readonly ISparqlExpression _expr;
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Pattern.</param>
         /// <param name="expr">Expression.</param>
         /// <param name="var">Variable to bind to.</param>
-        public Extend(ISparqlAlgebra pattern, ISparqlExpression expr, String var)
+        public Extend(ISparqlAlgebra pattern, ISparqlExpression expr, string var)
         {
             _inner = pattern;
             _expr = expr;
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variable Name to be bound.
         /// </summary>
-        public String VariableName
+        public string VariableName
         {
             get
             {
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
             else if (results is IdentityMultiset)
             {
                 context.OutputMultiset.AddVariable(_var);
-                Set s = new Set();
+                var s = new Set();
                 try
                 {
                     INode temp = _expr.Evaluate(context, 0);
@@ -151,13 +151,13 @@ namespace VDS.RDF.Query.Algebra
 
                 context.InputMultiset = results;
                 context.OutputMultiset.AddVariable(_var);
-                if (context.Options.UsePLinqEvaluation && this._expr.CanParallelise)
+                if (context.Options.UsePLinqEvaluation && _expr.CanParallelise)
                 {
                     results.SetIDs.AsParallel().ForAll(id => EvalExtend(context, results, id));
                 }
                 else
                 {
-                    foreach (int id in results.SetIDs)
+                    foreach (var id in results.SetIDs)
                     {
                         EvalExtend(context, results, id);
                     }
@@ -197,12 +197,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FloatingVariables { get { return _inner.FloatingVariables.Concat(_var.AsEnumerable()); } }
+        public IEnumerable<string> FloatingVariables { get { return _inner.FloatingVariables.Concat(_var.AsEnumerable()); } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<String> FixedVariables { get { return _inner.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return _inner.FixedVariables; } }
 
         /// <summary>
         /// Converts the Algebra to a Query.
@@ -219,10 +219,10 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = _inner.ToGraphPattern();
+            var gp = _inner.ToGraphPattern();
             if (gp.HasModifier)
             {
-                GraphPattern p = new GraphPattern();
+                var p = new GraphPattern();
                 p.AddGraphPattern(gp);
                 p.AddAssignment(new BindPattern(_var, _expr));
                 return p;

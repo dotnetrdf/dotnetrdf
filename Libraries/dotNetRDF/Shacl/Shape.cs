@@ -24,15 +24,15 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Nodes;
+using VDS.RDF.Shacl.Shapes;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Nodes;
-    using VDS.RDF.Shacl.Shapes;
-    using VDS.RDF.Shacl.Validation;
-
     internal abstract class Shape : WrapperNode
     {
         [DebuggerStepThrough]
@@ -102,9 +102,9 @@ namespace VDS.RDF.Shacl
                     from target in type.ObjectsOf(this)
                     select Target.Parse(type, target);
 
-                var targets = Vocabulary.Targets.SelectMany(selectTargets);
+                IEnumerable<Target> targets = Vocabulary.Targets.SelectMany(selectTargets);
 
-                var implicitClassTargets =
+                IEnumerable<Target> implicitClassTargets =
                     from shape in this.AsEnumerable()
                     where isClass(shape) && isShape(shape)
                     select Target.Parse(Vocabulary.TargetClass, shape);
@@ -149,7 +149,7 @@ namespace VDS.RDF.Shacl
 
         protected virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var components = (
+            IEnumerable<Constraint> components = (
                 from component in Graph.ConstraintComponents
                 where component.Matches(this)
                 select component.Constraints(this))

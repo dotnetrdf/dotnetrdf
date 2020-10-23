@@ -164,15 +164,15 @@ namespace VDS.RDF.Query.Expressions
             g.LoadFromFile(@"resources\sparql\data-3.ttl");
             Assert.False(g.IsEmpty);
 
-            SparqlQuery q = this._parser.ParseFromFile(@"resources\sparql\date-2.rq");
-            SparqlResultSet actual = g.ExecuteQuery(q) as SparqlResultSet;
+            SparqlQuery q = _parser.ParseFromFile(@"resources\sparql\date-2.rq");
+            var actual = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(actual);
 
             Console.WriteLine("Actual Results:");
             TestTools.ShowResults(actual);
 
-            SparqlResultSet expected = new SparqlResultSet();
-            this._resultsParser.Load(expected, @"resources\sparql\date-2-result.srx");
+            var expected = new SparqlResultSet();
+            _resultsParser.Load(expected, @"resources\sparql\date-2-result.srx");
 
             Console.WriteLine("Expected Results:");
             TestTools.ShowResults(expected);
@@ -187,15 +187,15 @@ namespace VDS.RDF.Query.Expressions
             g.LoadFromFile(@"resources\sparql\data-3.ttl");
             Assert.False(g.IsEmpty);
 
-            SparqlQuery q = this._parser.ParseFromFile(@"resources\sparql\date-3.rq");
-            SparqlResultSet actual = g.ExecuteQuery(q) as SparqlResultSet;
+            SparqlQuery q = _parser.ParseFromFile(@"resources\sparql\date-3.rq");
+            var actual = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(actual);
 
             Console.WriteLine("Actual Results:");
             TestTools.ShowResults(actual);
 
-            SparqlResultSet expected = new SparqlResultSet();
-            this._resultsParser.Load(expected, @"resources\sparql\date-3-result.srx");
+            var expected = new SparqlResultSet();
+            _resultsParser.Load(expected, @"resources\sparql\date-3-result.srx");
 
             Console.WriteLine("Expected Results:");
             TestTools.ShowResults(expected);
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Expressions
             INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
-            SparqlOrderingComparer comparer = new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+            var comparer = new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
 
             // Expected result is that x < y so return should be -1
             Assert.Equal(-1, comparer.Compare(dateTime1, dateTime2));
@@ -231,20 +231,20 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeSorting(String[] input, String[] output)
         {
             IGraph g = new Graph();
-            List<INode> orig =
+            var orig =
                 input.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
                      .OfType<INode>().ToList();
-            List<INode> sorted = new List<INode>(orig);
+            var sorted = new List<INode>(orig);
             sorted.Sort(new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal));
 
-            List<INode> expected =
+            var expected =
                 output.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
                       .OfType<INode>()
                       .ToList();
 
             Assert.Equal(expected.Count, sorted.Count);
 
-            for (int i = 0; i < expected.Count; i++)
+            for (var i = 0; i < expected.Count; i++)
             {
                 Assert.Equal(expected[i], sorted[i]);
             }

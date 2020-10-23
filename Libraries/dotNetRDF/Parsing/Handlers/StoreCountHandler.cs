@@ -35,7 +35,7 @@ namespace VDS.RDF.Parsing.Handlers
     public class StoreCountHandler : BaseRdfHandler
     {
         private int _counter = 0;
-        private HashSet<String> _graphs;
+        private HashSet<string> _graphs;
 
         /// <summary>
         /// Creates a new Store Count Handler.

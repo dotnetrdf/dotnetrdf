@@ -27,11 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
@@ -275,7 +270,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name.</param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(String varname)
+        public virtual IVariableNode CreateVariableNode(string varname)
         {
             return _g.CreateVariableNode(varname);
         }
@@ -681,7 +676,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleAsserted(object sender, TripleEventArgs args)
         {
             RaiseTripleAsserted(args);
         }
@@ -711,7 +706,7 @@ namespace VDS.RDF
             GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this);
+                var args = new TripleEventArgs(t, this);
                 if (d != null) d(this, args);
                 if (e != null) e(this, new GraphEventArgs(this, args));
             }
@@ -722,7 +717,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleRetracted(object sender, TripleEventArgs args)
         {
             RaiseTripleRetracted(args);
         }
@@ -752,7 +747,7 @@ namespace VDS.RDF
             GraphEventHandler e = Changed;
             if (d != null || e != null)
             {
-                TripleEventArgs args = new TripleEventArgs(t, this, false);
+                var args = new TripleEventArgs(t, this, false);
                 if (d != null) d(this, args);
                 if (e != null) e(this, new GraphEventArgs(this, args));
             }
@@ -763,7 +758,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
-        protected virtual void OnChanged(Object sender, GraphEventArgs args)
+        protected virtual void OnChanged(object sender, GraphEventArgs args)
         {
             RaiseGraphChanged(args.TripleEvent);
         }
@@ -798,7 +793,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
-        protected virtual void OnClearRequested(Object sender, CancellableGraphEventArgs args)
+        protected virtual void OnClearRequested(object sender, CancellableGraphEventArgs args)
         {
             RaiseClearRequested(args);
         }
@@ -821,7 +816,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
-        protected virtual void OnCleared(Object sender, GraphEventArgs args)
+        protected virtual void OnCleared(object sender, GraphEventArgs args)
         {
             RaiseCleared();
         }
@@ -843,7 +838,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
-        protected virtual void OnMergeRequested(Object sender, CancellableGraphEventArgs args)
+        protected virtual void OnMergeRequested(object sender, CancellableGraphEventArgs args)
         {
             RaiseMergeRequested(args);
         }
@@ -866,7 +861,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Arguments.</param>
-        protected virtual void OnMerged(Object sender, GraphEventArgs args)
+        protected virtual void OnMerged(object sender, GraphEventArgs args)
         {
             RaiseMerged();
         }

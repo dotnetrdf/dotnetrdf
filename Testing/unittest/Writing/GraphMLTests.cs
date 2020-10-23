@@ -44,9 +44,9 @@ namespace VDS.RDF.Writing
         [Fact]
         public void Produces_a_graph_element_per_graph()
         {
-            foreach (var graph in this.fixture.Input.Graphs)
+            foreach (var graph in fixture.Input.Graphs)
             {
-                var graphElement = this.fixture.GraphElementByBaseUri(graph.BaseUri);
+                var graphElement = fixture.GraphElementByBaseUri(graph.BaseUri);
 
                 Assert.NotNull(graphElement);
             }
@@ -55,9 +55,9 @@ namespace VDS.RDF.Writing
         [Fact]
         public void Produces_an_edge_element_per_triple()
         {
-            foreach (var graph in this.fixture.Input.Graphs)
+            foreach (var graph in fixture.Input.Graphs)
             {
-                var graphElement = this.fixture.GraphElementByBaseUri(graph.BaseUri);
+                var graphElement = fixture.GraphElementByBaseUri(graph.BaseUri);
 
                 var expected = graph.Triples.Count();
                 var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Edge, GraphMLSpecsHelper.NS)).Count();
@@ -69,9 +69,9 @@ namespace VDS.RDF.Writing
         [Fact]
         public void Produces_a_node_element_per_node()
         {
-            foreach (var graph in this.fixture.Input.Graphs)
+            foreach (var graph in fixture.Input.Graphs)
             {
-                var graphElement = this.fixture.GraphElementByBaseUri(graph.BaseUri);
+                var graphElement = fixture.GraphElementByBaseUri(graph.BaseUri);
 
                 var expected = graph.Nodes.Count();
                 var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();

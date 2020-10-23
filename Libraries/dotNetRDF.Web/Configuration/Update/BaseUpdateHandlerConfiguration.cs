@@ -68,7 +68,7 @@ namespace VDS.RDF.Web.Configuration.Update
             ISparqlUpdateProcessor processor;
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load Update Handler Configuration as the RDF configuration file does not specify a dnr:updateProcessor property for the Handler");
-            Object temp = ConfigurationLoader.LoadObject(g, procNode);
+            var temp = ConfigurationLoader.LoadObject(g, procNode);
             if (temp is ISparqlUpdateProcessor)
             {
                 processor = (ISparqlUpdateProcessor)temp;
@@ -77,19 +77,19 @@ namespace VDS.RDF.Web.Configuration.Update
             {
                 throw new DotNetRdfConfigurationException("Unable to load Update Handler Configuration as the RDF configuration file specifies a value for the Handlers dnr:updateProcessor property which cannot be loaded as an object which implements the ISparqlUpdateProcessor interface");
             }
-            this._processor = processor;
+            _processor = processor;
 
             // Handler Settings
-            this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), this._showUpdateForm);
-            String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
+            _showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), _showUpdateForm);
+            var defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
             if (defUpdateFile != null)
             {
                 defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
                 if (File.Exists(defUpdateFile))
                 {
-                    using (StreamReader reader = new StreamReader(defUpdateFile))
+                    using (var reader = new StreamReader(defUpdateFile))
                     {
-                        this._defaultUpdate = reader.ReadToEnd();
+                        _defaultUpdate = reader.ReadToEnd();
                         reader.Close();
                     }
                 }
@@ -99,10 +99,10 @@ namespace VDS.RDF.Web.Configuration.Update
             INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
-                Object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                var descrip = ConfigurationLoader.LoadObject(g, descripNode);
                 if (descrip is IGraph)
                 {
-                    this._serviceDescription = (IGraph)descrip;
+                    _serviceDescription = (IGraph)descrip;
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace VDS.RDF.Web.Configuration.Update
         {
             get
             {
-                return this._processor;
+                return _processor;
             }
         }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Web.Configuration.Update
         {
             get
             {
-                return this._showUpdateForm;
+                return _showUpdateForm;
             }
         }
 
@@ -140,7 +140,7 @@ namespace VDS.RDF.Web.Configuration.Update
         {
             get
             {
-                return this._defaultUpdate;
+                return _defaultUpdate;
             }
         }
 
@@ -151,7 +151,7 @@ namespace VDS.RDF.Web.Configuration.Update
         {
             get
             {
-                return this._serviceDescription;
+                return _serviceDescription;
             }
         }
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Web.Configuration.Update
             // Add Local Extension Function definitions
             IUriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
             IUriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
-            foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
+            foreach (ISparqlCustomExpressionFactory factory in _expressionFactories)
             {
                 foreach (Uri u in factory.AvailableExtensionFunctions)
                 {

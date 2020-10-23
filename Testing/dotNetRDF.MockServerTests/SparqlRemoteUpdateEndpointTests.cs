@@ -55,13 +55,13 @@ namespace dotNetRDF.MockServerTests
         {
 
             SparqlRemoteUpdateEndpoint endpoint = GetUpdateEndpoint();
-            ManualResetEvent signal = new ManualResetEvent(false);
+            var signal = new ManualResetEvent(false);
             endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
             {
                 signal.Set();
             }, null);
 
-            bool wasSet = signal.WaitOne(TimeSpan.FromSeconds(15.0));
+            var wasSet = signal.WaitOne(TimeSpan.FromSeconds(15.0));
             Assert.True(wasSet);
         }
 

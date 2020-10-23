@@ -55,18 +55,18 @@ namespace VDS.RDF.Query.PropertyFunctions
         public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
         {
             // Do a first pass which simply looks to find any 'magic' properties
-            Dictionary<PatternItem, PropertyFunctionInfo> funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
-            List<IMatchTriplePattern> ps = patterns.OfType<IMatchTriplePattern>().ToList();
+            var funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
+            var ps = patterns.OfType<IMatchTriplePattern>().ToList();
             if (ps.Count == 0) return new List<IPropertyFunctionPattern>();
             foreach (IMatchTriplePattern tp in ps)
             {
-                NodeMatchPattern predItem = tp.Predicate as NodeMatchPattern;
+                var predItem = tp.Predicate as NodeMatchPattern;
                 if (predItem == null) continue;
-                IUriNode predNode = predItem.Node as IUriNode;
+                var predNode = predItem.Node as IUriNode;
                 if (predNode == null) continue;
                 if (PropertyFunctionFactory.IsPropertyFunction(predNode.Uri, localFactories))
                 {
-                    PropertyFunctionInfo info = new PropertyFunctionInfo(predNode.Uri);
+                    var info = new PropertyFunctionInfo(predNode.Uri);
                     info.Patterns.Add(tp);
                     funcInfo.Add(tp.Subject, info);
                 }
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                 if (key.VariableName != null && key.VariableName.StartsWith("_:"))
                 {
                     // If LHS is a blank node may be collection form
-                    int count = funcInfo[key].Patterns.Count;
+                    var count = funcInfo[key].Patterns.Count;
                     ExtractRelatedPatterns(key, key, ps, funcInfo, funcInfo[key].SubjectArgs);
                     if (funcInfo[key].Patterns.Count == count)
                     {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                 if (searchKey.VariableName != null && searchKey.VariableName.StartsWith("_:"))
                 {
                     // If RHS is a blank node may be collection form
-                    int count = funcInfo[key].Patterns.Count;
+                    var count = funcInfo[key].Patterns.Count;
                     ExtractRelatedPatterns(key, searchKey, ps, funcInfo, funcInfo[key].ObjectArgs);
                     if (funcInfo[key].Patterns.Count == count)
                     {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
 
             // Now try to create actual property functions
-            List<IPropertyFunctionPattern> propFunctions = new List<IPropertyFunctionPattern>();
+            var propFunctions = new List<IPropertyFunctionPattern>();
             foreach (PatternItem key in funcInfo.Keys)
             {
                 IPropertyFunctionPattern propFunc;
@@ -150,9 +150,9 @@ namespace VDS.RDF.Query.PropertyFunctions
                 {
                     if (tp.Subject.VariableName == nextSubj.VariableName)
                     {
-                        NodeMatchPattern predItem = tp.Predicate as NodeMatchPattern;
+                        var predItem = tp.Predicate as NodeMatchPattern;
                         if (predItem == null) continue;
-                        IUriNode predNode = predItem.Node as IUriNode;
+                        var predNode = predItem.Node as IUriNode;
                         if (predNode == null) continue;
                         if (!argSeen && predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListFirst))
                         {

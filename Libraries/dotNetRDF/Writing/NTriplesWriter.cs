@@ -110,8 +110,8 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to.</param>
         protected override void SaveInternal(IGraph g, TextWriter output)
         {
-            NTriplesWriterContext context = new NTriplesWriterContext(g, output, Syntax);
-            List<Triple> ts = g.Triples.ToList();
+            var context = new NTriplesWriterContext(g, output, Syntax);
+            var ts = g.Triples.ToList();
             if (_sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
             foreach (Triple t in ts)
@@ -126,9 +126,9 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context.</param>
         /// <param name="t">Triple to convert.</param>
         /// <returns></returns>
-        private String TripleToNTriples(NTriplesWriterContext context, Triple t)
+        private string TripleToNTriples(NTriplesWriterContext context, Triple t)
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append(NodeToNTriples(context, t.Subject, TripleSegment.Subject));
             output.Append(" ");
             output.Append(NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
@@ -146,7 +146,7 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node to convert.</param>
         /// <param name="segment">Segment of the Triple being written.</param>
         /// <returns></returns>
-        private String NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
+        private string NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
             {
@@ -181,7 +181,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             RdfWriterWarning d = Warning;
             if (d != null)

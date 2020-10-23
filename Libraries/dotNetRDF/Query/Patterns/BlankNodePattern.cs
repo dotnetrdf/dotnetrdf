@@ -35,13 +35,13 @@ namespace VDS.RDF.Query.Patterns
     public class BlankNodePattern 
         : PatternItem
     {
-        private String _name;
+        private string _name;
 
         /// <summary>
         /// Creates a new Pattern representing a Blank Node.
         /// </summary>
         /// <param name="name">Blank Node ID.</param>
-        public BlankNodePattern(String name)
+        public BlankNodePattern(string name)
         {
             _name = "_:" + name;
         }
@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="name">Blank Node ID.</param>
         /// <param name="rigorousEvaluation">Whether to force rigorous evaluation.</param>
-        public BlankNodePattern(String name, bool rigorousEvaluation)
+        public BlankNodePattern(string name, bool rigorousEvaluation)
             : this(name)
         {
             RigorousEvaluation = rigorousEvaluation;
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Blank Node ID.
         /// </summary>
-        public String ID
+        public string ID
         {
             get
             {

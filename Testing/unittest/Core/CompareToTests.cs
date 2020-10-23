@@ -61,9 +61,9 @@ namespace VDS.RDF
             if (nodes.Count == 0) Assert.True(false, "No Input");
 
             _output.WriteLine("INode Typed Tests");
-            for (int i = 0; i < nodes.Count; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
-                for (int j = 0; j < nodes.Count; j++)
+                for (var j = 0; j < nodes.Count; j++)
                 {
                     INode a = nodes[i];
                     INode b = nodes[j];
@@ -78,8 +78,8 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        int c = a.CompareTo(b);
-                        int d = comparer.Compare(a, b);
+                        var c = a.CompareTo(b);
+                        var d = comparer.Compare(a, b);
                         Assert.Equal(c * -1, b.CompareTo(a));
                         Assert.Equal(d * -1, comparer.Compare(b, a));
 
@@ -109,9 +109,9 @@ namespace VDS.RDF
             if (nodes.Count == 0) Assert.True(false, "No Input");
 
             _output.WriteLine("Strongly Typed Tests - " + nodes.GetType().ToString());
-            for (int i = 0; i < nodes.Count; i++)
+            for (var i = 0; i < nodes.Count; i++)
             {
-                for (int j = 0; j < nodes.Count; j++)
+                for (var j = 0; j < nodes.Count; j++)
                 {
                     T a = nodes[i];
                     T b = nodes[j];
@@ -123,7 +123,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        int c = comparer.Compare(a, b);
+                        var c = comparer.Compare(a, b);
                         Assert.Equal(c * -1, comparer.Compare(b, a));
 
                         if (c > 0)
@@ -150,7 +150,7 @@ namespace VDS.RDF
         private void ShowOrdering(IEnumerable<INode> nodes, CompareOptions compareOptions = CompareOptions.Ordinal)
         {
             _output.WriteLine("Standard Ordering");
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (INode n in nodes.OrderBy(x => x))
             {
                 _output.WriteLine(n.ToString(formatter));
@@ -170,7 +170,7 @@ namespace VDS.RDF
         private void ShowOrdering(IEnumerable<INode> nodes, IComparer<INode> comparer)
         {
             _output.WriteLine("Standard Ordering");
-            NTriplesFormatter formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter();
             foreach (INode n in nodes.OrderBy(x => x))
             {
                 _output.WriteLine(n.ToString(formatter));
@@ -190,11 +190,11 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToBlankNodes()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
             IBlankNode b = g.CreateBlankNode();
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 b,
                 g.CreateBlankNode(),
@@ -214,10 +214,10 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             ILiteralNode plain = g.CreateLiteralNode("plain");
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 plain,
                 g.CreateLiteralNode("plain english", "en"),
@@ -241,9 +241,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToMalformedLiteralNodes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
@@ -262,9 +262,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToWithCompareOptions()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something"),
                 g.CreateLiteralNode("Something"),
@@ -284,9 +284,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdBytes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte)),
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte)),
@@ -305,9 +305,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedBytes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte)),
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte)),
@@ -326,9 +326,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdIntegers()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
@@ -347,9 +347,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdShorts()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeShort)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeShort)),
@@ -368,9 +368,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdLongs()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeLong)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeLong)),
@@ -389,9 +389,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedIntegers()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)),
@@ -410,9 +410,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedShorts()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort)),
@@ -431,9 +431,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdUnsignedLongs()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong)),
@@ -452,9 +452,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdNegativeIntegers()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger)),
@@ -473,9 +473,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdNonPositiveIntegers()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger)),
@@ -494,9 +494,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdNonNegativeIntegers()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger)),
@@ -515,9 +515,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdPositiveIntegers()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypePositiveInteger)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypePositiveInteger)),
@@ -536,9 +536,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdHexBinary()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeHexBinary)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeHexBinary)),
@@ -557,9 +557,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdDoubles()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)),
@@ -585,9 +585,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdFloats()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat)),
@@ -613,9 +613,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdUris()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)),
                 g.CreateLiteralNode("thing", new Uri(XmlSpecsHelper.XmlSchemaDataTypeAnyUri)),
@@ -640,9 +640,9 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToLiteralNodesXsdDateTimes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 g.CreateLiteralNode("something", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
                 DateTime.Now.ToLiteral(g),
@@ -666,10 +666,10 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToUriNodes()
         {
-            Graph g = new Graph();
+            var g = new Graph();
 
             IUriNode u = g.CreateUriNode("rdf:type");
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 u,
                 g.CreateUriNode(new Uri("http://example.org")),
@@ -695,13 +695,13 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToMixedNodes()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
             IBlankNode b = g.CreateBlankNode();
             ILiteralNode plain = g.CreateLiteralNode("plain");
             IUriNode u = g.CreateUriNode("rdf:type");
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 b,
                 g.CreateBlankNode(),
@@ -737,13 +737,13 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToMixedNodes3()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
 
             IBlankNode b = g.CreateBlankNode();
             ILiteralNode plain = g.CreateLiteralNode("plain");
             IUriNode u = g.CreateUriNode("rdf:type");
-            List<INode> nodes = new List<INode>()
+            var nodes = new List<INode>()
             {
                 b,
                 g.CreateBlankNode(),
@@ -802,13 +802,13 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToMixedNodes2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             IBlankNode b = g.CreateBlankNode();
             ILiteralNode l = g.CreateLiteralNode("literal", "en");
             IUriNode u = g.CreateUriNode(new Uri("http://example.org"));
             IVariableNode v = g.CreateVariableNode("var");
 
-            int c = b.CompareTo(l);
+            var c = b.CompareTo(l);
             Assert.Equal(c * -1, l.CompareTo(b));
             c = b.CompareTo(u);
             Assert.Equal(c * -1, u.CompareTo(b));
@@ -871,12 +871,12 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToEquivalentLiterals1()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             ILiteralNode canonical = (1).ToLiteral(g);
             ILiteralNode alternate =
                 g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
-            List<INode> ns = new List<INode>()
+            var ns = new List<INode>()
             {
                 canonical,
                 alternate
@@ -894,12 +894,12 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToEquivalentLiterals2()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             ILiteralNode canonical = (true).ToLiteral(g);
             ILiteralNode alternate =
                 g.CreateLiteralNode("TRUE", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
 
-            List<INode> ns = new List<INode>()
+            var ns = new List<INode>()
             {
                 canonical,
                 alternate
@@ -917,12 +917,12 @@ namespace VDS.RDF
         [Fact]
         public void NodeCompareToEquivalentLiterals3()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             ILiteralNode canonical = (1d).ToLiteral(g);
             ILiteralNode alternate =
                 g.CreateLiteralNode("1.00000", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
 
-            List<INode> ns = new List<INode>()
+            var ns = new List<INode>()
             {
                 canonical,
                 alternate

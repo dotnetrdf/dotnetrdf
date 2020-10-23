@@ -45,7 +45,7 @@ _:a a dnr:TripleCollection ;
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNode()
         {
             // given
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(TestConfigGraph);
 
             // when
@@ -61,7 +61,7 @@ _:a a dnr:TripleCollection ;
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUri()
         {
             // given
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(TestConfigGraph);
 
             // when
@@ -77,7 +77,7 @@ _:a a dnr:TripleCollection ;
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNodeUsingTypeAsParameter()
         {
             // given
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(TestConfigGraph);
 
             // when
@@ -93,7 +93,7 @@ _:a a dnr:TripleCollection ;
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUriUsingTypeAsParameter()
         {
             // given
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromString(TestConfigGraph);
 
             // when

@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public static String getCustomizedLabel(IResource resource)
         {
-            String label = resource.getString(RDFS.PropertyLabel);
+            var label = resource.getString(RDFS.PropertyLabel);
             if (label != null)
             {
                 return label;

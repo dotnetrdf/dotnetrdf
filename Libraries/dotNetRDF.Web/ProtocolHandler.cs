@@ -71,7 +71,7 @@ namespace VDS.RDF.Web
             basePath = context.Request.Path;
 
             // Is our Configuration already cached?
-            Object temp = context.Cache[context.Request.Path];
+            var temp = context.Cache[context.Request.Path];
             if (temp != null)
             {
                 if (temp is BaseProtocolHandlerConfiguration)
@@ -85,15 +85,15 @@ namespace VDS.RDF.Web
             }
 
             // Check the Configuration File is specified
-            String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
+            var configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
             if (configFile == null) throw new DotNetRdfConfigurationException("Unable to load Protocol Handler Configuration as the Web.Config file does not specify a 'dotNetRDFConfig' AppSetting to specify the RDF configuration file to use");
             IGraph g = WebConfigurationLoader.LoadConfigurationGraph(context, configFile);
 
             // Then check there is configuration associated with the expected URI
-            String objUri = "dotnetrdf:" + context.Request.Path;
+            var objUri = "dotnetrdf:" + context.Request.Path;
             INode objNode = g.GetUriNode(UriFactory.Create(objUri));
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Protocol Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
-            ProtocolHandlerConfiguration config = new ProtocolHandlerConfiguration(new WebContext(context), g, objNode);
+            var config = new ProtocolHandlerConfiguration(new WebContext(context), g, objNode);
 
             // Finally cache the Configuration before returning it
             if (config.CacheSliding)
@@ -113,7 +113,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         protected override void UpdateConfig(HttpContext context)
         {
-            if (this._config.CacheDuration == 0)
+            if (_config.CacheDuration == 0)
             {
                 if (context.Cache[context.Request.Path] != null) context.Cache.Remove(context.Request.Path);
             }
@@ -121,20 +121,20 @@ namespace VDS.RDF.Web
             {
                 if (context.Cache[context.Request.Path] != null)
                 {
-                    context.Cache[context.Request.Path] = this._config;
+                    context.Cache[context.Request.Path] = _config;
                 }
                 else
                 {
-                    String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
+                    var configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
                     System.Web.Caching.CacheDependency dependency = (configFile != null) ? new System.Web.Caching.CacheDependency(configFile) : null;
 
-                    if (this._config.CacheSliding)
+                    if (_config.CacheSliding)
                     {
-                        context.Cache.Add(context.Request.Path, this._config, dependency, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, this._config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                        context.Cache.Add(context.Request.Path, _config, dependency, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, _config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
                     }
                     else
                     {
-                        context.Cache.Add(context.Request.Path, this._config, dependency, DateTime.Now.AddMinutes(this._config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                        context.Cache.Add(context.Request.Path, _config, dependency, DateTime.Now.AddMinutes(_config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
                     }
                 }
             }

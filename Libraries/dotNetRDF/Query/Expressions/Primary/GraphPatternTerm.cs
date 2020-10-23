@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

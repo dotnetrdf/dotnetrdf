@@ -49,18 +49,18 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Configuration Namespace URI.
         /// </summary>
-        public const String ConfigurationNamespace = "http://www.dotnetrdf.org/configuration#";
+        public const string ConfigurationNamespace = "http://www.dotnetrdf.org/configuration#";
 
         /// <summary>
         /// Constants for URI Schemes with special meaning within the Configuration API.
         /// </summary>
-        public const String UriSchemeAppSettings = "appsetting",
+        public const string UriSchemeAppSettings = "appsetting",
                             UriSchemeConfigureOptions = "dotnetrdf-configure";
 
         /// <summary>
         /// URI Constants for configuration properties.
         /// </summary>
-        public const String PropertyType = ConfigurationNamespace + "type",
+        public const string PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
                             PropertyConfigure = ConfigurationNamespace  + "configure",
                             PropertyEnabled = ConfigurationNamespace + "enabled",
@@ -162,7 +162,7 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// URI Constants for configuration classes.
         /// </summary>
-        public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
+        public const string ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
                             // Classes for Triple Stores and Graphs and their associated low level storage
                             ClassTripleStore = ConfigurationNamespace + "TripleStore",
                             ClassGraphCollection = ConfigurationNamespace + "GraphCollection",
@@ -205,7 +205,7 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// QName Constants for Default Types for some configuration classes.
         /// </summary>
-        public const String DefaultTypeTripleStore = "VDS.RDF.TripleStore",
+        public const string DefaultTypeTripleStore = "VDS.RDF.TripleStore",
                             DefaultTypeGraphCollection  = "VDS.RDF.GraphCollection",
                             DefaultTypeGraph = "VDS.RDF.Graph",
                             DefaultTypeTripleCollection = "VDS.RDF.TreeIndexedTripleCollection",
@@ -221,7 +221,7 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Cache for loaded objects.
         /// </summary>
-        private static Dictionary<CachedObjectKey, Object> _cache = new Dictionary<CachedObjectKey, object>();
+        private static Dictionary<CachedObjectKey, object> _cache = new Dictionary<CachedObjectKey, object>();
 
         /// <summary>
         /// Set of built-in object factories that are automatically registered and used.
@@ -314,7 +314,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="file">File to load from.</param>
         /// <returns></returns>
-        public static IGraph LoadConfiguration(String file)
+        public static IGraph LoadConfiguration(string file)
         {
             return LoadConfiguration(file, true);
         }
@@ -325,9 +325,9 @@ namespace VDS.RDF.Configuration
         /// <param name="file">File to load from.</param>
         /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
-        public static IGraph LoadConfiguration(String file, bool autoConfigure)
+        public static IGraph LoadConfiguration(string file, bool autoConfigure)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             FileLoader.Load(g, file);
             return LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
@@ -337,7 +337,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="resource">Embedded Resource to load.</param>
         /// <returns></returns>
-        public static IGraph LoadEmbeddedConfiguration(String resource)
+        public static IGraph LoadEmbeddedConfiguration(string resource)
         {
             return LoadEmbeddedConfiguration(resource, true);
         }
@@ -348,9 +348,9 @@ namespace VDS.RDF.Configuration
         /// <param name="resource">Embedded Resource to load.</param>
         /// <param name="autoConfigure">Whether to apply auto-configuration.</param>
         /// <returns></returns>
-        public static IGraph LoadEmbeddedConfiguration(String resource, bool autoConfigure)
+        public static IGraph LoadEmbeddedConfiguration(string resource, bool autoConfigure)
         {
-            Graph g = new Graph();
+            var g = new Graph();
             EmbeddedResourceLoader.Load(g, resource);
             return LoadCommon(g, g.CreateLiteralNode(resource), autoConfigure);
         }
@@ -377,7 +377,7 @@ namespace VDS.RDF.Configuration
         private static IGraph LoadCommon(IGraph g, IEnumerable<INode> sources, bool autoConfigure)
         {
             // Add initial sources to already imported list
-            HashSet<INode> imported = new HashSet<INode>();
+            var imported = new HashSet<INode>();
             foreach (INode source in sources)
             {
                 imported.Add(source);
@@ -385,7 +385,7 @@ namespace VDS.RDF.Configuration
 
             // Find initial imports
             INode imports = g.CreateUriNode(UriFactory.Create(PropertyImports));
-            Queue<INode> importQueue = new Queue<INode>();
+            var importQueue = new Queue<INode>();
             foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
             {
                 importQueue.Enqueue(importData);
@@ -395,7 +395,7 @@ namespace VDS.RDF.Configuration
             {
                 // Load data from imported configuration graph
                 INode importData = importQueue.Dequeue();
-                Graph data = new Graph();
+                var data = new Graph();
                 switch (importData.NodeType)
                 {
                     case NodeType.Uri:
@@ -457,7 +457,7 @@ namespace VDS.RDF.Configuration
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
             {
-                Object temp = LoadObject(g, objNode);
+                var temp = LoadObject(g, objNode);
                 if (temp is IObjectFactory)
                 {
                     AddObjectFactory((IObjectFactory)temp);
@@ -496,15 +496,15 @@ namespace VDS.RDF.Configuration
                     if (propertyUri.Scheme.Equals(UriSchemeConfigureOptions))
                     {
                         // Parse the Class and Property out of the URI
-                        String className = propertyUri.AbsolutePath;
+                        var className = propertyUri.AbsolutePath;
                         if (propertyUri.Fragment.Length <= 1) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> is missing the fragment identifier to specify the property name");
-                        String propName = propertyUri.Fragment.Substring(1);
+                        var propName = propertyUri.Fragment.Substring(1);
 
                         // Get the Value we are setting to this property
                         INode value = t.Object;
 
                         // Get the type whose static option we are attempting to change
-                        Type type = Type.GetType(className);
+                        var type = Type.GetType(className);
                         if (type == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a class '" + className + "' which could not be loaded.  Please ensure the type name is fully qualified");
 
                         // Get the property in question
@@ -517,20 +517,20 @@ namespace VDS.RDF.Configuration
                             IValuedNode valueNode = value.AsValuedNode();
                             if (valueType.Equals(typeof(int)))
                             {
-                                int intValue = (int)valueNode.AsInteger();
+                                var intValue = (int)valueNode.AsInteger();
                                 property.SetValue(null, intValue, null);
                             }
                             else if (valueType.Equals(typeof(long)))
                             {
-                                long longValue = valueNode.AsInteger();
+                                var longValue = valueNode.AsInteger();
                                 property.SetValue(null, longValue, null);
                             }
                             else if (valueType.Equals(typeof(bool)))
                             {
-                                bool boolValue = valueNode.AsBoolean();
+                                var boolValue = valueNode.AsBoolean();
                                 property.SetValue(null, boolValue, null);
                             }
-                            else if (valueType.Equals(typeof(String)))
+                            else if (valueType.Equals(typeof(string)))
                             {
                                 property.SetValue(null, valueNode.AsString(), null);
                             }
@@ -546,7 +546,7 @@ namespace VDS.RDF.Configuration
 #endif
                             {
                                 if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t + " - the object must be a literal when the property being set has a enumeration type");
-                                Object enumVal = Enum.Parse(valueType, valueNode.AsString(), true);
+                                var enumVal = Enum.Parse(valueType, valueNode.AsString(), true);
                                 property.SetValue(null, enumVal, null);
                             }
                             else
@@ -579,8 +579,8 @@ namespace VDS.RDF.Configuration
             INode desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfParser));
             INode formatMimeType = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
             INode formatExtension = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
-            Object temp;
-            String[] mimeTypes, extensions;
+            object temp;
+            string[] mimeTypes, extensions;
 
             // Load RDF Parsers
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
@@ -720,10 +720,10 @@ namespace VDS.RDF.Configuration
 
             foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
             {
-                Object temp = LoadObject(g, t.Subject);
+                var temp = LoadObject(g, t.Subject);
                 if (temp is ISparqlOperator)
                 {
-                    bool enable = GetConfigurationBoolean(g, t.Subject, enabled, true);
+                    var enable = GetConfigurationBoolean(g, t.Subject, enabled, true);
                     if (enable)
                     {
                         SparqlOperators.AddOperator((ISparqlOperator)temp);
@@ -758,7 +758,7 @@ namespace VDS.RDF.Configuration
         /// The <see cref="ConfigurationLoader">ConfigurationLoader</see> is not currently capable of detecting more subtle circular references.
         /// </para>
         /// </remarks>
-        public static bool CheckCircularReference(INode a, INode b, String property)
+        public static bool CheckCircularReference(INode a, INode b, string property)
         {
             if (a.Equals(b))
             {
@@ -782,7 +782,7 @@ namespace VDS.RDF.Configuration
         /// </para>
         /// </remarks>
         [Obsolete("This method is obsolete and should no longer be used, constants are now URIs so you should just create URI Nodes directly on your Configuration Graph", true)]
-        public static INode CreateConfigurationNode(IGraph g, String qname)
+        public static INode CreateConfigurationNode(IGraph g, string qname)
         {
             return g.CreateUriNode(UriFactory.Create(qname));
         }
@@ -826,7 +826,7 @@ namespace VDS.RDF.Configuration
         /// Only returns the value part of Literal Nodes which are given as values for the property i.e. ignores all non-Literals and discards any language/data type from Literals.
         /// </para>
         /// </remarks>
-        public static String[] GetConfigurationArray(IGraph g, INode objNode, INode property)
+        public static string[] GetConfigurationArray(IGraph g, INode objNode, INode property)
         {
             return g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).Where(n => n.NodeType == NodeType.Literal).Select(n => ((ILiteralNode)n).Value).ToArray();
         }
@@ -874,7 +874,7 @@ namespace VDS.RDF.Configuration
         /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,INode)">GetConfigurationValue</see> function instead.
         /// </para>
         /// </returns>
-        public static String GetConfigurationString(IGraph g, INode objNode, INode property)
+        public static string GetConfigurationString(IGraph g, INode objNode, INode property)
         {
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return null;
@@ -905,7 +905,7 @@ namespace VDS.RDF.Configuration
         /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,IEnumerable{INode})">GetConfigurationValue</see> function instead.
         /// </para>
         /// </returns>
-        public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
+        public static string GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
             return properties.Select(p => GetConfigurationString(g, objNode, p)).Where(s => s != null).FirstOrDefault();
         }
@@ -917,7 +917,7 @@ namespace VDS.RDF.Configuration
         /// <param name="objNode">Object Node.</param>
         /// <param name="property">Property Node.</param>
         /// <returns></returns>
-        public static String GetConfigurationValue(IGraph g, INode objNode, INode property)
+        public static string GetConfigurationValue(IGraph g, INode objNode, INode property)
         {
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return null;
@@ -950,7 +950,7 @@ namespace VDS.RDF.Configuration
         /// <param name="objNode">Object Node.</param>
         /// <param name="properties">Property Nodes.</param>
         /// <returns></returns>
-        public static String GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
+        public static string GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
             return properties.Select(p => GetConfigurationValue(g, objNode, p)).Where(s => s != null).FirstOrDefault();
         }
@@ -1170,7 +1170,7 @@ namespace VDS.RDF.Configuration
         /// <remarks>
         /// Username and/or Password will be null if there is no value specified for the relevant properties.
         /// </remarks>
-        public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out String user, out String pwd)
+        public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out string user, out string pwd)
         {
             INode propUser = g.CreateUriNode(UriFactory.Create(PropertyUser)),
                   propPwd = g.CreateUriNode(UriFactory.Create(PropertyPassword));
@@ -1184,7 +1184,7 @@ namespace VDS.RDF.Configuration
                 INode credObj = GetConfigurationNode(g, objNode, propCredentials);
                 if (credObj != null)
                 {
-                    NetworkCredential credentials = (NetworkCredential)LoadObject(g, credObj, typeof(NetworkCredential));
+                    var credentials = (NetworkCredential)LoadObject(g, credObj, typeof(NetworkCredential));
                     user = credentials.UserName;
                     pwd = credentials.Password;
                 }
@@ -1202,7 +1202,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static bool IsCached(IGraph g, INode objNode)
         {
-            CachedObjectKey key = new CachedObjectKey(objNode, g);
+            var key = new CachedObjectKey(objNode, g);
             return _cache.ContainsKey(key);
         }
 
@@ -1221,7 +1221,7 @@ namespace VDS.RDF.Configuration
         /// Callers should also take care that any Objects returned from this method are disposed of when the caller no longer has a use for them as otherwise the reference kept in the cache here will cause the Object to remain in-memory consuming resources.
         /// </para>
         /// </remarks>
-        public static Object LoadObject(IGraph g, INode objNode, Type targetType)
+        public static object LoadObject(IGraph g, INode objNode, Type targetType)
         {
             if (targetType == null) throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as a null target type was provided - this may be due to a failure to specify a fully qualified type name with the dnr:type property for this object");
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load an Object as a null Object Node was provided");
@@ -1232,7 +1232,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Use an Object caching mechanism to avoid instantiating the same thing multiple times since this could be VERY costly
-            CachedObjectKey key = new CachedObjectKey(objNode, g);
+            var key = new CachedObjectKey(objNode, g);
             if (_cache.ContainsKey(key))
             {
                 if (_cache[key] == null)
@@ -1252,7 +1252,7 @@ namespace VDS.RDF.Configuration
             }
             _cache.Add(key, null);
 
-            Object temp = null;
+            object temp = null;
 
             // Try and find an Object Loader that can load this object
             try
@@ -1292,9 +1292,9 @@ namespace VDS.RDF.Configuration
         /// Use this overload when you have a Node which identifies an Object and you don't know what the type of that Object is.  This function looks up the <strong>dnr:type</strong> property for the given Object and then calls the other version of this function providing it with the relevant type information.
         /// </para>
         /// </remarks>
-        public static Object LoadObject(IGraph g, INode objNode)
+        public static object LoadObject(IGraph g, INode objNode)
         {
-            String typeName = GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
+            var typeName = GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
             if (typeName == null)
             {
                 typeName = GetDefaultType(g, objNode);
@@ -1318,14 +1318,14 @@ namespace VDS.RDF.Configuration
         /// <strong>Note:</strong> Only some configuration classes have corresponding default types, in general it is recommended that Configuration Graphs should always use the dnr:type property to explicitly state the intended type of an Object.
         /// </para>
         /// </remarks>
-        public static String GetDefaultType(IGraph g, INode objNode)
+        public static string GetDefaultType(IGraph g, INode objNode)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode declaredType = GetConfigurationNode(g, objNode, rdfType);
             if (declaredType == null) return null; //Fixes Bug CORE-98
             if (declaredType.NodeType == NodeType.Uri)
             {
-                String typeUri = declaredType.ToString();
+                var typeUri = declaredType.ToString();
                 if (typeUri.StartsWith(ConfigurationNamespace))
                 {
                     return GetDefaultType(typeUri);
@@ -1340,7 +1340,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="typeUri">Type URI declared by the rdf:type property.</param>
         /// <returns></returns>
-        public static String GetDefaultType(String typeUri)
+        public static string GetDefaultType(string typeUri)
         {
             switch (typeUri)
             {
@@ -1393,8 +1393,8 @@ namespace VDS.RDF.Configuration
             Uri uri = ((IUriNode)n).Uri;
             if (!uri.Scheme.Equals(UriSchemeAppSettings)) return n;
 
-            String strUri = uri.AbsoluteUri;
-            String key = strUri.Substring(strUri.IndexOf(':') + 1);
+            var strUri = uri.AbsoluteUri;
+            var key = strUri.Substring(strUri.IndexOf(':') + 1);
 
             var setting = SettingsProvider.GetSetting(key);
             if (setting == null)
@@ -1491,7 +1491,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given blank node identifier as an <see cref="Object"/>.
+        /// Loads the Object identified by the given blank node identifier as an <see cref="object"/>.
         /// </summary>
         /// <remarks>
         /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
@@ -1508,7 +1508,7 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given URI as an <see cref="Object"/>.
+        /// Loads the Object identified by the given URI as an <see cref="object"/>.
         /// </summary>
         /// <remarks>
         /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/>. 
@@ -1559,7 +1559,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="path">Path to resolve.</param>
         /// <returns></returns>
-        public static String ResolvePath(String path)
+        public static string ResolvePath(string path)
         {
             if (_resolver == null) return path;
             return _resolver.ResolvePath(path);

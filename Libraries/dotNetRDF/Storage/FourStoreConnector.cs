@@ -56,7 +56,7 @@ namespace VDS.RDF.Storage
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage, IConfigurationSerializable
         , IUpdateableStorage
     {
-        private String _baseUri;
+        private string _baseUri;
         private SparqlRemoteEndpoint _endpoint;
         private SparqlRemoteUpdateEndpoint _updateEndpoint;
         private bool _updatesEnabled = true;
@@ -70,7 +70,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor.
         /// </remarks>
-        public FourStoreConnector(String baseUri)
+        public FourStoreConnector(string baseUri)
         {
             // Determine the appropriate actual Base Uri
             if (baseUri.EndsWith("sparql/"))
@@ -104,7 +104,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
         /// </remarks>
-        public FourStoreConnector(String baseUri, bool enableUpdateSupport)
+        public FourStoreConnector(string baseUri, bool enableUpdateSupport)
             : this(baseUri)
         {
             _updatesEnabled = enableUpdateSupport;
@@ -118,7 +118,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor.
         /// </remarks>
-        public FourStoreConnector(String baseUri, IWebProxy proxy)
+        public FourStoreConnector(string baseUri, IWebProxy proxy)
             : this(baseUri)
         {
             Proxy = proxy;
@@ -133,7 +133,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
         /// </remarks>
-        public FourStoreConnector(String baseUri, bool enableUpdateSupport, IWebProxy proxy)
+        public FourStoreConnector(string baseUri, bool enableUpdateSupport, IWebProxy proxy)
             : this(baseUri, enableUpdateSupport)
         {
             Proxy = proxy;
@@ -233,9 +233,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public void LoadGraph(IGraph g, String graphUri)
+        public void LoadGraph(IGraph g, string graphUri)
         {
-            if (g.IsEmpty && graphUri != null & !graphUri.Equals(String.Empty))
+            if (g.IsEmpty && graphUri != null & !graphUri.Equals(string.Empty))
             {
                 g.BaseUri = UriFactory.Create(graphUri);
             }
@@ -247,9 +247,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="graphUri">URI of the Graph to load.</param>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            if (!graphUri.Equals(String.Empty))
+            if (!graphUri.Equals(string.Empty))
             {
                 _endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }");
             }
@@ -291,11 +291,11 @@ namespace VDS.RDF.Storage
                 request = ApplyRequestOptions(request);
 
                 // Write the Graph as Turtle to the Request Stream
-                CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
+                var writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 // Make the Request
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     // If we get here then it was OK
                     response.Close();
@@ -339,13 +339,13 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
         /// </remarks>
-        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (!_updatesEnabled)
             {
                 throw new RdfStorageException("4store does not support Triple level updates");
             }
-            else if (graphUri.Equals(String.Empty))
+            else if (graphUri.Equals(string.Empty))
             {
                 throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
             }
@@ -353,7 +353,7 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    StringBuilder delete = new StringBuilder();
+                    var delete = new StringBuilder();
                     if (removals != null)
                     {
                         if (removals.Any())
@@ -369,7 +369,7 @@ namespace VDS.RDF.Storage
                         }
                     }
 
-                    StringBuilder insert = new StringBuilder();
+                    var insert = new StringBuilder();
                     if (additions != null)
                     {
                         if (additions.Any())
@@ -417,10 +417,10 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Depending on the version of <a href="http://librdf.org/rasqal/">RASQAL</a> used and the options it was built with some kinds of queries may not suceed or return unexpected results.
         /// </remarks>
-        public Object Query(String sparqlQuery)
+        public object Query(string sparqlQuery)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
             if (results.ResultsType != SparqlResultsType.Unknown)
@@ -439,7 +439,7 @@ namespace VDS.RDF.Storage
         /// <param name="rdfHandler">RDF Handler.</param>
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="sparqlQuery">SPARQL Query.</param>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
             {
@@ -447,7 +447,7 @@ namespace VDS.RDF.Storage
                 _endpoint.Proxy = Proxy;
                 _endpoint.UseCredentialsForProxy = false;
                 HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery);
-                StreamReader data = new StreamReader(response.GetResponseStream());
+                var data = new StreamReader(response.GetResponseStream());
                 try
                 {
                     // Is the Content Type referring to a Sparql Result Set format?
@@ -491,13 +491,13 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the 4store server.
         /// </summary>
         /// <param name="graphUri">Uri of Graph to delete.</param>
-        public void DeleteGraph(String graphUri)
+        public void DeleteGraph(string graphUri)
         {
             try
             {
                 // Set up the Request
                 HttpWebRequest request;
-                if (!graphUri.Equals(String.Empty))
+                if (!graphUri.Equals(string.Empty))
                 {
                     request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(graphUri));
                 }
@@ -509,7 +509,7 @@ namespace VDS.RDF.Storage
                 request = ApplyRequestOptions(request);
 
                 // Make the Request
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     response.Close();
                 }
@@ -530,10 +530,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet)
                 {
-                    List<Uri> graphs = new List<Uri>();
+                    var graphs = new List<Uri>();
                     foreach (SparqlResult r in ((SparqlResultSet)results))
                     {
                         if (r.HasValue("g"))
@@ -565,7 +565,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> Please be aware that some valid SPARQL Updates may not be accepted by 4store since the SPARQL parser used by 4store does not support some of the latest editors draft syntax changes.
         /// </remarks>
-        public void Update(String sparqlUpdate)
+        public void Update(string sparqlUpdate)
         {
             _updateEndpoint.Update(sparqlUpdate);
         }
@@ -593,7 +593,7 @@ namespace VDS.RDF.Storage
             request = ApplyRequestOptions(request);
 
             // Write the Graph as Turtle to the Request Stream
-            CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
+            var writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
             SaveGraphAsync(request, writer, g, callback, state);
         }
 
@@ -606,7 +606,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
-            if (!graphUri.Equals(String.Empty))
+            if (!graphUri.Equals(string.Empty))
             {
                 _endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }", (rdfH, resH, st) =>
                     {
@@ -633,7 +633,7 @@ namespace VDS.RDF.Storage
             {
                 throw new RdfStorageException("4store does not support Triple level updates");
             }
-            else if (graphUri.Equals(String.Empty))
+            else if (graphUri.Equals(string.Empty))
             {
                 throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
             }
@@ -641,7 +641,7 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    StringBuilder delete = new StringBuilder();
+                    var delete = new StringBuilder();
                     if (removals != null)
                     {
                         if (removals.Any())
@@ -657,7 +657,7 @@ namespace VDS.RDF.Storage
                         }
                     }
 
-                    StringBuilder insert = new StringBuilder();
+                    var insert = new StringBuilder();
                     if (additions != null)
                     {
                         if (additions.Any())
@@ -721,7 +721,7 @@ namespace VDS.RDF.Storage
         {
             // Set up the Request
             HttpWebRequest request;
-            if (!graphUri.Equals(String.Empty))
+            if (!graphUri.Equals(string.Empty))
             {
                 request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(graphUri));
                 request.Method = "DELETE";
@@ -763,8 +763,8 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
-            Graph g = new Graph();
-            SparqlResultSet results = new SparqlResultSet();
+            var g = new Graph();
+            var results = new SparqlResultSet();
             Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
@@ -808,10 +808,10 @@ namespace VDS.RDF.Storage
                 }
 
                 // Now select the Accept Header based on the query type
-                String accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
+                var accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
 
                 // Create the Request, for simplicity async requests are always POST
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_endpoint.Uri);
+                var request = (HttpWebRequest)WebRequest.Create(_endpoint.Uri);
                 request.Accept = accept;
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
@@ -822,7 +822,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Stream stream = request.EndGetRequestStream(r);
-                        using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                         {
                             writer.Write("query=");
                             writer.Write(HttpUtility.UrlEncode(sparqlQuery));
@@ -834,9 +834,9 @@ namespace VDS.RDF.Storage
                             // Get the Response and process based on the Content Type
                             try
                             {
-                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-                                StreamReader data = new StreamReader(response.GetResponseStream());
-                                String ctype = response.ContentType;
+                                var response = (HttpWebResponse)request.EndGetResponse(r2);
+                                var data = new StreamReader(response.GetResponseStream());
+                                var ctype = response.ContentType;
                                 if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
                                 {
                                     // ASK/SELECT should return SPARQL Results

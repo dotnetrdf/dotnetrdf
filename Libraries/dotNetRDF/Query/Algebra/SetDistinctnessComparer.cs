@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Algebra
     public class SetDistinctnessComparer
         : IEqualityComparer<ISet>
     {
-        private List<String> _vars = new List<String>();
+        private List<string> _vars = new List<string>();
 
         /// <summary>
         /// Creates a new comparer that compares across all variables.
@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new comparer that compare only on the specific variables.
         /// </summary>
         /// <param name="variables">Variables.</param>
-        public SetDistinctnessComparer(IEnumerable<String> variables)
+        public SetDistinctnessComparer(IEnumerable<string> variables)
         {
             _vars.AddRange(variables);
         }
@@ -95,8 +95,8 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                StringBuilder output = new StringBuilder();
-                foreach (String var in _vars)
+                var output = new StringBuilder();
+                foreach (var var in _vars)
                 {
                     output.Append("?" + var + " = " + obj[var].ToSafeString());
                     output.Append(" , ");

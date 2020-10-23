@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl.Constraints
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-
     internal class MaxCount : Numeric
     {
         [DebuggerStepThrough]
@@ -51,7 +51,7 @@ namespace VDS.RDF.Shacl.Constraints
 
         internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            var invalidValues = valueNodes.Skip(NumericValue);
+            IEnumerable<INode> invalidValues = valueNodes.Skip(NumericValue);
 
             return ReportFocusNode(focusNode, invalidValues, report);
         }

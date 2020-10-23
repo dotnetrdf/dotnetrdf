@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 // Does the String contain the search string?
                 if (stringLit.Value.Contains(arg.Value))
                 {
-                    string result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
+                    var result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
                     return new StringNode(null, result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else

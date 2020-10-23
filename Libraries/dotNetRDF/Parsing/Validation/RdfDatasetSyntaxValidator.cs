@@ -53,10 +53,10 @@ namespace VDS.RDF.Parsing.Validation
         /// <returns></returns>
         public virtual ISyntaxValidationResults Validate(string data)
         {
-            String message;
+            string message;
             try
             {
-                StoreCountHandler handler = new StoreCountHandler();
+                var handler = new StoreCountHandler();
                 _parser.Load(handler, new StringReader(data));
 
                 message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + _parser.GetType().Name;

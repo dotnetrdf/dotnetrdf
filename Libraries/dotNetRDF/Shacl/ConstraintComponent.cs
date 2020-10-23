@@ -24,14 +24,14 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Shacl.Constraints;
+using VDS.RDF.Shacl.Shapes;
+
 namespace VDS.RDF.Shacl
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Shacl.Constraints;
-    using VDS.RDF.Shacl.Shapes;
-
     internal class ConstraintComponent : WrapperNode
     {
         [DebuggerStepThrough]

@@ -39,18 +39,18 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="variables">Variables.</param>
         /// <returns></returns>
-        String FormatResultSetHeader(IEnumerable<String> variables);
+        string FormatResultSetHeader(IEnumerable<string> variables);
 
         /// <summary>
         /// Generates a header section assuming no variables.
         /// </summary>
         /// <returns></returns>
-        String FormatResultSetHeader();
+        string FormatResultSetHeader();
 
         /// <summary>
         /// Generates a footer section.
         /// </summary>
         /// <returns></returns>
-        String FormatResultSetFooter();
+        string FormatResultSetFooter();
     }
 }

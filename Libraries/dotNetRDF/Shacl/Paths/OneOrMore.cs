@@ -24,13 +24,13 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using VDS.RDF.Query.Paths;
+
 namespace VDS.RDF.Shacl.Paths
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using VDS.RDF.Query.Paths;
-
     internal class OneOrMore : Unary
     {
         [DebuggerStepThrough]

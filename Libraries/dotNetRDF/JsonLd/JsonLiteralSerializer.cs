@@ -63,7 +63,7 @@ namespace VDS.RDF.JsonLd
             {
                 case JTokenType.Object:
                     writer.WriteStartObject();
-                    foreach (var property in (token as JObject).Properties().OrderBy(p=>p.Name, StringComparer.Ordinal))
+                    foreach (JProperty property in (token as JObject).Properties().OrderBy(p=>p.Name, StringComparer.Ordinal))
                     {
                         writer.WritePropertyName(property.Name);
                         Serialize(writer, property.Value);
@@ -72,7 +72,7 @@ namespace VDS.RDF.JsonLd
                     break;
                 case JTokenType.Array:
                     writer.WriteStartArray();
-                    foreach (var item in (token as JArray))
+                    foreach (JToken item in (token as JArray))
                     {
                         Serialize(writer, item);
                     }

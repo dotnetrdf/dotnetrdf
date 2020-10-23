@@ -43,11 +43,11 @@ namespace VDS.RDF.Parsing
         public void ParsingUriLoaderCache()
         {
             //Load the Graph
-            Graph g = new Graph();
+            var g = new Graph();
             UriLoader.Load(g, test);
 
             //Then reload the Graph which it should now come from the cache instead
-            Graph h = new Graph();
+            var h = new Graph();
             UriLoader.Load(h, test);
 
             Assert.Equal(g, h);
@@ -56,12 +56,12 @@ namespace VDS.RDF.Parsing
         [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderCustomCache()
         {
-            String original = UriLoader.CacheDirectory;
+            var original = UriLoader.CacheDirectory;
             try
             {
                 UriLoader.CacheDirectory = Path.GetDirectoryName(typeof(CachingTests).GetTypeInfo().Assembly.Location);
 
-                this.ParsingUriLoaderCache();
+                ParsingUriLoaderCache();
             }
             finally
             {
@@ -72,20 +72,20 @@ namespace VDS.RDF.Parsing
         [Fact(Skip = "Remote configuration is not currently available")]
         public void ParsingUriLoaderUriSantisation()
         {
-            Uri a = new Uri(ConfigurationLoader.ClassTripleStore);
-            Uri b = new Uri(ConfigurationLoader.ClassGraph);
+            var a = new Uri(ConfigurationLoader.ClassTripleStore);
+            var b = new Uri(ConfigurationLoader.ClassGraph);
 
             Console.WriteLine("URI A: " + a.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(a).AbsoluteUri);
             Console.WriteLine("URI B:" + b.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(b).AbsoluteUri);
 
             Assert.Equal(Tools.StripUriFragment(a).AbsoluteUri, Tools.StripUriFragment(b).AbsoluteUri);
 
-            Graph g = new Graph();
+            var g = new Graph();
             UriLoader.Load(g, a);
 
             Assert.True(UriLoader.IsCached(a), "Content should have been cached as a result of loading from the URI");
 
-            Graph h = new Graph();
+            var h = new Graph();
             UriLoader.Load(h, b);
 
             Assert.Equal(g, h);
@@ -97,15 +97,15 @@ namespace VDS.RDF.Parsing
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            int defaultTimeout = UriLoader.Timeout;
+            var defaultTimeout = UriLoader.Timeout;
             try
             {
                 UriLoader.Timeout = 45000;
-                Uri soton = new Uri("http://dbpedia.org/resource/Southampton");
-                Uri sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");
-                Uri sotonData = new Uri("http://dbpedia.org/data/Southampton.xml");
+                var soton = new Uri("http://dbpedia.org/resource/Southampton");
+                var sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");
+                var sotonData = new Uri("http://dbpedia.org/data/Southampton.xml");
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, soton);
 
                 Assert.True(UriLoader.IsCached(soton), "Resource URI should have been cached");

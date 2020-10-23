@@ -46,7 +46,7 @@ namespace VDS.RDF.Nodes
         /// <param name="datatype">Datatype URI.</param>
         /// <param name="numType">SPARQL Numeric Type.</param>
         /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="value"/>.</param>
-        protected NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType, bool normalizeLiteralValue = false)
+        protected NumericNode(IGraph g, string value, Uri datatype, SparqlNumericType numType, bool normalizeLiteralValue = false)
             : base(g, value, datatype, normalizeLiteralValue) 
         {
             _numType = numType;
@@ -96,7 +96,7 @@ namespace VDS.RDF.Nodes
                 case SparqlNumericType.Integer:
                     return AsInteger() != 0;
                 case SparqlNumericType.Decimal:
-                    return AsDecimal() != Decimal.Zero;
+                    return AsDecimal() != decimal.Zero;
                 case SparqlNumericType.Float:
                     return AsFloat() != 0.0f && !float.IsNaN(AsFloat());
                 case SparqlNumericType.Double:
@@ -136,7 +136,7 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String.
         /// </summary>
-        public String EffectiveType
+        public string EffectiveType
         {
             get
             {

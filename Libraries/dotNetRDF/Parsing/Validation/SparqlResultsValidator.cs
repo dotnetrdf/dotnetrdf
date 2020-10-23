@@ -52,10 +52,10 @@ namespace VDS.RDF.Parsing.Validation
         /// <returns></returns>
         public ISyntaxValidationResults Validate(string data)
         {
-            String message;
+            string message;
             try
             {
-                SparqlResultSet results = new SparqlResultSet();
+                var results = new SparqlResultSet();
                 StringParser.ParseResultSet(results, data);
                 message = "Valid SPARQL Results - " + results.Count + " Results - Parser: " + _parser.GetType().Name;
 

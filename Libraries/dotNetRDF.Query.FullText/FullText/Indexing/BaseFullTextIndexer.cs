@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// </summary>
         ~BaseFullTextIndexer()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple.</param>
         public virtual void Index(Triple t)
         {
-            this.Index(t.GraphUri.ToSafeString(), t);
+            Index(t.GraphUri.ToSafeString(), t);
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace VDS.RDF.Query.FullText.Indexing
         {
             foreach (Triple t in g.Triples)
             {
-                this.Index(t);
+                Index(t);
             }
-            this.Flush();
+            Flush();
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.FullText.Indexing
             foreach (Uri u in dataset.GraphUris)
             {
                 IGraph g = dataset[u];
-                this.Index(g);
+                Index(g);
             }
         }
 
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple.</param>
         public virtual void Unindex(Triple t)
         {
-            this.Unindex(t.GraphUri.ToSafeString(), t);
+            Unindex(t.GraphUri.ToSafeString(), t);
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace VDS.RDF.Query.FullText.Indexing
         {
             foreach (Triple t in g.Triples)
             {
-                this.Unindex(t);
+                Unindex(t);
             }
-            this.Flush();
+            Flush();
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.FullText.Indexing
             foreach (Uri u in dataset.GraphUris)
             {
                 IGraph g = dataset[u];
-                this.Unindex(g);
+                Unindex(g);
             }
         }
 
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         private void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
-            this.DisposeInternal();
+            DisposeInternal();
         }
 
         /// <summary>

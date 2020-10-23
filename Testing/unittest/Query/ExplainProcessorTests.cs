@@ -40,126 +40,126 @@ namespace VDS.RDF.Query
 
         private void TestExplainProcessor(String query)
         {
-            if (this._processor == null)
+            if (_processor == null)
             {
-                TripleStore store = new TripleStore();
-                Graph g = new Graph();
+                var store = new TripleStore();
+                var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = null;
                 store.Add(g);
 
-                this._processor = new ExplainQueryProcessor(store);
+                _processor = new ExplainQueryProcessor(store);
             }
 
-            SparqlQuery q = this._parser.ParseFromString(query);
+            SparqlQuery q = _parser.ParseFromString(query);
             Object results;
             Console.WriteLine("Input Query:");
-            Console.WriteLine(this._formatter.Format(q));
+            Console.WriteLine(_formatter.Format(q));
             Console.WriteLine();
 
             Console.WriteLine("Explanation with Default Options (Simulated):");
-            this._processor.ExplanationLevel = ExplanationLevel.DefaultSimulation;
-            results = this._processor.ProcessQuery(q);
+            _processor.ExplanationLevel = ExplanationLevel.DefaultSimulation;
+            results = _processor.ProcessQuery(q);
 
             Console.WriteLine();
             Console.WriteLine("Explanation with Default Options:");
-            this._processor.ExplanationLevel = ExplanationLevel.Default;
-            results = this._processor.ProcessQuery(q);
+            _processor.ExplanationLevel = ExplanationLevel.Default;
+            results = _processor.ProcessQuery(q);
 
             Console.WriteLine();
             Console.WriteLine("Explanation with Full Options:");
-            this._processor.ExplanationLevel = ExplanationLevel.Full;
-            results = this._processor.ProcessQuery(q);
+            _processor.ExplanationLevel = ExplanationLevel.Full;
+            results = _processor.ProcessQuery(q);
         }
 
         [Fact]
         public void SparqlExplainProcessor01()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o }");
         }
 
         [Fact]
         public void SparqlExplainProcessor02()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s a ?type } }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s a ?type } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor03()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?s a ?type } }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?s a ?type } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor04()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } FILTER(!BOUND(?type)) }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?s a ?type } FILTER(!BOUND(?type)) }");
         }
 
         [Fact]
         public void SparqlExplainProcessor05()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }");
         }
 
         [Fact]
         public void SparqlExplainProcessor06()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s a ?type }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s a ?type }");
         }
 
         [Fact]
         public void SparqlExplainProcessor07()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s ?p ?o2 }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . ?s ?p ?o2 }");
         }
 
         [Fact]
         public void SparqlExplainProcessor08()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?x ?y ?z } }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o MINUS { ?x ?y ?z } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor09()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . BIND(IsLiteral(?o) AS ?hasLiteral) . ?s a ?type }");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . BIND(IsLiteral(?o) AS ?hasLiteral) . ?s a ?type }");
         }
 
         [Fact]
         public void SparqlExplainProcessor10()
         {
-            this.TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . ?s a ?type . BIND(IsLiteral(?o) AS ?hasLiteral)}");
+            TestExplainProcessor("SELECT * WHERE { ?s ?p ?o . FILTER (!SAMETERM(?s, <ex:nothing>)) . ?s a ?type . BIND(IsLiteral(?o) AS ?hasLiteral)}");
         }
 
         [Fact]
         public void SparqlExplainProcessor11()
         {
-            this.TestExplainProcessor("SELECT * WHERE { GRAPH <http://graph> { ?s ?p ?o } }");
+            TestExplainProcessor("SELECT * WHERE { GRAPH <http://graph> { ?s ?p ?o } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor12()
         {
-            this.TestExplainProcessor("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }");
+            TestExplainProcessor("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor13()
         {
-            this.TestExplainProcessor("SELECT * WHERE { BIND(<http://graph> AS ?g) GRAPH ?g { ?s ?p ?o } }");
+            TestExplainProcessor("SELECT * WHERE { BIND(<http://graph> AS ?g) GRAPH ?g { ?s ?p ?o } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor14()
         {
-            this.TestExplainProcessor("SELECT * FROM <http://default> WHERE { GRAPH ?g { ?s ?p ?o } }");
+            TestExplainProcessor("SELECT * FROM <http://default> WHERE { GRAPH ?g { ?s ?p ?o } }");
         }
 
         [Fact]
         public void SparqlExplainProcessor15()
         {
-            this.TestExplainProcessor("SELECT * FROM NAMED <http://graph> WHERE { GRAPH ?g { ?s ?p ?o } }");
+            TestExplainProcessor("SELECT * FROM NAMED <http://graph> WHERE { GRAPH ?g { ?s ?p ?o } }");
         }
     }
 }

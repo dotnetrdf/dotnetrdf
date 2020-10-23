@@ -75,62 +75,62 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlQNameUnescapingPercentEncodingSimple()
         {
-            this.TestQNameUnescaping("ex:a%20space", "ex:a%20space");
+            TestQNameUnescaping("ex:a%20space", "ex:a%20space");
         }
 
         [Fact]
         public void SparqlQNameUnescapingPercentEncodingComplex()
         {
-            for (int i = 0; i <= 255; i++)
+            for (var i = 0; i <= 255; i++)
             {
-                this.TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
+                TestQNameUnescaping("ex:" + Uri.HexEscape((char)i), "ex:" + Uri.HexEscape((char)i));
             }
         }
 
         [Fact]
         public void SparqlQNameUnescapingSpecialCharactersSimple()
         {
-            foreach (char c in this._cs)
+            foreach (var c in _cs)
             {
-                this.TestQNameUnescaping("ex:a\\" + c + "character", "ex:a" + c + "character");
+                TestQNameUnescaping("ex:a\\" + c + "character", "ex:a" + c + "character");
             }
         }
 
         [Fact]
         public void SparqlQNameUnescapingSpecialCharactersComplex()
         {
-            foreach (char c in this._cs)
+            foreach (var c in _cs)
             {
-                this.TestQNameUnescaping("ex:\\" + c, "ex:" + c);
+                TestQNameUnescaping("ex:\\" + c, "ex:" + c);
             }
         }
 
         [Fact]
         public void SparqlQNameUnescapingSpecialCharactersMultiple()
         {
-            StringBuilder input = new StringBuilder();
-            StringBuilder output = new StringBuilder();
+            var input = new StringBuilder();
+            var output = new StringBuilder();
             input.Append("ex:");
             output.Append("ex:");
-            foreach (char c in this._cs)
+            foreach (var c in _cs)
             {
                 input.Append('\\');
                 input.Append(c);
                 output.Append(c);
             }
-            this.TestQNameUnescaping(input.ToString(), output.ToString());
+            TestQNameUnescaping(input.ToString(), output.ToString());
         }
 
         [Fact]
         public void SparqlQNameUnescapingDawg1()
         {
-            this.TestQNameUnescaping("og:audio:title", "og:audio:title");
+            TestQNameUnescaping("og:audio:title", "og:audio:title");
         }
 
         [Fact]
         public void SparqlQNameUnescapingDawg2()
         {
-            this.TestQNameUnescaping(@":c\~z\.", ":c~z.");
+            TestQNameUnescaping(@":c\~z\.", ":c~z.");
         }
 
         [Fact]

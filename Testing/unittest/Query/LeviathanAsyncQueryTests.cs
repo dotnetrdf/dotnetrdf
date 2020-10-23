@@ -32,7 +32,7 @@ namespace VDS.RDF.Query
             var query = parser.ParseFromString(
                 "SELECT * WHERE { ?instance a ?class }");
             var callbackInvoked = false;
-            int resultCount = 0;
+            var resultCount = 0;
             var syncResultSet = processor.ProcessQuery(query) as SparqlResultSet;
             Assert.NotNull(syncResultSet);
             var syncResultCount = syncResultSet.Count;

@@ -60,17 +60,17 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// The username to use for the connection.
         /// </summary>
-        protected readonly string Username;
+        protected new readonly string Username;
 
         /// <summary>
         /// The password to use for the connection.
         /// </summary>
-        protected readonly string Password;
+        protected new readonly string Password;
         
         /// <summary>
         /// True if a user name and password are specified, false otherwise.
         /// </summary>
-        protected readonly bool HasCredentials = false;
+        protected bool HasCredentials { get; }
 
         /// <summary>
         /// Available Stardog template types.
@@ -85,7 +85,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Stardog Server.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
-        public BaseStardogServer(String baseUri)
+        public BaseStardogServer(string baseUri)
             : this(baseUri, null, null)
         {
         }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        public BaseStardogServer(String baseUri, String username, String password)
+        public BaseStardogServer(string baseUri, string username, string password)
             : base()
         {
             BaseUri = baseUri;
@@ -105,7 +105,7 @@ namespace VDS.RDF.Storage.Management
 
             Username = username;
             Password = password;
-            HasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+            HasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public BaseStardogServer(String baseUri, IWebProxy proxy)
+        public BaseStardogServer(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -125,7 +125,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public BaseStardogServer(String baseUri, String username, String password, IWebProxy proxy)
+        public BaseStardogServer(string baseUri, string username, string password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
             Proxy = proxy;
@@ -148,23 +148,23 @@ namespace VDS.RDF.Storage.Management
         public virtual IEnumerable<string> ListStores()
         {
             // GET /admin/databases - application/json
-            var request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
             try
             {
                 var stores = new List<string>();
                 using (var response = (HttpWebResponse) request.GetResponse())
                 {
-                    String data = null;
+                    string data = null;
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
                         data = reader.ReadToEnd();
                     }
-                    if (String.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+                    if (string.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
 
                     var obj = JObject.Parse(data);
                     var dbs = (JArray) obj["databases"];
-                    foreach (var db in dbs.OfType<JValue>())
+                    foreach (JValue db in dbs.OfType<JValue>())
                     {
                         stores.Add(db.Value.ToString());
                     }
@@ -197,8 +197,8 @@ namespace VDS.RDF.Storage.Management
         public virtual IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
             var templates = new List<IStoreTemplate>();
-            var args = new Object[] {id};
-            foreach (var t in _templateTypes)
+            var args = new object[] {id};
+            foreach (Type t in _templateTypes)
             {
                 try
                 {
@@ -235,24 +235,24 @@ namespace VDS.RDF.Storage.Management
                 {
                     // Get the Template
                     var stardogTemplate = (BaseStardogTemplate) template;
-                    var errors = stardogTemplate.Validate();
+                    IEnumerable<string> errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    var jsonTemplate = stardogTemplate.GetTemplateJson();
+                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
                     Console.WriteLine(jsonTemplate.ToString());
 
                     // Create the request and write the JSON
-                    var request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     var boundary = StorageHelper.HttpMultipartBoundary;
                     var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     var terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
-                    using (var stream = request.GetRequestStream())
+                    using (Stream stream = request.GetRequestStream())
                     {
                         // Boundary
                         stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                         // Then the root Item
-                        var templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                        var templateItem = string.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
                         var itemBytes = Encoding.UTF8.GetBytes(templateItem);
                         stream.Write(itemBytes, 0, itemBytes.Length);
                         // Then terminating boundary
@@ -286,7 +286,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void DeleteStore(string storeID)
         {
             // DELETE /admin/databases/{db}
-            var request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
 
             try
             {
@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
             // GET /admin/databases - application/json
-            var request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
 
             try
             {
@@ -332,16 +332,16 @@ namespace VDS.RDF.Storage.Management
                         {
                             var response = (HttpWebResponse) request.EndGetResponse(r);
 
-                            String data = null;
+                            string data = null;
                             using (var reader = new StreamReader(response.GetResponseStream()))
                             {
                                 data = reader.ReadToEnd();
                             }
-                            if (String.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+                            if (string.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
 
                             var obj = JObject.Parse(data);
                             var dbs = (JArray) obj["databases"];
-                            foreach (var db in dbs.OfType<JValue>())
+                            foreach (JValue db in dbs.OfType<JValue>())
                             {
                                 stores.Add(db.Value.ToString());
                             }
@@ -391,8 +391,8 @@ namespace VDS.RDF.Storage.Management
         public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
             var templates = new List<IStoreTemplate>();
-            var args = new Object[] {id};
-            foreach (var t in _templateTypes)
+            var args = new object[] {id};
+            foreach (Type t in _templateTypes)
             {
                 try
                 {
@@ -427,13 +427,13 @@ namespace VDS.RDF.Storage.Management
                 {
                     // Get the Template
                     var stardogTemplate = (BaseStardogTemplate) template;
-                    var errors = stardogTemplate.Validate();
+                    IEnumerable<string> errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    var jsonTemplate = stardogTemplate.GetTemplateJson();
+                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
                     Console.WriteLine(jsonTemplate.ToString());
 
                     // Create the request and write the JSON
-                    var request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     var boundary = StorageHelper.HttpMultipartBoundary;
                     var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     var terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
@@ -443,12 +443,12 @@ namespace VDS.RDF.Storage.Management
                         {
                             try
                             {
-                                using (var stream = request.EndGetRequestStream(r))
+                                using (Stream stream = request.EndGetRequestStream(r))
                                 {
                                     // Boundary
                                     stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                                     // Then the root Item
-                                    var templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                                    var templateItem = string.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
                                     var itemBytes = Encoding.UTF8.GetBytes(templateItem);
                                     stream.Write(itemBytes, 0, itemBytes.Length);
                                     // Then terminating boundary
@@ -512,7 +512,7 @@ namespace VDS.RDF.Storage.Management
         public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             // DELETE /admin/databases/{db}
-            var request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
 
             try
             {
@@ -564,7 +564,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="method">HTTP method to use.</param>
         /// <param name="requestParams">Additional request parameters.</param>
         /// <returns></returns>
-        protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<String, String> requestParams)
+        protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<string, string> requestParams)
         {
             // Build the Request Uri
             var requestUri = AdminUri + servicePath;
@@ -612,7 +612,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="context">Configuration Serialization Context.</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            var manager = context.NextSubject;
+            INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
@@ -643,7 +643,7 @@ namespace VDS.RDF.Storage.Management
             /// <summary>
             /// Constants for valid Stardog Options.
             /// </summary>
-            public const String Online = "database.online",
+            public const string Online = "database.online",
                                 IcvActiveGraphs = "icv.active.graphs",
                                 IcvEnabled = "icv.enabled",
                                 IcvReasoningType = "icv.reasoning.type",
@@ -665,19 +665,19 @@ namespace VDS.RDF.Storage.Management
             /// <summary>
             /// Constants for valid Stardog Database types.
             /// </summary>
-            public const String DatabaseTypeDisk = "disk",
+            public const string DatabaseTypeDisk = "disk",
                                 DatabaseTypeMemory = "memory";
 
             /// <summary>
             /// Constanst for valid Search Re-Index Modes.
             /// </summary>
-            public const String SearchReIndexModeSync = "sync",
+            public const string SearchReIndexModeSync = "sync",
                                 SearchReIndexModeAsync = "async";
 
             /// <summary>
             /// Constants for special named graph URIs.
             /// </summary>
-            public const String SpecialNamedGraphDefault = "default",
+            public const string SpecialNamedGraphDefault = "default",
                                 SpecialNamedGraphUnionAll = "*";
 
             /// <summary>
@@ -708,16 +708,16 @@ namespace VDS.RDF.Storage.Management
             /// <summary>
             /// Pattern for valid Stardog database names.
             /// </summary>
-            public const String ValidDatabaseNamePattern = "^[A-Za-z]{1}[A-Za-z0-9_-]*$";
+            public const string ValidDatabaseNamePattern = "^[A-Za-z]{1}[A-Za-z0-9_-]*$";
 
             /// <summary>
             /// Validates whether a Database Name is valid.
             /// </summary>
             /// <param name="name">Database Name.</param>
             /// <returns></returns>
-            public static bool IsValidDatabaseName(String name)
+            public static bool IsValidDatabaseName(string name)
             {
-                return !String.IsNullOrEmpty(name) && Regex.IsMatch(name, ValidDatabaseNamePattern);
+                return !string.IsNullOrEmpty(name) && Regex.IsMatch(name, ValidDatabaseNamePattern);
             }
 
             /// <summary>
@@ -725,7 +725,7 @@ namespace VDS.RDF.Storage.Management
             /// </summary>
             /// <param name="type">Database Type.</param>
             /// <returns></returns>
-            public static bool IsValidDatabaseType(String type)
+            public static bool IsValidDatabaseType(string type)
             {
                 switch (type.ToLower())
                 {
@@ -742,7 +742,7 @@ namespace VDS.RDF.Storage.Management
             /// </summary>
             /// <param name="mode">Mode.</param>
             /// <returns></returns>
-            public static bool IsValidSearchReIndexMode(String mode)
+            public static bool IsValidSearchReIndexMode(string mode)
             {
                 switch (mode.ToLower())
                 {
@@ -759,9 +759,9 @@ namespace VDS.RDF.Storage.Management
             /// </summary>
             /// <param name="uri">URI.</param>
             /// <returns></returns>
-            public static bool IsValidNamedGraph(String uri)
+            public static bool IsValidNamedGraph(string uri)
             {
-                if (String.IsNullOrEmpty(uri)) return false;
+                if (string.IsNullOrEmpty(uri)) return false;
                 if (uri.Equals(SpecialNamedGraphDefault) || uri.Equals(SpecialNamedGraphUnionAll))
                 {
                     return true;
@@ -826,7 +826,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Stardog Server.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
-        public StardogV1Server(String baseUri)
+        public StardogV1Server(string baseUri)
             : this(baseUri, null, null)
         {
         }
@@ -837,7 +837,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        public StardogV1Server(String baseUri, String username, String password)
+        public StardogV1Server(string baseUri, string username, string password)
             : base(baseUri, username, password)
         {
         }
@@ -847,7 +847,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogV1Server(String baseUri, IWebProxy proxy)
+        public StardogV1Server(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -859,7 +859,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogV1Server(String baseUri, String username, String password, IWebProxy proxy)
+        public StardogV1Server(string baseUri, string username, string password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
@@ -897,7 +897,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Stardog Server.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
-        public StardogV2Server(String baseUri)
+        public StardogV2Server(string baseUri)
             : this(baseUri, null, null)
         {
         }
@@ -908,7 +908,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        public StardogV2Server(String baseUri, String username, String password)
+        public StardogV2Server(string baseUri, string username, string password)
             : base(baseUri, username, password)
         {
         }
@@ -918,7 +918,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogV2Server(String baseUri, IWebProxy proxy)
+        public StardogV2Server(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -930,7 +930,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogV2Server(String baseUri, String username, String password, IWebProxy proxy)
+        public StardogV2Server(string baseUri, string username, string password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
@@ -969,7 +969,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Stardog Server.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
-        public StardogV3Server(String baseUri)
+        public StardogV3Server(string baseUri)
             : this(baseUri, null, null)
         {
         }
@@ -980,7 +980,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        public StardogV3Server(String baseUri, String username, String password)
+        public StardogV3Server(string baseUri, string username, string password)
             : base(baseUri, username, password)
         {
         }
@@ -990,7 +990,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogV3Server(String baseUri, IWebProxy proxy)
+        public StardogV3Server(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -1002,7 +1002,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogV3Server(String baseUri, String username, String password, IWebProxy proxy)
+        public StardogV3Server(string baseUri, string username, string password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }
@@ -1040,7 +1040,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Stardog Server.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
-        public StardogServer(String baseUri)
+        public StardogServer(string baseUri)
             : this(baseUri, null, null)
         {
         }
@@ -1051,7 +1051,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        public StardogServer(String baseUri, String username, String password)
+        public StardogServer(string baseUri, string username, string password)
             : base(baseUri, username, password)
         {
         }
@@ -1061,7 +1061,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogServer(String baseUri, IWebProxy proxy)
+        public StardogServer(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -1073,7 +1073,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public StardogServer(String baseUri, String username, String password, IWebProxy proxy)
+        public StardogServer(string baseUri, string username, string password, IWebProxy proxy)
             : base(baseUri, username, password, proxy)
         {
         }

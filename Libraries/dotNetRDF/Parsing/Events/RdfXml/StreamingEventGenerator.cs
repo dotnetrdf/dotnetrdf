@@ -50,8 +50,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private bool _rdfRootSeen = false;
         private bool _stop = false;
         private bool _hasLineInfo = false;
-        private String _currentBaseUri = String.Empty;
-        private Stack<String> _baseUris = new Stack<string>();
+        private string _currentBaseUri = string.Empty;
+        private Stack<string> _baseUris = new Stack<string>();
 
         /// <summary>
         /// Creates a new Streaming Event Generator.
@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="stream">Stream.</param>
         /// <param name="baseUri">Base URI.</param>
-        public StreamingEventGenerator(Stream stream, String baseUri)
+        public StreamingEventGenerator(Stream stream, string baseUri)
             : this(stream)
         {
             _currentBaseUri = baseUri;
@@ -89,7 +89,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="reader">Text Reader.</param>
         /// <param name="baseUri">Base URI.</param>
-        public StreamingEventGenerator(TextReader reader, String baseUri)
+        public StreamingEventGenerator(TextReader reader, string baseUri)
             : this(reader)
         {
             _currentBaseUri = baseUri;
@@ -99,7 +99,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// Creates a new Streaming Event Generator.
         /// </summary>
         /// <param name="file">Filename.</param>
-        public StreamingEventGenerator(String file)
+        public StreamingEventGenerator(string file)
         {
             _reader = XmlReader.Create(new FileStream(file, FileMode.Open), GetSettings());
             _hasLineInfo = (_reader is IXmlLineInfo);
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="file">Filename.</param>
         /// <param name="baseUri">Base URI.</param>
-        public StreamingEventGenerator(String file, String baseUri)
+        public StreamingEventGenerator(string file, string baseUri)
             : this(file)
         {
             _currentBaseUri = baseUri;
@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <returns></returns>
         private XmlReaderSettings GetSettings()
         {
-            XmlReaderSettings settings = new XmlReaderSettings();
+            var settings = new XmlReaderSettings();
 #if NETCORE 
             settings.DtdProcessing = DtdProcessing.Ignore;
 #elif NET40 || NETSTANDARD2_0
@@ -158,7 +158,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 _parseLiteral = false;
                 _noRead = true;
                 _reader.MoveToContent();
-                String data = _reader.ReadInnerXml();
+                var data = _reader.ReadInnerXml();
                 return new TypedLiteralEvent(data, RdfSpecsHelper.RdfXmlLiteral, data, GetPosition());
             }
 
@@ -174,7 +174,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             if (_reader.EOF) throw new RdfParseException("Unable to read further events as the end of the stream has already been reached");
 
             // Otherwise attempt to read the next node
-            bool read = true;
+            var read = true;
             if (!_noRead)
             {
                 read = _reader.Read();
@@ -195,11 +195,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                             _first = false;
                             _rdfRootSeen = IsName("RDF", NamespaceMapper.RDF);
                             _rootEl = GetElement();
-                            RootEvent root = new RootEvent(GetBaseUri(), _reader.Value, GetPosition());
+                            var root = new RootEvent(GetBaseUri(), _reader.Value, GetPosition());
                             root.DocumentElement = (ElementEvent)_rootEl;
                             root.Children.Add((ElementEvent)_rootEl);
 
-                            if (root.BaseUri.Equals(String.Empty))
+                            if (root.BaseUri.Equals(string.Empty))
                             {
                                 root.BaseUri = _currentBaseUri;                                
                             }
@@ -257,10 +257,10 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
         }
 
-        private String GetBaseUri()
+        private string GetBaseUri()
         {
             _baseUris.Push(_currentBaseUri);
-            if (_reader.BaseURI.Equals(String.Empty))
+            if (_reader.BaseURI.Equals(string.Empty))
             {
                 return _currentBaseUri;
             }
@@ -288,14 +288,14 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 // Return a Namespace Attribute Event
                 if (_reader.LocalName.Equals("xmlns"))
                 {
-                    return new NamespaceAttributeEvent(String.Empty, _reader.Value, _reader.Value, GetPosition());
+                    return new NamespaceAttributeEvent(string.Empty, _reader.Value, _reader.Value, GetPosition());
                 }
                 else
                 {
                     return new NamespaceAttributeEvent(_reader.LocalName, _reader.Value, _reader.Value, GetPosition());
                 }
             }
-            else if (IsInNamespace(XmlSpecsHelper.NamespaceXml) || (_reader.NamespaceURI.Equals(String.Empty) && _reader.Name.StartsWith("xml")))
+            else if (IsInNamespace(XmlSpecsHelper.NamespaceXml) || (_reader.NamespaceURI.Equals(string.Empty) && _reader.Name.StartsWith("xml")))
             {
                 // Ignore other XML reserved names
                 return null;
@@ -330,13 +330,13 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private IRdfXmlEvent GetElement()
         {
             // Generate Element Event
-            ElementEvent el = new ElementEvent(_reader.Name, GetBaseUri(), _reader.Value, GetPosition());
+            var el = new ElementEvent(_reader.Name, GetBaseUri(), _reader.Value, GetPosition());
             _requireEndElement = _reader.IsEmptyElement;
 
             // Read Attribute Events
             if (_reader.HasAttributes)
             {
-                for (int i = 0; i < _reader.AttributeCount; i++)
+                for (var i = 0; i < _reader.AttributeCount; i++)
                 {
                     IRdfXmlEvent attr = GetNextAttribute();
                     if (attr is AttributeEvent)
@@ -401,12 +401,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             }
         }
 
-        private bool IsName(String localName, String namespaceUri)
+        private bool IsName(string localName, string namespaceUri)
         {
             return _reader.LocalName.Equals(localName) && _reader.NamespaceURI.Equals(namespaceUri);
         }
 
-        private bool IsInNamespace(String namespaceUri)
+        private bool IsInNamespace(string namespaceUri)
         {
             return _reader.NamespaceURI.Equals(namespaceUri);
         }

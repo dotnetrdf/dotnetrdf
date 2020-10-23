@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Threading.Tasks;
 using VDS.RDF.Parsing.Handlers;
 
@@ -63,11 +64,11 @@ namespace VDS.RDF.Query
                 {
                     if (antecedent.Exception != null)
                     {
-                        var innerException = antecedent.Exception.InnerExceptions[0];
-                        var queryException = innerException as RdfQueryException ??
-                                             new RdfQueryException(
-                                                 "Unexpected error while making an asynchronous query, see inner exception for details",
-                                                 innerException);
+                        Exception innerException = antecedent.Exception.InnerExceptions[0];
+                        RdfQueryException queryException = innerException as RdfQueryException ??
+                                                           new RdfQueryException(
+                                                               "Unexpected error while making an asynchronous query, see inner exception for details",
+                                                               innerException);
                         rdfCallback?.Invoke(null, new AsyncError(queryException, state));
                         resultsCallback?.Invoke(null, new AsyncError(queryException, state));
                     }
@@ -100,11 +101,11 @@ namespace VDS.RDF.Query
                 {
                     if (antecedent.Exception != null)
                     {
-                        var innerException = antecedent.Exception.InnerExceptions[0];
-                        var queryException = innerException as RdfQueryException ??
-                                             new RdfQueryException(
-                                                 "Unexpected error while making an asynchronous query, see inner exception for details",
-                                                 innerException);
+                        Exception innerException = antecedent.Exception.InnerExceptions[0];
+                        RdfQueryException queryException = innerException as RdfQueryException ??
+                                                           new RdfQueryException(
+                                                               "Unexpected error while making an asynchronous query, see inner exception for details",
+                                                               innerException);
                         callback?.Invoke(rdfHandler, resultsHandler, new AsyncError(queryException, state));
                     }
                     else

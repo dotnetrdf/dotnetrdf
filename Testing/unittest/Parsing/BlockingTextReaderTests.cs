@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing
             File.WriteAllText("ParsingTextReaderCreation1.txt", "ParsingTextReaderCreation1");
             using (StreamReader stream = File.OpenText("ParsingTextReaderCreation1.txt"))
             {
-                ParsingTextReader reader = ParsingTextReader.Create(stream);
+                var reader = ParsingTextReader.Create(stream);
                 Assert.IsType<NonBlockingTextReader>(reader);
                 stream.Close();
             }
@@ -58,9 +58,9 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderCreation2()
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
-                ParsingTextReader reader = ParsingTextReader.Create(stream);
+                var reader = ParsingTextReader.Create(stream);
                 Assert.IsType<NonBlockingTextReader>(reader);
                 stream.Close();
             }
@@ -69,12 +69,12 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderCreation3()
         {
-            using (WebClient client = new WebClient())
+            using (var client = new WebClient())
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
                 {
-                    ParsingTextReader reader = ParsingTextReader.Create(stream);
+                    var reader = ParsingTextReader.Create(stream);
                     Assert.IsType<BlockingTextReader>(reader);
                     stream.Close();
                 }
@@ -97,11 +97,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingSimpleRead()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             while (!reader.EndOfStream)
             {
                 output.Append((char)reader.Read());
@@ -119,12 +119,12 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingSimpleRead2()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            char[] cs = new char[100];
-            int read = reader.Read(cs, 0, cs.Length);
+            var cs = new char[100];
+            var read = reader.Read(cs, 0, cs.Length);
             Assert.Equal(TestData.Length, read);
             Assert.True(reader.EndOfStream);
             Assert.Equal(-1, reader.Peek());
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
 
             reader.Close();
 
-            String s = new string(cs, 0, read);
+            var s = new string(cs, 0, read);
             Assert.Equal(TestData, s);
         }
 
@@ -140,12 +140,12 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingSimpleReadBlock()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            char[] cs = new char[100];
-            int read = reader.ReadBlock(cs, 0, cs.Length);
+            var cs = new char[100];
+            var read = reader.ReadBlock(cs, 0, cs.Length);
             Assert.Equal(TestData.Length, read);
             Assert.True(reader.EndOfStream);
             Assert.Equal(-1, reader.Peek());
@@ -153,18 +153,18 @@ namespace VDS.RDF.Parsing
 
             reader.Close();
 
-            String s = new string(cs, 0, read);
+            var s = new string(cs, 0, read);
             Assert.Equal(TestData, s);          
         }
 
         [Fact]
         public void ParsingTextReaderBlockingReadToEnd()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            String s = reader.ReadToEnd();
+            var s = reader.ReadToEnd();
             Assert.Equal(TestData, s);
             Assert.Equal(-1, reader.Peek());
             Assert.Equal(-1, reader.Read());
@@ -175,11 +175,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingReadLine()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            String s = reader.ReadLine();
+            var s = reader.ReadLine();
             Assert.Equal(TestData, s);
             Assert.Equal(-1, reader.Peek());
             Assert.Equal(-1, reader.Read());
@@ -190,11 +190,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingReadLine2()
         {
-            StringReader strReader = new StringReader(TestData2);
+            var strReader = new StringReader(TestData2);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            String s = reader.ReadLine();
+            var s = reader.ReadLine();
             Assert.Equal(TestData2.Substring(0, 26), s);
             s = reader.ReadLine();
             Assert.Equal(TestData2.Substring(27), s);
@@ -207,11 +207,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingReadLine3()
         {
-            StringReader strReader = new StringReader(TestData3);
+            var strReader = new StringReader(TestData3);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            String s = reader.ReadLine();
+            var s = reader.ReadLine();
             Assert.Equal(TestData3.Substring(0, 26), s);
             s = reader.ReadLine();
             Assert.Equal(TestData3.Substring(27), s);
@@ -224,11 +224,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingReadLine4()
         {
-            StringReader strReader = new StringReader(TestData4);
+            var strReader = new StringReader(TestData4);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            String s = reader.ReadLine();
+            var s = reader.ReadLine();
             Assert.Equal(TestData4.Substring(0, 26), s);
             s = reader.ReadLine();
             Assert.Equal(String.Empty, s);
@@ -243,11 +243,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingReadLine5()
         {
-            StringReader strReader = new StringReader(TestData5);
+            var strReader = new StringReader(TestData5);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            String s = reader.ReadLine();
+            var s = reader.ReadLine();
             Assert.Equal(TestData5.Substring(0, 26), s);
             s = reader.ReadLine();
             Assert.Equal(TestData5.Substring(28), s);
@@ -260,13 +260,13 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingSimplePeek()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            for (int i = 1; i <= 100; i++)
+            for (var i = 1; i <= 100; i++)
             {
-                char c = (char)reader.Peek();
+                var c = (char)reader.Peek();
                 Console.WriteLine("Peek #" + i + " = " + c);
                 Assert.Equal(TestData[0], c);
             }
@@ -279,18 +279,18 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingSimpleReadBlock2()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
-            char[] cs = new char[10];
-            int start = 0;
+            var cs = new char[10];
+            var start = 0;
             while (!reader.EndOfStream)
             {
-                int read = reader.ReadBlock(cs, 0, cs.Length);
+                var read = reader.ReadBlock(cs, 0, cs.Length);
                 Assert.True(read <= 10);
 
-                String s = new string(cs, 0, read);
+                var s = new string(cs, 0, read);
                 Assert.Equal(TestData.Substring(start, read), s);
                 start += 10;
             }
@@ -303,20 +303,20 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingComplexReadBlock()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 5);
 
-            char[] cs = new char[10];
-            int start = 0;
+            var cs = new char[10];
+            var start = 0;
             while (!reader.EndOfStream)
             {
-                int read = reader.ReadBlock(cs, 0, cs.Length);
+                var read = reader.ReadBlock(cs, 0, cs.Length);
                 Assert.True(read <= 10);
 
                 if (read == 0) break;
 
-                String s = new string(cs, 0, read);
+                var s = new string(cs, 0, read);
                 Assert.Equal(TestData.Substring(start, read), s);
                 start += 10;
             }
@@ -329,20 +329,20 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingComplexReadBlock2()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 5);
 
-            char[] cs = new char[8];
-            int start = 0;
+            var cs = new char[8];
+            var start = 0;
             while (!reader.EndOfStream)
             {
-                int read = reader.ReadBlock(cs, 0, cs.Length);
+                var read = reader.ReadBlock(cs, 0, cs.Length);
                 Assert.True(read <= 8);
 
                 if (read == 0) break;
 
-                String s = new string(cs, 0, read);
+                var s = new string(cs, 0, read);
                 Assert.Equal(TestData.Substring(start, read), s);
                 start += 8;
             }
@@ -355,20 +355,20 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingTextReaderBlockingComplexReadBlock3()
         {
-            StringReader strReader = new StringReader(TestData);
+            var strReader = new StringReader(TestData);
 
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 2);
 
-            char[] cs = new char[10];
-            int start = 0;
+            var cs = new char[10];
+            var start = 0;
             while (!reader.EndOfStream)
             {
-                int read = reader.ReadBlock(cs, 0, cs.Length);
+                var read = reader.ReadBlock(cs, 0, cs.Length);
                 Assert.True(read <= 10);
 
                 if (read == 0) break;
 
-                String s = new string(cs, 0, read);
+                var s = new string(cs, 0, read);
                 Assert.Equal(TestData.Substring(start, read), s);
                 start += 10;
             }
@@ -386,13 +386,13 @@ namespace VDS.RDF.Parsing
         [Fact(Skip="Remote configuration is not currently available")]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
-            int defaultTimeout = UriLoader.Timeout;
+            var defaultTimeout = UriLoader.Timeout;
             try
             {
                 SetUriLoaderCaching(false);
                 UriLoader.Timeout = 45000;
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new Notation3Parser());
 
                 TestTools.ShowGraph(g);
@@ -411,7 +411,7 @@ namespace VDS.RDF.Parsing
             {
                 SetUriLoaderCaching(false);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new NTriplesParser());
 
                 TestTools.ShowGraph(g);
@@ -429,7 +429,7 @@ namespace VDS.RDF.Parsing
             {
                 SetUriLoaderCaching(false);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new TurtleParser());
 
                 TestTools.ShowGraph(g);
@@ -447,7 +447,7 @@ namespace VDS.RDF.Parsing
             {
                 SetUriLoaderCaching(false);
 
-                Graph g = new Graph();
+                var g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new RdfJsonParser());
 
                 TestTools.ShowGraph(g);
@@ -466,7 +466,7 @@ namespace VDS.RDF.Parsing
                 {
                     using (StreamReader reader = File.OpenText("resources\\dataset_50.ttl.gz"))
                     {
-                        String line = reader.ReadLine();
+                        var line = reader.ReadLine();
                         while (line != null)
                         {
                             writer.WriteLine(line);
@@ -483,12 +483,12 @@ namespace VDS.RDF.Parsing
         [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking1()
         {
-            this.EnsureNIOData();
+            EnsureNIOData();
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
 
-            for (int i = 0; i < 25; i++)
+            for (var i = 0; i < 25; i++)
             {
                 Console.WriteLine("Run #" + (i + 1));
                 timer.Reset();
@@ -496,7 +496,7 @@ namespace VDS.RDF.Parsing
                 //Test Blocking
                 BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText("resources\\nio.ttl"));
                 timer.Start();
-                int totalBlocking = 0;
+                var totalBlocking = 0;
                 int read;
                 while (!blocking.EndOfStream)
                 {
@@ -511,7 +511,7 @@ namespace VDS.RDF.Parsing
 
                 //Reset
                 timer.Reset();
-                int totalNonBlocking = 0;
+                var totalNonBlocking = 0;
 
                 NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText("resources\\nio.ttl"));
                 timer.Start();
@@ -538,12 +538,12 @@ namespace VDS.RDF.Parsing
         [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking2()
         {
-            this.EnsureNIOData();
+            EnsureNIOData();
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
 
-            for (int i = 0; i < 25; i++)
+            for (var i = 0; i < 25; i++)
             {
                 Console.WriteLine("Run #" + (i + 1));
                 timer.Reset();
@@ -551,7 +551,7 @@ namespace VDS.RDF.Parsing
                 //Test Blocking
                 BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                 timer.Start();
-                int totalBlocking = 0;
+                var totalBlocking = 0;
                 int read;
                 while (!blocking.EndOfStream)
                 {
@@ -566,7 +566,7 @@ namespace VDS.RDF.Parsing
 
                 //Reset
                 timer.Reset();
-                int totalNonBlocking = 0;
+                var totalNonBlocking = 0;
 
                 NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                 timer.Start();
@@ -592,23 +592,23 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingBlockingVsNonBlocking3()
         {
-            this.EnsureNIOData();
+            EnsureNIOData();
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
 
-            int maxSize = 1024 * 32;
-            for (int size = 1024; size < maxSize; size += 1024)
+            var maxSize = 1024 * 32;
+            for (var size = 1024; size < maxSize; size += 1024)
             {
                 Console.WriteLine("Buffer Size " + size);
-                for (int i = 0; i < 25; i++)
+                for (var i = 0; i < 25; i++)
                 {
                     timer.Reset();
 
                     //Test Blocking
                     BlockingTextReader blocking = ParsingTextReader.CreateBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                     timer.Start();
-                    int totalBlocking = 0;
+                    var totalBlocking = 0;
                     int read;
                     while (!blocking.EndOfStream)
                     {
@@ -621,7 +621,7 @@ namespace VDS.RDF.Parsing
 
                     //Reset
                     timer.Reset();
-                    int totalNonBlocking = 0;
+                    var totalNonBlocking = 0;
 
                     NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(File.OpenText("resources\\nio.ttl"), 4096);
                     timer.Start();
@@ -650,12 +650,12 @@ namespace VDS.RDF.Parsing
         [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking4()
         {
-            this.EnsureNIOData();
+            EnsureNIOData();
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
 
-            for (int i = 0; i < 25; i++)
+            for (var i = 0; i < 25; i++)
             {
                 Console.WriteLine("Run #" + (i + 1));
                 timer.Reset();
@@ -663,7 +663,7 @@ namespace VDS.RDF.Parsing
                 //Test Blocking
                 BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText("resources\\nio.ttl")));
                 timer.Start();
-                int totalBlocking = 0;
+                var totalBlocking = 0;
                 int read;
                 while (!blocking.EndOfStream)
                 {
@@ -678,7 +678,7 @@ namespace VDS.RDF.Parsing
 
                 //Reset
                 timer.Reset();
-                int totalNonBlocking = 0;
+                var totalNonBlocking = 0;
 
                 NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText("resources\\nio.ttl")));
                 timer.Start();
@@ -705,12 +705,12 @@ namespace VDS.RDF.Parsing
         [Trait("Coverage", "Skip")]
         public void ParsingBlockingVsNonBlocking5()
         {
-            this.EnsureNIOData();
+            EnsureNIOData();
 
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
 
-            for (int i = 0; i < 25; i++)
+            for (var i = 0; i < 25; i++)
             {
                 Console.WriteLine("Run #" + (i + 1));
                 timer.Reset();
@@ -718,7 +718,7 @@ namespace VDS.RDF.Parsing
                 //Test Blocking
                 BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(File.OpenText("resources\\nio.ttl"), 50));
                 timer.Start();
-                int totalBlocking = 0;
+                var totalBlocking = 0;
                 int read;
                 while (!blocking.EndOfStream)
                 {
@@ -733,7 +733,7 @@ namespace VDS.RDF.Parsing
 
                 //Reset
                 timer.Reset();
-                int totalNonBlocking = 0;
+                var totalNonBlocking = 0;
 
                 NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(File.OpenText("resources\\nio.ttl"), 50));
                 timer.Start();
@@ -777,54 +777,54 @@ namespace VDS.RDF.Parsing
 
         public JitterReader(TextReader reader, int chance)
         {
-            this._reader = reader;
-            this._jitter = chance;
-            if (this._jitter < 0) this._jitter = 0;
-            if (this._jitter > 100) this._jitter = 100;
+            _reader = reader;
+            _jitter = chance;
+            if (_jitter < 0) _jitter = 0;
+            if (_jitter > 100) _jitter = 100;
         }
 
         public override void Close()
         {
-            this._reader.Close();
+            _reader.Close();
         }
 
         protected override void Dispose(bool disposing)
         {
-            this._reader.Dispose();
+            _reader.Dispose();
         }
 
         public override int Peek()
         {
-            return this._reader.Peek();
+            return _reader.Peek();
         }
 
         public override int Read()
         {
-            return this._reader.Read();
+            return _reader.Read();
         }
 
         public override int Read(char[] buffer, int index, int count)
         {
-            int r = this._rnd.Next(100);
-            if (r < this._jitter)  count = 1 + this._rnd.Next(count);
-            return this._reader.Read(buffer, index, count);
+            var r = _rnd.Next(100);
+            if (r < _jitter)  count = 1 + _rnd.Next(count);
+            return _reader.Read(buffer, index, count);
         }
 
         public override int ReadBlock(char[] buffer, int index, int count)
         {
-            int r = this._rnd.Next(100);
-            if (r < this._jitter) Thread.Sleep(1);
-            return this._reader.ReadBlock(buffer, index, count);
+            var r = _rnd.Next(100);
+            if (r < _jitter) Thread.Sleep(1);
+            return _reader.ReadBlock(buffer, index, count);
         }
 
         public override string ReadLine()
         {
-            return this._reader.ReadLine();
+            return _reader.ReadLine();
         }
 
         public override string ReadToEnd()
         {
-            return this._reader.ReadToEnd();
+            return _reader.ReadToEnd();
         }
     }
 }

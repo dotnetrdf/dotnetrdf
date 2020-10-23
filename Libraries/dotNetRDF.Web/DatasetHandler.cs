@@ -67,7 +67,7 @@ namespace VDS.RDF.Web
         protected override BaseDatasetHandlerConfiguration LoadConfig(HttpContext context)
         {
             // Is our Configuration already cached?
-            Object temp = context.Cache[context.Request.Path];
+            var temp = context.Cache[context.Request.Path];
             if (temp != null)
             {
                 if (temp is BaseDatasetHandlerConfiguration)
@@ -81,15 +81,15 @@ namespace VDS.RDF.Web
             }
 
             // Check the Configuration File is specified
-            String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
+            var configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
             if (configFile == null) throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as the Web.Config file does not specify a 'dotNetRDFConfig' AppSetting to specify the RDF configuration file to use");
             IGraph g = WebConfigurationLoader.LoadConfigurationGraph(context, configFile);
 
             // Then check there is configuration associated with the expected URI
-            String objUri = "dotnetrdf:" + context.Request.Path;
+            var objUri = "dotnetrdf:" + context.Request.Path;
             INode objNode = g.GetUriNode(UriFactory.Create(objUri));
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
-            DatasetHandlerConfiguration config = new DatasetHandlerConfiguration(new WebContext(context), g, objNode);
+            var config = new DatasetHandlerConfiguration(new WebContext(context), g, objNode);
 
             // Finally cache the Configuration before returning it
             if (config.CacheSliding)
@@ -109,7 +109,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         protected override void UpdateConfig(HttpContext context)
         {
-            if (this._config.CacheDuration == 0)
+            if (_config.CacheDuration == 0)
             {
                 if (context.Cache[context.Request.Path] != null) context.Cache.Remove(context.Request.Path);
             }

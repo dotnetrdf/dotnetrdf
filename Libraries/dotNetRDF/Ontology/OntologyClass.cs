@@ -41,9 +41,9 @@ namespace VDS.RDF.Ontology
     public class OntologyClass
         : OntologyResource
     {
-        private const String PropertyDerivedClass = "derivedClass";
-        private const String PropertyDirectSubClass = "directSubClass";
-        private const String PropertyDirectSuperClass = "directSuperClass";
+        private const string PropertyDerivedClass = "derivedClass";
+        private const string PropertyDirectSubClass = "directSubClass";
+        private const string PropertyDirectSuperClass = "directSuperClass";
 
         /// <summary>
         /// Creates a new representation of a Class in the given Ontology Mode.
@@ -71,7 +71,7 @@ namespace VDS.RDF.Ontology
                 _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
             }
 
-            int c = 0;
+            var c = 0;
             do
             {
                 c = _resourceProperties[PropertyDerivedClass].Count;
@@ -88,7 +88,7 @@ namespace VDS.RDF.Ontology
             _resourceProperties.Add(PropertyDirectSuperClass, new HashSet<INode>());
             if (_resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
             {
-                foreach (var node in _resourceProperties[OntologyHelper.PropertySubClassOf])
+                foreach (INode node in _resourceProperties[OntologyHelper.PropertySubClassOf])
                 {
                     _resourceProperties[PropertyDirectSuperClass].Add(node);
                 }
@@ -147,8 +147,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddSubClass(OntologyClass @class)
         {
-            bool a = AddSubClass(@class.Resource);
-            bool b = @class.AddSuperClass(_resource);
+            var a = AddSubClass(@class.Resource);
+            var b = @class.AddSuperClass(_resource);
             return (a || b);
         }
 
@@ -202,8 +202,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveSubClass(OntologyClass @class)
         {
-            bool a = RemoveSubClass(@class.Resource);
-            bool b = @class.RemoveSuperClass(_resource);
+            var a = RemoveSubClass(@class.Resource);
+            var b = @class.RemoveSuperClass(_resource);
             return (a || b);
         }
 
@@ -247,8 +247,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddSuperClass(OntologyClass @class)
         {
-            bool a = AddSuperClass(@class.Resource);
-            bool b = @class.AddSubClass(_resource);
+            var a = AddSuperClass(@class.Resource);
+            var b = @class.AddSubClass(_resource);
             return (a || b);
         }
 
@@ -302,8 +302,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveSuperClass(OntologyClass @class)
         {
-            bool a = RemoveSuperClass(@class.Resource);
-            bool b = @class.RemoveSubClass(_resource);
+            var a = RemoveSuperClass(@class.Resource);
+            var b = @class.RemoveSubClass(_resource);
             return (a || b);
         }
 
@@ -347,8 +347,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddEquivalentClass(OntologyClass @class)
         {
-            bool a = AddEquivalentClass(@class.Resource);
-            bool b = @class.AddEquivalentClass(_resource);
+            var a = AddEquivalentClass(@class.Resource);
+            var b = @class.AddEquivalentClass(_resource);
             return (a || b);
         }
 
@@ -401,8 +401,8 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentClass(OntologyClass @class)
         {
-            bool a = RemoveEquivalentClass(@class.Resource);
-            bool b = @class.RemoveEquivalentClass(_resource);
+            var a = RemoveEquivalentClass(@class.Resource);
+            var b = @class.RemoveEquivalentClass(_resource);
             return (a || b);
         }
 
@@ -446,8 +446,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool AddDisjointClass(OntologyClass @class)
         {
-            bool a = AddDisjointClass(@class.Resource);
-            bool b = @class.AddDisjointClass(_resource);
+            var a = AddDisjointClass(@class.Resource);
+            var b = @class.AddDisjointClass(_resource);
             return (a || b);
         }
 
@@ -503,8 +503,8 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public bool RemoveDisjointClass(OntologyClass @class)
         {
-            bool a = RemoveDisjointClass(@class.Resource);
-            bool b = @class.RemoveDisjointClass(_resource);
+            var a = RemoveDisjointClass(@class.Resource);
+            var b = @class.RemoveDisjointClass(_resource);
             return (a || b);
         }
 
@@ -695,7 +695,7 @@ namespace VDS.RDF.Ontology
             if (ReferenceEquals(this, obj)) return true;
             if (obj is OntologyClass)
             {
-                OntologyClass other = (OntologyClass)obj;
+                var other = (OntologyClass)obj;
                 return other.Resource.Equals(_resource) && ReferenceEquals(other.Graph, _graph);
             }
             else

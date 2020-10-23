@@ -65,8 +65,8 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            String subjVar = PathStart.VariableName;
-            String objVar = PathEnd.VariableName;
+            var subjVar = PathStart.VariableName;
+            var objVar = PathEnd.VariableName;
             context.OutputMultiset = new Multiset();
 
             // Determine the Triples to which this applies
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Algebra
                         else
                         {
                             // Subject and Object are Unbound
-                            HashSet<INode> nodes = new HashSet<INode>();
+                            var nodes = new HashSet<INode>();
                             foreach (Triple t in context.Data.Triples)
                             {
                                 nodes.Add(t.Subject);
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Algebra
                             }
                             foreach (INode n in nodes)
                             {
-                                Set s = new Set();
+                                var s = new Set();
                                 s.Add(subjVar, n);
                                 s.Add(objVar, n);
                                 context.OutputMultiset.Add(s);
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         // Object is a Term
                         // Create a single set with the Variable bound to the Object Term
-                        Set s = new Set();
+                        var s = new Set();
                         s.Add(subjVar, ((NodeMatchPattern)PathEnd).Node);
                         context.OutputMultiset.Add(s);
                     }
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     // Object is Unbound
                     // Create a single set with the Variable bound to the Suject Term
-                    Set s = new Set();
+                    var s = new Set();
                     s.Add(objVar, ((NodeMatchPattern)PathStart).Node);
                     context.OutputMultiset.Add(s);
                 }
@@ -233,8 +233,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = new GraphPattern();
-            PropertyPathPattern pp = new PropertyPathPattern(PathStart, new FixedCardinality(Path, 0), PathEnd);
+            var gp = new GraphPattern();
+            var pp = new PropertyPathPattern(PathStart, new FixedCardinality(Path, 0), PathEnd);
             gp.AddTriplePattern(pp);
             return gp;
         }

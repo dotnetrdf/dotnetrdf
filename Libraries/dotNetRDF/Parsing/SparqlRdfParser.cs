@@ -112,10 +112,10 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 if (_parser == null)
                 {
-                    String data = input.ReadToEnd();
+                    var data = input.ReadToEnd();
                     StringParser.Parse(g, data);
                 }
                 else
@@ -162,12 +162,12 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Uses the <see cref="FileLoader">FileLoader</see> to load the RDF from the file which will attempt to determine the format of the RDF based on the file extension unless the parser was instantiated with a specific <see cref="IRdfReader">IRdfReader</see> to use.
         /// </remarks>
-        public void Load(ISparqlResultsHandler handler, String filename)
+        public void Load(ISparqlResultsHandler handler, string filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
 
-            Graph g = new Graph();
+            var g = new Graph();
             if (_parser == null)
             {
                 FileLoader.Load(g, filename);
@@ -208,7 +208,7 @@ namespace VDS.RDF.Parsing
                     INode rsetID = rset.Subject;
 
                     // Find the Variables the Result Set contains or the Boolean Value
-                    List<Triple> temp = context.Graph.Triples.WithSubjectPredicate(rsetID, boolean).ToList();
+                    var temp = context.Graph.Triples.WithSubjectPredicate(rsetID, boolean).ToList();
                     if (temp.Count > 0)
                     {
                         if (temp.Count > 1) throw new RdfParseException("Result Set has more than one boolean result defined for it");
@@ -217,13 +217,13 @@ namespace VDS.RDF.Parsing
                         INode result = booleanResult.Object;
                         if (result.NodeType == NodeType.Literal)
                         {
-                            ILiteralNode lit = (ILiteralNode)result;
+                            var lit = (ILiteralNode)result;
                             if (lit.DataType != null)
                             {
                                 if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                                 {
                                     bool b;
-                                    if (Boolean.TryParse(lit.Value, out b))
+                                    if (bool.TryParse(lit.Value, out b))
                                     {
                                         context.Handler.HandleBooleanResult(b);
                                         return;
@@ -278,15 +278,15 @@ namespace VDS.RDF.Parsing
                         {
                             // Each Solution has some Bindings
                             INode slnID = slnTriple.Object;
-                            bool ok = false;
-                            SparqlResult r = new SparqlResult();
+                            var ok = false;
+                            var r = new SparqlResult();
 
                             foreach (Triple bindingTriple in context.Graph.Triples.WithSubjectPredicate(slnID, binding))
                             {
                                 // Each Binding has a Variable and a Value
                                 ok = true;
                                 INode bindingID = bindingTriple.Object;
-                                String var = String.Empty;
+                                var var = string.Empty;
                                 INode val = null;
 
                                 // Retrieve the Variable and the Bound Value
@@ -294,7 +294,7 @@ namespace VDS.RDF.Parsing
                                 {
                                     if (valueTriple.Predicate.Equals(variable))
                                     {
-                                        if (!var.Equals(String.Empty)) throw new RdfParseException("Result Set contains a Binding which refers to more than one Variable");
+                                        if (!var.Equals(string.Empty)) throw new RdfParseException("Result Set contains a Binding which refers to more than one Variable");
                                         if (valueTriple.Object.NodeType != NodeType.Literal) throw new RdfParseException("Result Set contains a Binding which refers to a Variable but not by a Literal Node as required");
                                         var = ((ILiteralNode)valueTriple.Object).Value;
                                     }
@@ -304,7 +304,7 @@ namespace VDS.RDF.Parsing
                                         val = valueTriple.Object;
                                     }
                                 }
-                                if (var.Equals(String.Empty) || val == null) throw new RdfParseException("Result Set contains a Binding which doesn't contain both a Variable and a Value");
+                                if (var.Equals(string.Empty) || val == null) throw new RdfParseException("Result Set contains a Binding which doesn't contain both a Variable and a Value");
 
                                 // Check that the Variable was defined in the Header
                                 if (!context.Variables.Contains(var))
@@ -317,7 +317,7 @@ namespace VDS.RDF.Parsing
                             if (!ok) throw new RdfParseException("Result Set contains a Solution which has no Bindings");
 
                             // Check that all Variables are bound for a given result binding nulls where appropriate
-                            foreach (String v in context.Variables)
+                            foreach (var v in context.Variables)
                             {
                                 if (!r.HasValue(v))
                                 {
@@ -351,7 +351,7 @@ namespace VDS.RDF.Parsing
         /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected.
         /// </summary>
         /// <param name="message">Warning Message.</param>
-        private void RaiseWarning(String message)
+        private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
             if (d != null)

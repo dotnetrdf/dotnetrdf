@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 if (temp.NodeType == NodeType.Blank)
                 {
-                    IBlankNode b = (IBlankNode)temp;
+                    var b = (IBlankNode)temp;
                     return new StringNode(null, b.InternalID);
                 }
                 else

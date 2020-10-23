@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Builder
         {
             _selectBuilder.And(mapper =>
             {
-                var assignmentExpression = BuildAssignmentExpression(mapper);
+                TExpression assignmentExpression = BuildAssignmentExpression(mapper);
 
                 if (assignmentExpression is ISparqlAggregate)
                 {

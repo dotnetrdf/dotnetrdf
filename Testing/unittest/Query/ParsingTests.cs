@@ -52,7 +52,7 @@ namespace VDS.RDF.Query
 
         private SparqlQuery TestQuery(string query)
         {
-            var q = this._parser.ParseFromString(query);
+            var q = _parser.ParseFromString(query);
 
             _output.WriteLine(q.ToString());
             _output.WriteLine("");
@@ -63,7 +63,7 @@ namespace VDS.RDF.Query
 
         private SparqlUpdateCommandSet TestUpdate(string update)
         {
-            var cmds = this._updateParser.ParseFromString(update);
+            var cmds = _updateParser.ParseFromString(update);
 
             _output.WriteLine(cmds.ToString());
 
@@ -74,42 +74,42 @@ namespace VDS.RDF.Query
         public void SparqlParsingComplexGraphAfterUnion()
         {
             var query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} GRAPH ?g {?x ?y ?z}}";
-            this.TestQuery(query);
+            TestQuery(query);
         }
 
         [Fact]
         public void SparqlParsingComplexFilterAfterUnion()
         {
             var query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} FILTER(true)}";
-            this.TestQuery(query);
+            TestQuery(query);
         }
 
         [Fact]
         public void SparqlParsingComplexOptionalAfterUnion()
         {
             var query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} OPTIONAL {?x a ?u}}";
-            this.TestQuery(query);
+            TestQuery(query);
         }
 
         [Fact]
         public void SparqlParsingComplexMinusAfterUnion()
         {
             var query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} MINUS {?s ?p ?o}}";
-            this.TestQuery(query);
+            TestQuery(query);
         }
 
         [Fact]
         public void SparqlParsingComplexOptionalServiceUnion()
         {
             var query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} SERVICE ?g {?x ?y ?z}}";
-            this.TestQuery(query);
+            TestQuery(query);
         }
 
         [Fact]
         public void SparqlParsingSingleSubQuery()
         {
             var query = "SELECT * WHERE {{SELECT * WHERE {?s ?p ?o}}}";
-            this.TestQuery(query);
+            TestQuery(query);
         }
 
         [Fact]
@@ -441,7 +441,7 @@ SELECT * WHERE
 ";
             try
             {
-                this._parser.ParseFromString(query);
+                _parser.ParseFromString(query);
                 Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
@@ -466,7 +466,7 @@ SELECT * WHERE
 ";
             try
             {
-                this._parser.ParseFromString(query);
+                _parser.ParseFromString(query);
                 Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
@@ -491,7 +491,7 @@ SELECT * WHERE
 ";
             try
             {
-                this._parser.ParseFromString(query);
+                _parser.ParseFromString(query);
                 Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
@@ -516,7 +516,7 @@ SELECT * WHERE
 ";
             try
             {
-                this._parser.ParseFromString(query);
+                _parser.ParseFromString(query);
                 Assert.True(false, "Did not error as expected");
             }
             catch (RdfParseException parseEx)
@@ -545,7 +545,7 @@ WHERE
 }";
 
             // Should be a valid query
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -563,7 +563,7 @@ WHERE
 }";
 
             // Should be a valid query
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -581,7 +581,7 @@ WHERE
 }";
 
             // Should be a valid query
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -599,7 +599,7 @@ WHERE
 }";
 
             // Should be a valid query
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -617,7 +617,7 @@ WHERE
 }";
 
             // Should be a valid query
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -625,7 +625,7 @@ WHERE
         {
             const string query = "SELECT (UUID() AS ?test) { }";
 
-            var q = this._parser.ParseFromString(query);
+            var q = _parser.ParseFromString(query);
 
             var toString = q.ToString();
             Assert.Contains("(UUID", toString);
@@ -639,7 +639,7 @@ WHERE
         {
             const string query = "SELECT (StrUUID() AS ?test) { }";
 
-            var q = this._parser.ParseFromString(query);
+            var q = _parser.ParseFromString(query);
 
             var toString = q.ToString();
             Assert.Contains("(STRUUID", toString);
@@ -653,14 +653,14 @@ WHERE
         {
             const string query = "SELECT * WHERE { <http://example.com/foo bar> a <http://example.com/foo%20type> }";
 
-            Assert.Throws<RdfParseException>(() => this._parser.ParseFromString(query));
+            Assert.Throws<RdfParseException>(() => _parser.ParseFromString(query));
         }
         
         [Fact]
         public void SparqlParsingEscapedWhitespaceInUris()
         {
             const string query = "SELECT * WHERE { <http://example.com/foo%20bar> a <http://example.com/foo%20type> }";
-            var q = this._parser.ParseFromString(query);
+            var q = _parser.ParseFromString(query);
             var pattern = q.RootGraphPattern.TriplePatterns[0] as IMatchTriplePattern;
             Assert.NotNull(pattern);
             var subjectMatch = pattern.Subject as NodeMatchPattern;
@@ -690,7 +690,7 @@ WHERE
   }
 }";
 
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -707,7 +707,7 @@ WHERE
             // Invalid because non-aggregate and non-group key used in projection
             const string query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
 
-            Assert.Throws<RdfParseException>(() => this._parser.ParseFromString(query));
+            Assert.Throws<RdfParseException>(() => _parser.ParseFromString(query));
         }
 
         [Fact]
@@ -715,7 +715,7 @@ WHERE
         {
             // Valid because only aggregates and group keys used in projection
             const string query = @"SELECT (<http://func>(?s) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o } GROUP BY ?s";
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]
@@ -723,7 +723,7 @@ WHERE
         {
             // Invalid because non-aggregate and non-group key used in projection
             const string query = @"SELECT (<http://func>(?count) AS ?test) (COUNT(*) AS ?count) WHERE { ?s ?p ?o }";
-            this._parser.ParseFromString(query);
+            _parser.ParseFromString(query);
         }
 
         [Fact]

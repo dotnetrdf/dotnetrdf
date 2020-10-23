@@ -126,11 +126,11 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (ps[0].ParameterType.Equals(qnameMapperType))
                             {
-                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as ITripleFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as ITripleFormatter;
                             }
                             else if (ps[0].ParameterType.Equals(nsMapperType))
                             {
-                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as ITripleFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as ITripleFormatter;
                             }
                         }
                         else if (ps.Length == 0)
@@ -251,7 +251,7 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _closeOnEnd = true;
         private INamespaceMapper _formattingMapper = new QNameOutputMapper();
         private SparqlResultsType _currentType = SparqlResultsType.Boolean;
-        private List<String> _currVariables = new List<String>();
+        private List<string> _currVariables = new List<string>();
         private bool _headerWritten = false;
 
         /// <summary>
@@ -334,11 +334,11 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (ps[0].ParameterType.Equals(qnameMapperType))
                             {
-                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as IResultFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as IResultFormatter;
                             }
                             else if (ps[0].ParameterType.Equals(nsMapperType))
                             {
-                                _formatter = Activator.CreateInstance(_formatterType, new Object[] { _formattingMapper }) as IResultFormatter;
+                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as IResultFormatter;
                             }
                         }
                         else if (ps.Length == 0)

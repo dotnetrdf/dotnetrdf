@@ -348,7 +348,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                char[] cs = id.ToCharArray();
+                var cs = id.ToCharArray();
                 if (char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
                 {
                     // Can't start with a Digit, Hyphen or Underscore
@@ -383,7 +383,7 @@ namespace VDS.RDF.Writing
             else
             {
                 // All characters must be alphanumeric and not start with a digit in NTriples
-                char[] cs = id.ToCharArray();
+                var cs = id.ToCharArray();
                 return char.IsLetter(cs[0]) && cs.All(c => char.IsLetterOrDigit(c) && c <= 127);
             }
         }
@@ -416,7 +416,7 @@ namespace VDS.RDF.Writing
                     }
 
                     // Build the collection recursively
-                    OutputRdfCollection c = new OutputRdfCollection(false);
+                    var c = new OutputRdfCollection(false);
 
                     // Get the thing that is the rdf:first related to this rdf:rest
                     Triple[] firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first).ToArray();//context.Graph.GetTriples(relfirstsel).Distinct();
@@ -480,7 +480,7 @@ namespace VDS.RDF.Writing
             // using Blank Node syntax [p1 o1; p2 o2; p3 o3]
             if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ExplicitOnly)
             {
-                List<IBlankNode> bnodes = context.Graph.Nodes.BlankNodes().ToList();
+                var bnodes = context.Graph.Nodes.BlankNodes().ToList();
                 foreach (IBlankNode b in bnodes)
                 {
                     if (context.Collections.ContainsKey(b))
@@ -488,7 +488,7 @@ namespace VDS.RDF.Writing
                         continue;
                     }
 
-                    List<Triple> ts = context.Graph.GetTriples(b).ToList();
+                    var ts = context.Graph.GetTriples(b).ToList();
 
                     if (ts.Count <= 1)
                     {
@@ -504,7 +504,7 @@ namespace VDS.RDF.Writing
                         {
                             ts.RemoveAll(t => t.Object.Equals(b));
                         }
-                        OutputRdfCollection c = new OutputRdfCollection(true);
+                        var c = new OutputRdfCollection(true);
                         c.Triples.AddRange(ts);
                         context.Collections.Add(b, c);
                     }
@@ -518,7 +518,7 @@ namespace VDS.RDF.Writing
             }
 
             // Once we've found all the Collections we need to check which are actually eligible for compression
-            List<KeyValuePair<INode, OutputRdfCollection>> cs = context.Collections.ToList();
+            var cs = context.Collections.ToList();
 
             // 1 - If all the Triples pertaining to a particular Node are in the Collection then a collection is not eligible
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
@@ -543,8 +543,8 @@ namespace VDS.RDF.Writing
                     // can't compress i.e. the collection is not linked to anything else
                     // Or if the number of mentions compared to the expected mentions differs by more than 1 then
                     // can't compress i.e. the collection is linked to more than one thing
-                    int mentions = context.Graph.GetTriples(kvp.Key).Count();
-                    int expectedMentions = ((c.Triples.Count * 3) - 1);
+                    var mentions = context.Graph.GetTriples(kvp.Key).Count();
+                    var expectedMentions = ((c.Triples.Count * 3) - 1);
                     if (expectedMentions == mentions || mentions - expectedMentions != 1)
                     {
                         context.Collections.Remove(kvp.Key);
@@ -560,7 +560,7 @@ namespace VDS.RDF.Writing
             cs = context.Collections.OrderByDescending(kvp => kvp.Value.Triples.Count).ToList();
 
             // First build up a dependencies table
-            Dictionary<INode, HashSet<INode>> dependencies = new Dictionary<INode, HashSet<INode>>();
+            var dependencies = new Dictionary<INode, HashSet<INode>>();
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in cs)
             {
                 OutputRdfCollection c = kvp.Value;
@@ -572,7 +572,7 @@ namespace VDS.RDF.Writing
                 }
 
                 // Otherwise check each Object of the Triples for other Blank Nodes
-                HashSet<INode> ds = new HashSet<INode>(new FastNodeComparer());
+                var ds = new HashSet<INode>(new FastNodeComparer());
                 foreach (Triple t in c.Triples)
                 {
                     // Only care about Blank Nodes which aren't the collection root but are the root for another collection
@@ -633,7 +633,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     INode temp = kvp.Key;
-                    for (int i = 0; i < c.Triples.Count; i++)
+                    for (var i = 0; i < c.Triples.Count; i++)
                     {
                         context.TriplesDone.Add(c.Triples[i]);
                         if (i < c.Triples.Count - 1)
@@ -655,7 +655,7 @@ namespace VDS.RDF.Writing
                 OutputRdfCollection c = kvp.Value;
                 if (c.IsExplicit)
                 {
-                    int mentions = context.Graph.GetTriples(kvp.Key).Count(t => !context.TriplesDone.Contains(t));
+                    var mentions = context.Graph.GetTriples(kvp.Key).Count(t => !context.TriplesDone.Contains(t));
                     if (mentions - 1 > c.Triples.Count)
                     {
                         context.Collections.Remove(kvp.Key);
@@ -718,7 +718,7 @@ namespace VDS.RDF.Writing
             var capacity = ts.Count;
             var sortHelperDictionary = new Dictionary<INode, Dictionary<INode, List<Triple>>>(capacity);
             // Fill dictionary
-            foreach (var triple in ts)
+            foreach (Triple triple in ts)
             {
                 if (!sortHelperDictionary.ContainsKey(triple.Subject))
                 {
@@ -734,13 +734,13 @@ namespace VDS.RDF.Writing
             }
 
             ts.Clear();
-            var keys = sortHelperDictionary.Keys.ToArray();
+            INode[] keys = sortHelperDictionary.Keys.ToArray();
             Array.Sort(keys, new FastNodeComparer());
-            foreach (var subjectKey in keys)
+            foreach (INode subjectKey in keys)
             {
-                var predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
+                INode[] predicateKeys = sortHelperDictionary[subjectKey].Keys.ToArray();
                 Array.Sort(predicateKeys, new FastNodeComparer());
-                foreach (var predicateKey in predicateKeys)
+                foreach (INode predicateKey in predicateKeys)
                 {
                     ts.AddRange(sortHelperDictionary[subjectKey][predicateKey]);
                 }

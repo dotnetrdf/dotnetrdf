@@ -119,7 +119,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                Graph g = new Graph();
+                var g = new Graph();
                 g.BaseUri = _graphUri;
                 context.Data.AddGraph(g);
             }
@@ -140,7 +140,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("CREATE ");
             if (_silent) output.Append("SILENT ");
             output.Append("GRAPH <");

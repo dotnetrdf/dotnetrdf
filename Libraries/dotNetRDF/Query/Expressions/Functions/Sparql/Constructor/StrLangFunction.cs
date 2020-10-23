@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                     string langSpec;
                     if (lang.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode langLit = (ILiteralNode)lang;
+                        var langLit = (ILiteralNode)lang;
                         if (langLit.DataType == null)
                         {
                             langSpec = langLit.Value;
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                     }
                     if (s.NodeType == NodeType.Literal)
                     {
-                        ILiteralNode lit = (ILiteralNode)s;
+                        var lit = (ILiteralNode)s;
                         if (lit.DataType == null)
                         {
                             if (lit.Language.Equals(string.Empty))

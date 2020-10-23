@@ -98,9 +98,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             output.Append("COALESCE(");
-            for (int i = 0; i < _expressions.Count; i++)
+            for (var i = 0; i < _expressions.Count; i++)
             {
                 output.Append(_expressions[i].ToString());
                 if (i < _expressions.Count - 1)

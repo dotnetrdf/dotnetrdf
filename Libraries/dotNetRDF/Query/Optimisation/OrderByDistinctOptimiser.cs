@@ -58,18 +58,18 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (algebra is Distinct)
             {
-                Distinct distinct = (Distinct)algebra;
+                var distinct = (Distinct)algebra;
                 if (distinct.InnerAlgebra is Select)
                 {
-                    Select select = (Select)distinct.InnerAlgebra;
+                    var select = (Select)distinct.InnerAlgebra;
                     if (!select.IsSelectAll)
                     {
                         if (select.InnerAlgebra is OrderBy)
                         {
-                            bool ok = true;
-                            OrderBy orderBy = (OrderBy)select.InnerAlgebra;
-                            List<String> projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
-                            foreach (String var in orderBy.Ordering.Variables)
+                            var ok = true;
+                            var orderBy = (OrderBy)select.InnerAlgebra;
+                            var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
+                            foreach (var var in orderBy.Ordering.Variables)
                             {
                                 if (!projectVars.Contains(var))
                                 {
@@ -81,8 +81,8 @@ namespace VDS.RDF.Query.Optimisation
                             if (ok)
                             {
                                 // Safe to apply the optimization
-                                Select newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
-                                Distinct newDistinct = new Distinct(newSelect);
+                                var newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
+                                var newDistinct = new Distinct(newSelect);
                                 return new OrderBy(newDistinct, orderBy.Ordering);
                             }
 
@@ -95,18 +95,18 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (algebra is Reduced)
             {
-                Reduced reduced = (Reduced)algebra;
+                var reduced = (Reduced)algebra;
                 if (reduced.InnerAlgebra is Select)
                 {
-                    Select select = (Select)reduced.InnerAlgebra;
+                    var select = (Select)reduced.InnerAlgebra;
                     if (!select.IsSelectAll)
                     {
                         if (select.InnerAlgebra is OrderBy)
                         {
-                            bool ok = true;
-                            OrderBy orderBy = (OrderBy)select.InnerAlgebra;
-                            List<String> projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
-                            foreach (String var in orderBy.Ordering.Variables)
+                            var ok = true;
+                            var orderBy = (OrderBy)select.InnerAlgebra;
+                            var projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
+                            foreach (var var in orderBy.Ordering.Variables)
                             {
                                 if (!projectVars.Contains(var))
                                 {
@@ -118,8 +118,8 @@ namespace VDS.RDF.Query.Optimisation
                             if (ok)
                             {
                                 // Safe to apply the optimization
-                                Select newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
-                                Reduced newReduced = new Reduced(newSelect);
+                                var newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
+                                var newReduced = new Reduced(newSelect);
                                 return new OrderBy(newReduced, orderBy.Ordering);
                             }
 

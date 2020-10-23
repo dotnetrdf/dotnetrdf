@@ -81,11 +81,11 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets an Empty Enumerable since a Node Term does not use variables.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
-                return Enumerable.Empty<String>();
+                return Enumerable.Empty<string>();
             }
         }
 
@@ -103,11 +103,11 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
-        public String Functor
+        public string Functor
         {
             get
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

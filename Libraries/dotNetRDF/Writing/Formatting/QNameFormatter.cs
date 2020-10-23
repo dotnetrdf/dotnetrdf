@@ -48,11 +48,11 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name.</param>
         /// <param name="qnameMapper">QName Map.</param>
-        public QNameFormatter(String formatName, QNameOutputMapper qnameMapper)
+        public QNameFormatter(string formatName, QNameOutputMapper qnameMapper)
             : base(formatName)
         {
             _qnameMapper = qnameMapper;
-            foreach (String prefix in _qnameMapper.Prefixes.ToList())
+            foreach (var prefix in _qnameMapper.Prefixes.ToList())
             {
                 if (!IsValidQName(prefix + ":"))
                 {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="formatName">Format Name.</param>
         /// <param name="qnameMapper">QName Map.</param>
         /// <param name="allowAKeyword">Whether the 'a' keyword can be used for the RDF type predicate.</param>
-        public QNameFormatter(String formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
+        public QNameFormatter(string formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
             : this(formatName, qnameMapper)
         {
             _allowAKeyword = allowAKeyword;
@@ -78,7 +78,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="value">Value.</param>
         /// <returns></returns>
-        protected virtual bool IsValidQName(String value)
+        protected virtual bool IsValidQName(string value)
         {
             return TurtleSpecsHelper.IsValidQName(value);
         }
@@ -91,8 +91,8 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
-            StringBuilder output = new StringBuilder();
-            String qname;
+            var output = new StringBuilder();
+            string qname;
 
             if (_allowAKeyword && segment == TripleSegment.Predicate && u.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfType))
             {
@@ -134,6 +134,6 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="prefix">Namespace Prefix.</param>
         /// <param name="namespaceUri">Namespace URI.</param>
         /// <returns></returns>
-        public abstract string FormatNamespace(String prefix, Uri namespaceUri);
+        public abstract string FormatNamespace(string prefix, Uri namespaceUri);
     }
 }

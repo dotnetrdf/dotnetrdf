@@ -130,7 +130,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="formatter">Formatter.</param>
         /// <returns></returns>
-        public virtual String ToString(INodeFormatter formatter)
+        public virtual string ToString(INodeFormatter formatter)
         {
             return formatter.Format(this);
         }
@@ -141,7 +141,7 @@ namespace VDS.RDF
         /// <param name="formatter">Formatter.</param>
         /// <param name="segment">Triple Segment.</param>
         /// <returns></returns>
-        public virtual String ToString(INodeFormatter formatter, TripleSegment segment)
+        public virtual string ToString(INodeFormatter formatter, TripleSegment segment)
         {
             return formatter.Format(this, segment);
         }
@@ -172,9 +172,9 @@ namespace VDS.RDF
         /// <remarks>Uses the Equals method to evaluate the result.</remarks>
         public static bool operator ==(BaseNode a, BaseNode b)
         {
-            if (((Object)a) == null)
+            if (((object)a) == null)
             {
-                if (((Object)b) == null) return true;
+                if (((object)b) == null) return true;
                 return false;
             }
             else
@@ -192,9 +192,9 @@ namespace VDS.RDF
         /// <remarks>Uses the Equals method to evaluate the result.</remarks>
         public static bool operator !=(BaseNode a, BaseNode b)
         {
-            if (((Object)a) == null)
+            if (((object)a) == null)
             {
-                if (((Object)b) == null) return false;
+                if (((object)b) == null) return false;
                 return true;
             }
             else

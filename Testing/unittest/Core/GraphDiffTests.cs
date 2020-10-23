@@ -39,8 +39,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffEqualGraphs()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h = g;
 
@@ -53,8 +53,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffDifferentGraphs()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h.LoadFromFile("resources\\Turtle.ttl");
 
@@ -67,8 +67,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffEqualGraphs2()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h.LoadFromFile("resources\\InferenceTest.ttl");
 
@@ -81,8 +81,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffRemovedGroundTriples()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h.LoadFromFile("resources\\InferenceTest.ttl");
 
@@ -99,8 +99,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffAddedGroundTriples()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h.LoadFromFile("resources\\InferenceTest.ttl");
 
@@ -120,8 +120,8 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffAddedMSG()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h.LoadFromFile("resources\\InferenceTest.ttl");
 
@@ -141,8 +141,8 @@ namespace VDS.RDF
         [SkippableFact]
         public void GraphDiffRemovedMSG()
         {
-            Graph g = new Graph();
-            Graph h = new Graph();
+            var g = new Graph();
+            var h = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             h.LoadFromFile("resources\\InferenceTest.ttl");
 
@@ -161,7 +161,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffNullReferenceBoth()
         {
-            GraphDiff diff = new GraphDiff();
+            var diff = new GraphDiff();
             GraphDiffReport report = diff.Difference(null, null);
 
             TestTools.ShowDifferences(report);
@@ -173,10 +173,10 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffNullReferenceA()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            GraphDiff diff = new GraphDiff();
+            var diff = new GraphDiff();
             GraphDiffReport report = diff.Difference(null, g);
             TestTools.ShowDifferences(report);
 
@@ -188,7 +188,7 @@ namespace VDS.RDF
         [Fact]
         public void GraphDiffNullReferenceB()
         {
-            Graph g = new Graph();
+            var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
             GraphDiffReport report = g.Difference(null);
@@ -243,9 +243,9 @@ namespace VDS.RDF
 
         private static void TestGraphDiff(string testGraphName)
         {
-            Graph a = new Graph();
+            var a = new Graph();
             a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
-            Graph b = new Graph();
+            var b = new Graph();
             b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
 
             var diff = a.Difference(b);

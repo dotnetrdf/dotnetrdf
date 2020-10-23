@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable.</param>
         /// <param name="n">Value.</param>
         /// <returns></returns>
-        public override bool ContainsValue(String var, INode n)
+        public override bool ContainsValue(string var, INode n)
         {
             return true;
         }
@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return Enumerable.Empty<String>();
+                return Enumerable.Empty<string>();
             }
         }
         

@@ -53,14 +53,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            List<List<INode>> paths = new List<List<INode>>();
+            var paths = new List<List<INode>>();
             BaseMultiset initialInput = context.InputMultiset;
             int step = 0, prevCount = 0, skipCount = 0;
 
-            String subjVar = PathStart.VariableName;
-            String objVar = PathEnd.VariableName;
-            bool bothTerms = (subjVar == null && objVar == null);
-            bool reverse = false;
+            var subjVar = PathStart.VariableName;
+            var objVar = PathEnd.VariableName;
+            var bothTerms = (subjVar == null && objVar == null);
+            var reverse = false;
 
             if (subjVar == null || (subjVar != null && context.InputMultiset.ContainsVariable(subjVar)) || (objVar != null && !context.InputMultiset.ContainsVariable(objVar)))
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     foreach (INode nextStep in EvaluateStep(context, path, reverse))
                     {
-                        List<INode> newPath = new List<INode>(path);
+                        var newPath = new List<INode>(path);
                         newPath.Add(nextStep);
                         paths.Add(newPath);
                     }
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query.Algebra
                 // Can short circuit evaluation here if both are terms and any path is acceptable
                 if (bothTerms)
                 {
-                    bool exit = false;
+                    var exit = false;
                     foreach (List<INode> path in paths)
                     {
                         if (reverse)
@@ -166,14 +166,14 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = new Multiset();
 
                 // Evaluate the Paths to check that are acceptable
-                HashSet<ISet> returnedPaths = new HashSet<ISet>();
+                var returnedPaths = new HashSet<ISet>();
                 foreach (List<INode> path in paths)
                 {
                     if (reverse)
                     {
                         if (PathEnd.Accepts(context, path[0]) && PathStart.Accepts(context, path[path.Count - 1]))
                         {
-                            Set s = new Set();
+                            var s = new Set();
                             if (!bothTerms)
                             {
                                 if (subjVar != null) s.Add(subjVar, path[path.Count - 1]);
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (PathStart.Accepts(context, path[0]) && PathEnd.Accepts(context, path[path.Count - 1]))
                         {
-                            Set s = new Set();
+                            var s = new Set();
                             if (!bothTerms)
                             {
                                 if (subjVar != null) s.Add(subjVar, path[0]);
@@ -244,8 +244,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override GraphPattern ToGraphPattern()
         {
-            GraphPattern gp = new GraphPattern();
-            PropertyPathPattern pp = new PropertyPathPattern(PathStart, new OneOrMore(Path), PathEnd);
+            var gp = new GraphPattern();
+            var pp = new PropertyPathPattern(PathStart, new OneOrMore(Path), PathEnd);
             gp.AddTriplePattern(pp);
             return gp;
         }

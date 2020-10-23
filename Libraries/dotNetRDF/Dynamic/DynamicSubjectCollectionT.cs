@@ -24,11 +24,13 @@
 // </copyright>
 */
 
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Dynamic
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
     /// Represents a strongly type read/write dynamic collection of subjects by predicate and object.
     /// </summary>
@@ -75,7 +77,7 @@ namespace VDS.RDF.Dynamic
         /// <remarks>Nodes are wrapped in a <see cref="DynamicNode"/>.</remarks>
         public void CopyTo(T[] array, int index)
         {
-            this.Subjects.Select(Convert).ToArray().CopyTo(array, index);
+            Subjects.Select(Convert).ToArray().CopyTo(array, index);
         }
 
         /// <summary>
@@ -91,17 +93,17 @@ namespace VDS.RDF.Dynamic
         /// <inheritdoc/>
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            return this.Subjects.Select(Convert).GetEnumerator();
+            return Subjects.Select(Convert).GetEnumerator();
         }
 
         private T Convert(INode value)
         {
-            var type = typeof(T);
+            Type type = typeof(T);
 
             if (type.IsSubclassOf(typeof(DynamicNode)))
             {
                 // TODO: Exception handling
-                var ctor = type.GetConstructor(new[] { typeof(INode) });
+                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode) });
                 value = (DynamicNode)ctor.Invoke(new[] { value });
             }
 

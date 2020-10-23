@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
             // Lazy Evaluation for efficiency
             try
             {
-                bool leftResult = _leftExpr.Evaluate(context, bindingID).AsBoolean();
+                var leftResult = _leftExpr.Evaluate(context, bindingID).AsBoolean();
                 if (leftResult)
                 {
                     // If the LHS is true it doesn't matter about any subsequent results
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
             {
                 // If there's an Error on the LHS we return true only if the RHS evaluates to true
                 // Otherwise we throw the Error
-                bool rightResult = _rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
+                var rightResult = _rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
                 if (rightResult)
                 {
                     return new BooleanNode(null, true);
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
+            var output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + _leftExpr.ToString() + ")");

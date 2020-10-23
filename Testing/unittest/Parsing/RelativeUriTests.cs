@@ -44,8 +44,8 @@ namespace VDS.RDF.Parsing
             //This invocation succeeds because when invoking via the FileLoader
             //the Base URI will be set to the file URI
 
-            Graph g = new Graph();
-            RdfXmlParser parser = new RdfXmlParser();
+            var g = new Graph();
+            var parser = new RdfXmlParser();
             g.LoadFromFile("resources\\rdfxml-relative-uri.rdf", parser);
 
             //Expect a non-empty grpah with a single triple
@@ -66,9 +66,9 @@ namespace VDS.RDF.Parsing
             //This invocation succeeds because when invoking because
             //we manually set the Base URI prior to invoking the parser
 
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org");
-            RdfXmlParser parser = new RdfXmlParser();
+            var parser = new RdfXmlParser();
             parser.Load(g, "resources\\rdfxml-relative-uri.rdf");
 
             //Expect a non-empty grpah with a single triple
@@ -90,8 +90,8 @@ namespace VDS.RDF.Parsing
             //This invocation fails because when invoking the parser directly
             //the Base URI is not set to the file URI
 
-            Graph g = new Graph();
-            RdfXmlParser parser = new RdfXmlParser();
+            var g = new Graph();
+            var parser = new RdfXmlParser();
 
             Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\rdfxml-relative-uri.rdf"));
         }
@@ -101,8 +101,8 @@ namespace VDS.RDF.Parsing
         {
             //This invocation fails because there is no Base URI to
             //resolve against
-            Graph g = new Graph();
-            TurtleParser parser = new TurtleParser();
+            var g = new Graph();
+            var parser = new TurtleParser();
 
             Assert.Throws<RdfParseException>(() => parser.Load(g, new StringReader(TurtleExample)));
         }
@@ -112,9 +112,9 @@ namespace VDS.RDF.Parsing
         {
             //This invocation succeeds because we define a Base URI
             //resolve against
-            Graph g = new Graph();
+            var g = new Graph();
             g.BaseUri = new Uri("http://example.org");
-            TurtleParser parser = new TurtleParser();
+            var parser = new TurtleParser();
             parser.Load(g, new StringReader(TurtleExample));
 
             //Expect a non-empty grpah with a single triple

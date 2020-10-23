@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Builder
 
         public BooleanExpression Exists(Action<IGraphPatternBuilder> buildExistsPattern)
         {
-            GraphPatternBuilder builder = new GraphPatternBuilder();
+            var builder = new GraphPatternBuilder();
             buildExistsPattern(builder);
             var existsFunction = new ExistsFunction(builder.BuildGraphPattern(Prefixes), true);
             return new BooleanExpression(existsFunction);

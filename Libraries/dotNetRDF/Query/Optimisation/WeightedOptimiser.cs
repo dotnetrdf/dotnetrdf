@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Optimisation
             if (count.NodeType == NodeType.Literal)
             {
                 long i;
-                if (Int64.TryParse(((ILiteralNode)count).Value, out i))
+                if (long.TryParse(((ILiteralNode)count).Value, out i))
                 {
                     long current;
                     if (_subjectWeightings.TryGetValue(n, out current))
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Optimisation
             if (count.NodeType == NodeType.Literal)
             {
                 long i;
-                if (Int64.TryParse(((ILiteralNode)count).Value, out i))
+                if (long.TryParse(((ILiteralNode)count).Value, out i))
                 {
                     long current;
                     if (_predicateWeightings.TryGetValue(n, out current))
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Optimisation
             if (count.NodeType == NodeType.Literal)
             {
                 long i;
-                if (Int64.TryParse(((ILiteralNode)count).Value, out i))
+                if (long.TryParse(((ILiteralNode)count).Value, out i))
                 {
                     long current;
                     if (_objectWeightings.TryGetValue(n, out current))
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             set
             {
-                _defSubjWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
+                _defSubjWeight = Math.Min(Math.Max(double.Epsilon, value), 1d);
             }
         }
 
@@ -262,7 +262,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             set
             {
-                _defPredWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
+                _defPredWeight = Math.Min(Math.Max(double.Epsilon, value), 1d);
             }
         }
 
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Optimisation
             }
             set
             {
-                _defObjWeight = Math.Min(Math.Max(Double.Epsilon, value), 1d);
+                _defObjWeight = Math.Min(Math.Max(double.Epsilon, value), 1d);
             }
         }
 
@@ -306,10 +306,10 @@ namespace VDS.RDF.Query.Optimisation
             GetSelectivities(x, out xSubj, out xPred, out xObj);
             GetSelectivities(y, out ySubj, out yPred, out yObj);
 
-            double xSel = xSubj * xPred * xObj;
-            double ySel = ySubj * yPred * yObj;
+            var xSel = xSubj * xPred * xObj;
+            var ySel = ySubj * yPred * yObj;
 
-            int c = xSel.CompareTo(ySel);
+            var c = xSel.CompareTo(ySel);
             if (c == 0)
             {
                 // Fall back to standard ordering if selectivities are equal
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query.Optimisation
             switch (x.PatternType)
             {
                 case TriplePatternType.Match:
-                    IMatchTriplePattern p = (IMatchTriplePattern)x;
+                    var p = (IMatchTriplePattern)x;
                     switch (p.IndexType)
                     {
                         case TripleIndexType.NoVariables:

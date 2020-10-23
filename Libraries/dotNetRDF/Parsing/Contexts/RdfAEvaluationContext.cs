@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing.Contexts
         private INode _parentSubj, _parentObj;
         private NamespaceMapper _nsmapper = new NamespaceMapper(true);
         private List<IncompleteTriple> _incompleteTriples = new List<IncompleteTriple>();
-        private String _lang = String.Empty;
+        private string _lang = string.Empty;
         private IRdfAVocabulary _localVocabularly;
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfAEvaluationContext(Uri baseUri)
         {
             _baseUri = baseUri;
-            _nsmapper.AddNamespace(String.Empty, UriFactory.Create(RdfAParser.XHtmlVocabNamespace));
+            _nsmapper.AddNamespace(string.Empty, UriFactory.Create(RdfAParser.XHtmlVocabNamespace));
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets the Language.
         /// </summary>
-        public String Language
+        public string Language
         {
             get
             {

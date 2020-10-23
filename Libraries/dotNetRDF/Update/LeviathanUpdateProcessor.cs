@@ -234,7 +234,7 @@ namespace VDS.RDF.Update
             // Then if possible attempt to get the lock and determine whether it needs releasing
             ReaderWriterLockSlim currLock =
                 (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset) _dataset).Lock : _lock;
-            bool mustRelease = false;
+            var mustRelease = false;
             try
             {
                 if (!currLock.IsWriteLockHeld)
@@ -343,7 +343,7 @@ namespace VDS.RDF.Update
 
                 // Start the operation
                 context.StartExecution();
-                for (int i = 0; i < commands.CommandCount; i++)
+                for (var i = 0; i < commands.CommandCount; i++)
                 {
                     // Process each individual command with auto-commit disabled so that individual commands
                     // don't try and commit after each one is applied. When the processor is in auto-commit

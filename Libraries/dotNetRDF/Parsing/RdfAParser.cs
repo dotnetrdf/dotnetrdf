@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         protected override HtmlDocument LoadAndParse(TextReader input)
         {
-            HtmlDocument doc = new HtmlDocument();
+            var doc = new HtmlDocument();
             doc.Load(input);
             return doc;
         }

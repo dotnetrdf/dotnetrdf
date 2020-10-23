@@ -53,25 +53,25 @@ namespace VDS.RDF.Web
         [Fact]
         public void WebConnegGetSparqlWriterWithAcceptAll()
         {
-            this.TestSparqlWriterConneg("*/*", typeof(SparqlXmlWriter), "application/sparql-results+xml");
+            TestSparqlWriterConneg("*/*", typeof(SparqlXmlWriter), "application/sparql-results+xml");
         }
 
         [Fact]
         public void WebConnegGetSparqlWriterWithAcceptXml()
         {
-            this.TestSparqlWriterConneg("application/sparql-results+xml", typeof(SparqlXmlWriter), "application/sparql-results+xml");
+            TestSparqlWriterConneg("application/sparql-results+xml", typeof(SparqlXmlWriter), "application/sparql-results+xml");
         }
 
         [Fact]
         public void WebConnegGetSparqlWriterWithAcceptJson()
         {
-            this.TestSparqlWriterConneg("application/sparql-results+json", typeof(SparqlJsonWriter), "application/sparql-results+json");
+            TestSparqlWriterConneg("application/sparql-results+json", typeof(SparqlJsonWriter), "application/sparql-results+json");
         }
 
         [Fact]
         public void WebConnegGetSparqlWriterWithAcceptHtml()
         {
-            this.TestSparqlWriterConneg("text/html", typeof(SparqlHtmlWriter), "text/html");
+            TestSparqlWriterConneg("text/html", typeof(SparqlHtmlWriter), "text/html");
         }
     }
 }

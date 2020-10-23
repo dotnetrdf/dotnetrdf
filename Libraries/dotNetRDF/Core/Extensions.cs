@@ -254,11 +254,11 @@ namespace VDS.RDF
             // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
-            byte[] input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
-            byte[] output = _sha256.ComputeHash(input);
+            var input = Encoding.UTF8.GetBytes(u.AbsoluteUri);
+            var output = _sha256.ComputeHash(input);
 
-            StringBuilder hash = new StringBuilder();
-            foreach (byte b in output)
+            var hash = new StringBuilder();
+            foreach (var b in output)
             {
                 hash.Append(b.ToString("x2"));
             }
@@ -279,11 +279,11 @@ namespace VDS.RDF
             // Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
-            byte[] input = Encoding.UTF8.GetBytes(s);
-            byte[] output = _sha256.ComputeHash(input);
+            var input = Encoding.UTF8.GetBytes(s);
+            var output = _sha256.ComputeHash(input);
 
-            StringBuilder hash = new StringBuilder();
-            foreach (byte b in output)
+            var hash = new StringBuilder();
+            foreach (var b in output)
             {
                 hash.Append(b.ToString("x2"));
             }
@@ -366,8 +366,8 @@ namespace VDS.RDF
             INode listCurrent = listRoot;
 
             // Then we can assert the collection
-            List<INode> nodes = objects.Select(x => mapFunc(x)).ToList();
-            for (int i = 0; i < nodes.Count; i++)
+            var nodes = objects.Select(x => mapFunc(x)).ToList();
+            for (var i = 0; i < nodes.Count; i++)
             {
                 if (nodes[i] == null) throw new RdfException("Unable to assert list because one of the items was null");
                 g.Assert(listCurrent, rdfFirst, nodes[i]);
@@ -423,9 +423,9 @@ namespace VDS.RDF
 
             if (listRoot.Equals(rdfNil)) return Enumerable.Empty<Triple>();
 
-            List<Triple> ts = new List<Triple>();
-            int currCount = 0;
-            int diff = 0;
+            var ts = new List<Triple>();
+            var currCount = 0;
+            var diff = 0;
             INode listCurrent = listRoot;
             do
             {
@@ -563,8 +563,8 @@ namespace VDS.RDF
             if (!objects.Any()) return;
 
             // Figure out which items need removing
-            List<INode> currObjects = GetListItems(g, listRoot).ToList();
-            int initialCount = currObjects.Count;
+            var currObjects = GetListItems(g, listRoot).ToList();
+            var initialCount = currObjects.Count;
             foreach (INode obj in objects.Select(x => mapFunc(x)))
             {
                 currObjects.Remove(obj);
@@ -750,8 +750,8 @@ namespace VDS.RDF
         {
             if (line.Contains('\n'))
             {
-                string[] lines = line.Split('\n');
-                foreach (string l in lines)
+                var lines = line.Split('\n');
+                foreach (var l in lines)
                 {
                     if (string.IsNullOrEmpty(l) || l.ToCharArray().All(c => char.IsWhiteSpace(c))) continue;
                     builder.AppendLine(new string(' ', indent) + l);
@@ -791,7 +791,7 @@ namespace VDS.RDF
         /// <returns></returns>
         internal static IInMemoryQueryableStore AsTripleStore(this IGraph g)
         {
-            TripleStore store = new TripleStore();
+            var store = new TripleStore();
             store.Add(g);
             return store;
         }
@@ -805,9 +805,9 @@ namespace VDS.RDF
         public static object ExecuteQuery(this IGraph g, string sparqlQuery)
         {
             // Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
-            InMemoryDataset ds = new InMemoryDataset(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var ds = new InMemoryDataset(g);
+            var processor = new LeviathanQueryProcessor(ds);
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
             return processor.ProcessQuery(q);
         }
@@ -821,9 +821,9 @@ namespace VDS.RDF
         /// <param name="sparqlQuery">SPARQL Query.</param>
         public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            InMemoryDataset ds = new InMemoryDataset(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
-            SparqlQueryParser parser = new SparqlQueryParser();
+            var ds = new InMemoryDataset(g);
+            var processor = new LeviathanQueryProcessor(ds);
+            var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
             processor.ProcessQuery(rdfHandler, resultsHandler, q);
         }
@@ -859,8 +859,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public static object ExecuteQuery(this IGraph g, SparqlQuery query)
         {
-            InMemoryDataset ds = new InMemoryDataset(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
+            var ds = new InMemoryDataset(g);
+            var processor = new LeviathanQueryProcessor(ds);
             return processor.ProcessQuery(query);
         }
 
@@ -873,8 +873,8 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query.</param>
         public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            InMemoryDataset ds = new InMemoryDataset(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
+            var ds = new InMemoryDataset(g);
+            var processor = new LeviathanQueryProcessor(ds);
             processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
@@ -1105,7 +1105,7 @@ namespace VDS.RDF
         /// <param name="streamWriter">The stream to write to.</param>
         public static void SaveToStream(this IGraph g, string filename, TextWriter streamWriter)
         {
-            var writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
+            IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
             g.SaveToStream(streamWriter, writer);
         }
     }

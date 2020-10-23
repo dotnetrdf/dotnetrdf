@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             IValuedNode a = _leftExpr.Evaluate(context, bindingID);
             IValuedNode b = _rightExpr.Evaluate(context, bindingID);
 
-            SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
+            var type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
             switch (type)
             {

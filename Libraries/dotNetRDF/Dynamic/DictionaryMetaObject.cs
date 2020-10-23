@@ -24,12 +24,12 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq.Expressions;
+
 namespace VDS.RDF.Dynamic
 {
-    using System.Collections.Generic;
-    using System.Dynamic;
-    using System.Linq.Expressions;
-
     internal class DictionaryMetaObject : EnumerableMetaObject
     {
         internal DictionaryMetaObject(Expression parameter, object value)
@@ -42,7 +42,7 @@ namespace VDS.RDF.Dynamic
             return binder.FallbackGetMember(
                 this,
                 CreateMetaObject(
-                    this.CreateIndexExpression(
+                    CreateIndexExpression(
                         binder.Name)));
         }
 
@@ -53,7 +53,7 @@ namespace VDS.RDF.Dynamic
                 value,
                 CreateMetaObject(
                     Expression.Assign(
-                        this.CreateIndexExpression(binder.Name),
+                        CreateIndexExpression(binder.Name),
                         value.Expression)));
         }
 
@@ -66,8 +66,8 @@ namespace VDS.RDF.Dynamic
         {
             return Expression.Property(
                 Expression.Convert(
-                    this.Expression,
-                    this.RuntimeType),
+                    Expression,
+                    RuntimeType),
                 "Item",
                 new[] { Expression.Constant(name) });
         }
@@ -77,8 +77,8 @@ namespace VDS.RDF.Dynamic
             return new DynamicMetaObject(
                 expression,
                 BindingRestrictions.GetTypeRestriction(
-                    this.Expression,
-                    this.LimitType));
+                    Expression,
+                    LimitType));
         }
     }
 }
