@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void LoadGraph(IGraph graph, Uri uri)
         {
-            LoadGraphAsync(graph, uri, null, CancellationToken.None).RunSynchronously();
+            LoadGraph(graph, uri, null);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void LoadGraph(IGraph graph, Uri uri, IRdfReader parser)
         {
-            LoadGraphAsync(graph, uri, parser, CancellationToken.None).RunSynchronously();
+            Task.Run(() => LoadGraphAsync(graph, uri, parser, CancellationToken.None)).Wait();
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void LoadDataset(ITripleStore store, Uri uri)
         {
-            LoadDatasetAsync(store, uri, null, CancellationToken.None).RunSynchronously();
+            LoadDataset(store, uri, null);
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void LoadDataset(ITripleStore store, Uri uri, IStoreReader parser)
         {
-            LoadDatasetAsync(store, uri, parser, CancellationToken.None).RunSynchronously();
+            Task.Run(()=>LoadDatasetAsync(store, uri, parser, CancellationToken.None)).Wait();
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public void LoadDataset(IRdfHandler handler, Uri uri, IStoreReader parser)
         {
-            LoadDatasetAsync(handler, uri, parser, CancellationToken.None).RunSynchronously();
+            Task.Run(() => LoadDatasetAsync(handler, uri, parser, CancellationToken.None)).Wait();
         }
 
         /// <summary>
