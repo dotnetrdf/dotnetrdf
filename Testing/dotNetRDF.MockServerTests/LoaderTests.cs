@@ -12,6 +12,7 @@ using Xunit;
 
 namespace dotNetRDF.MockServerTests
 {
+    [Collection("RdfServerTests")]
     public class LoaderTests : IClassFixture<RdfServerFixture>
     {
         private static readonly HttpClient HttpClient = new HttpClient();
@@ -79,7 +80,7 @@ namespace dotNetRDF.MockServerTests
             var loader = new Loader(HttpClient);
             var resourceUri = new Uri(ServerUri + "/resource");
             await loader.LoadGraphAsync(graph, resourceUri, new TurtleParser(TurtleSyntax.W3C, false));
-            var requestLog = ServerFixture.Server.LogEntries.FirstOrDefault();
+            var requestLog = ServerFixture.Server.LogEntries.FirstOrDefault(e => e.RequestMessage.Path.EndsWith("/resource"));
             requestLog.Should().NotBeNull();
             requestLog.RequestMessage.Headers["Accept"].Should().Contain(v => v.Contains("text/turtle"));
             requestLog.RequestMessage.Headers["Accept"].Should().NotContain(v => v.Contains("application/n-triples"));
