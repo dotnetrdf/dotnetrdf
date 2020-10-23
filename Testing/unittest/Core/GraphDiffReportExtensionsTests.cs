@@ -78,8 +78,10 @@ _:s <urn:p> <urn:o> .
         [Fact]
         public void Supports_named_graph_in_with_clause()
         {
-            var older = new Graph();
-            older.BaseUri = new Uri("urn:g");
+            var older = new Graph
+            {
+                BaseUri = new Uri("urn:g")
+            };
 
             var newer = GraphFrom("<urn:s> <urn:p> <urn:o> .");
 

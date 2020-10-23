@@ -66,8 +66,10 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAllegroGraphSaveEmptyGraph1()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/AllegroGraph/empty");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/AllegroGraph/empty")
+            };
 
             AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
             agraph.SaveGraph(g);
@@ -89,8 +91,10 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
-            var g = new Graph();
-            g.BaseUri = graphUri;
+            var g = new Graph
+            {
+                BaseUri = graphUri
+            };
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
             Console.WriteLine("Saving non-empty graph");
             agraph.SaveGraph(g);
@@ -103,8 +107,10 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
 
             // Now attempt to save an empty graph as well
-            g = new Graph();
-            g.BaseUri = graphUri;
+            g = new Graph
+            {
+                BaseUri = graphUri
+            };
             Console.WriteLine("Attempting to save empty graph with same name");
             agraph.SaveGraph(g);
             Console.WriteLine("Empty graph saved");
@@ -126,8 +132,10 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
-            var g = new Graph();
-            g.BaseUri = graphUri;
+            var g = new Graph
+            {
+                BaseUri = graphUri
+            };
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
             Console.WriteLine("Saving non-empty graph");
             agraph.SaveGraph(g);
@@ -140,8 +148,10 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
 
             // Now attempt to overwrite with an empty graph
-            g = new Graph();
-            g.BaseUri = graphUri;
+            g = new Graph
+            {
+                BaseUri = graphUri
+            };
             Console.WriteLine("Attempting to save empty graph with same name");
             agraph.SaveGraph(g);
             Console.WriteLine("Empty graph saved");

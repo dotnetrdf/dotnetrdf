@@ -344,7 +344,7 @@ namespace VDS.RDF
 
         public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)
         {
-            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = cultureInfoOverride;
 
             try

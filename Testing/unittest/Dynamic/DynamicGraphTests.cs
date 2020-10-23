@@ -34,8 +34,10 @@ namespace VDS.RDF.Dynamic
         [Fact]
         public void Subject_base_uri_defaults_to_graph_base_uri()
         {
-            var d = new DynamicGraph();
-            d.BaseUri = UriFactory.Create("urn:");
+            var d = new DynamicGraph
+            {
+                BaseUri = UriFactory.Create("urn:")
+            };
 
             Assert.Equal(d.BaseUri, d.SubjectBaseUri);
         }

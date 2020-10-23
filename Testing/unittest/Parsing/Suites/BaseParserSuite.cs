@@ -165,8 +165,10 @@ namespace VDS.RDF.Parsing.Suites
         {
             Assert.True(File.Exists(file), "Manifest file " + file + " not found");
 
-            var manifest = new Graph();
-            manifest.BaseUri = BaseUri;
+            var manifest = new Graph
+            {
+                BaseUri = BaseUri
+            };
             try
             {
                 manifest.LoadFromFile(file);
@@ -216,10 +218,12 @@ WHERE
         protected void RunManifest(string file, INode[] positiveSyntaxTests, INode[] negativeSyntaxTests)
         {
             Assert.True(File.Exists(file), "Manifest file " + file + " not found");
-            
 
-            var manifest = new Graph();
-            manifest.BaseUri = BaseUri;
+
+            var manifest = new Graph
+            {
+                BaseUri = BaseUri
+            };
             try
             {
                 manifest.LoadFromFile(file);

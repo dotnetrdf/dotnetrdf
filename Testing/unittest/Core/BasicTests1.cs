@@ -269,8 +269,10 @@ namespace VDS.RDF
         [Fact]
         public void UriResolutionWithGraphBase()
         {
-            IGraph g = new Graph();
-            g.BaseUri = new Uri("http://example.org/");
+            IGraph g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/")
+            };
 
             var expected = new Uri("http://example.org/relative/path");
             IUriNode actual = g.CreateUriNode(new Uri("relative/path", UriKind.Relative));
@@ -429,12 +431,18 @@ namespace VDS.RDF
         [Fact]
         public void NodesBlankNodeEquality()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/BlankNodeEquality");
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/BlankNodeEqualityTwo");
-            var i = new Graph();
-            i.BaseUri = new Uri("http://example.org/BlankNodeEquality");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/BlankNodeEquality")
+            };
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/BlankNodeEqualityTwo")
+            };
+            var i = new Graph
+            {
+                BaseUri = new Uri("http://example.org/BlankNodeEquality")
+            };
 
             Console.WriteLine("Doing some Blank Node Equality Testing");
             Console.WriteLine("Blank Nodes are equal if they have the same ID and come from the same Graph which is established by Reference Equality between the two Graphs");
@@ -565,8 +573,10 @@ namespace VDS.RDF
             Console.WriteLine();
 
             //Create a Graph
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/")
+            };
             g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
 
             //Create a list of various Nodes
@@ -660,8 +670,10 @@ namespace VDS.RDF
             Console.WriteLine();
 
             //Create a Graph
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/")
+            };
             g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
 
             //Create a list of various Nodes

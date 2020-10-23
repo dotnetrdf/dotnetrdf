@@ -604,8 +604,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             def.NamespaceMap.Import(command.Namespaces);
             def.Assert(new Triple(def.CreateUriNode("ex:a"), def.CreateUriNode("ex:b"), def.CreateUriNode("ex:c")));
             dataset.AddGraph(def);
-            IGraph ex = new Graph();
-            ex.BaseUri = new Uri("http://example.org/graph");
+            IGraph ex = new Graph
+            {
+                BaseUri = new Uri("http://example.org/graph")
+            };
             ex.NamespaceMap.Import(command.Namespaces);
             ex.Assert(new Triple(ex.CreateUriNode("ex:a"), ex.CreateUriNode("ex:b"), ex.CreateUriNode("ex:c")));
             dataset.AddGraph(ex);

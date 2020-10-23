@@ -107,8 +107,10 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParameterizedStringWithNulls()
         {
-            var query = new SparqlParameterizedString();
-            query.CommandText = "SELECT * WHERE { @s ?p ?o }";
+            var query = new SparqlParameterizedString
+            {
+                CommandText = "SELECT * WHERE { @s ?p ?o }"
+            };
 
             //Set a URI to a valid value
             query.SetUri("s", new Uri("http://example.org"));
@@ -123,8 +125,10 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlParameterizedStringWithNulls2()
         {
-            var query = new SparqlParameterizedString();
-            query.CommandText = "SELECT * WHERE { @s ?p ?o }";
+            var query = new SparqlParameterizedString
+            {
+                CommandText = "SELECT * WHERE { @s ?p ?o }"
+            };
 
             //Set a URI to a valid value
             query.SetUri("s", new Uri("http://example.org"));
@@ -195,9 +199,11 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
 
             var endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"),
-                "https://www.wikidata.org");
-            endpoint.UserAgent =
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36";
+                "https://www.wikidata.org")
+            {
+                UserAgent =
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+            };
             SparqlResultSet results = endpoint.QueryWithResultSet(query);
             TestTools.ShowResults(results);
 
@@ -221,8 +227,10 @@ namespace VDS.RDF.Query
         public void SparqlRemoteVirtuosoWithSponging()
         {
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso), "Test Config marks Virtuoso as unavailable, cannot run test");
-            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"));
-            endpoint.HttpMode = "POST";
+            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"))
+            {
+                HttpMode = "POST"
+            };
             var query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
 
             IGraph g = endpoint.QueryWithResultGraph(query);

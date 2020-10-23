@@ -46,9 +46,11 @@ namespace VDS.RDF.Query
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
 
-            var bindingsQuery = new SparqlParameterizedString();
-            bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car }";
+            var bindingsQuery = new SparqlParameterizedString
+            {
+                Namespaces = query.Namespaces,
+                CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car }"
+            };
 
             TestBindings(GetTestData(), bindingsQuery, query);
         }
@@ -60,9 +62,11 @@ namespace VDS.RDF.Query
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
 
-            var bindingsQuery = new SparqlParameterizedString();
-            bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car ex:Plane }";
+            var bindingsQuery = new SparqlParameterizedString
+            {
+                Namespaces = query.Namespaces,
+                CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car ex:Plane }"
+            };
 
             TestBindings(GetTestData(), bindingsQuery, query);
         }
@@ -73,9 +77,11 @@ namespace VDS.RDF.Query
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
 
-            var bindingsQuery = new SparqlParameterizedString();
-            bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ( ?subj ?type ) { (ex:FordFiesta ex:Car) }";
+            var bindingsQuery = new SparqlParameterizedString
+            {
+                Namespaces = query.Namespaces,
+                CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ( ?subj ?type ) { (ex:FordFiesta ex:Car) }"
+            };
 
             TestBindings(GetTestData(), bindingsQuery, query);
         }

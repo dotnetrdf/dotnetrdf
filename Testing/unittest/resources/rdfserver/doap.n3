@@ -1,0 +1,58 @@
+﻿@base <http://www.dotnetrdf.org/project#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+<http://www.dotnetrdf.org/project#> a <http://usefulinc.com/ns/doap#Project> .
+_:autos1 a <http://projects.apache.org/ns/asfext#Standard> .
+_:autos1 <http://projects.apache.org/ns/asfext#body> "W3C" .
+_:autos1 <http://projects.apache.org/ns/asfext#id> "" .
+_:autos1 <http://projects.apache.org/ns/asfext#title> "SPARQL" .
+_:autos1 <http://projects.apache.org/ns/asfext#url> <http://www.w3.org/TR/rdf-sparql-query/> .
+<http://www.dotnetrdf.org/project#> <http://projects.apache.org/ns/asfext#implements> _:autos1 .
+_:autos2 a <http://projects.apache.org/ns/asfext#Standard> .
+_:autos2 <http://projects.apache.org/ns/asfext#body> "W3C" .
+_:autos2 <http://projects.apache.org/ns/asfext#id> "" .
+_:autos2 <http://projects.apache.org/ns/asfext#title> "Resource Description Framework" .
+_:autos2 <http://projects.apache.org/ns/asfext#url> <http://www.w3.org/RDF/> .
+<http://www.dotnetrdf.org/project#> <http://projects.apache.org/ns/asfext#implements> _:autos2 .
+_:autos3 a <http://projects.apache.org/ns/asfext#Standard> .
+_:autos3 <http://projects.apache.org/ns/asfext#body> "W3C" .
+_:autos3 <http://projects.apache.org/ns/asfext#id> "" .
+_:autos3 <http://projects.apache.org/ns/asfext#title> "Turtle" .
+_:autos3 <http://projects.apache.org/ns/asfext#url> <http://www.w3.org/TR/turtle/> .
+<http://www.dotnetrdf.org/project#> <http://projects.apache.org/ns/asfext#implements> _:autos3 .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#bug-database> <https://www.dotnetrdf.org/tracker/> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#category> <http://projects.apache.org/category/library> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#created> "2009-01-01" .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#description> "dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .Net environments.  It supports most common RDF formats and provides a fully compliant SPARQL 1.1 engine." .
+_:autos4 a <http://xmlns.com/foaf/0.1/Person> .
+_:autos4 <http://xmlns.com/foaf/0.1/mbox> <mailto:rvesse@dotnetrdf.org> .
+_:autos4 <http://xmlns.com/foaf/0.1/name> "Rob Vesse" .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#developer> _:autos4 .
+_:autos5 a <http://xmlns.com/foaf/0.1/Person> .
+_:autos5 <http://xmlns.com/foaf/0.1/name> "Tomasz Pluskiewicz" .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#developer> _:autos5 .
+_:autos6 a <http://xmlns.com/foaf/0.1/Person> .
+_:autos6 <http://xmlns.com/foaf/0.1/name> "Graham Moore" .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#developer> _:autos6 .
+_:autos7 a <http://xmlns.com/foaf/0.1/Person> .
+_:autos7 <http://xmlns.com/foaf/0.1/name> "Khalil Ahmed" .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#developer> _:autos7 .
+_:autos8 a <http://xmlns.com/foaf/0.1/Person> .
+_:autos8 <http://xmlns.com/foaf/0.1/name> "Ron Michael Zettlemoyer" .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#developer> _:autos8 .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#download-page> <http://www.dotnetrdf.org/content.asp?pageID=Downloads> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#homepage> <http://www.dotnetrdf.org/> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#license> <http://usefulinc.com/doap/licenses/mit> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#mailing-list> <http://www.dotnetrdf.org/content.asp?pageID=Support> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#name> "dotNetRDF"@en .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#programming-language> "C# .Net"@en .
+_:autos9 a <http://usefulinc.com/ns/doap#Version> .
+_:autos9 <http://usefulinc.com/ns/doap#created> "2013-05-07"@en .
+_:autos9 <http://usefulinc.com/ns/doap#name> "dotNetRDF 1.0.0"@en .
+_:autos9 <http://usefulinc.com/ns/doap#revision> "1.0.0"@en .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#release> _:autos9 .
+_:autos10 a <http://usefulinc.com/ns/doap#HGRepository> .
+_:autos10 <http://usefulinc.com/ns/doap#browse> <https://bitbucket.org/dotnetrdf/dotnetrdf/src> .
+_:autos10 <http://usefulinc.com/ns/doap#location> <https://bitbucket.org/dotnetrdf/dotnetrdf> .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#repository> _:autos10 .
+<http://www.dotnetrdf.org/project#> <http://usefulinc.com/ns/doap#shortdesc> "A framework for developing Semantic Web and Linked Data applications in .Net environments"@en .

@@ -99,8 +99,10 @@ namespace VDS.RDF.Writing
 
             Console.WriteLine();
 
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org")
+            };
             StringParser.Parse(h, data, new RdfAParser());
 
             Console.WriteLine("Extracted Triples");
@@ -160,8 +162,10 @@ namespace VDS.RDF.Writing
         [MemberData(nameof(RoundTripTestData), Formats.All ^ Formats.RdfXml)]
         public void WritingI18NCharacters(IRdfWriter writer, IRdfReader parser)
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/植物");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/植物")
+            };
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/植物"));
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/植物/名=しそ;使用部=葉"));
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/植物#使用部"));
@@ -176,8 +180,10 @@ namespace VDS.RDF.Writing
         [MemberData(nameof(RoundTripTestData))]
         public void WritingUriEscaping(IRdfWriter writer, IRdfReader parser)
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/space in/base");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/space in/base")
+            };
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/space in/namespace"));
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));

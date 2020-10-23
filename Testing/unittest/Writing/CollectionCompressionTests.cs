@@ -101,8 +101,10 @@ namespace VDS.RDF.Writing
             _output.WriteLine("");
 
             var strWriter = new System.IO.StringWriter();
-            var writer = new CompressingTurtleWriter();
-            writer.CompressionLevel = WriterCompressionLevel.High;
+            var writer = new CompressingTurtleWriter
+            {
+                CompressionLevel = WriterCompressionLevel.High
+            };
             writer.Save(g, strWriter);
 
             _output.WriteLine("Compressed Turtle");
@@ -381,8 +383,10 @@ namespace VDS.RDF.Writing
             INode n = g.CreateBlankNode();
 
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("dnr:genericManager"), n);
-            var sContext = new ConfigurationSerializationContext(g);
-            sContext.NextSubject = n;
+            var sContext = new ConfigurationSerializationContext(g)
+            {
+                NextSubject = n
+            };
             connector.SerializeConfiguration(sContext);
 
             var collections = FindCollections(g);

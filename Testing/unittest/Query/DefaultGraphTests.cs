@@ -96,8 +96,10 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store);
@@ -125,8 +127,10 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store);
@@ -153,8 +157,10 @@ namespace VDS.RDF.Query
             var store = new TripleStore();
             var g = new Graph();
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store, h.BaseUri);
@@ -172,11 +178,15 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
             var store = new TripleStore();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/graph");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/graph")
+            };
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store, h.BaseUri);
@@ -194,11 +204,15 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
             var store = new TripleStore();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/graph");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/graph")
+            };
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store, h.BaseUri);
@@ -217,11 +231,15 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
             var store = new TripleStore();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/graph");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/graph")
+            };
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store, h.BaseUri);
@@ -240,11 +258,15 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
             var store = new TripleStore();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/graph");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/graph")
+            };
             store.Add(g);
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/someOtherGraph")
+            };
             store.Add(h);
 
             var dataset = new InMemoryDataset(store, h.BaseUri);

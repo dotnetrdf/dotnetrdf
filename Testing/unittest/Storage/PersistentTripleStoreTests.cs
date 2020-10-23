@@ -329,8 +329,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -362,8 +364,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -483,8 +487,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -521,8 +527,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -835,8 +843,10 @@ namespace VDS.RDF.Storage
             {
                 // Try and dump
                 var strWriter = new StringWriter();
-                var writer = new TriGWriter();
-                writer.UseMultiThreadedWriting = false;
+                var writer = new TriGWriter
+                {
+                    UseMultiThreadedWriting = false
+                };
 
                 writer.Save(store, strWriter);
                 Console.WriteLine("TriG output:");
@@ -870,8 +880,10 @@ namespace VDS.RDF.Storage
 
                 // Then try and dump
                 var strWriter = new StringWriter();
-                var writer = new TriGWriter();
-                writer.UseMultiThreadedWriting = false;
+                var writer = new TriGWriter
+                {
+                    UseMultiThreadedWriting = false
+                };
 
                 writer.Save(store, strWriter);
                 Console.WriteLine("TriG output:");

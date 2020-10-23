@@ -30,18 +30,29 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing
 {
-    public class BlockingTextReaderTests
+    [Collection("RdfServer")]
+    public class BlockingTextReaderTests : BaseTest
     {
         private const String TestData = "abcdefghijklmnopqrstuvwxyz0123456789";
         private const String TestData2 = "abcdefghijklmnopqrstuvwxyz\n0123456789";
         private const String TestData3 = "abcdefghijklmnopqrstuvwxyz\r0123456789";
         private const String TestData4 = "abcdefghijklmnopqrstuvwxyz\n\r0123456789";
         private const String TestData5 = "abcdefghijklmnopqrstuvwxyz\r\n0123456789";
+
+        private readonly RdfServerFixture _serverFixture;
+
+        public BlockingTextReaderTests(RdfServerFixture serverFixture, ITestOutputHelper output) : base(output)
+        {
+            _serverFixture = serverFixture;
+        }
+
 
         [Fact]
         public void ParsingTextReaderCreation1()
@@ -111,7 +122,7 @@ namespace VDS.RDF.Parsing
             Assert.Equal(-1, reader.Read());
             reader.Close();
 
-            Console.WriteLine(output.ToString());
+            Debug(output.ToString());
 
             Assert.Equal(TestData, output.ToString());
         }
@@ -267,7 +278,7 @@ namespace VDS.RDF.Parsing
             for (var i = 1; i <= 100; i++)
             {
                 var c = (char)reader.Peek();
-                Console.WriteLine("Peek #" + i + " = " + c);
+                Debug("Peek #" + i + " = " + c);
                 Assert.Equal(TestData[0], c);
             }
             Assert.False(reader.EndOfStream);
@@ -378,85 +389,23 @@ namespace VDS.RDF.Parsing
             reader.Close();
         }
 
-        private void SetUriLoaderCaching(bool cachingEnabled)
+        [Theory]
+        [InlineData(typeof(Notation3Parser))]
+        [InlineData(typeof(NTriplesParser))]
+        [InlineData(typeof(RdfXmlParser))]
+        [InlineData(typeof(RdfJsonParser))]
+        [InlineData(typeof(JsonLdParser))]
+        [InlineData(typeof(TurtleParser))]
+        public void ParsingTextReaderBlockingNetwork(Type parserType)
         {
-            UriLoader.CacheEnabled = cachingEnabled;
+            var loader = new Loader(_serverFixture.Client);
+            var g = new Graph();
+            var parser = parserType.GetConstructor(new Type []{}).Invoke(new object []{}) as IRdfReader;
+            Uri uri = _serverFixture.UriFor("/doap#");
+            loader.LoadGraph(g, uri, parser);
+            g.Triples.Count.Should().BeGreaterThan(0);
         }
 
-        [Fact(Skip="Remote configuration is not currently available")]
-        public void ParsingTextReaderBlockingNetworkStreamNotation3()
-        {
-            var defaultTimeout = UriLoader.Timeout;
-            try
-            {
-                SetUriLoaderCaching(false);
-                UriLoader.Timeout = 45000;
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new Notation3Parser());
-
-                TestTools.ShowGraph(g);
-            }
-            finally
-            {
-                SetUriLoaderCaching(true);
-                UriLoader.Timeout = defaultTimeout;
-            }
-        }
-
-        [Fact(Skip = "Remote configuration is not currently available")]
-        public void ParsingTextReaderBlockingNetworkStreamNTriples()
-        {
-            try
-            {
-                SetUriLoaderCaching(false);
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new NTriplesParser());
-
-                TestTools.ShowGraph(g);
-            }
-            finally
-            {
-                SetUriLoaderCaching(true);
-            }
-        }
-
-        [Fact(Skip = "Remote configuration is not currently available")]
-        public void ParsingTextReaderBlockingNetworkStreamTurtle()
-        {
-            try
-            {
-                SetUriLoaderCaching(false);
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new TurtleParser());
-
-                TestTools.ShowGraph(g);
-            }
-            finally
-            {
-                SetUriLoaderCaching(true);
-            }
-        }
-
-        [Fact(Skip = "Remote configuration is not currently available")]
-        public void ParsingTextReaderBlockingNetworkStreamRdfJson()
-        {
-            try
-            {
-                SetUriLoaderCaching(false);
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new RdfJsonParser());
-
-                TestTools.ShowGraph(g);
-            }
-            finally
-            {
-                SetUriLoaderCaching(true);
-            }
-        }
 
         private void EnsureNIOData()
         {
@@ -490,7 +439,7 @@ namespace VDS.RDF.Parsing
 
             for (var i = 0; i < 25; i++)
             {
-                Console.WriteLine("Run #" + (i + 1));
+                Debug("Run #" + (i + 1));
                 timer.Reset();
 
                 //Test Blocking
@@ -507,7 +456,7 @@ namespace VDS.RDF.Parsing
                 blocking.Close();
                 blockingTime = blockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+                Debug("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
 
                 //Reset
                 timer.Reset();
@@ -524,14 +473,14 @@ namespace VDS.RDF.Parsing
                 nonBlocking.Close();
                 nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+                Debug("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
 
                 Assert.Equal(totalBlocking, totalNonBlocking);
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Blocking Total Time = " + blockingTime);
-            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+            Debug();
+            Debug("Blocking Total Time = " + blockingTime);
+            Debug("Non-Blocking Total Time = " + nonBlockingTime);
         }
 
         [Fact]
@@ -545,7 +494,7 @@ namespace VDS.RDF.Parsing
 
             for (var i = 0; i < 25; i++)
             {
-                Console.WriteLine("Run #" + (i + 1));
+                Debug("Run #" + (i + 1));
                 timer.Reset();
 
                 //Test Blocking
@@ -562,7 +511,7 @@ namespace VDS.RDF.Parsing
                 blocking.Close();
                 blockingTime = blockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+                Debug("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
 
                 //Reset
                 timer.Reset();
@@ -579,14 +528,14 @@ namespace VDS.RDF.Parsing
                 nonBlocking.Close();
                 nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+                Debug("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
 
                 Assert.Equal(totalBlocking, totalNonBlocking);
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Blocking Total Time = " + blockingTime);
-            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+            Debug();
+            Debug("Blocking Total Time = " + blockingTime);
+            Debug("Non-Blocking Total Time = " + nonBlockingTime);
         }
 
         [Fact]
@@ -600,7 +549,7 @@ namespace VDS.RDF.Parsing
             var maxSize = 1024 * 32;
             for (var size = 1024; size < maxSize; size += 1024)
             {
-                Console.WriteLine("Buffer Size " + size);
+                Debug("Buffer Size " + size);
                 for (var i = 0; i < 25; i++)
                 {
                     timer.Reset();
@@ -637,10 +586,10 @@ namespace VDS.RDF.Parsing
                     Assert.Equal(totalBlocking, totalNonBlocking);
                 }
 
-                Console.WriteLine();
-                Console.WriteLine("Blocking Total Time = " + blockingTime);
-                Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
-                Console.WriteLine();
+                Debug();
+                Debug("Blocking Total Time = " + blockingTime);
+                Debug("Non-Blocking Total Time = " + nonBlockingTime);
+                Debug();
                 blockingTime = new TimeSpan();
                 nonBlockingTime = new TimeSpan();
             }
@@ -657,7 +606,7 @@ namespace VDS.RDF.Parsing
 
             for (var i = 0; i < 25; i++)
             {
-                Console.WriteLine("Run #" + (i + 1));
+                Debug("Run #" + (i + 1));
                 timer.Reset();
 
                 //Test Blocking
@@ -674,7 +623,7 @@ namespace VDS.RDF.Parsing
                 blocking.Close();
                 blockingTime = blockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+                Debug("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
 
                 //Reset
                 timer.Reset();
@@ -691,14 +640,14 @@ namespace VDS.RDF.Parsing
                 nonBlocking.Close();
                 nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+                Debug("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
 
                 Assert.Equal(totalBlocking, totalNonBlocking);
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Blocking Total Time = " + blockingTime);
-            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+            Debug();
+            Debug("Blocking Total Time = " + blockingTime);
+            Debug("Non-Blocking Total Time = " + nonBlockingTime);
         }
 
         [Fact]
@@ -712,7 +661,7 @@ namespace VDS.RDF.Parsing
 
             for (var i = 0; i < 25; i++)
             {
-                Console.WriteLine("Run #" + (i + 1));
+                Debug("Run #" + (i + 1));
                 timer.Reset();
 
                 //Test Blocking
@@ -729,7 +678,7 @@ namespace VDS.RDF.Parsing
                 blocking.Close();
                 blockingTime = blockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+                Debug("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
 
                 //Reset
                 timer.Reset();
@@ -746,14 +695,14 @@ namespace VDS.RDF.Parsing
                 nonBlocking.Close();
                 nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
 
-                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+                Debug("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
 
                 Assert.Equal(totalBlocking, totalNonBlocking);
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Blocking Total Time = " + blockingTime);
-            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+            Debug();
+            Debug("Blocking Total Time = " + blockingTime);
+            Debug("Non-Blocking Total Time = " + nonBlockingTime);
         }
     }
 

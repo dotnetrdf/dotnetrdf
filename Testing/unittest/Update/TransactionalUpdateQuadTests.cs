@@ -45,8 +45,10 @@ namespace VDS.RDF.Update
         {
             var dataset = new InMemoryQuadDataset();
 
-            var g = new Graph();
-            g.BaseUri = TestGraphUri;
+            var g = new Graph
+            {
+                BaseUri = TestGraphUri
+            };
             dataset.AddGraph(g);
 
             return dataset;

@@ -77,8 +77,10 @@ namespace VDS.RDF
         {
             ITripleStore store = GetInstance();
 
-            IGraph g = new Graph();
-            g.BaseUri = new Uri("http://example.org/graph");
+            IGraph g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/graph")
+            };
             store.Add(g);
 
             Assert.False(store.IsEmpty);
@@ -109,8 +111,10 @@ namespace VDS.RDF
         {
             ITripleStore store = GetInstance();
 
-            IGraph g = new Graph();
-            g.BaseUri = new Uri("http://nosuchdomain.com/graph");
+            IGraph g = new Graph
+            {
+                BaseUri = new Uri("http://nosuchdomain.com/graph")
+            };
             store.Add(g);
 
             Assert.True(store.HasGraph(g.BaseUri));

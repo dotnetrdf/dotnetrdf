@@ -76,8 +76,10 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameSaveEmptyGraph1()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/Sesame/empty");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/Sesame/empty")
+            };
 
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
             sesame.SaveGraph(g);
@@ -99,8 +101,10 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
-            var g = new Graph();
-            g.BaseUri = graphUri;
+            var g = new Graph
+            {
+                BaseUri = graphUri
+            };
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
             Console.WriteLine("Saving non-empty graph");
             sesame.SaveGraph(g);
@@ -113,8 +117,10 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
 
             // Now attempt to save an empty graph as well
-            g = new Graph();
-            g.BaseUri = graphUri;
+            g = new Graph
+            {
+                BaseUri = graphUri
+            };
             Console.WriteLine("Attempting to save empty graph with same name");
             sesame.SaveGraph(g);
             Console.WriteLine("Empty graph saved");
@@ -136,8 +142,10 @@ namespace VDS.RDF.Storage
             Console.WriteLine("Existing graph deleted");
 
             // First create a non-empty graph
-            var g = new Graph();
-            g.BaseUri = graphUri;
+            var g = new Graph
+            {
+                BaseUri = graphUri
+            };
             g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(new Uri("http://example.org/BNode")));
             Console.WriteLine("Saving non-empty graph");
             sesame.SaveGraph(g);
@@ -150,8 +158,10 @@ namespace VDS.RDF.Storage
             Assert.Equal(g, h);
 
             // Now attempt to overwrite with an empty graph
-            g = new Graph();
-            g.BaseUri = graphUri;
+            g = new Graph
+            {
+                BaseUri = graphUri
+            };
             Console.WriteLine("Attempting to save empty graph with same name");
             sesame.SaveGraph(g);
             Console.WriteLine("Empty graph saved");
@@ -199,8 +209,10 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageSesameDeleteTriples2()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/SesameTest/Delete2");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/SesameTest/Delete2")
+            };
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/ns#"));
             g.Assert(g.CreateUriNode("ex:subj"), g.CreateUriNode("ex:pred"), g.CreateUriNode("ex:obj"));
 
@@ -233,8 +245,10 @@ namespace VDS.RDF.Storage
         public void StorageSesameDeleteTriples3()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/sesame/chinese");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/sesame/chinese")
+            };
             FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
@@ -316,8 +330,10 @@ namespace VDS.RDF.Storage
         public void StorageSesameCyrillic()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/sesame/cyrillic")
+            };
             FileLoader.Load(g, @"..\\resources\cyrillic.rdf");
             sesame.SaveGraph(g);
 
@@ -336,8 +352,10 @@ namespace VDS.RDF.Storage
         public void StorageSesameChinese()
         {
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/sesame/chinese");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/sesame/chinese")
+            };
             FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 
@@ -436,8 +454,10 @@ DELETE WHERE
             SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
             // Ensure required graph is present
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/sesame/chinese");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/sesame/chinese")
+            };
             FileLoader.Load(g, @"..\\resources\chinese.ttl");
             sesame.SaveGraph(g);
 

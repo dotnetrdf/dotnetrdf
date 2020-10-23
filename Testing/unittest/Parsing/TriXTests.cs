@@ -73,8 +73,10 @@ namespace VDS.RDF.Parsing
             var store = new TripleStore();
             for (var i = 1; i <= numGraphs; i++)
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/graph/" + i);
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/graph/" + i)
+                };
 
                 for (var j = 1; j <= triplesPerGraph; j++)
                 {

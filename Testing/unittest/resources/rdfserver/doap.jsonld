@@ -1,0 +1,282 @@
+﻿[
+  {
+    "@id": "http://www.dotnetrdf.org/project#",
+    "@type": [
+      "http://usefulinc.com/ns/doap#Project"
+    ],
+    "http://projects.apache.org/ns/asfext#implements": [
+      {
+        "@id": "_:autos1"
+      },
+      {
+        "@id": "_:autos2"
+      },
+      {
+        "@id": "_:autos3"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#bug-database": [
+      {
+        "@id": "https://www.dotnetrdf.org/tracker/"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#category": [
+      {
+        "@id": "http://projects.apache.org/category/library"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#created": [
+      {
+        "@value": "2009-01-01"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#description": [
+      {
+        "@value": "dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .Net environments.  It supports most common RDF formats and provides a fully compliant SPARQL 1.1 engine."
+      }
+    ],
+    "http://usefulinc.com/ns/doap#developer": [
+      {
+        "@id": "_:autos4"
+      },
+      {
+        "@id": "_:autos5"
+      },
+      {
+        "@id": "_:autos6"
+      },
+      {
+        "@id": "_:autos7"
+      },
+      {
+        "@id": "_:autos8"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#download-page": [
+      {
+        "@id": "http://www.dotnetrdf.org/content.asp?pageID=Downloads"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#homepage": [
+      {
+        "@id": "http://www.dotnetrdf.org/"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#license": [
+      {
+        "@id": "http://usefulinc.com/doap/licenses/mit"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#mailing-list": [
+      {
+        "@id": "http://www.dotnetrdf.org/content.asp?pageID=Support"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#name": [
+      {
+        "@language": "en",
+        "@value": "dotNetRDF"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#programming-language": [
+      {
+        "@language": "en",
+        "@value": "C# .Net"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#release": [
+      {
+        "@id": "_:autos9"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#repository": [
+      {
+        "@id": "_:autos10"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#shortdesc": [
+      {
+        "@language": "en",
+        "@value": "A framework for developing Semantic Web and Linked Data applications in .Net environments"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos1",
+    "@type": [
+      "http://projects.apache.org/ns/asfext#Standard"
+    ],
+    "http://projects.apache.org/ns/asfext#body": [
+      {
+        "@value": "W3C"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#id": [
+      {
+        "@value": ""
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#title": [
+      {
+        "@value": "SPARQL"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#url": [
+      {
+        "@id": "http://www.w3.org/TR/rdf-sparql-query/"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos2",
+    "@type": [
+      "http://projects.apache.org/ns/asfext#Standard"
+    ],
+    "http://projects.apache.org/ns/asfext#body": [
+      {
+        "@value": "W3C"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#id": [
+      {
+        "@value": ""
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#title": [
+      {
+        "@value": "Resource Description Framework"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#url": [
+      {
+        "@id": "http://www.w3.org/RDF/"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos3",
+    "@type": [
+      "http://projects.apache.org/ns/asfext#Standard"
+    ],
+    "http://projects.apache.org/ns/asfext#body": [
+      {
+        "@value": "W3C"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#id": [
+      {
+        "@value": ""
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#title": [
+      {
+        "@value": "Turtle"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#url": [
+      {
+        "@id": "http://www.w3.org/TR/turtle/"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos4",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Person"
+    ],
+    "http://xmlns.com/foaf/0.1/mbox": [
+      {
+        "@id": "mailto:rvesse@dotnetrdf.org"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@value": "Rob Vesse"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos5",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Person"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@value": "Tomasz Pluskiewicz"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos6",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Person"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@value": "Graham Moore"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos7",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Person"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@value": "Khalil Ahmed"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos8",
+    "@type": [
+      "http://xmlns.com/foaf/0.1/Person"
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "@value": "Ron Michael Zettlemoyer"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos9",
+    "@type": [
+      "http://usefulinc.com/ns/doap#Version"
+    ],
+    "http://usefulinc.com/ns/doap#created": [
+      {
+        "@language": "en",
+        "@value": "2013-05-07"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#name": [
+      {
+        "@language": "en",
+        "@value": "dotNetRDF 1.0.0"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#revision": [
+      {
+        "@language": "en",
+        "@value": "1.0.0"
+      }
+    ]
+  },
+  {
+    "@id": "_:autos10",
+    "@type": [
+      "http://usefulinc.com/ns/doap#HGRepository"
+    ],
+    "http://usefulinc.com/ns/doap#browse": [
+      {
+        "@id": "https://bitbucket.org/dotnetrdf/dotnetrdf/src"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#location": [
+      {
+        "@id": "https://bitbucket.org/dotnetrdf/dotnetrdf"
+      }
+    ]
+  }
+]

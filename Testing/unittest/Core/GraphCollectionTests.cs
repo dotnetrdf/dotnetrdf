@@ -101,8 +101,10 @@ namespace VDS.RDF
             g.LoadFromFile("resources\\InferenceTest.ttl");
             g.BaseUri = new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"));
 
-            var empty = new Graph();
-            empty.BaseUri = g.BaseUri;
+            var empty = new Graph
+            {
+                BaseUri = g.BaseUri
+            };
             store.Add(empty);
 
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
@@ -133,8 +135,10 @@ namespace VDS.RDF
             g.LoadFromUri(u);
             g.BaseUri = u;
 
-            var empty = new Graph();
-            empty.BaseUri = g.BaseUri;
+            var empty = new Graph
+            {
+                BaseUri = g.BaseUri
+            };
             store.Add(empty);
 
             Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");

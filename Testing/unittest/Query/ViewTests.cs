@@ -57,8 +57,10 @@ namespace VDS.RDF.Query
         public void SparqlViewConstruct1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store);
-            view.BaseUri = new Uri("http://example.org/view");
+            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store)
+            {
+                BaseUri = new Uri("http://example.org/view")
+            };
             store.Add(view);
 
             Console.WriteLine("SPARQL View Empty");
@@ -94,8 +96,10 @@ namespace VDS.RDF.Query
         public void SparqlViewDescribe1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
-            view.BaseUri = new Uri("http://example.org/view");
+            var view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store)
+            {
+                BaseUri = new Uri("http://example.org/view")
+            };
             store.Add(view);
 
             Console.WriteLine("SPARQL View Empty");
@@ -131,8 +135,10 @@ namespace VDS.RDF.Query
         public void SparqlViewSelect1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { GRAPH ?g { ?s <http://example.org/vehicles/Speed> ?speed } }", store);
-            view.BaseUri = new Uri("http://example.org/view");
+            var view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { GRAPH ?g { ?s <http://example.org/vehicles/Speed> ?speed } }", store)
+            {
+                BaseUri = new Uri("http://example.org/view")
+            };
             store.Add(view);
 
             Console.WriteLine("SPARQL View Empty");
@@ -168,8 +174,10 @@ namespace VDS.RDF.Query
         public void SparqlViewAndReasonerInteraction1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store);
-            view.BaseUri = new Uri("http://example.org/view");
+            var view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store)
+            {
+                BaseUri = new Uri("http://example.org/view")
+            };
             store.Add(view);
 
             Console.WriteLine("SPARQL View Empty");
@@ -217,8 +225,10 @@ namespace VDS.RDF.Query
         public void SparqlViewGraphScope1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
-            view.BaseUri = new Uri("http://example.org/view");
+            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store)
+            {
+                BaseUri = new Uri("http://example.org/view")
+            };
             store.Add(view);
 
             Console.WriteLine("SPARQL View Empty");
@@ -241,8 +251,10 @@ namespace VDS.RDF.Query
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
 
             //Load another Graph with a different URI into the Store
-            var h = new Graph();
-            h.BaseUri = new Uri("http://example.org/2");
+            var h = new Graph
+            {
+                BaseUri = new Uri("http://example.org/2")
+            };
             FileLoader.Load(h, "resources\\Turtle.ttl");
             store.Add(h);
 

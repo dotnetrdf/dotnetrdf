@@ -104,9 +104,10 @@ namespace VDS.RDF
         public void Delegates_GraphUri()
         {
             var node = new NodeFactory().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node);
-
-            wrapper.GraphUri = UriFactory.Create("http://example.com/");
+            var wrapper = new MockWrapperNode(node)
+            {
+                GraphUri = UriFactory.Create("http://example.com/")
+            };
 
             var expected = node.GraphUri;
             var actual = wrapper.GraphUri;

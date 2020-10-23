@@ -25,20 +25,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
+using VDS.RDF.Parsing.Handlers;
+using WireMock.Logging;
 using Xunit;
-using VDS.RDF.Configuration;
-using VDS.RDF.Parsing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
-
+    [Collection("RdfServer")]
     public class LoaderTests
     {
+        private readonly RdfServerFixture _serverFixture;
+        public LoaderTests(RdfServerFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+            _serverFixture.Server.ResetLogEntries();
+        }
 
         [Fact]
         public void ParsingDataUri1()
@@ -59,20 +66,9 @@ namespace VDS.RDF.Parsing
             foreach (var uri in uris)
             {
                 var u = new Uri(uri);
-
-                Console.WriteLine("Testing URI " + u.AbsoluteUri);
-
                 var g = new Graph();
                 DataUriLoader.Load(g, u);
-
                 Assert.Equal(1, g.Triples.Count);
-
-                Console.WriteLine("Triples produced:");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
             }
         }
 
@@ -95,157 +91,10 @@ namespace VDS.RDF.Parsing
             foreach (var uri in uris)
             {
                 var u = new Uri(uri);
-
-                Console.WriteLine("Testing URI " + u.AbsoluteUri);
-
+                var loader = new Loader(_serverFixture.Client);
                 var g = new Graph();
-                UriLoader.Load(g, u);
-
+                loader.LoadGraph(g, u);
                 Assert.Equal(1, g.Triples.Count);
-
-                Console.WriteLine("Triples produced:");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-            }
-        }
-
-        [SkippableFact]
-        public void ParsingDBPedia()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
-            request.Accept = "application/rdf+xml";
-            request.Method = "GET";
-            request.Timeout = 45000;
-
-            try
-            {
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    Console.WriteLine("OK");
-                    Console.WriteLine("Content Length: " + response.ContentLength);
-                    Console.WriteLine("Content Type: " + response.ContentType);
-                }
-            }
-            catch (WebException webEx)
-            {
-                Console.WriteLine("ERROR");
-                Console.WriteLine(webEx.Message);
-                Console.WriteLine(webEx.StackTrace);
-                Assert.True(false);
-            }
-
-            request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/data/London");
-            request.Accept = "application/rdf+xml";
-            request.Method = "GET";
-            request.Timeout = 45000;
-
-            try
-            {
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    Console.WriteLine("OK");
-                    Console.WriteLine("Content Length: " + response.ContentLength);
-                    Console.WriteLine("Content Type: " + response.ContentType);
-                }
-            }
-            catch (WebException webEx)
-            {
-                Console.WriteLine("ERROR");
-                Console.WriteLine(webEx.Message);
-                Console.WriteLine(webEx.StackTrace);
-                Assert.True(false);
-            }
-
-            try
-            {
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/London"));
-                Console.WriteLine("OK");
-                Console.WriteLine(g.Triples.Count + " Triples retrieved");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Assert.True(false);
-            }
-        }
-
-        private void SetUriLoaderCaching(bool cachingEnabled)
-        {
-            UriLoader.CacheEnabled = cachingEnabled;
-        }
-
-        [SkippableFact]
-        public void ParsingUriLoaderDBPedia1()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var defaultTimeout = UriLoader.Timeout;
-            try
-            {
-                SetUriLoaderCaching(false);
-                UriLoader.Timeout = 45000;
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Barack_Obama"));
-                var formatter = new NTriplesFormatter();
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString(formatter));
-                }
-                Assert.False(g.IsEmpty, "Graph should not be empty");
-            }
-            finally
-            {
-                SetUriLoaderCaching(true);
-                UriLoader.Timeout = defaultTimeout;
-            }
-        }
-
-        [SkippableFact]
-        public void ParsingUriLoaderDBPedia2()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            IGraph g = new Graph();
-            UriLoader.Load(g, new Uri("http://de.dbpedia.org/resource/Disillusion"));
-
-            INodeFormatter formatter = new TurtleW3CFormatter();
-            foreach (INode p in g.Triples.Select(t => t.Predicate).Distinct())
-            {
-                Console.WriteLine("ToString() = " + p.ToString());
-                Console.WriteLine("Formatted = " + p.ToString(formatter));
-                Console.WriteLine("URI ToString() = " + ((IUriNode)p).Uri.ToString());
-            }
-        }
-
-        [SkippableFact]
-        public void ParsingUriLoaderDBPedia3()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var defaultTimeout = UriLoader.Timeout;
-            try
-            {
-                SetUriLoaderCaching(false);
-                UriLoader.Timeout = 45000;
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://dbpedia.org/ontology/wikiPageRedirects"), new RdfXmlParser());
-                Assert.False(g.IsEmpty, "Graph should not be empty");
-                TestTools.ShowGraph(g);
-            }
-            finally
-            {
-                SetUriLoaderCaching(true);
-                UriLoader.Timeout = defaultTimeout;
             }
         }
 
@@ -254,9 +103,6 @@ namespace VDS.RDF.Parsing
         {
             var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
-
-            TestTools.ShowGraph(g);
-
             Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
@@ -265,9 +111,6 @@ namespace VDS.RDF.Parsing
         {
             var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
-
-            TestTools.ShowGraph(g);
-
             Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
@@ -276,8 +119,6 @@ namespace VDS.RDF.Parsing
         {
             var g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
-
-            TestTools.ShowGraph(g);
             Assert.False(g.IsEmpty, "Graph should be non-empty");
         }
 
@@ -286,8 +127,7 @@ namespace VDS.RDF.Parsing
         {
             var store = new TripleStore();
             store.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-
-            Assert.True(store.Triples.Count() > 0);
+            Assert.True(store.Triples.Any());
             Assert.Equal(1, store.Graphs.Count);
         }
 
@@ -302,9 +142,162 @@ namespace VDS.RDF.Parsing
             
             store.LoadFromFile("fileloader-graph-to-store.ttl");
 
-            Assert.True(store.Triples.Count() > 0);
+            Assert.True(store.Triples.Any());
             Assert.Equal(1, store.Graphs.Count);
         }
-       
+
+        [Fact]
+        public async Task LoadNewGraphFromHttpUri()
+        {
+            var g = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/one.ttl");
+            await loader.LoadGraphAsync(g, resourceUri);
+            g.Triples.Count.Should().Be(1);
+            g.BaseUri.Should().Be(resourceUri, "the loader should set the base URI of the target graph if it is not already set.");
+        }
+
+        [Fact]
+        public async Task LoadExistingGraphFromHttpUri()
+        {
+            var baseUri = new Uri("http://example.org/graph");
+            var g = new Graph { BaseUri = baseUri };
+            g.Assert(g.CreateUriNode(new Uri("http://example.org/s")),
+                g.CreateUriNode(new Uri("http://example.org/p")),
+                g.CreateUriNode(new Uri("http://example.org/o")));
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/one.ttl");
+
+            await loader.LoadGraphAsync(g, resourceUri);
+
+            g.Triples.Count.Should().Be(2, "the loader should add to existing graph content, not replace it.");
+            g.BaseUri.Should().Be(baseUri, "the loader should not change the base URI of the target graph if it is already set.");
+        }
+
+        [Fact]
+        public async Task ParseGraphToCustomHandler()
+        {
+            var h = new CountHandler();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/one.nt");
+            await loader.LoadGraphAsync(h, resourceUri, null, CancellationToken.None);
+            h.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task LoadGraphFromHttpUriFailsIfRequestFails()
+        {
+            var graph = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/notfound.ttl");
+            RdfException ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadGraphAsync(graph, resourceUri));
+            ex.Message.Should().Contain(resourceUri.AbsoluteUri).And.Contain("404").And.Contain("Not Found");
+        }
+
+        [Fact]
+        public async Task LoadGraphWithSpecificParserForcesHttpHeader()
+        {
+            var graph = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/resource");
+            await loader.LoadGraphAsync(graph, resourceUri, new TurtleParser(TurtleSyntax.W3C, false));
+            ILogEntry requestLog = _serverFixture.Server.LogEntries.FirstOrDefault(e => e.RequestMessage.Path.EndsWith("/resource"));
+            requestLog.Should().NotBeNull();
+            requestLog.RequestMessage.Headers["Accept"].Should().Contain(v => v.Contains("text/turtle"));
+            requestLog.RequestMessage.Headers["Accept"].Should().NotContain(v => v.Contains("application/n-triples"));
+        }
+
+        [Fact]
+        public async Task LoadTripleStoreFromHttpUri()
+        {
+            var store = new TripleStore();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/one.trig");
+            await loader.LoadDatasetAsync(store, resourceUri);
+            store.Triples.Count().Should().Be(2);
+            store.Graphs.Count.Should().Be(2);
+        }
+
+        [Fact]
+        public async Task LoadTripleStoreFromHttpUriFailsIfRequestFails()
+        {
+            var store = new TripleStore();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/notfound.trig");
+            RdfException ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadDatasetAsync(store, resourceUri));
+            ex.Message.Should().Contain(resourceUri.AbsoluteUri).And.Contain("404").And.Contain("Not Found");
+        }
+
+        [Fact]
+        public async Task LoadGraphCanBeCancelled()
+        {
+            var graph = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/wait");
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(500);
+            await Assert.ThrowsAsync<TaskCanceledException>(() =>
+                loader.LoadGraphAsync(graph, resourceUri, null, cts.Token));
+        }
+
+        [Fact]
+        public async Task LoadDatasetCanBeCancelled()
+        {
+            var store = new TripleStore();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/wait");
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(500);
+            await Assert.ThrowsAsync<TaskCanceledException>(() =>
+                loader.LoadDatasetAsync(store, resourceUri, null, cts.Token));
+        }
+
+        [Fact]
+        public async Task LoadGraphFromFileUri()
+        {
+            var graph = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = Path.DirectorySeparatorChar.Equals('/')
+                ? new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "simple.ttl")))
+                : new Uri(Path.GetFullPath(Path.Combine("resources", "simple.ttl")));
+            resourceUri.Scheme.Should().Be("file");
+            await loader.LoadGraphAsync(graph, resourceUri);
+            graph.Triples.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task LoadGraphFromDataUri()
+        {
+            var graph = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            var resourceUri = new Uri("data:text/turtle,<http://example.org/s>%20a%20<http://example.org/t>%20.");
+            await loader.LoadGraphAsync(graph, resourceUri);
+            graph.Triples.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task LoadDatasetFromFileUri()
+        {
+            var store = new TripleStore();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = Path.DirectorySeparatorChar.Equals('/')
+                ? new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "simple.trig")))
+                : new Uri(Path.GetFullPath(Path.Combine("resources", "simple.trig")));
+            resourceUri.Scheme.Should().Be("file");
+            await loader.LoadDatasetAsync(store, resourceUri);
+            store.Graphs.Count.Should().Be(2);
+            store.Triples.Count().Should().Be(2);
+        }
+
+        [Fact]
+        public async Task LoadDatasetFromDataUri()
+        {
+            var store = new TripleStore();
+            var loader = new Loader(_serverFixture.Client);
+            var resourceUri = new Uri("data:application/x-trig,{<http://example.org/s>%20a%20<http://example.org/t>%20.}<http://example.org/g>{<http://example.org/s> <http://example.org/p> <http://example.org/o>%20.}");
+            await loader.LoadDatasetAsync(store, resourceUri);
+            store.Graphs.Count.Should().Be(2);
+            store.Triples.Count().Should().Be(2);
+        }
     }
 }

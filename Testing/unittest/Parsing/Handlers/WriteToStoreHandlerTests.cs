@@ -62,8 +62,10 @@ namespace VDS.RDF.Parsing.Handlers
             }
             else
             {
-                var g = new Graph();
-                g.BaseUri = TestGraphUri;
+                var g = new Graph
+                {
+                    BaseUri = TestGraphUri
+                };
                 manager.SaveGraph(g);
             }
 
@@ -111,8 +113,10 @@ namespace VDS.RDF.Parsing.Handlers
             }
             else
             {
-                var g = new Graph();
-                g.BaseUri = TestGraphUri;
+                var g = new Graph
+                {
+                    BaseUri = TestGraphUri
+                };
                 manager.SaveGraph(g);
                 g.BaseUri = graphB;
                 manager.SaveGraph(g);
@@ -153,8 +157,10 @@ namespace VDS.RDF.Parsing.Handlers
             } 
             else 
             {
-                var temp = new Graph();
-                temp.BaseUri = TestBNodeUri;
+                var temp = new Graph
+                {
+                    BaseUri = TestBNodeUri
+                };
                 manager.SaveGraph(temp);
             }
 

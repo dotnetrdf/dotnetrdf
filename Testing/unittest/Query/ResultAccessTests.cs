@@ -55,8 +55,10 @@ namespace VDS.RDF.Query
 
         private SparqlQuery CreateQuery(String query)
         {
-            var queryStr = new SparqlParameterizedString(query);
-            queryStr.Namespaces = new NamespaceMapper();
+            var queryStr = new SparqlParameterizedString(query)
+            {
+                Namespaces = new NamespaceMapper()
+            };
             return _parser.ParseFromString(queryStr);
         }
 

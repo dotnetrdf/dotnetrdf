@@ -122,8 +122,10 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromFile(@"resources\Turtle.ttl");
 
-            var g = new Graph();
-            g.BaseUri = UriFactory.Create("http://example.org/");
+            var g = new Graph
+            {
+                BaseUri = UriFactory.Create("http://example.org/")
+            };
             g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example.org/"));
             g.NamespaceMap.AddNamespace("rdfs", UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#"));
 

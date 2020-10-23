@@ -605,8 +605,10 @@ WHERE
             var store = new TripleStore();
             IGraph def = new Graph();
             store.Add(def);
-            IGraph named = new Graph();
-            named.BaseUri = new Uri("http://name");
+            IGraph named = new Graph
+            {
+                BaseUri = new Uri("http://name")
+            };
             store.Add(named);
 
             Assert.Equal(2, store.Graphs.Count);

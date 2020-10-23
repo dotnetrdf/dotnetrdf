@@ -24,33 +24,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
-using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
 
+    [Collection("RdfServer")]
     public class BaseUriAssignmentTests
     {
-        private String ShowBaseUri(Uri baseUri)
+        private readonly RdfServerFixture _serverFixture;
+        public BaseUriAssignmentTests(RdfServerFixture serverFixture)
         {
-            if (baseUri == null)
-            {
-                return "<NULL>";
-            }
-            try
-            {
-                return "<" + baseUri.ToString() + ">";
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // Weird error happening only in CI build on appveyor
-                return "ArgumentOutOfRangeException raised while attempting to format URI";
-            }
+            _serverFixture = serverFixture;
         }
 
         [Fact]
@@ -58,53 +44,33 @@ namespace VDS.RDF.Parsing
         {
             var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
             Assert.NotNull(g.BaseUri);
         }
 
-        [SkippableFact]
+        [Fact]
         public void ParsingBaseUriAssignmentUriLoader()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var defaultTimeout = UriLoader.Timeout;
-            try
-            {
-                //DBPedia can be slow so up the timeout for this test
-                UriLoader.Timeout = 45000;
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
-                Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
-                Assert.NotNull(g.BaseUri);
-            }
-            finally
-            {
-                //Remember to reset timeout afterwards
-                UriLoader.Timeout = defaultTimeout;
-            }
+            var loader = new Loader(_serverFixture.Client);
+            var g = new Graph();
+            loader.LoadGraph(g, _serverFixture.UriFor("/resource/Southampton"));
+            Assert.NotNull(g.BaseUri);
         }
 
         [Fact]
         public void ParsingBaseUriAssignmentRdfXml()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/RdfXml");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/RdfXml")
+            };
 
             var strWriter = new System.IO.StringWriter();
             var writer = new RdfXmlWriter();
             writer.Save(g, strWriter);
 
-            Console.WriteLine("Original Base URI: " + ShowBaseUri(g.BaseUri));
-
-            Console.WriteLine("Output using RdfXmlWriter:");
-            Console.WriteLine(strWriter.ToString());
-            Console.WriteLine();
-
             var h = new Graph();
             var parser = new RdfXmlParser();
             parser.Load(h, new System.IO.StringReader(strWriter.ToString()));
-
-            Console.WriteLine("Base URI after round-trip using RdfXmlWriter: " + ShowBaseUri(h.BaseUri));
             Assert.NotNull(h.BaseUri);
         }
     }
