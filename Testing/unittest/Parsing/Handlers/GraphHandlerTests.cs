@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing.Handlers
             var loader = new Loader(_serverFixture.Client);
             var g = new Graph();
             g.BaseUri.Should().BeNull();
-            Uri targetUri = _serverFixture.UriFor("/doap#");
+            Uri targetUri = _serverFixture.UriFor("/one.ttl");
             loader.LoadGraph(g, targetUri);
             g.BaseUri.Should().Be(targetUri);
         }
@@ -223,7 +223,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             var loader = new Loader(_serverFixture.Client);
             var g = new Graph();
-            Uri targetUri = _serverFixture.UriFor("/doap#");
+            Uri targetUri = _serverFixture.UriFor("/one.ttl");
             g.BaseUri.Should().BeNull();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri.Should().NotBeNull("loading into a graph with no BaseUri should set the BaseUri");
