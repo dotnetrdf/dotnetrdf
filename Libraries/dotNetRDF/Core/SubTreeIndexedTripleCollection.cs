@@ -46,9 +46,9 @@ namespace VDS.RDF
         // Main Storage
         private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Indexes
-        private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer()),
-                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer()),
-                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastVirtualNodeComparer());
+        private MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
+                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
+                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer());
 
         // Placeholder Variables for compound lookups
         private VariableNode _subjVar = new VariableNode(null, "s"),
@@ -86,15 +86,15 @@ namespace VDS.RDF
         /// <param name="index">Index to insert into.</param>
         /// <param name="comparer">Comparer for the Index.</param>
         /// <param name="hashFunc">Hash Function for the Index.</param>
-        private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
+        private void Index(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index, Func<Triple,int> hashFunc, IComparer<Triple> comparer)
         {
             if (index.TryGetValue(n, out var subtree))
             {
-                if (subtree.TryGetValue(t, out List<Triple> ts))
+                if (subtree.TryGetValue(t, out HashSet<Triple> ts))
                 {
                     if (ts == null)
                     {
-                        subtree[t] = new List<Triple> { t };
+                        subtree[t] = new HashSet<Triple> { t };
                     }
                     else
                     {
@@ -103,13 +103,13 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    subtree.Add(t, new List<Triple> { t });
+                    subtree.Add(t, new HashSet<Triple> { t });
                 }
             }
             else
             {
-                subtree = new MultiDictionary<Triple, List<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.AVL);
-                subtree.Add(t, new List<Triple> { t });
+                subtree = new MultiDictionary<Triple, HashSet<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.AVL);
+                subtree.Add(t, new HashSet<Triple> { t });
                 index.Add(n, subtree);
             }
         }
@@ -132,11 +132,11 @@ namespace VDS.RDF
         /// <param name="n">Node to index by.</param>
         /// <param name="t">Triple.</param>
         /// <param name="index">Index to remove from.</param>
-        private void Unindex(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> index)
+        private void Unindex(INode n, Triple t, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
         {
-            if (index.TryGetValue(n, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (index.TryGetValue(n, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(t, out List<Triple> ts))
+                if (subtree.TryGetValue(t, out HashSet<Triple> ts))
                 {
                     if (ts != null) ts.Remove(t);
                 }
@@ -224,7 +224,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            if (_o.TryGetValue(obj, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
                 return (from ts in subtree.Values
                         where ts != null
@@ -241,7 +241,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            if (_p.TryGetValue(pred, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (_p.TryGetValue(pred, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
                 return (from ts in subtree.Values
                         where ts != null
@@ -258,7 +258,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            if (_s.TryGetValue(subj, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
                 return (from ts in subtree.Values
                         where ts != null
@@ -276,9 +276,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            if (_p.TryGetValue(obj, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (_p.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(_subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out List<Triple> ts))
+                if (subtree.TryGetValue(new Triple(_subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out HashSet<Triple> ts))
                 {
                     return (ts ?? Enumerable.Empty<Triple>());
                 }
@@ -295,9 +295,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            if (_o.TryGetValue(obj, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(subj, _predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out List<Triple> ts))
+                if (subtree.TryGetValue(new Triple(subj, _predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out HashSet<Triple> ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -314,9 +314,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            if (_s.TryGetValue(subj, out MultiDictionary<Triple, List<Triple>> subtree))
+            if (_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), _objVar.CopyNode(subj.Graph)), out List<Triple> ts))
+                if (subtree.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), _objVar.CopyNode(subj.Graph)), out HashSet<Triple> ts))
                 {
                     return ts ?? Enumerable.Empty<Triple>();
                 }
