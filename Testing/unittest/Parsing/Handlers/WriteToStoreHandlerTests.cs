@@ -253,20 +253,20 @@ namespace VDS.RDF.Parsing.Handlers
             TestWriteToStoreHandler(agraph);
         }
 
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerFuseki()
-        {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-                FusekiConnector fuseki = FusekiTest.GetConnection();
-                TestWriteToStoreHandler(fuseki);
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
-        }
+        //[SkippableFact]
+        //public void ParsingWriteToStoreHandlerFuseki()
+        //{
+        //    try
+        //    {
+        //        UriLoader.CacheEnabled = false;
+        //        FusekiConnector fuseki = FusekiTest.GetConnection();
+        //        TestWriteToStoreHandler(fuseki);
+        //    }
+        //    finally
+        //    {
+        //        UriLoader.CacheEnabled = true;
+        //    }
+        //}
 
         [SkippableFact]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
@@ -275,12 +275,12 @@ namespace VDS.RDF.Parsing.Handlers
             TestWriteToStoreHandlerWithBNodes(agraph);
         }
 
-        [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestWriteToStoreHandlerWithBNodes(fuseki);
-        }
+        //[SkippableFact]
+        //public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
+        //{
+        //    FusekiConnector fuseki = FusekiTest.GetConnection();
+        //    TestWriteToStoreHandlerWithBNodes(fuseki);
+        //}
 
     }
 }
