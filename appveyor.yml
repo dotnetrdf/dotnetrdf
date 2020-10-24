@@ -28,7 +28,6 @@ test_script:
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\unittest\unittest.csproj
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
   - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
-  - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\dotNetRDF.MockServerTests\dotNetRDF.MockServerTests.csproj
 
 before_deploy:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
