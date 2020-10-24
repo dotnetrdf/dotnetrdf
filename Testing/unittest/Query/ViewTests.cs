@@ -211,16 +211,6 @@ namespace VDS.RDF.Query
             TestTools.ShowGraph(view);
         }
 
-        [Fact(Skip = "If the test is not stable, fix the test")]
-        public void SparqlViewAndReasonerInteraction2()
-        {
-            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
-            for (var i = 1; i <= 50; i++)
-            {
-                SparqlViewAndReasonerInteraction1();
-            }
-        }
-
         [Fact]
         public void SparqlViewGraphScope1()
         {
@@ -231,9 +221,7 @@ namespace VDS.RDF.Query
             };
             store.Add(view);
 
-            Console.WriteLine("SPARQL View Empty");
-            TestTools.ShowGraph(view);
-            Console.WriteLine();
+            Assert.Empty(view.Triples);
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph();
@@ -244,9 +232,6 @@ namespace VDS.RDF.Query
             Thread.Sleep(500);
             if (view.Triples.Count == 0) view.UpdateView();
             var lastCount = view.Triples.Count;
-
-            Console.WriteLine("SPARQL View Populated");
-            TestTools.ShowGraph(view);
 
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
 
@@ -270,17 +255,6 @@ namespace VDS.RDF.Query
             view.UpdateView();
 
             Assert.True(view.Triples.Count == lastCount, "View should not have changed since the removed Graph is not in the set of Graphs over which the query operates");
-        }
-
-
-        [Fact(Skip = "If the test is not stable, we should fix the test")]
-        public void SparqlViewGraphScope2()
-        {
-            //Since the test has failed intermittently in the past run it a whole bunch of times to be on the safe side
-            for (var i = 1; i <= 50; i++)
-            {
-                SparqlViewGraphScope1();
-            }
         }
 
     }

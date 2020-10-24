@@ -89,14 +89,14 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromFile(@"resources\rvesse.ttl");
 
-            var d = g.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"), predicateBaseUri: UriFactory.Create("http://xmlns.com/foaf/0.1/"));
+            dynamic d = g.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"), predicateBaseUri: UriFactory.Create("http://xmlns.com/foaf/0.1/"));
 
-            var rvesse = d.rvesse;
-            var onlineAccount = rvesse.OnlineAccount.Single();
-            var accountName = onlineAccount.accountName.Single();
-            var currentProjects = rvesse.currentProject;
-            var mbox = rvesse.mbox;
-            var hex_id = rvesse["wot:hasKey"].Single()["wot:hex_id"].Single();
+            dynamic rvesse = d.rvesse;
+            dynamic onlineAccount = rvesse.OnlineAccount.Single();
+            dynamic accountName = onlineAccount.accountName.Single();
+            dynamic currentProjects = rvesse.currentProject;
+            dynamic mbox = rvesse.mbox;
+            dynamic hex_id = rvesse["wot:hasKey"].Single()["wot:hex_id"].Single();
 
             Assert.Equal(g.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org/people#rvesse")), rvesse);
             Assert.IsAssignableFrom<IBlankNode>(onlineAccount);
@@ -129,7 +129,7 @@ namespace VDS.RDF.Dynamic
             g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example.org/"));
             g.NamespaceMap.AddNamespace("rdfs", UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#"));
 
-            var d = g.AsDynamic();
+            dynamic d = g.AsDynamic();
 
             d.one = new Dictionary<object, object>
             {
@@ -189,7 +189,7 @@ namespace VDS.RDF.Dynamic
 
             d[d.CreateBlankNode()]["rdf:type"] = d.CreateUriNode(":BlankNode");
 
-            var blankNodeCollection = d[d.CreateBlankNode()];
+            dynamic blankNodeCollection = d[d.CreateBlankNode()];
             blankNodeCollection.property = new[]
             {
                 d.CreateUriNode(":value"),
@@ -197,7 +197,7 @@ namespace VDS.RDF.Dynamic
             };
             blankNodeCollection["rdf:type"] = d.CreateUriNode(":BlankNodeCollection");
 
-            var collection = g.AssertList(new[]
+            INode collection = g.AssertList(new[]
             {
                 g.CreateUriNode(":item1"),
                 g.CreateUriNode(":item2"),
@@ -214,7 +214,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromFile(@"resources\rvesse.ttl");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"));
+            dynamic d = actual.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"));
 
             var rvesse = new FoafPerson(d.rvesse);
             rvesse.Names.Add("Rob Vesse");
@@ -272,7 +272,7 @@ namespace VDS.RDF.Dynamic
 
             public ICollection<DoapProject> Projects => new DynamicObjectCollection<DoapProject>(this, "currentProject");
 
-            public ICollection<WotKey> Keys => new DynamicObjectCollection<WotKey>(this, "http://xmlns.com/wot/0.1/hasKey");
+            public new ICollection<WotKey> Keys => new DynamicObjectCollection<WotKey>(this, "http://xmlns.com/wot/0.1/hasKey");
         }
 
         private class FoafAccount : DynamicNode
@@ -314,11 +314,11 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var expected = g.CreateUriNode(UriFactory.Create("urn:s"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            IUriNode expected = g.CreateUriNode(UriFactory.Create("urn:s"));
 
             // See 1. for other key options
-            var actual = d["s"];
+            dynamic actual = d["s"];
 
             Assert.Equal(expected, actual);
         }
@@ -328,10 +328,10 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var expected = g.CreateUriNode(UriFactory.Create("urn:s"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            IUriNode expected = g.CreateUriNode(UriFactory.Create("urn:s"));
 
-            var actual = d.s;
+            dynamic actual = d.s;
 
             Assert.Equal(expected, actual);
         }
@@ -342,7 +342,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
 
             // See 1. for other key options
             // See 3. for other value options
@@ -357,7 +357,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
 
             // See 3. for other value options
             d.s = new { p = "o" };
@@ -371,7 +371,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph { BaseUri = UriFactory.Create("urn:") };
-            var d = actual.AsDynamic();
+            dynamic d = actual.AsDynamic();
 
             // See 1. for other key options
             // See 3. for other value options
@@ -385,11 +385,11 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
 
             // See 1. for other key options
             // See 3. for other value options
-            var condition = d.Contains("s", new { p = "o" });
+            dynamic condition = d.Contains("s", new { p = "o" });
 
             Assert.True(condition);
         }
@@ -399,10 +399,10 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
 
             // See 1. for other key options
-            var condition = d.ContainsKey("s");
+            dynamic condition = d.ContainsKey("s");
 
             Assert.True(condition);
         }
@@ -412,7 +412,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
 
             // See 1. for other key options
             d.Remove("s");
@@ -425,7 +425,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
 
             // See 1. for other key options
             // See 3. for other value options
@@ -439,12 +439,12 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var expected = "o".AsEnumerable();
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            IEnumerable<string> expected = "o".AsEnumerable();
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
-            var actual = s["p"];
+            dynamic actual = s["p"];
 
             Assert.Equal(expected, actual);
         }
@@ -454,11 +454,11 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var expected = "o".AsEnumerable();
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            IEnumerable<string> expected = "o".AsEnumerable();
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
-            var actual = s.p;
+            dynamic actual = s.p;
 
             Assert.Equal(expected, actual);
         }
@@ -469,8 +469,8 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
             // See 2. for other value options
@@ -485,8 +485,8 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 2. for other value options
             s.p = "o";
@@ -500,8 +500,8 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
             // See 2. for other value options
@@ -515,12 +515,12 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
             // See 2. for other value options
-            var condition = s.Contains("p", "o");
+            dynamic condition = s.Contains("p", "o");
 
             Assert.True(condition);
         }
@@ -530,11 +530,11 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
-            var condition = s.ContainsKey("p");
+            dynamic condition = s.ContainsKey("p");
 
             Assert.True(condition);
         }
@@ -544,8 +544,8 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             s.Clear();
 
@@ -557,8 +557,8 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
             s.Remove("p");
@@ -571,8 +571,8 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var s = d.s;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic s = d.s;
 
             // See 1. for other key options
             // See 2. for other value options
@@ -587,10 +587,10 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var expected = 1;
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var sp = d.s.p;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic sp = d.s.p;
 
-            var actual = sp.Count;
+            dynamic actual = sp.Count;
 
             Assert.Equal(expected, actual);
         }
@@ -601,8 +601,8 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            var d = actual.AsDynamic(UriFactory.Create("urn:"));
-            var sp = d.s.p;
+            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic sp = d.s.p;
 
             // See 2. for other value options
             sp.Add("o");
@@ -614,8 +614,8 @@ namespace VDS.RDF.Dynamic
         public void Object_collection_clear()
         {
             var g = new Graph();
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var sp = d.s.p;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic sp = d.s.p;
 
             sp.Clear();
 
@@ -627,11 +627,11 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var sp = d.s.p;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic sp = d.s.p;
 
             // See 2. for other value options
-            var condition = sp.Contains("o");
+            dynamic condition = sp.Contains("o");
 
             Assert.True(condition);
         }
@@ -641,8 +641,8 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
-            var sp = d.s.p;
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic sp = d.s.p;
 
             // See 2. for other value options
             sp.Remove("o");
@@ -655,11 +655,11 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
             var expected = "o";
-            var sp = d.s.p;
+            dynamic sp = d.s.p;
 
-            var actual = sp.Single();
+            dynamic actual = sp.Single();
 
             Assert.Equal(expected, actual);
         }
@@ -669,9 +669,9 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var set = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
+            dynamic set = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
 
-            var result = set.Single();
+            dynamic result = set.Single();
 
             Assert.IsType<DynamicSparqlResult>(result);
         }
@@ -681,12 +681,12 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var results = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
-            var result = results.Single();
+            dynamic results = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
+            dynamic result = results.Single();
 
-            var actual = result["o"];
+            dynamic actual = result["o"];
 
-            Xunit.Assert.Equal("o", actual);
+            Assert.Equal("o", actual);
         }
 
         [Fact]
@@ -694,12 +694,12 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var results = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
-            var result = results.Single();
+            dynamic results = ((SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }")).AsDynamic();
+            dynamic result = results.Single();
 
-            var actual = result.o;
+            dynamic actual = result.o;
 
-            Xunit.Assert.Equal("o", actual);
+            Assert.Equal("o", actual);
         }
 
         [Fact]
@@ -708,10 +708,10 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var result = results.Single();
-            var dynamicResults = results.AsDynamic();
-            var dynamicResult = dynamicResults.Single();
-            var expected = new NodeFactory().CreateLiteralNode("o1");
+            SparqlResult result = results.Single();
+            dynamic dynamicResults = results.AsDynamic();
+            dynamic dynamicResult = dynamicResults.Single();
+            ILiteralNode expected = new NodeFactory().CreateLiteralNode("o1");
 
             // See 4. for other value options
             dynamicResult["o"] = "o1";
@@ -725,10 +725,10 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var result = results.Single();
-            var dynamicResults = results.AsDynamic();
-            var dynamicResult = dynamicResults.Single();
-            var expected = new NodeFactory().CreateLiteralNode("o1");
+            SparqlResult result = results.Single();
+            dynamic dynamicResults = results.AsDynamic();
+            dynamic dynamicResult = dynamicResults.Single();
+            ILiteralNode expected = new NodeFactory().CreateLiteralNode("o1");
 
             // See 2. for other value options
             dynamicResult.o = "o1";
@@ -742,10 +742,10 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var result = results.Single();
-            var dynamicResults = results.AsDynamic();
-            var dynamicResult = dynamicResults.Single();
-            var expected = new NodeFactory().CreateLiteralNode("y");
+            SparqlResult result = results.Single();
+            dynamic dynamicResults = results.AsDynamic();
+            dynamic dynamicResult = dynamicResults.Single();
+            ILiteralNode expected = new NodeFactory().CreateLiteralNode("y");
 
             // See 2. for other value options
             dynamicResult.Add("x", "y");
@@ -759,9 +759,9 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var result = results.Single();
-            var dynamicResults = results.AsDynamic();
-            var dynamicResult = dynamicResults.Single();
+            SparqlResult result = results.Single();
+            dynamic dynamicResults = results.AsDynamic();
+            dynamic dynamicResult = dynamicResults.Single();
 
             dynamicResult.Clear();
 
@@ -774,11 +774,11 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var result = results.Single();
-            var dynamicResults = results.AsDynamic();
-            var dynamicResult = dynamicResults.Single();
+            SparqlResult _ = results.Single();
+            dynamic dynamicResults = results.AsDynamic();
+            dynamic dynamicResult = dynamicResults.Single();
 
-            var condition = dynamicResult.ContainsKey("s");
+            dynamic condition = dynamicResult.ContainsKey("s");
 
             Assert.True(condition);
         }
@@ -789,9 +789,9 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            var result = results.Single();
-            var dynamicResults = results.AsDynamic();
-            var dynamicResult = dynamicResults.Single();
+            SparqlResult result = results.Single();
+            dynamic dynamicResults = results.AsDynamic();
+            dynamic dynamicResult = dynamicResults.Single();
 
             dynamicResult.Remove("s");
 

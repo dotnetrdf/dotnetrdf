@@ -24,22 +24,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
+using System;
+using VDS.RDF.Shacl.Validation;
+using VDS.RDF.Writing;
+using Xunit;
+using Xunit.Abstractions;
+using static VDS.RDF.Shacl.TestSuiteData;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using VDS.RDF.Shacl.Validation;
-    using VDS.RDF.Writing;
-    using Xunit;
-    using Xunit.Abstractions;
-    using static TestSuiteData;
-
     public class TestSuite
     {
-        private readonly ITestOutputHelper output;
+        private readonly ITestOutputHelper _output;
 
         public TestSuite(ITestOutputHelper output)
         {
-            this.output = output;
+            this._output = output;
         }
 
         [Theory]
@@ -72,7 +72,7 @@ namespace VDS.RDF.Shacl
 
         private static void Conforms(string name)
         {
-            ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
+            ExtractTestData(name, out IGraph testGraph, out var failure, out IGraph dataGraph, out IGraph shapesGraph);
 
             void conforms()
             {
@@ -94,16 +94,16 @@ namespace VDS.RDF.Shacl
 
         private void Validates(string name)
         {
-            ExtractTestData(name, out var testGraph, out var failure, out var dataGraph, out var shapesGraph);
+            ExtractTestData(name, out IGraph testGraph, out var failure, out IGraph dataGraph, out IGraph shapesGraph);
 
             void validates()
             {
-                var actual = new ShapesGraph(shapesGraph).Validate(dataGraph).Normalised;
-                var expected = Report.Parse(testGraph).Normalised;
+                IGraph actual = new ShapesGraph(shapesGraph).Validate(dataGraph).Normalised;
+                IGraph expected = Report.Parse(testGraph).Normalised;
 
                 var writer = new CompressingTurtleWriter();
-                output.WriteLine(StringWriter.Write(expected, writer));
-                output.WriteLine(StringWriter.Write(actual, writer));
+                _output.WriteLine(StringWriter.Write(expected, writer));
+                _output.WriteLine(StringWriter.Write(actual, writer));
 
                 RemoveUnnecessaryResultMessages(actual, expected);
 
