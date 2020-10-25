@@ -406,6 +406,7 @@ namespace VDS.RDF
             return new Graph();
         }
 
+        /*
         [Fact]
         public void GetUriNode_ShouldBeFastForLargeGraphs()
         {
@@ -561,6 +562,7 @@ namespace VDS.RDF
             // then
             Assert.True(total.TotalMilliseconds < 100);
         }
+        */
     }
 
 
