@@ -24,43 +24,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
+    [Collection("RdfServer")]
     public class UpdateTimeouts
     {
-        private SparqlUpdateParser _parser = new SparqlUpdateParser();
+        private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
+        private readonly RdfServerFixture _serverFixture;
 
-        [Fact(Skip="Remote configuration not currently available")]
+        public UpdateTimeouts(RdfServerFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+        }
+
+        [Fact]
         public void SparqlUpdateTimeout()
         {
-            var update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";
-            SparqlUpdateCommandSet cmds = _parser.ParseFromString(update);
+            var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/doap")}>; CREATE GRAPH <http://example.org/2>";
+            var cmds = _parser.ParseFromString(update);
             cmds.Timeout = 1;
 
             var store = new TripleStore();
             var processor = new LeviathanUpdateProcessor(store);
-            try
-            {
-                processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Expected a SparqlUpdateTimeoutException");
-            }
-            catch (SparqlUpdateTimeoutException timeoutEx)
-            {
-                TestTools.ReportError("Timeout", timeoutEx);
-                Console.WriteLine();
-                Console.WriteLine("Execution Time: " + cmds.UpdateExecutionTime.Value.ToString());
-
-                Assert.False(store.HasGraph(new Uri("http://example.org/1")), "Graph 1 should not exist");
-                Assert.False(store.HasGraph(new Uri("http://example.org/2")), "Graph 2 should not exist");
-
-            }
+            Assert.Throws<SparqlUpdateTimeoutException>(() => processor.ProcessCommandSet(cmds));
+            store.HasGraph(new Uri("http://example.org/1")).Should().BeFalse("Graph 1 should not exist");
+            store.HasGraph(new Uri("http://example.org/2")).Should().BeFalse("Graph 2 should not exist");
         }
     }
 }

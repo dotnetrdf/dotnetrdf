@@ -45,9 +45,14 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Query
 {
 
-    public class SparqlTests
+    public class SparqlTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
+        private MockRemoteSparqlEndpointFixture _serverFixture;
 
+        public SparqlTests(MockRemoteSparqlEndpointFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+        }
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
             var parser = new SparqlQueryParser();
@@ -157,144 +162,6 @@ namespace VDS.RDF.Query
             var query = new SparqlParameterizedString("DESCRIBE @uri");
             query.SetUri("uri", new Uri("http://example.com/some@encoded/uri"));
             Assert.Equal("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString());
-        }
-
-        [SkippableFact]
-        public void SparqlDBPedia()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var query =
-                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
-
-            var endpoint =
-                new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-            SparqlResultSet results = endpoint.QueryWithResultSet(query);
-            TestTools.ShowResults(results);
-
-            using (HttpWebResponse response = endpoint.QueryRaw(query))
-            {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        Console.WriteLine(reader.ReadLine());
-                    }
-
-                    reader.Close();
-                }
-
-                response.Close();
-            }
-
-        }
-
-        [SkippableFact]
-        public void SparqlWikidata()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var query = "SELECT * WHERE {?s ?p ?o } LIMIT 1";
-
-            var endpoint = new SparqlRemoteEndpoint(new Uri("https://query.wikidata.org/sparql"),
-                "https://www.wikidata.org")
-            {
-                UserAgent =
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-            };
-            SparqlResultSet results = endpoint.QueryWithResultSet(query);
-            TestTools.ShowResults(results);
-
-            using (HttpWebResponse response = endpoint.QueryRaw(query))
-            {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        Console.WriteLine(reader.ReadLine());
-                    }
-
-                    reader.Close();
-                }
-
-                response.Close();
-            }
-        }
-
-        [SkippableFact]
-        public void SparqlRemoteVirtuosoWithSponging()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso), "Test Config marks Virtuoso as unavailable, cannot run test");
-            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"))
-            {
-                HttpMode = "POST"
-            };
-            var query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
-
-            IGraph g = endpoint.QueryWithResultGraph(query);
-            TestTools.ShowGraph(g);
-            Assert.False(g.IsEmpty, "Graph should not be empty");
-        }
-
-        [SkippableFact]
-        public void SparqlDbPediaDotIssue()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var query = @"PREFIX dbpediaO: <http://dbpedia.org/ontology/>
-select distinct ?entity ?redirectedEntity
-where {
- ?entity rdfs:label 'Apple Computer'@en .
- ?entity dbpediaO:wikiPageRedirects ?redirectedEntity .
-}";
-
-            var endpoint =
-                new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-            Console.WriteLine("Results obtained with QueryWithResultSet()");
-            SparqlResultSet results = endpoint.QueryWithResultSet(query);
-            TestTools.ShowResults(results);
-            Console.WriteLine();
-
-            Console.WriteLine("Results obtained with QueryRaw()");
-            using (HttpWebResponse response = endpoint.QueryRaw(query))
-            {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        Console.WriteLine(reader.ReadLine());
-                    }
-
-                    reader.Close();
-                }
-
-                response.Close();
-            }
-
-            Console.WriteLine();
-
-            Console.WriteLine("Results obtained with QueryRaw() requesting JSON");
-            using (HttpWebResponse response =
-                endpoint.QueryRaw(query, new String[] {"application/sparql-results+json"}))
-            {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        Console.WriteLine(reader.ReadLine());
-                    }
-
-                    reader.Close();
-                }
-
-                response.Close();
-            }
-
-            Console.WriteLine();
-
         }
 
         [Fact]
@@ -457,19 +324,15 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlEndpointWithExtensions()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql), "Test Config marks Remote SPARQL as unavailable, test cannot be run");
-
-            var endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
-
+            //var endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
             var testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 1";
 
-            Console.WriteLine("Testing Sparql Connector with vendor specific extensions in query");
-            Console.WriteLine();
-            Console.WriteLine(testQuery);
+            _serverFixture.RegisterSelectQueryGetHandler(testQuery);
+            var endpoint = new SparqlConnector(new Uri(_serverFixture.Server.Urls[0] + "/sparql"));
 
             Assert.Throws<RdfException>(() =>
             {
@@ -479,7 +342,8 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             endpoint.SkipLocalParsing = true;
 
             var results = endpoint.Query(testQuery);
-            TestTools.ShowResults(results);
+            results.Should().BeOfType<SparqlResultSet>().Which.Results.Should().NotBeEmpty();
+            //TestTools.ShowResults(results);
         }
 
         [Fact]
@@ -575,17 +439,14 @@ WHERE
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlSimpleQuery1()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
             var store = new TripleStore();
-            store.AddFromUri(new Uri("http://dbpedia.org/resource/Barack_Obama"));
+            FileLoader.Load(store, Path.Combine("resources", "czech-royals.ttl"));
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
             var sparqlParser = new SparqlQueryParser();
-            SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
+            var query = sparqlParser.ParseFromString(sparqlQuery);
             var processor = new LeviathanQueryProcessor(store);
             var results = processor.ProcessQuery(query);
         }

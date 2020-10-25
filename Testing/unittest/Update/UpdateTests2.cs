@@ -38,9 +38,16 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
 {
-
+    [Collection("RdfServer")]
     public class UpdateTests2
     {
+        private readonly RdfServerFixture _serverFixture;
+
+        public UpdateTests2(RdfServerFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+        }
+
         [Fact]
         public void SparqlUpdateCreateDrop()
         {
@@ -107,37 +114,19 @@ namespace VDS.RDF.Update
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlUpdateLoad()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
             var store = new TripleStore();
 
-            var loadLondon = new LoadCommand(new Uri("http://dbpedia.org/resource/London"));
-            var loadSouthampton = new LoadCommand(new Uri("http://dbpedia.org/resource/Southampton"), new Uri("http://example.org"));
+            var loadLondon = new LoadCommand(_serverFixture.UriFor("/doap"));
+            var loadSouthampton = new LoadCommand(_serverFixture.UriFor("/resource/Southampton"), new Uri("http://example.org"));
 
             store.ExecuteUpdate(loadLondon);
             store.ExecuteUpdate(loadSouthampton);
 
             Assert.Equal(2, store.Graphs.Count);
             Assert.NotEmpty(store.Triples);
-
-            foreach (IGraph g in store.Graphs)
-            {
-                foreach (Triple t in g.Triples)
-                {
-                    Console.Write(t.ToString());
-                    if (g.BaseUri != null)
-                    {
-                        Console.WriteLine(" from " + g.BaseUri.ToString());
-                    }
-                    else
-                    {
-                        Console.WriteLine();
-                    }
-                }
-            }
         }
 
         [Fact]
@@ -149,13 +138,13 @@ namespace VDS.RDF.Update
             g.BaseUri = null;
             store.Add(g);
 
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            var rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
             Assert.NotEmpty(store.GetTriplesWithPredicate(rdfType));
 
             var update = "DELETE {?s a ?type} WHERE {?s a ?type}";
             var parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString(update);
+            var cmds = parser.ParseFromString(update);
             store.ExecuteUpdate(cmds);
 
             Assert.Empty(store.GetTriplesWithPredicate(rdfType));
@@ -172,7 +161,7 @@ namespace VDS.RDF.Update
             var dataset = new InMemoryDataset(store);
 
             var parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
+            var cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
 
             ISparqlUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
@@ -189,7 +178,7 @@ namespace VDS.RDF.Update
             var dataset = new InMemoryDataset(store);
 
             var parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
+            var cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
 
             ISparqlUpdateProcessor processor = new ExplainUpdateProcessor(dataset, ExplanationLevel.Full);
             processor.ProcessCommandSet(cmds);
@@ -226,13 +215,13 @@ DELETE { ex:Subject ex:hasObject ex:Object . }
 INSERT { ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] . }
 WHERE { ?s ?p ?o . }"
             };
-            SparqlUpdateCommandSet cmds = new SparqlUpdateParser().ParseFromString(command);
+            var cmds = new SparqlUpdateParser().ParseFromString(command);
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.Single(dataset.Graphs);
 
-            IGraph g = dataset.Graphs.First();
+            var g = dataset.Graphs.First();
             Assert.Equal(2, g.Triples.Count);
             Assert.False(ReferenceEquals(g, sourceGraph), "Result Graph should not be the Source Graph");
             Assert.Equal(1, sourceGraph.Triples.Count);
@@ -265,13 +254,13 @@ DELETE { ex:Subject ex:hasObject ex:Object . }
 INSERT { ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] . }
 WHERE { ?s ?p ?o . }"
             };
-            SparqlUpdateCommandSet cmds = new SparqlUpdateParser().ParseFromString(command);
+            var cmds = new SparqlUpdateParser().ParseFromString(command);
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.Single(dataset.Graphs);
 
-            IGraph g = dataset.Graphs.First();
+            var g = dataset.Graphs.First();
             Assert.Equal(2, g.Triples.Count);
             Assert.True(ReferenceEquals(g, sourceGraph), "Result Graph should be the Source Graph");
             Assert.Equal(2, sourceGraph.Triples.Count);
@@ -338,17 +327,17 @@ _:blank rr:objectMap _:autos2.";
             TestTools.ShowGraph(graph);
             Console.WriteLine();
 
-            Triple x = graph.GetTriplesWithPredicate(graph.CreateUriNode("rr:predicateObjectMap")).FirstOrDefault();
-            INode origBNode = x.Object;
+            var x = graph.GetTriplesWithPredicate(graph.CreateUriNode("rr:predicateObjectMap")).FirstOrDefault();
+            var origBNode = x.Object;
             Assert.True(graph.GetTriples(origBNode).Count() > 1, "Should be more than one Triple using the BNode");
-            IEnumerable<Triple> ys = graph.GetTriplesWithSubject(origBNode);
-            foreach (Triple y in ys)
+            var ys = graph.GetTriplesWithSubject(origBNode);
+            foreach (var y in ys)
             {
                 Assert.Equal(origBNode, y.Subject);
             }
 
             //Graphs should be equal
-            GraphDiffReport diff = graph.Difference(expectedGraph);
+            var diff = graph.Difference(expectedGraph);
             if (!diff.AreEqual) TestTools.ShowDifferences(diff);
             Assert.Equal(expectedGraph, graph);
 
@@ -371,10 +360,10 @@ INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }";
             Assert.Equal(1, store.Graphs.Count);
             Assert.Equal(2, store.Triples.Count());
 
-            IGraph def = store[null];
-            Triple a = def.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).FirstOrDefault();
+            var def = store[null];
+            var a = def.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).FirstOrDefault();
             Assert.NotNull(a);
-            Triple b = def.Triples.Where(t => t.Object.NodeType == NodeType.Blank).FirstOrDefault();
+            var b = def.Triples.Where(t => t.Object.NodeType == NodeType.Blank).FirstOrDefault();
             Assert.NotNull(b);
 
             Assert.Equal(a.Subject, b.Object);
@@ -420,7 +409,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             var dataset = new InMemoryDataset(g);
 
             var updates = "INSERT { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
-            SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
+            var commands = new SparqlUpdateParser().ParseFromString(updates);
 
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
@@ -445,7 +434,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.Equal(2, dataset.GraphUris.Count());
 
             var updates = "DELETE { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
-            SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
+            var commands = new SparqlUpdateParser().ParseFromString(updates);
 
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
@@ -471,7 +460,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.Equal(2, dataset.GraphUris.Count());
 
             var updates = "DELETE { GRAPH ?s { ?s ?p ?o } } INSERT { GRAPH ?o { ?s ?p ?o } } WHERE { ?s ?p ?o }";
-            SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
+            var commands = new SparqlUpdateParser().ParseFromString(updates);
 
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
