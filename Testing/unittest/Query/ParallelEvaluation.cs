@@ -161,9 +161,11 @@ namespace VDS.RDF.Query
 
             for (var i = 1; i <= 10000; i++)
             {
-                var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
-                context.InputMultiset = multiset;
-                context.OutputMultiset = new Multiset();
+                var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions())
+                {
+                    InputMultiset = multiset,
+                    OutputMultiset = new Multiset()
+                };
 
                 context.InputMultiset.SetIDs.AsParallel().ForAll(id => EvalExtend(context, context.InputMultiset, expr, "actual", id));
 

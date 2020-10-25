@@ -26,19 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using Xunit;
-using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Optimisation;
-using VDS.RDF.Writing.Formatting;
 using Xunit.Abstractions;
 
 
@@ -46,7 +41,8 @@ namespace VDS.RDF.Query
 {
     public class SparqlTests2
     {
-        private ITestOutputHelper _output;
+        private readonly ITestOutputHelper _output;
+
         public SparqlTests2(ITestOutputHelper output)
         {
             _output = output;
@@ -102,7 +98,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -137,7 +133,7 @@ namespace VDS.RDF.Query
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -178,7 +174,7 @@ namespace VDS.RDF.Query
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -218,7 +214,7 @@ namespace VDS.RDF.Query
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -279,7 +275,7 @@ namespace VDS.RDF.Query
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_0);
             Assert.Throws<RdfParseException>(() =>
             {
-                SparqlQuery q = parser.ParseFromString(query);
+                SparqlQuery _ = parser.ParseFromString(query);
             });
         }
 
@@ -294,7 +290,7 @@ namespace VDS.RDF.Query
             store.Add(g);
 
             var parser = new SparqlQueryParser();
-            Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
+            Assert.Throws<RdfParseException>(() => { SparqlQuery _ = parser.ParseFromString(query); });
         }
 
         [Fact]
@@ -312,7 +308,7 @@ namespace VDS.RDF.Query
                 store.Add(g);
 
                 var parser = new SparqlQueryParser();
-                Assert.Throws<RdfParseException>(() => { SparqlQuery q = parser.ParseFromString(query); });
+                Assert.Throws<RdfParseException>(() => { SparqlQuery _ = parser.ParseFromString(query); });
             }
             finally
             {
@@ -460,7 +456,7 @@ WHERE
             SparqlQuery q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -486,7 +482,7 @@ WHERE
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
             Assert.Throws<RdfParseException>(() =>
             {
-                SparqlQuery q = parser.ParseFromString(query);
+                SparqlQuery _ = parser.ParseFromString(query);
             });
         }
 
@@ -673,7 +669,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -704,7 +700,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -735,7 +731,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -766,7 +762,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -797,7 +793,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -828,7 +824,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -859,7 +855,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -893,22 +889,21 @@ WHERE
             Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             _output.WriteLine(string.Empty);
 
-            var dataset = AsDataset(store);
+            ISparqlDataset dataset = AsDataset(store);
             var processor = new LeviathanQueryProcessor(dataset);
             timer.Start();
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             timer.Stop();
             _output.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
             timer.Reset();
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset1)
             {
-                var rset = (SparqlResultSet)results;
-                foreach (SparqlResult r in rset)
+                foreach (SparqlResult r in rset1)
                 {
                     _output.WriteLine(r.ToString());
                 }
-                Assert.True(rset.Count == 5, "Expected exactly 5 results");
+                Assert.True(rset1.Count == 5, "Expected exactly 5 results");
             }
 
             //Then do without optimisation
@@ -918,9 +913,8 @@ WHERE
             timer.Stop();
             _output.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -947,7 +941,7 @@ WHERE
             _output.WriteLine(string.Empty);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            var results = processor.ProcessQuery(q);
+            object results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -982,7 +976,7 @@ WHERE
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -1022,7 +1016,7 @@ WHERE
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -1066,7 +1060,7 @@ WHERE
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store),
                     options => { options.QueryExecutionTimeout = 0; });
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -1106,7 +1100,7 @@ WHERE
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
                 if (results is SparqlResultSet)
                 {
@@ -1124,12 +1118,9 @@ WHERE
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlFilterLazyDBPedia()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
             try
             {
                 UseSpecificOptimiserOnly(new LazyBgpOptimiser());
@@ -1140,7 +1131,7 @@ WHERE
 
                 var store = new TripleStore();
                 var g = new Graph();
-                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Southampton"));
+                FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
                 store.Add(g);
 
                 var parser = new SparqlQueryParser();
@@ -1151,11 +1142,10 @@ WHERE
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                if (results is SparqlResultSet rset)
                 {
-                    var rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         _output.WriteLine(r.ToString());
@@ -1197,22 +1187,20 @@ WHERE
                 _output.WriteLine(string.Empty);
 
                 var processor = new LeviathanQueryProcessor(AsDataset(store));
-                var results = processor.ProcessQuery(q);
+                object results = processor.ProcessQuery(q);
                 Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                if (results is SparqlResultSet rset)
                 {
-                    var rset = (SparqlResultSet)results;
                     foreach (SparqlResult r in rset)
                     {
                         _output.WriteLine(r.ToString());
                     }
                     Assert.True(rset.Count == 3, "Expected exactly 3 results");
 
-                    var results2 = processor.ProcessQuery(q2);
+                    object results2 = processor.ProcessQuery(q2);
                     Assert.IsAssignableFrom<SparqlResultSet>(results2);
-                    if (results2 is SparqlResultSet)
+                    if (results2 is SparqlResultSet rset2)
                     {
-                        var rset2 = (SparqlResultSet)results2;
                         foreach (SparqlResult r in rset2)
                         {
                             _output.WriteLine(r.ToString());
@@ -1243,11 +1231,11 @@ WHERE
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 var parser = new SparqlQueryParser();
-                var q = parser.ParseFromString(query);
-                var results = g.ExecuteQuery(q);
+                SparqlQuery q = parser.ParseFromString(query);
+                object results = g.ExecuteQuery(q);
                 Assert.True(results is SparqlResultSet, "Expected a SPARQL results set");
                 var rset = results as SparqlResultSet;
-                foreach (var r in rset)
+                foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
                     Assert.Equal(2, r.Count);
@@ -1275,11 +1263,11 @@ WHERE
                 FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
                 var parser = new SparqlQueryParser();
-                var q = parser.ParseFromString(query);
-                var results = g.ExecuteQuery(q);
+                SparqlQuery q = parser.ParseFromString(query);
+                object results = g.ExecuteQuery(q);
                 Assert.True(results is SparqlResultSet, "Expected a SPARQL results set");
                 var rset = results as SparqlResultSet;
-                foreach (var r in rset)
+                foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
                     Assert.Equal(2, r.Count);

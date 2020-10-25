@@ -8,7 +8,7 @@ using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using Xunit;
 
-namespace dotNetRDF.MockServerTests
+namespace VDS.RDF.Query
 {
     public class SparqlUpdateClientTests : IClassFixture<MockRemoteUpdateEndpointFixture>
     {

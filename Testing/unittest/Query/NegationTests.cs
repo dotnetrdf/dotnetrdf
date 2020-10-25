@@ -54,9 +54,11 @@ namespace VDS.RDF.Query
             negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed } }";
 
-            var query = new SparqlParameterizedString();
-            query.Namespaces = negQuery.Namespaces;
-            query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }";
+            var query = new SparqlParameterizedString
+            {
+                Namespaces = negQuery.Namespaces,
+                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }"
+            };
 
             TestNegation(GetTestData(), negQuery, query);
         }
@@ -68,9 +70,11 @@ namespace VDS.RDF.Query
             negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed FILTER(EXISTS { ?s ex:PassengerCapacity ?passengers }) } }";
 
-            var query = new SparqlParameterizedString();
-            query.Namespaces = negQuery.Namespaces;
-            query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed ; ex:PassengerCapacity ?passengers} FILTER(!BOUND(?speed)) }";
+            var query = new SparqlParameterizedString
+            {
+                Namespaces = negQuery.Namespaces,
+                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed ; ex:PassengerCapacity ?passengers} FILTER(!BOUND(?speed)) }"
+            };
 
             TestNegation(GetTestData(), negQuery, query);
         }
@@ -82,9 +86,11 @@ namespace VDS.RDF.Query
             negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car MINUS { ?s ex:Speed ?speed FILTER(NOT EXISTS { ?s ex:PassengerCapacity ?passengers }) } }";
 
-            var query = new SparqlParameterizedString();
-            query.Namespaces = negQuery.Namespaces;
-            query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed OPTIONAL { ?s ex:PassengerCapacity ?passengers} FILTER(!BOUND(?passengers)) } FILTER(!BOUND(?speed)) }";
+            var query = new SparqlParameterizedString
+            {
+                Namespaces = negQuery.Namespaces,
+                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed OPTIONAL { ?s ex:PassengerCapacity ?passengers} FILTER(!BOUND(?passengers)) } FILTER(!BOUND(?speed)) }"
+            };
 
             TestNegation(GetTestData(), negQuery, query);
         }
@@ -113,9 +119,11 @@ namespace VDS.RDF.Query
             negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car FILTER(NOT EXISTS { ?s ex:Speed ?speed }) }";
 
-            var query = new SparqlParameterizedString();
-            query.Namespaces = negQuery.Namespaces;
-            query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }";
+            var query = new SparqlParameterizedString
+            {
+                Namespaces = negQuery.Namespaces,
+                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(!BOUND(?speed)) }"
+            };
 
             TestNegation(GetTestData(), negQuery, query);
         }
@@ -127,9 +135,11 @@ namespace VDS.RDF.Query
             negQuery.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
             negQuery.CommandText = "SELECT ?s WHERE { ?s a ex:Car FILTER(EXISTS { ?s ex:Speed ?speed }) }";
 
-            var query = new SparqlParameterizedString();
-            query.Namespaces = negQuery.Namespaces;
-            query.CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(BOUND(?speed)) }";
+            var query = new SparqlParameterizedString
+            {
+                Namespaces = negQuery.Namespaces,
+                CommandText = "SELECT ?s WHERE { ?s a ex:Car OPTIONAL { ?s ex:Speed ?speed } FILTER(BOUND(?speed)) }"
+            };
 
             TestNegation(GetTestData(), negQuery, query);
         }

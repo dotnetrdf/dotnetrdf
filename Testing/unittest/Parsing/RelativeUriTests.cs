@@ -66,8 +66,10 @@ namespace VDS.RDF.Parsing
             //This invocation succeeds because when invoking because
             //we manually set the Base URI prior to invoking the parser
 
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org")
+            };
             var parser = new RdfXmlParser();
             parser.Load(g, "resources\\rdfxml-relative-uri.rdf");
 
@@ -112,8 +114,10 @@ namespace VDS.RDF.Parsing
         {
             //This invocation succeeds because we define a Base URI
             //resolve against
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org")
+            };
             var parser = new TurtleParser();
             parser.Load(g, new StringReader(TurtleExample));
 

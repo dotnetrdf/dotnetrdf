@@ -100,40 +100,25 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlFunctionsRand()
         {
-            var query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
+            const string query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
             var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
 
-            var results = g.ExecuteQuery(query);
-            if (results is SparqlResultSet)
-            {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-            }
-            else
-            {
-                Assert.True(false, "Did not get a SPARQL Result Set as expected");
-            }
+            object results = g.ExecuteQuery(query);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
         }
 
         [Fact]
         public void SparqlOrderByNonDeterministic()
         {
-            var query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
+            const string query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             for (var i = 0; i < 50; i++)
             {
-                var results = g.ExecuteQuery(query);
-                if (results is SparqlResultSet)
-                {
-                    Console.WriteLine("Run #" + (i+1) + " OK");
-                }
-                else
-                {
-                    Assert.True(false, "Did not get a SPARQL Result Set as expected");
-                }
+                object results = g.ExecuteQuery(query);
+                Assert.IsAssignableFrom<SparqlResultSet>(results);
             }
         }
     }

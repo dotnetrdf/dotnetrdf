@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    public class RemoteEndpoints
+   public class RemoteEndpoints
     {
         const int AsyncTimeout = 45000;
 
@@ -131,8 +131,10 @@ results.Dispose()
             for (var i = 1; i <= totalRuns; i++)
             {
                 SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                var queryString = new SparqlParameterizedString();
-                queryString.CommandText = "SELECT * WHERE { ?s ?p ?o }";
+                var queryString = new SparqlParameterizedString
+                {
+                    CommandText = "SELECT * WHERE { ?s ?p ?o }"
+                };
 
                 SparqlResultSet results = endpoint.QueryWithResultSet(queryString.ToString());
                 Assert.Equal(1, results.Count);
@@ -171,8 +173,10 @@ results.Dispose()
                 updateEndpoint.Update("INSERT DATA { <http://subject/" + (i % subjects) + "> <http://predicate/" + (i % predicates) + "> <http://object/" + i + "> . }");
 
                 SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
-                var queryString = new SparqlParameterizedString();
-                queryString.CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }";
+                var queryString = new SparqlParameterizedString
+                {
+                    CommandText = "SELECT * WHERE { <http://subject/" + (i % 1000) + "> ?p ?o }"
+                };
 
                 var handler = new ResultCountHandler();
                 endpoint.QueryWithResultSet(handler, queryString.ToString());
@@ -314,8 +318,10 @@ results.Dispose()
                 reader.Close();
             }
 
-            var endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org");
-            endpoint.Timeout = AsyncTimeout;
+            var endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org")
+            {
+                Timeout = AsyncTimeout
+            };
             var timer = new Stopwatch();
             timer.Start();
             var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
@@ -367,8 +373,10 @@ results.Dispose()
                 reader.Close();
             }
 
-            var endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"));
-            endpoint.Timeout = AsyncTimeout;
+            var endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"))
+            {
+                Timeout = AsyncTimeout
+            };
             var timer = new Stopwatch();
             timer.Start();
             var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
@@ -475,8 +483,10 @@ results.Dispose()
                 reader.Close();
             }
 
-            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint)));
-            endpoint.Timeout = AsyncTimeout;
+            var endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint)))
+            {
+                Timeout = AsyncTimeout
+            };
             var timer = new Stopwatch();
             timer.Start();
             var syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;

@@ -45,8 +45,10 @@ namespace VDS.RDF.Parsing
             };
             IRdfReader parser = new RdfXmlParser();
 
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/ampersandsInRdfXml");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/ampersandsInRdfXml")
+            };
             g.Assert(new Triple(g.CreateUriNode(), g.CreateUriNode(new Uri("http://example.org/property")), g.CreateUriNode(new Uri("http://example.org/a&b"))));
             g.Assert(new Triple(g.CreateUriNode(), g.CreateUriNode(new Uri("http://example.org/property")), g.CreateLiteralNode("A & B")));
 

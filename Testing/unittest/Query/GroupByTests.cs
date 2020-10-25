@@ -24,14 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -42,7 +39,7 @@ namespace VDS.RDF.Query
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
             var parser = new SparqlQueryParser();
-            var parsedQuery = parser.ParseFromString(query);
+            SparqlQuery parsedQuery = parser.ParseFromString(query);
             var processor =new LeviathanQueryProcessor(store);
             return processor.ProcessQuery(parsedQuery);
         }
@@ -50,31 +47,24 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGroupByInSubQuery()
         {
-            var query = "SELECT ?s WHERE {{SELECT ?s WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
+            const string query = "SELECT ?s WHERE {{SELECT ?s WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            SparqlQuery _ = parser.ParseFromString(query);
         }
 
         [Fact]
         public void SparqlGroupByAssignmentSimple()
         {
-            var query = "SELECT ?x WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
+            const string query = "SELECT ?x WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
-
-            var formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
-            Console.WriteLine();
 
             var g = new QueryableGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-
                 Assert.True(rset.All(r => r.HasValue("x") && !r.HasValue("s")), "All Results should have a ?x variable and no ?s variable");
             }
             else
@@ -86,23 +76,16 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGroupByAssignmentSimple2()
         {
-            var query = "SELECT ?x (COUNT(?p) AS ?predicates) WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
+            const string query = "SELECT ?x (COUNT(?p) AS ?predicates) WHERE { ?s ?p ?o } GROUP BY ?s AS ?x";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
-
-            var formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
-            Console.WriteLine();
 
             var g = new QueryableGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-
                 Assert.True(rset.All(r => r.HasValue("x") && !r.HasValue("s") && r.HasValue("predicates")), "All Results should have a ?x and ?predicates variables and no ?s variable");
             }
             else
@@ -114,23 +97,16 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGroupByAssignmentExpression()
         {
-            var query = "SELECT ?s ?sum WHERE { ?s ?p ?o } GROUP BY ?s (1 + 2 AS ?sum)";
+            const string query = "SELECT ?s ?sum WHERE { ?s ?p ?o } GROUP BY ?s (1 + 2 AS ?sum)";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
-
-            var formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
-            Console.WriteLine();
 
             var g = new QueryableGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-
                 Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("sum")), "All Results should have a ?s and a ?sum variable");
             }
             else
@@ -139,29 +115,18 @@ namespace VDS.RDF.Query
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlGroupByAssignmentExpression2()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
+            const string query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
-            Console.WriteLine();
-
             var g = new QueryableGraph();
-            UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Southampton"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
+            object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-
                 Assert.True(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
             }
             else
@@ -170,29 +135,18 @@ namespace VDS.RDF.Query
             }
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlGroupByAssignmentExpression3()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang) HAVING LANGMATCHES(?lang, \"*\")";
+            const string query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang) HAVING LANGMATCHES(?lang, \"*\")";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var formatter = new SparqlFormatter();
-            Console.WriteLine(formatter.Format(q));
-            Console.WriteLine();
-
             var g = new QueryableGraph();
-            UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Southampton"));
-
-            var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
+            object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-
                 Assert.True(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
             }
             else
@@ -204,15 +158,15 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlGroupBySample()
         {
-            var query = "SELECT ?s (SAMPLE(?o) AS ?object) WHERE {?s ?p ?o} GROUP BY ?s";
+            const string query = "SELECT ?s (SAMPLE(?o) AS ?object) WHERE {?s ?p ?o} GROUP BY ?s";
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            SparqlQuery _ = parser.ParseFromString(query);
         }
 
         [Fact]
         public void SparqlGroupByAggregateEmptyGroup1()
         {
-            var query = @"PREFIX ex: <http://example.com/>
+            const string query = @"PREFIX ex: <http://example.com/>
 SELECT (MAX(?value) AS ?max)
 WHERE {
 	?x ex:p ?value
@@ -220,7 +174,6 @@ WHERE {
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
             var processor = new LeviathanQueryProcessor(new TripleStore());
-            Console.WriteLine(q.ToAlgebra().ToString());
 
             var results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results == null) Assert.True(false, "Null results");
@@ -233,7 +186,7 @@ WHERE {
         [Fact]
         public void SparqlGroupByAggregateEmptyGroup2()
         {
-            var query = @"PREFIX ex: <http://example.com/>
+            const string query = @"PREFIX ex: <http://example.com/>
 SELECT (MAX(?value) AS ?max)
 WHERE {
 	?x ex:p ?value
@@ -241,7 +194,6 @@ WHERE {
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
             var processor = new LeviathanQueryProcessor(new TripleStore());
-            Console.WriteLine(q.ToAlgebra().ToString());
 
             var results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results == null) Assert.True(false, "Null results");
@@ -252,7 +204,7 @@ WHERE {
         [Fact]
         public void SparqlGroupByRefactor1()
         {
-            var query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#>
+            const string query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#>
 PREFIX : <http://example/>
 
 SELECT * FROM <http://data-g3-dup.ttl>
@@ -263,7 +215,7 @@ WHERE
   GRAPH ?g { ?s ?q ?v . } 
 }";
 
-            var data = @"_:x <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-g3-dup.ttl> .
+            const string data = @"_:x <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-g3-dup.ttl> .
 _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-g3-dup.ttl> .
 _:x <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-g3.ttl> .
 _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-g3.ttl> .";
@@ -273,14 +225,13 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
 
             var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
             Assert.Equal(6, results.Variables.Count());
         }
 
         [Fact]
         public void SparqlGroupByRefactor2()
         {
-            var query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
+            const string query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
 PREFIX : <http://example/>
 
 SELECT * FROM <http://two-nested-opt.ttl>
@@ -293,7 +244,7 @@ WHERE
   }
 }";
 
-            var data = @"<http://example/x1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
+            const string data = @"<http://example/x1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
 <http://example/x2> <http://example/p> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
 <http://example/x3> <http://example/q> ""3""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
 <http://example/x3> <http://example/q> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .";
@@ -303,7 +254,6 @@ WHERE
 
             var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
             Assert.Equal(1, results.Count);
             Assert.Equal(2, results.Variables.Count());
         }
@@ -311,7 +261,7 @@ WHERE
         [Fact]
         public void SparqlGroupByRefactor3()
         {
-            var query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
+            const string query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
 PREFIX : <http://example/>
 
 SELECT ?x ?y ?z FROM <http://join-combo-graph-2.ttl>
@@ -322,7 +272,7 @@ WHERE
   { ?x :p ?y . } UNION { ?p a ?z . } 
 }";
 
-            var data = @"<http://example/x1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+            const string data = @"<http://example/x1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
 <http://example/x1> <http://example/r> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
 <http://example/x2> <http://example/p> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
 <http://example/x2> <http://example/r> ""10""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
@@ -341,7 +291,6 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
 
             var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
             Assert.Equal(1, results.Count);
             Assert.Equal(3, results.Variables.Count());
         }
@@ -349,7 +298,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
         [Fact]
         public void SparqlGroupByRefactor4()
         {
-            var query = @"PREFIX : <http://example/>
+            const string query = @"PREFIX : <http://example/>
 
 SELECT ?s ?w
 FROM <http://group-data-2.ttl>
@@ -360,7 +309,7 @@ WHERE
 }
 GROUP BY ?s ?w";
 
-            var data = @"<http://example/s1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
+            const string data = @"<http://example/s1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
 <http://example/s3> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
 <http://example/s1> <http://example/q> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
 <http://example/s2> <http://example/p> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .";
@@ -370,7 +319,6 @@ GROUP BY ?s ?w";
 
             var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
             Assert.Equal(3, results.Count);
             Assert.Equal(2, results.Variables.Count());
             Assert.True(results.All(r => r.Count > 0), "One or more rows were empty");
@@ -380,67 +328,52 @@ GROUP BY ?s ?w";
         [Fact]
         public void SparqlGroupByRefactor5()
         {
-            var query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY ?s";
+            const string query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY ?s";
 
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
             var queryStr = q.ToString();
-            Console.WriteLine("Raw ToString()");
-            Console.WriteLine(queryStr);
-            Console.WriteLine();
             Assert.Contains("GROUP BY ?s", queryStr);
 
             var queryStrFmt = new SparqlFormatter().Format(q);
-            Console.WriteLine("Formatted String");
-            Console.WriteLine(queryStrFmt);
             Assert.Contains("GROUP BY ?s", queryStrFmt);
         }
 
         [Fact]
         public void SparqlGroupByRefactor6()
         {
-            var query = "SELECT ?s ?p WHERE { ?s ?p ?o } GROUP BY ?s ?p";
+            const string query = "SELECT ?s ?p WHERE { ?s ?p ?o } GROUP BY ?s ?p";
 
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
             var queryStr = q.ToString();
-            Console.WriteLine("Raw ToString()");
-            Console.WriteLine(queryStr);
-            Console.WriteLine();
             Assert.Contains("GROUP BY ?s ?p", queryStr);
 
             var queryStrFmt = new SparqlFormatter().Format(q);
-            Console.WriteLine("Formatted String");
-            Console.WriteLine(queryStrFmt);
             Assert.Contains("GROUP BY ?s ?p", queryStrFmt);
         }
 
         [Fact]
         public void SparqlGroupByRefactor7()
         {
-            var query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY (?s)";
+            const string query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY (?s)";
 
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
             var queryStr = q.ToString();
-            Console.WriteLine("Raw ToString()");
-            Console.WriteLine(queryStr);
-            Console.WriteLine();
             Assert.Contains("GROUP BY ?s", queryStr);
 
             var queryStrFmt = new SparqlFormatter().Format(q);
-            Console.WriteLine("Formatted String");
-            Console.WriteLine(queryStrFmt);
             Assert.Contains("GROUP BY ?s", queryStrFmt);
         }
 
         [Fact]
         public void SparqlGroupByRefactor8()
         {
-            var query = @"PREFIX : <http://example.org/>
+            const string query = @"PREFIX : <http://example.org/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?o ?x (COALESCE(?o / ?x, -2 ) AS ?div)
@@ -451,7 +384,7 @@ WHERE
   OPTIONAL { ?s :q ?x . }
 }";
 
-            var data = @"<http://example.org/n0> <http://example.org/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+            const string data = @"<http://example.org/n0> <http://example.org/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n1> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n1> <http://example.org/q> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n2> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
@@ -464,7 +397,6 @@ WHERE
 
             var results = ExecuteQuery(store, query) as SparqlResultSet;
             Assert.NotNull(results);
-            TestTools.ShowResults(results);
             Assert.Equal(4, results.Count);
             Assert.Equal(3, results.Variables.Count());
 
@@ -492,11 +424,7 @@ WHERE
         [Fact]
         public void SparqlGroupByRefactor9()
         {
-            try
-            {
-                //Options.UsePLinqEvaluation = false;
-
-                var query = @"PREFIX : <http://example.org/>
+            const string query = @"PREFIX : <http://example.org/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT (COALESCE(?x, -1 ) AS ?cx) (COALESCE(?o / ?x, -2 ) AS ?div)
@@ -509,7 +437,7 @@ WHERE
   OPTIONAL { ?s :q ?x . }
 }";
 
-                var data = @"<http://example.org/n0> <http://example.org/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+            const string data = @"<http://example.org/n0> <http://example.org/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n1> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n1> <http://example.org/q> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n2> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
@@ -517,32 +445,26 @@ WHERE
 <http://example.org/n3> <http://example.org/p> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
 <http://example.org/n3> <http://example.org/q> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .";
 
-                var store = new TripleStore();
-                StringParser.ParseDataset(store, data, new NQuadsParser());
+            var store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
 
-                var results = ExecuteQuery(store, query) as SparqlResultSet;
-                Assert.NotNull(results);
-                TestTools.ShowResults(results);
-                Assert.Equal(4, results.Count);
-                Assert.Equal(4, results.Variables.Count());
+            var results = ExecuteQuery(store, query) as SparqlResultSet;
+            Assert.NotNull(results);
+            Assert.Equal(4, results.Count);
+            Assert.Equal(4, results.Variables.Count());
 
-                foreach (SparqlResult r in results)
-                {
-                    var cxVal = r["cx"].AsValuedNode().AsInteger();
-                    if (cxVal == -1) Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
-                }
-            }
-            finally
+            foreach (SparqlResult r in results)
             {
-                //Options.UsePLinqEvaluation = true;
+                var cxVal = r["cx"].AsValuedNode().AsInteger();
+                if (cxVal == -1) Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
             }
         }
 
         [Fact]
         public void SparqlGroupByComplex1()
         {
-            var data = @"PREFIX : <http://test/> INSERT DATA { :x :p 1 , 2 . :y :p 5 }";
-            var query = @"SELECT ?s (CONCAT('$', STR(SUM(?o))) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
+            const string data = @"PREFIX : <http://test/> INSERT DATA { :x :p 1 , 2 . :y :p 5 }";
+            const string query = @"SELECT ?s (CONCAT('$', STR(SUM(?o))) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
 
             var store = new TripleStore();
             store.ExecuteUpdate(data);
@@ -554,11 +476,11 @@ WHERE
             Assert.NotNull(results);
             Assert.True(results.All(r => r.HasBoundValue("Total")));
 
-            SparqlResult x = results.Where(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x"))).FirstOrDefault();
+            SparqlResult x = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x")));
             Assert.NotNull(x);
             Assert.Equal("$3", x["Total"].AsValuedNode().AsString());
 
-            SparqlResult y = results.Where(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y"))).FirstOrDefault();
+            SparqlResult y = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y")));
             Assert.NotNull(y);
             Assert.Equal("$5", y["Total"].AsValuedNode().AsString());
         }
@@ -567,7 +489,7 @@ WHERE
         public void SparqlGroupByComplex2()
         {
             //Nested aggregates are a parser error
-            var query = @"SELECT ?s (SUM(MIN(?o)) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
+            const string query = @"SELECT ?s (SUM(MIN(?o)) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
             var parser = new SparqlQueryParser();
 
             Assert.Throws<RdfParseException>(() => parser.ParseFromString(query));
@@ -576,7 +498,7 @@ WHERE
         [Fact]
         public void SparqlGroupByWithValues1()
         {
-            var query = @"SELECT ?a WHERE { VALUES ( ?a ) { ( 1 ) ( 2 ) } } GROUP BY ?a";
+            const string query = @"SELECT ?a WHERE { VALUES ( ?a ) { ( 1 ) ( 2 ) } } GROUP BY ?a";
 
             var g = new QueryableGraph();
             var results = g.ExecuteQuery(query) as SparqlResultSet;
@@ -588,7 +510,7 @@ WHERE
         [Fact]
         public void SparqlGroupByWithValues2()
         {
-            var query = @"SELECT ?a ?b WHERE { VALUES ( ?a ?b ) { ( 1 2 ) ( 1 UNDEF ) ( UNDEF 2 ) } } GROUP BY ?a ?b";
+            const string query = @"SELECT ?a ?b WHERE { VALUES ( ?a ?b ) { ( 1 2 ) ( 1 UNDEF ) ( UNDEF 2 ) } } GROUP BY ?a ?b";
 
             var g = new QueryableGraph();
             var results = g.ExecuteQuery(query) as SparqlResultSet;
@@ -600,13 +522,15 @@ WHERE
         [Fact]
         public void SparqlGroupByWithGraph1()
         {
-            var query = @"SELECT ?g WHERE { GRAPH ?g { } } GROUP BY ?g";
+            const string query = @"SELECT ?g WHERE { GRAPH ?g { } } GROUP BY ?g";
 
             var store = new TripleStore();
             IGraph def = new Graph();
             store.Add(def);
-            IGraph named = new Graph();
-            named.BaseUri = new Uri("http://name");
+            IGraph named = new Graph
+            {
+                BaseUri = new Uri("http://name")
+            };
             store.Add(named);
 
             Assert.Equal(2, store.Graphs.Count);

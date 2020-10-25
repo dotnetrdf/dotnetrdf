@@ -599,8 +599,10 @@ namespace VDS.RDF.Storage
             Assert.True(g.IsEmpty, "Graph should be empty after DROP command");
 
             _output.WriteLine("Inserting data");
-            IGraph newData = new Graph();
-            newData.BaseUri = new Uri("http://example.org/stardog/update/3");
+            IGraph newData = new Graph
+            {
+                BaseUri = new Uri("http://example.org/stardog/update/3")
+            };
             newData.Assert(newData.CreateUriNode(new Uri("http://x")), newData.CreateUriNode(new Uri("http://y")),
                 newData.CreateUriNode(new Uri("http://z")));
             stardog.SaveGraph(newData);

@@ -329,8 +329,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -362,8 +364,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -483,8 +487,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -521,8 +527,10 @@ namespace VDS.RDF.Storage
             var store = new PersistentTripleStore(manager);
             try
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded")
+                };
                 EnsureGraphDeleted(manager, g.BaseUri);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
@@ -835,8 +843,10 @@ namespace VDS.RDF.Storage
             {
                 // Try and dump
                 var strWriter = new StringWriter();
-                var writer = new TriGWriter();
-                writer.UseMultiThreadedWriting = false;
+                var writer = new TriGWriter
+                {
+                    UseMultiThreadedWriting = false
+                };
 
                 writer.Save(store, strWriter);
                 Console.WriteLine("TriG output:");
@@ -870,8 +880,10 @@ namespace VDS.RDF.Storage
 
                 // Then try and dump
                 var strWriter = new StringWriter();
-                var writer = new TriGWriter();
-                writer.UseMultiThreadedWriting = false;
+                var writer = new TriGWriter
+                {
+                    UseMultiThreadedWriting = false
+                };
 
                 writer.Save(store, strWriter);
                 Console.WriteLine("TriG output:");
@@ -900,163 +912,12 @@ namespace VDS.RDF.Storage
 
         #endregion
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiContains()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestContains(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiGetGraph()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestGetGraph(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestAddTriplesFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestAddTriplesDiscarded(fuseki);
-        }
-
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestRemoveTriplesFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestRemoveTriplesDiscarded(fuseki);
-        }
-
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestAddGraphFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestAddGraphDiscarded(fuseki);
-        }
-
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestRemoveGraphFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestRemoveGraphDiscarded(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestAddThenRemoveGraphFlushed(fuseki);
-        }
-
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestAddThenRemoveGraphDiscarded(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestRemoveThenAddGraphFlushed(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphDiscarded()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestRemoveThenAddGraphDiscarded(fuseki);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiQueryUnsynced()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(fuseki));
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiQuerySelect()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiQueryAsk()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
-            TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiQueryConstruct()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiQueryDescribe()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(fuseki));
-        }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreMemUpdate()
         {
             var manager = new InMemoryManager();
             TestUpdate(manager);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreFusekiUpdate()
-        {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestUpdate(fuseki);
         }
 
 #if !NO_VIRTUOSO

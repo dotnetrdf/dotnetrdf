@@ -336,8 +336,10 @@ namespace VDS.RDF.Writing
             var g = new Graph();
             g.LoadFromString(data, new TurtleParser());
 
-            var writer = new RdfXmlWriter();
-            writer.CompressionLevel = WriterCompressionLevel.High;
+            var writer = new RdfXmlWriter
+            {
+                CompressionLevel = WriterCompressionLevel.High
+            };
             var outData = StringWriter.Write(g, writer);
 
             Assert.Contains("rdf:about=\"&ex;1s\"", outData);

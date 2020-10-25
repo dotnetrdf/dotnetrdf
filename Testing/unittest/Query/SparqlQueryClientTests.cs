@@ -2,10 +2,9 @@
 using System.Net.Http;
 using FluentAssertions;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query;
 using Xunit;
 
-namespace dotNetRDF.MockServerTests
+namespace VDS.RDF.Query
 {
     public class SparqlQueryClientTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
@@ -26,15 +25,15 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void SelectWithResultSet()
         {
-            var client = GetQueryClient();
-            var resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery);
+            SparqlQueryClient client = GetQueryClient();
+            SparqlResultSet resultSet = await client.QueryWithResultSetAsync(_fixture.SelectQuery);
             resultSet.Count.Should().Be(1);
         }
 
         [Fact]
         public async void SelectWithCountHandler()
         {
-            var client = GetQueryClient();
+            SparqlQueryClient client = GetQueryClient();
             var handler = new ResultCountHandler();
             await client.QueryWithResultSetAsync(_fixture.SelectQuery, handler);
             handler.Count.Should().Be(1);
@@ -43,23 +42,23 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void SelectRaisesExceptionOnServerError()
         {
-            var client = GetQueryClient();
-            var ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery));
+            SparqlQueryClient client = GetQueryClient();
+            RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultSetAsync(_fixture.ErrorSelectQuery));
             ex.Message.Should().Contain("400");
         }
 
         [Fact]
         public async void ConstructWithResultGraph()
         {
-            var client = GetQueryClient();
-            var resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery);
+            SparqlQueryClient client = GetQueryClient();
+            IGraph resultGraph = await client.QueryWithResultGraphAsync(_fixture.ConstructQuery);
             resultGraph.Triples.Count.Should().Be(1);
         }
 
         [Fact]
         public async void ConstructWithCountHandler()
         {
-            var client = GetQueryClient();
+            SparqlQueryClient client = GetQueryClient();
             var handler = new CountHandler();
             await client.QueryWithResultGraphAsync(_fixture.ConstructQuery, handler);
             handler.Count.Should().Be(1);
@@ -68,8 +67,8 @@ namespace dotNetRDF.MockServerTests
         [Fact]
         public async void ConstructRaisesExceptionOnServerError()
         {
-            var client = GetQueryClient();
-            var ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery));
+            SparqlQueryClient client = GetQueryClient();
+            RdfQueryException ex = await Assert.ThrowsAsync<RdfQueryException>(async () => await client.QueryWithResultGraphAsync(_fixture.ErrorConstructQuery));
             ex.Message.Should().Contain("400");
         }
     }

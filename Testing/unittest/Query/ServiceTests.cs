@@ -33,35 +33,35 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
-    public class ServiceTests
+    public class ServiceTests : IClassFixture< MockRemoteSparqlEndpointFixture>
     {
-        [SkippableFact]
+        private readonly MockRemoteSparqlEndpointFixture _serverFixture;
+
+        public ServiceTests(MockRemoteSparqlEndpointFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+        }
+
+        [Fact]
         public void SparqlServiceUsingDBPedia()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } LIMIT 10";
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { ?s ?p ?o . } LIMIT 10");
+            var query = $"SELECT * WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o }} }} LIMIT 10";
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(query);
+            var q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(new TripleStore());
             var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
-            {
-                TestTools.ShowResults(results);
-            }
-            else
-            {
-                Assert.True(false, "Should have returned a SPARQL Result Set");
-            }
+            Assert.IsType<SparqlResultSet>(results);
+            var resultSet = results as SparqlResultSet;
+            Assert.NotEmpty(resultSet.Results);
         }
 
-        [SkippableFact]
+        [Fact]
         public void SparqlServiceUsingDBPediaAndBindings()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Southampton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Ilkeston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");
             var query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } VALUES ?s { <http://dbpedia.org/resource/Southampton> <http://dbpedia.org/resource/Ilkeston> }";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);

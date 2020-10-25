@@ -59,8 +59,10 @@ namespace VDS.RDF.Parsing
         public void ParsingN3GraphLiterals()
         {
             var TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/n3/graph-literals");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/n3/graph-literals")
+            };
             StringParser.Parse(g, TestFragment, new Notation3Parser());
 
             Assert.True(g.Triples.Count == 1, "Should be 1 Triple");
@@ -84,8 +86,10 @@ namespace VDS.RDF.Parsing
             var writer = new Notation3Writer();
             foreach (var test in tests)
             {
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/n3rules");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/n3rules")
+                };
                 StringParser.Parse(g, test, parser);
                 Console.WriteLine(StringWriter.Write(g, writer));
 
@@ -130,8 +134,10 @@ namespace VDS.RDF.Parsing
         {
             var rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
 
-            var rulesGraph = new Graph();
-            rulesGraph.BaseUri = new Uri("http://example.org/rules");
+            var rulesGraph = new Graph
+            {
+                BaseUri = new Uri("http://example.org/rules")
+            };
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             var data = new Graph();

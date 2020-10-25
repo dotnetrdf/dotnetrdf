@@ -271,8 +271,10 @@ namespace VDS.RDF.Storage
         public void StorageVirtuosoBlankNodePersistence()
         {
             //Create our Test Graph
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/bnodes/");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/bnodes/")
+            };
             g.NamespaceMap.AddNamespace(String.Empty, g.BaseUri);
 
             IBlankNode b = g.CreateBlankNode("blank");
@@ -359,8 +361,10 @@ namespace VDS.RDF.Storage
                 Console.WriteLine("Got the Virtuoso Manager OK");
 
                 //Make some Triples to add to the Graph
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/")
+                };
                 g.NamespaceMap.AddNamespace(String.Empty, g.BaseUri);
 
                 var additions = new List<Triple>();
@@ -590,8 +594,10 @@ namespace VDS.RDF.Storage
             {
 
                 //Make the Test Graph
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/VirtuosoEncodingTest");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/VirtuosoEncodingTest")
+                };
                 IUriNode encodedString = g.CreateUriNode(new Uri("http://example.org/encodedString"));
                 ILiteralNode encodedText = g.CreateLiteralNode("William Jørgensen");
                 g.Assert(new Triple(g.CreateUriNode(), encodedString, encodedText));
@@ -695,8 +701,10 @@ namespace VDS.RDF.Storage
             {
 
                 //Create the Test Graph
-                var g = new Graph();
-                g.BaseUri = new Uri("http://example.org/VirtuosoRegexTest");
+                var g = new Graph
+                {
+                    BaseUri = new Uri("http://example.org/VirtuosoRegexTest")
+                };
                 INode subj1 = g.CreateUriNode(new Uri("http://example.org/one"));
                 INode subj2 = g.CreateUriNode(new Uri("http://example.org/two"));
                 INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));

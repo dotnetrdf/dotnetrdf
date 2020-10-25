@@ -85,8 +85,10 @@ namespace VDS.RDF.Query.FullText
             indexer.Dispose();
 
             //Build the SPARQL Query and parse it
-            var queryString = new SparqlParameterizedString(query);
-            queryString.Namespaces = GetQueryNamespaces();
+            var queryString = new SparqlParameterizedString(query)
+            {
+                Namespaces = GetQueryNamespaces()
+            };
             SparqlQuery q = _parser.ParseFromString(queryString);
 
             var formatter = new SparqlFormatter(q.NamespaceMap);

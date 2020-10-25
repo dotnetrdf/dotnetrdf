@@ -41,8 +41,10 @@ namespace VDS.RDF.Parsing.Suites
 
         protected override Graph TryParseTestInput(string file)
         {
-            var actual = new Graph();
-            actual.BaseUri = new Uri(BaseUri, Path.GetFileName(file));
+            var actual = new Graph
+            {
+                BaseUri = new Uri(BaseUri, Path.GetFileName(file))
+            };
             Parser.Load(actual, file);
             return actual;
         }

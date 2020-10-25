@@ -127,9 +127,11 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfXmlStreaming()
         {
-                var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
-                parser.TraceParsing = true;
-                var g = new Graph();
+            var parser = new RdfXmlParser(RdfXmlParserMode.Streaming)
+            {
+                TraceParsing = true
+            };
+            var g = new Graph();
                 parser.Load(g, "resources\\example.rdf");
 
                 TestTools.ShowGraph(g);
@@ -225,8 +227,10 @@ namespace VDS.RDF.Parsing
             var fragment = @"<?xml version='1.0'?><rdf:RDF xmlns:rdf='" + NamespaceMapper.RDF + @"' xmlns='http://example.org/'><rdf:Description rdf:about='http://example.org/subject'><predicate rdf:resource='http://example.org/object' /></rdf:Description></rdf:RDF>";
 
             var g = new Graph();
-            var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
-            parser.TraceParsing = true;
+            var parser = new RdfXmlParser(RdfXmlParserMode.Streaming)
+            {
+                TraceParsing = true
+            };
             VDS.RDF.Parsing.StringParser.Parse(g, fragment, parser);
             foreach (Triple t in g.Triples)
             {

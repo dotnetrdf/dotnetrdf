@@ -29,14 +29,12 @@ using System.Text;
 using System.Threading;
 using FluentAssertions;
 using Moq;
-using VDS.RDF;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
 using Xunit;
 
-namespace dotNetRDF.MockServerTests
+namespace VDS.RDF.Query
 {
     public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {

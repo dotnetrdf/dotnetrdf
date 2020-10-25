@@ -24,17 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Configuration;
-using VDS.RDF.Parsing;
 using System.Reflection;
 
 namespace VDS.RDF.Parsing
 {
+    [Obsolete("Code tests obsolete caching layer that will be removed in a future release")]
     public class CachingTests
     {
         private static Uri test = new Uri("http://www.dotnetrdf.org/configuration#");

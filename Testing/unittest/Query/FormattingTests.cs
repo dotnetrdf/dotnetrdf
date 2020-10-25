@@ -47,8 +47,10 @@ namespace VDS.RDF.Query
             var q = new SparqlQuery { QueryType = SparqlQueryType.Select };
             q.AddVariable(new SparqlVariable("s", true));
 
-            var gp = new GraphPattern();
-            gp.IsOptional = true;
+            var gp = new GraphPattern
+            {
+                IsOptional = true
+            };
             gp.AddTriplePattern(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")));
             q.RootGraphPattern = gp;
 

@@ -411,8 +411,10 @@ namespace VDS.RDF.Storage
             ReadWriteSparqlConnector connector = ReadWriteSparqlTests.GetConnection();
             var g = new Graph();
             INode n = g.CreateBlankNode();
-            var context = new ConfigurationSerializationContext(g);
-            context.NextSubject = n;
+            var context = new ConfigurationSerializationContext(g)
+            {
+                NextSubject = n
+            };
             connector.SerializeConfiguration(context);
 
             TestTools.ShowGraph(g);

@@ -5,7 +5,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace dotNetRDF.MockServerTests
+namespace VDS.RDF.Query
 {
     public class MockRemoteUpdateEndpointFixture : IDisposable
     {

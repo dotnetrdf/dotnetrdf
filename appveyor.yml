@@ -28,8 +28,11 @@ test_script:
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\unittest\unittest.csproj
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
   - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
-  - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\dotNetRDF.MockServerTests\dotNetRDF.MockServerTests.csproj
-
+#  - cmd: docker build Testing\test_images\fuseki -t fuseki # Container build fails at the step where it creates the data directory /mnt/fuseki
+  - cmd: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds & exit 0
+  - cmd: dotnet test -c Release --framework netcoreapp3.1 Testing\dotNetRDF.Connectors.Fuseki.Tests\dotNetRDF.Connectors.Fuseki.Tests.csproj
+  - cmd: docker stop fuseki & exit 0
+  
 before_deploy:
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
 

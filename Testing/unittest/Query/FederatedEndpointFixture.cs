@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Net;
 using System.Text;
-using VDS.RDF;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 
-namespace dotNetRDF.MockServerTests
+namespace VDS.RDF.Query
 {
     public class FederatedEndpointFixture : IDisposable
     {
@@ -24,7 +23,7 @@ namespace dotNetRDF.MockServerTests
     <results>
         <result>
             <binding name='s'><uri>http://example.org/s</uri></binding>
-            <binding name='p'><uri>http://example.org/s</uri></binding>
+            <binding name='p'><uri>http://example.org/p</uri></binding>
             <binding name='o'><literal>o</literal></binding>
         </result>
     </results>
@@ -40,7 +39,7 @@ namespace dotNetRDF.MockServerTests
     <results>
         <result>
             <binding name='s'><uri>http://contoso.com/s</uri></binding>
-            <binding name='p'><uri>http://contoso.com/s</uri></binding>
+            <binding name='p'><uri>http://contoso.com/p</uri></binding>
             <binding name='o'><literal>o</literal></binding>
         </result>
     </results>
@@ -51,8 +50,8 @@ namespace dotNetRDF.MockServerTests
 
         public FederatedEndpointFixture()
         {
-            Server1 = FluentMockServer.Start();
-            Server2 = FluentMockServer.Start();
+            Server1 = WireMockServer.Start();
+            Server2 = WireMockServer.Start();
 
             Server1.Given(Request.Create()
                     .WithPath("/query")

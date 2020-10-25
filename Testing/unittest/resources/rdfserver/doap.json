@@ -1,0 +1,348 @@
+﻿{
+  "_:autos1": {
+    "http://projects.apache.org/ns/asfext#body": [
+      {
+        "value": "W3C",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#id": [
+      {
+        "value": "",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#title": [
+      {
+        "value": "SPARQL",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#url": [
+      {
+        "value": "http://www.w3.org/TR/rdf-sparql-query/",
+        "type": "uri"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://projects.apache.org/ns/asfext#Standard",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos10": {
+    "http://usefulinc.com/ns/doap#browse": [
+      {
+        "value": "https://bitbucket.org/dotnetrdf/dotnetrdf/src",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#location": [
+      {
+        "value": "https://bitbucket.org/dotnetrdf/dotnetrdf",
+        "type": "uri"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://usefulinc.com/ns/doap#HGRepository",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos2": {
+    "http://projects.apache.org/ns/asfext#body": [
+      {
+        "value": "W3C",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#id": [
+      {
+        "value": "",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#title": [
+      {
+        "value": "Resource Description Framework",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#url": [
+      {
+        "value": "http://www.w3.org/RDF/",
+        "type": "uri"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://projects.apache.org/ns/asfext#Standard",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos3": {
+    "http://projects.apache.org/ns/asfext#body": [
+      {
+        "value": "W3C",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#id": [
+      {
+        "value": "",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#title": [
+      {
+        "value": "Turtle",
+        "type": "literal"
+      }
+    ],
+    "http://projects.apache.org/ns/asfext#url": [
+      {
+        "value": "http://www.w3.org/TR/turtle/",
+        "type": "uri"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://projects.apache.org/ns/asfext#Standard",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos4": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://xmlns.com/foaf/0.1/Person",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/mbox": [
+      {
+        "value": "mailto:rvesse@dotnetrdf.org",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "value": "Rob Vesse",
+        "type": "literal"
+      }
+    ]
+  },
+  "_:autos5": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://xmlns.com/foaf/0.1/Person",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "value": "Tomasz Pluskiewicz",
+        "type": "literal"
+      }
+    ]
+  },
+  "_:autos6": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://xmlns.com/foaf/0.1/Person",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "value": "Graham Moore",
+        "type": "literal"
+      }
+    ]
+  },
+  "_:autos7": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://xmlns.com/foaf/0.1/Person",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "value": "Khalil Ahmed",
+        "type": "literal"
+      }
+    ]
+  },
+  "_:autos8": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://xmlns.com/foaf/0.1/Person",
+        "type": "uri"
+      }
+    ],
+    "http://xmlns.com/foaf/0.1/name": [
+      {
+        "value": "Ron Michael Zettlemoyer",
+        "type": "literal"
+      }
+    ]
+  },
+  "_:autos9": {
+    "http://usefulinc.com/ns/doap#created": [
+      {
+        "value": "2013-05-07",
+        "lang": "en",
+        "type": "literal"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#name": [
+      {
+        "value": "dotNetRDF 1.0.0",
+        "lang": "en",
+        "type": "literal"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#revision": [
+      {
+        "value": "1.0.0",
+        "lang": "en",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://usefulinc.com/ns/doap#Version",
+        "type": "uri"
+      }
+    ]
+  },
+  "http://www.dotnetrdf.org/project#": {
+    "http://projects.apache.org/ns/asfext#implements": [
+      {
+        "value": "_:autos1",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos2",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos3",
+        "type": "bnode"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#bug-database": [
+      {
+        "value": "https://www.dotnetrdf.org/tracker/",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#category": [
+      {
+        "value": "http://projects.apache.org/category/library",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#created": [
+      {
+        "value": "2009-01-01",
+        "type": "literal"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#description": [
+      {
+        "value": "dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .Net environments.  It supports most common RDF formats and provides a fully compliant SPARQL 1.1 engine.",
+        "type": "literal"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#developer": [
+      {
+        "value": "_:autos4",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos5",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos6",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos7",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos8",
+        "type": "bnode"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#download-page": [
+      {
+        "value": "http://www.dotnetrdf.org/content.asp?pageID=Downloads",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#homepage": [
+      {
+        "value": "http://www.dotnetrdf.org/",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#license": [
+      {
+        "value": "http://usefulinc.com/doap/licenses/mit",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#mailing-list": [
+      {
+        "value": "http://www.dotnetrdf.org/content.asp?pageID=Support",
+        "type": "uri"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#name": [
+      {
+        "value": "dotNetRDF",
+        "lang": "en",
+        "type": "literal"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#programming-language": [
+      {
+        "value": "C# .Net",
+        "lang": "en",
+        "type": "literal"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#release": [
+      {
+        "value": "_:autos9",
+        "type": "bnode"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#repository": [
+      {
+        "value": "_:autos10",
+        "type": "bnode"
+      }
+    ],
+    "http://usefulinc.com/ns/doap#shortdesc": [
+      {
+        "value": "A framework for developing Semantic Web and Linked Data applications in .Net environments",
+        "lang": "en",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://usefulinc.com/ns/doap#Project",
+        "type": "uri"
+      }
+    ]
+  }
+}

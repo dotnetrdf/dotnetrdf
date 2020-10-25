@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://usefulinc.com/ns/doap#Project" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos1">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://projects.apache.org/ns/asfext#Standard" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos1">
+	<body xmlns="http://projects.apache.org/ns/asfext#">W3C</body>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos1">
+	<id xmlns="http://projects.apache.org/ns/asfext#"></id>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos1">
+	<title xmlns="http://projects.apache.org/ns/asfext#">SPARQL</title>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos1">
+	<url xmlns="http://projects.apache.org/ns/asfext#" rdf:resource="http://www.w3.org/TR/rdf-sparql-query/" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<implements xmlns="http://projects.apache.org/ns/asfext#" rdf:nodeID="autos1" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos2">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://projects.apache.org/ns/asfext#Standard" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos2">
+	<body xmlns="http://projects.apache.org/ns/asfext#">W3C</body>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos2">
+	<id xmlns="http://projects.apache.org/ns/asfext#"></id>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos2">
+	<title xmlns="http://projects.apache.org/ns/asfext#">Resource Description Framework</title>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos2">
+	<url xmlns="http://projects.apache.org/ns/asfext#" rdf:resource="http://www.w3.org/RDF/" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<implements xmlns="http://projects.apache.org/ns/asfext#" rdf:nodeID="autos2" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos3">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://projects.apache.org/ns/asfext#Standard" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos3">
+	<body xmlns="http://projects.apache.org/ns/asfext#">W3C</body>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos3">
+	<id xmlns="http://projects.apache.org/ns/asfext#"></id>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos3">
+	<title xmlns="http://projects.apache.org/ns/asfext#">Turtle</title>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos3">
+	<url xmlns="http://projects.apache.org/ns/asfext#" rdf:resource="http://www.w3.org/TR/turtle/" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<implements xmlns="http://projects.apache.org/ns/asfext#" rdf:nodeID="autos3" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<bug-database xmlns="http://usefulinc.com/ns/doap#" rdf:resource="https://www.dotnetrdf.org/tracker/" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<category xmlns="http://usefulinc.com/ns/doap#" rdf:resource="http://projects.apache.org/category/library" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<created xmlns="http://usefulinc.com/ns/doap#">2009-01-01</created>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<description xmlns="http://usefulinc.com/ns/doap#">dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .Net environments.  It supports most common RDF formats and provides a fully compliant SPARQL 1.1 engine.</description>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos4">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos4">
+	<mbox xmlns="http://xmlns.com/foaf/0.1/" rdf:resource="mailto:rvesse@dotnetrdf.org" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos4">
+	<name xmlns="http://xmlns.com/foaf/0.1/">Rob Vesse</name>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<developer xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos4" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos5">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos5">
+	<name xmlns="http://xmlns.com/foaf/0.1/">Tomasz Pluskiewicz</name>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<developer xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos5" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos6">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos6">
+	<name xmlns="http://xmlns.com/foaf/0.1/">Graham Moore</name>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<developer xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos6" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos7">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos7">
+	<name xmlns="http://xmlns.com/foaf/0.1/">Khalil Ahmed</name>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<developer xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos7" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos8">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://xmlns.com/foaf/0.1/Person" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos8">
+	<name xmlns="http://xmlns.com/foaf/0.1/">Ron Michael Zettlemoyer</name>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<developer xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos8" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<download-page xmlns="http://usefulinc.com/ns/doap#" rdf:resource="http://www.dotnetrdf.org/content.asp?pageID=Downloads" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<homepage xmlns="http://usefulinc.com/ns/doap#" rdf:resource="http://www.dotnetrdf.org/" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<license xmlns="http://usefulinc.com/ns/doap#" rdf:resource="http://usefulinc.com/doap/licenses/mit" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<mailing-list xmlns="http://usefulinc.com/ns/doap#" rdf:resource="http://www.dotnetrdf.org/content.asp?pageID=Support" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<name xmlns="http://usefulinc.com/ns/doap#" xml:lang="en">dotNetRDF</name>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<programming-language xmlns="http://usefulinc.com/ns/doap#" xml:lang="en">C# .Net</programming-language>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos9">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://usefulinc.com/ns/doap#Version" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos9">
+	<created xmlns="http://usefulinc.com/ns/doap#" xml:lang="en">2013-05-07</created>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos9">
+	<name xmlns="http://usefulinc.com/ns/doap#" xml:lang="en">dotNetRDF 1.0.0</name>
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos9">
+	<revision xmlns="http://usefulinc.com/ns/doap#" xml:lang="en">1.0.0</revision>
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<release xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos9" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos10">
+	<type xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://usefulinc.com/ns/doap#HGRepository" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos10">
+	<browse xmlns="http://usefulinc.com/ns/doap#" rdf:resource="https://bitbucket.org/dotnetrdf/dotnetrdf/src" />
+</rdf:Description>
+<rdf:Description rdf:nodeID="autos10">
+	<location xmlns="http://usefulinc.com/ns/doap#" rdf:resource="https://bitbucket.org/dotnetrdf/dotnetrdf" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<repository xmlns="http://usefulinc.com/ns/doap#" rdf:nodeID="autos10" />
+</rdf:Description>
+<rdf:Description rdf:about="http://www.dotnetrdf.org/project#">
+	<shortdesc xmlns="http://usefulinc.com/ns/doap#" xml:lang="en">A framework for developing Semantic Web and Linked Data applications in .Net environments</shortdesc>
+</rdf:Description>
+</rdf:RDF>

@@ -25,11 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FluentAssertions;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
@@ -38,69 +35,38 @@ namespace VDS.RDF.Parsing
         [Fact]
         public void ParsingRdfABadSyntax()
         {
-            var parser = new RdfAParser();
-            var g = new Graph();
-            Console.WriteLine("Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored");
-            g.BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale");
+            //Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored
+            var g = new Graph {BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale")};
             FileLoader.Load(g, "resources\\bad_rdfa.html");
-
-            Console.WriteLine(g.Triples.Count + " Triples");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-
-            Console.WriteLine();
-            var ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
-            ttlwriter.HighSpeedModePermitted = false;
-            ttlwriter.Save(g, "test.ttl");
+            g.IsEmpty.Should().BeFalse("some triples should have been harvested from the bad RDFa example");
         }
 
         [Fact]
         public void ParsingRdfAGoodRelations()
         {
-            try
+            var tests = new List<string>
             {
-                UriLoader.CacheEnabled = false;
-                var tests = new List<string>()
+                "gr1",
+                "gr2",
+                "gr3"
+            };
+
+            FileLoader.Warning += TestTools.WarningPrinter;
+
+            foreach (var test in tests)
+            {
+                var g = new Graph
                 {
-                    "gr1",
-                    "gr2",
-                    "gr3"
+                    BaseUri = new Uri("http://example.org/goodrelations")
+                };
+                var h = new Graph
+                {
+                    BaseUri = g.BaseUri
                 };
 
-                FileLoader.Warning += TestTools.WarningPrinter;
-
-                foreach (var test in tests)
-                {
-                    Console.WriteLine("Test '" + test + "'");
-                    Console.WriteLine();
-
-                    var g = new Graph();
-                    g.BaseUri = new Uri("http://example.org/goodrelations");
-                    var h = new Graph();
-                    h.BaseUri = g.BaseUri;
-
-                    Console.WriteLine("Graph A Warnings:");
-                    FileLoader.Load(g, string.Format("resources\\{0}.xhtml", test));
-                    Console.WriteLine();
-                    Console.WriteLine("Graph B Warnings:");
-                    FileLoader.Load(h, string.Format("resources\\{0}b.xhtml", test));
-                    Console.WriteLine();
-
-                    Console.WriteLine("Graph A (RDFa 1.0)");
-                    TestTools.ShowGraph(g);
-                    Console.WriteLine();
-                    Console.WriteLine("Graph B (RDFa 1.1)");
-                    TestTools.ShowGraph(h);
-                    Console.WriteLine();
-
-                    Assert.Equal(g, h);
-                }
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
+                FileLoader.Load(g, $"resources\\{test}.xhtml");
+                FileLoader.Load(h, $"resources\\{test}b.xhtml");
+                Assert.Equal(g, h);
             }
         }
 

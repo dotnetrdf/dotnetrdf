@@ -26,13 +26,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.IO;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
 {
+    [Collection("RdfServer")]
     public class GraphHandlerTests
     {
+        private readonly RdfServerFixture _serverFixture;
+
+        public GraphHandlerTests(RdfServerFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+        }
+
         [Fact]
         public void ParsingGraphHandlerImplicitTurtle()
         {
@@ -168,8 +177,10 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerImplicitInitialBaseUri()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/")
+            };
 
             var fragment = "<subject> <predicate> <object> .";
             var parser = new TurtleParser();
@@ -182,8 +193,10 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingGraphHandlerExplicitInitialBaseUri()
         {
-            var g = new Graph();
-            g.BaseUri = new Uri("http://example.org/");
+            var g = new Graph
+            {
+                BaseUri = new Uri("http://example.org/")
+            };
 
             var fragment = "<subject> <predicate> <object> .";
             var parser = new TurtleParser();
@@ -194,47 +207,29 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(1, g.Triples.Count);
         }
 
-        [Fact(Skip = "Replace test with a version that does not depend on an external service")]
-        public void ParsingGraphHandlerImplicitBaseUriPropogation()
+        [Fact]
+        public void ParsingGraphHandlerImplicitBaseUriPropagation()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-
-                var g = new Graph();
-                UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
-                var formatter = new NTriplesFormatter();
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            var loader = new Loader(_serverFixture.Client);
+            var g = new Graph();
+            g.BaseUri.Should().BeNull();
+            Uri targetUri = _serverFixture.UriFor("/one.ttl");
+            loader.LoadGraph(g, targetUri);
+            g.BaseUri.Should().Be(targetUri);
         }
 
-        [Fact(Skip = "Replace test with a version that does not depend on an external service")]
+        [Fact]
         public void ParsingGraphHandlerImplicitBaseUriPropogation2()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-
-                var g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                UriLoader.Load(g, new Uri("http://wiki.rkbexplorer.com/id/void"));
-                var formatter = new NTriplesFormatter();
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            var loader = new Loader(_serverFixture.Client);
+            var g = new Graph();
+            Uri targetUri = _serverFixture.UriFor("/one.ttl");
+            g.BaseUri.Should().BeNull();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri.Should().NotBeNull("loading into a graph with no BaseUri should set the BaseUri");
+            Uri baseUri = g.BaseUri;
+            loader.LoadGraph(g, targetUri);
+            g.BaseUri.Should().Be(baseUri, "merging a second graph should not overwrite the BaseUri");
         }
 
         [Fact]
