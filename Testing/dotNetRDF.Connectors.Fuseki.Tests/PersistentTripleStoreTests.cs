@@ -100,13 +100,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemContains()
-        {
-            var manager = new InMemoryManager();
-            TestContains(manager);
-        }
-
         #endregion
 
         #region Get Graph Tests
@@ -151,13 +144,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemGetGraph()
-        {
-            var manager = new InMemoryManager();
-            TestGetGraph(manager);
-        }
-
         #endregion
 
         #region Add Triples Tests
@@ -193,13 +179,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemAddTriplesFlushed()
-        {
-            var manager = new InMemoryManager();
-            TestAddTriplesFlushed(manager);
-        }
-
         private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
             EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
@@ -229,13 +208,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
-        {
-            var manager = new InMemoryManager();
-            TestAddTriplesDiscarded(manager);
         }
 
         #endregion
@@ -273,13 +245,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
-        {
-            var manager = new InMemoryManager();
-            TestRemoveTriplesFlushed(manager);
-        }
-
         private void TestRemoveTriplesDiscarded(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
@@ -309,13 +274,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
-        {
-            var manager = new InMemoryManager();
-            TestRemoveTriplesDiscarded(manager);
         }
 
         #endregion
@@ -348,13 +306,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemAddGraphFlushed()
-        {
-            var manager = new InMemoryManager();
-            TestAddGraphFlushed(manager);
         }
 
         private void TestAddGraphDiscarded(IStorageProvider manager)
@@ -394,13 +345,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemAddGraphDiscarded()
-        {
-            var manager = new InMemoryManager();
-            TestAddGraphDiscarded(manager);
-        }
-
         #endregion
 
         #region Remove Graph Tests
@@ -437,13 +381,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
-        {
-            var manager = new InMemoryManager();
-            TestRemoveGraphFlushed(manager);
-        }
-
         private void TestRemoveGraphDiscarded(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
@@ -467,13 +404,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
-        {
-            var manager = new InMemoryManager();
-            TestRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -513,13 +443,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemAddThenRemoveGraphFlushed()
-        {
-            var manager = new InMemoryManager();
-            TestAddThenRemoveGraphFlushed(manager);
-        }
-
         private void TestAddThenRemoveGraphDiscarded(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
@@ -551,13 +474,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemAddThenRemoveGraphDiscarded()
-        {
-            var manager = new InMemoryManager();
-            TestAddThenRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -594,13 +510,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemRemoveThenAddGraphFlushed()
-        {
-            var manager = new InMemoryManager();
-            TestRemoveThenAddGraphFlushed(manager);
-        }
-
         private void TestRemoveThenAddGraphDiscarded(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
@@ -629,13 +538,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemRemoveThenAddGraphDiscarded()
-        {
-            var manager = new InMemoryManager();
-            TestRemoveThenAddGraphDiscarded(manager);
         }
 
         #endregion
@@ -735,42 +637,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemQueryUnsynced()
-        {
-            var manager = new InMemoryManager();
-            Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(manager));
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemQuerySelect()
-        {
-            var manager = new InMemoryManager();
-            TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemQueryAsk()
-        {
-            var manager = new InMemoryManager();
-            TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
-            TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemQueryConstruct()
-        {
-            var manager = new InMemoryManager();
-            TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemQueryDescribe()
-        {
-            var manager = new InMemoryManager();
-            TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
-        }
-
         #endregion
 
         #region SPARQL Update Tests
@@ -821,13 +687,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemUpdateUnsynced()
-        {
-            var manager = new InMemoryManager();
-            Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(manager));
         }
 
         #endregion
@@ -894,20 +753,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemDump1()
-        {
-            var manager = new InMemoryManager();
-            TestDumpStoreEmpty(manager);
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemDump2()
-        {
-            var manager = new InMemoryManager();
-            TestDumpStorePrimed(manager);
         }
 
         #endregion
@@ -1055,13 +900,6 @@ namespace VDS.RDF.Storage
         {
             FusekiConnector fuseki = FusekiTest.GetConnection();
             Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(fuseki));
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemUpdate()
-        {
-            var manager = new InMemoryManager();
-            TestUpdate(manager);
         }
 
         [SkippableFact]
