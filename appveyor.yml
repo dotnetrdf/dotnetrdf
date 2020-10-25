@@ -29,7 +29,7 @@ test_script:
 #  - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
 #  - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
 #  - ps: docker build Testing\test_images\fuseki -t fuseki
-  - ps: docker run -rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
+  - ps: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
   - ps: dotnet test -c Release -framework netcoreapp3.1 Testing\dotNetRDF.Connectors.Fuseki.Tests\dotNetRDF.Connectors.Fuseki.Tests.csproj
   - ps: docker stop fuseki
   
