@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SparqlAnalyzer", "Testing\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Fuseki.Tests", "Testing\dotNetRDF.Connectors.Fuseki.Tests\dotNetRDF.Connectors.Fuseki.Tests.csproj", "{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Tests", "Testing\dotNetRDF.Connectors.Tests\dotNetRDF.Connectors.Tests.csproj", "{D20F6C78-9DC7-4AFB-B69F-289733B516C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -150,6 +152,18 @@ Global
 		{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E}.Release|x64.Build.0 = Release|Any CPU
 		{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E}.Release|x86.ActiveCfg = Release|Any CPU
 		{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E}.Release|x86.Build.0 = Release|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Debug|x64.Build.0 = Debug|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Release|x64.ActiveCfg = Release|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Release|x64.Build.0 = Release|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +178,7 @@ Global
 		{63FDB648-1631-4452-8B60-E5A4225341FB} = {3B3CCD52-CF1B-492C-A5F8-FBB626C5039C}
 		{B19AD698-11F5-486E-B534-00262F751700} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
 		{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
+		{D20F6C78-9DC7-4AFB-B69F-289733B516C3} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {801E5D6F-1615-444B-BDE4-8A6A30FE0520}

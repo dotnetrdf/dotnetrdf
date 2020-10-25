@@ -35,7 +35,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests
     /// </summary>
-    public class WriteToStoreHandlerTests
+    public abstract class WriteToStoreHandlerTests
     {
         private readonly Uri TestGraphUri = new Uri("http://example.org/WriteToStoreHandlerTest");
         private readonly Uri TestBNodeUri = new Uri("http://example.org/WriteToStoreHandlerTest/BNodes");
@@ -184,14 +184,17 @@ namespace VDS.RDF.Storage
                 }
             }
         }
+
+        protected abstract IStorageProvider GetConnection();
+
         [SkippableFact]
-        public void ParsingWriteToStoreHandlerFuseki()
+        public void ParsingWriteToStoreHandler()
         {
             try
             {
                 UriLoader.CacheEnabled = false;
-                FusekiConnector fuseki = FusekiTest.GetConnection();
-                TestWriteToStoreHandler(fuseki);
+                IStorageProvider store = GetConnection();
+                TestWriteToStoreHandler(store);
             }
             finally
             {
@@ -200,10 +203,10 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatches()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
-            TestWriteToStoreHandlerWithBNodes(fuseki);
+            IStorageProvider store = GetConnection();
+            TestWriteToStoreHandlerWithBNodes(store);
         }
 
     }

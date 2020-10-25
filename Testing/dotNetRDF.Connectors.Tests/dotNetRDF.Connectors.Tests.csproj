@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRDF.Connectors.Fuseki.Tests</AssemblyTitle>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Fuseki.Tests</AssemblyName>
-    <PackageId>dotNetRDF.Connectors.Fuseki.Tests</PackageId>
+    <AssemblyTitle>dotNetRDF.Connectors.Tests</AssemblyTitle>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>dotNetRDF.Connectors.Tests</AssemblyName>
+    <PackageId>dotNetRDF.Connectors.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
-    <ProjectReference Include="..\dotNetRDF.Connectors.Tests\dotNetRDF.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
@@ -61,9 +60,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Async\" />
+    <None Update="resources\rdfserver\southampton.rdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  
+
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>

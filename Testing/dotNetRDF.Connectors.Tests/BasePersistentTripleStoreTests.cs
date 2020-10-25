@@ -34,11 +34,18 @@ using StringWriter = System.IO.StringWriter;
 
 namespace VDS.RDF.Storage
 {
-    public class PersistentTripleStoreTests
+    public abstract class BasePersistentTripleStoreTests
     {
         private const string TestGraphUri1 = "http://example.org/persistence/graphs/1",
                              TestGraphUri2 = "http://example.org/persistence/graphs/2",
                              TestGraphUri3 = "http://example.org/persistence/graphs/3";
+
+        private readonly RdfServerFixture _serverFixture;
+
+        protected BasePersistentTripleStoreTests(RdfServerFixture serverFixture)
+        {
+            _serverFixture = serverFixture;
+        }
 
         private void EnsureTestDataset(IStorageProvider manager)
         {
@@ -72,6 +79,8 @@ namespace VDS.RDF.Storage
         {
             Assert.Throws<ArgumentNullException>(() => new PersistentTripleStore(null));
         }
+
+        protected abstract IStorageProvider GetConnection();
 
         #region Contains Tests
 
@@ -645,15 +654,11 @@ namespace VDS.RDF.Storage
         {
             EnsureTestDataset(manager);
 
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
             var store = new PersistentTripleStore(manager);
             try
             {
                 store.Remove(new Uri(TestGraphUri1));
-
-                store.ExecuteUpdate("LOAD <http://dbpedia.org/resource/Ilkeston>");
+                store.ExecuteUpdate($"LOAD <{_serverFixture.UriFor("/resource/Southampton")}>");
             }
             finally
             {
@@ -760,28 +765,28 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiContains()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestContains(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiGetGraph()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestGetGraph(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestAddTriplesFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestAddTriplesDiscarded(fuseki);
         }
 
@@ -789,14 +794,14 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestRemoveTriplesFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestRemoveTriplesDiscarded(fuseki);
         }
 
@@ -804,14 +809,14 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestAddGraphFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestAddGraphDiscarded(fuseki);
         }
 
@@ -819,21 +824,21 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestRemoveGraphFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestRemoveGraphDiscarded(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestAddThenRemoveGraphFlushed(fuseki);
         }
 
@@ -841,42 +846,42 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestAddThenRemoveGraphDiscarded(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestRemoveThenAddGraphFlushed(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphDiscarded()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestRemoveThenAddGraphDiscarded(fuseki);
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             Assert.Throws<RdfQueryException>(() => TestQueryUnsynced(fuseki));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQuerySelect()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryAsk()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
             TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
@@ -884,28 +889,28 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryConstruct()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiQueryDescribe()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(fuseki));
         }
 
         [SkippableFact]
         public void StoragePersistentTripleStoreFusekiUpdate()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            IStorageProvider fuseki = GetConnection();
             TestUpdate(fuseki);
         }
 

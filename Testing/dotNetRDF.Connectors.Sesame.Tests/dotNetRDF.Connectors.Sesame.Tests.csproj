@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRDF.Connectors.Fuseki.Tests</AssemblyTitle>
+    <AssemblyTitle>dotNetRDF.Connectors.Sesame.Tests</AssemblyTitle>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Fuseki.Tests</AssemblyName>
-    <PackageId>dotNetRDF.Connectors.Fuseki.Tests</PackageId>
+    <AssemblyName>dotNetRDF.Connectors.Sesame.Tests</AssemblyName>
+    <PackageId>dotNetRDF.Connectors.Sesame.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
-    <ProjectReference Include="..\dotNetRDF.Connectors.Tests\dotNetRDF.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 

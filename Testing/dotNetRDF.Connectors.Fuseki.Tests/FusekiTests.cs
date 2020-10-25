@@ -34,12 +34,12 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {
-    public class FusekiTest
+    public class FusekiTests
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        public FusekiTest(ITestOutputHelper testOutputHelper)
+        public FusekiTests(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -64,7 +64,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTest.GetConnection(mimeType);
+                FusekiConnector fuseki = FusekiTests.GetConnection(mimeType);
                 fuseki.SaveGraph(g);
                 _testOutputHelper.WriteLine("Graph saved to Fuseki OK");
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = new Uri("http://example.org/fuseki#test");
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.SaveGraph(g);
                 Console.WriteLine("Graph saved to Fuseki OK");
 
@@ -130,7 +130,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.SaveGraph(g);
                 Console.WriteLine("Graph saved to Fuseki OK");
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.SaveGraph(g);
                 Console.WriteLine("Graph saved to Fuseki OK");
 
@@ -201,7 +201,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
 
                 var h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fusekiTest");
@@ -228,7 +228,7 @@ namespace VDS.RDF.Storage
                 UriLoader.CacheEnabled = false;
                 StorageFusekiSaveGraph();
 
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.DeleteGraph("http://example.org/fusekiTest");
 
                 var g = new Graph();
@@ -260,7 +260,7 @@ namespace VDS.RDF.Storage
                 UriLoader.CacheEnabled = false;
                 StorageFusekiSaveDefaultGraph();
 
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.DeleteGraph((Uri)null);
 
                 var g = new Graph();
@@ -292,7 +292,7 @@ namespace VDS.RDF.Storage
                 UriLoader.CacheEnabled = false;
                 StorageFusekiSaveDefaultGraph();
 
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.DeleteGraph((String)null);
 
                 var g = new Graph();
@@ -328,7 +328,7 @@ namespace VDS.RDF.Storage
                 var ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
 
                 fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -352,7 +352,7 @@ namespace VDS.RDF.Storage
                 var ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                FusekiConnector fuseki = FusekiTest.GetConnection();
+                FusekiConnector fuseki = FusekiTests.GetConnection();
                 fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
 
                 fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -367,7 +367,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageFusekiQuery()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            FusekiConnector fuseki = FusekiTests.GetConnection();
 
             var results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
             if (results is SparqlResultSet)
@@ -383,7 +383,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageFusekiUpdate()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            FusekiConnector fuseki = FusekiTests.GetConnection();
 
             //Try doing a SPARQL Update LOAD command
             var command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
@@ -412,7 +412,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageFusekiDescribe()
         {
-            FusekiConnector fuseki = FusekiTest.GetConnection();
+            FusekiConnector fuseki = FusekiTests.GetConnection();
 
             var results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
             if (results is IGraph)

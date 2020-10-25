@@ -26,12 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace VDS.RDF.Storage
 {
 
-    public class FusekiAsync
+    public class FusekiAsyncTests
         : BaseAsyncTests
     {
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return FusekiTest.GetConnection();
+            return FusekiTests.GetConnection();
         }
     }
 }
