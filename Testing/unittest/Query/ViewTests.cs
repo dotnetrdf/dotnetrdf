@@ -28,31 +28,11 @@ using System.Threading;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query
 {
     public class ViewTests
     {
-        [SkippableFact]
-        public void SparqlViewNativeAllegroGraph()
-        {
-                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-                var store = new PersistentTripleStore(agraph);
-
-                //Load a Graph into the Store to ensure there is some data for the view to retrieve
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                agraph.SaveGraph(g);
-
-                //Create the SPARQL View
-                var view = new NativeSparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store);
-
-                Console.WriteLine("SPARQL View Populated");
-                TestTools.ShowGraph(view);
-                Console.WriteLine();
-        }
-
         [Fact]
         public void SparqlViewConstruct1()
         {

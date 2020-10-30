@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
             var parser = new SparqlQueryParser();
-            var q = parser.ParseFromString(query);
+            SparqlQuery q = parser.ParseFromString(query);
             var processor = new LeviathanQueryProcessor(store);
             return processor.ProcessQuery(q);
         }
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query
             FileLoader.Load(g, "resources\\json.owl");
             store.Add(g);
 
-            var results = ExecuteQuery(store, query);
+            object results = ExecuteQuery(store, query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -336,12 +336,12 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
 
             Assert.Throws<RdfException>(() =>
             {
-                var r = endpoint.Query(testQuery);
+                object r = endpoint.Query(testQuery);
             });
 
             endpoint.SkipLocalParsing = true;
 
-            var results = endpoint.Query(testQuery);
+            object results = endpoint.Query(testQuery);
             results.Should().BeOfType<SparqlResultSet>().Which.Results.Should().NotBeEmpty();
             //TestTools.ShowResults(results);
         }
@@ -373,7 +373,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("resources\\anton.rq");
 
-            var results = g.ExecuteQuery(query);
+            object results = g.ExecuteQuery(query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
             if (results is SparqlResultSet)
             {
@@ -446,9 +446,9 @@ WHERE
             FileLoader.Load(store, Path.Combine("resources", "czech-royals.ttl"));
             const string sparqlQuery = "SELECT * WHERE {?s ?p ?o}";
             var sparqlParser = new SparqlQueryParser();
-            var query = sparqlParser.ParseFromString(sparqlQuery);
+            SparqlQuery query = sparqlParser.ParseFromString(sparqlQuery);
             var processor = new LeviathanQueryProcessor(store);
-            var results = processor.ProcessQuery(query);
+            object results = processor.ProcessQuery(query);
         }
 
         private readonly String[] _langSpecCaseQueries = new string[]
@@ -565,14 +565,14 @@ WHERE
             IGraph g = new Graph();
             g.NamespaceMap.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
             g.NamespaceMap.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
-            var rdfType = g.CreateUriNode("rdf:type");
-            var person = g.CreateUriNode("foaf:Person");
-            var name = g.CreateUriNode("foaf:name");
-            var age = g.CreateUriNode("foaf:age");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode person = g.CreateUriNode("foaf:Person");
+            IUriNode name = g.CreateUriNode("foaf:name");
+            IUriNode age = g.CreateUriNode("foaf:age");
             for (var i = 0; i < 3; i++)
             {
                 // Create 3 statements for each instance of foaf:Person (including rdf:type statement)
-                var s = g.CreateUriNode(new Uri("http://example.com/people/" + i));
+                IUriNode s = g.CreateUriNode(new Uri("http://example.com/people/" + i));
                 g.Assert(new Triple(s, rdfType, person));
                 g.Assert(new Triple(s, name, g.CreateLiteralNode("Person " + i)));
                 g.Assert(new Triple(s, age, g.CreateLiteralNode((20 + i).ToString(CultureInfo.InvariantCulture))));
@@ -633,9 +633,9 @@ WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
 
             var queryProcessor = new LeviathanQueryProcessor(store);
             var queryParser = new SparqlQueryParser();
-            var q = queryParser.ParseFromString(query);
+            SparqlQuery q = queryParser.ParseFromString(query);
             var result = q.Process(queryProcessor) as SparqlResultSet;
-            var oNode = result.First()["o"];
+            INode oNode = result.First()["o"];
             Assert.Equal("0.5", ((ILiteralNode)oNode).Value);
 
             q = queryParser.ParseFromString("SELECT ?a WHERE { ?s ?p ?o. BIND(?o / 2 AS ?a) }");

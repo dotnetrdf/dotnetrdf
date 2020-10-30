@@ -26,10 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -37,7 +39,6 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
-using System.Web;
 
 namespace VDS.RDF.Storage
 {
@@ -56,12 +57,11 @@ namespace VDS.RDF.Storage
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage, IConfigurationSerializable
         , IUpdateableStorage
     {
-        private string _baseUri;
-        private SparqlRemoteEndpoint _endpoint;
-        private SparqlRemoteUpdateEndpoint _updateEndpoint;
-        private bool _updatesEnabled = true;
-        private SparqlFormatter _formatter = new SparqlFormatter();
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly string _baseUri;
+        private readonly SparqlQueryClient _queryClient;
+        private readonly SparqlUpdateClient _updateClient;
+        private readonly bool _updatesEnabled = true;
+        private readonly SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new 4store connector which manages access to the services provided by a 4store server.
@@ -72,14 +72,15 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public FourStoreConnector(string baseUri)
         {
+            if (baseUri == null) throw new ArgumentNullException(nameof(baseUri));
             // Determine the appropriate actual Base Uri
             if (baseUri.EndsWith("sparql/"))
             {
-                _baseUri = baseUri.Substring(0, baseUri.IndexOf("sparql/"));
+                _baseUri = baseUri.Substring(0, baseUri.IndexOf("sparql/", StringComparison.Ordinal));
             }
             else if (baseUri.EndsWith("data/"))
             {
-                _baseUri = baseUri.Substring(0, baseUri.IndexOf("data/"));
+                _baseUri = baseUri.Substring(0, baseUri.IndexOf("data/", StringComparison.Ordinal));
             }
             else if (!baseUri.EndsWith("/"))
             {
@@ -90,10 +91,9 @@ namespace VDS.RDF.Storage
                 _baseUri = baseUri;
             }
 
-            _endpoint = new SparqlRemoteEndpoint(UriFactory.Create(_baseUri + "sparql/"));
-            _updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(_baseUri + "update/"));
-            _endpoint.Timeout = 60000;
-            _updateEndpoint.Timeout = 60000;
+            _queryClient = new SparqlQueryClient(HttpClient, UriFactory.Create(_baseUri + "sparql/"));
+            _updateClient = new SparqlUpdateClient(HttpClient, UriFactory.Create(_baseUri + "update/"));
+            HttpClient.Timeout = TimeSpan.FromMilliseconds(60000);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
         {
             if (!graphUri.Equals(string.Empty))
             {
-                _endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }");
+                _queryClient.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }", handler).Wait();
             }
             else
             {
@@ -274,38 +274,24 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if you try and save a Graph without a Base Uri or if there is an error communicating with the 4store instance.</exception>
         public void SaveGraph(IGraph g)
         {
-            try
+            if (g.BaseUri == null)
             {
-                // Set up the Request
-                HttpWebRequest request;
-                if (g.BaseUri != null)
-                {
-                    request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.AbsoluteUri));
-                }
-                else
-                {
-                    throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
-                }
-                request.Method = "PUT";
-                request.ContentType = MimeTypesHelper.Turtle[0];
-                request = ApplyRequestOptions(request);
-
-                // Write the Graph as Turtle to the Request Stream
-                var writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
-                writer.Save(g, new StreamWriter(request.GetRequestStream()));
-
-                // Make the Request
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    // If we get here then it was OK
-                    response.Close();
-                }
-
-
+                throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
             }
-            catch (WebException webEx)
+
+            var requestUri = new Uri(_baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.AbsoluteUri));
+            var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
             {
-                throw StorageHelper.HandleHttpError(webEx, "saving a Graph to");
+                Content = new GraphContent(g, new CompressingTurtleWriter(WriterCompressionLevel.High))
+                {
+                    Encoding = new UTF8Encoding(false),
+                    ContentLengthRequired = true,
+                },
+            };
+            HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpError(response, "saving a Graph to");
             }
         }
 
@@ -390,7 +376,7 @@ namespace VDS.RDF.Storage
                     {
                         if (insert.Length > 0)
                         {
-                            Update(delete.ToString() + "\n;\n"  + insert.ToString());
+                            Update(delete + "\n;\n"  + insert);
                         }
                         else
                         {
@@ -441,34 +427,7 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlQuery">SPARQL Query.</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            try
-            {
-                // Ensure Proxy Settings have been taken from the class
-                _endpoint.Proxy = Proxy;
-                _endpoint.UseCredentialsForProxy = false;
-                HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery);
-                var data = new StreamReader(response.GetResponseStream());
-                try
-                {
-                    // Is the Content Type referring to a Sparql Result Set format?
-                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                    resreader.Load(resultsHandler, data);
-                    response.Close();
-                }
-                catch (RdfParserSelectionException)
-                {
-                    // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
-
-                    // Is the Content Type referring to a RDF format?
-                    IRdfReader rdfreader = MimeTypesHelper.GetParser(response.ContentType);
-                    rdfreader.Load(rdfHandler, data);
-                    response.Close();
-                }
-            }
-            catch (WebException webEx)
-            {
-                throw StorageHelper.HandleHttpQueryError(webEx);
-            }
+            _queryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).Wait();
         }
 
         /// <summary>
@@ -493,32 +452,16 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of Graph to delete.</param>
         public void DeleteGraph(string graphUri)
         {
-            try
+            if (string.IsNullOrEmpty(graphUri))
             {
-                // Set up the Request
-                HttpWebRequest request;
-                if (!graphUri.Equals(string.Empty))
-                {
-                    request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(graphUri));
-                }
-                else
-                {
-                    throw new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server");
-                }
-                request.Method = "DELETE";
-                request = ApplyRequestOptions(request);
-
-                // Make the Request
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    response.Close();
-                }
-
-                // If we get here then it's OK
+                throw new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server");
             }
-            catch (WebException webEx)
+
+            var requestUri = _baseUri + "data/" + Uri.EscapeUriString(graphUri);
+            HttpResponseMessage response = HttpClient.DeleteAsync(requestUri).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                throw StorageHelper.HandleHttpError(webEx, "deleting a Graph from");
+                StorageHelper.HandleHttpError(response, "deleting a Graph from");
             }
         }
 
@@ -530,19 +473,16 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet)
+                object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                if (results is SparqlResultSet resultSet)
                 {
                     var graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    foreach (SparqlResult r in resultSet.Where(x=>x.HasValue("g")))
                     {
-                        if (r.HasValue("g"))
+                        INode temp = r["g"];
+                        if (temp.NodeType == NodeType.Uri)
                         {
-                            INode temp = r["g"];
-                            if (temp.NodeType == NodeType.Uri)
-                            {
-                                graphs.Add(((IUriNode)temp).Uri);
-                            }
+                            graphs.Add(((IUriNode)temp).Uri);
                         }
                     }
                     return graphs;
@@ -567,7 +507,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Update(string sparqlUpdate)
         {
-            _updateEndpoint.Update(sparqlUpdate);
+            _updateClient.UpdateAsync(sparqlUpdate).Wait();
         }
 
         /// <summary>
@@ -579,22 +519,18 @@ namespace VDS.RDF.Storage
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             // Set up the Request
-            HttpWebRequest request;
-            if (g.BaseUri != null)
-            {
-                request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + g.BaseUri.AbsoluteUri);
-            }
-            else
+            if (g.BaseUri == null)
             {
                 throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
             }
-            request.Method = "PUT";
-            request.ContentType = MimeTypesHelper.Turtle[0];
-            request = ApplyRequestOptions(request);
+
+            var request = new HttpRequestMessage(HttpMethod.Put, _baseUri + "data/" + g.BaseUri.AbsoluteUri);
+            var writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
 
             // Write the Graph as Turtle to the Request Stream
-            var writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
-            SaveGraphAsync(request, writer, g, callback, state);
+            request.Content =
+                new GraphContent(g, writer) {Encoding = new UTF8Encoding(false), ContentLengthRequired = true};
+            SaveGraphAsync(request, g, callback, state);
         }
 
         /// <summary>
@@ -604,23 +540,47 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
+        public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback,
+            object state)
         {
             if (!graphUri.Equals(string.Empty))
             {
-                _endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }", (rdfH, resH, st) =>
+                _queryClient
+                    .QueryWithResultGraphAsync(
+                        "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }",
+                        handler)
+                    .ContinueWith(queryTask =>
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
-                    }, state);
+                        if (queryTask.IsFaulted)
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler,
+                                    StorageHelper.HandleError(queryTask.Exception, "retrieving a Graph from")), state);
+                        }
+                        else if (queryTask.IsCanceled)
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler,
+                                    new RdfStorageException("Operation was cancelled.")), state);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler),
+                                state);
+                        }
+                    });
             }
             else
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, new RdfStorageException("Cannot retrieve a Graph from 4store without specifying a Graph URI")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler,
+                        new RdfStorageException("Cannot retrieve a Graph from 4store without specifying a Graph URI")),
+                    state);
             }
         }
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously.
+        /// Updates a Graph in the Store asynchronously.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
@@ -678,7 +638,7 @@ namespace VDS.RDF.Storage
                     {
                         if (insert.Length > 0)
                         {
-                            Update(delete.ToString() + "\n;\n" + insert.ToString(), (sender, args, st) =>
+                            Update(delete + "\n;\n" + insert, (sender, args, st) =>
                                 {
                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                                 }, state);
@@ -719,19 +679,14 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            // Set up the Request
-            HttpWebRequest request;
-            if (!graphUri.Equals(string.Empty))
-            {
-                request = (HttpWebRequest)WebRequest.Create(_baseUri + "data/" + Uri.EscapeUriString(graphUri));
-                request.Method = "DELETE";
-                request = ApplyRequestOptions(request);
-                DeleteGraphAsync(request, false, graphUri, callback, state);
-            }
-            else
+            if (string.IsNullOrEmpty(graphUri))
             {
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server")), state);
+                return;
             }
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, _baseUri + "data/" + Uri.EscapeUriString(graphUri));
+            DeleteGraphAsync(request, false, graphUri, callback, state);
         }
 
         /// <summary>
@@ -742,17 +697,25 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
-            try
+            _updateClient.UpdateAsync(sparqlUpdates).ContinueWith(updateTask =>
             {
-                _updateEndpoint.Update(sparqlUpdates, (st) =>
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates), state);
-                    }, state);
-            }
-            catch (Exception ex)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, new RdfStorageException("Unexpected error while trying to send SPARQL Updates to 4store, see inner exception for details", ex)), state);
-            }
+                if (updateTask.IsCanceled)
+                {
+                    callback(this,
+                        new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate,
+                            new RdfStorageException("Operation was cancelled.")), state);
+                }
+                else if (updateTask.IsFaulted)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate,
+                        StorageHelper.HandleError(updateTask.Exception, "executing SPARQL update on")), state);
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates),
+                        state);
+                }
+            }).ConfigureAwait(true);
         }
 
         /// <summary>
@@ -786,109 +749,29 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
+            AsyncStorageCallback callback, object state)
         {
-            try
-            {
-                // First off parse the Query to see what kind of query it is
-                SparqlQuery q;
-                try
+            _queryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).ContinueWith(
+                queryTask =>
                 {
-                    q = _parser.ParseFromString(sparqlQuery);
-                }
-                catch (RdfParseException parseEx)
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, parseEx), state);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while trying to parse the SPARQL Query prior to sending it to the Store, see inner exception for details", ex)), state);
-                    return;
-                }
-
-                // Now select the Accept Header based on the query type
-                var accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
-
-                // Create the Request, for simplicity async requests are always POST
-                var request = (HttpWebRequest)WebRequest.Create(_endpoint.Uri);
-                request.Accept = accept;
-                request.Method = "POST";
-                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                request = ApplyRequestOptions(request);
-
-                request.BeginGetRequestStream(r =>
-                {
-                    try
+                    if (queryTask.IsFaulted)
                     {
-                        Stream stream = request.EndGetRequestStream(r);
-                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
-                        {
-                            writer.Write("query=");
-                            writer.Write(HttpUtility.UrlEncode(sparqlQuery));
-                            writer.Close();
-                        }
-
-                        request.BeginGetResponse(r2 =>
-                        {
-                            // Get the Response and process based on the Content Type
-                            try
-                            {
-                                var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                var data = new StreamReader(response.GetResponseStream());
-                                var ctype = response.ContentType;
-                                if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
-                                {
-                                    // ASK/SELECT should return SPARQL Results
-                                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, q.QueryType == SparqlQueryType.Ask);
-                                    resreader.Load(resultsHandler, data);
-                                    response.Close();
-                                }
-                                else
-                                {
-                                    // CONSTRUCT/DESCRIBE should return a Graph
-                                    IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                                    rdfreader.Load(rdfHandler, data);
-                                    response.Close();
-                                }
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
-                            }
-                            catch (WebException webEx)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
-                            }
-                            catch (Exception ex)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
-                            }
-                        }, state);
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                StorageHelper.HandleError(queryTask.Exception, "executing a query on")), state);
                     }
-                    catch (WebException webEx)
+                    else if (queryTask.IsCanceled)
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                new RdfStorageException("Operation was cancelled.")), state);
                     }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
-            }
-            catch (Exception ex)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
-            }
-        }
-
-        /// <summary>
-        /// Disposes of a 4store connection.
-        /// </summary>
-        public override void Dispose()
-        {
-            // No Dispose actions needed
+                    else
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery,
+                                rdfHandler, resultsHandler), state);
+                }).ConfigureAwait(true);
         }
 
         /// <summary>

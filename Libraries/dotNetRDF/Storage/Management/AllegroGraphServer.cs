@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -159,46 +160,31 @@ namespace VDS.RDF.Storage.Management
         /// <param name="template">Template for creating the new Store.</param>
         public override bool CreateStore(IStoreTemplate template)
         {
-            HttpWebRequest request = null;
-            HttpWebResponse response = null;
             try
             {
                 var createParams = new Dictionary<string, string> {{"override", "false"}};
-                request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
+                HttpRequestMessage request =
+                    CreateRequest("repositories/" + template.ID, "*/*", HttpMethod.Put, createParams);
 
-                using (response = (HttpWebResponse)request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    response.Close();
+                    // A 409 just means that the store already exists
+                    return true;
                 }
-                return true;
+
+                throw StorageHelper.HandleHttpError(response, "creating store in");
             }
-            catch (WebException webEx)
+            catch (RdfStorageException)
             {
-                if (webEx.Response != null)
-                {
-                    if (webEx.Response != null)
-                    {
-                    }
-
-                    // Got a Response so we can analyse the Response Code
-                    response = (HttpWebResponse)webEx.Response;
-                    var code = (int)response.StatusCode;
-                    if (code == 400)
-                    {
-                        // OK - Just means the Store already exists
-                        return true;
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "creating store in");
             }
         }
+
         /// <summary>
         /// Requests that AllegroGraph deletes a Store.
         /// </summary>
@@ -207,16 +193,17 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest("repositories/" + storeID, "*/*", "DELETE", new Dictionary<string, string>());
+                HttpRequestMessage request = CreateRequest("repositories/" + storeID, "*/*", HttpMethod.Delete, new Dictionary<string, string>());
 
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    response.Close();
+                    throw StorageHelper.HandleHttpError(response, "delete");
                 }
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "delete");
+                throw StorageHelper.HandleError(ex, "delete");
             }
         }
 
@@ -229,16 +216,16 @@ namespace VDS.RDF.Storage.Management
             string data;
             try
             {
-                HttpWebRequest request = CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
-                using (var response = (HttpWebResponse)request.GetResponse())
+                HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get, new Dictionary<string, string>());
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        data = reader.ReadToEnd();
-                        reader.Close();
-                    }
-                    response.Close();
+                    throw StorageHelper.HandleHttpError(response, "list Stores from");
                 }
+
+                using var reader = new StreamReader(response.Content.ReadAsStreamAsync().Result);
+                data = reader.ReadToEnd();
+                reader.Close();
             }
             catch (WebException webEx)
             {
@@ -249,7 +236,7 @@ namespace VDS.RDF.Storage.Management
             var stores = new List<string>();
             foreach (JToken token in json.Children())
             {
-                if (token["id"] is JValue id)
+                if (token["id"] is JValue id && id.Value != null)
                 {
                     stores.Add(id.Value.ToString());
                 }
@@ -260,15 +247,15 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Gets a Store within the current catalog.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
         /// <remarks>
         /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue.
         /// </remarks>
-        public override IStorageProvider GetStore(string storeID)
+        public override IStorageProvider GetStore(string storeId)
         {
             // Otherwise return a new instance
-            return new AllegroGraphConnector(_agraphBase, _catalog, storeID, _username, _pwd, Proxy);
+            return new AllegroGraphConnector(_agraphBase, _catalog, storeId, _username, _pwd, Proxy);
         }
 
         /// <summary>
@@ -280,47 +267,68 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
-                request.BeginGetResponse(r =>
+                HttpRequestMessage request = CreateRequest("repositories", "application/json", HttpMethod.Get,
+                    new Dictionary<string, string>());
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
-                    try
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        var response = (HttpWebResponse)request.EndGetResponse(r);
-                        string data;
-                        using (var reader = new StreamReader(response.GetResponseStream()))
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled.")
+                                    : StorageHelper.HandleError(requestTask.Exception, "listing stores from")),
+                            state);
+                    }
+                    else
+                    {
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
                         {
-                            data = reader.ReadToEnd();
-                            reader.Close();
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                    StorageHelper.HandleHttpError(response, "listing stores from")),
+                                state);
                         }
-
-                        var json = JArray.Parse(data);
-                        var stores = new List<string>();
-                        foreach (JToken token in json.Children())
+                        else
                         {
-                            if (token["id"] is JValue id)
+                            response.Content.ReadAsStringAsync().ContinueWith(readTask =>
                             {
-                                stores.Add(id.Value.ToString());
-                            }
+                                if (readTask.IsCanceled || readTask.IsFaulted)
+                                {
+                                    callback(this,
+                                        new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                            readTask.IsCanceled
+                                                ? new RdfStorageException("The operation was cancelled.")
+                                                : StorageHelper.HandleError(requestTask.Exception,
+                                                    "listing stores from")),
+                                        state);
+                                }
+                                else
+                                {
+                                    var json = JArray.Parse(readTask.Result);
+                                    var stores = new List<string>();
+                                    foreach (JToken token in json.Children())
+                                    {
+                                        if (token["id"] is JValue id)
+                                        {
+                                            stores.Add(id.Value.ToString());
+                                        }
+                                    }
+
+                                    callback(this,
+                                        new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, stores), state);
+                                }
+                            });
                         }
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, stores), state);
                     }
-                    catch (WebException webEx)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "list Stores from")), state);
-                    }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "list Stores from")), state);
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "list Stores from")), state);
+                });
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "list Stores from")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                        StorageHelper.HandleError(ex, "list Stores from")), state);
             }
         }
 
@@ -359,77 +367,46 @@ namespace VDS.RDF.Storage.Management
             try
             {
                 var createParams = new Dictionary<string, string> {{"override", "false"}};
-                HttpWebRequest request = CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
-
-                request.BeginGetResponse(r =>
+                HttpRequestMessage request =
+                    CreateRequest("repositories/" + template.ID, "*/*", HttpMethod.Put, createParams);
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
-                    try
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        var response = (HttpWebResponse)request.EndGetResponse(r);
-                        response.Close();
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
-                    }
-                    catch (WebException webEx)
-                    {
-                        if (webEx.Response != null)
-                        {
-                            if (webEx.Response != null)
-                            {
-                            }
-
-                            // Got a Response so we can analyse the Response Code
-                            var response = (HttpWebResponse)webEx.Response;
-                            var code = (int)response.StatusCode;
-                            if (code == 400)
-                            {
-                                // 400 just means the store already exists so this is OK
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
-                            }
-                            else
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
-                            }
-                        }
-                        else
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                if (webEx.Response != null)
-                {
-                    if (webEx.Response != null)
-                    {
-                    }
-
-                    // Got a Response so we can analyse the Response Code
-                    var response = (HttpWebResponse)webEx.Response;
-                    var code = (int)response.StatusCode;
-                    if (code == 400)
-                    {
-                        // 400 just means the store already exists so this is OK
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID), state);
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore,
+                                template.ID,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled.")
+                                    : StorageHelper.HandleError(requestTask.Exception, "creating store on")
+                            ), state);
                     }
                     else
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!(response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Conflict))
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore,
+                                    template.ID,
+                                    StorageHelper.HandleHttpError(response, "creating store on")), state);
+                        }
+                        else
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template),
+                                state);
+                        }
                     }
-                }
-                else
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
-                }
+                });
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID,
+                        new RdfStorageException(
+                            "An unexpected error occurred while trying to create a store, see inner exception for details",
+                            ex)), state);
             }
         }
 
@@ -443,51 +420,58 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest("repositories/" + storeId, "*/*", "DELETE", new Dictionary<string, string>());
-
-                request.BeginGetResponse(r =>
+                HttpRequestMessage request = CreateRequest("repositories/" + storeId, "*/*", HttpMethod.Delete,
+                    new Dictionary<string, string>());
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
-                    try
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        var response = (HttpWebResponse)request.EndGetResponse(r);
-
-                        // If we get here then the operation completed OK
-                        response.Close();
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId), state);
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled.")
+                                    : StorageHelper.HandleError(requestTask.Exception, "deleting a store from")),
+                            state);
                     }
-                    catch (WebException webEx)
+                    else
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeId + "; from")), state);
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId,
+                                    StorageHelper.HandleHttpError(response, "deleting a store from")),
+                                state);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId),
+                                state);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleError(ex, "delete the Store '" + storeId + "' from")), state);
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeId + "; from")), state);
+                });
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId, StorageHelper.HandleError(ex, "delete the Store '" + storeId + "' from")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId,
+                        StorageHelper.HandleError(ex, "delete the Store '" + storeId + "' from")), state);
             }
         }
 
         /// <summary>
         /// Gets a Store within the current catalog asynchronously.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to call back.</param>
         /// <returns></returns>
         /// <remarks>
         /// AllegroGraph groups stores by catalog, you may only use this method to obtain stores within your current catalogue.
         /// </remarks>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void GetStore(string storeId, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(_agraphBase, _catalog, storeID, _username, _pwd, Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, new AllegroGraphConnector(_agraphBase, _catalog, storeId, _username, _pwd, Proxy)), state);
         }
 
         /// <summary>
@@ -498,10 +482,38 @@ namespace VDS.RDF.Storage.Management
         /// <param name="method">HTTP Method.</param>
         /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
+        [Obsolete]
         protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
             // Remove JSON Mime Types from supported Accept types
             // This is a compatability issue with Allegro having a weird custom JSON serialisation
+            if (accept.Contains("application/json"))
+            {
+                accept = accept.Replace("application/json,", string.Empty);
+                if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
+            }
+            if (accept.Contains("text/json"))
+            {
+                accept = accept.Replace("text/json", string.Empty);
+                if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
+            }
+            if (accept.Contains(",;")) accept = accept.Replace(",;", ",");
+
+            return base.CreateRequest(servicePath, accept, method, queryParams);
+        }
+
+        /// <summary>
+        /// Helper method for creating HTTP Requests to the Store.
+        /// </summary>
+        /// <param name="servicePath">Path to the Service requested.</param>
+        /// <param name="accept">Acceptable Content Types.</param>
+        /// <param name="method">HTTP Method.</param>
+        /// <param name="queryParams">Querystring Parameters.</param>
+        /// <returns></returns>
+        protected override HttpRequestMessage CreateRequest(string servicePath, string accept, HttpMethod method, Dictionary<string, string> queryParams)
+        {
+            // Remove JSON Mime Types from supported Accept types
+            // This is a compatibility issue with Allegro having a weird custom JSON serialisation
             if (accept.Contains("application/json"))
             {
                 accept = accept.Replace("application/json,", string.Empty);

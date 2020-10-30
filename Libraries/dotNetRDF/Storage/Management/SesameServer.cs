@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Net.Http;
 using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -99,14 +99,8 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Store.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public SesameServer(string baseUri, string username, string password)
-        {
-            _baseUri = baseUri;
-            if (!_baseUri.EndsWith("/")) _baseUri += "/";
-            _username = username;
-            _pwd = password;
-            _hasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
-        }
+        public SesameServer(string baseUri, string username, string password) 
+            : this(baseUri, username, password, null) { }
 
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
@@ -124,21 +118,20 @@ namespace VDS.RDF.Storage.Management
         /// <param name="password">Password to use for requests that require authentication.</param>
         /// <param name="proxy">Proxy Server.</param>
         public SesameServer(string baseUri, string username, string password, IWebProxy proxy)
-            : this(baseUri, username, password)
         {
+            _baseUri = baseUri;
+            if (!_baseUri.EndsWith("/")) _baseUri += "/";
+            _username = username;
+            _pwd = password;
+            _hasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
+            if (_hasCredentials) SetCredentials(username, password);
             Proxy = proxy;
         }
 
         /// <summary>
         /// Gets the IO Behaviour of the server.
         /// </summary>
-        public IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.StorageServer;
-            }
-        }
+        public IOBehaviour IOBehaviour => IOBehaviour.StorageServer;
 
 
         /// <summary>
@@ -189,55 +182,64 @@ namespace VDS.RDF.Storage.Management
         /// </remarks>
         public virtual bool CreateStore(IStoreTemplate template)
         {
-            if (template is BaseSesameTemplate)
+            if (!(template is BaseSesameTemplate sesameTemplate))
             {
-                try
-                {
-                    var createParams = new Dictionary<string, string>();
-                    var sesameTemplate = (BaseSesameTemplate)template;
-                    if (template.Validate().Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    IGraph g = sesameTemplate.GetTemplateGraph();
-
-                    // Firstly we need to save the Repository Template as a new Context to Sesame
-                    createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    HttpWebRequest request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
-
-                    request.ContentType = MimeTypesHelper.NTriples[0];
-                    var ntwriter = new NTriplesWriter();
-                    ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
-
-                    using (var response = (HttpWebResponse)request.GetResponse())
-                    {
-                        // If we get then it was OK
-                        response.Close();
-                    }
-
-                    // Then we need to declare that said Context is of type rep:RepositoryContext
-                    var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
-                    EnsureSystemConnection();
-                    _sysConnection.UpdateGraph(string.Empty, repoType.AsEnumerable(), null);
-
-                    return true;
-                }
-                catch (WebException webEx)
-                {
-                    throw StorageHelper.HandleHttpError(webEx, "creating a new Store in");
-                }
+                throw new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate");
             }
-            throw new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate");
+
+            try
+            {
+                var createParams = new Dictionary<string, string>();
+                if (template.Validate().Any())
+                    throw new RdfStorageException(
+                        "Template is not valid, call Validate() on the template to see the list of errors");
+                IGraph g = sesameTemplate.GetTemplateGraph();
+
+                // Firstly we need to save the Repository Template as a new Context to Sesame
+                createParams.Add("context", sesameTemplate.ContextNode.ToString());
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements",
+                    "*/*", HttpMethod.Post, createParams);
+                var ntWriter = new NTriplesWriter();
+                request.Content = new GraphContent(g, ntWriter);
+
+                using (HttpResponseMessage response = HttpClient.SendAsync(request).Result)
+                {
+                    // If we get then it was OK
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw StorageHelper.HandleHttpError(response, "creating a new store in");
+                    }
+                }
+
+                // Then we need to declare that said Context is of type rep:RepositoryContext
+                var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"),
+                    g.CreateUriNode("rep:RepositoryContext"));
+                EnsureSystemConnection();
+                _sysConnection.UpdateGraph(string.Empty, repoType.AsEnumerable(), null);
+
+                return true;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "creating a new Store in");
+            }
         }
 
         /// <summary>
         /// Gets the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
         /// <remarks>
         /// If the Store ID requested represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
         /// </remarks>
-        public virtual IStorageProvider GetStore(string storeID)
+        public virtual IStorageProvider GetStore(string storeId)
         {
-            return new SesameHttpProtocolConnector(_baseUri, storeID, _username, _pwd, Proxy);
+            return new SesameHttpProtocolConnector(_baseUri, storeId, _username, _pwd, Proxy);
         }
 
         /// <summary>
@@ -251,17 +253,19 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
 
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var response = HttpClient.SendAsync(request).Result)
                 {
-                    // If we get here it completed OK
-                    response.Close();
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw StorageHelper.HandleHttpError(response, "deleting the Store '" + storeID + "' from");
+                    }
                 }
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
+                throw StorageHelper.HandleError(ex, "deleting the Store '" + storeID + "' from");
             }
         }
 
@@ -273,20 +277,22 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+                HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, new Dictionary<string, string>());
 
                 var handler = new ListStringsHandler("id");
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    var parser = new SparqlXmlParser();
-                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
-                    response.Close();
+                    throw StorageHelper.HandleHttpError(response, "listing Stores from");
                 }
+
+                var parser = new SparqlXmlParser();
+                parser.Load(handler, new StreamReader(response.Content.ReadAsStreamAsync().Result));
                 return handler.Strings;
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
+                throw StorageHelper.HandleError(ex, "listing Stores from");
             }
         }
 
@@ -356,13 +362,10 @@ namespace VDS.RDF.Storage.Management
 
                 IGraph g = sesameTemplate.GetTemplateGraph();
                 createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                HttpWebRequest request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", "POST", createParams);
-
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                var ntwriter = new NTriplesWriter();
-
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements", "*/*", HttpMethod.Post, createParams);
+                request.Content = new GraphContent(g, MimeTypesHelper.NTriples[0]);
                 EnsureSystemConnection();
-                _sysConnection.SaveGraphAsync(request, ntwriter, g, (sender, args, st) =>
+                _sysConnection.SaveGraphAsync(request, g, (sender, args, st) =>
                 {
                     if (args.WasSuccessful)
                     {
@@ -395,23 +398,22 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Gets a store asynchronously.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         /// <remarks>
         /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself.
         /// </remarks>
-        public virtual void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        public virtual void GetStore(string storeId, AsyncStorageCallback callback, object state)
         {
             try
             {
-                IAsyncStorageProvider provider;
-                provider = new SesameHttpProtocolConnector(_baseUri, storeID, _username, _pwd, Proxy);
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
+                IAsyncStorageProvider provider = new SesameHttpProtocolConnector(_baseUri, storeId, _username, _pwd, Proxy);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, provider), state);
             }
             catch (Exception e)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, e), state);
             }
         }
 
@@ -425,29 +427,36 @@ namespace VDS.RDF.Storage.Management
         {
             try
             {
-                HttpWebRequest request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
-
-                request.BeginGetResponse(r =>
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeID, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
-                    try
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        var response = (HttpWebResponse)request.EndGetResponse(r);
-                        // If we get here it completed OK
-                        response.Close();
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled")
+                                    : StorageHelper.HandleError(requestTask.Exception,
+                                        $"deleting the store {storeID} from")),
+                            state);
                     }
-                    catch (WebException webEx)
+                    else
                     {
-                        throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
+                        using HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore,
+                                    StorageHelper.HandleHttpError(response,
+                                        $"deleting the store {storeID} from")),
+                                state);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore), state);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        throw StorageHelper.HandleError(ex, "deleting the Store '" + storeID + "' asynchronously from");
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
+                });
             }
             catch (Exception ex)
             {
@@ -462,33 +471,56 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback.</param>
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
-            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+            HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, new Dictionary<string, string>());
             var handler = new ListStringsHandler("id");
             try
             {
-                request.BeginGetResponse(r =>
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
-                    try
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        var response = (HttpWebResponse)request.EndGetResponse(r);
-                        var parser = new SparqlXmlParser();
-                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
-                        response.Close();
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, handler.Strings), state);
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled")
+                                    : StorageHelper.HandleError(requestTask.Exception, "listing stores from")),
+                            state);
                     }
-                    catch (WebException webEx)
+                    else
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores from")), state);
+                        using HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                    StorageHelper.HandleHttpError(response, "listing stores from")),
+                                state);
+                        }
+                        else
+                        {
+                            response.Content.ReadAsStreamAsync().ContinueWith(readTask =>
+                            {
+                                if (readTask.IsCanceled || readTask.IsFaulted)
+                                {
+                                    callback(this,
+                                        new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                            readTask.IsCanceled
+                                                ? new RdfStorageException("The operation was cancelled")
+                                                : StorageHelper.HandleError(readTask.Exception, "listing stores from")),
+                                        state);
+                                }
+                                else
+                                {
+                                    var parser = new SparqlXmlParser();
+                                    parser.Load(handler, new StreamReader(readTask.Result));
+                                    callback(this,
+                                        new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, handler.Strings),
+                                        state);
+                                }
+                            });
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores from")), state);
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores from")), state);
+                });
             }
             catch (Exception ex)
             {
@@ -504,6 +536,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="method">HTTP Method.</param>
         /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
+        [Obsolete("This method is obsolete and will be removed in a future release.")]
         protected virtual HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
             // Build the Request Uri
@@ -534,8 +567,41 @@ namespace VDS.RDF.Storage.Management
                 request.PreAuthenticate = true;
             }
 
-            return ApplyRequestOptions(request);
+            //return ApplyRequestOptions(request);
+            return request;
         }
+
+        /// <summary>
+        /// Helper method for creating HTTP Requests to the Store.
+        /// </summary>
+        /// <param name="servicePath">Path to the Service requested.</param>
+        /// <param name="accept">Acceptable Content Types.</param>
+        /// <param name="method">HTTP Method.</param>
+        /// <param name="queryParams">Querystring Parameters.</param>
+        /// <returns></returns>
+        protected virtual HttpRequestMessage CreateRequest(string servicePath, string accept, HttpMethod method, Dictionary<string, string> queryParams)
+        {
+            // Build the Request Uri
+            var requestUri = _baseUri + servicePath;
+            if (queryParams != null)
+            {
+                if (queryParams.Count > 0)
+                {
+                    requestUri += "?";
+                    foreach (var p in queryParams.Keys)
+                    {
+                        requestUri += p + "=" + HttpUtility.UrlEncode(queryParams[p]) + "&";
+                    }
+                    requestUri = requestUri.Substring(0, requestUri.Length - 1);
+                }
+            }
+
+            // Create our Request
+            var request = new HttpRequestMessage(method, requestUri);
+            request.Headers.Add("Accept", accept);
+            return request;
+        }
+
 
         /// <summary>
         /// Ensures the connection to the Sesame SYSTEM repository is prepared if it isn't already.
@@ -551,9 +617,13 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Disposes of the server.
         /// </summary>
-        public virtual void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _sysConnection.Dispose();
+            if (disposing)
+            {
+                _sysConnection.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         /// <summary>

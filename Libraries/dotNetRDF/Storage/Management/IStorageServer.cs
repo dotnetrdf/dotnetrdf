@@ -86,9 +86,9 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Gets the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
-        IStorageProvider GetStore(string storeID);
+        IStorageProvider GetStore(string storeId);
     }
 
     /// <summary>
@@ -151,9 +151,9 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Gets a store asynchronously.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        void GetStore(string storeID, AsyncStorageCallback callback, object state);
+        void GetStore(string storeId, AsyncStorageCallback callback, object state);
     }
 }

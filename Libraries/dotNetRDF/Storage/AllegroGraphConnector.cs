@@ -27,13 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Net;
-using System.Text;
+using System.Net.Http;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
-using System.Web;
 
 namespace VDS.RDF.Storage
 {
@@ -170,32 +168,22 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request;
-
                 // Create the Request
-                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
 
                 // Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                var postData = new StringBuilder();
-                postData.Append("query=");
-                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-                using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
-                {
-                    writer.Write(postData);
-                    writer.Close();
-                }
+                request.Content = new FormUrlEncodedContent(new []{new KeyValuePair<string, string>("query", sparqlUpdate)});
 
                 // Get the Response and process based on the Content Type
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    // If we get here it completed OK
-                    response.Close();
+                    throw StorageHelper.HandleHttpError(response, "updating");
                 }
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "updating");
+                throw StorageHelper.HandleError(ex, "updating");
             }
         }
 
@@ -209,65 +197,49 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request;
-
                 // Create the Request
-                request = CreateRequest(_repositoriesPrefix + _store + _updatePath, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
+                    MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
 
                 // Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                var postData = new StringBuilder();
-                postData.Append("query=");
-                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
-
-                request.BeginGetRequestStream(r =>
+                request.Content =
+                    new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlUpdate)});
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
-                    try
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        Stream stream = request.EndGetRequestStream(r);
-                        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate,
+                                sparqlUpdate,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled")
+                                    : StorageHelper.HandleError(requestTask.Exception, "updating")),
+                            state);
+                    }
+                    else
+                    {
+                        using HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
                         {
-                            writer.Write(postData);
-                            writer.Close();
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate,
+                                    sparqlUpdate,
+                                    StorageHelper.HandleHttpError(response, "updating")),
+                                state);
                         }
-
-                        // Get the Response and process based on the Content Type
-                        request.BeginGetResponse(r2 =>
+                        else
                         {
-                            try
-                            {
-                                var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                // If we get here it completed OK
-                                response.Close();
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
-                            }
-                            catch (WebException webEx)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
-                            }
-                            catch (Exception ex)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
-                            }
-                        }, state);
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
+                        }
                     }
-                    catch (WebException webEx)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
-                    }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
-                    }
-                }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
+                });
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate,
+                        StorageHelper.HandleError(ex, "updating")), state);
             }
         }
 
@@ -289,6 +261,7 @@ namespace VDS.RDF.Storage
         /// <param name="method">HTTP Method.</param>
         /// <param name="queryParams">Querystring Parameters.</param>
         /// <returns></returns>
+        [Obsolete("This method is obsolete and will be removed in a future release. Use CreateRequest(string, string, HttpMethod, Dictionary<string, string>) instead.")]
         protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
             // Remove JSON Mime Types from supported Accept types
@@ -305,6 +278,25 @@ namespace VDS.RDF.Storage
             }
             if (accept.Contains(",;")) accept = accept.Replace(",;", ",");
 
+            return base.CreateRequest(servicePath, accept, method, queryParams);
+        }
+
+        /// <inheritdoc />
+        protected override HttpRequestMessage CreateRequest(string servicePath, string accept, HttpMethod method, Dictionary<string, string> queryParams)
+        {
+            // Remove JSON Mime Types from supported Accept types
+            // This is a compatibility issue with Allegro having a weird custom JSON serialization
+            if (accept.Contains("application/json"))
+            {
+                accept = accept.Replace("application/json,", string.Empty);
+                if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
+            }
+            if (accept.Contains("text/json"))
+            {
+                accept = accept.Replace("text/json", string.Empty);
+                if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
+            }
+            if (accept.Contains(",;")) accept = accept.Replace(",;", ",");
             return base.CreateRequest(servicePath, accept, method, queryParams);
         }
 
@@ -357,12 +349,12 @@ namespace VDS.RDF.Storage
             }
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(_store)));
             
-            if (Username != null && Password != null)
+            if (HttpClientHandler?.Credentials is NetworkCredential networkCredential)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(Username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(Password)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(networkCredential.UserName)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(networkCredential.Password)));
             }
 
             SerializeStandardConfig(manager, context);

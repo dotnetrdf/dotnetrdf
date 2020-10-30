@@ -46,9 +46,10 @@ namespace VDS.RDF.Storage
 
         public static FusekiConnector GetConnection(string uploadMimeType = null)
         {
-            var mimeTypeDescription =
+            MimeTypeDefinition mimeTypeDescription =
                 uploadMimeType == null ? null : MimeTypesHelper.GetDefinitions(uploadMimeType).First();
-            return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer), mimeTypeDescription);
+            return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer),
+                mimeTypeDescription);
         }
 
         [SkippableTheory]
@@ -56,312 +57,211 @@ namespace VDS.RDF.Storage
         [InlineData("application/n-triples")]
         public void StorageFusekiSaveGraph(string mimeType = null)
         {
-            try
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/fusekiTest");
+
+            //Save Graph to Fuseki
+            FusekiConnector fuseki = FusekiTests.GetConnection(mimeType);
+            fuseki.SaveGraph(g);
+            _testOutputHelper.WriteLine("Graph saved to Fuseki OK");
+
+            //Now retrieve Graph from Fuseki
+            var h = new Graph();
+            fuseki.LoadGraph(h, "http://example.org/fusekiTest");
+
+            _testOutputHelper.WriteLine("");
+            foreach (Triple t in h.Triples)
             {
-                UriLoader.CacheEnabled = false;
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/fusekiTest");
-
-                //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTests.GetConnection(mimeType);
-                fuseki.SaveGraph(g);
-                _testOutputHelper.WriteLine("Graph saved to Fuseki OK");
-
-                //Now retrieve Graph from Fuseki
-                var h = new Graph();
-                fuseki.LoadGraph(h, "http://example.org/fusekiTest");
-
-                _testOutputHelper.WriteLine("");
-                foreach (Triple t in h.Triples)
-                {
-                    _testOutputHelper.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
+                _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+
+            Assert.Equal(g, h);
         }
 
         [SkippableFact]
         public void StorageFusekiSaveGraph2()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/fuseki#test");
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/fuseki#test");
 
-                //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.SaveGraph(g);
-                Console.WriteLine("Graph saved to Fuseki OK");
+            //Save Graph to Fuseki
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.SaveGraph(g);
 
-                //Now retrieve Graph from Fuseki
-                var h = new Graph();
-                fuseki.LoadGraph(h, "http://example.org/fuseki#test");
+            //Now retrieve Graph from Fuseki
+            var h = new Graph();
+            fuseki.LoadGraph(h, "http://example.org/fuseki#test");
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            Assert.Equal(g, h);
         }
 
         [SkippableFact]
         public void StorageFusekiSaveDefaultGraph()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                g.BaseUri = null;
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = null;
 
-                //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.SaveGraph(g);
-                Console.WriteLine("Graph saved to Fuseki OK");
+            //Save Graph to Fuseki
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.SaveGraph(g);
 
-                //Now retrieve Graph from Fuseki
-                var h = new Graph();
-                fuseki.LoadGraph(h, (Uri)null);
+            //Now retrieve Graph from Fuseki
+            var h = new Graph();
+            fuseki.LoadGraph(h, (Uri)null);
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
-                Assert.Null(h.BaseUri);
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            Assert.Equal(g, h);
+            Assert.Null(h.BaseUri);
         }
 
         [SkippableFact]
         public void StorageFusekiSaveDefaultGraph2()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                g.BaseUri = null;
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = null;
 
-                //Save Graph to Fuseki
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.SaveGraph(g);
-                Console.WriteLine("Graph saved to Fuseki OK");
+            //Save Graph to Fuseki
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.SaveGraph(g);
 
-                //Now retrieve Graph from Fuseki
-                var h = new Graph();
-                fuseki.LoadGraph(h, (String)null);
+            //Now retrieve Graph from Fuseki
+            var h = new Graph();
+            fuseki.LoadGraph(h, (String)null);
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
-                Assert.Null(h.BaseUri);
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            Assert.Equal(g, h);
+            Assert.Null(h.BaseUri);
         }
 
         [SkippableFact]
         public void StorageFusekiLoadGraph()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-                //Ensure that the Graph will be there using the SaveGraph() test
-                StorageFusekiSaveGraph();
+            //Ensure that the Graph will be there using the SaveGraph() test
+            StorageFusekiSaveGraph();
 
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/fusekiTest");
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/fusekiTest");
 
-                //Try to load the relevant Graph back from the Store
-                FusekiConnector fuseki = FusekiTests.GetConnection();
+            //Try to load the relevant Graph back from the Store
+            FusekiConnector fuseki = FusekiTests.GetConnection();
 
-                var h = new Graph();
-                fuseki.LoadGraph(h, "http://example.org/fusekiTest");
+            var h = new Graph();
+            fuseki.LoadGraph(h, "http://example.org/fusekiTest");
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            Assert.Equal(g, h);
         }
 
         [SkippableFact]
         public void StorageFusekiDeleteGraph()
         {
+            StorageFusekiSaveGraph();
+
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.DeleteGraph("http://example.org/fusekiTest");
+
+            var g = new Graph();
             try
             {
-                UriLoader.CacheEnabled = false;
-                StorageFusekiSaveGraph();
-
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.DeleteGraph("http://example.org/fusekiTest");
-
-                var g = new Graph();
-                try
-                {
-                    fuseki.LoadGraph(g, "http://example.org/fusekiTest");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Errored as expected since the Graph was deleted");
-                    // TestTools.ReportError("Error", ex);
-                }
-                Console.WriteLine();
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                fuseki.LoadGraph(g, "http://example.org/fusekiTest");
             }
-            finally
+            catch (Exception)
             {
-                UriLoader.CacheEnabled = true;
+                // Expect exception or empty graph
             }
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.True(g.IsEmpty,
+                "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [SkippableFact]
         public void StorageFusekiDeleteDefaultGraph()
         {
+            StorageFusekiSaveDefaultGraph();
+
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.DeleteGraph((Uri)null);
+
+            var g = new Graph();
             try
             {
-                UriLoader.CacheEnabled = false;
-                StorageFusekiSaveDefaultGraph();
-
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.DeleteGraph((Uri)null);
-
-                var g = new Graph();
-                try
-                {
-                    fuseki.LoadGraph(g, (Uri)null);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Errored as expected since the Graph was deleted");
-                    //TestTools.ReportError("Error", ex);
-                }
-                Console.WriteLine();
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                fuseki.LoadGraph(g, (Uri)null);
             }
-            finally
+            catch (Exception)
             {
-                UriLoader.CacheEnabled = true;
+                // Expect exception or empty graph
             }
+
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.True(g.IsEmpty,
+                "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [SkippableFact]
         public void StorageFusekiDeleteDefaultGraph2()
         {
+            StorageFusekiSaveDefaultGraph();
+
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.DeleteGraph((String)null);
+
+            var g = new Graph();
             try
             {
-                UriLoader.CacheEnabled = false;
-                StorageFusekiSaveDefaultGraph();
-
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.DeleteGraph((String)null);
-
-                var g = new Graph();
-                try
-                {
-                    fuseki.LoadGraph(g, (Uri)null);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Errored as expected since the Graph was deleted");
-                    // TestTools.ReportError("Error", ex);
-                }
-                Console.WriteLine();
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                fuseki.LoadGraph(g, (Uri)null);
             }
-            finally
+            catch (Exception)
             {
-                UriLoader.CacheEnabled = true;
+                // Expect exception or empty graph
             }
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.True(g.IsEmpty,
+                "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [SkippableFact]
         public void StorageFusekiAddTriples()
         {
-            try
+            StorageFusekiSaveGraph();
+
+            var g = new Graph();
+            var ts = new List<Triple>
             {
-                UriLoader.CacheEnabled = false;
-                StorageFusekiSaveGraph();
+                new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
+                    g.CreateUriNode(new Uri("http://example.org/predicate")),
+                    g.CreateUriNode(new Uri("http://example.org/object")))
+            };
 
-                var g = new Graph();
-                var ts = new List<Triple>();
-                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
 
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
-
-                fuseki.LoadGraph(g, "http://example.org/fusekiTest");
-                Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            fuseki.LoadGraph(g, "http://example.org/fusekiTest");
+            Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
         }
 
         [SkippableFact]
         public void StorageFusekiRemoveTriples()
         {
-            try
+            StorageFusekiSaveGraph();
+
+            var g = new Graph();
+            var ts = new List<Triple>
             {
-                UriLoader.CacheEnabled = false;
-                StorageFusekiSaveGraph();
+                new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
+                    g.CreateUriNode(new Uri("http://example.org/predicate")),
+                    g.CreateUriNode(new Uri("http://example.org/object")))
+            };
 
-                var g = new Graph();
-                var ts = new List<Triple>();
-                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+            FusekiConnector fuseki = FusekiTests.GetConnection();
+            fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
 
-                FusekiConnector fuseki = FusekiTests.GetConnection();
-                fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
-
-                fuseki.LoadGraph(g, "http://example.org/fusekiTest");
-                Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            fuseki.LoadGraph(g, "http://example.org/fusekiTest");
+            Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
         [SkippableFact]
@@ -369,7 +269,7 @@ namespace VDS.RDF.Storage
         {
             FusekiConnector fuseki = FusekiTests.GetConnection();
 
-            var results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
+            object results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
             if (results is SparqlResultSet)
             {
                 //TestTools.ShowResults(results);
@@ -393,12 +293,6 @@ namespace VDS.RDF.Storage
             IGraph g = new Graph();
             fuseki.LoadGraph(g, "http://example.org/Ilson");
             Assert.False(g.IsEmpty, "Graph should be non-empty");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString(_formatter));
-            }
-
-            Console.WriteLine();
 
             //Try a DROP Graph to see if that works
             command = "DROP GRAPH <http://example.org/Ilson>";
@@ -414,7 +308,7 @@ namespace VDS.RDF.Storage
         {
             FusekiConnector fuseki = FusekiTests.GetConnection();
 
-            var results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
+            object results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
             if (results is IGraph)
             {
                 //TestTools.ShowGraph((IGraph) results);

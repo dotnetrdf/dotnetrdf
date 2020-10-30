@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -224,32 +225,28 @@ namespace VDS.RDF.Storage
             {
                 retrievalUri += "?default";
             }
+
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(retrievalUri);
-                request.Method = "GET";
-                request.Accept = MimeTypesHelper.HttpAcceptHeader;
-                request = ApplyRequestOptions(request);
+                var request = new HttpRequestMessage(HttpMethod.Get, retrievalUri);
+                request.Headers.Add("Accept", MimeTypesHelper.HttpAcceptHeader);
 
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    // Parse the retrieved RDF
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
-
-                    // If we get here then it was OK
-                    response.Close();
+                    // If the error is a 404 then return
+                    // Any other error caused the function to throw an error
+                    if (response.StatusCode == HttpStatusCode.NotFound) return;
+                    throw StorageHelper.HandleHttpError(response, "loading a Graph from");
                 }
+
+                // Parse the retrieved RDF
+                IRdfReader parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+                parser.Load(handler, new StreamReader(response.Content.ReadAsStreamAsync().Result));
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                // If the error is a 404 then return
-                // Any other error caused the function to throw an error
-                if (webEx.Response != null)
-                {
-                    if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound) return;
-                }
-                throw StorageHelper.HandleHttpError(webEx, "loading a Graph from");
+                throw StorageHelper.HandleError(ex, "loading a Graph from");
             }
         }
 
@@ -277,31 +274,22 @@ namespace VDS.RDF.Storage
             {
                 lookupUri += "?default";
             }
+
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(lookupUri);
-                request.Method = "HEAD";
-                request = ApplyRequestOptions(request);
-
-                using (var response = (HttpWebResponse)request.GetResponse())
+                var request = new HttpRequestMessage(HttpMethod.Head, lookupUri);
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    // If we get here then it was OK
-                    response.Close();
                     return true;
                 }
+
+                if (response.StatusCode == HttpStatusCode.NotFound) return false;
+                throw StorageHelper.HandleHttpError(response, "check Graph existence in");
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                // If the error is a 404 then return false
-                // Any other error caused the function to throw an error
-                if (webEx.Response != null)
-                {
-                    if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
-                    {
-                        return false;
-                    }
-                }
-                throw StorageHelper.HandleHttpError(webEx, "check Graph existence in");
+                throw StorageHelper.HandleError(ex, "check Graph existence in");
             }
         }
 
@@ -322,25 +310,18 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
-                request.Method = "PUT";
-                //request.ContentType = MimeTypesHelper.RdfXml[0];
-                request.ContentType = _writerMimeTypeDefinition.CanonicalMimeType;
-                request = ApplyRequestOptions(request);
-
-                //RdfXmlWriter writer = new RdfXmlWriter();
-                IRdfWriter writer = _writerMimeTypeDefinition.GetRdfWriter();
-                writer.Save(g, new StreamWriter(request.GetRequestStream()));
-
-                using (var response = (HttpWebResponse)request.GetResponse())
+                var request = new HttpRequestMessage(HttpMethod.Put, saveUri)
                 {
-                    // If we get here then it was OK
-                    response.Close();
-                }
+                    Content = new GraphContent(g, _writerMimeTypeDefinition.CanonicalMimeType),
+                };
+
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode) return;
+                throw StorageHelper.HandleHttpError(response, "saving a Graph to");
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "saving a Graph to");
+                throw StorageHelper.HandleError(ex, "saving a Graph to");
             }
         }
 
@@ -369,9 +350,15 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (removals != null && removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Graph Store HTTP Protocol for Graph Management does not support");
+            if (removals != null && removals.Any())
+            {
+                throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Graph Store HTTP Protocol for Graph Management does not support");
+            }
 
-            if (additions == null || !additions.Any()) return;
+            if (additions == null || !additions.Any())
+            {
+                return;
+            }
 
             var updateUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(string.Empty))
@@ -383,29 +370,14 @@ namespace VDS.RDF.Storage
                 updateUri += "?default";
             }
 
-            try
+            var request = new HttpRequestMessage(HttpMethod.Post, updateUri);
+            var g = new Graph();
+            g.Assert(additions);
+            request.Content = new GraphContent(g, _writerMimeTypeDefinition.GetRdfWriter());
+            using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode)
             {
-                var request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
-                request.Method = "POST";
-                //request.ContentType = MimeTypesHelper.RdfXml[0];
-                request.ContentType = _writerMimeTypeDefinition.CanonicalMimeType;
-                request = ApplyRequestOptions(request);
-
-                //RdfXmlWriter writer = new RdfXmlWriter();
-                IRdfWriter writer = _writerMimeTypeDefinition.GetRdfWriter();
-                var g = new Graph();
-                g.Assert(additions);
-                writer.Save(g, new StreamWriter(request.GetRequestStream()));
-
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    // If we get here then it was OK
-                    response.Close();
-                }
-            }
-            catch (WebException webEx)
-            {
-                throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
+                throw StorageHelper.HandleHttpError(response, "updating a Graph in");
             }
         }
 
@@ -434,25 +406,11 @@ namespace VDS.RDF.Storage
                 deleteUri += "?default";
             }
 
-            try
+            var request = new HttpRequestMessage(HttpMethod.Delete, deleteUri);
+            HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
             {
-                var request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
-                request.Method = "DELETE";
-                request = ApplyRequestOptions(request);
-
-                using (var response = (HttpWebResponse)request.GetResponse())
-                {
-                    // If we get here then it was OK
-                    response.Close();
-                }
-            }
-            catch (WebException webEx)
-            {
-                // Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
-                if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
-                {
-                    throw StorageHelper.HandleHttpError(webEx, "deleting a Graph from");
-                }
+                throw StorageHelper.HandleHttpError(response, "deleting a Graph from");
             }
         }
 
@@ -505,11 +463,8 @@ namespace VDS.RDF.Storage
             {
                 retrievalUri += "?default";
             }
-            var request = (HttpWebRequest)WebRequest.Create(retrievalUri);
-            request.Method = "GET";
-            request.Accept = MimeTypesHelper.HttpAcceptHeader;
-            request = ApplyRequestOptions(request);
-
+            var request = new HttpRequestMessage(HttpMethod.Get, retrievalUri);
+            request.Headers.Add("Accept", MimeTypesHelper.HttpAcceptHeader);
             LoadGraphAsync(request, handler, callback, state);
         }
 
@@ -530,11 +485,7 @@ namespace VDS.RDF.Storage
             {
                 saveUri += "?default";
             }
-            var request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
-            request.Method = "PUT";
-            request.ContentType = MimeTypesHelper.RdfXml[0];
-            request = ApplyRequestOptions(request);
-
+            var request = new HttpRequestMessage(HttpMethod.Put, saveUri);
             SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
         }
 
@@ -573,11 +524,7 @@ namespace VDS.RDF.Storage
                 updateUri += "?default";
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
-            request.Method = "POST";
-            request.ContentType = MimeTypesHelper.RdfXml[0];
-            request = ApplyRequestOptions(request);
-
+            var request = new HttpRequestMessage(HttpMethod.Post, updateUri);
             var writer = new RdfXmlWriter();
 
             UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
@@ -611,35 +558,10 @@ namespace VDS.RDF.Storage
                 deleteUri += "?default";
             }
 
-            try
-            {
-                var request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
-                request.Method = "DELETE";
-                request = ApplyRequestOptions(request);
-
-                DeleteGraphAsync(request, true, graphUri, callback, state);
-            }
-            catch (WebException webEx)
-            {
-                // Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
-                if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "deleting a Graph from")), state);
-                }
-                else
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
-                }
-            }
+            var request = new HttpRequestMessage(HttpMethod.Delete, deleteUri);
+            DeleteGraphAsync(request, true, graphUri, callback, state);
         }
 
-        /// <summary>
-        /// Disposes of the Connection.
-        /// </summary>
-        public override void Dispose()
-        {
-            // Nothing to dispose of
-        }
 
         /// <summary>
         /// Gets a String representation of the connection.
