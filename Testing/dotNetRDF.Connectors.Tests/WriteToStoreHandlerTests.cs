@@ -50,7 +50,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void TestWriteToStoreHandler(IStorageProvider manager)
+        protected void TestWriteToStoreHandler(IStorageProvider manager)
         {
             //First ensure that our test file exists
             EnsureTestData();
@@ -93,7 +93,7 @@ namespace VDS.RDF.Storage
             Assert.Equal(orig, temp);
         }
 
-        private void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
+        protected void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
         {
             var factory = new NodeFactory();
             INode a = factory.CreateUriNode(new Uri("http://example.org/a"));
@@ -146,7 +146,7 @@ namespace VDS.RDF.Storage
             Assert.True(gD.ContainsTriple(new Triple(d, d, d)), "d Graph should have the d triple");
         }
 
-        private void TestWriteToStoreHandlerWithBNodes(IStorageProvider manager)
+        protected void TestWriteToStoreHandlerWithBNodes(IStorageProvider manager)
         {
             var fragment = "@prefix : <http://example.org/>. :subj :has [ a :BNode ; :with \"value\" ] .";
 
@@ -190,16 +190,8 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void ParsingWriteToStoreHandler()
         {
-            try
-            {
-                UriLoader.CacheEnabled = false;
-                IStorageProvider store = GetConnection();
-                TestWriteToStoreHandler(store);
-            }
-            finally
-            {
-                UriLoader.CacheEnabled = true;
-            }
+            IStorageProvider store = GetConnection();
+            TestWriteToStoreHandler(store);
         }
 
         [SkippableFact]

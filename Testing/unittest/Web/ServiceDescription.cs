@@ -52,9 +52,7 @@ namespace VDS.RDF.Web
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server at " + server);
             Console.WriteLine();
 
-            var formatter = new NTriplesFormatter();
-
-            var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
+            var request = (HttpWebRequest)WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -81,8 +79,6 @@ namespace VDS.RDF.Web
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server at " + path);
             Console.WriteLine("This Test tries to ensure that the URI resolution works correctly");
             Console.WriteLine();
-
-            var formatter = new NTriplesFormatter();
 
             var request = (HttpWebRequest)System.Net.WebRequest.Create(path);
             request.Method = "OPTIONS";
@@ -111,7 +107,6 @@ namespace VDS.RDF.Web
             Console.WriteLine("Making an request for the Service Description from the web demos SPARQL Server at " + path);
             Console.WriteLine();
 
-            var formatter = new NTriplesFormatter();
             var g = new Graph();
             UriLoader.Load(g, new Uri(path));
             TestTools.ShowGraph(g);
@@ -127,8 +122,6 @@ namespace VDS.RDF.Web
 
             Console.WriteLine("Making an OPTIONS request to the web demos Query Handler at " + server);
             Console.WriteLine();
-
-            var formatter = new NTriplesFormatter();
 
             var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
@@ -157,8 +150,6 @@ namespace VDS.RDF.Web
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server Query Endpoint at " + server);
             Console.WriteLine();
 
-            var formatter = new NTriplesFormatter();
-
             var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
@@ -185,8 +176,6 @@ namespace VDS.RDF.Web
 
             Console.WriteLine("Making an OPTIONS request to the web demos SPARQL Server Update Endpoint at " + server);
             Console.WriteLine();
-
-            var formatter = new NTriplesFormatter();
 
             var request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";

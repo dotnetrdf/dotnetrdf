@@ -29,13 +29,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-using System.Web;
 
 namespace VDS.RDF.Storage
 {
@@ -181,7 +181,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                var graph = (graphUri != null && !graphUri.Equals(string.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : string.Empty;
+                var graph = (graphUri != null && !graphUri.Equals(string.Empty))
+                    ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {"
+                    : string.Empty;
                 var update = new StringBuilder();
 
                 if (additions != null)
@@ -223,25 +225,24 @@ namespace VDS.RDF.Storage
                 if (update.Length > 0)
                 {
                     // Make the SPARQL Update Request
-                    var request = (HttpWebRequest)WebRequest.Create(_updateUri);
-                    request.Method = "POST";
-                    request.ContentType = "application/sparql-update";
-                    request = ApplyRequestOptions(request);
-
-                    var writer = new StreamWriter(request.GetRequestStream());
-                    writer.Write(update.ToString());
-                    writer.Close();
-
-                    using (var response = (HttpWebResponse)request.GetResponse())
+                    var request = new HttpRequestMessage(HttpMethod.Post, _updateUri)
                     {
-                        // If we get here without erroring then the request was OK
-                        response.Close();
+                        Content = new StringContent(update.ToString(), Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
+                    };
+                    using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw StorageHelper.HandleHttpError(response, "updating a Graph in");
                     }
                 }
             }
-            catch (WebException webEx)
+            catch (RdfStorageException)
             {
-                throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "updating a Graph in");
             }
         }
 
@@ -288,63 +289,55 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpWebRequest request;
+                HttpRequestMessage request;
 
                 // Create the Request
                 var queryUri = _queryUri;
                 if (sparqlQuery.Length < 2048)
                 {
                     queryUri += "?query=" + Uri.EscapeDataString(sparqlQuery);
-                    request = (HttpWebRequest)WebRequest.Create(queryUri);
-                    request.Method = "GET";
-                    request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                    request = ApplyRequestOptions(request);
+                    request = new HttpRequestMessage(HttpMethod.Get, queryUri);
+                    request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
                 }
                 else
                 {
-                    request = (HttpWebRequest)WebRequest.Create(queryUri);
-                    request.Method = "POST";
-                    request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                    request = ApplyRequestOptions(request);
-
-                    // Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                    var postData = new StringBuilder();
-                    postData.Append("query=");
-                    postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-                    using (var writer = new StreamWriter(request.GetRequestStream(), new UTF8Encoding(false)))
-                    {
-                        writer.Write(postData);
-                        writer.Close();
-                    }
+                    request = new HttpRequestMessage(HttpMethod.Post, queryUri);
+                    request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
+                    request.Content =
+                        new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
                 }
 
                 // Get the Response and process based on the Content Type
-                using (var response = (HttpWebResponse)request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    var data = new StreamReader(response.GetResponseStream());
-                    var ctype = response.ContentType;
-                    try
-                    {
-                        // Is the Content Type referring to a RDF format?
-                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                        rdfreader.Load(rdfHandler, data);
-                        response.Close();
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        // If we get a Parser selection exception then the Content Type isn't valid for a RDF Graph
+                    throw StorageHelper.HandleHttpQueryError(response);
+                }
 
-                        // Is the Content Type referring to a Sparql Result Set format?
-                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
-                        resreader.Load(resultsHandler, data);
-                        response.Close();
-                    }
+                var data = new StreamReader(response.Content.ReadAsStreamAsync().Result);
+                var ctype = response.Content.Headers.ContentType.MediaType;
+                try
+                {
+                    // Is the Content Type referring to a RDF format?
+                    IRdfReader rdfReader = MimeTypesHelper.GetParser(ctype);
+                    rdfReader.Load(rdfHandler, data);
+                }
+                catch (RdfParserSelectionException)
+                {
+                    // If we get a Parser selection exception then the Content Type isn't valid for a RDF Graph
+
+                    // Is the Content Type referring to a Sparql Result Set format?
+                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(ctype, true);
+                    sparqlParser.Load(resultsHandler, data);
                 }
             }
-            catch (WebException webEx)
+            catch (RdfQueryException)
             {
-                throw StorageHelper.HandleHttpQueryError(webEx);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "querying");
             }
         }
 
@@ -357,24 +350,23 @@ namespace VDS.RDF.Storage
             try
             {
                 // Make the SPARQL Update Request
-                var request = (HttpWebRequest)WebRequest.Create(_updateUri);
-                request.Method = "POST";
-                request.ContentType = "application/sparql-update";
-                request = ApplyRequestOptions(request);
-
-                var writer = new StreamWriter(request.GetRequestStream());
-                writer.Write(sparqlUpdate);
-                writer.Close();
-
-                using (var response = (HttpWebResponse)request.GetResponse())
+                var request = new HttpRequestMessage(HttpMethod.Post, _updateUri)
                 {
-                    // If we get here without erroring then the request was OK
-                    response.Close();
+                    Content = new StringContent(sparqlUpdate, Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
+                };
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "updating");
                 }
             }
-            catch (WebException webEx)
+            catch (RdfStorageException)
             {
-                throw StorageHelper.HandleHttpError(webEx, "updating");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "updating");
             }
         }
 
@@ -411,91 +403,99 @@ namespace VDS.RDF.Storage
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
+            AsyncStorageCallback callback, object state)
         {
             try
             {
-                HttpWebRequest request;
-
                 // Create the Request, always use POST for async for simplicity
                 var queryUri = _queryUri;
 
-                request = (HttpWebRequest)WebRequest.Create(queryUri);
-                request.Method = "POST";
-                request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                request = ApplyRequestOptions(request);
+                var request = new HttpRequestMessage(HttpMethod.Post, queryUri);
+                request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
 
                 // Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.Utf8WWWFormURLEncoded;
-                var postData = new StringBuilder();
-                postData.Append("query=");
-                postData.Append(HttpUtility.UrlEncode(sparqlQuery));
-
-                request.BeginGetRequestStream(r =>
+                request.Content =
+                    new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
+                {
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        try
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled")
+                                    : StorageHelper.HandleError(requestTask.Exception, "querying")),
+                            state);
+                    }
+                    else
+                    {
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
                         {
-                            Stream stream = request.EndGetRequestStream(r);
-                            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                    StorageHelper.HandleHttpError(response, "querying")),
+                                state);
+                        }
+                        else
+                        {
+                            response.Content.ReadAsStreamAsync().ContinueWith(readTask =>
                             {
-                                writer.Write(postData);
-                                writer.Close();
-                            }
-
-                            // Get the Response and process based on the Content Type
-                            request.BeginGetResponse(r2 =>
-                            {
-                                try
+                                if (readTask.IsCanceled || readTask.IsFaulted)
                                 {
-                                    var response = (HttpWebResponse)request.EndGetResponse(r2);
-
-                                    var data = new StreamReader(response.GetResponseStream());
-                                    var ctype = response.ContentType;
+                                    callback(this,
+                                        new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                            readTask.IsCanceled
+                                                ? new RdfStorageException("The operation was cancelled")
+                                                : StorageHelper.HandleError(readTask.Exception, "querying")),
+                                        state);
+                                }
+                                else
+                                {
                                     try
                                     {
-                                        // Is the Content Type referring to a Sparql Result Set format?
-                                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
-                                        resreader.Load(resultsHandler, data);
-                                        response.Close();
-                                    }
-                                    catch (RdfParserSelectionException)
-                                    {
-                                        // If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+                                        var data = new StreamReader(readTask.Result);
+                                        var ctype = response.Content.Headers.ContentType.MediaType;
+                                        try
+                                        {
+                                            // Is the Content Type referring to a Sparql Result Set format?
+                                            ISparqlResultsReader resreader =
+                                                MimeTypesHelper.GetSparqlParser(ctype, true);
+                                            resreader.Load(resultsHandler, data);
+                                        }
+                                        catch (RdfParserSelectionException)
+                                        {
+                                            // If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
 
-                                        // Is the Content Type referring to a RDF format?
-                                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                                        rdfreader.Load(rdfHandler, data);
-                                        response.Close();
+                                            // Is the Content Type referring to a RDF format?
+                                            IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                            rdfreader.Load(rdfHandler, data);
+                                        }
+
+                                        callback(this,
+                                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                                sparqlQuery, rdfHandler, resultsHandler), state);
                                     }
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
+                                    catch (Exception ex)
+                                    {
+                                        callback(this,
+                                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                                                StorageHelper.HandleError(ex, "querying")),
+                                            state);
+                                    }
                                 }
-                                catch (WebException webEx)
-                                {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
-                                }
-                                catch (Exception ex)
-                                {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
-                                }
-                            }, state);
+                            });
                         }
-                        catch (WebException webEx)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
-                        }
-                        catch (Exception ex)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
+                    }
+                }).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
+                        StorageHelper.HandleError(ex, "querying")),
+                    state);
             }
         }
 
@@ -510,52 +510,38 @@ namespace VDS.RDF.Storage
             try
             {
                 // Make the SPARQL Update Request
-                var request = (HttpWebRequest)WebRequest.Create(_updateUri);
-                request.Method = "POST";
-                request.ContentType = "application/sparql-update";
-                request = ApplyRequestOptions(request);
-
-                request.BeginGetRequestStream(r =>
+                var request = new HttpRequestMessage(HttpMethod.Post, _updateUri)
+                {
+                    Content = new StringContent(sparqlUpdate, Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
+                };
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
+                {
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        try
+                        callback(this,
+                            new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled")
+                                    : StorageHelper.HandleError(requestTask.Exception, "updating")),
+                            state);
+                    }
+                    else
+                    {
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
                         {
-                            Stream stream = request.EndGetRequestStream(r);
-                            var writer = new StreamWriter(stream);
-                            writer.Write(sparqlUpdate);
-                            writer.Close();
-
-                            request.BeginGetResponse(r2 =>
-                                {
-                                    try
-                                    {
-                                        var response = (HttpWebResponse)request.EndGetResponse(r2);
-                                        // If we get here without erroring then the request was OK
-                                        response.Close();
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
-                                    }
-                                    catch (WebException webEx)
-                                    {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
-                                    }
-                                }, state);
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate,
+                                    StorageHelper.HandleHttpError(response, "updating")),
+                                state);
                         }
-                        catch (WebException webEx)
+                        else
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
                         }
-                        catch (Exception ex)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
+                    }
+                }).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -593,11 +579,14 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            AsyncStorageCallback callback, object state)
         {
             try
             {
-                var graph = (graphUri != null && !graphUri.Equals(string.Empty)) ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {" : string.Empty;
+                var graph = (graphUri != null && !graphUri.Equals(string.Empty))
+                    ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {"
+                    : string.Empty;
                 var update = new StringBuilder();
 
                 if (additions != null)
@@ -639,25 +628,32 @@ namespace VDS.RDF.Storage
                 if (update.Length > 0)
                 {
                     Update(update.ToString(), (sender, args, st) =>
+                    {
+                        if (args.WasSuccessful)
                         {
-                            if (args.WasSuccessful)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
-                            }
-                            else
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
-                            }
-                        }, state);
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()),
+                                state);
+                        }
+                        else
+                        {
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(),
+                                    args.Error), state);
+                        }
+                    }, state);
                 }
                 else
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                    callback(this,
+                        new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
                 }
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "updating a Graph asynchronously")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(),
+                        StorageHelper.HandleError(ex, "updating a Graph asynchronously")), state);
             }
         }
 

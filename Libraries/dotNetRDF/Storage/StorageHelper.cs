@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
@@ -68,6 +69,16 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Handles HTTP Query Errors obtaining additional information from the HTTP response if possible.
+        /// </summary>
+        /// <param name="responseMessage">HTTP response.</param>
+        /// <returns></returns>
+        public static RdfQueryException HandleHttpQueryError(HttpResponseMessage responseMessage)
+        {
+            return HandleHttpError(responseMessage, "querying", msg => new RdfQueryException(msg));
+        }
+
+        /// <summary>
         /// Handles HTTP Errors obtaining additional information from the HTTP response if possible.
         /// </summary>
         /// <param name="webEx">HTTP Error.</param>
@@ -76,6 +87,17 @@ namespace VDS.RDF.Storage
         public static RdfStorageException HandleHttpError(WebException webEx, string action)
         {
             return HandleHttpError<RdfStorageException>(webEx, action, (msg, ex) => new RdfStorageException(msg, ex));
+        }
+
+        /// <summary>
+        /// Handles HTTP errors, obtaining additional information from the HTTP response if possible.
+        /// </summary>
+        /// <param name="response">HTTP response.</param>
+        /// <param name="action">Action being performed.</param>
+        /// <returns>Exception that can be raised to notify this error.</returns>
+        public static RdfStorageException HandleHttpError(HttpResponseMessage response, string action)
+        {
+            return HandleHttpError(response, action, (msg) => new RdfStorageException(msg));
         }
 
         /// <summary>
@@ -111,6 +133,34 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Handles HTTP errors obtaining additional information from the HTTP response if possible.
+        /// </summary>
+        /// <typeparam name="T">Type of exception to raise.</typeparam>
+        /// <param name="responseMessage">HTTP response message to process.</param>
+        /// <param name="action">Action being performed when the response message was received.</param>
+        /// <param name="errorProvider">Function that generates the exception to be raised.</param>
+        /// <returns></returns>
+        public static T HandleHttpError<T>(HttpResponseMessage responseMessage, string action,
+            Func<string, T> errorProvider) where T : Exception
+        {
+            if (responseMessage.Content.Headers.ContentLength.HasValue &&
+                responseMessage.Content.Headers.ContentLength > 0)
+            {
+                string responseText;
+                try
+                {
+                    responseText = responseMessage.Content.ReadAsStringAsync().Result;
+                }
+                catch
+                {
+                    return errorProvider("A HTTP error " + GetStatusLine(responseMessage) + " occurred while " + action + " the Store.\nError getting response, see aforementioned status line or inner exception for further details");
+                }
+                return errorProvider("A HTTP error " + GetStatusLine(responseMessage ) + " occurred while " + action + " the Store.\nStore returned the following error message: " + responseText + "\nSee aforementioned status line or inner exception for further details");
+            }
+            return errorProvider("A HTTP error " + GetStatusLine(responseMessage) + " occurred while " + action + " the Store.\nEmpty response body, see aforementioned status line or the inner exception for further details");
+        }
+
+        /// <summary>
         /// Tries to get the status line for inclusion in the HTTP error message.
         /// </summary>
         /// <param name="webEx">Web exception.</param>
@@ -127,6 +177,11 @@ namespace VDS.RDF.Storage
                 return webEx.Status.ToSafeString();
             }
             return string.Empty;
+        }
+
+        private static string GetStatusLine(HttpResponseMessage responseMessage)
+        {
+            return $"(HTTP {(int)responseMessage.StatusCode} {responseMessage.ReasonPhrase})";
         }
 
         /// <summary>

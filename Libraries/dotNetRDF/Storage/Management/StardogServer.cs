@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -50,23 +51,13 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// The base URI of the Stardog server.
         /// </summary>
-        protected readonly string BaseUri;
+        protected readonly string _baseUri;
 
         /// <summary>
         /// The URI of the admin API.
         /// </summary>
-        protected readonly string AdminUri;
+        protected readonly string _adminUri;
 
-        /// <summary>
-        /// The username to use for the connection.
-        /// </summary>
-        protected new readonly string Username;
-
-        /// <summary>
-        /// The password to use for the connection.
-        /// </summary>
-        protected new readonly string Password;
-        
         /// <summary>
         /// True if a user name and password are specified, false otherwise.
         /// </summary>
@@ -99,12 +90,10 @@ namespace VDS.RDF.Storage.Management
         public BaseStardogServer(string baseUri, string username, string password)
             : base()
         {
-            BaseUri = baseUri;
-            if (!BaseUri.EndsWith("/")) BaseUri += "/";
-            AdminUri = BaseUri + "admin/";
-
-            Username = username;
-            Password = password;
+            _baseUri = baseUri;
+            if (!_baseUri.EndsWith("/")) _baseUri += "/";
+            _adminUri = _baseUri + "admin/";
+            SetCredentials(username, password);
             HasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
         }
 
@@ -116,6 +105,20 @@ namespace VDS.RDF.Storage.Management
         public BaseStardogServer(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
+        }
+
+        /// <summary>
+        /// Creates a new connection to a Starddog server.
+        /// </summary>
+        /// <param name="baseUri"></param>
+        /// <param name="httpClientHandler"></param>
+        public BaseStardogServer(string baseUri, HttpClientHandler httpClientHandler) :
+            base(httpClientHandler)
+        {
+            _baseUri = baseUri;
+            if (!_baseUri.EndsWith("/")) _baseUri += "/";
+            _adminUri = _baseUri + "admin/";
+            HasCredentials = httpClientHandler.Credentials != null;
         }
 
         /// <summary>
@@ -148,34 +151,30 @@ namespace VDS.RDF.Storage.Management
         public virtual IEnumerable<string> ListStores()
         {
             // GET /admin/databases - application/json
-            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            HttpRequestMessage request = CreateAdminRequest("databases", "application/json", HttpMethod.Get,
+                new Dictionary<string, string>());
 
             try
             {
                 var stores = new List<string>();
-                using (var response = (HttpWebResponse) request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                var data = response.Content.ReadAsStringAsync().Result;
+                if (string.IsNullOrEmpty(data))
                 {
-                    string data = null;
-                    using (var reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        data = reader.ReadToEnd();
-                    }
-                    if (string.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+                    throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+                }
 
-                    var obj = JObject.Parse(data);
-                    var dbs = (JArray) obj["databases"];
-                    foreach (JValue db in dbs.OfType<JValue>())
-                    {
-                        stores.Add(db.Value.ToString());
-                    }
-
-                    response.Close();
+                var obj = JObject.Parse(data);
+                var dbs = (JArray) obj["databases"];
+                foreach (JValue db in dbs.OfType<JValue>())
+                {
+                    stores.Add(db.Value.ToString());
                 }
                 return stores;
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
+                throw StorageHelper.HandleError(ex, "listing Stores from");
             }
         }
 
@@ -233,81 +232,76 @@ namespace VDS.RDF.Storage.Management
                 // Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
                 try
                 {
-                    // Get the Template
-                    var stardogTemplate = (BaseStardogTemplate) template;
-                    IEnumerable<string> errors = stardogTemplate.Validate();
-                    if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
-                    Console.WriteLine(jsonTemplate.ToString());
-
-                    // Create the request and write the JSON
-                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                    var boundary = StorageHelper.HttpMultipartBoundary;
-                    var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                    var terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-                    request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
-
-                    using (Stream stream = request.GetRequestStream())
-                    {
-                        // Boundary
-                        stream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                        // Then the root Item
-                        var templateItem = string.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
-                        var itemBytes = Encoding.UTF8.GetBytes(templateItem);
-                        stream.Write(itemBytes, 0, itemBytes.Length);
-                        // Then terminating boundary
-                        stream.Write(terminatorBytes, 0, terminatorBytes.Length);
-                        stream.Close();
-                    }
+                    HttpRequestMessage request = BuildCreateStoreRequestMessage(template);
 
                     // Make the request
-                    using (var response = (HttpWebResponse) request.GetResponse())
+                    using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                    if (!response.IsSuccessStatusCode)
                     {
-                        // If we get here it completed OK
-                        response.Close();
+                        throw StorageHelper.HandleHttpError(response, $"creating a new Store '{template.ID}' in");
                     }
+                    // If we get here it completed OK
                     return true;
                 }
-                catch (WebException webEx)
+                catch (Exception ex)
                 {
-                    throw StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' in");
+                    throw StorageHelper.HandleError(ex, $"creating a new Store '{template.ID}' in");
                 }
             }
-            else
-            {
-                throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
-            }
+
+            throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
+        }
+
+        private HttpRequestMessage BuildCreateStoreRequestMessage(IStoreTemplate template)
+        {
+            // Get the Template
+            var stardogTemplate = (BaseStardogTemplate) template;
+            IEnumerable<string> errors = stardogTemplate.Validate();
+            if (errors.Any())
+                throw new RdfStorageException(
+                    "Template is not valid, call Validate() on the template to see the list of errors");
+            JObject jsonTemplate = stardogTemplate.GetTemplateJson();
+
+            // Create the request and write the JSON
+            HttpRequestMessage request = CreateAdminRequest("databases", MimeTypesHelper.Any, HttpMethod.Post,
+                new Dictionary<string, string>());
+            request.Content =
+                new MultipartFormDataContent(StorageHelper.HttpMultipartBoundary)
+                {
+                    {new StringContent(jsonTemplate.ToString()), "root"},
+                };
+            return request;
         }
 
         /// <summary>
         /// Deletes a Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
-        public virtual void DeleteStore(string storeID)
+        /// <param name="storeId">Store ID.</param>
+        public virtual void DeleteStore(string storeId)
         {
             // DELETE /admin/databases/{db}
-            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
+            HttpRequestMessage request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
 
             try
             {
-                using (var response = (HttpWebResponse) request.GetResponse())
+                using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+                if (!response.IsSuccessStatusCode)
                 {
-                    // If we get here then it completed OK
-                    response.Close();
+                    throw StorageHelper.HandleHttpError(response, $"deleting Store {storeId} from");
                 }
             }
-            catch (WebException webEx)
+            catch (Exception ex)
             {
-                throw StorageHelper.HandleHttpError(webEx, "deleting Store " + storeID + " from");
+                throw StorageHelper.HandleError(ex, $"deleting Store {storeId} from");
             }
         }
 
         /// <summary>
         /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
-        public abstract IStorageProvider GetStore(string storeID);
+        public abstract IStorageProvider GetStore(string storeId);
 
         #endregion
 
@@ -321,51 +315,67 @@ namespace VDS.RDF.Storage.Management
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
             // GET /admin/databases - application/json
-            HttpWebRequest request = CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+            HttpRequestMessage request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, new Dictionary<string, string>());
 
             try
             {
                 var stores = new List<string>();
-                request.BeginGetResponse(r =>
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
+                {
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        try
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled.")
+                                    : StorageHelper.HandleError(requestTask.Exception,
+                                        "listing Stores asynchronously from")),
+                            state);
+                    }
+                    else
+                    {
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
                         {
-                            var response = (HttpWebResponse) request.EndGetResponse(r);
-
-                            string data = null;
-                            using (var reader = new StreamReader(response.GetResponseStream()))
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                    StorageHelper.HandleHttpError(response, "listing Stores asynchronously from")),
+                                state);
+                        }
+                        else
+                        {
+                            response.Content.ReadAsStringAsync().ContinueWith(readTask =>
                             {
-                                data = reader.ReadToEnd();
-                            }
-                            if (string.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+                                if (readTask.IsCanceled || readTask.IsFaulted)
+                                {
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                                            readTask.IsCanceled
+                                                ? new RdfStorageException("The operation was cancelled.")
+                                                : StorageHelper.HandleError(requestTask.Exception,
+                                                    "listing Stores asynchronously from")),
+                                        state);
+                                }
+                                else
+                                {
+                                    var obj = JObject.Parse(readTask.Result);
+                                    var dbs = (JArray)obj["databases"];
+                                    foreach (JValue db in dbs.OfType<JValue>())
+                                    {
+                                        stores.Add(db.Value.ToString());
+                                    }
 
-                            var obj = JObject.Parse(data);
-                            var dbs = (JArray) obj["databases"];
-                            foreach (JValue db in dbs.OfType<JValue>())
-                            {
-                                stores.Add(db.Value.ToString());
-                            }
+                                    callback(this,
+                                        new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, stores), state);
 
-                            response.Close();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, stores), state);
+                                }
+                            });
                         }
-                        catch (WebException webEx)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores asynchronously from")), state);
-                        }
-                        catch (Exception ex)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores asynchronously from")), state);
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores asynchronously from")), state);
+                    }
+                });
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores asynchronously from")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,
+                        StorageHelper.HandleError(ex, "listing Stores asynchronously from")), state);
             }
         }
 
@@ -425,76 +435,47 @@ namespace VDS.RDF.Storage.Management
                 // Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
                 try
                 {
-                    // Get the Template
-                    var stardogTemplate = (BaseStardogTemplate) template;
-                    IEnumerable<string> errors = stardogTemplate.Validate();
-                    if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
-                    Console.WriteLine(jsonTemplate.ToString());
-
-                    // Create the request and write the JSON
-                    HttpWebRequest request = CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                    var boundary = StorageHelper.HttpMultipartBoundary;
-                    var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                    var terminatorBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-                    request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
-
-                    request.BeginGetRequestStream(r =>
+                    HttpRequestMessage request = BuildCreateStoreRequestMessage(template);
+                    HttpClient.SendAsync(request).ContinueWith(requestTask =>
+                    {
+                        if (requestTask.IsCanceled || requestTask.IsFaulted)
                         {
-                            try
+                            callback(this,
+                                new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore,
+                                    template.ID,
+                                    requestTask.IsCanceled
+                                        ? new RdfStorageException("The operation was cancelled.")
+                                        : StorageHelper.HandleError(requestTask.Exception,
+                                            $"creating a new Store '{template.ID}' asynchronously in")),
+                                state);
+                        }
+                        else
+                        {
+                            HttpResponseMessage response = requestTask.Result;
+                            if (!response.IsSuccessStatusCode)
                             {
-                                using (Stream stream = request.EndGetRequestStream(r))
-                                {
-                                    // Boundary
-                                    stream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                                    // Then the root Item
-                                    var templateItem = string.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
-                                    var itemBytes = Encoding.UTF8.GetBytes(templateItem);
-                                    stream.Write(itemBytes, 0, itemBytes.Length);
-                                    // Then terminating boundary
-                                    stream.Write(terminatorBytes, 0, terminatorBytes.Length);
-                                    stream.Close();
-                                }
-
-                                // Make the request
-                                request.BeginGetResponse(r2 =>
-                                    {
-                                        try
-                                        {
-                                            using (var response = (HttpWebResponse) request.EndGetResponse(r2))
-                                            {
-                                                // If we get here it completed OK
-                                                response.Close();
-                                            }
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID), state);
-                                        }
-                                        catch (WebException webEx)
-                                        {
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' asynchronously in")), state);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(ex, "creating a new Store '" + template.ID + "' asynchronously in")), state);
-                                        }
-                                    }, state);
+                                callback(this,
+                                    new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore,
+                                        template.ID,
+                                        StorageHelper.HandleHttpError(response,
+                                            $"creating a new Store '{template.ID}' asynchronously in")),
+                                    state);
                             }
-                            catch (WebException webEx)
+                            else
                             {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                                callback(this,
+                                    new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID),
+                                    state);
                             }
-                            catch (Exception ex)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(ex, "creating a new Store '" + template.ID + "' asynchronously in")), state);
-                            }
-                        }, state);
-                }
-                catch (WebException webEx)
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                        }
+                    });
                 }
                 catch (Exception ex)
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(ex, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                    callback(this,
+                        new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID,
+                            StorageHelper.HandleError(ex,
+                                "creating a new Store '" + template.ID + "' asynchronously in")), state);
                 }
             }
             else
@@ -506,53 +487,66 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Deletes a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public virtual void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
+        public virtual void DeleteStore(string storeId, AsyncStorageCallback callback, object state)
         {
-            // DELETE /admin/databases/{db}
-            HttpWebRequest request = CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<string, string>());
-
             try
             {
-                request.BeginGetResponse(r =>
+                // DELETE /admin/databases/{db}
+                HttpRequestMessage request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any,
+                    HttpMethod.Delete, new Dictionary<string, string>());
+                HttpClient.SendAsync(request).ContinueWith(requestTask =>
+                {
+                    if (requestTask.IsCanceled || requestTask.IsFaulted)
                     {
-                        try
+                        callback(this,
+                            new AsyncStorageCallbackArgs(
+                                AsyncStorageOperation.DeleteStore,
+                                storeId,
+                                requestTask.IsCanceled
+                                    ? new RdfStorageException("The operation was cancelled.")
+                                    : StorageHelper.HandleError(requestTask.Exception,
+                                        $"deleting Store {storeId} asynchronously from")),
+                            state);
+                    }
+                    else
+                    {
+                        HttpResponseMessage response = requestTask.Result;
+                        if (!response.IsSuccessStatusCode)
                         {
-                            var response = (HttpWebResponse) request.EndGetResponse(r);
-
-                            // If we get here then it completed OK
-                            response.Close();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
+                            callback(this,
+                                new AsyncStorageCallbackArgs(
+                                    AsyncStorageOperation.DeleteStore,
+                                    storeId,
+                                    StorageHelper.HandleHttpError(response,
+                                        $"deleting Store {storeId} asynchronously from")),
+                                state);
                         }
-                        catch (WebException webEx)
+                        else
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "deleting Store " + storeID + " asynchronously from")), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId),
+                                state);
                         }
-                        catch (Exception ex)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "deleting Store " + storeID + " asynchronously from")), state);
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "deleting Store " + storeID + " asynchronously from")), state);
+                    }
+                });
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "deleting Store " + storeID + " asynchronously from")), state);
+                callback(this,
+                    new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId,
+                        StorageHelper.HandleError(ex, "deleting Store " + storeId + " asynchronously from")), state);
             }
         }
 
         /// <summary>
         /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public abstract void GetStore(string storeID, AsyncStorageCallback callback, object state);
+        public abstract void GetStore(string storeId, AsyncStorageCallback callback, object state);
 
         #endregion
 
@@ -564,10 +558,11 @@ namespace VDS.RDF.Storage.Management
         /// <param name="method">HTTP method to use.</param>
         /// <param name="requestParams">Additional request parameters.</param>
         /// <returns></returns>
+        [Obsolete("This method is obsolete and will be removed in a future release.")]
         protected virtual HttpWebRequest CreateAdminRequest(string servicePath, string accept, string method, Dictionary<string, string> requestParams)
         {
             // Build the Request Uri
-            var requestUri = AdminUri + servicePath;
+            var requestUri = _adminUri + servicePath;
             if (requestParams.Count > 0)
             {
                 requestUri += "?";
@@ -582,7 +577,7 @@ namespace VDS.RDF.Storage.Management
             var request = (HttpWebRequest) WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
-            request = ApplyRequestOptions(request);
+            //request = ApplyRequestOptions(request);
 
             // Add the special Stardog Headers
             request.Headers.Add("SD-Protocol", "1.0");
@@ -590,22 +585,48 @@ namespace VDS.RDF.Storage.Management
             // Add Credentials if needed
             if (HasCredentials)
             {
-                var credentials = new NetworkCredential(Username, Password);
-                request.Credentials = credentials;
+                //var credentials = new NetworkCredential(Username, Password);
+                //request.Credentials = credentials;
+                request.Credentials = HttpClientHandler.Credentials;
                 request.PreAuthenticate = true;
             }
 
             return request;
         }
 
-        /// <summary>
-        /// Disposes of the server.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // Nothing to do
-        }
 
+        /// <summary>
+        /// Create a request to the Stardog server's Admin API.
+        /// </summary>
+        /// <param name="servicePath">The admin API service path.</param>
+        /// <param name="accept">Accept header content.</param>
+        /// <param name="method">HTTP method to use.</param>
+        /// <param name="requestParams">Additional request parameters.</param>
+        /// <returns></returns>
+        protected virtual HttpRequestMessage CreateAdminRequest(string servicePath, string accept, HttpMethod method, Dictionary<string, string> requestParams)
+        {
+            // Build the Request Uri
+            var requestUri = _adminUri + servicePath;
+            if (requestParams.Count > 0)
+            {
+                requestUri += "?";
+                foreach (var p in requestParams.Keys)
+                {
+                    requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
+                }
+                requestUri = requestUri.Substring(0, requestUri.Length - 1);
+            }
+
+            // Create our Request
+            var request = new HttpRequestMessage(method, requestUri);
+            request.Headers.Add("Accept", accept);
+
+            // Add the special Stardog Headers
+            request.Headers.Add("SD-Protocol", "1.0");
+
+            return request;
+        }
+        
         /// <summary>
         /// Serializes the connection's configuration.
         /// </summary>
@@ -622,14 +643,14 @@ namespace VDS.RDF.Storage.Management
             context.Graph.Assert(new Triple(manager, rdfType, storageServer));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(BaseUri)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_baseUri)));
 
-            if (Username != null && Password != null)
+            if (HttpClientHandler?.Credentials is NetworkCredential networkCredential)
             {
                 INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
                 INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
-                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(Username)));
-                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(Password)));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(networkCredential.UserName)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(networkCredential.Password)));
             }
 
             SerializeStandardConfig(manager, context);
@@ -863,27 +884,36 @@ namespace VDS.RDF.Storage.Management
             : base(baseUri, username, password, proxy)
         {
         }
-        
+
+        /// <summary>
+        /// Creates a new connection to a Stardog server.
+        /// </summary>
+        /// <param name="baseUri">Base URI of the server.</param>
+        /// <param name="httpClientHandler">Handler to configure outgoing HTTP requests.</param>
+        public StardogV1Server(string baseUri, HttpClientHandler httpClientHandler)
+            : base(baseUri, httpClientHandler)
+        {
+        }
 
         /// <summary>
         /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
-        public override IStorageProvider GetStore(string storeID)
+        public override IStorageProvider GetStore(string storeId)
         {
-            return new StardogV1Connector(BaseUri, storeID, Username, Password, Proxy);
+            return new StardogV1Connector(_baseUri, storeId, HttpClientHandler);
         }
 
         /// <summary>
         /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void GetStore(string storeId, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV1Connector(BaseUri, storeID, Username, Password, Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, new StardogV1Connector(_baseUri, storeId, HttpClientHandler)), state);
         }
     }
 
@@ -940,22 +970,22 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
-        public override IStorageProvider GetStore(string storeID)
+        public override IStorageProvider GetStore(string storeId)
         {
-            return new StardogV2Connector(BaseUri, storeID, Username, Password, Proxy);
+            return new StardogV2Connector(_baseUri, storeId, HttpClientHandler);
         }
 
         /// <summary>
         /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void GetStore(string storeId, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV2Connector(BaseUri, storeID, Username, Password, Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, new StardogV2Connector(_baseUri, storeId, HttpClientHandler)), state);
         }
     }
 
@@ -1011,22 +1041,22 @@ namespace VDS.RDF.Storage.Management
         /// <summary>
         /// Gets a provider for the Store with the given ID.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <returns></returns>
-        public override IStorageProvider GetStore(string storeID)
+        public override IStorageProvider GetStore(string storeId)
         {
-            return new StardogV3Connector(BaseUri, storeID, Username, Password, Proxy);
+            return new StardogV3Connector(_baseUri, storeId, HttpClientHandler);
         }
 
         /// <summary>
         /// Gets a database from the server.
         /// </summary>
-        /// <param name="storeID">Store ID.</param>
+        /// <param name="storeId">Store ID.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void GetStore(string storeId, AsyncStorageCallback callback, object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogV3Connector(BaseUri, storeID, Username, Password, Proxy)), state);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, new StardogV3Connector(_baseUri, storeId, HttpClientHandler)), state);
         }
     }
 

@@ -24,34 +24,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Threading;
 using Xunit;
 using VDS.RDF.Configuration;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Storage;
-using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
     public class ReadWriteSparqlTests
     {
-        private NTriplesFormatter _formatter = new NTriplesFormatter();
+        private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
         public static ReadWriteSparqlConnector GetConnection()
         {
             return new ReadWriteSparqlConnector(RemoteEndpoints.GetQueryEndpoint(), RemoteEndpoints.GetUpdateEndpoint());
-        }
-
-        private void SetUriLoaderCaching(bool newValue)
-        {
-            UriLoader.CacheEnabled = newValue;
         }
 
         [SkippableFact]
@@ -59,14 +47,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Save Graph to ReadWriteSparql
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.SaveGraph(g);
                 Console.WriteLine("Graph saved to ReadWriteSparql OK");
 
@@ -84,7 +70,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -93,14 +78,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.SaveGraph(g);
                 Console.WriteLine("Graph saved to ReadWriteSparql OK");
 
@@ -119,7 +102,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -128,14 +110,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 var g = new Graph();
                 g.LoadFromFile("resources\\InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.SaveGraph(g);
                 Console.WriteLine("Graph saved to ReadWriteSparql OK");
 
@@ -154,7 +134,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -163,8 +142,6 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageReadWriteSparqlSaveGraph();
 
@@ -173,7 +150,7 @@ namespace VDS.RDF.Storage
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Try to load the relevant Graph back from the Store
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
 
                 var h = new Graph();
                 readWrite.LoadGraph(h, "http://example.org/readWriteTest");
@@ -188,7 +165,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -197,11 +173,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 StorageReadWriteSparqlSaveGraph();
 
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.DeleteGraph("http://example.org/readWriteTest");
 
                 var g = new Graph();
@@ -221,7 +195,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -230,11 +203,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 StorageReadWriteSparqlSaveDefaultGraph();
 
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.DeleteGraph((Uri)null);
 
                 var g = new Graph();
@@ -254,7 +225,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -263,11 +233,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 StorageReadWriteSparqlSaveDefaultGraph();
 
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.DeleteGraph((String)null);
 
                 var g = new Graph();
@@ -287,7 +255,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -296,15 +263,17 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 StorageReadWriteSparqlSaveGraph();
 
                 var g = new Graph();
-                var ts = new List<Triple>();
-                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+                var ts = new List<Triple>
+                {
+                    new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
+                        g.CreateUriNode(new Uri("http://example.org/predicate")),
+                        g.CreateUriNode(new Uri("http://example.org/object")))
+                };
 
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.UpdateGraph("http://example.org/readWriteTest", ts, null);
 
                 readWrite.LoadGraph(g, "http://example.org/readWriteTest");
@@ -312,7 +281,6 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
@@ -321,15 +289,17 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                SetUriLoaderCaching(false);
-
                 StorageReadWriteSparqlSaveGraph();
 
                 var g = new Graph();
-                var ts = new List<Triple>();
-                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+                var ts = new List<Triple>
+                {
+                    new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
+                        g.CreateUriNode(new Uri("http://example.org/predicate")),
+                        g.CreateUriNode(new Uri("http://example.org/object")))
+                };
 
-                ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+                ReadWriteSparqlConnector readWrite = GetConnection();
                 readWrite.UpdateGraph("http://example.org/readWriteTest", null, ts);
 
                 readWrite.LoadGraph(g, "http://example.org/readWriteTest");
@@ -337,14 +307,13 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                SetUriLoaderCaching(true);
             }
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlQuery()
         {
-            ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+            ReadWriteSparqlConnector readWrite = GetConnection();
 
             var results = readWrite.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
             if (results is SparqlResultSet)
@@ -363,7 +332,7 @@ namespace VDS.RDF.Storage
             Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
                 "Test Config marks Remote Parsing as unavailable, test cannot be run");
 
-            ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+            ReadWriteSparqlConnector readWrite = GetConnection();
 
             //Try doing a SPARQL Update LOAD command
             var command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
@@ -392,12 +361,12 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageReadWriteSparqlDescribe()
         {
-            ReadWriteSparqlConnector readWrite = ReadWriteSparqlTests.GetConnection();
+            ReadWriteSparqlConnector readWrite = GetConnection();
 
             var results = readWrite.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
-            if (results is IGraph)
+            if (results is IGraph graph)
             {
-                TestTools.ShowGraph((IGraph) results);
+                TestTools.ShowGraph(graph);
             }
             else
             {
@@ -408,7 +377,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageReadWriteSparqlConfigSerialization1()
         {
-            ReadWriteSparqlConnector connector = ReadWriteSparqlTests.GetConnection();
+            ReadWriteSparqlConnector connector = GetConnection();
             var g = new Graph();
             INode n = g.CreateBlankNode();
             var context = new ConfigurationSerializationContext(g)

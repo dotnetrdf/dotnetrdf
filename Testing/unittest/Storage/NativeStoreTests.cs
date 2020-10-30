@@ -49,11 +49,9 @@ namespace VDS.RDF.Storage
             Assert.False(g.IsEmpty, "Test Graph should be non-empty");
 
             //Create our Native Managers
-            var managers = new List<IStorageProvider>() {
-                new InMemoryManager(),
-#if NET40
-                VirtuosoTest.GetConnection()
-#endif
+            var managers = new List<IStorageProvider>
+            {
+                new InMemoryManager()
             };
 
             //Save the Graph to each Manager

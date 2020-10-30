@@ -47,7 +47,6 @@ namespace VDS.RDF.Storage
         /// Method to be implemented by derived classes to obtain the storage provider to test
         /// </summary>
         /// <returns></returns>
-        /// <r
         protected abstract IAsyncStorageProvider GetAsyncProvider();
 
         protected void Fail(IAsyncStorageProvider provider, String msg)
