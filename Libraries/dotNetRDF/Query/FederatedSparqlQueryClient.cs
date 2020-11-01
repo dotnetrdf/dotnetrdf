@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
     /// it just naively merges the data.
     /// </para>
     /// </remarks>
-    public class FederatedSparqlQueryClient
+    public class FederatedSparqlQueryClient : ISparqlQueryClient
     {
         private readonly HttpClient _httpClient;
         private readonly List<SparqlQueryClient> _endpoints = new List<SparqlQueryClient>();
@@ -116,14 +116,20 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">The SPARQL query string.</param>
         /// <returns>An RDF graph containing the combined results received from all remote endpoints.</returns>
-        public async Task<IGraph> QueryWithResultGraphAsync(string sparqlQuery)
+        public Task<IGraph> QueryWithResultGraphAsync(string sparqlQuery)
+        {
+            return QueryWithResultGraphAsync(sparqlQuery, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public async Task<IGraph> QueryWithResultGraphAsync(string sparqlQuery, CancellationToken cancellationToken)
         {
             var g = new Graph();
 
             // If no endpoints return an empty graph
             if (_endpoints.Count == 0) return g;
 
-            await QueryWithResultGraphAsync(sparqlQuery, new GraphHandler(g), CancellationToken.None);
+            await QueryWithResultGraphAsync(sparqlQuery, new GraphHandler(g), cancellationToken);
             return g;
         }
 

@@ -28,6 +28,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -233,7 +234,7 @@ namespace VDS.RDF.Query
             if (_remote == null)
             {
                 Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS), "Test Config marks IIS as unavailable, cannot run test");
-                _remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
+                _remote = new RemoteQueryProcessor(new SparqlQueryClient(new HttpClient(),  new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
             }
         }
 
