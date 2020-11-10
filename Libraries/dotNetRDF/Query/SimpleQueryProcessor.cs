@@ -25,7 +25,7 @@
 */
 
 using System;
-using VDS.RDF.Parsing.Handlers;
+using System.Threading.Tasks;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -89,5 +89,16 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <inheritdoc />
+        public Task<object> ProcessQueryAsync(SparqlQuery query)
+        {
+            return Task.Factory.StartNew(() => ProcessQuery(query));
+        }
+
+        /// <inheritdoc />
+        public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            return Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query));
+        }
     }
 }

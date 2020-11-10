@@ -42,8 +42,8 @@ namespace VDS.RDF.Storage.Management
     public class AllegroGraphServer
         : SesameServer
     {
-        private string _agraphBase;
-        private string _catalog;
+        private readonly string _agraphBase;
+        private readonly string _catalog;
          
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store.
@@ -263,6 +263,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to callback.</param>
+        [Obsolete("Replaced with ListStoresAsync(CancellationToken).")]
         public override void ListStores(AsyncStorageCallback callback, object state)
         {
             try

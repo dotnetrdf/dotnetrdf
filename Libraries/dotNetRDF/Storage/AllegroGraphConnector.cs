@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management;
@@ -240,6 +242,37 @@ namespace VDS.RDF.Storage
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate,
                         StorageHelper.HandleError(ex, "updating")), state);
+            }
+        }
+
+        /// <inheritdoc />
+        public virtual async Task UpdateAsync(string sparqlUpdate, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _updatePath,
+                    MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+
+                // Build the Post Data and add to the Request Body
+                request.Content =
+                    new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlUpdate)});
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "updating");
+                }
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "updating");
             }
         }
 

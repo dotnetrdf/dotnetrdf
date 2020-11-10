@@ -31,6 +31,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -408,15 +410,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                // Create the Request, always use POST for async for simplicity
-                var queryUri = _queryUri;
-
-                var request = new HttpRequestMessage(HttpMethod.Post, queryUri);
-                request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
-
-                // Build the Post Data and add to the Request Body
-                request.Content =
-                    new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+                HttpRequestMessage request = CreateQueryRequestMessage(sparqlQuery);
                 HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
                     if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -499,6 +493,66 @@ namespace VDS.RDF.Storage
             }
         }
 
+        private HttpRequestMessage CreateQueryRequestMessage(string sparqlQuery)
+        {
+            // Create the Request, always use POST for async for simplicity
+            var queryUri = _queryUri;
+
+            var request = new HttpRequestMessage(HttpMethod.Post, queryUri);
+            request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
+
+            // Build the Post Data and add to the Request Body
+            request.Content =
+                new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+            return request;
+        }
+
+        /// <inheritdoc />
+        public async Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken)
+        {
+            var g = new Graph();
+            var results = new SparqlResultSet();
+            await QueryAsync(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, cancellationToken);
+            return results.ResultsType == SparqlResultsType.Unknown ? (object)g : results;
+        }
+
+        /// <inheritdoc />
+        public async Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
+            CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = CreateQueryRequestMessage(sparqlQuery);
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpQueryError(response);
+            }
+
+            try
+            {
+                var data = new StreamReader(await response.Content.ReadAsStreamAsync());
+                var contentType = response.Content.Headers.ContentType.MediaType;
+                try
+                {
+                    // Is the Content Type referring to a Sparql Result Set format?
+                    ISparqlResultsReader resultsReader =
+                        MimeTypesHelper.GetSparqlParser(contentType, true);
+                    resultsReader.Load(resultsHandler, data);
+                }
+                catch (RdfParserSelectionException)
+                {
+                    // If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+
+                    // Is the Content Type referring to a RDF format?
+                    IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+                    rdfReader.Load(rdfHandler, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "querying");
+            }
+        }
+
         /// <summary>
         /// Executes SPARQL Updates against the Fuseki store.
         /// </summary>
@@ -549,11 +603,26 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public async Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _updateUri)
+            {
+                Content = new StringContent(sparqlUpdates, Encoding.UTF8, MimeTypesHelper.SparqlUpdate),
+            };
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpError(response, "updating");
+            }
+        }
+
         /// <summary>
         /// Lists the graph sin the Store asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
         public override void ListGraphs(AsyncStorageCallback callback, object state)
         {
             // Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
@@ -571,6 +640,14 @@ namespace VDS.RDF.Storage
             }, state);
         }
 
+        /// <inheritdoc />
+        public override async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
+        {
+            var handler = new ListUrisHandler("g");
+            await QueryAsync(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", cancellationToken);
+            return handler.Uris.Select(u => u?.AbsoluteUri);
+        }
+
         /// <summary>
         /// Updates a Graph on the Fuseki Server.
         /// </summary>
@@ -584,46 +661,8 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                var graph = (graphUri != null && !graphUri.Equals(string.Empty))
-                    ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {"
-                    : string.Empty;
                 var update = new StringBuilder();
-
-                if (additions != null)
-                {
-                    if (additions.Any())
-                    {
-                        update.AppendLine("INSERT DATA {");
-                        if (!graph.Equals(string.Empty)) update.AppendLine(graph);
-
-                        foreach (Triple t in additions)
-                        {
-                            update.AppendLine(_formatter.Format(t));
-                        }
-
-                        if (!graph.Equals(string.Empty)) update.AppendLine("}");
-                        update.AppendLine("}");
-                    }
-                }
-
-                if (removals != null)
-                {
-                    if (removals.Any())
-                    {
-                        if (update.Length > 0) update.AppendLine(";");
-
-                        update.AppendLine("DELETE DATA {");
-                        if (!graph.Equals(string.Empty)) update.AppendLine(graph);
-
-                        foreach (Triple t in removals)
-                        {
-                            update.AppendLine(_formatter.Format(t));
-                        }
-
-                        if (!graph.Equals(string.Empty)) update.AppendLine("}");
-                        update.AppendLine("}");
-                    }
-                }
+                MakeSparqlUpdate(graphUri, additions, removals, update);
 
                 if (update.Length > 0)
                 {
@@ -654,6 +693,62 @@ namespace VDS.RDF.Storage
                 callback(this,
                     new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(),
                         StorageHelper.HandleError(ex, "updating a Graph asynchronously")), state);
+            }
+        }
+
+        private void MakeSparqlUpdate(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, StringBuilder update)
+        {
+            var graph = (graphUri != null && !graphUri.Equals(string.Empty))
+                ? "GRAPH <" + _formatter.FormatUri(graphUri) + "> {"
+                : string.Empty;
+
+            if (additions != null)
+            {
+                if (additions.Any())
+                {
+                    update.AppendLine("INSERT DATA {");
+                    if (!graph.Equals(string.Empty)) update.AppendLine(graph);
+
+                    foreach (Triple t in additions)
+                    {
+                        update.AppendLine(_formatter.Format(t));
+                    }
+
+                    if (!graph.Equals(string.Empty)) update.AppendLine("}");
+                    update.AppendLine("}");
+                }
+            }
+
+            if (removals != null)
+            {
+                if (removals.Any())
+                {
+                    if (update.Length > 0) update.AppendLine(";");
+
+                    update.AppendLine("DELETE DATA {");
+                    if (!graph.Equals(string.Empty)) update.AppendLine(graph);
+
+                    foreach (Triple t in removals)
+                    {
+                        update.AppendLine(_formatter.Format(t));
+                    }
+
+                    if (!graph.Equals(string.Empty)) update.AppendLine("}");
+                    update.AppendLine("}");
+                }
+            }
+        }
+
+
+        /// <inheritdoc />
+        public override async Task UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken)
+        {
+            var update = new StringBuilder();
+            MakeSparqlUpdate(graphUri, additions, removals, update);
+            if (update.Length > 0)
+            {
+                await UpdateAsync(update.ToString(), cancellationToken);
             }
         }
 

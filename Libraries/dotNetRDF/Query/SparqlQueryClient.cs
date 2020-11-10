@@ -43,7 +43,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A class for connecting to a remote SPARQL endpoint and making queries against it using the System.Net.Http library.
     /// </summary>
-    public class SparqlQueryClient
+    public class SparqlQueryClient : ISparqlQueryClient
     {
         private readonly HttpClient _httpClient;
         private const int LongQueryLength = 2048;

@@ -26,6 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
@@ -175,7 +178,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Diposes of the Store.
+        /// Disposes of the Store.
         /// </summary>
         public abstract void Dispose();
 
@@ -200,7 +203,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state)
         {
-            Uri u = (string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             LoadGraph(g, u, callback, state);
         }
 
@@ -225,8 +228,20 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
-            Uri u = (string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             LoadGraph(handler, u, callback, state);
+        }
+
+        /// <inheritdoc />
+        public Task LoadGraphAsync(IGraph g, string graphUri, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => LoadGraph(g, graphUri), cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task LoadGraphAsync(IRdfHandler handler, string graphUri, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => LoadGraph(handler, graphUri), cancellationToken);
         }
 
         /// <summary>
@@ -240,8 +255,14 @@ namespace VDS.RDF.Storage
             this.AsyncSaveGraph(g, callback, state);
         }
 
+        /// <inheritdoc />
+        public Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => SaveGraph(g), cancellationToken);
+        }
+
         /// <summary>
-        /// Updates a Graph in the Store asychronously.
+        /// Updates a Graph in the Store asynchronously.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
@@ -254,7 +275,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously.
+        /// Updates a Graph in the Store asynchronously.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
@@ -263,8 +284,15 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
-            Uri u = (string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             UpdateGraph(u, additions, removals, callback, state);
+        }
+
+        /// <inheritdoc />
+        public Task UpdateGraphAsync(string graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken)
+        {
+            return Task.Run(() => UpdateGraph(graphName, additions, removals), cancellationToken);
         }
 
         /// <summary>
@@ -286,8 +314,14 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            Uri u = (string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             DeleteGraph(u, callback, state);
+        }
+
+        /// <inheritdoc />
+        public Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => DeleteGraph(graphName), cancellationToken);
         }
 
         /// <summary>
@@ -298,6 +332,14 @@ namespace VDS.RDF.Storage
         public void ListGraphs(AsyncStorageCallback callback, object state)
         {
             this.AsyncListGraphs(callback, state);
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
+        {
+            IEnumerable<Uri> graphUris = await Task.Run(ListGraphs, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            return graphUris.Select(u => u?.AbsoluteUri);
         }
     }
 }

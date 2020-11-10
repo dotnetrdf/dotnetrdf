@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Threading.Tasks;
 using VDS.RDF.Query.Inference.Pellet;
 using VDS.RDF.Query.Inference.Pellet.Services;
 
@@ -159,6 +160,20 @@ namespace VDS.RDF.Query
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = (DateTime.Now - start);
             }
+        }
+
+        /// <inheritdoc />
+        public Task<object> ProcessQueryAsync(SparqlQuery query)
+        {
+            // TODO: Use async interface on PelletQueryService when it is supported instead.
+            return Task.Factory.StartNew(()=>ProcessQuery(query));
+        }
+
+        /// <inheritdoc />
+        public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            // TODO: Use async interface on PelletQueryService when it is supported instead.
+            return Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query));
         }
     }
 }

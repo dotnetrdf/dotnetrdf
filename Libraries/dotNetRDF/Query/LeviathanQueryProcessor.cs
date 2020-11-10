@@ -320,6 +320,27 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Process a SPARQL query asynchronously returning either a <see cref="SparqlResultSet"/> or a <see cref="IGraph"/> depending on the type of the query.
+        /// </summary>
+        /// <param name="query">SPARQL query.</param>
+        /// <returns>Either an &lt;see cref="IGraph"&gt;IGraph&lt;/see&gt; instance of a &lt;see cref="SparqlResultSet"&gt;SparqlResultSet&lt;/see&gt; depending on the type of the query.</returns>
+        public Task<object> ProcessQueryAsync(SparqlQuery query)
+        {
+            return Task.Factory.StartNew(() => ProcessQuery(query));
+        }
+
+        /// <summary>
+        /// Process a SPARQL query asynchronously, passing the results to teh relevant handler.
+        /// </summary>
+        /// <param name="rdfHandler">RDF handler invoked for queries that return RDF graphs.</param>
+        /// <param name="resultsHandler">Results handler invoked for queries that return SPARQL results sets.</param>
+        /// <param name="query">SPARQL query.</param>
+        public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            return Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query));
+        }
+
+        /// <summary>
         /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes.
         /// </summary>
         /// <param name="rdfHandler">RDF Handler.</param>

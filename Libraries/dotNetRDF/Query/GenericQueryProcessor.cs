@@ -90,5 +90,17 @@ namespace VDS.RDF.Query
                 query.QueryExecutionTime = elapsed;
             }
         }
+
+        /// <inheritdoc />
+        public Task<object> ProcessQueryAsync(SparqlQuery query)
+        {
+            return Task.Factory.StartNew(() => ProcessQuery(query));
+        }
+
+        /// <inheritdoc />
+        public Task ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            return Task.Factory.StartNew(() => ProcessQuery(rdfHandler, resultsHandler, query));
+        }
     }
 }

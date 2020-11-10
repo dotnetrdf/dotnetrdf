@@ -161,9 +161,15 @@ namespace VDS.RDF.Configuration
                     INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
-                    if (temp is SparqlRemoteEndpoint)
+                    if (temp is SparqlRemoteEndpoint queryEndpoint)
                     {
-                        processor = new RemoteQueryProcessor((SparqlRemoteEndpoint)temp);
+#pragma warning disable 618
+                        processor = new RemoteQueryProcessor(queryEndpoint);
+#pragma warning restore 618
+                    }
+                    else if (temp is SparqlQueryClient queryClient)
+                    {
+                        processor = new RemoteQueryProcessor(queryClient);
                     }
                     else
                     {

@@ -32,6 +32,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -76,7 +78,7 @@ namespace VDS.RDF.Storage.Management
         /// Creates a new connection to a Stardog Server.
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
-        public BaseStardogServer(string baseUri)
+        protected BaseStardogServer(string baseUri)
             : this(baseUri, null, null)
         {
         }
@@ -87,14 +89,14 @@ namespace VDS.RDF.Storage.Management
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        public BaseStardogServer(string baseUri, string username, string password)
+        protected BaseStardogServer(string baseUri, string username, string password)
             : base()
         {
             _baseUri = baseUri;
             if (!_baseUri.EndsWith("/")) _baseUri += "/";
             _adminUri = _baseUri + "admin/";
             SetCredentials(username, password);
-            HasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
+            HasCredentials = !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password);
         }
 
         /// <summary>
@@ -102,7 +104,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public BaseStardogServer(string baseUri, IWebProxy proxy)
+        protected BaseStardogServer(string baseUri, IWebProxy proxy)
             : this(baseUri, null, null, proxy)
         {
         }
@@ -112,7 +114,7 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="baseUri"></param>
         /// <param name="httpClientHandler"></param>
-        public BaseStardogServer(string baseUri, HttpClientHandler httpClientHandler) :
+        protected BaseStardogServer(string baseUri, HttpClientHandler httpClientHandler) :
             base(httpClientHandler)
         {
             _baseUri = baseUri;
@@ -128,7 +130,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="proxy">Proxy Server.</param>
-        public BaseStardogServer(string baseUri, string username, string password, IWebProxy proxy)
+        protected BaseStardogServer(string baseUri, string username, string password, IWebProxy proxy)
             : this(baseUri, username, password)
         {
             Proxy = proxy;
@@ -379,6 +381,23 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<string>> ListStoresAsync(CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = CreateAdminRequest("databases", "application/json", HttpMethod.Get, new Dictionary<string, string>());
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpError(response, "listing stores from");
+            }
+
+            var result = await response.Content.ReadAsStringAsync();
+            var obj = JObject.Parse(result);
+            var dbs = (JArray)obj["databases"];
+            if (dbs == null) throw new RdfStorageException("The server did not provide the expected JSON response when listing stores.");
+            return dbs.OfType<JValue>().Select(db => db.Value.ToString()).ToList();
+        }
+
         /// <summary>
         /// Gets a default template for creating a new Store.
         /// </summary>
@@ -391,6 +410,12 @@ namespace VDS.RDF.Storage.Management
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new StardogDiskTemplate(id)), state);
         }
 
+        /// <inheritdoc />
+        public virtual Task<IStoreTemplate> GetDefaultTemplateAsync(string id, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new StardogDiskTemplate(id) as IStoreTemplate);
+        }
+
         /// <summary>
         /// Gets all available templates for creating a new Store.
         /// </summary>
@@ -399,6 +424,12 @@ namespace VDS.RDF.Storage.Management
         /// <param name="state">State to pass to the callback.</param>
         /// <returns></returns>
         public virtual void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
+        {
+            IEnumerable<IStoreTemplate> templates = MakeStoreTemplatesList(id);
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
+        }
+
+        private IEnumerable<IStoreTemplate> MakeStoreTemplatesList(string id)
         {
             var templates = new List<IStoreTemplate>();
             var args = new object[] {id};
@@ -413,7 +444,14 @@ namespace VDS.RDF.Storage.Management
                     // Ignore and continue
                 }
             }
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
+
+            return templates;
+        }
+
+        /// <inheritdoc />
+        public virtual Task<IEnumerable<IStoreTemplate>> GetAvailableTemplatesAsync(string id, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(MakeStoreTemplatesList(id));
         }
 
         /// <summary>
@@ -484,6 +522,39 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <inheritdoc />
+        public virtual async Task<string> CreateStoreAsync(IStoreTemplate template, CancellationToken cancellationToken)
+        {
+            if (!(template is BaseStardogTemplate))
+            {
+                throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
+            }
+
+            try
+            {
+                HttpRequestMessage request = BuildCreateStoreRequestMessage(template);
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, $"creating a new store '{template.ID}' in");
+                }
+
+                return template.ID;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, $"creating a new store '{template.ID}' in");
+            }
+        }
+
         /// <summary>
         /// Deletes a database from the server.
         /// </summary>
@@ -540,6 +611,33 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <inheritdoc />
+        public async Task DeleteStoreAsync(string storeId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpRequestMessage request = CreateAdminRequest("databases/" + storeId, MimeTypesHelper.Any,
+                    HttpMethod.Delete, new Dictionary<string, string>());
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, $"deleting store '{storeId}' from");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, $"deleting store '{storeId}' from");
+            }
+        }
+
         /// <summary>
         /// Gets a database from the server.
         /// </summary>
@@ -547,6 +645,9 @@ namespace VDS.RDF.Storage.Management
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         public abstract void GetStore(string storeId, AsyncStorageCallback callback, object state);
+
+        /// <inheritdoc />
+        public abstract Task<IAsyncStorageProvider> GetStoreAsync(string storeId, CancellationToken cancellationToken);
 
         #endregion
 
@@ -914,6 +1015,12 @@ namespace VDS.RDF.Storage.Management
         public override void GetStore(string storeId, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, new StardogV1Connector(_baseUri, storeId, HttpClientHandler)), state);
+        }
+
+        /// <inheritdoc />
+        public override Task<IAsyncStorageProvider> GetStoreAsync(string storeId, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new StardogV1Connector(_baseUri, storeId, HttpClientHandler) as IAsyncStorageProvider);
         }
     }
 

@@ -27,6 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -47,7 +49,7 @@ namespace VDS.RDF.Storage
     public class InMemoryManager 
         : BaseAsyncSafeConnector, IUpdateableStorage, IAsyncUpdateableStorage, IConfigurationSerializable
     {
-        private ISparqlDataset _dataset;
+        private readonly ISparqlDataset _dataset;
         private SparqlQueryParser _queryParser;
         private SparqlUpdateParser _updateParser;
         private LeviathanQueryProcessor _queryProcessor;
@@ -171,8 +173,7 @@ namespace VDS.RDF.Storage
         {
             if (!_dataset.HasGraph(graphUri))
             {
-                var temp = new Graph();
-                temp.BaseUri = graphUri;
+                var temp = new Graph {BaseUri = graphUri};
                 _dataset.AddGraph(temp);
             }
 
@@ -382,6 +383,19 @@ namespace VDS.RDF.Storage
             this.AsyncQueryHandlers(sparqlQuery, rdfHandler, resultsHandler, callback, state);
         }
 
+        /// <inheritdoc />
+        public Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => Query(sparqlQuery), cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
+            CancellationToken cancellationToken)
+        {
+            return Task.Run(() => Query(rdfHandler, resultsHandler, sparqlQuery), cancellationToken);
+        }
+
         /// <summary>
         /// Updates the store asynchronously.
         /// </summary>
@@ -391,6 +405,12 @@ namespace VDS.RDF.Storage
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             this.AsyncUpdate(sparqlUpdates, callback, state);
+        }
+
+        /// <inheritdoc />
+        public Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken)
+        {
+            return Task.Run(() => Update(sparqlUpdates), cancellationToken);
         }
 
         #endregion

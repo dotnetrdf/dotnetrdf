@@ -33,6 +33,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -87,8 +89,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected SesameServer _server;
 
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private NTriplesFormatter _formatter = new NTriplesFormatter();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
 
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store.
@@ -105,7 +107,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID.</param>
         /// <param name="username">Username to use for requests that require authentication.</param>
         /// <param name="password">Password to use for requests that require authentication.</param>
-        public BaseSesameHttpProtocolConnector(string baseUri, string storeID, string username, string password)
+        public BaseSesameHttpProtocolConnector(string baseUri, string storeID, string username, string password) : base(new HttpClientHandler())
         {
             _baseUri = baseUri;
             if (!_baseUri.EndsWith("/")) _baseUri += "/";
@@ -551,60 +553,52 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                HttpRequestMessage request;
-                HttpResponseMessage response;
-                var serviceParams = new Dictionary<string, string>();
-                IRdfWriter rdfWriter = CreateRdfWriter();
+                UpdateGraphAsync(graphUri, additions, removals, CancellationToken.None).Wait();
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "updating a Graph in");
+            }
+        }
 
-                if (!graphUri.Equals(string.Empty))
-                {
-                    serviceParams.Add("context", "<" + graphUri + ">");
-                }
-                else
-                {
-                    serviceParams.Add("context", "null");
-                }
+        private Dictionary<string, string> MakeServiceParams(string graphName)
+        {
+            return new Dictionary<string, string>
+            {
+                {"context", string.IsNullOrEmpty(graphName) ? "null" : $"<{graphName}>"},
+            };
+        }
 
-                if (removals != null)
+        /// <inheritdoc />
+        public override async Task UpdateGraphAsync(string graphName, IEnumerable<Triple> additions,
+            IEnumerable<Triple> removals, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request;
+            HttpResponseMessage response;
+            Dictionary<string, string> serviceParams = MakeServiceParams(graphName);
+            IRdfWriter rdfWriter = CreateRdfWriter();
+
+            if (removals != null)
+            {
+                if (removals.Any())
                 {
-                    if (removals.Any())
+                    serviceParams.Add("subj", null);
+                    serviceParams.Add("pred", null);
+                    serviceParams.Add("obj", null);
+
+                    // Have to do a DELETE for each individual Triple
+                    foreach (Triple t in removals.Distinct())
                     {
-                        serviceParams.Add("subj", null);
-                        serviceParams.Add("pred", null);
-                        serviceParams.Add("obj", null);
+                        serviceParams["subj"] = _formatter.Format(t.Subject);
+                        serviceParams["pred"] = _formatter.Format(t.Predicate);
+                        serviceParams["obj"] = _formatter.Format(t.Object);
+                        request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
 
-                        // Have to do a DELETE for each individual Triple
-                        foreach (Triple t in removals.Distinct())
-                        {
-                            serviceParams["subj"] = _formatter.Format(t.Subject);
-                            serviceParams["pred"] = _formatter.Format(t.Predicate);
-                            serviceParams["obj"] = _formatter.Format(t.Object);
-                            request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
-
-                            using (response = HttpClient.SendAsync(request).Result)
-                            {
-                                if (!response.IsSuccessStatusCode)
-                                {
-                                    throw StorageHelper.HandleHttpError(response, "updating a Graph in");
-                                }
-                            }
-                        }
-                        serviceParams.Remove("subj");
-                        serviceParams.Remove("pred");
-                        serviceParams.Remove("obj");
-                    }
-                }
-
-                if (additions != null)
-                {
-                    if (additions.Any())
-                    {
-                        // Add the new Triples
-                        request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Post, serviceParams);
-                        var h = new Graph();
-                        h.Assert(additions);
-                        request.Content = new GraphContent(h, rdfWriter);
-                        using (response = HttpClient.SendAsync(request).Result)
+                        using (response = await HttpClient.SendAsync(request, cancellationToken))
                         {
                             if (!response.IsSuccessStatusCode)
                             {
@@ -612,11 +606,29 @@ namespace VDS.RDF.Storage
                             }
                         }
                     }
+                    serviceParams.Remove("subj");
+                    serviceParams.Remove("pred");
+                    serviceParams.Remove("obj");
                 }
             }
-            catch (Exception ex)
+
+            if (additions != null)
             {
-                throw StorageHelper.HandleError(ex, "updating a Graph in");
+                if (additions.Any())
+                {
+                    // Add the new Triples
+                    request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Post, serviceParams);
+                    var h = new Graph();
+                    h.Assert(additions);
+                    request.Content = new GraphContent(h, rdfWriter);
+                    using (response = await HttpClient.SendAsync(request, cancellationToken))
+                    {
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw StorageHelper.HandleHttpError(response, "updating a Graph in");
+                        }
+                    }
+                }
             }
         }
 
@@ -637,16 +649,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                var serviceParams = new Dictionary<string, string>();
-
-                if (!graphUri.Equals(string.Empty))
-                {
-                    serviceParams.Add("context", "<" + graphUri + ">");
-                }
-                else
-                {
-                    serviceParams.Add("context", "null");
-                }
+                Dictionary<string, string> serviceParams = MakeServiceParams(graphUri);
 
                 HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
 
@@ -695,6 +698,46 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public override async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (await QueryAsync("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", cancellationToken) is
+                    SparqlResultSet resultSet)
+                {
+                    var graphs = new List<string>();
+                    foreach (SparqlResult r in resultSet)
+                    {
+                        if (r.HasValue("g"))
+                        {
+                            INode temp = r["g"];
+                            if (temp.NodeType == NodeType.Uri)
+                            {
+                                graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
+                            } 
+                            else if (temp.NodeType == NodeType.Literal)
+                            {
+                                graphs.Add(((ILiteralNode)temp).Value);
+                            }
+                        }
+                    }
+
+                    return graphs;
+                }
+
+                return Enumerable.Empty<string>();
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "listing graphs from");
+            }
+        }
+
         /// <summary>
         /// Gets the parent server.
         /// </summary>
@@ -714,6 +757,19 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+            SaveGraphAsync(request, g, callback, state);
+        }
+
+        /// <inheritdoc />
+        public override Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+            return SaveGraphAsync(request, cancellationToken);
+        }
+
+        private HttpRequestMessage MakeSaveGraphRequestMessage(IGraph g)
+        {
             HttpRequestMessage request;
             var serviceParams = new Dictionary<string, string>();
 
@@ -727,6 +783,7 @@ namespace VDS.RDF.Storage
                 {
                     serviceParams.Add("context", g.BaseUri.AbsoluteUri);
                 }
+
                 request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Put, serviceParams);
             }
             else
@@ -735,8 +792,10 @@ namespace VDS.RDF.Storage
             }
 
             request.Content = new GraphContent(g, GetSaveContentType());
-            SaveGraphAsync(request, g, callback, state);
+            return request;
         }
+
+        
 
         /// <summary>
         /// Loads a Graph from the Store asynchronously.
@@ -747,6 +806,19 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
+            HttpRequestMessage request = MakeLoadGraphRequestMessage(graphUri);
+            LoadGraphAsync(request, handler, callback, state);
+        }
+
+        /// <inheritdoc />
+        public override Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeLoadGraphRequestMessage(graphName);
+            return LoadGraphAsync(request, handler, cancellationToken);
+        }
+
+        private HttpRequestMessage MakeLoadGraphRequestMessage(string graphUri)
+        {
             var serviceParams = new Dictionary<string, string>();
 
             var requestUri = _repositoriesPrefix + _store + "/statements";
@@ -755,9 +827,9 @@ namespace VDS.RDF.Storage
                 serviceParams.Add("context", "<" + graphUri + ">");
             }
 
-            HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get, serviceParams);
-
-            LoadGraphAsync(request, handler, callback, state);
+            HttpRequestMessage request =
+                CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get, serviceParams);
+            return request;
         }
 
         /// <summary>
@@ -905,6 +977,17 @@ namespace VDS.RDF.Storage
             DeleteGraphAsync(request, false, graphUri, callback, state);
         }
 
+        /// <inheritdoc />
+        public override Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
+        {
+            var serviceParams = new Dictionary<string, string>
+            {
+                {"context", string.IsNullOrEmpty(graphName) ? "null" : $"<{graphName}>"},
+            };
+            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Delete, serviceParams);
+            return DeleteGraphAsync(request, false, cancellationToken);
+        }
+
         /// <summary>
         /// Makes a SPARQL Query against the underlying store.
         /// </summary>
@@ -940,41 +1023,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                // Pre-parse the query to determine what the Query Type is
-                var isAsk = false;
-                SparqlQuery q = null;
-                try
-                {
-                    q = _parser.ParseFromString(sparqlQuery);
-                    isAsk = q.QueryType == SparqlQueryType.Ask;
-                }
-                catch
-                {
-                    // If parsing error fallback to naive detection
-                    isAsk = Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase);
-                }
-
-                // Select Accept Header
-                string accept;
-                if (q != null)
-                {
-                    accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask
-                        ? MimeTypesHelper.HttpSparqlAcceptHeader
-                        : MimeTypesHelper.HttpAcceptHeader);
-                }
-                else
-                {
-                    accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                }
-
-                // Create the Request, for simplicity async requests are always POST
-                var queryParams = new Dictionary<string, string>();
-                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept,
-                    HttpMethod.Post, queryParams);
-
-                // Build the Post Data and add to the Request Body
-                request.Content =
-                    new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+                HttpRequestMessage request = MakeQueryRequestMessage(sparqlQuery, out var isAsk, out SparqlQuery q);
 
                 HttpClient.SendAsync(request).ContinueWith(requestTask =>
                 {
@@ -1071,6 +1120,108 @@ namespace VDS.RDF.Storage
             {
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler,
                     StorageHelper.HandleError(ex, "querying")), state);
+            }
+        }
+
+        private HttpRequestMessage MakeQueryRequestMessage(string sparqlQuery, out bool isAsk, out SparqlQuery q)
+        {
+            // Pre-parse the query to determine what the Query Type is
+            isAsk = false;
+            q = null;
+            try
+            {
+                q = _parser.ParseFromString(sparqlQuery);
+                isAsk = q.QueryType == SparqlQueryType.Ask;
+            }
+            catch
+            {
+                // If parsing error fallback to naive detection
+                isAsk = Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase);
+            }
+
+            // Select Accept Header
+            string accept;
+            if (q != null)
+            {
+                accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask
+                    ? MimeTypesHelper.HttpSparqlAcceptHeader
+                    : MimeTypesHelper.HttpAcceptHeader);
+            }
+            else
+            {
+                accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+            }
+
+            // Create the Request, for simplicity async requests are always POST
+            var queryParams = new Dictionary<string, string>();
+            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + _store + _queryPath, accept,
+                HttpMethod.Post, queryParams);
+
+            // Build the Post Data and add to the Request Body
+            request.Content =
+                new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
+            return request;
+        }
+
+        /// <inheritdoc />
+        public async Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken)
+        {
+            var g = new Graph();
+            var results = new SparqlResultSet();
+            await QueryAsync(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, cancellationToken);
+            return results.ResultsType == SparqlResultsType.Unknown ? (object)g : results;
+        }
+
+        /// <inheritdoc />
+        public async Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
+            CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request =
+                MakeQueryRequestMessage(sparqlQuery, out bool isAsk, out SparqlQuery parsedQuery);
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpQueryError(response);
+            }
+            var contentType = response.Content.Headers.ContentType.MediaType;
+            var data = new StreamReader(await response.Content.ReadAsStreamAsync());
+            try
+            {
+                // Is the Content Type referring to a Sparql Result Set format?
+                ISparqlResultsReader resultsReader =
+                    MimeTypesHelper.GetSparqlParser(contentType, isAsk);
+                resultsReader.Load(resultsHandler, data);
+            }
+            catch (RdfParserSelectionException)
+            {
+                // If we get a Parser Selection exception then the Content Type isn't valid for a SPARQL Result Set
+                // HACK: As this is Sesame this may be it being buggy and sending application/xml instead of application/sparql-results+xml
+                if (contentType.StartsWith("application/xml"))
+                {
+                    try
+                    {
+                        ISparqlResultsReader resreader =
+                            MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
+                        resreader.Load(resultsHandler, data);
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // Ignore this and fall back to trying as an RDF format instead
+                    }
+                }
+
+                // Is the Content Type referring to a RDF format?
+                IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+                if (parsedQuery != null && (SparqlSpecsHelper.IsSelectQuery(parsedQuery.QueryType) ||
+                                  parsedQuery.QueryType == SparqlQueryType.Ask))
+                {
+                    var resreader = new SparqlRdfParser(rdfReader);
+                    resreader.Load(resultsHandler, data);
+                }
+                else
+                {
+                    rdfReader.Load(rdfHandler, data);
+                }
             }
         }
 

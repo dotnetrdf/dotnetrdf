@@ -804,27 +804,6 @@ namespace VDS.RDF.Storage
 
         #region SPARQL Update Tests
 
-        private void TestUpdateUnsynced(IStorageProvider manager)
-        {
-            EnsureTestDataset(manager);
-
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
-                "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var store = new PersistentTripleStore(manager);
-            try
-            {
-                store.Remove(new Uri(TestGraphUri1));
-
-                store.ExecuteUpdate("LOAD <http://dbpedia.org/resource/Ilkeston>");
-            }
-            finally
-            {
-                store.Discard();
-                store.Dispose();
-            }
-        }
-
         private void TestUpdate(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
@@ -857,13 +836,6 @@ namespace VDS.RDF.Storage
             {
                 store.Dispose();
             }
-        }
-
-        [SkippableFact]
-        public void StoragePersistentTripleStoreMemUpdateUnsynced()
-        {
-            IStorageProvider manager = GetStorageProvider();
-            Assert.Throws<SparqlUpdateException>(() => TestUpdateUnsynced(manager));
         }
 
         #endregion

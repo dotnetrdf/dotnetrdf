@@ -30,6 +30,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -269,6 +271,18 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <inheritdoc />
+        public virtual async Task DeleteStoreAsync(string storeId, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = CreateRequest(_repositoriesPrefix + storeId, MimeTypesHelper.Any, HttpMethod.Delete, new Dictionary<string, string>());
+
+            using HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpError(response, $"deleting the Store '{storeId}' from");
+            }
+        }
+
         /// <summary>
         /// Gets the list of available stores.
         /// </summary>
@@ -308,6 +322,12 @@ namespace VDS.RDF.Storage.Management
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new SesameMemTemplate(id)), state);
         }
 
+        /// <inheritdoc />
+        public Task<IStoreTemplate> GetDefaultTemplateAsync(string id, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<IStoreTemplate>(new SesameMemTemplate(id));
+        }
+
         /// <summary>
         /// Gets all available templates for creating a store.
         /// </summary>
@@ -334,6 +354,12 @@ namespace VDS.RDF.Storage.Management
                 }
             }
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
+        }
+
+        /// <inheritdoc />
+        public Task<IEnumerable<IStoreTemplate>> GetAvailableTemplatesAsync(string id, CancellationToken cancellationToken)
+        {
+            return Task.Factory.StartNew(() => GetAvailableTemplates(id), cancellationToken);
         }
 
         /// <summary>
@@ -395,6 +421,40 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <inheritdoc />
+        public async Task<string> CreateStoreAsync(IStoreTemplate template, CancellationToken cancellationToken)
+        {
+            if (!(template is BaseSesameTemplate sesameTemplate))
+            {
+                throw new RdfStorageException("Invalid template. Templates must derive from BaseSesameTemplate.");
+            }
+
+            if (template.Validate().Any())
+            {
+                throw new RdfStorageException("Template is not valid. Call Validate() on the template to see the list of errors.");
+            }
+
+            try
+            {
+                IGraph g = sesameTemplate.GetTemplateGraph();
+                var createParams =
+                    new Dictionary<string, string>() {{"context", sesameTemplate.ContextNode.ToString()}};
+                HttpRequestMessage request = CreateRequest(_repositoriesPrefix + SystemRepositoryID + "/statements",
+                    "*/*", HttpMethod.Post, createParams);
+                request.Content = new GraphContent(g, MimeTypesHelper.NTriples[0]);
+                EnsureSystemConnection();
+                await _sysConnection.SaveGraphAsync(request, cancellationToken);
+                var repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"),
+                    g.CreateUriNode("rep:RepositoryContext"));
+                await _sysConnection.UpdateGraphAsync(string.Empty, repoType.AsEnumerable(), null, cancellationToken);
+                return template.ID;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "creating a new store in");
+            }
+        }
+
         /// <summary>
         /// Gets a store asynchronously.
         /// </summary>
@@ -415,6 +475,13 @@ namespace VDS.RDF.Storage.Management
             {
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeId, e), state);
             }
+        }
+
+        /// <inheritdoc/>
+        public virtual Task<IAsyncStorageProvider> GetStoreAsync(string storeId, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(
+                new SesameHttpProtocolConnector(_baseUri, storeId, _username, _pwd, Proxy) as IAsyncStorageProvider);
         }
 
         /// <summary>
@@ -464,11 +531,37 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <inheritdoc />
+        public async Task<IEnumerable<string>> ListStoresAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0],
+                    HttpMethod.Get, new Dictionary<string, string>());
+                var handler = new ListStringsHandler("id");
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "listing stores from");
+                }
+
+                Stream data = await response.Content.ReadAsStreamAsync();
+                var parser = new SparqlXmlParser();
+                parser.Load(handler, new StreamReader(data));
+                return handler.Strings;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "listing stores from");
+            } 
+        }
+
         /// <summary>
         /// Lists the available stores asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("This method is obsolete and will be removed in a future release. Replaced by ListStoresAsync")]
         public virtual void ListStores(AsyncStorageCallback callback, object state)
         {
             HttpRequestMessage request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], HttpMethod.Get, new Dictionary<string, string>());
