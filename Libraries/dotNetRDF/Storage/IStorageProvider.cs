@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
@@ -369,6 +371,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with LoadGraphAsync(IGraph, string, CancellationToken)")]
         void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
@@ -378,6 +381,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with LoadGraphAsync(IGraph, string, CancellationToken)")]
         void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
@@ -387,6 +391,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with LoadGraphAsync(IRdfHandler, string, CancellationToken)")]
         void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
@@ -396,7 +401,24 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with LoadGraphAsync(IRdfHandler, string, CancellationToken)")]
         void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state);
+
+        /// <summary>
+        /// Loads a graph from the store asynchronously.
+        /// </summary>
+        /// <param name="g">The target graph to load into.</param>
+        /// <param name="graphUri">URI of the graph to load.</param>
+        /// <param name="cancellationToken"></param>
+        Task LoadGraphAsync(IGraph g, string graphUri, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Loads a graph from the store asynchronously.
+        /// </summary>
+        /// <param name="handler">The handler to receive the loaded triples.</param>
+        /// <param name="graphUri">URI of the graph to load.</param>
+        /// <param name="cancellationToken"></param>
+        Task LoadGraphAsync(IRdfHandler handler, string graphUri, CancellationToken cancellationToken);
 
         /// <summary>
         /// Saves a Graph to the Store asynchronously.
@@ -404,27 +426,48 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with SaveGraphAsync(IGraph, CancellationToken)")]
         void SaveGraph(IGraph g, AsyncStorageCallback callback, object state);
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously.
+        /// Saves a Graph to the Store asynchronously.
+        /// </summary>
+        /// <param name="g">Graph to save.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Updates a Graph in the Store asynchronously.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
         /// <param name="removals">Triples to be removed.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with UpdateGraphAsync(string, IEnumerable<Triple>, IEnumerable<Triple>, CancellationToken")]
         void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
 
         /// <summary>
-        /// Updates a Graph in the Store asychronously.
+        /// Updates a Graph in the Store asynchronously.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
         /// <param name="removals">Triples to be removed.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with UpdateGraphAsync(string, IEnumerable<Triple>, IEnumerable<Triple>, CancellationToken")]
         void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
+
+        /// <summary>
+        /// Updates a graph in the store asynchronously.
+        /// </summary>
+        /// <param name="graphName">Name of the graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <param name="cancellationToken"></param>
+        Task UpdateGraphAsync(string graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes a Graph from the Store.
@@ -440,14 +483,31 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with DeleteGraphAsync(string, CancellationToken)")]
         void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state);
+
+        /// <summary>
+        /// Deletes a graph from the store asynchronously.
+        /// </summary>
+        /// <param name="graphName">Name of the graph to delete.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken);
 
         /// <summary>
         /// Lists the Graphs in the Store asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
         void ListGraphs(AsyncStorageCallback callback, object state);
+
+        /// <summary>
+        /// Lists the names of the graphs in the store asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -466,6 +526,7 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
+        [Obsolete("This method is obsolete and will be removed in a future version. Replaced by QueryAsync(string, CancellationToken)")]
         void Query(string sparqlQuery, AsyncStorageCallback callback, object state);
 
         /// <summary>
@@ -480,7 +541,25 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query.</exception>
         /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results.</exception>
         /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand.</exception>
+        [Obsolete("Replaced by QueryAsync(IRdfHandler, ISparqlResultsHandler, string")]
         void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state);
+
+        /// <summary>
+        /// Queries the store asynchronously.
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query.</param>
+        /// <param name="cancellationToken"></param>
+        Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Queries the store asynchronously.
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler that will receive graph results from CONSTRUCT or DESCRIBE queries.</param>
+        /// <param name="resultsHandler">SPARQL Results set handler that will receive results from ASK or SELECT queries.</param>
+        /// <param name="sparqlQuery">The SPARQL query to execute.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -495,7 +574,16 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdates">SPARQL Update.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("This method is obsolete and will be removed in a future version. Replaced by UpdateAsync(string, CancellationToken).")]
         void Update(string sparqlUpdates, AsyncStorageCallback callback, object state);
+
+        /// <summary>
+        /// Updates the store asynchronously.
+        /// </summary>
+        /// <param name="sparqlUpdates"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken);
     }
 
     /// <summary>

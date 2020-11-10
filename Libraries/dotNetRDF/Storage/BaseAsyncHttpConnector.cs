@@ -61,14 +61,13 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Create a new connector.
         /// </summary>
-        protected BaseAsyncHttpConnector()
-        {}
+        /// <param name="httpClientHandler"></param>
+        protected BaseAsyncHttpConnector(HttpClientHandler httpClientHandler):base(httpClientHandler){}
 
         /// <summary>
         /// Create a new connector.
         /// </summary>
-        /// <param name="httpClientHandler"></param>
-        protected BaseAsyncHttpConnector(HttpClientHandler httpClientHandler):base(httpClientHandler){}
+        protected BaseAsyncHttpConnector() {}
 
         /// <summary>
         /// Loads a Graph from the Store asynchronously.
@@ -116,48 +115,20 @@ namespace VDS.RDF.Storage
         public abstract void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state);
 
         /// <summary>
-        /// Helper method for doing async load operations, callers just need to provide an appropriately prepared HTTP request.
+        /// Loads a graph from the store asynchronously.
         /// </summary>
-        /// <param name="request">HTTP Request.</param>
-        /// <param name="handler">Handler to load with.</param>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        [Obsolete("This method is obsolete and will be removed in a future version.")]
-        protected internal void LoadGraphAsync(HttpWebRequest request, IRdfHandler handler, AsyncStorageCallback callback, object state)
+        /// <param name="g">The graph to load data into.</param>
+        /// <param name="graphName">The name of the graph to retrieve from the store.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <remarks>This implementation delegates to the <see cref="LoadGraphAsync(IRdfHandler,string,CancellationToken)"/> method by wrapping <paramref name="g"/> in a <see cref="GraphHandler"/>.</remarks>
+        public virtual Task LoadGraphAsync(IGraph g, string graphName, CancellationToken cancellationToken)
         {
-            request.BeginGetResponse(r =>
-            {
-                try
-                {
-                    var response = (HttpWebResponse)request.EndGetResponse(r);
-                    // Parse the retrieved RDF
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
-
-                    // If we get here then it was OK
-                    response.Close();
-
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
-                }
-                catch (WebException webEx)
-                {
-                    if (webEx.Response != null)
-                    {
-                        if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
-                            return;
-                        }
-                    }
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx)), state);
-                }
-                catch (Exception ex)
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, StorageHelper.HandleError(ex, "loading a Graph asynchronously from")), state);
-                }
-            }, state);
+            return LoadGraphAsync(new GraphHandler(g), graphName, cancellationToken);
         }
 
+        /// <inheritdoc />
+        public abstract Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken);
 
         /// <summary>
         /// Helper method for doing async load operations, callers just need to provide an appropriately prepared HTTP request.
@@ -235,12 +206,52 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Helper method for doing async load operations, callers just need to provide an appropriately prepared HTTP request.
+        /// </summary>
+        /// <param name="request">HTTP Request.</param>
+        /// <param name="handler">Handler to load with.</param>
+        /// <param name="cancellationToken"></param>
+        protected internal async Task LoadGraphAsync(HttpRequestMessage request, IRdfHandler handler, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // Return an empty graph on a 4040
+                    return;
+                }
+
+                throw StorageHelper.HandleHttpError(response, "loading a graph asynchronously from");
+            }
+
+            try
+            {
+                IRdfReader parser =
+                    MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+                Stream data = await response.Content.ReadAsStreamAsync();
+                parser.Load(handler, new StreamReader(data));
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "loading a graph asynchronously from");
+            }
+        }
+
+        /// <summary>
         /// Saves a Graph to the Store asynchronously.
         /// </summary>
         /// <param name="g">Graph to save.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         public abstract void SaveGraph(IGraph g, AsyncStorageCallback callback, object state);
+
+        /// <inheritdoc />
+        public abstract Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken);
 
         /// <summary>
         /// Helper method for doing callback-based async save operations.
@@ -294,7 +305,33 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Helper method for doing async save operations, callers just need to provide an appropriately perpared HTTP requests and a RDF writer which will be used to write the data to the request body.
+        /// Helper method for doing async save operations.
+        /// </summary>
+        /// <param name="request">A request message with the request content already set.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected async internal Task SaveGraphAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "saving a Graph asynchronously to");
+                }
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "saving a Graph asynchronously to");
+            }
+        }
+
+        /// <summary>
+        /// Helper method for doing async save operations, callers just need to provide an appropriately prepared HTTP requests and a RDF writer which will be used to write the data to the request body.
         /// </summary>
         /// <param name="request">HTTP request.</param>
         /// <param name="writer">RDF Writer.</param>
@@ -362,6 +399,10 @@ namespace VDS.RDF.Storage
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         public abstract void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state);
+
+        /// <inheritdoc />
+        public abstract Task UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Helper method for doing async update operations, callers just need to provide an appropriately prepared HTTP request and a RDF writer which will be used to write the data to the request body.
@@ -461,6 +502,28 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Helper method for simple updates that only add triples to a graph in the store.
+        /// </summary>
+        /// <param name="request">A pre-prepared request message without its content set.</param>
+        /// <param name="writer">The RDF writer to use to create the request content.</param>
+        /// <param name="additions">The triples to be added to the store.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <remarks>This helper method sets the content of <paramref name="request"/> to a new <see cref="GraphContent"/> instance using the provided <paramref name="writer"/>. It then sends the request to the server and provides a default handling of the response message.</remarks>
+        protected internal async Task UpdateGraphAsync(HttpRequestMessage request, IRdfWriter writer,
+            IEnumerable<Triple> additions, CancellationToken cancellationToken)
+        {
+            var g = new Graph();
+            g.Assert(additions);
+            request.Content = new GraphContent(g, writer);
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpError(response, "updating a graph asynchronously in");
+            }
+        }
+
+        /// <summary>
         /// Deletes a Graph from the Store.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete.</param>
@@ -478,6 +541,9 @@ namespace VDS.RDF.Storage
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
         public abstract void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state);
+
+        /// <inheritdoc />
+        public abstract Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken);
 
         /// <summary>
         /// Helper method for doing async delete operations, callers just need to provide an appropriately prepared HTTP request.
@@ -541,7 +607,8 @@ namespace VDS.RDF.Storage
                     callback(this,
                         new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(),
                             new RdfStorageException("Operation was cancelled.")), state);
-                } else if (sendTask.IsFaulted)
+                }
+                else if (sendTask.IsFaulted)
                 {
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(),
                         StorageHelper.HandleError(sendTask.Exception, "deleting a Graph asynchronously from")), state);
@@ -567,10 +634,28 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Helper method for deleting a graph from a store.
+        /// </summary>
+        /// <param name="request">The delete request to send.</param>
+        /// <param name="allow404">True if the client should ignore a 404 returned as the result of trying to delete a non-existent graph.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        protected internal async Task DeleteGraphAsync(HttpRequestMessage request, bool allow404, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound && allow404) return;
+                throw StorageHelper.HandleHttpError(response, "deleting a graph asynchronously from");
+            }
+        }
+
+        /// <summary>
         /// Lists the Graphs in the Store asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
         public virtual void ListGraphs(AsyncStorageCallback callback, object state)
         {
             if (this is IAsyncQueryableStorage)
@@ -593,6 +678,27 @@ namespace VDS.RDF.Storage
             {
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, new RdfStorageException("Underlying store does not supported listing graphs asynchronously or has failed to appropriately override this method")), state);
             }
+        }
+
+        /// <summary>
+        /// List the names of the graph on the remote server asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Task that returns the list of graph names.</returns>
+        /// <exception cref="RdfStorageException">Raised if the store does not support the asynchronous SPARQL query required to retrieve a list of graph names.</exception>
+        /// <remarks>This implementation uses a SPARQL query to list the names of the graphs in the store. Many stores support more efficient means of listing graphs and so this method SHOULD be overridden.
+        /// If the store does not implement the <see cref="IAsyncQueryableStorage"/> interface, then this method MUST be overridden.</remarks>
+        public virtual async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
+        {
+            if (!(this is IAsyncQueryableStorage queryableStore))
+            {
+                throw new RdfStorageException(
+                    "Underlying store does not supported listing graphs asynchronously or has failed to appropriately override this method");
+            }
+
+            var handler = new ListUrisHandler("g");
+            await queryableStore.QueryAsync(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", cancellationToken);
+            return handler.Uris.Select(u => u.AbsoluteUri).ToList();
         }
 
         /// <summary>
@@ -683,62 +789,5 @@ namespace VDS.RDF.Storage
             }
         }
 
-        /// <summary>
-        /// Helper method for doing async operations where a sequence of HTTP requests must be run.
-        /// </summary>
-        /// <param name="requests">HTTP requests.</param>
-        /// <param name="callback">Callback.</param>
-        /// <param name="state">State to pass to the callback.</param>
-        [Obsolete]
-        protected internal void MakeRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, object state)
-        {
-            Task.Factory.StartNew(() => DoRequestSequence(requests, callback, state)).ContinueWith(antecedent =>
-            {
-                if (antecedent.IsFaulted)
-                {
-                    callback?.Invoke(this,
-                        new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown,
-                            new RdfStorageException(
-                                "Unexpected error while making a sequence of asynchronous requests to the Store, see inner exception for details",
-                                antecedent.Exception)), state);
-                }
-            });
-        }
-
-        private void DoRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, object state)
-        {
-            var signal = new ManualResetEvent(false);
-            foreach (HttpWebRequest request in requests)
-            {
-                request.BeginGetResponse(r =>
-                {
-                    try
-                    {
-                        var response = (HttpWebResponse)request.EndGetResponse(r);
-
-                        // This request worked OK, close the response and carry on
-                        response.Close();
-                        signal.Set();
-                    }
-                    catch (WebException webEx)
-                    {
-                        if (webEx.Response != null)
-                        {
-                        }
-
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("A HTTP Error occurred while making a sequence of asynchronous requests to the Store, see inner exception for details", webEx)), state);
-                    }
-                    catch (Exception ex)
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("Unexpected error while making a sequence of asynchronous requests to the Store, see inner exception for details", ex)), state);
-                    }
-                }, state);
-
-                signal.WaitOne();
-                signal.Reset();
-            }
-
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown), state);
-        }
     }
 }

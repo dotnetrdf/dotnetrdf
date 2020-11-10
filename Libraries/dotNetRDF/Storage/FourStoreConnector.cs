@@ -32,6 +32,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -70,7 +71,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor.
         /// </remarks>
-        public FourStoreConnector(string baseUri)
+        public FourStoreConnector(string baseUri) 
         {
             if (baseUri == null) throw new ArgumentNullException(nameof(baseUri));
             // Determine the appropriate actual Base Uri
@@ -518,6 +519,19 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+            SaveGraphAsync(request, g, callback, state);
+        }
+
+        /// <inheritdoc />
+        public override Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+            return SaveGraphAsync(request, cancellationToken);
+        }
+
+        private HttpRequestMessage MakeSaveGraphRequestMessage(IGraph g)
+        {
             // Set up the Request
             if (g.BaseUri == null)
             {
@@ -530,7 +544,7 @@ namespace VDS.RDF.Storage
             // Write the Graph as Turtle to the Request Stream
             request.Content =
                 new GraphContent(g, writer) {Encoding = new UTF8Encoding(false), ContentLengthRequired = true};
-            SaveGraphAsync(request, g, callback, state);
+            return request;
         }
 
         /// <summary>
@@ -579,6 +593,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public override Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(graphName))
+            {
+                throw new RdfStorageException("Cannot retrieve a Graph from 4store without specifying a Graph URI");
+            }
+
+            return _queryClient.QueryWithResultGraphAsync(
+                "CONSTRUCT { ?s ?p ?o } FROM <" + graphName.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }",
+                handler, cancellationToken);
+        }
+
         /// <summary>
         /// Updates a Graph in the Store asynchronously.
         /// </summary>
@@ -601,37 +628,9 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
-                    var delete = new StringBuilder();
-                    if (removals != null)
-                    {
-                        if (removals.Any())
-                        {
-                            // Build up the DELETE command and execute
-                            delete.AppendLine("DELETE DATA");
-                            delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            foreach (Triple t in removals)
-                            {
-                                delete.AppendLine(t.ToString(_formatter));
-                            }
-                            delete.AppendLine("}}");
-                        }
-                    }
+                    StringBuilder delete = MakeDeleteCommand(graphUri, removals);
 
-                    var insert = new StringBuilder();
-                    if (additions != null)
-                    {
-                        if (additions.Any())
-                        {
-                            // Build up the INSERT command and execute
-                            insert.AppendLine("INSERT DATA");
-                            insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            foreach (Triple t in additions)
-                            {
-                                insert.AppendLine(t.ToString(_formatter));
-                            }
-                            insert.AppendLine("}}");
-                        }
-                    }
+                    StringBuilder insert = MakeInsertCommand(graphUri, additions);
 
                     // Use Update() method to send the updates
                     if (delete.Length > 0)
@@ -671,6 +670,74 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public override Task UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken)
+        {
+            if (!_updatesEnabled)
+            {
+                throw new RdfStorageException("4store does not support Triple level updates");
+            }
+
+            if (string.IsNullOrEmpty(graphUri))
+            {
+                throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
+            }
+
+            StringBuilder delete = MakeDeleteCommand(graphUri, removals);
+            StringBuilder insert = MakeInsertCommand(graphUri, additions);
+            if (delete.Length > 0)
+            {
+                return insert.Length > 0 ? UpdateAsync(delete + "\n;\n" + insert, cancellationToken) : UpdateAsync(delete.ToString(), cancellationToken);
+            }
+
+            return insert.Length > 0 ? UpdateAsync(insert.ToString(), cancellationToken) : Task.CompletedTask;
+        }
+
+        private StringBuilder MakeInsertCommand(string graphUri, IEnumerable<Triple> additions)
+        {
+            var insert = new StringBuilder();
+            if (additions != null)
+            {
+                if (additions.Any())
+                {
+                    // Build up the INSERT command and execute
+                    insert.AppendLine("INSERT DATA");
+                    insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                    foreach (Triple t in additions)
+                    {
+                        insert.AppendLine(t.ToString(_formatter));
+                    }
+
+                    insert.AppendLine("}}");
+                }
+            }
+
+            return insert;
+        }
+
+        private StringBuilder MakeDeleteCommand(string graphUri, IEnumerable<Triple> removals)
+        {
+            var delete = new StringBuilder();
+            if (removals != null)
+            {
+                if (removals.Any())
+                {
+                    // Build up the DELETE command and execute
+                    delete.AppendLine("DELETE DATA");
+                    delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                    foreach (Triple t in removals)
+                    {
+                        delete.AppendLine(t.ToString(_formatter));
+                    }
+
+                    delete.AppendLine("}}");
+                }
+            }
+
+            return delete;
+        }
+
         /// <summary>
         /// Deletes a Graph from the Store.
         /// </summary>
@@ -687,6 +754,17 @@ namespace VDS.RDF.Storage
 
             var request = new HttpRequestMessage(HttpMethod.Delete, _baseUri + "data/" + Uri.EscapeUriString(graphUri));
             DeleteGraphAsync(request, false, graphUri, callback, state);
+        }
+
+        /// <inheritdoc />
+        public override Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(graphName))
+            {
+                throw new RdfStorageException("Cannot delete a graph without a base URI from a 4store server.");
+            }
+            var request = new HttpRequestMessage(HttpMethod.Delete, _baseUri + "data/" + Uri.EscapeUriString(graphName));
+            return DeleteGraphAsync(request, false, cancellationToken);
         }
 
         /// <summary>
@@ -718,6 +796,12 @@ namespace VDS.RDF.Storage
             }).ConfigureAwait(true);
         }
 
+        /// <inheritdoc />
+        public Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken)
+        {
+            return _updateClient.UpdateAsync(sparqlUpdates, cancellationToken);
+        }
+
         /// <summary>
         /// Queries the store asynchronously.
         /// </summary>
@@ -741,6 +825,14 @@ namespace VDS.RDF.Storage
             }, state);
         }
 
+        /// <inheritdoc />
+        public async Task<object> QueryAsync(string sparqlQuery, CancellationToken cancellationToken)
+        {
+            var g = new Graph();
+            var results = new SparqlResultSet();
+            await QueryAsync(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, cancellationToken);
+            return results.ResultsType == SparqlResultsType.Unknown ? (object)g : results;
+        }
         /// <summary>
         /// Queries the store asynchronously.
         /// </summary>
@@ -772,6 +864,13 @@ namespace VDS.RDF.Storage
                             new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery,
                                 rdfHandler, resultsHandler), state);
                 }).ConfigureAwait(true);
+        }
+
+        /// <inheritdoc />
+        public Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery,
+            CancellationToken cancellationToken)
+        {
+            return _queryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, cancellationToken);
         }
 
         /// <summary>

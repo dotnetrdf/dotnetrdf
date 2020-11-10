@@ -6,7 +6,7 @@ only for testing purposes and are in no way good examples of using these stores 
 ## Images Provided
 
 ### Fuseki
-    docker run --rm -p 3030:3030 --name fuseki fuseki/latest --mem /ds
+    docker run --rm -p 3030:3030 --name fuseki fuseki:latest --mem /ds
     
 Exposes a store at http://localhost:3030/ds/data
 

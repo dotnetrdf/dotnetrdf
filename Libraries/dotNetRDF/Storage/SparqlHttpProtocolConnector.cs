@@ -30,6 +30,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -67,7 +69,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server.</param>
         /// <param name="writerMimeTypeDefinition">The MIME type specifying the syntax to use when sending RDF data to the server. Defaults to "application/rdf+xml".</param>
-        public SparqlHttpProtocolConnector(string serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
+        public SparqlHttpProtocolConnector(string serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null) : base(new HttpClientHandler())
         {
             if (serviceUri == null)
                 throw new ArgumentNullException(nameof(serviceUri),
@@ -396,6 +398,16 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete.</param>
         public virtual void DeleteGraph(string graphUri)
         {
+            HttpRequestMessage request = MakeDeleteGraphRequestMessage(graphUri);
+            HttpResponseMessage response = HttpClient.SendAsync(request).Result;
+            if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
+            {
+                throw StorageHelper.HandleHttpError(response, "deleting a Graph from");
+            }
+        }
+
+        private HttpRequestMessage MakeDeleteGraphRequestMessage(string graphUri)
+        {
             var deleteUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(string.Empty))
             {
@@ -407,11 +419,7 @@ namespace VDS.RDF.Storage
             }
 
             var request = new HttpRequestMessage(HttpMethod.Delete, deleteUri);
-            HttpResponseMessage response = HttpClient.SendAsync(request).Result;
-            if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NotFound)
-            {
-                throw StorageHelper.HandleHttpError(response, "deleting a Graph from");
-            }
+            return request;
         }
 
         /// <summary>
@@ -454,18 +462,32 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
+            HttpRequestMessage request = MakeLoadGraphRequestMessage(graphUri);
+            LoadGraphAsync(request, handler, callback, state);
+        }
+
+        /// <inheritdoc />
+        public override Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeLoadGraphRequestMessage(graphName);
+            return LoadGraphAsync(request, handler, cancellationToken);
+        }
+
+        private HttpRequestMessage MakeLoadGraphRequestMessage(string graphName)
+        {
             var retrievalUri = _serviceUri;
-            if (graphUri != null && !graphUri.Equals(string.Empty))
+            if (graphName != null && !graphName.Equals(string.Empty))
             {
-                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphName);
             }
             else
             {
                 retrievalUri += "?default";
             }
+
             var request = new HttpRequestMessage(HttpMethod.Get, retrievalUri);
             request.Headers.Add("Accept", MimeTypesHelper.HttpAcceptHeader);
-            LoadGraphAsync(request, handler, callback, state);
+            return request;
         }
 
         /// <summary>
@@ -476,6 +498,12 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+            SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
+        }
+
+        private HttpRequestMessage MakeSaveGraphRequestMessage(IGraph g)
+        {
             var saveUri = _serviceUri;
             if (g.BaseUri != null)
             {
@@ -485,8 +513,17 @@ namespace VDS.RDF.Storage
             {
                 saveUri += "?default";
             }
+
             var request = new HttpRequestMessage(HttpMethod.Put, saveUri);
-            SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
+            return request;
+        }
+
+        /// <inheritdoc />
+        public override Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
+            request.Content = new GraphContent(g, new RdfXmlWriter());
+            return SaveGraphAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -514,6 +551,14 @@ namespace VDS.RDF.Storage
                 return;
             }
 
+            HttpRequestMessage request = MakeUpdateGraphRequestMessage(graphUri);
+            var writer = new RdfXmlWriter();
+
+            UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
+        }
+
+        private HttpRequestMessage MakeUpdateGraphRequestMessage(string graphUri)
+        {
             var updateUri = _serviceUri;
             if (graphUri != null && !graphUri.Equals(string.Empty))
             {
@@ -525,9 +570,34 @@ namespace VDS.RDF.Storage
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post, updateUri);
-            var writer = new RdfXmlWriter();
+            return request;
+        }
 
-            UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
+        /// <inheritdoc />
+        public override Task UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken)
+        {
+            if (removals != null && removals.Any())
+            {
+                throw new RdfStorageException(
+                    "Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Graph Store HTTP Protocol for Graph Management does not support");
+            }
+
+            if (additions == null || !additions.Any())
+            {
+                return Task.CompletedTask;
+            }
+
+            HttpRequestMessage request = MakeUpdateGraphRequestMessage(graphUri);
+            var writer = new RdfXmlWriter();
+            return UpdateGraphAsync(request, writer, additions, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public override Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeDeleteGraphRequestMessage(graphName);
+            return DeleteGraphAsync(request, true, cancellationToken);
         }
 
         /// <summary>
@@ -535,11 +605,18 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
         public override void ListGraphs(AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing graphs")), state);
         }
-        
+
+        /// <inheritdoc />
+        public override Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing graphs");
+        }
+
         /// <summary>
         /// Deletes a Graph from the store asynchronously.
         /// </summary>

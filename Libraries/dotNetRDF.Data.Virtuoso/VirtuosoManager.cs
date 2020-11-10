@@ -1440,50 +1440,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Executes a Query SQL Command against the database and returns a DataTable.
-        /// </summary>
-        /// <param name="sqlCmd">SQL Command.</param>
-        /// <returns>DataTable of results.</returns>
-        private DataTable ExecuteQuery(string sqlCmd)
-        {
-            //Create the SQL Command
-            var cmd = new VirtuosoCommand(sqlCmd, _db);
-            cmd.CommandTimeout = _timeout > 0 ? _timeout : cmd.CommandTimeout;
-            if (_dbtrans != null)
-            {
-                //Add to the Transaction if required
-                cmd.Transaction = _dbtrans;
-            }
-
-            //Execute the Query
-            var adapter = new VirtuosoDataAdapter(cmd);
-            var results = new DataTable();
-            adapter.Fill(results);
-
-            return results;
-        }
-
-        /// <summary>
-        /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result).
-        /// </summary>
-        /// <param name="sqlCmd">SQL Command.</param>
-        /// <returns>First Column of First Row of the Results.</returns>
-        private object ExecuteScalar(string sqlCmd)
-        {
-            //Create the SQL Command
-            var cmd = new VirtuosoCommand(sqlCmd, _db);
-            cmd.CommandTimeout = _timeout > 0 ? _timeout : cmd.CommandTimeout;
-            if (_dbtrans != null)
-            {
-                //Add to the Transaction if required
-                cmd.Transaction = _dbtrans;
-            }
-
-            //Execute the Scalar
-            return cmd.ExecuteScalar();
-        }
-
-        /// <summary>
         /// Gets whether there is an active connection to the Virtuoso database.
         /// </summary>
         public bool HasOpenConnection

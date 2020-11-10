@@ -182,7 +182,7 @@ namespace VDS.RDF.Storage
 
             _username = username;
             _pwd = password;
-            _hasCredentials = (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password));
+            _hasCredentials = !string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password);
             if (_hasCredentials) SetCredentials(username, password);
 
             // Server reference
@@ -856,7 +856,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
                 if (results is SparqlResultSet resultSet)
                 {
                     var graphs = new List<Uri>();
@@ -898,6 +898,24 @@ namespace VDS.RDF.Storage
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             SaveGraphAsync(g, callback, state);
+        }
+
+        /// <inheritdoc />
+        public override async Task SaveGraphAsync(IGraph g, CancellationToken cancellationToken)
+        {
+            if (_activeTrans != null)
+            {
+                await SaveGraphAsync(_activeTrans, false, g, cancellationToken);
+            }
+            else
+            {
+                await BeginAsync(cancellationToken);
+                if (g.BaseUri != null)
+                {
+                    await DeleteGraphAsync(g.BaseUri.AbsoluteUri, cancellationToken);
+                }
+                await SaveGraphAsync(_activeTrans, true, g, cancellationToken);
+            }
         }
 
         /// <summary>
@@ -963,11 +981,7 @@ namespace VDS.RDF.Storage
         protected virtual void SaveGraphAsync(string tID, bool autoCommit, IGraph g, AsyncStorageCallback callback,
             object state)
         {
-            HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, HttpMethod.Post,
-                new Dictionary<string, string>());
-            var store = new TripleStore();
-            store.Add(g);
-            request.Content = new DatasetContent(store, _writer);
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(tID, g);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled)
@@ -1023,6 +1037,58 @@ namespace VDS.RDF.Storage
             });
         }
 
+        private HttpRequestMessage MakeSaveGraphRequestMessage(string tID, IGraph g)
+        {
+            HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, HttpMethod.Post,
+                new Dictionary<string, string>());
+            var store = new TripleStore();
+            store.Add(g);
+            request.Content = new DatasetContent(store, _writer);
+            return request;
+        }
+
+        /// <summary>
+        /// Save a graph asynchronously within the scope of an open transaction.
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction.</param>
+        /// <param name="autoCommit">Whether to commit/rollback the transaction when the operation is completed.</param>
+        /// <param name="g">The graph to save.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="RdfStorageException">Raised if the Stardog server responds with an error status code.</exception>
+        protected virtual async Task SaveGraphAsync(string transactionId, bool autoCommit, IGraph g,
+            CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeSaveGraphRequestMessage(transactionId, g);
+            try
+            {
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "saving a graph asynchronously to");
+                }
+
+                if (autoCommit)
+                {
+                    await CommitAsync(cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (autoCommit && _activeTrans != null)
+                {
+                    await RollbackAsync(cancellationToken);
+                }
+
+                throw ex switch
+                {
+                    RdfStorageException storageException => storageException,
+                    OperationCanceledException canceledException => canceledException,
+                    _ => StorageHelper.HandleError(ex, "saving a graph asynchronously to")
+                };
+            }
+        }
+
         /// <summary>
         /// Loads a Graph from the Store asynchronously.
         /// </summary>
@@ -1033,25 +1099,7 @@ namespace VDS.RDF.Storage
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback,
             object state)
         {
-            var serviceParams = new Dictionary<string, string>();
-
-            var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
-            var requestUri = _kb + tID + "/query";
-            var construct = new SparqlParameterizedString();
-            if (!graphUri.Equals(string.Empty))
-            {
-                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
-                construct.SetUri("graph", UriFactory.Create(graphUri));
-            }
-            else
-            {
-                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            }
-
-            serviceParams.Add("query", construct.ToString());
-
-            HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
-                serviceParams);
+            HttpRequestMessage request = MakeLoadGraphRequestMessage(graphUri);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled)
@@ -1115,6 +1163,59 @@ namespace VDS.RDF.Storage
             });
         }
 
+        private HttpRequestMessage MakeLoadGraphRequestMessage(string graphUri)
+        {
+            var serviceParams = new Dictionary<string, string>();
+
+            var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+            var requestUri = _kb + tID + "/query";
+            var construct = new SparqlParameterizedString();
+            if (!graphUri.Equals(string.Empty))
+            {
+                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
+                construct.SetUri("graph", UriFactory.Create(graphUri));
+            }
+            else
+            {
+                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+            }
+
+            serviceParams.Add("query", construct.ToString());
+
+            HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
+                serviceParams);
+            return request;
+        }
+
+        /// <inheritdoc />
+        public override async Task LoadGraphAsync(IRdfHandler handler, string graphName, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpRequestMessage request = MakeLoadGraphRequestMessage(graphName);
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "loading a graph from");
+                }
+
+                IRdfReader parser = MimeTypesHelper.GetParser(response.Content.Headers.ContentType.MediaType);
+                parser.Load(handler, new StreamReader(await response.Content.ReadAsStreamAsync()));
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "loading a graph from");
+            }
+        }
+
         /// <summary>
         /// Updates a Graph in the Store asynchronously.
         /// </summary>
@@ -1176,6 +1277,21 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public override async Task UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals,
+            CancellationToken cancellationToken)
+        {
+            if (_activeTrans != null)
+            {
+                await UpdateGraphAsync(_activeTrans, false, graphUri, additions, removals, cancellationToken);
+            }
+            else
+            {
+                await BeginAsync(cancellationToken);
+                await UpdateGraphAsync(_activeTrans, true, graphUri, additions, removals, cancellationToken);
+            }
+        }
+
         /// <summary>
         /// Apply an update to a graph as part of a transaction.
         /// </summary>
@@ -1191,13 +1307,7 @@ namespace VDS.RDF.Storage
         {
             if (removals != null && removals.Any())
             {
-                HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/remove", MimeTypesHelper.Any,
-                    HttpMethod.Post, new Dictionary<string, string>());
-                var store = new TripleStore();
-                var g = new Graph {BaseUri = graphUri.ToSafeUri()};
-                g.Assert(removals);
-                store.Add(g);
-                request.Content = new DatasetContent(store, _writer);
+                HttpRequestMessage request = MakeRemoveTriplesRequestMessage(tID, graphUri, removals);
                 HttpClient.SendAsync(request).ContinueWith(removalRequestTask =>
                 {
                     if (removalRequestTask.IsCanceled)
@@ -1279,14 +1389,7 @@ namespace VDS.RDF.Storage
                             }
 
                             // Apply additions
-                            HttpRequestMessage addRequest = CreateRequest(_kb + "/" + tID + "/add",
-                                MimeTypesHelper.Any,
-                                HttpMethod.Post, new Dictionary<string, string>());
-                            store = new TripleStore();
-                            g = new Graph {BaseUri = graphUri.ToSafeUri()};
-                            g.Assert(additions);
-                            store.Add(g);
-                            addRequest.Content = new DatasetContent(store, _writer);
+                            HttpRequestMessage addRequest = MakeAddTriplesRequestMessage(tID, graphUri, additions);
                             HttpClient.SendAsync(addRequest).ContinueWith(addRequestTask =>
                             {
                                 if (addRequestTask.IsCanceled)
@@ -1371,14 +1474,7 @@ namespace VDS.RDF.Storage
             }
             else if (additions != null && additions.Any())
             {
-                HttpRequestMessage addRequest = CreateRequest(_kb + "/" + tID + "/add",
-                    MimeTypesHelper.Any,
-                    HttpMethod.Post, new Dictionary<string, string>());
-                var store = new TripleStore();
-                var g = new Graph {BaseUri = graphUri.ToSafeUri()};
-                g.Assert(additions);
-                store.Add(g);
-                addRequest.Content = new DatasetContent(store, _writer);
+                HttpRequestMessage addRequest = MakeAddTriplesRequestMessage(tID, graphUri, additions);
                 HttpClient.SendAsync(addRequest).ContinueWith(addRequestTask =>
                 {
                     if (addRequestTask.IsCanceled)
@@ -1468,6 +1564,117 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Helper method to construct an HTTP request to add triples to a graph.
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction to use for the update.</param>
+        /// <param name="graphName">The name of the graph to be updated.</param>
+        /// <param name="additions">The triples to add to the graph.</param>
+        /// <returns></returns>
+        protected virtual HttpRequestMessage MakeAddTriplesRequestMessage(string transactionId, string graphName, IEnumerable<Triple> additions)
+        {
+            HttpRequestMessage addRequest = CreateRequest(_kb + "/" + transactionId + "/add",
+                MimeTypesHelper.Any,
+                HttpMethod.Post, new Dictionary<string, string>());
+            var store = new TripleStore();
+            var g = new Graph {BaseUri = graphName.ToSafeUri()};
+            g.Assert(additions);
+            store.Add(g);
+            addRequest.Content = new DatasetContent(store, _writer);
+            return addRequest;
+        }
+
+        /// <summary>
+        /// Helper method to construct an HTTP request to remove triples from a graph.
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction to use for the update.</param>
+        /// <param name="graphName">The name of the graph to be updated.</param>
+        /// <param name="removals">The triples to remove from the graph.</param>
+        /// <returns></returns>
+        protected virtual HttpRequestMessage MakeRemoveTriplesRequestMessage(string transactionId, string graphName, IEnumerable<Triple> removals)
+        {
+            HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/remove", MimeTypesHelper.Any,
+                HttpMethod.Post, new Dictionary<string, string>());
+            var store = new TripleStore();
+            var g = new Graph {BaseUri = graphName.ToSafeUri()};
+            g.Assert(removals);
+            store.Add(g);
+            request.Content = new DatasetContent(store, _writer);
+            return request;
+        }
+
+
+        /// <summary>
+        /// Update a graph asynchronously within the context of a transaction.
+        /// </summary>
+        /// <param name="transactionId">The transaction to use.</param>
+        /// <param name="autoCommit">Whether to automatically commit/rollback the transaction.</param>
+        /// <param name="graphUri">The name of the graph to be updated.</param>
+        /// <param name="additions">The triples to add to the graph.</param>
+        /// <param name="removals">The triples to remove from the graph.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="RdfStorageException"></exception>
+        protected virtual async Task UpdateGraphAsync(string transactionId, bool autoCommit, string graphUri,
+            IEnumerable<Triple> additions, IEnumerable<Triple> removals, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (removals != null && removals.Any())
+                {
+                    HttpRequestMessage request = MakeRemoveTriplesRequestMessage(transactionId, graphUri, removals);
+                    HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw StorageHelper.HandleHttpError(response, "updating a graph in");
+                    }
+
+                    if (additions != null && additions.Any())
+                    {
+                        request = MakeAddTriplesRequestMessage(transactionId, graphUri, additions);
+                        response = await HttpClient.SendAsync(request, cancellationToken);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw StorageHelper.HandleHttpError(response, "updating a graph in");
+                        }
+                    }
+
+                    if (autoCommit)
+                    {
+                        await CommitAsync(cancellationToken);
+                    }
+                }
+                else if (additions != null && additions.Any())
+                {
+                    HttpRequestMessage request = MakeAddTriplesRequestMessage(transactionId, graphUri, additions);
+                    HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw StorageHelper.HandleHttpError(response, "updating a graph in");
+                    }
+
+                    if (autoCommit)
+                    {
+                        await CommitAsync(cancellationToken);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (autoCommit)
+                {
+                    await RollbackAsync(cancellationToken);
+                }
+
+                throw ex switch
+                {
+                    OperationCanceledException canceledException => canceledException,
+                    RdfStorageException storageException => storageException,
+                    _ => StorageHelper.HandleError(ex, "updating a graph in")
+                };
+            }
+        }
+
+        /// <summary>
         /// Deletes a Graph from the Store.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete.</param>
@@ -1509,13 +1716,7 @@ namespace VDS.RDF.Storage
         protected virtual void DeleteGraphAsync(string tID, bool autoCommit, string graphUri,
             AsyncStorageCallback callback, object state)
         {
-            HttpRequestMessage request = CreateRequest(
-                _kb + "/" + tID + "/clear/",
-                MimeTypesHelper.Any,
-                HttpMethod.Post,
-                new Dictionary<string, string>() {{"graph-uri", graphUri.Equals(string.Empty) ? "DEFAULT" : graphUri},}
-            );
-            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            HttpRequestMessage request = MakeDeleteGraphRequestMessage(tID, graphUri);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -1584,6 +1785,79 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Helper method that constructs the request message to send to the server to delete a graph.
+        /// </summary>
+        /// <param name="transactionId">The ID of the transaction within which the graph will be deleted.</param>
+        /// <param name="graphName">The name of the graph to be deleted.</param>
+        /// <returns>A configured <see cref="HttpRequestMessage"/> instance.</returns>
+        protected virtual HttpRequestMessage MakeDeleteGraphRequestMessage(string transactionId, string graphName)
+        {
+            HttpRequestMessage request = CreateRequest(
+                _kb + "/" + transactionId + "/clear/",
+                MimeTypesHelper.Any,
+                HttpMethod.Post,
+                new Dictionary<string, string>() {{"graph-uri", graphName.Equals(string.Empty) ? "DEFAULT" : graphName},}
+            );
+            request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+            return request;
+        }
+
+        /// <inheritdoc />
+        public override async Task DeleteGraphAsync(string graphName, CancellationToken cancellationToken)
+        {
+            if (_activeTrans != null)
+            {
+                await DeleteGraphAsync(_activeTrans, graphName, false, cancellationToken);
+            }
+            else
+            {
+                await BeginAsync(cancellationToken);
+                await DeleteGraphAsync(_activeTrans, graphName, true, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Delete a graph asynchronously withing the context of a transaction.
+        /// </summary>
+        /// <param name="transactionId">The transaction to use.</param>
+        /// <param name="graphName">The name of the graph to be deleted.</param>
+        /// <param name="autoCommit">Whether to automatically commit/rollback the transaction.</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="RdfStorageException">Raised if the Stardog server responds with an error status code when deleting thre graph or commiting the transaction.</exception>
+        protected virtual async Task DeleteGraphAsync(string transactionId, string graphName, bool autoCommit,
+            CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeDeleteGraphRequestMessage(transactionId, graphName);
+            try
+            {
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "deleting a graph from");
+                }
+
+                if (autoCommit)
+                {
+                    await CommitAsync(cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (autoCommit && _activeTrans != null)
+                {
+                    await RollbackAsync(cancellationToken);
+                }
+
+                throw ex switch
+                {
+                    OperationCanceledException cancelledException => cancelledException,
+                    RdfStorageException storageException => storageException,
+                    _ => StorageHelper.HandleError(ex, "deleting a graph from")
+                };
+            }
+        }
+        /// <summary>
         /// Queries the store asynchronously.
         /// </summary>
         /// <param name="query">SPARQL Query.</param>
@@ -1609,6 +1883,15 @@ namespace VDS.RDF.Storage
             }, state);
         }
 
+        /// <inheritdoc />
+        public virtual async Task<object> QueryAsync(string query, CancellationToken cancellationToken)
+        {
+            var g = new Graph();
+            var results = new SparqlResultSet();
+            await QueryAsync(new GraphHandler(g), new ResultSetHandler(results), query, cancellationToken);
+            return results.ResultsType == SparqlResultsType.Unknown ? (object)g : results;
+        }
+
         /// <summary>
         /// Queries the store asynchronously.
         /// </summary>
@@ -1620,20 +1903,7 @@ namespace VDS.RDF.Storage
         public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query,
             AsyncStorageCallback callback, object state)
         {
-            var transactionId = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
-
-            // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-            var accept =
-                MimeTypesHelper.CustomHttpAcceptHeader(
-                    MimeTypesHelper.SparqlResultsXml.Concat(
-                        MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
-
-            // Create the Request, for simplicity async requests are always POST
-            var queryParams = new Dictionary<string, string>();
-            HttpRequestMessage request = CreateRequest(_kb + transactionId + "/query", accept, HttpMethod.Post, queryParams);
-
-            // Build the Post Data and add to the Request Body
-            request.Content = new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", query)});
+            HttpRequestMessage request = MakeQueryRequestMessage(query);
             HttpClient.SendAsync(request).ContinueWith(requestTask =>
             {
                 if (requestTask.IsCanceled || requestTask.IsFaulted)
@@ -1697,6 +1967,56 @@ namespace VDS.RDF.Storage
             }).ConfigureAwait(true);
         }
 
+        /// <inheritdoc />
+        public virtual async Task QueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query,
+            CancellationToken cancellationToken)
+        {
+            HttpRequestMessage request = MakeQueryRequestMessage(query);
+            HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw StorageHelper.HandleHttpQueryError(response);
+            }
+
+            var contentType = response.Content.Headers.ContentType.MediaType;
+            using var data = new StreamReader(await response.Content.ReadAsStreamAsync());
+            try
+            {
+                // Is the Content Type referring to a Sparql Result Set format?
+                ISparqlResultsReader sparqlResultsReader = MimeTypesHelper.GetSparqlParser(
+                    contentType,
+                    Regex.IsMatch(query, "ASK", RegexOptions.IgnoreCase));
+                sparqlResultsReader.Load(resultsHandler, data);
+            }
+            catch (RdfParserSelectionException)
+            {
+                // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                // Is the Content Type referring to a RDF format?
+                IRdfReader rdfReader = MimeTypesHelper.GetParser(contentType);
+                rdfReader.Load(rdfHandler, data);
+            }
+        }
+
+        private HttpRequestMessage MakeQueryRequestMessage(string query)
+        {
+            var transactionId = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
+
+            // String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+            var accept =
+                MimeTypesHelper.CustomHttpAcceptHeader(
+                    MimeTypesHelper.SparqlResultsXml.Concat(
+                        MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
+
+            // Create the Request, for simplicity async requests are always POST
+            var queryParams = new Dictionary<string, string>();
+            HttpRequestMessage request = CreateRequest(_kb + transactionId + "/query", accept, HttpMethod.Post, queryParams);
+
+            // Build the Post Data and add to the Request Body
+            request.Content = new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", query)});
+            return request;
+        }
+
         #region HTTP Helper Methods
 
         /// <summary>
@@ -1714,7 +2034,7 @@ namespace VDS.RDF.Storage
             // Build the Request Uri
             var requestUri = _baseUri + servicePath + "?";
 
-            if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
+            if (!(requestParams is null) && requestParams.Count > 0)
             {
                 foreach (var p in requestParams.Keys)
                 {
@@ -1757,8 +2077,7 @@ namespace VDS.RDF.Storage
         {
             // Build the Request Uri
             var requestUri = _baseUri + servicePath + "?";
-
-            if (!ReferenceEquals(requestParams, null) && requestParams.Count > 0)
+            if (!(requestParams is null) && requestParams.Count > 0)
             {
                 foreach (var p in requestParams.Keys)
                 {
@@ -2072,6 +2391,53 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Begins a transaction asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="RdfStorageException">Raised if there is already an active transaction for this connector or if the Stardog server responds with an error status code or a null or empty response.</exception>
+        public virtual async Task BeginAsync(CancellationToken cancellationToken)
+        {
+            if (_activeTrans != null)
+            {
+                throw new RdfStorageException(
+                    "Cannot start a new Transaction as there is already an active Transaction");
+            }
+
+            try
+            {
+                HttpRequestMessage request = CreateRequest(_kb + "/transaction/begin", "text/plain",
+                    HttpMethod.Post, new Dictionary<string, string>());
+                request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "beginning a Transaction in");
+                }
+
+                var transactionId = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrEmpty(transactionId))
+                {
+                    throw new RdfStorageException("Stardog failed to begin a transaction");
+                }
+
+                _activeTrans = transactionId;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "beginning a transaction in");
+            }
+        }
+
+        /// <summary>
         /// Commits a transaction asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
@@ -2124,6 +2490,48 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Commit a transaction asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="RdfStorageException">Raised if there is currently no open transaction for this connector, or if the Stardog server responds with an error status code.</exception>
+        public virtual async Task CommitAsync(CancellationToken cancellationToken)
+        {
+            // TODO: Should we allow a cancellation during the commit?
+            if (_activeTrans == null)
+            {
+                throw new RdfStorageException(
+                    "Cannot commit a Transaction as there is currently no active Transaction");
+            }
+
+            try
+            {
+                HttpRequestMessage request = CreateRequest(_kb + "/transaction/commit/" + _activeTrans,
+                    "text/plain", HttpMethod.Post, new Dictionary<string, string>());
+                request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "committing a Transaction to");
+                }
+
+                _activeTrans = null;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "commiting a transaction to");
+            }
+        }
+
+        /// <summary>
         /// Rolls back a transaction asynchronously.
         /// </summary>
         /// <param name="callback">Callback.</param>
@@ -2172,6 +2580,48 @@ namespace VDS.RDF.Storage
                         }
                     }
                 }).ConfigureAwait(true);
+            }
+        }
+
+        /// <summary>
+        /// Roll back the current transaction on this connector asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="RdfStorageException">If there is no open transaction on the connector or if the Stardog server responds with an error status code.</exception>
+        public virtual async Task RollbackAsync(CancellationToken cancellationToken)
+        {
+            // TODO: Should we allow a cancellation during the commit?
+            if (_activeTrans == null)
+            {
+                throw new RdfStorageException(
+                    "Cannot rollback a Transaction on the as there is currently no active Transaction");
+            }
+
+            try
+            {
+                HttpRequestMessage request = CreateRequest(_kb + "/transaction/rollback/" + _activeTrans,
+                    MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
+                request.Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[0]);
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "rolling back a transaction from");
+                }
+
+                _activeTrans = null;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "rolling back a transaction from");
             }
         }
 
@@ -2521,24 +2971,18 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         protected override string GetReasoningParameter()
         {
-            switch (Reasoning)
+            return Reasoning switch
             {
-                case StardogReasoningMode.QL:
-                    return "reasoning=QL";
-                case StardogReasoningMode.EL:
-                    return "reasoning=EL";
-                case StardogReasoningMode.RL:
-                    return "reasoning=RL";
-                case StardogReasoningMode.DL:
-                    return "reasoning=DL";
-                case StardogReasoningMode.RDFS:
-                    return "reasoning=RDFS";
-                case StardogReasoningMode.SL:
-                    return "reasoning=SL";
-                case StardogReasoningMode.None:
-                default:
-                    return string.Empty;
-            }
+                StardogReasoningMode.QL => "reasoning=QL",
+                StardogReasoningMode.EL => "reasoning=EL",
+                StardogReasoningMode.RL => "reasoning=RL",
+                StardogReasoningMode.DL => "reasoning=DL",
+                StardogReasoningMode.RDFS => "reasoning=RDFS",
+                StardogReasoningMode.SL => "reasoning=SL",
+                StardogReasoningMode.DatabaseControlled => string.Empty,
+                StardogReasoningMode.None => string.Empty,
+                _ => string.Empty
+            };
         }
 
         /// <summary>
@@ -2622,6 +3066,34 @@ namespace VDS.RDF.Storage
                 }
             });
 
+        }
+
+        /// <inheritdoc />
+        public async Task UpdateAsync(string sparqlUpdates, CancellationToken cancellationToken)
+        {
+            try
+            {
+                HttpRequestMessage request =
+                    CreateRequest(KbId + "/update", MimeTypesHelper.Any, HttpMethod.Post, null);
+                request.Content = new StringContent(sparqlUpdates, Encoding.UTF8, MimeTypesHelper.SparqlUpdate);
+                HttpResponseMessage response = await HttpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw StorageHelper.HandleHttpError(response, "executing a SPARQL update against");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "executing a SPARQL update against");
+            }
         }
     }
 
