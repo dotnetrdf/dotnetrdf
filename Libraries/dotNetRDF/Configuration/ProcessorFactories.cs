@@ -76,8 +76,7 @@ namespace VDS.RDF.Configuration
         private const string LeviathanQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor",
                              SimpleQueryProcessor = "VDS.RDF.Query.SimpleQueryProcessor",
                              GenericQueryProcessor = "VDS.RDF.Query.GenericQueryProcessor",
-                             RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor",
-                             PelletQueryProcessor = "VDS.RDF.Query.PelletQueryProcessor";
+                             RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor";
 
         /// <summary>
         /// Tries to load a SPARQL Query Processor based on information from the Configuration Graph.
@@ -176,16 +175,6 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load the Remote Query Processor identified by the Node '" + objNode.ToSafeString() + "' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
                     }
                     break;
-
-
-                case PelletQueryProcessor:
-                    var server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
-                    if (server == null) return false;
-                    var kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
-                    if (kb == null) return false;
-
-                    processor = new PelletQueryProcessor(UriFactory.Create(server), kb);
-                    break;
             }
 
             obj = processor;
@@ -205,7 +194,6 @@ namespace VDS.RDF.Configuration
                 case SimpleQueryProcessor:
                 case GenericQueryProcessor:
                 case RemoteQueryProcessor:
-                case PelletQueryProcessor:
                     return true;
                 default:
                     return false;

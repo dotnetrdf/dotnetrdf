@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Query;
-using VDS.RDF.Query.Inference.Pellet.Services;
 
 namespace VDS.RDF
 {
@@ -149,44 +148,5 @@ namespace VDS.RDF
         /// </summary>
         public object State { get; private set; }
     }
-
-}
-
-namespace VDS.RDF.Query.Inference.Pellet
-{
-    /// <summary>
-    /// Callback that occurs when the connection to a Pellet Server instance is ready for use.
-    /// </summary>
-    /// <param name="server">Pellet Server.</param>
-    /// <param name="state">State.</param>
-    public delegate void PelletServerReadyCallback(PelletServer server, object state);
-
-    /// <summary>
-    /// Callback for Pellet Constistency Service.
-    /// </summary>
-    /// <param name="isConsistent">Whether the Knowledge Base is consistent.</param>
-    /// <param name="state">State.</param>
-    public delegate void PelletConsistencyCallback(bool isConsistent, object state);
-
-    /// <summary>
-    /// Callback for Pellet Search Service.
-    /// </summary>
-    /// <param name="results">Pellet Search Results.</param>
-    /// <param name="state">State.</param>
-    public delegate void PelletSearchServiceCallback(List<SearchServiceResult> results, object state);
-
-    /// <summary>
-    /// Callback for Pellet Cluster Service.
-    /// </summary>
-    /// <param name="clusters">Clusters.</param>
-    /// <param name="state">State.</param>
-    public delegate void PelletClusterServiceCallback(List<List<INode>> clusters, object state);
-
-    /// <summary>
-    /// Callback for Pellet Similarity Service.
-    /// </summary>
-    /// <param name="results">Similarity Results.</param>
-    /// <param name="state">State.</param>
-    public delegate void PelletSimilarityServiceCallback(List<KeyValuePair<INode, double>> results, object state);
 
 }
