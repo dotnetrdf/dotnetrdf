@@ -38,6 +38,7 @@ namespace VDS.RDF.Update
     /// <summary>
     /// A Class for connecting to a remote SPARQL Update endpoint and executing Updates against it.
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in a future release. Replaced by VDS.RDF.Update.SparqlUpdateClient.")]
     public class SparqlRemoteUpdateEndpoint 
         : BaseEndpoint
     {
