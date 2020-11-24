@@ -32,6 +32,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -617,6 +618,16 @@ WHERE
 
             //Count only covers named graphs
             Assert.Equal(1, results.Count);
+        }
+
+        [Fact]
+        public void SparqlGroupByWithEmptyResultSet()
+        {
+            //var query = "SELECT ?s  (COUNT(?o) AS ?c) WHERE {?s a ?o} GROUP BY ?s";
+            var query = "SELECT ?s  (COUNT(?o) AS ?c) WHERE {?s a ?o} GROUP BY ?s";
+            var m = new InMemoryManager();
+            var result = (SparqlResultSet)m.Query(query);
+            Assert.Empty(result.Results);
         }
     }
 }
