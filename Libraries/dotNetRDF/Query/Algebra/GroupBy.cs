@@ -71,6 +71,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 results = new Multiset();
             }
+
+            
             GroupMultiset groupSet = new GroupMultiset(results);
             List<BindingGroup> groups;
 
@@ -101,9 +103,11 @@ namespace VDS.RDF.Query.Algebra
                 }
                 groupSet.AddGroup(group);
             }
-            // If grouping produced no groups and there are aggregates present
-            // then an implicit group is created
-            if (groups.Count == 0 && _aggregates.Count > 0) groupSet.AddGroup(new BindingGroup());
+            // If grouping produced no groups, there are aggregates present, then an implicit group is created unless the input multiset was empty and explicit grouping was specified.
+            if (groups.Count == 0 && _aggregates.Count > 0 && !(context.InputMultiset.IsEmpty && (Grouping != null || context.Query.GroupBy != null)))
+            {
+                groupSet.AddGroup(new BindingGroup());
+            }
 
             // Apply the aggregates
             context.InputMultiset = groupSet;
