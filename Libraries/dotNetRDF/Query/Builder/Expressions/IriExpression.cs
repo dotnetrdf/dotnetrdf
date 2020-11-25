@@ -35,7 +35,11 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public class IriExpression : RdfTermExpression
     {
-        internal IriExpression(Uri iri) 
+        /// <summary>
+        /// Wraps the <paramref name="iri"/> as a constant IRI expression.
+        /// </summary>
+        /// <param name="iri"></param>
+        public IriExpression(Uri iri) 
             : base(new ConstantTerm(new UriNode(null, iri)))
         {
         }
