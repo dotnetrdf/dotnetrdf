@@ -1,6 +1,13 @@
 ﻿Change Log
 ==========
 
+2.6.1
+-----
+
+NEW: Added a public constructor for the `IriExpression` class to make it easier to add IRI constants when building a SPARQL query.
+FIX: Significant performance enhancement for the TreeIndexedTripleCollection makes it faster to retract triples. Thanks to @blackwork for the PR.
+FIX: Fix to the Leviathan query engine to fix the behaviour of grouped aggregates when the input context is empty. Thanks to @giacomociti for the bug report.
+
 2.6
 ---
 
