@@ -51,8 +51,8 @@ namespace dotNetRDF.MockServerTests
 
         public FederatedEndpointFixture()
         {
-            Server1 = FluentMockServer.Start();
-            Server2 = FluentMockServer.Start();
+            Server1 = WireMockServer.Start();
+            Server2 = WireMockServer.Start();
 
             Server1.Given(Request.Create()
                     .WithPath("/query")
