@@ -29,6 +29,9 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -164,7 +167,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public void SparqlGroupByAggregateEmptyGroup1()
+        public void SparqlAggEmptyGroupMax2()
         {
             const string query = @"PREFIX ex: <http://example.com/>
 SELECT (MAX(?value) AS ?max)
@@ -184,7 +187,7 @@ WHERE {
         }
 
         [Fact]
-        public void SparqlGroupByAggregateEmptyGroup2()
+        public void SparqlAggEmptyGroupMax1()
         {
             const string query = @"PREFIX ex: <http://example.com/>
 SELECT (MAX(?value) AS ?max)
@@ -193,12 +196,45 @@ WHERE {
 } GROUP BY ?x";
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.NotNull(results);
+            Assert.True(results.IsEmpty, "Results should be empty");
+        }
+
+        [Fact]
+        public void SparqlAggEmptyGroupCount1()
+        {
+            // counting no results with grouping returns no results
+            var query = @"PREFIX : <http://example/>
+
+SELECT (count(*) AS ?C)
+WHERE {
+   ?s :p ?x
+}
+GROUP BY ?s";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
             var processor = new LeviathanQueryProcessor(new TripleStore());
-
             var results = processor.ProcessQuery(q) as SparqlResultSet;
-            if (results == null) Assert.True(false, "Null results");
+            Assert.NotNull(results);
+            Assert.True(results.IsEmpty);
+        }
 
-            Assert.False(results.IsEmpty, "Results should not be empty");
+        [Fact]
+        public void SparqlAggEmptyGroupCount2()
+        {
+            // counting no results without grouping always returns a single results
+            var query = @"PREFIX : <http://example/>
+
+SELECT (count(*) AS ?C)
+WHERE {
+   ?s :p ?x
+}";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.NotNull(results);
+            Assert.False(results.IsEmpty);
         }
 
         [Fact]
@@ -541,6 +577,16 @@ WHERE
 
             //Count only covers named graphs
             Assert.Equal(1, results.Count);
+        }
+
+        [Fact]
+        public void SparqlGroupByWithEmptyResultSet()
+        {
+            //var query = "SELECT ?s  (COUNT(?o) AS ?c) WHERE {?s a ?o} GROUP BY ?s";
+            var query = "SELECT ?s  (COUNT(?o) AS ?c) WHERE {?s a ?o} GROUP BY ?s";
+            var m = new InMemoryManager();
+            var result = (SparqlResultSet)m.Query(query);
+            Assert.Empty(result.Results);
         }
     }
 }
