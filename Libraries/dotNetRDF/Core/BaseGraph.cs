@@ -59,6 +59,11 @@ namespace VDS.RDF
         protected Uri _baseuri = null;
 
         /// <summary>
+        /// The name of the graph.
+        /// </summary>
+        protected readonly IRefNode _name;
+
+        /// <summary>
         /// Blank Node ID Mapper.
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
@@ -73,23 +78,25 @@ namespace VDS.RDF
         /// Creates a new Base Graph using the given Triple Collection.
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use.</param>
-        protected BaseGraph(BaseTripleCollection tripleCollection)
+        /// <param name="graphName">The name to assign to the graph</param>
+        protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null)
         {
             _triples = tripleCollection;
             _bnodemapper = new BlankNodeMapper();
             _nsmapper = new NamespaceMapper();
+            _name = graphName;
 
             // Create Event Handlers and attach to the Triple Collection
-            TripleAddedHandler = new TripleEventHandler(OnTripleAsserted);
-            TripleRemovedHandler = new TripleEventHandler(OnTripleRetracted);
+            TripleAddedHandler = OnTripleAsserted;
+            TripleRemovedHandler = OnTripleRetracted;
             AttachEventHandlers(_triples);
         }
 
         /// <summary>
         /// Creates a new Base Graph which uses the default <see cref="TreeIndexedTripleCollection" /> as the Triple Collection.
         /// </summary>
-        protected BaseGraph()
-            : this(new TreeIndexedTripleCollection())
+        protected BaseGraph(IRefNode graphName = null)
+            : this(new TreeIndexedTripleCollection(), graphName)
         {
         }
 
@@ -127,6 +134,14 @@ namespace VDS.RDF
         {
             get => _baseuri;
             set => _baseuri = value;
+        }
+
+        /// <summary>
+        /// Get or set the name of the graph.
+        /// </summary>
+        public virtual IRefNode Name
+        {
+            get => _name;
         }
 
         /// <summary>

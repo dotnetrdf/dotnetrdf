@@ -144,6 +144,9 @@ namespace VDS.RDF.Query.Spin
         public Uri BaseUri { get; set; }
 
         /// <inheritdoc />
+        public IRefNode Name { get; }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             Reset();

@@ -27,17 +27,19 @@
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Blank Nodes.
+    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired.
     /// </summary>
-    public interface IBlankNode 
-        : IRefNode
+    public interface ITransactionalGraph
+        : IGraph
     {
         /// <summary>
-        /// Gets the Internal ID of the Blank Node.
+        /// Flushes any changes to the Graph.
         /// </summary>
-        string InternalID
-        {
-            get;
-        }
+        void Flush();
+
+        /// <summary>
+        /// Discards any changes to the Graph.
+        /// </summary>
+        void Discard();
     }
 }

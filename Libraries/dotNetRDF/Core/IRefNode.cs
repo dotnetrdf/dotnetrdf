@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -27,17 +27,9 @@
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Blank Nodes.
+    /// A marker interface shared by nodes that act as references to resources.
     /// </summary>
-    public interface IBlankNode 
-        : IRefNode
+    public interface IRefNode : INode
     {
-        /// <summary>
-        /// Gets the Internal ID of the Blank Node.
-        /// </summary>
-        string InternalID
-        {
-            get;
-        }
     }
 }

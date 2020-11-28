@@ -84,6 +84,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the name of the graph.
+        /// </summary>
+        public virtual IRefNode Name
+        {
+            get
+            {
+                return _g.Name;
+            }
+        }
+
+        /// <summary>
         /// Gets whether the Graph is empty.
         /// </summary>
         public virtual bool IsEmpty => _g.IsEmpty;

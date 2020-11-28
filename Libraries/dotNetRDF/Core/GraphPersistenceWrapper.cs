@@ -59,7 +59,7 @@ namespace VDS.RDF
         /// </summary>
         protected readonly IGraph _g;
         private readonly List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
-        private bool _alwaysQueueActions = false;
+        private readonly bool _alwaysQueueActions = false;
         private readonly TripleEventHandler _tripleAddedHandler;
         private readonly TripleEventHandler _tripleRemovedHandler;
 
@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// The <paramref name="alwaysQueueActions">alwaysQueueActions</paramref> setting when enabled will cause the wrapper to queue Asserts and Retracts for persistence regardless of whether the relevant Triples already exist (i.e. normally if a Triple exists is cannot be asserted again and if it doesn't exist it cannot be retracted).  This is useful for creating derived wrappers which operate in write-only mode i.e. append mode for an existing graph that may be too large to reasonably load into memory.
         /// </remarks>
         public GraphPersistenceWrapper(bool alwaysQueueActions)
-            : this(new Graph(), alwaysQueueActions) { }
+            : this(new Graph()) { }
 
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around the given Graph.
@@ -125,6 +125,11 @@ namespace VDS.RDF
             get => _g.BaseUri;
             set => _g.BaseUri = value;
         }
+
+        /// <summary>
+        /// Gets the name of the graph.
+        /// </summary>
+        public IRefNode Name { get => _g.Name; }
 
         /// <summary>
         /// Gets whether the Graph is empty.
