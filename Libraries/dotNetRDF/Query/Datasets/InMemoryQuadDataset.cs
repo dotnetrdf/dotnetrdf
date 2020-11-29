@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 if (_store.HasGraph(null))
                 {
-                    _store.Graphs[null].Clear();
+                    _store.Graphs[(IRefNode)null].Clear();
                     return true;
                 }
                 return false;

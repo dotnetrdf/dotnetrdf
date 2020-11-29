@@ -27,33 +27,64 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.Common.Collections;
+using System.Threading;
 
 namespace VDS.RDF
 {
     /// <summary>
-    /// Wrapper class for Graph Collections.
+    /// Thread Safe decorator around a Graph collection.
     /// </summary>
-    public class GraphCollection 
-        : BaseGraphCollection, IEnumerable<IGraph>
+    /// <remarks>
+    /// Provides concurrency via a <see cref="ReaderWriterLockSlim" />.
+    /// </remarks>
+    public class ThreadSafeGraphCollection 
+        : WrapperGraphCollection
     {
-        /// <summary>
-        /// Internal Constant used as the Hash Code for the default graph.
-        /// </summary>
-        protected const int DefaultGraphId = 0;
+        private readonly ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         /// <summary>
-        /// Dictionary of Graph Uri Enhanced Hash Codes to Graphs.
+        /// Creates a new Thread Safe decorator around the default <see cref="GraphCollection"/>.
         /// </summary>
-        /// <remarks>See <see cref="Extensions.GetEnhancedHashCode">GetEnhancedHashCode()</see>.</remarks>
-        protected MultiDictionary<IRefNode, IGraph> _graphs;
+        public ThreadSafeGraphCollection()
+            : base(new GraphCollection()) { }
 
         /// <summary>
-        /// Creates a new Graph Collection.
+        /// Creates a new Thread Safe decorator around the supplied graph collection.
         /// </summary>
-        public GraphCollection()
+        /// <param name="graphCollection">Graph Collection.</param>
+        public ThreadSafeGraphCollection(BaseGraphCollection graphCollection)
+            : base(graphCollection) { }
+
+        /// <summary>
+        /// Enters the write lock.
+        /// </summary>
+        protected void EnterWriteLock()
         {
-            _graphs = new MultiDictionary<IRefNode, IGraph>(u => u?.GetHashCode() ?? DefaultGraphId, true, new FastNodeComparer(), MultiDictionaryMode.AVL);
+            _lockManager.EnterWriteLock();
+        }
+
+        /// <summary>
+        /// Exits the write lock.
+        /// </summary>
+        protected void ExitWriteLock()
+        {
+            _lockManager.ExitWriteLock();
+        }
+
+        /// <summary>
+        /// Enters the read lock.
+        /// </summary>
+        protected void EnterReadLock()
+        {
+            _lockManager.EnterReadLock();
+        }
+
+        /// <summary>
+        /// Exits the read lock.
+        /// </summary>
+        protected void ExitReadLock()
+        {
+            _lockManager.ExitReadLock();
         }
 
         /// <summary>
@@ -61,11 +92,18 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph Uri to test.</param>
         /// <returns></returns>
-        [Obsolete("Replaced by Contains(IRefNode)")]
+        [Obsolete]
         public override bool Contains(Uri graphUri)
         {
-            if (graphUri == null) return _graphs.Keys.Any(k => k == null);
-            return _graphs.Keys.Any(k => k is IUriNode uriNode && uriNode.Uri.Equals(graphUri));
+            try
+            {
+                EnterReadLock();
+                return _graphs.Contains(graphUri);
+            }
+            finally
+            {
+                ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -76,7 +114,15 @@ namespace VDS.RDF
         /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
         public override bool Contains(IRefNode graphName)
         {
-            return _graphs.ContainsKey(graphName);
+            try
+            {
+                EnterReadLock();
+                return _graphs.Contains(graphName);
+            }
+            finally
+            {
+                ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -87,25 +133,14 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true.</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            if (_graphs.ContainsKey(g.Name))
+            try
             {
-                // Already exists in the Graph Collection
-                if (mergeIfExists)
-                {
-                    // Merge into the existing Graph
-                    _graphs[g.Name].Merge(g);
-                    return true;
-                }
-
-                // Not allowed
-                throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
+                EnterWriteLock();
+                return _graphs.Add(g, mergeIfExists);
             }
-            else
+            finally
             {
-                // Safe to add a new Graph
-                _graphs.Add(g.Name, g);
-                RaiseGraphAdded(g);
-                return true;
+                ExitWriteLock();
             }
         }
 
@@ -113,12 +148,18 @@ namespace VDS.RDF
         /// Removes a Graph from the Collection.
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to remove.</param>
-        [Obsolete("Replaced by Remove(IRefNode)")]
+        [Obsolete]
         protected internal override bool Remove(Uri graphUri)
         {
-            IRefNode graphName = _graphs.Keys.FirstOrDefault(k => k is UriNode uriNode && uriNode.Uri.Equals(graphUri));
-            if (graphName == null && !_graphs.ContainsKey(null!)) return false;
-            return Remove(graphName);
+            try
+            {
+                EnterWriteLock();
+                return _graphs.Remove(graphUri);
+            }
+            finally
+            {
+                ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -128,17 +169,19 @@ namespace VDS.RDF
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName) 
+        protected internal override bool Remove(IRefNode graphName)
         {
-            if (_graphs.TryGetValue(graphName, out IGraph g) &&
-                _graphs.Remove(graphName))
+            try
             {
-                RaiseGraphRemoved(g);
-                return true;
+                EnterWriteLock();
+                return _graphs.Remove(graphName);
             }
-
-            return false;
+            finally
+            {
+                ExitWriteLock();
+            }
         }
+
 
         /// <summary>
         /// Gets the number of Graphs in the Collection.
@@ -147,50 +190,95 @@ namespace VDS.RDF
         {
             get
             {
-                return _graphs.Count;
+                try
+                {
+                    EnterReadLock();
+                    return _graphs.Count;
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
             }
+        }
+
+        /// <summary>
+        /// Gets the Enumerator for the Collection.
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerator<IGraph> GetEnumerator()
+        {
+            IEnumerable<IGraph> graphs;
+            try
+            {
+                EnterReadLock();
+                graphs = _graphs.ToList();
+            }
+            finally
+            {
+                ExitReadLock();
+            }
+            return graphs.GetEnumerator();
         }
 
         /// <summary>
         /// Provides access to the Graph URIs of Graphs in the Collection.
         /// </summary>
-        [Obsolete("Replaced by GraphNames")]
+        [Obsolete]
         public override IEnumerable<Uri> GraphUris
         {
             get
             {
-                return _graphs.Keys.Where(k=>k == null || k is IUriNode).Select(k=>(k as UriNode)?.Uri);
+                try
+                {
+                    EnterReadLock();
+                    return _graphs.GraphUris.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
             }
         }
 
         /// <summary>
         /// Provides an enumeration of the names of all of teh graphs in the collection.
         /// </summary>
-        public override IEnumerable<IRefNode> GraphNames => _graphs.Keys;
+        public override IEnumerable<IRefNode> GraphNames
+        {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _graphs.GraphNames.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a Graph from the Collection.
         /// </summary>
         /// <param name="graphUri">Graph Uri.</param>
         /// <returns></returns>
-        [Obsolete("Replaced by this[IRefNode]")]
+        [Obsolete]
         public override IGraph this[Uri graphUri]
         {
-            get 
+            get
             {
-                if (graphUri == null && _graphs.TryGetValue(null!, out IGraph defaultGraph))
+                try
                 {
-                    return defaultGraph;
+                    EnterReadLock();
+                    return _graphs[graphUri];
                 }
-
-                IGraph g = _graphs.Values.FirstOrDefault(
-                    graph => graph.Name is IUriNode uriNode && uriNode.Uri.Equals(graphUri));
-                if (g == null)
+                finally
                 {
-                    throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
+                    ExitReadLock();
                 }
-
-                return g;
             }
         }
 
@@ -204,27 +292,16 @@ namespace VDS.RDF
         {
             get
             {
-                if (_graphs.TryGetValue(graphName, out IGraph g)) return g;
-                throw new RdfException("The graph with the given name does not exist in this graph collection.");
+                try
+                {
+                    EnterReadLock();
+                    return _graphs[graphName];
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
             }
-        }
-
-        /// <summary>
-        /// Gets the Enumerator for the Collection.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<IGraph> GetEnumerator()
-        {
-            return _graphs.Values.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Gets the Enumerator for this Collection.
-        /// </summary>
-        /// <returns></returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         /// <summary>
@@ -233,7 +310,15 @@ namespace VDS.RDF
         /// <remarks>Invokes the <strong>Dispose()</strong> method of all Graphs contained in the Collection.</remarks>
         public override void Dispose()
         {
-            _graphs.Clear();
+            try
+            {
+                EnterWriteLock();
+                _graphs.Dispose();
+            }
+            finally
+            {
+                ExitWriteLock();
+            }
         }
     }
 }

@@ -38,12 +38,22 @@ namespace VDS.RDF
         [Fact]
         public void GraphCollectionBasic1()
         {
-            var store = new TripleStore();
+            var store = new GraphCollection();
             var g = new Graph();
-            store.Add(g);
+            store.Add(g, false);
 
-            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
+            Assert.True(store.Contains(g.BaseUri), "Graph Collection should contain the Graph");
             Assert.Equal(g, store[g.BaseUri]);
+        }
+
+        [Fact]
+        public void GraphCollectionAddUnnamedGraph()
+        {
+            var collection = new GraphCollection();
+            var g = new Graph();
+            collection.Add(g, false);
+            Assert.True(collection.Contains((IRefNode)null));
+            Assert.True(collection.Contains((Uri) null));
         }
 
         [Fact]

@@ -39,14 +39,14 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new decorator.
         /// </summary>
-        public BaseDemandGraphCollection()
+        protected BaseDemandGraphCollection()
             : base() { }
 
         /// <summary>
         /// Creates a new decorator over the given graph collection.
         /// </summary>
         /// <param name="collection">Graph Collection.</param>
-        public BaseDemandGraphCollection(BaseGraphCollection collection)
+        protected BaseDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
         /// <summary>
@@ -54,6 +54,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete]
         public override bool Contains(Uri graphUri)
         {
             try
@@ -73,6 +74,42 @@ namespace VDS.RDF
                     Add(g, false);
                     return true;
                 }
+            }
+            catch
+            {
+                // Any errors in checking if the Graph already exists or loading it on-demand leads to a return of false
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the graph with the given name exists in this graph collection.
+        /// </summary>
+        /// <param name="graphName">Graph name to test for.</param>
+        /// <returns>True if a graph with the specified name is in the collection, false otherwise.</returns>
+        /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
+        public override bool Contains(IRefNode graphName)
+        {
+            try
+            {
+                if (base.Contains(graphName))
+                {
+                    return true;
+                }
+
+                if (graphName is IUriNode uriNode)
+                {
+                    // Try to do on-demand loading
+                    IGraph g = LoadOnDemand(uriNode.Uri);
+
+                    // Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
+                    // in case the loading process sets it otherwise
+                    g.BaseUri = uriNode.Uri;
+                    Add(g, false);
+                    return true;
+                }
+
+                return false;
             }
             catch
             {
