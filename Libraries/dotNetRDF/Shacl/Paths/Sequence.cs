@@ -34,8 +34,8 @@ namespace VDS.RDF.Shacl.Paths
     internal class Sequence : Path
     {
         [DebuggerStepThrough]
-        internal Sequence(INode node)
-            : base(node)
+        internal Sequence(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -45,7 +45,7 @@ namespace VDS.RDF.Shacl.Paths
             {
                 return (
                     from member in Graph.GetListItems(this)
-                    let path = Path.Parse(member)
+                    let path = Path.Parse(member, Graph)
                     select path.SparqlPath)
                     .Aggregate((first, second) => new SequencePath(first, second));
             }
@@ -58,7 +58,7 @@ namespace VDS.RDF.Shacl.Paths
                 return
                     Graph.GetListAsTriples(this)
                     .Concat(
-                    Graph.GetListItems(this).SelectMany(member => Path.Parse(member).AsTriples));
+                    Graph.GetListItems(this).SelectMany(member => Path.Parse(member, Graph).AsTriples));
             }
         }
     }

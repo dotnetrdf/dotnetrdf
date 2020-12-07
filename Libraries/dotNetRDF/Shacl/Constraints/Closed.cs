@@ -49,7 +49,7 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             if (!BooleanValue)
             {
@@ -58,7 +58,7 @@ namespace VDS.RDF.Shacl.Constraints
 
             IEnumerable<Triple> invalidValues =
                 from valueNode in valueNodes
-                from outgoing in valueNode.Graph.GetTriplesWithSubject(valueNode)
+                from outgoing in dataGraph.GetTriplesWithSubject(valueNode)
                 let property = outgoing.Predicate
                 let ignoredProperties =
                     from ignoredProperty in Vocabulary.IgnoredProperties.ObjectsOf(Shape)
@@ -66,7 +66,7 @@ namespace VDS.RDF.Shacl.Constraints
                     select ignoredMember
                 let definedProperties =
                     from property in Vocabulary.Property.ObjectsOf(Shape)
-                    from path in Vocabulary.Path.ObjectsOf(property)
+                    from path in Vocabulary.Path.ObjectsOf(property, Shape.Graph)
                     select path
                 let allProperties = definedProperties.Concat(ignoredProperties)
                 where !allProperties.Contains(property)

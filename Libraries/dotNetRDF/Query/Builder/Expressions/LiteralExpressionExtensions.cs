@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         /// </summary>
         internal static ConstantTerm ToSimpleLiteral(this string value, bool normalizeLiteralValue)
         {
-            return new ConstantTerm(new LiteralNode(null, value, normalizeLiteralValue));
+            return new ConstantTerm(new LiteralNode(value, normalizeLiteralValue));
         }
     }
 }

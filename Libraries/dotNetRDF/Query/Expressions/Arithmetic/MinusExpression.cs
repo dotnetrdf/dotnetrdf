@@ -56,56 +56,56 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             switch (a.NumericType)
             {
                 case SparqlNumericType.Integer:
-                    return new LongNode(null, -1 * a.AsInteger());
+                    return new LongNode(-1 * a.AsInteger());
 
                 case SparqlNumericType.Decimal:
                     var decvalue = a.AsDecimal();
                     if (decvalue == decimal.Zero)
                     {
-                        return new DecimalNode(null, decimal.Zero);
+                        return new DecimalNode(decimal.Zero);
                     }
                     else
                     {
-                        return new DecimalNode(null, -1 * decvalue);
+                        return new DecimalNode(-1 * decvalue);
                     }
                 case SparqlNumericType.Float:
                     var fltvalue = a.AsFloat();
                     if (float.IsNaN(fltvalue))
                     {
-                        return new FloatNode(null, float.NaN);
+                        return new FloatNode(float.NaN);
                     }
                     else if (float.IsPositiveInfinity(fltvalue))
                     {
-                        return new FloatNode(null, float.NegativeInfinity);
+                        return new FloatNode(float.NegativeInfinity);
                     }
                     else if (float.IsNegativeInfinity(fltvalue))
                     {
-                        return new FloatNode(null, float.PositiveInfinity);
+                        return new FloatNode(float.PositiveInfinity);
                     }
                     else
                     {
-                        return new FloatNode(null, -1.0f * fltvalue);
+                        return new FloatNode(-1.0f * fltvalue);
                     }
                 case SparqlNumericType.Double:
                     var dblvalue = a.AsDouble();
                     if (double.IsNaN(dblvalue))
                     {
-                        return new DoubleNode(null, double.NaN);
+                        return new DoubleNode(double.NaN);
                     }
                     else if (double.IsPositiveInfinity(dblvalue))
                     {
-                        return new DoubleNode(null, double.NegativeInfinity);
+                        return new DoubleNode(double.NegativeInfinity);
                     }
                     else if (double.IsNegativeInfinity(dblvalue))
                     {
-                        return new DoubleNode(null, double.PositiveInfinity);
+                        return new DoubleNode(double.PositiveInfinity);
                     }
                     else
                     {
-                        return new DoubleNode(null, -1.0 * dblvalue);
+                        return new DoubleNode(-1.0 * dblvalue);
                     }
                 default:
-                    throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             }
         }
 

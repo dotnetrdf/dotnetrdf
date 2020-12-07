@@ -33,11 +33,11 @@ using VDS.RDF.Shacl.Validation;
 
 namespace VDS.RDF.Shacl
 {
-    internal abstract class Shape : WrapperNode
+    internal abstract class Shape : GraphWrapperNode
     {
         [DebuggerStepThrough]
-        protected Shape(INode node)
-            : base(node)
+        protected Shape(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -88,12 +88,12 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                bool isShape(INode node)
+                bool isShape(GraphWrapperNode node)
                 {
                     return Vocabulary.Shapes.Any(node.IsInstanceOf);
                 }
 
-                bool isClass(INode node)
+                bool isClass(GraphWrapperNode node)
                 {
                     return node.IsInstanceOf(Vocabulary.RdfsClass);
                 }
@@ -113,41 +113,46 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal static Shape Parse(INode node)
+        internal static Shape Parse(GraphWrapperNode node)
         {
-            if (Vocabulary.Path.ObjectsOf(node).Any())
+            return Parse(node, node.Graph);
+        }
+
+        internal static Shape Parse(INode node, IGraph graph)
+        {
+            if (Vocabulary.Path.ObjectsOf(node, graph).Any())
             {
-                return new Property(node);
+                return new Property(node, graph);
             }
             else
             {
-                return new Node(node);
+                return new Node(node, graph);
             }
         }
 
-        internal bool Validate(IGraph dataGragh, Report report)
+        internal bool Validate(IGraph dataGraph, Report report)
         {
-            return SelectFocusNodes(dataGragh)
-                .Select(focusNode => Validate(focusNode, focusNode.AsEnumerable(), report))
+            return SelectFocusNodes(dataGraph)
+                .Select(focusNode => Validate(dataGraph, focusNode, focusNode.AsEnumerable(), report))
                 .Aggregate(true, (a, b) => a && b);
         }
 
-        internal bool Validate(INode focusNode)
+        internal bool Validate(IGraph dataGraph, INode focusNode)
         {
-            return Validate(focusNode, focusNode.AsEnumerable());
+            return Validate(dataGraph, focusNode, focusNode.AsEnumerable());
         }
 
-        internal bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report = null)
+        internal bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report = null)
         {
             if (Deactivated)
             {
                 return true;
             }
 
-            return ValidateInternal(focusNode, valueNodes, report);
+            return ValidateInternal(dataGraph, focusNode, valueNodes, report);
         }
 
-        protected virtual bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        protected virtual bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             IEnumerable<Constraint> components = (
                 from component in Graph.ConstraintComponents
@@ -157,13 +162,13 @@ namespace VDS.RDF.Shacl
 
             return (
                 from constraint in Constraints.Concat(components)
-                select constraint.Validate(focusNode, valueNodes, report))
+                select constraint.Validate(dataGraph, focusNode, valueNodes, report))
                 .Aggregate(true, (first, second) => first && second);
         }
 
-        private IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
+        private IEnumerable<INode> SelectFocusNodes(IGraph dataGraph)
         {
-            return Targets.SelectMany(target => target.SelectFocusNodes(dataGragh)).Distinct();
+            return Targets.SelectMany(target => target.SelectFocusNodes(dataGraph)).Distinct();
         }
     }
 }

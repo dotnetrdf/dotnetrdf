@@ -110,18 +110,28 @@ namespace VDS.RDF.Writing
             writer.WriteStartElement("graph");
 
             // Is the Graph Named?
-            if (g.BaseUri != null)
+            if (g.Name != null)
             {
-                if (!g.BaseUri.AbsoluteUri.StartsWith("trix:local:"))
+                if (g.Name is IUriNode uriNode)
                 {
-                    writer.WriteStartElement("uri");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri));
-                    writer.WriteEndElement();
+                    var graphUri = uriNode.Uri.AbsoluteUri;
+                    if (!graphUri.StartsWith("trix:local:"))
+                    {
+                        writer.WriteStartElement("uri");
+                        writer.WriteRaw(WriterHelper.EncodeForXml(graphUri));
+                        writer.WriteEndElement();
+                    }
+                    else
+                    {
+                        writer.WriteStartElement("id");
+                        writer.WriteRaw(WriterHelper.EncodeForXml(graphUri));
+                        writer.WriteEndElement();
+                    }
                 }
                 else
                 {
                     writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri.Substring(11)));
+                    writer.WriteRaw(WriterHelper.EncodeForXml(((IBlankNode)g.Name).InternalID));
                     writer.WriteEndElement();
                 }
             }

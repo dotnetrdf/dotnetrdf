@@ -89,6 +89,7 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the Dataset updating the Full Text Index appropriately.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to remove.</param>
+        [Obsolete("Replaced by RemoveGraph(IRefNode)")]
         public override bool RemoveGraph(Uri graphUri)
         {
             if (HasGraph(graphUri))
@@ -96,6 +97,20 @@ namespace VDS.RDF.Query.Datasets
                 _indexer.Unindex(this[graphUri]);
             }
             return base.RemoveGraph(graphUri);
+        }
+
+        /// <summary>
+        /// Removes a Graph from the Dataset updating the full text index appropriately.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        public override bool RemoveGraph(IRefNode graphName)
+        {
+            if (HasGraph(graphName))
+            {
+                _indexer.Unindex(this[graphName]);
+            }
+
+            return base.RemoveGraph(graphName);
         }
 
         /// <summary>
@@ -121,7 +136,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="args">Event Arguments.</param>
         private void HandleTripleAdded(Object sender, TripleEventArgs args)
         {
-            _indexer.Index(args.Triple);
+            _indexer.Index(args.Graph, args.Triple);
         }
 
         /// <summary>
@@ -131,7 +146,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="args">Event Arguments.</param>
         private void HandleTripleRemoved(Object sender, TripleEventArgs args)
         {
-            _indexer.Unindex(args.Triple);
+            _indexer.Unindex(args.Graph, args.Triple);
         }
 
         /// <summary>

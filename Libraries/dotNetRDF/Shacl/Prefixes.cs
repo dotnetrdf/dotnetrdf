@@ -31,11 +31,11 @@ using System.Linq;
 
 namespace VDS.RDF.Shacl
 {
-    internal class Prefixes : WrapperNode, IEnumerable<PrefixDeclaration>
+    internal class Prefixes : GraphWrapperNode, IEnumerable<PrefixDeclaration>
     {
         [DebuggerStepThrough]
-        internal Prefixes(INode node)
-            : base(node)
+        internal Prefixes(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
 
@@ -46,7 +46,7 @@ namespace VDS.RDF.Shacl
                 return 
                     Vocabulary.Declare.ObjectsOf(this)
                     .Union(
-                    Vocabulary.OwlImports.ObjectsOf(this).SelectMany(Vocabulary.Declare.ObjectsOf)).Select(d => new PrefixDeclaration(d));
+                    Vocabulary.OwlImports.ObjectsOf(this).SelectMany(x=>Vocabulary.Declare.ObjectsOf(x, Graph))).Select(d => new PrefixDeclaration(d, Graph));
             }
         }
 

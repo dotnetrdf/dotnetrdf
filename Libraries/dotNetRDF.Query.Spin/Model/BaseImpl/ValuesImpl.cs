@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Spin.Model
                     }
                     else
                     {
-                        TupleImpl.print(getModel(), Resource.Get(value, getModel()), p);
+                        TupleImpl.print(getModel(), Resource.Get(value, Graph, getModel()), p);
                     }
                     if (vit.MoveNext())
                     {

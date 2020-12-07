@@ -342,7 +342,7 @@ namespace VDS.RDF.Query.Filters
         {
             get
             {
-                ISparqlExpression expr = new ConstantTerm(new BooleanNode(null, true));
+                ISparqlExpression expr = new ConstantTerm(new BooleanNode(true));
                 if (_filters.Count == 1)
                 {
                     expr = _filters[0].Expression;

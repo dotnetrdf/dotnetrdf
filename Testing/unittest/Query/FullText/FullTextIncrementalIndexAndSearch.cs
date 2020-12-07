@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.FullText
                 var ts = g.Triples.Skip(i).Take(100).ToList();
                 foreach (var t in ts)
                 {
-                    indexer.Index(t);
+                    indexer.Index(g, t);
                 }
                 indexer.Flush();
 
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.FullText
                 var ts = g.Triples.Skip(i).Take(100).ToList();
                 foreach (var t in ts)
                 {
-                    indexer.Index(t);
+                    indexer.Index(g, t);
                 }
                 indexer.Flush();
 

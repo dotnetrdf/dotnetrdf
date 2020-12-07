@@ -69,7 +69,7 @@ namespace VDS.RDF.Query
                     DetachEventHandlers(_triples);
                     foreach (Triple t in g.Triples)
                     {
-                        _triples.Add(t.CopyTriple(this));
+                        _triples.Add(t);
                     }
                     AttachEventHandlers(_triples);
                 }

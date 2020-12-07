@@ -474,8 +474,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet resultSet)
+                if (Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") is SparqlResultSet resultSet)
                 {
                     var graphs = new List<Uri>();
                     foreach (SparqlResult r in resultSet.Where(x=>x.HasValue("g")))
@@ -488,10 +487,47 @@ namespace VDS.RDF.Storage
                     }
                     return graphs;
                 }
-                else
+
+                return Enumerable.Empty<Uri>();
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public IEnumerable<string> ListGraphNames()
+        {
+            try
+            {
+                if (Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") is SparqlResultSet resultSet)
                 {
-                    return Enumerable.Empty<Uri>();
+                    var graphs = new List<string>();
+                    foreach (SparqlResult r in resultSet.Where(x => x.HasValue("g")))
+                    {
+                        INode temp = r["g"];
+                        if (temp.NodeType == NodeType.Uri)
+                        {
+                            graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
+                        }
+                        else if (temp.NodeType == NodeType.Blank)
+                        {
+                            graphs.Add("_:" + ((IBlankNode)temp).InternalID);
+                        }
+                    }
+                    return graphs;
                 }
+
+                return Enumerable.Empty<string>();
             }
             catch (Exception ex)
             {

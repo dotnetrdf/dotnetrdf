@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             long i;
                             if (long.TryParse(lit.Value, out i))
                             {
-                                return new LongNode(lit.Graph, i);
+                                return new LongNode(i);
                             }
                             else
                             {
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (long.TryParse(lit.Value, out i))
                             {
                                 // Parsed OK
-                                return new LongNode(lit.Graph, i);
+                                return new LongNode(i);
                             }
                             else
                             {
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (long.TryParse(lit.Value, out i))
                         {
                             // Parsed OK
-                            return new LongNode(lit.Graph, i);
+                            return new LongNode(i);
                         }
                         else
                         {

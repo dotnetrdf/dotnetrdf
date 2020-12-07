@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
                                 // Parsed OK
-                                return new FloatNode(lit.Graph, f);
+                                return new FloatNode(f);
                             }
                             else
                             {
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
                                 // Parsed OK
-                                return new FloatNode(lit.Graph, f);
+                                return new FloatNode(f);
                             }
                             else
                             {
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                         {
                             // Parsed OK
-                            return new FloatNode(lit.Graph, f);
+                            return new FloatNode(f);
                         }
                         else
                         {

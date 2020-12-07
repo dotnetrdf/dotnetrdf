@@ -306,7 +306,7 @@ namespace VDS.RDF
         /// <remarks>Handy method which means you can assert a Triple by specifying the Subject, Predicate and Object without having to explicity declare a new Triple.</remarks>
         public static void Assert(this IGraph g, INode subj, INode pred, INode obj)
         {
-            g.Assert(new Triple(Tools.CopyNode(subj, g), Tools.CopyNode(pred, g), Tools.CopyNode(obj, g)));
+            g.Assert(new Triple(subj, pred, obj));
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace VDS.RDF
         /// <remarks>Handy method which means you can retract a Triple by specifying the Subject, Predicate and Object without having to explicity declare a new Triple.</remarks>
         public static void Retract(this IGraph g, INode subj, INode pred, INode obj)
         {
-            g.Retract(new Triple(Tools.CopyNode(subj, g), Tools.CopyNode(pred, g), Tools.CopyNode(obj, g)));
+            g.Retract(new Triple(subj, pred, obj));
         }
 
 #endregion
@@ -591,58 +591,6 @@ namespace VDS.RDF
 
 #endregion
 
-#region Node and Triple Copying Extensions
-
-        /// <summary>
-        /// Copies a Node to the target Graph.
-        /// </summary>
-        /// <param name="n">Node to copy.</param>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyNode(INode, IGraph)">Tools.CopyNode()</see> method.</remarks>
-        public static INode CopyNode(this INode n, IGraph target)
-        {
-            return Tools.CopyNode(n, target);
-        }
-
-        /// <summary>
-        /// Copies a Node to the target Graph.
-        /// </summary>
-        /// <param name="n">Node to copy.</param>
-        /// <param name="target">Target Graph.</param>
-        /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from.</param>
-        /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyNode(INode, IGraph, bool)">Tools.CopyNode()</see> method.</remarks>
-        public static INode CopyNode(this INode n, IGraph target, bool keepOriginalGraphUri)
-        {
-            return Tools.CopyNode(n, target, keepOriginalGraphUri);
-        }
-
-
-        /// <summary>
-        /// Copies a Triple to the target Graph.
-        /// </summary>
-        /// <param name="t">Triple to copy.</param>
-        /// <param name="target">Target Graph.</param>
-        /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple(Triple, IGraph)">Tools.CopyTriple()</see> method.</remarks>
-        public static Triple CopyTriple(this Triple t, IGraph target)
-        {
-            return Tools.CopyTriple(t, target);
-        }
-
-        /// <summary>
-        /// Copies a Triple to the target Graph.
-        /// </summary>
-        /// <param name="t">Triple to copy.</param>
-        /// <param name="target">Target Graph.</param>
-        /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from.</param>
-        /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple(Triple, IGraph, bool)">Tools.CopyTriple()</see> method.</remarks>
-        public static Triple CopyTriple(this Triple t, IGraph target, bool keepOriginalGraphUri)
-        {
-            return Tools.CopyTriple(t, target, keepOriginalGraphUri);
-        }
 
         /// <summary>
         /// Copies a Triple from one Graph mapping Nodes as appropriate.
@@ -656,32 +604,30 @@ namespace VDS.RDF
             INode s, p, o;
             if (mapping.ContainsKey(t.Subject))
             {
-                s = mapping[t.Subject].CopyNode(target);
+                s = mapping[t.Subject];
             }
             else
             {
-                s = t.Subject.CopyNode(target);
+                s = t.Subject;
             }
             if (mapping.ContainsKey(t.Predicate))
             {
-                p = mapping[t.Predicate].CopyNode(target);
+                p = mapping[t.Predicate];
             }
             else
             {
-                p = t.Predicate.CopyNode(target);
+                p = t.Predicate;
             }
             if (mapping.ContainsKey(t.Object))
             {
-                o = mapping[t.Object].CopyNode(target);
+                o = mapping[t.Object];
             }
             else
             {
-                o = t.Object.CopyNode(target);
+                o = t.Object;
             }
             return new Triple(s, p, o);
         }
-
-#endregion
 
 #region String related Extensions
 
@@ -713,6 +659,14 @@ namespace VDS.RDF
         internal static Uri ToSafeUri(this string str)
         {
             return (string.IsNullOrEmpty(str) ? null : UriFactory.Create(str));
+        }
+
+        internal static string ToSafeString(IRefNode refNode)
+        {
+            if (refNode == null) return string.Empty;
+            if (refNode.NodeType == NodeType.Uri) return ((IUriNode)refNode).Uri.AbsoluteUri;
+            if (refNode.NodeType == NodeType.Blank) return $"_:{((IBlankNode)refNode).InternalID}";
+            throw new RdfException("Unexpected node type in ToSafeString(IRefNode). Expected Either Uri or Blank but got " + refNode.NodeType);
         }
 
         /// <summary>

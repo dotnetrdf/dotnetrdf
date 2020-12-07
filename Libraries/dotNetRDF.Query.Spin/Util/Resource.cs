@@ -36,47 +36,44 @@ namespace VDS.RDF.Query.Spin.Util
     /// <summary>
     /// A utility class that wraps dotNetRDF Nodes with the same interface as the Jena Resource classes
     /// </summary>
-    internal class Resource : IResource, IComparable<IResource>, IEquatable<IResource>
+    internal class Resource : WrapperNode, IResource, IComparable<IResource>, IEquatable<IResource>
     {
 
         #region Basic resource wrapper implementation
 
-        private readonly INode _source;
         private readonly SpinProcessor _model;
 
-        internal static Resource Get(INode node, SpinProcessor spinModel)
+        internal static Resource Get(INode node, IGraph inferenceGraph, SpinProcessor spinModel)
         {
             if (node == null) return null;
-            if (node is Resource && ((IResource)node).getModel() == spinModel)
+            if (node is Resource resource && resource.getModel() == spinModel)
             {
-                return (Resource)node;
+                return resource;
             }
-            return new Resource(node, spinModel);
+            return new Resource(node, inferenceGraph, spinModel);
         }
 
-        protected Resource(INode node, SpinProcessor spinModel)
+        protected Resource(INode node, IGraph inferenceGraph, SpinProcessor spinModel) : base(node is Resource resourceNode ? resourceNode.Node : node)
         {
-            _source = node;
+            Graph = inferenceGraph;
             _model = spinModel;
-            if (node is Resource)
-            {
-                _source = ((Resource)node).getSource();
-            }
         }
+
+        public IGraph Graph { get; }
 
         public bool isBlank()
         {
-            return _source is IBlankNode;
+            return Node is IBlankNode;
         }
 
         public bool isUri()
         {
-            return _source is IUriNode;
+            return Node is IUriNode;
         }
 
         public bool isLiteral()
         {
-            return _source is ILiteralNode;
+            return Node is ILiteralNode;
         }
 
         public Uri Uri
@@ -85,7 +82,7 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 if (isUri())
                 {
-                    return ((IUriNode)_source).Uri;
+                    return ((IUriNode)Node).Uri;
                 }
                 return null;
             }
@@ -93,7 +90,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         public INode getSource()
         {
-            return _source;
+            return Node;
         }
 
         public SpinProcessor getModel()
@@ -103,11 +100,11 @@ namespace VDS.RDF.Query.Spin.Util
 
         public bool canAs(INode cls)
         {
-            return _model.ContainsTriple(_source, RDF.PropertyType, cls);
+            return _model.ContainsTriple(Node, RDF.PropertyType, cls);
         }
 
         // A constructor cache to optimize half of the reflection work
-        private static Dictionary<Type, ConstructorInfo> constructors = new Dictionary<Type, ConstructorInfo>();
+        private static readonly Dictionary<Type, ConstructorInfo> constructors = new Dictionary<Type, ConstructorInfo>();
         public IResource As(Type cls)
         {
             ConstructorInfo constructor;
@@ -117,15 +114,20 @@ namespace VDS.RDF.Query.Spin.Util
             }
             else
             {
-                constructor = cls.GetConstructor(new Type[] { typeof(INode), typeof(SpinProcessor) });
+                constructor = cls.GetConstructor(new[] { typeof(INode), typeof(IGraph), typeof(SpinProcessor) });
                 constructors[cls] = constructor;
             }
-            return (IResource)constructor.Invoke(new object[] { _source, _model });
+
+            if (constructor == null)
+            {
+                throw new SpinException("Unable to locate a usable constructor for type " + cls.FullName);
+            }
+            return (IResource)constructor.Invoke(new object[] { Node, Graph, _model });
         }
 
         public IEnumerable<IResource> getObjects(INode property)
         {
-            return _model.GetTriplesWithSubjectPredicate(this, property).Select(t => Resource.Get(t.Object, _model));
+            return _model.GetTriplesWithSubjectPredicate(this, property).Select(t => Resource.Get(t.Object, Graph, _model));
         }
 
         public List<IResource> AsList()
@@ -139,7 +141,7 @@ namespace VDS.RDF.Query.Spin.Util
                 {
                     if (!RDFUtil.sameTerm(RDF.Nil, step.Object))
                     {
-                        result.Add(Resource.Get(step.Object, _model));
+                        result.Add(Resource.Get(step.Object, Graph, _model));
                     }
                     step = _model.GetTriplesWithSubjectPredicate(listRoot, RDF.PropertyRest).FirstOrDefault();
                     if (step != null)
@@ -166,36 +168,36 @@ namespace VDS.RDF.Query.Spin.Util
             {
                 return;
             }
-            if (predicate is IResource)
+            if (predicate is IResource predicateResource)
             {
-                predicate = ((IResource)predicate).getSource();
+                predicate = predicateResource.getSource();
             }
-            if (value is IResource)
+            if (value is IResource valueResource)
             {
-                value = ((IResource)value).getSource();
+                value = valueResource.getSource();
             }
-            _source.Graph.Assert(_source, predicate, value);
+            Graph.Assert(Node, predicate, value);
         }
 
         // TODO check whether we need to reference Model or _model
         public IEnumerable<Triple> listProperties()
         {
-            return _model.GetTriplesWithSubject(_source);
+            return _model.GetTriplesWithSubject(Node);
         }
 
         public IEnumerable<Triple> listProperties(INode property)
         {
-            return _model.GetTriplesWithSubjectPredicate(_source, property);
+            return _model.GetTriplesWithSubjectPredicate(Node, property);
         }
 
         public bool hasProperty(INode property)
         {
-            return _model.GetTriplesWithSubjectPredicate(_source, property).Any();
+            return _model.GetTriplesWithSubjectPredicate(Node, property).Any();
         }
 
         public bool hasProperty(INode property, INode value)
         {
-            return _model.ContainsTriple(_source, property, value);
+            return _model.ContainsTriple(Node, property, value);
         }
 
         /* To simplify subsequent code and calls, we consider chaining cases where property is null */
@@ -203,7 +205,7 @@ namespace VDS.RDF.Query.Spin.Util
         {
             if (property != null)
             {
-                return _model.GetTriplesWithSubjectPredicate(_source, property).FirstOrDefault();
+                return _model.GetTriplesWithSubjectPredicate(Node, property).FirstOrDefault();
             }
             return null;
         }
@@ -213,7 +215,7 @@ namespace VDS.RDF.Query.Spin.Util
             Triple t = getProperty(property);
             if (t != null)
             {
-                return Resource.Get(t.Object, _model);
+                return Resource.Get(t.Object, Graph, _model);
             }
             else
             {
@@ -244,9 +246,9 @@ namespace VDS.RDF.Query.Spin.Util
         public bool? getBoolean(INode property)
         {
             ILiteralNode obj = getLiteral(property);
-            if (obj != null && obj is IValuedNode)
+            if (obj is IValuedNode valuedNode)
             {
-                return ((IValuedNode)obj).AsBoolean();
+                return valuedNode.AsBoolean();
             }
             return null;
         }
@@ -254,144 +256,46 @@ namespace VDS.RDF.Query.Spin.Util
         public int? getInteger(INode property)
         {
             ILiteralNode obj = getLiteral(property);
-            if (obj != null && obj is IValuedNode)
+            if (obj is IValuedNode valuedNode)
             {
-                return (int)((IValuedNode)obj).AsInteger();
+                return (int)valuedNode.AsInteger();
             }
             return null;
         }
         public long? getLong(INode property)
         {
             ILiteralNode obj = getLiteral(property);
-            if (obj != null && obj is IValuedNode)
+            if (obj is IValuedNode valuedNode)
             {
-                return ((IValuedNode)obj).AsInteger();
+                return valuedNode.AsInteger();
             }
             return null;
         }
 
-        public String getString(INode property)
+        public string getString(INode property)
         {
             ILiteralNode obj = getLiteral(property);
-            if (obj != null)
-            {
-                return obj.Value;
-            }
-            return null;
+            return obj?.Value;
         }
 
 
         public IResource inferRDFNode(INode property)
         {
             IResource existing = getObject(property);
-            if (existing != null)
-            {
-                return existing;
-            }
-            else
-            {
-                return null;
-            }
+            return existing;
         }
 
         #endregion
 
-        #region INode implementation
-
-        public NodeType NodeType => _source.NodeType;
-
-        public IGraph Graph => _source.Graph;
-
-        public Uri GraphUri
-        {
-            get => _source.GraphUri;
-            set => _source.GraphUri = value;
-        }
-
-        public string ToString(Writing.Formatting.INodeFormatter formatter)
-        {
-            return _source.ToString(formatter);
-        }
-
-        public string ToString(Writing.Formatting.INodeFormatter formatter, Writing.TripleSegment segment)
-        {
-            return _source.ToString(formatter, segment);
-        }
-
-        public int CompareTo(INode other)
-        {
-            if (other is IResource) return CompareTo((IResource)other);
-            return _source.CompareTo(other);
-        }
-
         public int CompareTo(IResource other)
         {
-            if (other == null) return 1;
-            return _source.CompareTo(other.getSource());
-        }
-
-        public int CompareTo(IBlankNode other)
-        {
-            return _source.CompareTo(other);
-        }
-
-        public int CompareTo(IGraphLiteralNode other)
-        {
-            return _source.CompareTo(other);
-        }
-
-        public int CompareTo(ILiteralNode other)
-        {
-            return _source.CompareTo(other);
-        }
-
-        public int CompareTo(IUriNode other)
-        {
-            return _source.CompareTo(other);
-        }
-
-        public int CompareTo(IVariableNode other)
-        {
-            return _source.CompareTo(other);
-        }
-
-        public bool Equals(INode other)
-        {
-            if (other is IResource) return Equals((IResource)other);
-            return _source.Equals(other);
+            return other == null ? 1 : Node.CompareTo(other.getSource());
         }
 
         public bool Equals(IResource other)
         {
             if (other == null) return false;
-            return _source.Equals(other.getSource());
+            return Node.Equals(other.getSource());
         }
-
-        public bool Equals(IBlankNode other)
-        {
-            return _source.Equals(other);
-        }
-
-        public bool Equals(IGraphLiteralNode other)
-        {
-            return _source.Equals(other);
-        }
-
-        public bool Equals(ILiteralNode other)
-        {
-            return _source.Equals(other);
-        }
-
-        public bool Equals(IUriNode other)
-        {
-            return _source.Equals(other);
-        }
-
-        public bool Equals(IVariableNode other)
-        {
-            return _source.Equals(other);
-        }
-
-        #endregion
     }
 }

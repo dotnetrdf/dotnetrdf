@@ -150,11 +150,11 @@ namespace VDS.RDF.Query.Construct
             }
             else if (_s != null)
             {
-                temp = new BlankNode(_g, id.Substring(2) + _s.ID);
+                temp = new BlankNode(id.Substring(2) + _s.ID);
             }
             else
             {
-                temp = new BlankNode(_g, id.Substring(2));
+                temp = new BlankNode(id.Substring(2));
             }
             _bnodeMap.Add(id, temp);
             return temp;

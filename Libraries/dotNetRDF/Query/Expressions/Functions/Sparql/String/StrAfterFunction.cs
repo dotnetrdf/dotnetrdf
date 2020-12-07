@@ -74,11 +74,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 if (datatype != null)
                 {
-                    return new StringNode(null, resultValue, datatype);
+                    return new StringNode(resultValue, datatype);
                 }
                 else if (!lang.Equals(string.Empty))
                 {
-                    return new StringNode(null, resultValue, lang);
+                    return new StringNode(resultValue, lang);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (datatype != null)
                 {
-                    return new StringNode(null, string.Empty, datatype);
+                    return new StringNode(string.Empty, datatype);
                 }
                 else
                 {

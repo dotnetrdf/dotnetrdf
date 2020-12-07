@@ -95,16 +95,16 @@ namespace VDS.RDF.Query.Inference
                 // Build the final version of the rule text for the given input and output
                 var ruleText = new StringBuilder();
 
-                // If there's a Base URI on the Output Graph need a WITH clause
-                if (output.BaseUri != null)
+                // If there's a name on the Output Graph need a WITH clause
+                if (output.Name != null)
                 {
-                    ruleText.AppendLine("WITH <" + _formatter.FormatUri(output.BaseUri) + ">");
+                    ruleText.AppendLine("WITH " + _formatter.Format(output.Name));
                 }
                 ruleText.AppendLine(rule[0]);
                 // If there's a Base URI on the Input Graph need a USING clause
-                if (input.BaseUri != null)
+                if (input.Name != null)
                 {
-                    ruleText.AppendLine("USING <" + _formatter.FormatUri(input.BaseUri) + ">");
+                    ruleText.AppendLine("USING " + _formatter.Format(input.Name));
                 }
                 ruleText.AppendLine(rule[1]);
 
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Subject))
                         {
-                            variableMap.Add(x.Subject, new VariableNode(null, "autoRuleVar" + nextVarID));
+                            variableMap.Add(x.Subject, new VariableNode("autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(_formatter.Format(variableMap[x.Subject]));
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Predicate))
                         {
-                            variableMap.Add(x.Predicate, new VariableNode(null, "autoRuleVar" + nextVarID));
+                            variableMap.Add(x.Predicate, new VariableNode("autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(_formatter.Format(variableMap[x.Predicate]));
@@ -190,7 +190,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Object))
                         {
-                            variableMap.Add(x.Object, new VariableNode(null, "autoRuleVar" + nextVarID));
+                            variableMap.Add(x.Object, new VariableNode("autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(_formatter.Format(variableMap[x.Object]));
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Subject))
                         {
-                            variableMap.Add(x.Subject, new VariableNode(null, "autoRuleVar" + nextVarID));
+                            variableMap.Add(x.Subject, new VariableNode("autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(_formatter.Format(variableMap[x.Subject]));
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Predicate))
                         {
-                            variableMap.Add(x.Predicate, new VariableNode(null, "autoRuleVar" + nextVarID));
+                            variableMap.Add(x.Predicate, new VariableNode("autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(_formatter.Format(variableMap[x.Predicate]));
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Object))
                         {
-                            variableMap.Add(x.Object, new VariableNode(null, "autoRuleVar" + nextVarID));
+                            variableMap.Add(x.Object, new VariableNode("autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(_formatter.Format(variableMap[x.Object]));

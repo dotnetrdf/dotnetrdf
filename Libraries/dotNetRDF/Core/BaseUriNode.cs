@@ -26,7 +26,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -41,64 +40,32 @@ namespace VDS.RDF
         : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>, IValuedNode
     {
         private Uri _uri;
-
-        /// <summary>
-        /// Internal Only Constructor for URI Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="uri">URI.</param>
-        protected internal BaseUriNode(IGraph g, Uri uri)
-            : base(g, NodeType.Uri)
-        {
-            _uri = uri;
-
-            // Compute Hash Code
-            _hashcode = (_nodetype + ToString()).GetHashCode();
-        }
-
-        /// <summary>
-        /// Internal Only Constructor for URI Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="qname">QName for the Node.</param>
-        /// <remarks>
-        /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
-        /// </remarks>
-        protected internal BaseUriNode(IGraph g, string qname)
-            : base(g, NodeType.Uri)
-        {
-            if (qname.Contains(':'))
-            {
-                if (_graph != null)
-                {
-                    _uri = UriFactory.Create(Tools.ResolveQName(qname, _graph.NamespaceMap, _graph.BaseUri));
-                }
-                else
-                {
-                    throw new RdfException("Cannot create a URI Node using a QName in a Null Graph");
-                }
-            }
-            else
-            {
-                throw new RdfException("Cannot create a URI Node since the QName '" + qname + "' appears to be invalid");
-            }
-
-            // Compute Hash Code
-            _hashcode = (_nodetype + ToString()).GetHashCode();
-        }
+        private readonly int _hashCode;
 
         /// <summary>
         /// Internal Only Constructor for URI Nodes.
         /// </summary>
         /// <param name="uri">URI.</param>
         protected internal BaseUriNode(Uri uri)
-            : this(null, uri) { }
+            : base(NodeType.Uri)
+        {
+            _uri = uri ?? throw new ArgumentNullException(nameof(uri));
 
+            // Compute Hash Code
+            _hashCode = (_nodeType, _uri.AbsoluteUri).GetHashCode();
+        }
 
         /// <summary>
         /// Gets the Uri for this Node.
         /// </summary>
         public virtual Uri Uri => _uri;
+
+        /// <summary>Serves as the default hash function.</summary>
+        /// <returns>A hash code for the current object.</returns>
+        public override int GetHashCode()
+        {
+            return _hashCode;
+        }
 
         /// <summary>
         /// Implementation of Equality for Uri Nodes.
@@ -114,15 +81,13 @@ namespace VDS.RDF
 
             if (ReferenceEquals(this, obj)) return true;
 
-            if (obj is INode)
+            if (obj is INode node)
             {
-                return Equals((INode)obj);
+                return Equals(node);
             }
-            else
-            {
-                // Can only be equal to other Nodes
-                return false;
-            }
+
+            // Can only be equal to other Nodes
+            return false;
         }
 
         /// <summary>
@@ -135,7 +100,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((object)other == null) return false;
+            if (other is null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -145,11 +110,24 @@ namespace VDS.RDF
 
                 return EqualityHelper.AreUrisEqual(_uri, temp);
             }
-            else
+
+            // Can only be equal to UriNodes
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether this Node is equal to a Blank Node (should always be false).
+        /// </summary>
+        /// <param name="other">Blank Node.</param>
+        /// <returns></returns>
+        public override bool Equals(IRefNode other)
+        {
+            if (other is IUriNode uriNode)
             {
-                // Can only be equal to UriNodes
-                return false;
+                return Equals(uriNode);
             }
+
+            return false;
         }
 
         /// <summary>
@@ -159,7 +137,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
-            if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
@@ -170,7 +147,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
-            if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
@@ -181,7 +157,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
-            if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
@@ -192,7 +167,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
-            if ((object)other == null) return false;
+            if (other is null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -206,7 +181,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
-            if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
@@ -274,10 +248,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="other">Node to test against.</param>
         /// <returns></returns>
-        public override int CompareTo(IBlankNode other)
+        public override int CompareTo(IRefNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
+            if (other is IUriNode uriNode) return CompareTo(uriNode);
+            // Otherwise other is null or a blank node and we are greater than either of those
+            return 1;
+        }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
+        /// </summary>
+        /// <param name="other">Node to test against.</param>
+        /// <returns></returns>
+        public override int CompareTo(IBlankNode other)
+        {
             // URI Nodes are greater than nulls and Blank Nodes
             return 1;
         }
@@ -289,8 +274,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
-            if (ReferenceEquals(this, other)) return 0;
-
             if (other == null)
             {
                 // Everything is greater than a null
@@ -311,19 +294,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
-            if (ReferenceEquals(this, other)) return 0;
-
             if (other == null)
             {
                 // Everything is greater than a null
                 // Return a 1 to indicate this
                 return 1;
             }
-            else
-            {
-                // URI Nodes are less than Literal Nodes
-                return -1;
-            }
+
+            // URI Nodes are less than Literal Nodes
+            return -1;
         }
 
         /// <summary>
@@ -333,8 +312,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
-            if (ReferenceEquals(this, other)) return 0;
-
             // URI Nodes are greater than nulls and Variable Nodes
             return 1;
         }
@@ -346,8 +323,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
-            if (ReferenceEquals(this, other)) return 0;
-
             return ComparisonHelper.CompareUris(Uri, other.Uri);
         }
 

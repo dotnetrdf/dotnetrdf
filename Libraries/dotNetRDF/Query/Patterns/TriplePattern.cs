@@ -527,13 +527,15 @@ namespace VDS.RDF.Query.Patterns
 
         private Triple CreateTriple(INode s, INode p, INode o)
         {
-            IGraph target = s.Graph;
-            if (target == null)
-            {
-                target = p.Graph;
-                if (target == null) target = o.Graph;
-            }
-            return new Triple(s.CopyNode(target), p.CopyNode(target), o.CopyNode(target));
+            // KA - simplified now that nodes are not bound to a graph - could be removed
+            //IGraph target = s.Graph;
+            //if (target == null)
+            //{
+            //    target = p.Graph;
+            //    if (target == null) target = o.Graph;
+            //}
+            //return new Triple(s.CopyNode(target), p.CopyNode(target), o.CopyNode(target));
+            return new Triple(s, p, o);
         }
 
         /// <summary>
@@ -582,7 +584,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public Triple Construct(ConstructContext context)
         {
-            return new Triple(Tools.CopyNode(_subj.Construct(context), context.Graph), Tools.CopyNode(_pred.Construct(context), context.Graph), Tools.CopyNode(_obj.Construct(context), context.Graph));
+            return new Triple(_subj.Construct(context), _pred.Construct(context), _obj.Construct(context));
         }
 
         /// <summary>

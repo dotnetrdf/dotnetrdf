@@ -42,24 +42,28 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(string sparqlQuery, IInMemoryQueryableStore store)
-            : base(sparqlQuery, store) { }
+        /// <param name="name">The graph name to assign to the view.</param>
+        public SparqlView(string sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
+            : base(sparqlQuery, store, name) { }
 
         /// <summary>
         /// Creates a new SPARQL View.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store)
-            : this(sparqlQuery.ToString(), store) { }
+        /// <param name="name">The graph name to assign to the view.</param>
+        public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
+            : this(sparqlQuery.ToString(), store, name) { }
 
         /// <summary>
         /// Creates a new SPARQL View.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store)
-            : base(sparqlQuery, store) { }
+        /// <param name="name">The graph name to assign to the view.</param>
+        public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store, IRefNode name = null)
+            : base(sparqlQuery, store, name) { }
+
 
         /// <summary>
         /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store.
@@ -78,7 +82,7 @@ namespace VDS.RDF.Query
                     var triples = new TreeIndexedTripleCollection(FullTripleIndexing);
                     foreach (Triple t in g.Triples)
                     {
-                        triples.Add(t.CopyTriple(this));
+                        triples.Add(t);
                     }
                     _triples = triples;
                     AttachEventHandlers(_triples);

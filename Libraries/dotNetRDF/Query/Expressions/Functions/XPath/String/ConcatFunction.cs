@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 }
             }
 
-            return new StringNode(null, output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>

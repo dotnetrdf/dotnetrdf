@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     {
 
 
-        public ModuleImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ModuleImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Spin.Model
             if (constraint.Object is IBlankNode)
             {
                 // Optimized case to avoid walking up class hierarchy
-                IEnumerator<Triple> types = Resource.Get(constraint.Object, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
+                IEnumerator<Triple> types = Resource.Get(constraint.Object, Graph, getModel()).listProperties(RDF.PropertyType).GetEnumerator();
                 while (types.MoveNext())
                 {
                     Triple typeS = types.Current;
@@ -108,21 +108,21 @@ namespace VDS.RDF.Query.Spin.Model
                     {
                         if (RDFUtil.sameTerm(SPL.ClassArgument, typeS.Object))
                         {
-                            results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, getModel())));
+                            results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
                         }
                         else if (!RDFUtil.sameTerm(SPL.ClassAttribute,typeS.Object))
                         {
-                            if (Resource.Get(typeS.Object, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
+                            if (Resource.Get(typeS.Object, Graph, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
                             {
-                                results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, getModel())));
+                                results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
                             }
                         }
                     }
                 }
             }
-            else if (constraint.Object is IUriNode && Resource.Get(constraint.Object, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
+            else if (constraint.Object is IUriNode && Resource.Get(constraint.Object, Graph, getModel()).hasProperty(RDFS.PropertySubClassOf, SPL.ClassArgument))
             {
-                results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, getModel())));
+                results.Add(SPINFactory.asArgument(Resource.Get(constraint.Object, Graph, getModel())));
             }
         }
 

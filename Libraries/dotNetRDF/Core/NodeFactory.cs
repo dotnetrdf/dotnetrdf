@@ -69,26 +69,26 @@ namespace VDS.RDF
         public IBlankNode CreateBlankNode(string nodeId)
         {
             _bnodeMap.CheckID(ref nodeId);
-            return new BlankNode(null, nodeId);
+            return new BlankNode(nodeId);
         }
 
         /// <summary>
-        /// Creates a Graph Literal Node which represents the empty Subgraph.
+        /// Creates a Graph Literal Node which represents the empty Sub-graph.
         /// </summary>
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return new GraphLiteralNode(null);
+            return new GraphLiteralNode();
         }
 
         /// <summary>
-        /// Creates a Graph Literal Node which represents the given Subgraph.
+        /// Creates a Graph Literal Node which represents the given Sub-graph.
         /// </summary>
         /// <param name="subgraph">Subgraph.</param>
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return new GraphLiteralNode(null, subgraph);
+            return new GraphLiteralNode(subgraph);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return new LiteralNode(null, literal, datatype, NormalizeLiteralValues);
+            return new LiteralNode(literal, datatype, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -109,18 +109,18 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal)
         {
-            return new LiteralNode(null, literal, NormalizeLiteralValues);
+            return new LiteralNode(literal, NormalizeLiteralValues);
         }
 
         /// <summary>
         /// Creates a Literal Node with the given Value and Language.
         /// </summary>
         /// <param name="literal">Value of the Literal.</param>
-        /// <param name="langspec">Language Specifier for the Literal.</param>
+        /// <param name="langSpec">Language Specifier for the Literal.</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
-            return new LiteralNode(null, literal, langspec, NormalizeLiteralValues);
+            return new LiteralNode(literal, langSpec, NormalizeLiteralValues);
         }
 
         /// <summary>
@@ -130,17 +130,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode CreateUriNode(Uri uri)
         {
-            return new UriNode(null, uri);
+            return new UriNode(uri);
         }
 
         /// <summary>
         /// Creates a Variable Node for the given Variable Name.
         /// </summary>
-        /// <param name="varname"></param>
+        /// <param name="varName"></param>
         /// <returns></returns>
-        public IVariableNode CreateVariableNode(string varname)
+        public IVariableNode CreateVariableNode(string varName)
         {
-            return new VariableNode(null, varname);
+            return new VariableNode(varName);
         }
 
         /// <summary>
@@ -252,11 +252,11 @@ namespace VDS.RDF
     class MockNodeFactory
         : INodeFactory
     {
-        private IBlankNode _bnode = new BlankNode(null, "mock");
-        private IGraphLiteralNode _glit = new GraphLiteralNode(null);
-        private ILiteralNode _lit = new LiteralNode(null, "mock", false);
-        private IUriNode _uri = new UriNode(null, UriFactory.Create("dotnetrdf:mock"));
-        private IVariableNode _var = new VariableNode(null, "mock");
+        private IBlankNode _bnode = new BlankNode("mock");
+        private IGraphLiteralNode _glit = new GraphLiteralNode();
+        private ILiteralNode _lit = new LiteralNode("mock", false);
+        private IUriNode _uri = new UriNode(UriFactory.Create("dotnetrdf:mock"));
+        private IVariableNode _var = new VariableNode("mock");
 
         #region INodeFactory Members
 

@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
         {
-            return new LongNode(null, Convert.ToInt64(dateTime.Month));
+            return new LongNode(Convert.ToInt64(dateTime.Month));
         }
 
         /// <summary>

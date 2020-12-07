@@ -48,6 +48,15 @@ namespace VDS.RDF.Query.Spin
 
         internal bool IsChanged => Additions.Count > 0 || Removals.Count > 0;
 
+        /// <summary>
+        /// Create a new SPIN graph
+        /// </summary>
+        /// <param name="graphName">The graph name. May be null.</param>
+        public SpinWrappedGraph(IRefNode graphName = null)
+        {
+            Name = graphName;
+        }
+
         #region Events helpers
 
         /// <summary>

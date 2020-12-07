@@ -48,6 +48,7 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="nodeFactory">Factory to use for creating new nodes in the description graph.</param>
         void Describe(IRdfHandler handler, SparqlEvaluationContext context);
     }
 }

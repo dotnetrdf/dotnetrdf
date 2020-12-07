@@ -52,10 +52,9 @@ namespace VDS.RDF.Writing
 
             var graph1 = new Graph();
             graph1.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            graph1.BaseUri = null;
             store.Add(graph1);
 
-            var graph2 = new Graph();
+            var graph2 = new Graph(new UriNode(new Uri("http://example.com/graph2")));
             graph2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(graph2);
 

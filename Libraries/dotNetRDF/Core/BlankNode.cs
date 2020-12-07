@@ -35,19 +35,11 @@ namespace VDS.RDF
         : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
         /// <summary>
-        /// Internal Only Constructor for Blank Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node belongs to.</param>
-        protected internal BlankNode(IGraph g)
-            : base(g) { }
-
-        /// <summary>
         /// Internal Only constructor for Blank Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node belongs to.</param>
         /// <param name="id">Custom Node ID to use.</param>
-        protected internal BlankNode(IGraph g, string id)
-            : base(g, id) { }
+        protected internal BlankNode(string id)
+            : base(id) { }
 
         /// <summary>
         /// Internal Only constructor for Blank Nodes.

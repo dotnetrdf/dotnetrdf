@@ -38,7 +38,8 @@ namespace VDS.RDF.Skos
         /// Creates a new collection for the given resource.
         /// </summary>
         /// <param name="resource">Resource representing the collection.</param>
-        public SkosCollection(INode resource) : base(resource) { }
+        /// <param name="graph">Graph containing the resource representing the collection.</param>
+        public SkosCollection(INode resource, IGraph graph) : base(resource, graph) { }
 
         /// <summary>
         /// Gets the members of the collection.
@@ -49,7 +50,7 @@ namespace VDS.RDF.Skos
             {
                 return 
                     GetObjects(SkosHelper.Member)
-                    .Select(SkosMember.Create);
+                    .Select(x=>SkosMember.Create(x, Graph));
             }
         }
     }

@@ -139,22 +139,22 @@ namespace VDS.RDF.Writing
                             {
                                 case NodeType.Blank:
                                     var b = (IBlankNode)r[v];
-                                    IBlankNode bMapped;
-                                    if (b.GraphUri == null)
-                                    {
-                                        bMapped = g.CreateBlankNode(b.InternalID + "def");
-                                    }
-                                    else
-                                    {
-                                        bMapped = g.CreateBlankNode(b.InternalID + b.GraphUri.GetEnhancedHashCode());
-                                    }
+                                    IBlankNode bMapped = g.CreateBlankNode(b.InternalID + "def");
+                                    //if (b.GraphUri == null)
+                                    //{
+                                    //    bMapped = g.CreateBlankNode(b.InternalID + "def");
+                                    //}
+                                    //else
+                                    //{
+                                    //    bMapped = g.CreateBlankNode(b.InternalID + b.GraphUri.GetEnhancedHashCode());
+                                    //}
                                     g.Assert(new Triple(bnd, value, bMapped));
                                     break;
                                 case NodeType.GraphLiteral:
                                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL Results RDF Serialization"));
                                 case NodeType.Literal:
                                 case NodeType.Uri:
-                                    g.Assert(new Triple(bnd, value, r[v].CopyNode(g)));
+                                    g.Assert(new Triple(bnd, value, r[v]));
                                     break;
                                 default:
                                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("SPARQL Results RDF Serialization"));

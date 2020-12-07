@@ -141,22 +141,22 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IUpdate> GetConstructorsForClass(INode cls)
         {
-            var constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, this))).ToList();
+            var constructors = GetTriplesWithSubjectPredicate(cls, SPIN.PropertyConstructor).Select(t => SPINFactory.asUpdate(Resource.Get(t.Object, _currentSparqlGraph, this))).ToList();
             return constructors;
         }
 
         internal IEnumerable<IResource> GetAllInstances(INode cls)
         {
-            var resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, this)).ToList();
+            var resourceList = GetTriplesWithPredicateObject(RDF.PropertyType, cls).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
             return resourceList;
         }
 
         internal IEnumerable<IResource> GetAllSubClasses(INode root, bool includeRoot = false)
         {
-            var classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
+            var classList = GetTriplesWithPredicateObject(RDFS.PropertySubClassOf, root).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
             if (includeRoot)
             {
-                classList.Add(Resource.Get(root, this));
+                classList.Add(Resource.Get(root, _currentSparqlGraph, this));
             }
             SortClasses(classList);
             return classList;
@@ -164,10 +164,10 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSuperClasses(INode root, bool includeRoot = false)
         {
-            var classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, this)).ToList();
+            var classList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubClassOf).Select(t => Resource.Get(t.Object, _currentSparqlGraph, this)).ToList();
             if (includeRoot)
             {
-                classList.Add(Resource.Get(root, this));
+                classList.Add(Resource.Get(root, _currentSparqlGraph, this));
             }
             SortClasses(classList);
             return classList;
@@ -175,10 +175,10 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSubProperties(INode root, bool includeRoot = false)
         {
-            var propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, this)).ToList();
+            var propertyList = GetTriplesWithPredicateObject(RDFS.PropertySubPropertyOf, root).Select(t => Resource.Get(t.Subject, _currentSparqlGraph, this)).ToList();
             if (includeRoot)
             {
-                propertyList.Add(Resource.Get(root, this));
+                propertyList.Add(Resource.Get(root, _currentSparqlGraph, this));
             }
             SortProperties(propertyList);
             return propertyList;
@@ -186,10 +186,10 @@ namespace VDS.RDF.Query.Spin
 
         internal IEnumerable<IResource> GetAllSuperProperties(INode root, bool includeRoot = false)
         {
-            var propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, this)).ToList();
+            var propertyList = GetTriplesWithSubjectPredicate(root, RDFS.PropertySubPropertyOf).Select(t => Resource.Get(t.Object, _currentSparqlGraph, this)).ToList();
             if (includeRoot)
             {
-                propertyList.Add(Resource.Get(root, this));
+                propertyList.Add(Resource.Get(root, _currentSparqlGraph, this));
             }
             SortProperties(propertyList);
             return propertyList;
@@ -210,9 +210,9 @@ namespace VDS.RDF.Query.Spin
             INode resource = _currentSparqlGraph.CreateBlankNode();
             if (rdfType != null)
             {
-                _currentSparqlGraph.Assert(resource, Tools.CopyNode(RDF.PropertyType, _currentSparqlGraph), Tools.CopyNode(rdfType, _currentSparqlGraph));
+                _currentSparqlGraph.Assert(resource, RDF.PropertyType, rdfType);
             }
-            return Resource.Get(resource, this);
+            return Resource.Get(resource, _currentSparqlGraph, this);
         }
 
         internal IResource CreateList(IResource[] elements)
@@ -273,7 +273,7 @@ namespace VDS.RDF.Query.Spin
 
         internal bool ContainsTriple(INode subj, INode pred, INode obj)
         {
-            return ContainsTriple(new Triple(Tools.CopyNode(GetSourceNode(subj), _currentSparqlGraph), Tools.CopyNode(GetSourceNode(pred), _currentSparqlGraph), Tools.CopyNode(GetSourceNode(obj), _currentSparqlGraph)));
+            return ContainsTriple(new Triple(GetSourceNode(subj), GetSourceNode(pred), GetSourceNode(obj)));
         }
 
         internal bool ContainsTriple(Triple t)
@@ -363,7 +363,7 @@ namespace VDS.RDF.Query.Spin
                 if (!_currentSparqlGraph.IsEmpty)
                 {
                     _spinConfiguration.AddGraph(_currentSparqlGraph);
-                    spinQuery = SPINFactory.asQuery(Resource.Get(q, this));
+                    spinQuery = SPINFactory.asQuery(Resource.Get(q, _currentSparqlGraph, this));
                     queryCache[sparqlQuery] = spinQuery;
                 }
             }
@@ -390,7 +390,7 @@ namespace VDS.RDF.Query.Spin
                     if (!_currentSparqlGraph.IsEmpty)
                     {
                         _spinConfiguration.AddGraph(_currentSparqlGraph);
-                        IUpdate spinQuery = SPINFactory.asUpdate(Resource.Get(q, this));
+                        IUpdate spinQuery = SPINFactory.asUpdate(Resource.Get(q, _currentSparqlGraph, this));
                         queryCache[sparqlQuery] = spinQuery;
                         spinQueryList.Add(spinQuery);
                     }

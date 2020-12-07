@@ -75,11 +75,11 @@ namespace VDS.RDF.Shacl.Constraints
         {
             get
             {
-                return Vocabulary.Prefixes.ObjectsOf(this).Select(p => new Prefixes(p)).SingleOrDefault() ?? Enumerable.Empty<PrefixDeclaration>();
+                return Vocabulary.Prefixes.ObjectsOf(this).Select(p => new Prefixes(p, Graph)).SingleOrDefault() ?? Enumerable.Empty<PrefixDeclaration>();
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             var queryString = new SparqlParameterizedString(Query);
 
@@ -95,9 +95,9 @@ namespace VDS.RDF.Shacl.Constraints
             BindFocusNode(query.RootGraphPattern, focusNode);
             query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("currentShape", new ConstantTerm(Shape)));
 
-            if (Shape.GraphUri is object)
+            if (Shape.Graph.Name != null)
             {
-                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.CreateUriNode(Shape.GraphUri))));
+                query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern("shapesGraph", new ConstantTerm(Shape.Graph.Name)));
             }
 
             foreach (KeyValuePair<string, INode> parameter in Parameters)
@@ -105,10 +105,10 @@ namespace VDS.RDF.Shacl.Constraints
                 query.RootGraphPattern.TriplePatterns.Insert(0, new BindPattern(parameter.Key, new ConstantTerm(parameter.Value)));
             }
 
-            return ValidateInternal(focusNode, valueNodes, report, query);
+            return ValidateInternal(dataGraph, focusNode, valueNodes, report, query);
         }
 
-        protected abstract bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query);
+        protected abstract bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query);
 
         private static void BindFocusNode(GraphPattern pattern, INode focusNode)
         {

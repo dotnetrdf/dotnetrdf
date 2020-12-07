@@ -155,23 +155,23 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             {
                 case SparqlNumericType.NaN:
                     // No Numeric Values
-                    return new LongNode(null, 0);
+                    return new LongNode(0);
 
                 case SparqlNumericType.Integer:
                     // Integer Values
-                    return new LongNode(null, lngtotal);
+                    return new LongNode(lngtotal);
 
                 case SparqlNumericType.Decimal:
                     // Decimal Values
-                    return new DecimalNode(null, dectotal);
+                    return new DecimalNode(dectotal);
 
                 case SparqlNumericType.Float:
                     // Float Values
-                    return new FloatNode(null, flttotal);
+                    return new FloatNode(flttotal);
 
                 case SparqlNumericType.Double:
                     // Double Values
-                    return new DoubleNode(null, dbltotal);
+                    return new DoubleNode(dbltotal);
 
                 default:
                     throw new RdfQueryException("Failed to calculate a valid Sum");

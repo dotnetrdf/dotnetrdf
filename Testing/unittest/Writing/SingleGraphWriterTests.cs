@@ -58,7 +58,7 @@ namespace VDS.RDF.Writing
         [Fact]
         public void ItWritesNQuadsOutputWithANamedGraph()
         {
-            var graph = new Graph {BaseUri = new Uri("http://example.org/g")};
+            var graph = new Graph(new UriNode(new Uri("http://example.org/g")));
             graph.Assert(new Triple(graph.CreateUriNode(new Uri("http://example.org/s")),
                 graph.CreateUriNode(new Uri("http://example.org/p")),
                 graph.CreateUriNode(new Uri("http://example.org/o"))));

@@ -32,6 +32,7 @@
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <RootNamespace>VDS.RDF.Storage</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

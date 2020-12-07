@@ -34,8 +34,8 @@ namespace VDS.RDF.Shacl.Paths
     internal class Predicate : Path
     {
         [DebuggerStepThrough]
-        internal Predicate(INode node)
-            : base(node)
+        internal Predicate(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
 

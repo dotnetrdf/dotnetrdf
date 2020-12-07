@@ -68,7 +68,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var expected = new[] { s, p, o };
 
             void isSPO(object actual)
@@ -119,7 +119,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Equal(3, d.Count);
         }
@@ -129,7 +129,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.IsReadOnly);
         }
@@ -200,7 +200,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             d.Clear();
 
@@ -244,7 +244,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = (IEnumerable)new DynamicNode(s);
+            var d = (IEnumerable)new DynamicNode(s, g);
             var spo = new[] { s, p, o };
 
             var actual = d.GetEnumerator();

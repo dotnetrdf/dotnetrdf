@@ -76,7 +76,7 @@ namespace VDS.RDF.Writing
             // Queue the Graphs to be written
             foreach (IGraph g in context.Store.Graphs)
             {
-                context.Add(g.BaseUri);
+                context.Add(g.Name);
             }
 
             // Start making the async calls
@@ -117,8 +117,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = null;
-                while (globalContext.TryGetNextUri(out u))
+                while (globalContext.TryGetNextGraphName(out IRefNode u))
                 {
                     // Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];

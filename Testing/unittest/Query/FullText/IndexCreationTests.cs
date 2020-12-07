@@ -331,7 +331,7 @@ namespace VDS.RDF.Query.FullText
 
                 for (var i = 9; i >= 0; i--)
                 {
-                    indexer.Unindex(g.Triples.First());
+                    indexer.Unindex(g, g.Triples.First());
                     indexer.Flush();
                     Assert.Equal(i, searcher.Match("example").Count());
                 }

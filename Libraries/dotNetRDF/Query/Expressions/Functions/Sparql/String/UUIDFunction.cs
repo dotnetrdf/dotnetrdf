@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         protected override IValuedNode EvaluateInternal(Guid uuid)
         {
-            return new UriNode(null, new Uri("urn:uuid:" + uuid.ToString()));
+            return new UriNode(new Uri("urn:uuid:" + uuid.ToString()));
         }
 
         /// <summary>

@@ -166,9 +166,9 @@ namespace VDS.RDF.JsonLd
             {
                 if (graphUri == null)
                 {
-                    Assert.True(actualTripleStore.HasGraph(null), 
+                    Assert.True(actualTripleStore.HasGraph((IRefNode)null), 
                         $"Test failed for input {testFile}.\r\nExpected a default graph to be present.");
-                    AssertGraphsEqual(expectedTripleStore[null], actualTripleStore[null],
+                    AssertGraphsEqual(expectedTripleStore[(IRefNode)null], actualTripleStore[(IRefNode)null],
                         expectedTripleStore, actualTripleStore, testFile);
                 } 
                 else if (graphUri.ToString().StartsWith("nquads:bnode:"))

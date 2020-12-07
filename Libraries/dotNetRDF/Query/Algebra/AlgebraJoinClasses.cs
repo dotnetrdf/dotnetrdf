@@ -231,7 +231,7 @@ namespace VDS.RDF.Query.Algebra
         : ILeftJoin
     {
         private readonly ISparqlAlgebra _lhs, _rhs;
-        private readonly ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(null, true)));
+        private readonly ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(true)));
 
         /// <summary>
         /// Creates a new LeftJoin where there is no Filter over the join.

@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
@@ -43,7 +42,7 @@ namespace VDS.RDF
         #region Properties
 
         /// <summary>
-        /// Get the name of the graph.
+        /// Gets the name of the graph.
         /// </summary>
         /// <remarks>The graph name May be NULL for an unnamed (default) graph.</remarks>
         IRefNode Name

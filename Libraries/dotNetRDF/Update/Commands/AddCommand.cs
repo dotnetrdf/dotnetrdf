@@ -35,11 +35,20 @@ namespace VDS.RDF.Update.Commands
         : BaseTransferCommand
     {
         /// <summary>
+        /// Creates a command which merges the data from the source graph into the destination graph.
+        /// </summary>
+        /// <param name="sourceGraphName">Name of the source graph.</param>
+        /// <param name="destinationGraphName">Name of the destination graph.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
+        public AddCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false):base(SparqlUpdateCommandType.Add, sourceGraphName, destinationGraphName, silent){}
+
+        /// <summary>
         /// Creates a Command which merges the data from the Source Graph into the Destination Graph.
         /// </summary>
         /// <param name="sourceUri">Source Graph URI.</param>
         /// <param name="destUri">Destination Graph URI.</param>
         /// <param name="silent">Whether errors should be suppressed.</param>
+        [Obsolete("Replaced by AddCommand(IRefNode, IRefNode, bool)")]
         public AddCommand(Uri sourceUri, Uri destUri, bool silent)
             : base(SparqlUpdateCommandType.Add, sourceUri, destUri, silent) { }
 
@@ -48,6 +57,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="sourceUri">Source Graph URI.</param>
         /// <param name="destUri">Destination Graph URI.</param>
+        [Obsolete("Replaced by AddCommand(IRefNode, IRefNode, bool)")]
         public AddCommand(Uri sourceUri, Uri destUri)
             : base(SparqlUpdateCommandType.Add, sourceUri, destUri) { }
 
@@ -59,20 +69,19 @@ namespace VDS.RDF.Update.Commands
         {
             try
             {
-                if (context.Data.HasGraph(_sourceUri))
+                if (context.Data.HasGraph(SourceGraphName))
                 {
                     // Get the Source Graph
-                    IGraph source = context.Data.GetModifiableGraph(_sourceUri);
+                    IGraph source = context.Data.GetModifiableGraph(SourceGraphName);
 
                     // Get the Destination Graph
                     IGraph dest;
-                    if (!context.Data.HasGraph(_destUri))
+                    if (!context.Data.HasGraph(DestinationGraphName))
                     {
-                        dest = new Graph();
-                        dest.BaseUri = _destUri;
+                        dest = new Graph(DestinationGraphName);
                         context.Data.AddGraph(dest);
                     }
-                    dest = context.Data.GetModifiableGraph(_destUri);
+                    dest = context.Data.GetModifiableGraph(DestinationGraphName);
 
                     // Move data from the Source into the Destination
                     dest.Merge(source);
@@ -82,9 +91,9 @@ namespace VDS.RDF.Update.Commands
                     // Only show error if not Silent
                     if (!_silent)
                     {
-                        if (_sourceUri != null)
+                        if (SourceGraphName != null)
                         {
-                            throw new SparqlUpdateException("Cannot ADD from Graph <" + _sourceUri.AbsoluteUri + "> as it does not exist");
+                            throw new SparqlUpdateException("Cannot ADD from Graph " + SourceGraphName + " as it does not exist");
                         }
                         else
                         {

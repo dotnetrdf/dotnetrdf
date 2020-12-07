@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
-                                return new DecimalNode(lit.Graph, d);
+                                return new DecimalNode(d);
                             }
                             else
                             {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
-                                return new DecimalNode(lit.Graph, d);
+                                return new DecimalNode(d);
                             }
                             else
                             {
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                         {
                             // Parsed OK
-                            return new DecimalNode(lit.Graph, d);
+                            return new DecimalNode(d);
                         }
                         else
                         {

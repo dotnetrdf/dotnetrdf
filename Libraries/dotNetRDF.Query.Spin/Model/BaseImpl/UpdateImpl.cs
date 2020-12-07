@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal abstract class UpdateImpl : AbstractSPINResource, IUpdate
     {
 
-        public UpdateImpl(INode node, SpinProcessor graph)
-            : base(node, graph)
+        public UpdateImpl(INode node, IGraph graph, SpinProcessor processor)
+            : base(node, graph, processor)
         {
 
         }
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Spin.Model
                     p.printKeyword(keyword);
                     p.print(" ");
                 }
-                p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(UriFactory.Create(graphIRI)), getModel()));
+                p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(UriFactory.Create(graphIRI)), Graph, getModel()));
             }
         }
 

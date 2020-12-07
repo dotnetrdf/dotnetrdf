@@ -38,7 +38,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Throws<ArgumentNullException>(() =>
                 d[null as string]);
@@ -55,7 +55,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             var actual = d[p];
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Throws<ArgumentNullException>(() =>
                 d[null as string] = null);
@@ -97,7 +97,7 @@ namespace VDS.RDF.Dynamic
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s1"));
             var p = UriFactory.Create("urn:p1");
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             d[p] = null;
 
@@ -126,7 +126,7 @@ namespace VDS.RDF.Dynamic
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s1"));
             var p = "urn:p1";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             d[p] = "o";
 
@@ -146,7 +146,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s1"));
-            var d = new DynamicNode(s) as IDictionary<string, object>;
+            var d = new DynamicNode(s, g) as IDictionary<string, object>;
 
             var actual = d.Keys;
             var expected = g.GetTriplesWithSubject(s).Select(triple => (triple.Predicate as IUriNode).Uri.AbsoluteUri).Distinct();
@@ -159,7 +159,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Throws<ArgumentNullException>(() =>
                 d.Add(null as string, null));
@@ -171,7 +171,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var s = g.CreateBlankNode();
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Throws<ArgumentNullException>(() =>
                 d.Add(p, null));
@@ -191,7 +191,7 @@ namespace VDS.RDF.Dynamic
             var s = UriFactory.Create("urn:s");
             var p = UriFactory.Create("urn:p");
             var o = UriFactory.Create("urn:o");
-            var d = new DynamicNode(g.CreateUriNode(s));
+            var d = new DynamicNode(g.CreateUriNode(s), g);
 
             d.Add(p.AbsoluteUri, new[] { s, p, o });
 
@@ -209,7 +209,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             d.Add(p, "abc");
 
@@ -227,7 +227,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s) as IDictionary<string, object>;
+            var d = new DynamicNode(s, g) as IDictionary<string, object>;
 
             d.Add(new KeyValuePair<string, object>(p, "o"));
 
@@ -239,7 +239,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Contains(null as string, null));
         }
@@ -250,7 +250,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var s = g.CreateBlankNode();
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Contains(p, null));
         }
@@ -262,7 +262,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateBlankNode();
             var p = "urn:p";
             var o = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Contains(p, o));
         }
@@ -278,7 +278,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
             var o = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Contains(p, o));
         }
@@ -294,7 +294,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.True(d.Contains(p, o));
         }
@@ -311,7 +311,7 @@ namespace VDS.RDF.Dynamic
 
             var s = UriFactory.Create("urn:s");
             var p = UriFactory.Create("urn:p");
-            var d = new DynamicNode(g.CreateUriNode(s));
+            var d = new DynamicNode(g.CreateUriNode(s), g);
 
             Assert.True(d.Contains(p.AbsoluteUri, new[] { s, p }));
         }
@@ -326,7 +326,7 @@ namespace VDS.RDF.Dynamic
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.True(d.Contains(p, "o"));
         }
@@ -342,7 +342,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Contains(new KeyValuePair<string, object>(p, o), d);
         }
@@ -352,7 +352,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.ContainsKey(null as string));
         }
@@ -368,7 +368,7 @@ namespace VDS.RDF.Dynamic
             var s = "urn:s";
             var p = "urn:p";
             var o = "urn:o";
-            var d = new DynamicNode(g.CreateUriNode(UriFactory.Create(s)));
+            var d = new DynamicNode(g.CreateUriNode(UriFactory.Create(s)), g);
 
             Assert.False(d.ContainsKey(s));
             Assert.True(d.ContainsKey(p));
@@ -412,7 +412,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s) as IDictionary<string, object>;
+            var d = new DynamicNode(s, g) as IDictionary<string, object>;
             var array = new KeyValuePair<string, object>[5];
             var spo = new[] { s, p, o };
             void isEmpty(KeyValuePair<string, object> actual)
@@ -478,7 +478,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var spo = new[] { s, p, o };
 
             using (var actual = d.Cast<KeyValuePair<string, object>>().GetEnumerator())
@@ -500,7 +500,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Remove(null as string));
         }
@@ -572,7 +572,7 @@ namespace VDS.RDF.Dynamic
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             d.Remove(p);
 
@@ -615,7 +615,7 @@ namespace VDS.RDF.Dynamic
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             Assert.True(d.Remove(p));
             Assert.False(d.Remove(p));
@@ -626,7 +626,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Remove(null as string, null));
         }
@@ -637,7 +637,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var s = g.CreateBlankNode();
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.Remove(p, null));
         }
@@ -710,7 +710,7 @@ namespace VDS.RDF.Dynamic
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
             var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             d.Remove(p, o);
 
@@ -785,7 +785,7 @@ namespace VDS.RDF.Dynamic
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = actual.CreateUriNode(UriFactory.Create("urn:p"));
             var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             d.Remove(p.Uri.AbsoluteUri, new[] { s, p, o });
 
@@ -811,7 +811,7 @@ namespace VDS.RDF.Dynamic
 
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, actual);
 
             d.Remove(p, "o");
 
@@ -886,7 +886,7 @@ namespace VDS.RDF.Dynamic
             var s = actual.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
             var o = actual.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s) as IDictionary<string, object>;
+            var d = new DynamicNode(s, actual) as IDictionary<string, object>;
 
             d.Remove(new KeyValuePair<string, object>(p, o));
 
@@ -898,7 +898,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.False(d.TryGetValue(null as string, out var objects));
         }
@@ -913,7 +913,7 @@ namespace VDS.RDF.Dynamic
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = "urn:p";
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.True(d.TryGetValue(p, out var objects));
             Assert.IsType<DynamicObjectCollection>(objects);

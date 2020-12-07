@@ -38,7 +38,8 @@ namespace VDS.RDF.Skos
         /// Creates a new concept for the given resource.
         /// </summary>
         /// <param name="resource">Resource representing the concept.</param>
-        public SkosConcept(INode resource) : base(resource) { }
+        /// <param name="graph">The graph containing the concept.</param>
+        public SkosConcept(INode resource, IGraph graph) : base(resource, graph) { }
 
         /// <summary>
         /// Gets the concept schemes the concept is contained in.
@@ -319,7 +320,7 @@ namespace VDS.RDF.Skos
         {
             return 
                 GetObjects(predicateUri)
-                .Select(o => new SkosConceptScheme(o));
+                .Select(o => new SkosConceptScheme(o, Graph));
         }
 
         private IEnumerable<ILiteralNode> GetLiterals(string predicateUri)

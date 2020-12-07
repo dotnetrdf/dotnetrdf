@@ -29,17 +29,16 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Query.Builder;
 
 namespace VDS.RDF.Shacl.Validation
 {
     /// <summary>
     /// Represents a SHACL validation report.
     /// </summary>
-    public class Report : WrapperNode
+    public class Report : GraphWrapperNode
     {
-        private Report(INode node)
-            : base(node)
+        private Report(INode node, IGraph reportGraph)
+            : base(node, reportGraph)
         {
             Graph.TripleAsserted += TripleAsserted;
             Graph.TripleRetracted += TripleRetracted;
@@ -136,12 +135,12 @@ WHERE {
         /// <returns>A report representing the SHACL validation report in the erapped graph.</returns>
         public static Report Parse(IGraph g)
         {
-            return new Report(g.InstancesOf(Vocabulary.ValidationReport).Single());
+            return new Report(g.InstancesOf(Vocabulary.ValidationReport).Single(), g);
         }
 
         internal static Report Create(IGraph g)
         {
-            var report = new Report(g.CreateBlankNode())
+            var report = new Report(g.CreateBlankNode(), g)
             {
                 Type = Vocabulary.ValidationReport,
                 Conforms = true,

@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
             }
 
-            return new LongNode(null, c);
+            return new LongNode(c);
         }
 
         /// <summary>

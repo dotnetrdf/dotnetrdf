@@ -36,15 +36,14 @@ namespace VDS.RDF.Writing
             var store = new TripleStore();
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = null;
             store.Add(g);
-            g = new Graph();
+
+            g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             g.LoadFromFile("resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/graph");
             store.Add(g);
-            g = new Graph();
+
+            g = new Graph(new UriNode(new Uri("http://example.org/cyrillic")));
             g.LoadFromFile(@"resources\cyrillic.rdf");
-            g.BaseUri = new Uri("http://example.org/cyrillic");
             store.Add(g);
 
             if (writer is ICompressingWriter)
@@ -67,8 +66,8 @@ namespace VDS.RDF.Writing
 
             foreach (IGraph graph in store.Graphs)
             {
-                Assert.True(store2.HasGraph(graph.BaseUri), "Parsed Stored should have contained serialized graph");
-                Assert.Equal(graph, store2[graph.BaseUri]);
+                Assert.True(store2.HasGraph(graph.Name), "Parsed Stored should have contained serialized graph");
+                Assert.Equal(graph, store2[graph.Name]);
             }
         }
 

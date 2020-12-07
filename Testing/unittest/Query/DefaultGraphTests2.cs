@@ -25,11 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
@@ -37,9 +34,9 @@ namespace VDS.RDF.Query
 
     public class DefaultGraphTests2
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
 
-        private ISparqlDataset GetDataset(List<IGraph> gs, bool unionDefaultGraph)
+        private ISparqlDataset GetDataset(IEnumerable<IGraph> gs, bool unionDefaultGraph)
         {
             var store = new TripleStore();
             foreach (IGraph g in gs)
@@ -50,7 +47,7 @@ namespace VDS.RDF.Query
             return new InMemoryDataset(store, unionDefaultGraph);
         }
 
-        private ISparqlDataset GetDataset(List<IGraph> gs, Uri defaultGraphUri)
+        private ISparqlDataset GetDataset(IEnumerable<IGraph> gs, Uri defaultGraphUri)
         {
             var store = new TripleStore();
             foreach (IGraph g in gs)
@@ -58,17 +55,17 @@ namespace VDS.RDF.Query
                 store.Add(g, false);
             }
 
-            return new InMemoryDataset(store, defaultGraphUri);
+            return new InMemoryDataset(store, defaultGraphUri == null ? null : new UriNode(defaultGraphUri));
         }
 
         [Fact]
         public void SparqlDatasetDefaultGraphUnion()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             gs.Add(h);
 
@@ -77,13 +74,12 @@ namespace VDS.RDF.Query
             SparqlQuery q = _parser.ParseFromString(query);
             var processor = new LeviathanQueryProcessor(dataset);
 
-            var results = processor.ProcessQuery(q);
-            if (results is IGraph)
+            object results = processor.ProcessQuery(q);
+            if (results is IGraph resultGraph)
             {
-                var r = (IGraph)results;
-                Assert.Equal(g.Triples.Count + h.Triples.Count, r.Triples.Count);
-                Assert.True(r.HasSubGraph(g), "g should be a subgraph of the results");
-                Assert.True(r.HasSubGraph(h), "h should be a subgraph of the results");
+                Assert.Equal(g.Triples.Count + h.Triples.Count, resultGraph.Triples.Count);
+                Assert.True(resultGraph.HasSubGraph(g), "g should be a sub-graph of the results");
+                Assert.True(resultGraph.HasSubGraph(h), "h should be a sub-graph of the results");
             }
             else
             {
@@ -95,10 +91,10 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphUnionAndGraphClause()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             gs.Add(h);
 
@@ -107,13 +103,12 @@ namespace VDS.RDF.Query
             SparqlQuery q = _parser.ParseFromString(query);
             var processor = new LeviathanQueryProcessor(dataset);
 
-            var results = processor.ProcessQuery(q);
-            if (results is IGraph)
+            object results = processor.ProcessQuery(q);
+            if (results is IGraph r)
             {
-                var r = (IGraph)results;
                 Assert.Equal(0, r.Triples.Count);
-                Assert.False(r.HasSubGraph(g), "g should not be a subgraph of the results");
-                Assert.False(r.HasSubGraph(h), "h should not be a subgraph of the results");
+                Assert.False(r.HasSubGraph(g), "g should not be a sub-graph of the results");
+                Assert.False(r.HasSubGraph(h), "h should not be a sub-graph of the results");
             }
             else
             {
@@ -125,10 +120,10 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphNoUnion()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             gs.Add(h);
 
@@ -155,13 +150,11 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphNamed()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
@@ -187,13 +180,11 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphNamedAndGraphClause()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
@@ -219,13 +210,11 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphNamed2()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
@@ -251,13 +240,11 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphNamedAndGraphClause2()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
@@ -283,13 +270,11 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphUnknownName()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/unknown"));
@@ -315,13 +300,11 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphUnnamed()
         {
             var gs = new List<IGraph>();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
             gs.Add(g);
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, null);

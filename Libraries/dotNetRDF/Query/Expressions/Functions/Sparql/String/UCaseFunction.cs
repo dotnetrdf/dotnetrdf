@@ -51,11 +51,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             if (stringLit.DataType != null)
             {
-                return new StringNode(null, stringLit.Value.ToUpper(), stringLit.DataType);
+                return new StringNode(stringLit.Value.ToUpper(), stringLit.DataType);
             }
             else
             {
-                return new StringNode(null, stringLit.Value.ToUpper(), stringLit.Language);
+                return new StringNode(stringLit.Value.ToUpper(), stringLit.Language);
             }
         }
 

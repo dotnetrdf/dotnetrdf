@@ -444,9 +444,6 @@ namespace VDS.RDF
                 BaseUri = new Uri("http://example.org/BlankNodeEquality")
             };
 
-            Console.WriteLine("Doing some Blank Node Equality Testing");
-            Console.WriteLine("Blank Nodes are equal if they have the same ID and come from the same Graph which is established by Reference Equality between the two Graphs");
-
             IBlankNode b = g.CreateBlankNode();
             IBlankNode c = g.CreateBlankNode();
             IBlankNode d = h.CreateBlankNode();
@@ -466,13 +463,14 @@ namespace VDS.RDF
             Assert.Equal(e, e);
 
             //Named Nodes
+            // Named nodes are equal if they have the same ID
             IBlankNode one = g.CreateBlankNode("one");
             IBlankNode two = h.CreateBlankNode("one");
             IBlankNode three = i.CreateBlankNode("one");
 
-            Assert.NotEqual(one, three);
-            Assert.NotEqual(one, two);
-            Assert.NotEqual(two, three);
+            Assert.Equal(one, three);
+            Assert.Equal(one, two);
+            Assert.Equal(two, three);
         }
 
         [Fact]

@@ -24,9 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace VDS.RDF
@@ -69,7 +66,7 @@ namespace VDS.RDF
             store.Add(g);
 
             Assert.False(store.IsEmpty);
-            Assert.True(store.HasGraph(g.BaseUri));
+            Assert.True(store.HasGraph(g.Name));
         }
 
         [Fact]
@@ -77,14 +74,11 @@ namespace VDS.RDF
         {
             ITripleStore store = GetInstance();
 
-            IGraph g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            IGraph g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             store.Add(g);
 
             Assert.False(store.IsEmpty);
-            Assert.True(store.HasGraph(g.BaseUri));
+            Assert.True(store.HasGraph(g.Name));
         }
 
         [Fact]
@@ -92,7 +86,7 @@ namespace VDS.RDF
         {
             ITripleStore store = GetInstance();
 
-            Assert.False(store.HasGraph(new Uri("http://thereisnosuchdomain.com:1234/graph")));
+            Assert.False(store.HasGraph(new UriNode(new Uri("http://thereisnosuchdomain.com:1234/graph"))));
         }
 
         [Fact]
@@ -103,7 +97,7 @@ namespace VDS.RDF
             IGraph g = new Graph();
             store.Add(g);
 
-            Assert.True(store.HasGraph(null));
+            Assert.True(store.HasGraph((IRefNode)null));
         }
 
         [Fact]
@@ -111,13 +105,10 @@ namespace VDS.RDF
         {
             ITripleStore store = GetInstance();
 
-            IGraph g = new Graph
-            {
-                BaseUri = new Uri("http://nosuchdomain.com/graph")
-            };
+            IGraph g = new Graph(new UriNode(new Uri("http://nosuchdomain.com/graph")));
             store.Add(g);
 
-            Assert.True(store.HasGraph(g.BaseUri));
+            Assert.True(store.HasGraph(g.Name));
         }
     }
 

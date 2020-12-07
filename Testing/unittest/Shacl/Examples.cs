@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using VDS.RDF.Shacl.Validation;
+
 namespace VDS.RDF.Shacl
 {
     using System.Linq;
@@ -134,10 +136,11 @@ namespace VDS.RDF.Shacl
 ");
 
             var processor = new ShapesGraph(shapesGraph);
-            var report = processor.Validate(dataGraph);
+            Report report = processor.Validate(dataGraph);
 
-            var result = report.Results.Single();
-
+            Assert.Equal(1, report.Results.Count);
+            
+            Result result = report.Results.Single();
             Assert.Equal("test message", result.Message.Value);
         }
     }

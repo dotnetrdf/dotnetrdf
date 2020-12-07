@@ -62,11 +62,11 @@ namespace VDS.RDF.Query.FullText
             var dataset = new FullTextIndexedDataset(memData, indexer, false);
 
             //Test Graph
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.com/graph1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             dataset.AddGraph(g);
-            Assert.True(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
+            Assert.True(dataset.HasGraph(g.Name), "Graph should exist in dataset");
 
             //Now do a search to check all the triples got indexed
             var searchTerm = "http";
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.FullText
             }
 
             //Now remove the Graph
-            dataset.RemoveGraph(g.BaseUri);
+            dataset.RemoveGraph(g.Name);
 
             //Repeat the search to check all the triples got unindexed
             foreach (Triple searchTriple in searchTriples)
@@ -109,11 +109,11 @@ namespace VDS.RDF.Query.FullText
             var dataset = new FullTextIndexedDataset(memData, indexer, false);
 
             //Test Graph
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.com/graph2")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             dataset.AddGraph(g);
-            Assert.True(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
+            Assert.True(dataset.HasGraph(g.Name), "Graph should exist in dataset");
 
             //Now do a search to check all the triples got indexed
             var searchTerm = "http";
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.FullText
             }
 
             //Now remove the Graph
-            dataset.RemoveGraph(g.BaseUri);
+            dataset.RemoveGraph(g.Name);
 
             //Repeat the search to check all the triples got unindexed
             foreach (Triple searchTriple in searchTriples)

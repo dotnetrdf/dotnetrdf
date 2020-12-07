@@ -24,16 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Storage;
 using VDS.RDF.Update;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Query
 {
@@ -46,7 +40,7 @@ namespace VDS.RDF.Query
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
             var parser = new SparqlQueryParser();
-            var parsedQuery = parser.ParseFromString(query);
+            SparqlQuery parsedQuery = parser.ParseFromString(query);
             var processor = new LeviathanQueryProcessor(store);
             return processor.ProcessQuery(parsedQuery);
         }
@@ -59,7 +53,7 @@ namespace VDS.RDF.Query
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
 
-            var results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
+            object results = ExecuteQuery(store, "ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet)results).Result);
@@ -78,7 +72,7 @@ namespace VDS.RDF.Query
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
 
-            var results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
+            object results = ExecuteQuery(store, "ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
                 Assert.False(((SparqlResultSet)results).Result);
@@ -96,23 +90,20 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
             var dataset = new InMemoryDataset(store);
-            dataset.SetDefaultGraph(h.BaseUri);
+            dataset.SetDefaultGraph(h.Name);
             var processor = new LeviathanQueryProcessor(dataset);
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
 
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                TestTools.ShowResults(results);
-                Assert.True(((SparqlResultSet)results).IsEmpty, "Results should be empty as an empty Graph was set as the Default Graph");
+                TestTools.ShowResults(resultSet);
+                Assert.True(resultSet.IsEmpty, "Results should be empty as an empty Graph was set as the Default Graph");
             }
             else
             {
@@ -127,23 +118,20 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
             var dataset = new InMemoryDataset(store);
-            dataset.SetDefaultGraph(g.BaseUri);
+            dataset.SetDefaultGraph(g.Name);
             var processor = new LeviathanQueryProcessor(dataset);
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
 
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                TestTools.ShowResults(results);
-                Assert.False(((SparqlResultSet)results).IsEmpty, "Results should be false as a non-empty Graph was set as the Default Graph");
+                TestTools.ShowResults(resultSet);
+                Assert.False(resultSet.IsEmpty, "Results should be false as a non-empty Graph was set as the Default Graph");
             }
             else
             {
@@ -157,13 +145,10 @@ namespace VDS.RDF.Query
             var store = new TripleStore();
             var g = new Graph();
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
-            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var dataset = new InMemoryDataset(store, h.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>");
@@ -178,18 +163,12 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate2()
         {
             var store = new TripleStore();
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
-            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var dataset = new InMemoryDataset(store, h.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>");
@@ -204,18 +183,12 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate3()
         {
             var store = new TripleStore();
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
-            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var dataset = new InMemoryDataset(store, h.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>; LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/someOtherGraph>");
@@ -231,18 +204,12 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate4()
         {
             var store = new TripleStore();
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
-            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var dataset = new InMemoryDataset(store, h.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }");
@@ -258,18 +225,12 @@ namespace VDS.RDF.Query
         public void SparqlDatasetDefaultGraphManagementWithUpdate5()
         {
             var store = new TripleStore();
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             store.Add(g);
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/someOtherGraph")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/someOtherGraph")));
             store.Add(h);
 
-            var dataset = new InMemoryDataset(store, h.BaseUri);
+            var dataset = new InMemoryDataset(store, h.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }; DELETE WHERE { ?s a ?type }");
@@ -289,23 +250,20 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var dataset = new InMemoryDataset();
-            IGraph ex = new Graph();
+            IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
-            ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
             dataset.AddGraph(def);
-
-            dataset.SetDefaultGraph(def.BaseUri);
+            dataset.SetDefaultGraph(def.Name);
 
             var processor = new LeviathanQueryProcessor(dataset);
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-                Assert.Equal(ex.Triples.Count, rset.Count);
+                TestTools.ShowResults(resultSet);
+                Assert.Equal(ex.Triples.Count, resultSet.Count);
             }
             else
             {
@@ -321,21 +279,19 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var dataset = new InMemoryDataset();
-            IGraph ex = new Graph();
+            IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
-            ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
             var processor = new LeviathanQueryProcessor(dataset);
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-                Assert.Equal(ex.Triples.Count, rset.Count);
+                TestTools.ShowResults(resultSet);
+                Assert.Equal(ex.Triples.Count, resultSet.Count);
             }
             else
             {
@@ -351,23 +307,20 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var dataset = new InMemoryDataset(false);
-            IGraph ex = new Graph();
+            IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
-            ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
             dataset.AddGraph(def);
-
-            dataset.SetDefaultGraph(def.BaseUri);
+            dataset.SetDefaultGraph(def.Name);
 
             var processor = new LeviathanQueryProcessor(dataset);
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-                Assert.Equal(ex.Triples.Count, rset.Count);
+                TestTools.ShowResults(resultSet);
+                Assert.Equal(ex.Triples.Count, resultSet.Count);
             }
             else
             {
@@ -383,21 +336,19 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var dataset = new InMemoryDataset(false);
-            IGraph ex = new Graph();
+            IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
-            ex.BaseUri = new Uri("http://example.org/graph");
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
             var processor = new LeviathanQueryProcessor(dataset);
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-                Assert.Equal(ex.Triples.Count, rset.Count);
+                TestTools.ShowResults(resultSet);
+                Assert.Equal(ex.Triples.Count, resultSet.Count);
             }
             else
             {
@@ -413,24 +364,22 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var store = new TripleStore();
-            IGraph ex = new Graph();
+            IGraph ex = new Graph(new UriNode(new Uri("http://example.org/named")));
             FileLoader.Load(ex, "resources\\InferenceTest.ttl");
-            ex.BaseUri = new Uri("http://example.org/named");
             store.Add(ex);
-            IGraph ex2 = new Graph();
+
+            IGraph ex2 = new Graph(new UriNode(new Uri("http://example.org/other")));
             ex2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            ex2.BaseUri = new Uri("http://example.org/other");
             store.Add(ex2);
 
             var dataset = new InMemoryDataset(store);
 
             var processor = new LeviathanQueryProcessor(dataset);
-            var results = processor.ProcessQuery(q);
-            if (results is SparqlResultSet)
+            object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-                TestTools.ShowResults(rset);
-                Assert.Equal(0, rset.Count);
+                TestTools.ShowResults(resultSet);
+                Assert.Equal(0, resultSet.Count);
             }
             else
             {

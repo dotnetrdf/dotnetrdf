@@ -35,26 +35,26 @@ namespace VDS.RDF.Skos
     /// </summary>
     public abstract class SkosMember : SkosResource
     {
-        internal SkosMember(INode resource) : base(resource) { }
+        internal SkosMember(INode resource, IGraph graph) : base(resource, graph) { }
 
-        internal static SkosMember Create(INode node)
+        internal static SkosMember Create(INode node, IGraph graph)
         {
-            IUriNode a = node.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            IEnumerable<Triple> typeStatements = node.Graph.GetTriplesWithSubjectPredicate(node, a);
+            IUriNode a = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IEnumerable<Triple> typeStatements = graph.GetTriplesWithSubjectPredicate(node, a);
 
-            IUriNode skosOrderedCollection = node.Graph.CreateUriNode(UriFactory.Create(SkosHelper.OrderedCollection));
+            IUriNode skosOrderedCollection = graph.CreateUriNode(UriFactory.Create(SkosHelper.OrderedCollection));
             if (typeStatements.WithObject(skosOrderedCollection).Any())
             {
-                return new SkosOrderedCollection(node);
+                return new SkosOrderedCollection(node, graph);
             }
 
-            IUriNode skosCollection = node.Graph.CreateUriNode(UriFactory.Create(SkosHelper.Collection));
+            IUriNode skosCollection = graph.CreateUriNode(UriFactory.Create(SkosHelper.Collection));
             if (typeStatements.WithObject(skosCollection).Any())
             {
-                return new SkosCollection(node);
+                return new SkosCollection(node, graph);
             }
 
-            return new SkosConcept(node);
+            return new SkosConcept(node, graph);
         }
     }
 }

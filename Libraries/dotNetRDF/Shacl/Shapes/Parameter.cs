@@ -33,8 +33,8 @@ namespace VDS.RDF.Shacl.Shapes
     internal class Parameter : Property
     {
         [DebuggerStepThrough]
-        internal Parameter(INode node)
-            : base(node)
+        internal Parameter(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
 
@@ -48,7 +48,7 @@ namespace VDS.RDF.Shacl.Shapes
 
         internal bool Matches(Shape shape)
         {
-            return !Equals((INode)shape) && ValidateInternal(shape, shape.AsEnumerable(), null);
+            return !Equals((INode)shape) && ValidateInternal(Graph, shape, shape.AsEnumerable(), null);
         }
     }
 }

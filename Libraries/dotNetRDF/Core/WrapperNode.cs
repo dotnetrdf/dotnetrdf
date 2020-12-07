@@ -24,10 +24,6 @@
 // </copyright>
 */
 
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using System;
 using System.Diagnostics;
 using VDS.RDF.Writing;
@@ -38,7 +34,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract decorator for Nodes to make it easier to layer functionality on top of existing implementations.
     /// </summary>
-    public abstract class WrapperNode : INode, IBlankNode, IUriNode, ILiteralNode
+    public abstract class WrapperNode : IBlankNode, IUriNode, ILiteralNode
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapperNode"/> class.
@@ -57,29 +53,6 @@ namespace VDS.RDF
             get
             {
                 return Node.NodeType;
-            }
-        }
-
-        /// <inheritdoc/>
-        public IGraph Graph
-        {
-            get
-            {
-                return Node.Graph;
-            }
-        }
-
-        /// <inheritdoc/>
-        public Uri GraphUri
-        {
-            get
-            {
-                return Node.GraphUri;
-            }
-
-            set
-            {
-                Node.GraphUri = value;
             }
         }
 
@@ -156,7 +129,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the underlying node this is a wrapper around.
         /// </summary>
-        protected INode Node { get; private set; }
+        protected INode Node { get; }
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
@@ -170,7 +143,10 @@ namespace VDS.RDF
             return Node.GetHashCode();
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Provides a string representation of this node.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Node.ToString();
@@ -178,6 +154,12 @@ namespace VDS.RDF
 
         /// <inheritdoc/>
         public int CompareTo(INode other)
+        {
+            return Node.CompareTo(other);
+        }
+
+        /// <inheritdoc />
+        public int CompareTo(IRefNode other)
         {
             return Node.CompareTo(other);
         }
@@ -214,6 +196,12 @@ namespace VDS.RDF
 
         /// <inheritdoc/>
         public bool Equals(INode other)
+        {
+            return Node.Equals(other);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(IRefNode other)
         {
             return Node.Equals(other);
         }

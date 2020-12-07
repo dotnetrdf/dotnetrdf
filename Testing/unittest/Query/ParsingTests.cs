@@ -423,7 +423,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             var uri = new Uri("http://dbpedia.org/resource/$_(film)");
 
             var parametrizedQueryString = new SparqlParameterizedString(queryString);
-            parametrizedQueryString.SetVariable("subject", new UriNode(null, uri));
+            parametrizedQueryString.SetVariable("subject", new UriNode(uri));
             var sparqlQuery = new SparqlQueryParser().ParseFromString(parametrizedQueryString);
             _output.WriteLine(sparqlQuery.ToString());
 

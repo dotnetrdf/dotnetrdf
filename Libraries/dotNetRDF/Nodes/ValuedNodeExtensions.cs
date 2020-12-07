@@ -52,10 +52,10 @@ namespace VDS.RDF.Nodes
             {
                 case NodeType.Blank:
                     var b = (IBlankNode)n;
-                    return new BlankNode(n.Graph, b.InternalID);
+                    return new BlankNode(b.InternalID);
                 case NodeType.GraphLiteral:
                     var glit = (IGraphLiteralNode)n;
-                    return new GraphLiteralNode(n.Graph, glit.SubGraph);
+                    return new GraphLiteralNode(glit.SubGraph);
                 case NodeType.Literal:
                     var lit = (ILiteralNode)n;
                     // Decide what kind of valued node to produce based on node datatype
@@ -68,42 +68,42 @@ namespace VDS.RDF.Nodes
                                 bool bVal;
                                 if (bool.TryParse(lit.Value, out bVal))
                                 {
-                                    return new BooleanNode(n.Graph, bVal);
+                                    return new BooleanNode( bVal);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode( lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
                                 // xsd:byte actually maps to SignedByte in .Net
                                 sbyte sbVal;
                                 if (sbyte.TryParse(lit.Value, out sbVal))
                                 {
-                                    return new SignedByteNode(n.Graph, sbVal, lit.Value);
+                                    return new SignedByteNode(sbVal, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
                                 DateTime date;
                                 if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out date))
                                 {
-                                    return new DateNode(n.Graph, date, lit.Value);
+                                    return new DateNode(date, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
                                 DateTime dateTime;
                                 if (DateTime.TryParse(lit.Value, null, DateTimeStyles.AdjustToUniversal, out dateTime))
                                 {
-                                    return new DateTimeNode(n.Graph, dateTime, lit.Value);
+                                    return new DateTimeNode(dateTime, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration:
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
@@ -111,41 +111,41 @@ namespace VDS.RDF.Nodes
                                 try
                                 {
                                     timeSpan = XmlConvert.ToTimeSpan(lit.Value);
-                                    return new TimeSpanNode(n.Graph, timeSpan, lit.Value, lit.DataType);
+                                    return new TimeSpanNode(timeSpan, lit.Value, lit.DataType);
                                 }
                                 catch
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDecimal:
                                 decimal dec;
                                 if (decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                                 {
-                                    return new DecimalNode(n.Graph, dec, lit.Value);
+                                    return new DecimalNode(dec, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                 double dbl;
                                 if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                                 {
-                                    return new DoubleNode(n.Graph, dbl, lit.Value);
+                                    return new DoubleNode(dbl, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeFloat:
                                 float flt;
                                 if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out flt))
                                 {
-                                    return new FloatNode(n.Graph, flt, lit.Value);
+                                    return new FloatNode(flt, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeInt:
                             case XmlSpecsHelper.XmlSchemaDataTypeInteger:
@@ -154,11 +154,11 @@ namespace VDS.RDF.Nodes
                                 long lng;
                                 if (long.TryParse(lit.Value, out lng))
                                 {
-                                    return new LongNode(n.Graph, lng, lit.Value, lit.DataType);
+                                    return new LongNode(lng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
@@ -166,11 +166,11 @@ namespace VDS.RDF.Nodes
                                 long neglng;
                                 if (long.TryParse(lit.Value, out neglng) && neglng < 0)
                                 {
-                                    return new LongNode(n.Graph, neglng, lit.Value, lit.DataType);
+                                    return new LongNode(neglng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
                             case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
@@ -178,22 +178,22 @@ namespace VDS.RDF.Nodes
                                 long poslng;
                                 if (long.TryParse(lit.Value, out poslng) && poslng >= 0)
                                 {
-                                    return new LongNode(n.Graph, poslng, lit.Value, lit.DataType);
+                                    return new LongNode(poslng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
                                 // xsd:unsignedByte actually maps to Byte in .Net
                                 byte byVal;
                                 if (byte.TryParse(lit.Value, out byVal))
                                 {
-                                    return new ByteNode(n.Graph, byVal, lit.Value);
+                                    return new ByteNode(byVal, lit.Value);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
                             case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
@@ -202,49 +202,49 @@ namespace VDS.RDF.Nodes
                                 ulong ulng;
                                 if (ulong.TryParse(lit.Value, out ulng))
                                 {
-                                    return new UnsignedLongNode(n.Graph, ulng, lit.Value, lit.DataType);
+                                    return new UnsignedLongNode(ulng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                             case RdfSpecsHelper.RdfLangString:
                                 return !lit.Language.Equals(string.Empty)
-                                    ? new StringNode(n.Graph, lit.Value, lit.Language)
-                                    : new StringNode(n.Graph, lit.Value);
+                                    ? new StringNode(lit.Value, lit.Language)
+                                    : new StringNode(lit.Value);
                             default:
                                 if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
                                 {
                                     long l;
                                     if (long.TryParse(lit.Value, out l))
                                     {
-                                        return new LongNode(n.Graph, l, lit.Value, lit.DataType);
+                                        return new LongNode(l, lit.Value, lit.DataType);
                                     }
                                     else
                                     {
-                                        return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                        return new StringNode(lit.Value, lit.DataType);
                                     }
                                 }
                                 else
                                 {
-                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                    return new StringNode(lit.Value, lit.DataType);
                                 }
                         }
                     }
                     else if (!lit.Language.Equals(string.Empty))
                     {
-                        return new StringNode(n.Graph, lit.Value, lit.Language);
+                        return new StringNode(lit.Value, lit.Language);
                     }
                     else
                     {
-                        return new StringNode(n.Graph, lit.Value);
+                        return new StringNode(lit.Value);
                     }
                 case NodeType.Uri:
                     var u = (IUriNode)n;
-                    return new UriNode(n.Graph, u.Uri);
+                    return new UriNode(u.Uri);
                 case NodeType.Variable:
                     var v = (IVariableNode)n;
-                    return new VariableNode(n.Graph, v.VariableName);
+                    return new VariableNode(v.VariableName);
                 default:
                     throw new RdfQueryException("Cannot create a valued node for an unknown node type");
             }

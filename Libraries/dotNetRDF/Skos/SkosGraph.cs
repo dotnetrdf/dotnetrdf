@@ -47,7 +47,7 @@ namespace VDS.RDF.Skos
         public SkosGraph(IGraph g) : base(g) { }
 
         /// <summary>
-        /// Gets concept schems contained in the graph.
+        /// Gets concept schemes contained in the graph.
         /// </summary>
         public IEnumerable<SkosConceptScheme> ConceptSchemes
         {
@@ -55,7 +55,7 @@ namespace VDS.RDF.Skos
             {
                 return 
                     GetInstances(SkosHelper.ConceptScheme)
-                    .Select(node => new SkosConceptScheme(node));
+                    .Select(node => new SkosConceptScheme(node, this));
             }
         }
 
@@ -68,7 +68,7 @@ namespace VDS.RDF.Skos
             {
                 return 
                     GetInstances(SkosHelper.Concept)
-                    .Select(node => new SkosConcept(node));
+                    .Select(node => new SkosConcept(node, this));
             }
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Skos
             {
                 return 
                     GetInstances(SkosHelper.Collection)
-                    .Select(node => new SkosCollection(node));
+                    .Select(node => new SkosCollection(node, this));
             }
         }
 
@@ -94,7 +94,7 @@ namespace VDS.RDF.Skos
             {
                 return 
                     GetInstances(SkosHelper.OrderedCollection)
-                    .Select(node => new SkosOrderedCollection(node));
+                    .Select(node => new SkosOrderedCollection(node, this));
             }
         }
 

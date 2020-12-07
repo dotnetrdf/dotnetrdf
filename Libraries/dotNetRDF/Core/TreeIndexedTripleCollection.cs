@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
@@ -48,9 +47,9 @@ namespace VDS.RDF
         private MultiDictionary<Triple, HashSet<Triple>> _sp, _so, _po;
 
         // Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode(null, "s"),
-                             _predVar = new VariableNode(null, "p"),
-                             _objVar = new VariableNode(null, "o");
+        private VariableNode _subjVar = new VariableNode("s"),
+                             _predVar = new VariableNode("p"),
+                             _objVar = new VariableNode("o");
 
         private int _count = 0;
 
@@ -392,7 +391,7 @@ namespace VDS.RDF
             if (_po != null)
             {
                 HashSet<Triple> ts;
-                if (_po.TryGetValue(new Triple(_subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out ts))
+                if (_po.TryGetValue(new Triple(_subjVar, pred, obj), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -418,7 +417,7 @@ namespace VDS.RDF
             if (_so != null)
             {
                 HashSet<Triple> ts;
-                if (_so.TryGetValue(new Triple(subj, _predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out ts))
+                if (_so.TryGetValue(new Triple(subj, _predVar, obj), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -444,7 +443,7 @@ namespace VDS.RDF
             if (_sp != null)
             {
                 HashSet<Triple> ts;
-                if (_sp.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), _objVar.CopyNode(subj.Graph)), out ts))
+                if (_sp.TryGetValue(new Triple(subj, pred, _objVar), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }

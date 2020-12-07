@@ -42,21 +42,6 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Controls how the <see cref="SparqlConnector">SparqlConnector</see> loads Graphs from the Endpoint.
-    /// </summary>
-    public enum SparqlConnectorLoadMethod 
-    {
-        /// <summary>
-        /// Graphs are loaded by issuing a DESCRIBE query using the Graph URI
-        /// </summary>
-        Describe,
-        /// <summary>
-        /// Graphs are loaded by issuing a CONSTRUCT FROM query using the Graph URI
-        /// </summary>
-        Construct,
-    }
-
-    /// <summary>
     /// Class for connecting to any SPARQL Endpoint as a read-only Store.
     /// </summary>
     /// <remarks>
@@ -466,6 +451,41 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public virtual IEnumerable<string> ListGraphNames()
+        {
+            try
+            {
+                // Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
+                // won't interpret GRAPH ?g { } correctly
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                if (results is SparqlResultSet)
+                {
+                    var graphs = new List<string>();
+                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    {
+                        if (r.HasValue("g"))
+                        {
+                            INode temp = r["g"];
+                            if (temp.NodeType == NodeType.Uri)
+                            {
+                                graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
+                            }
+                            else if (temp.NodeType == NodeType.Blank)
+                            {
+                                graphs.Add("_:" + ((IBlankNode)temp).InternalID);
+                            }
+                        }
+                    }
+                    return graphs;
+                }
+
+                return Enumerable.Empty<string>();
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
+            }
+        }
         /// <summary>
         /// Returns that listing graphs is supported.
         /// </summary>

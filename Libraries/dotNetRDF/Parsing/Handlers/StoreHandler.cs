@@ -82,12 +82,11 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (!_store.HasGraph(t.GraphUri))
             {
-                var g = new Graph();
-                g.BaseUri = t.GraphUri;
+                var g = new Graph(t.GraphUri == null ? null : new UriNode(t.GraphUri));
                 _store.Add(g);
             }
             IGraph target = _store[t.GraphUri];
-            target.Assert(t.CopyTriple(target));
+            target.Assert(t);
             return true;
         }
 

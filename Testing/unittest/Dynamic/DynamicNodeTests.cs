@@ -22,31 +22,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+using System;
+using System.Dynamic;
+using System.Linq.Expressions;
+using Xunit;
 
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Dynamic;
-    using System.Linq.Expressions;
-    using Xunit;
-
     public class DynamicNodeTests
     {
-        [Fact]
-        public void Requires_node_with_graph()
-        {
-            var s = new NodeFactory().CreateBlankNode();
-
-            Assert.Throws<InvalidOperationException>(() =>
-                new DynamicNode(s));
-        }
-
         [Fact]
         public void BaseUri_defaults_to_graph_base_uri()
         {
             var g = new Graph { BaseUri = new Uri("urn:g") };
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Equal(g.BaseUri, d.BaseUri);
         }
@@ -56,7 +46,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.IsAssignableFrom<IUriNode>(d);
             Assert.Equal(((IUriNode)d).Uri, s.Uri);
@@ -67,7 +57,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Throws<InvalidOperationException>(() =>
                 ((IUriNode)d).Uri);
@@ -78,7 +68,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.IsAssignableFrom<IBlankNode>(d);
             Assert.Equal(((IBlankNode)d).InternalID, s.InternalID);
@@ -89,7 +79,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
 
             Assert.Throws<InvalidOperationException>(() =>
                 ((IBlankNode)d).InternalID);
@@ -104,7 +94,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var p = (IDynamicMetaObjectProvider)d;
             var mo = p.GetMetaObject(Expression.Empty());
 

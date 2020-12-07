@@ -31,8 +31,8 @@ namespace VDS.RDF.Shacl.Shapes
     internal class Node : Shape
     {
         [DebuggerStepThrough]
-        internal Node(INode node)
-            : base(node)
+        internal Node(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
     }

@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.FullText
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
 
-                _dataset = new InMemoryDataset(store, g.BaseUri);
+                _dataset = new InMemoryDataset(store, g.Name);
             }
         }
 

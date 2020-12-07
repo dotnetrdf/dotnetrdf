@@ -34,6 +34,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -42,24 +43,38 @@ namespace VDS.RDF.Update.Commands
     /// </summary>
     public class DeleteCommand : BaseModificationCommand
     {
-        private GraphPattern _deletePattern, _wherePattern;
-
         /// <summary>
         /// Creates a new DELETE command.
         /// </summary>
         /// <param name="deletions">Pattern to construct Triples to delete.</param>
         /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
         /// <param name="graphUri">URI of the affected Graph.</param>
+        [Obsolete("Replaced by DeleteCommand(GraphPatten, GraphPatter, IRefNode")]
         public DeleteCommand(GraphPattern deletions, GraphPattern where, Uri graphUri)
             : base(SparqlUpdateCommandType.Delete)
         {
             if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
 
-            _deletePattern = deletions;
-            _wherePattern = where;
-            _graphUri = graphUri;
+            DeletePattern = deletions;
+            WherePattern = where;
+            WithGraphName = graphUri == null ? null : new UriNode(graphUri);
         }
 
+        /// <summary>
+        /// Creates a new DELETE command.
+        /// </summary>
+        /// <param name="deletions">Pattern to construct Triples to delete.</param>
+        /// <param name="where">Pattern to select data which is then used in evaluating the deletions pattern.</param>
+        /// <param name="graphName">Name of the affected Graph.</param>
+        public DeleteCommand(GraphPattern deletions, GraphPattern where, IRefNode graphName)
+            : base(SparqlUpdateCommandType.Delete)
+        {
+            if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+
+            DeletePattern = deletions;
+            WherePattern = where;
+            WithGraphName = graphName;
+        }
         /// <summary>
         /// Creates a new DELETE command which operates on the Default Graph.
         /// </summary>
@@ -70,8 +85,8 @@ namespace VDS.RDF.Update.Commands
         {
             if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
 
-            _deletePattern = deletions;
-            _wherePattern = where;
+            DeletePattern = deletions;
+            WherePattern = where;
         }
 
         /// <summary>
@@ -79,15 +94,26 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="where">Pattern to construct Triples to delete.</param>
         /// <param name="graphUri">URI of the affected Graph.</param>
+        [Obsolete("Replaced by DeleteCommand(GraphPattern, IRefNode)")]
         public DeleteCommand(GraphPattern where, Uri graphUri)
             : this(where, where, graphUri) { }
+
+        /// <summary>
+        /// Creates a new DELETE command. 
+        /// </summary>
+        /// <param name="where">Pattern to construct Triples to delete.</param>
+        /// <param name="graphName">Name of the affected Graph.</param>
+        public DeleteCommand(GraphPattern where, IRefNode graphName)
+            : this(where, where, graphName)
+        {
+        }
 
         /// <summary>
         /// Createa a new DELETE command which operates on the Default Graph.
         /// </summary>
         /// <param name="where">Pattern to construct Triples to delete.</param>
         public DeleteCommand(GraphPattern where)
-            : this(where, where, null) { }
+            : this(where, where, (IRefNode)null) { }
 
         /// <summary>
         /// Gets whether the Command affects a single Graph.
@@ -101,10 +127,10 @@ namespace VDS.RDF.Update.Commands
                 {
                     affectedUris.Add(TargetUri.AbsoluteUri);
                 }
-                if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
-                if (_deletePattern.HasChildGraphPatterns)
+                if (DeletePattern.IsGraph) affectedUris.Add(DeletePattern.GraphSpecifier.Value);
+                if (DeletePattern.HasChildGraphPatterns)
                 {
-                    affectedUris.AddRange(from p in _deletePattern.ChildGraphPatterns
+                    affectedUris.AddRange(from p in DeletePattern.ChildGraphPatterns
                                           where p.IsGraph
                                           select p.GraphSpecifier.Value);
                 }
@@ -118,6 +144,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
             var affectedUris = new List<string>();
@@ -129,10 +156,10 @@ namespace VDS.RDF.Update.Commands
             {
                 affectedUris.Add(string.Empty);
             }
-            if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
-            if (_deletePattern.HasChildGraphPatterns)
+            if (DeletePattern.IsGraph) affectedUris.Add(DeletePattern.GraphSpecifier.Value);
+            if (DeletePattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in _deletePattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in DeletePattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
@@ -142,44 +169,62 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            var affectedUris = new List<string> {TargetGraph.ToSafeString()};
+
+            if (DeletePattern.IsGraph)
+            {
+                affectedUris.Add(DeletePattern.GraphSpecifier.Value);
+            }
+            if (DeletePattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in DeletePattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+            }
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
+
+            return affectedUris.Contains(graphName.ToSafeString());
+        }
+
+        /// <summary>
         /// Gets the URI of the Graph the deletions are made from.
         /// </summary>
+        [Obsolete("Replaced by TargetGraph")]
         public Uri TargetUri
         {
             get
             {
-                return _graphUri;
-            }
-        }
-       
-        /// <summary>
-        /// Gets the pattern used for Deletions.
-        /// </summary>
-        public GraphPattern DeletePattern
-        {
-            get
-            {
-                return _deletePattern;
+                return (WithGraphName as UriNode)?.Uri;
             }
         }
 
         /// <summary>
+        /// Gets the name of the graph the deletions are made from.
+        /// </summary>
+        public IRefNode TargetGraph => WithGraphName;
+       
+        /// <summary>
+        /// Gets the pattern used for Deletions.
+        /// </summary>
+        public GraphPattern DeletePattern { get; }
+
+        /// <summary>
         /// Gets the pattern used for the WHERE clause.
         /// </summary>
-        public GraphPattern WherePattern
-        {
-            get
-            {
-                return _wherePattern;
-            }
-        }
+        public GraphPattern WherePattern { get; }
 
         /// <summary>
         /// Optimises the Commands WHERE pattern.
         /// </summary>
         public override void Optimise(IQueryOptimiser optimiser)
         {
-            _wherePattern.Optimise(optimiser);
+            WherePattern.Optimise(optimiser);
         }
 
         /// <summary>
@@ -194,13 +239,13 @@ namespace VDS.RDF.Update.Commands
             try
             {
                 // If there is a WITH clause and no matching graph, and the delete pattern doesn't contain child graph patterns then there is nothing to do
-                if (_graphUri != null && !context.Data.HasGraph(_graphUri) && !_deletePattern.HasChildGraphPatterns)
+                if (WithGraphName != null && !context.Data.HasGraph(WithGraphName) && !DeletePattern.HasChildGraphPatterns)
                 {
                     return;
                 }
 
                 // First evaluate the WHERE pattern to get the affected bindings
-                ISparqlAlgebra where = _wherePattern.ToAlgebra();
+                ISparqlAlgebra where = WherePattern.ToAlgebra();
                 if (context.Commands != null)
                 {
                     where = context.Commands.ApplyAlgebraOptimisers(where);
@@ -211,14 +256,14 @@ namespace VDS.RDF.Update.Commands
                 // so we can save ourselves the effort of doing this
                 if (!UsingUris.Any())
                 {
-                    if (_graphUri != null)
+                    if (WithGraphName != null)
                     {
-                        context.Data.SetActiveGraph(_graphUri);
+                        context.Data.SetActiveGraph(WithGraphName);
                         defGraphOk = true;
                     }
                     else
                     {
-                        context.Data.SetActiveGraph((Uri)null);
+                        context.Data.SetActiveGraph((IRefNode)null);
                         defGraphOk = true;
                     }
                 }
@@ -263,7 +308,7 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 // Get the Graph from which we are deleting
-                IGraph g = context.Data.HasGraph(_graphUri) ? context.Data.GetModifiableGraph(_graphUri) : null;
+                IGraph g = context.Data.HasGraph(WithGraphName) ? context.Data.GetModifiableGraph(WithGraphName) : null;
 
                 // Delete the Triples for each Solution
                 foreach (ISet s in results.Sets)
@@ -276,7 +321,7 @@ namespace VDS.RDF.Update.Commands
                         try
                         {
                             var constructContext = new ConstructContext(g, s, true);
-                            foreach (IConstructTriplePattern p in _deletePattern.TriplePatterns
+                            foreach (IConstructTriplePattern p in DeletePattern.TriplePatterns
                                 .OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -300,7 +345,7 @@ namespace VDS.RDF.Update.Commands
                     }
 
                     // Triples from GRAPH clauses
-                    foreach (GraphPattern gp in _deletePattern.ChildGraphPatterns)
+                    foreach (GraphPattern gp in DeletePattern.ChildGraphPatterns)
                     {
                         deletedTriples.Clear();
                         try
@@ -395,14 +440,14 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             var output = new StringBuilder();
-            if (_graphUri != null)
+            var formatter = new SparqlFormatter();
+            if (WithGraphName != null)
             {
-                output.Append("WITH <");
-                output.Append(_graphUri.AbsoluteUri.Replace(">", "\\>"));
-                output.AppendLine(">");
+                output.Append("WITH ");
+                output.AppendLine(formatter.Format(WithGraphName));
             }
             output.AppendLine("DELETE");
-            if (!ReferenceEquals(_deletePattern, _wherePattern)) output.AppendLine(_deletePattern.ToString());
+            if (!ReferenceEquals(DeletePattern, WherePattern)) output.AppendLine(DeletePattern.ToString());
             if (_usingUris != null)
             {
                 foreach (Uri u in _usingUris)
@@ -418,7 +463,7 @@ namespace VDS.RDF.Update.Commands
                 }
             }
             output.AppendLine("WHERE");
-            output.AppendLine(_wherePattern.ToString());
+            output.AppendLine(WherePattern.ToString());
             return output.ToString();
         }
     }

@@ -41,19 +41,21 @@ namespace VDS.RDF.Dynamic
         /// Initializes a new instance of the <see cref="DynamicNode"/> class.
         /// </summary>
         /// <param name="node">The node to wrap.</param>
+        /// <param name="graph">The graph context of the dynamic node.</param>
         /// <param name="baseUri">The URI used to resolve relative predicate references.</param>
         /// <exception cref="InvalidOperationException">When <paramref name="node"/> has no graph.</exception>
         // TODO: Make sure all instantiations copy original node to appropriate host graph
-        public DynamicNode(INode node, Uri baseUri = null)
+        public DynamicNode(INode node, IGraph graph, Uri baseUri = null)
             : base(node)
         {
-            if (Graph is null)
-            {
-                throw new InvalidOperationException("Node must have graph");
-            }
-
             this.baseUri = baseUri;
+            Graph = graph;
         }
+
+        /// <summary>
+        /// Get the graph context for this dynamic node.
+        /// </summary>
+        public IGraph Graph { get; }
 
         /// <summary>
         /// Gets the URI used to resolve relative predicate references.

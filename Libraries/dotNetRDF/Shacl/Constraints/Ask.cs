@@ -53,12 +53,12 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
+        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
         {
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 let q = BindValue(query, valueNode)
-                let result = ((SparqlResultSet)focusNode.Graph.ExecuteQuery(q)).Result
+                let result = ((SparqlResultSet)dataGraph.ExecuteQuery(q)).Result
                 where !result
                 select valueNode;
 

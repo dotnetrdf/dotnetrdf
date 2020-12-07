@@ -110,7 +110,7 @@ namespace VDS.RDF.Query
                 var g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
-                _data = new InMemoryDataset(store, g.BaseUri);
+                _data = new InMemoryDataset(store, g.Name);
             }
         }
 
@@ -250,7 +250,7 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
 
             var path =
                 new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -269,7 +269,7 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
 
             var path =
                 new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -289,7 +289,7 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
 
             var path =
                 new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -309,7 +309,7 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
 
             var path =
                 new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));

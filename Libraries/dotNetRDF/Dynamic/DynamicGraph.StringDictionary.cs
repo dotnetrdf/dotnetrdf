@@ -49,7 +49,7 @@ namespace VDS.RDF.Dynamic
             {
                 return UriNodes
                     .ToDictionary(
-                        subject => subject.AsName(BaseUri),
+                        subject => subject.AsName(BaseUri, NamespaceMap),
                         subject => this[subject]);
             }
         }

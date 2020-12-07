@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new BooleanNode(null, _expr.Evaluate(context, bindingID).AsSafeBoolean());
+            return new BooleanNode(_expr.Evaluate(context, bindingID).AsSafeBoolean());
         }
 
         /// <summary>

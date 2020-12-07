@@ -58,13 +58,21 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="t">Triple.</param>
         protected abstract void Index(String graphUri, Triple t);
 
+        /// <inheritdoc/>
+        [Obsolete("Replaced by Index(IGraph, Triple)", true)]
+        public virtual void Index(Triple t)
+        {
+            Index((IGraph)null, t);
+        }
+
         /// <summary>
         /// Indexes a Triple.
         /// </summary>
+        /// <param name="g">Graph context of the triple to be indexed</param>
         /// <param name="t">Triple.</param>
-        public virtual void Index(Triple t)
+        public virtual void Index(IGraph g, Triple t)
         {
-            Index(t.GraphUri.ToSafeString(), t);
+            Index(g.Name.ToSafeString(), t);
         }
 
         /// <summary>
@@ -75,7 +83,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         {
             foreach (Triple t in g.Triples)
             {
-                Index(t);
+                Index(g, t);
             }
             Flush();
         }
@@ -86,7 +94,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="dataset">Dataset.</param>
         public virtual void Index(ISparqlDataset dataset)
         {
-            foreach (Uri u in dataset.GraphUris)
+            foreach (IRefNode u in dataset.GraphNames)
             {
                 IGraph g = dataset[u];
                 Index(g);
@@ -104,9 +112,16 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Unindexes a Triple.
         /// </summary>
         /// <param name="t">Triple.</param>
+        [Obsolete("Replaced by Unindex(IGraph, Triple). As triples no longer have a reference to a parent graph, this method should no longer be used.", true)]
         public virtual void Unindex(Triple t)
         {
-            Unindex(t.GraphUri.ToSafeString(), t);
+            Unindex(string.Empty, t);
+        }
+
+        /// <inheritdoc />
+        public virtual void Unindex(IGraph g, Triple t)
+        {
+            Unindex(g.Name.ToSafeString(), t);
         }
 
         /// <summary>
@@ -117,7 +132,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         {
             foreach (Triple t in g.Triples)
             {
-                Unindex(t);
+                Unindex(g, t);
             }
             Flush();
         }
@@ -128,7 +143,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <param name="dataset">Dataset.</param>
         public virtual void Unindex(ISparqlDataset dataset)
         {
-            foreach (Uri u in dataset.GraphUris)
+            foreach (IRefNode u in dataset.GraphNames)
             {
                 IGraph g = dataset[u];
                 Unindex(g);

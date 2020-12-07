@@ -911,13 +911,13 @@ namespace VDS.RDF.Query
                 else
                 {
                     // Just an IRIRef
-                    return new ConstantTerm(new UriNode(null, u));
+                    return new ConstantTerm(new UriNode(u));
                 }
             }
             else
             {
                 // Just an IRIRef
-                return new ConstantTerm(new UriNode(null, u));
+                return new ConstantTerm(new UriNode(u));
             }
         }
 
@@ -933,7 +933,7 @@ namespace VDS.RDF.Query
                 if (next.TokenType == Token.LANGSPEC)
                 {
                     tokens.Dequeue();
-                    return new ConstantTerm(new LiteralNode(null, str.Value, next.Value, NormalizeLiteralValues));
+                    return new ConstantTerm(new LiteralNode(str.Value, next.Value, NormalizeLiteralValues));
                 }
                 else if (next.TokenType == Token.HATHAT)
                 {
@@ -965,27 +965,27 @@ namespace VDS.RDF.Query
                         bool b;
                         if (bool.TryParse(dtlit.Value, out b))
                         {
-                            return new ConstantTerm(new BooleanNode(null, b));
+                            return new ConstantTerm(new BooleanNode(b));
                         }
                         else
                         {
-                            return new ConstantTerm(new StringNode(null, dtlit.Value, dtlit.DataType));
+                            return new ConstantTerm(new StringNode(dtlit.Value, dtlit.DataType));
                         }
                     }
                     else
                     {
                         // Just a datatyped Literal Node
-                        return new ConstantTerm(new LiteralNode(null, str.Value, u, NormalizeLiteralValues));
+                        return new ConstantTerm(new LiteralNode(str.Value, u, NormalizeLiteralValues));
                     }
                 }
                 else
                 {
-                    return new ConstantTerm(new LiteralNode(null, str.Value, NormalizeLiteralValues));
+                    return new ConstantTerm(new LiteralNode(str.Value, NormalizeLiteralValues));
                 }
             }
             else
             {
-                return new ConstantTerm(new LiteralNode(null, str.Value, NormalizeLiteralValues));
+                return new ConstantTerm(new LiteralNode(str.Value, NormalizeLiteralValues));
             }
 
         }
@@ -997,11 +997,11 @@ namespace VDS.RDF.Query
 
             if (lit.Value.Equals("true"))
             {
-                return new ConstantTerm(new BooleanNode(null, true));
+                return new ConstantTerm(new BooleanNode(true));
             }
             else if (lit.Value.Equals("false"))
             {
-                return new ConstantTerm(new BooleanNode(null, false));
+                return new ConstantTerm(new BooleanNode(false));
             }
             else
             {
@@ -1017,15 +1017,15 @@ namespace VDS.RDF.Query
                     // Use Regular Expressions to see what type it is
                     if (SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new ConstantTerm(new LongNode(null, long.Parse(literal.Value)));
+                        return new ConstantTerm(new LongNode(long.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, decimal.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
+                        return new ConstantTerm(new DecimalNode(decimal.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, double.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
+                        return new ConstantTerm(new DoubleNode(double.Parse(literal.Value, NumberStyles.Any, CultureInfo.InvariantCulture)));
                     }
                     else
                     {
@@ -1047,7 +1047,7 @@ namespace VDS.RDF.Query
                     }
 
                     // Try to return a numeric expression, enforce the need for a valid numeric value where relevant
-                    var lit = new LiteralNode(null, literal.Value, UriFactory.Create(dtUri), NormalizeLiteralValues);
+                    var lit = new LiteralNode(literal.Value, UriFactory.Create(dtUri), NormalizeLiteralValues);
                     IValuedNode value = lit.AsValuedNode();
                     if (requireValidLexicalForm && value.NumericType == SparqlNumericType.NaN)
                     {
@@ -1077,15 +1077,15 @@ namespace VDS.RDF.Query
                     // Use Regex to see if it's a Integer/Decimal/Double
                     if (SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new ConstantTerm(new LongNode(null, long.Parse(literal.Value)));
+                        return new ConstantTerm(new LongNode(long.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, decimal.Parse(literal.Value)));
+                        return new ConstantTerm(new DecimalNode(decimal.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, double.Parse(literal.Value)));
+                        return new ConstantTerm(new DoubleNode(double.Parse(literal.Value)));
                     }
                     else
                     {

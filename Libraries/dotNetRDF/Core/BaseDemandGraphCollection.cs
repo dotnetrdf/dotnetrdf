@@ -155,7 +155,7 @@ namespace VDS.RDF
             {
                 try
                 {
-                    var g = new Graph();
+                    var g = new Graph(new UriNode(graphUri));
                     ConfigurationLoader.Loader.LoadGraph(g, graphUri);
                     return g;
                 }
@@ -202,7 +202,7 @@ namespace VDS.RDF
             {
                 try
                 {
-                    var g = new Graph();
+                    var g = new Graph(new UriNode(graphUri));
                     FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
 
                     return g;

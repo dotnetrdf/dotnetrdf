@@ -68,7 +68,7 @@ namespace VDS.RDF
             Assert.True(_graphChanged, "GraphChanged event of the Triple Store should have fired");
 
             //Remove the Graph from the Store which should fire the GraphRemoved event
-            store.Remove(g.BaseUri);
+            store.Remove(g.Name);
             Assert.True(_graphRemoved, "GraphRemoved event of the Triple Store should have fired");
         }
 
@@ -92,7 +92,7 @@ namespace VDS.RDF
         {
             _graphChanged = true;
             Console.WriteLine("GraphChanged event occurred on a " + sender.GetType().Name + " instance");
-            if (args.GraphEvent != null && args.GraphEvent.TripleEvent != null)
+            if (args.GraphEvent?.TripleEvent != null)
             {
                 Console.WriteLine("  Event was a Triple Event");
                 Console.WriteLine("  " + args.GraphEvent.TripleEvent.Triple.ToString());

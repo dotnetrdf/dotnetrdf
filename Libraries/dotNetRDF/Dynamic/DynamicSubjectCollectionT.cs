@@ -38,6 +38,8 @@ namespace VDS.RDF.Dynamic
     public class DynamicSubjectCollection<T> : DynamicSubjectCollection, ICollection<T>
         where T : INode
     {
+        private readonly IGraph _graph;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicSubjectCollection{T}"/> class.
         /// </summary>
@@ -48,6 +50,7 @@ namespace VDS.RDF.Dynamic
                 predicate.AsUriNode(@object.Graph, @object.BaseUri),
                 @object)
         {
+            _graph = @object.Graph;
         }
 
         /// <summary>
@@ -103,8 +106,8 @@ namespace VDS.RDF.Dynamic
             if (type.IsSubclassOf(typeof(DynamicNode)))
             {
                 // TODO: Exception handling
-                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode) });
-                value = (DynamicNode)ctor.Invoke(new[] { value });
+                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
+                value = (DynamicNode)ctor.Invoke(new object[] { value, _graph });
             }
 
             return (T)value;

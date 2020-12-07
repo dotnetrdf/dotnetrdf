@@ -23,7 +23,7 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
 
             var processor = new LeviathanQueryProcessor(dataset);
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
 
             var processor = new LeviathanQueryProcessor(dataset);
 

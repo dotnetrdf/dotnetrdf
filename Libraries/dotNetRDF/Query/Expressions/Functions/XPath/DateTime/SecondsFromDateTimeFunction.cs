@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             var seconds = Convert.ToDecimal(dateTime.Second);
             seconds += ((decimal)dateTime.Millisecond) / 1000m;
 
-            return new DecimalNode(null, seconds);
+            return new DecimalNode(seconds);
         }
 
         /// <summary>

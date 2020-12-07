@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Builder
 
         public LiteralExpression StrDt(LiteralExpression lexicalForm, Uri datatypeIri)
         {
-            return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(null, datatypeIri)));
+            return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(datatypeIri)));
         }
 
         public LiteralExpression StrDt(LiteralExpression lexicalForm, VariableExpression datatypeIri)
@@ -171,12 +171,12 @@ namespace VDS.RDF.Query.Builder
 
         public LiteralExpression StrDt(string lexicalForm, Uri datatypeIri)
         {
-            return StrDt(lexicalForm.ToConstantTerm(), new ConstantTerm(new UriNode(null, datatypeIri)));
+            return StrDt(lexicalForm.ToConstantTerm(), new ConstantTerm(new UriNode(datatypeIri)));
         }
 
         public LiteralExpression StrDt(VariableExpression lexicalForm, Uri datatypeIri)
         {
-            return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(null, datatypeIri)));
+            return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(datatypeIri)));
         }
 
         public LiteralExpression StrDt(VariableExpression lexicalForm, VariableExpression datatypeIri)

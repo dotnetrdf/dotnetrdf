@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Spin.Model
                 Triple s = it.Current;
                 if (!RDFUtil.sameTerm(RDF.PropertyType, s.Predicate))
                 {
-                    values[Resource.Get(s.Predicate, getModel())] = Resource.Get(s.Object, getModel());
+                    values[Resource.Get(s.Predicate, Graph, getModel())] = Resource.Get(s.Object, Graph, getModel());
                 }
             }
             return values;
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Spin.Model
                 Triple s = it.Current;
                 if (s.Object is IUriNode)
                 {
-                    IResource candidate = Resource.Get(s.Object, getModel());
+                    IResource candidate = Resource.Get(s.Object, Graph, getModel());
                     if (type == null)
                     {
                         type = candidate;

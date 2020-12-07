@@ -64,6 +64,31 @@ namespace VDS.RDF
         public ThreadSafeGraph(ThreadSafeTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
+        /// <summary>
+        /// Creates a new named thread-safe graph.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        public ThreadSafeGraph(IRefNode name):
+            this(new ThreadSafeTripleCollection(new TreeIndexedTripleCollection(true))) { }
+
+        /// <summary>
+        /// Creates a new named thread-safe graph using the given triple collection.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="tripleCollection">The triple collection that the graph contains.</param>
+        /// <remarks><paramref name="tripleCollection"/> will be wrapped as a <see cref="ThreadSafeTripleCollection"/> by this constructor.</remarks>
+        public ThreadSafeGraph(IRefNode name, BaseTripleCollection tripleCollection)
+            : this(name, new ThreadSafeTripleCollection(tripleCollection)){ }
+
+        /// <summary>
+        /// Creates a new named thread-safe graph using a thread-safe triple collection.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="tripleCollection">The thread-safe triple collection that the graph contains.</param>
+        public ThreadSafeGraph(IRefNode name, ThreadSafeTripleCollection tripleCollection)
+            :base(name, tripleCollection){ }
+
+
         #region Triple Assertion and Retraction
 
         /// <summary>

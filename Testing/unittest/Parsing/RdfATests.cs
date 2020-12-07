@@ -52,14 +52,14 @@ namespace VDS.RDF.Parsing
             };
 
             FileLoader.Warning += TestTools.WarningPrinter;
-
+            var testGraphName = new UriNode(new Uri("http://example.org/goodrelations"));
             foreach (var test in tests)
             {
-                var g = new Graph
+                var g = new Graph(testGraphName)
                 {
                     BaseUri = new Uri("http://example.org/goodrelations")
                 };
-                var h = new Graph
+                var h = new Graph(testGraphName)
                 {
                     BaseUri = g.BaseUri
                 };

@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         public PiFunction()
         {
-            _node = new DoubleNode(null, Math.PI);
+            _node = new DoubleNode(Math.PI);
         }
 
         /// <summary>

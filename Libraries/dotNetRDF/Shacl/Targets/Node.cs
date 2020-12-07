@@ -39,7 +39,7 @@ namespace VDS.RDF.Shacl.Targets
 
         internal override IEnumerable<INode> SelectFocusNodes(IGraph dataGragh)
         {
-            return this.CopyNode(dataGragh).AsEnumerable();
+            return this.AsEnumerable();
         }
     }
 }

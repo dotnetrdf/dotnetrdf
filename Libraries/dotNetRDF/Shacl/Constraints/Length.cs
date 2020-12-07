@@ -41,11 +41,11 @@ namespace VDS.RDF.Shacl.Constraints
         {
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
-                where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(valueNode).CompareTo(NumericValue))
+                where valueNode.NodeType == NodeType.Blank || !ValidateInternal(SparqlLength(dataGraph, valueNode).CompareTo(NumericValue))
                 select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);
@@ -53,14 +53,14 @@ namespace VDS.RDF.Shacl.Constraints
 
         protected abstract bool ValidateInternal(int comparison);
 
-        private static int SparqlLength(INode node)
+        private static int SparqlLength(IGraph dataGraph, INode node)
         {
             var query = new SparqlParameterizedString(@"
 SELECT (STRLEN(STR($value)) AS ?length) {}
 ");
             query.SetVariable("value", node);
 
-            return (int)((SparqlResultSet)node.Graph.ExecuteQuery(query)).Single()["length"].AsValuedNode().AsInteger();
+            return (int)((SparqlResultSet)dataGraph.ExecuteQuery(query)).Single()["length"].AsValuedNode().AsInteger();
         }
     }
 }

@@ -39,8 +39,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
-        protected internal NonNormalizedLiteralNode(IGraph g, string literal)
-            : base(g, literal, false) { }
+        protected internal NonNormalizedLiteralNode(string literal)
+            : base(literal, false) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
@@ -48,8 +48,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="langspec">Language Specifier for the Literal.</param>
-        protected internal NonNormalizedLiteralNode(IGraph g, string literal, string langspec)
-            : base(g, literal, langspec, false) { }
+        protected internal NonNormalizedLiteralNode(string literal, string langspec)
+            : base(literal, langspec, false) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
@@ -57,8 +57,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">Uri for the Literals Data Type.</param>
-        protected internal NonNormalizedLiteralNode(IGraph g, string literal, Uri datatype)
-            : base(g, literal, datatype, false) { }
+        protected internal NonNormalizedLiteralNode(string literal, Uri datatype)
+            : base(literal, datatype, false) { }
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes.

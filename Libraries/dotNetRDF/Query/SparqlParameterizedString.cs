@@ -441,7 +441,7 @@ namespace VDS.RDF.Query
         public void SetLiteral(string name, string value, bool normalizeValue)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");
-            SetParameter(name, new LiteralNode(_g, value, normalizeValue));
+            SetParameter(name, new LiteralNode(value, normalizeValue));
         }
 
         /// <summary>
@@ -454,7 +454,7 @@ namespace VDS.RDF.Query
         public void SetLiteral(string name, string value, Uri datatype, bool normalizeLiteralValue)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");
-            SetParameter(name, datatype == null ? new LiteralNode(_g, value, normalizeLiteralValue) : new LiteralNode(_g, value, datatype, normalizeLiteralValue));
+            SetParameter(name, datatype == null ? new LiteralNode(value, normalizeLiteralValue) : new LiteralNode(value, datatype, normalizeLiteralValue));
         }
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace VDS.RDF.Query
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a Literal to be null");
             if (lang == null) throw new ArgumentNullException(nameof(lang), "Cannot set a Literal to have a null Language");
-            SetParameter(name, new LiteralNode(_g, value, lang, normalizeLiteralValue));
+            SetParameter(name, new LiteralNode(value, lang, normalizeLiteralValue));
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace VDS.RDF.Query
         public void SetUri(string name, Uri value)
         {
             if (value == null) throw new ArgumentNullException(nameof(value), "Cannot set a URI to be null");
-            SetParameter(name, new UriNode(_g, value));
+            SetParameter(name, new UriNode(value));
         }
 
         /// <summary>

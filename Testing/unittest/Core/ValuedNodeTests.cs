@@ -136,28 +136,28 @@ namespace VDS.RDF
         [MemberData(nameof(GetTestCultures))]
         public void ShouldApplyInvariantFormattingToDecimalLiteralStringRegardlessOfCulture(CultureInfo ci)
         {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", ()=>new DecimalNode(_graph, 3.4m)));
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", ()=>new DecimalNode(3.4m)));
         }
 
         [Theory]
         [MemberData(nameof(GetTestCultures))]
         public void ShouldApplyInvariantFormattingToDoubleLiteralStringRegardlessOfCulture(CultureInfo ci)
         {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new DoubleNode(_graph, 3.4d)));
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new DoubleNode(3.4d)));
         }
 
         [Theory]
         [MemberData(nameof(GetTestCultures))]
         public void ShouldApplyInvariantFormattingToFloatLiteralStringRegardlessOfCulture(CultureInfo ci)
         {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new FloatNode(_graph, 3.4f)));
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3.4", () => new FloatNode(3.4f)));
         }
 
         [Theory]
         [MemberData(nameof(GetTestCultures))]
         public void ShouldApplyInvariantFormattingToLongLiteralStringRegardlessOfCulture(CultureInfo ci)
         {
-            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3400000", () => new LongNode(_graph, 3400000L)));
+            TestTools.ExecuteWithChangedCulture(ci, () => AssertLiteralString("3400000", () => new LongNode(3400000L)));
         }
 
         private void AssertLiteralString(string expectLiteral, Func<IValuedNode> constructor)

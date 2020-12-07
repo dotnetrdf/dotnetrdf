@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Spin.Model
                         if (Aggregations.getName((IResource)type) != null)
                         {
                             it.Dispose();
-                            return new AggregationImpl(resource, resource.getModel());
+                            return new AggregationImpl(resource, resource.Graph, resource.getModel());
                         }
                     }
                 }
@@ -533,7 +533,7 @@ namespace VDS.RDF.Query.Spin.Model
             }
             else
             {
-                return (IElementList)Resource.Get(RDF.Nil, model).As(typeof(ElementListImpl));
+                return (IElementList)Resource.Get(RDF.Nil, null, model).As(typeof(ElementListImpl));
             }
         }
 
@@ -553,7 +553,7 @@ namespace VDS.RDF.Query.Spin.Model
             }
             else
             {
-                return (IElementList)Resource.Get(RDF.Nil, model).As(typeof(ElementListImpl));
+                return (IElementList)Resource.Get(RDF.Nil, null, model).As(typeof(ElementListImpl));
             }
         }
 
@@ -759,7 +759,7 @@ namespace VDS.RDF.Query.Spin.Model
             var vars = new List<IResource>();
             foreach (var varName in data.Variables)
             {
-                vars.Add(Resource.Get(RDFUtil.CreateLiteralNode(varName), model));
+                vars.Add(Resource.Get(RDFUtil.CreateLiteralNode(varName), null, model));
             }
             IResource varList = model.CreateList(vars.GetEnumerator());
             values.AddProperty(SP.PropertyVarNames, varList);
@@ -777,11 +777,11 @@ namespace VDS.RDF.Query.Spin.Model
                         INode value = binding.Value(varName);
                         if (value == null)
                         {
-                            nodes.Add(Resource.Get(SP.ClassPropertyUndef, model));
+                            nodes.Add(Resource.Get(SP.ClassPropertyUndef, null, model));
                         }
                         else
                         {
-                            nodes.Add(Resource.Get(value, model));
+                            nodes.Add(Resource.Get(value, null, model));
                         }
                     }
                     lists.Add(model.CreateList(nodes.GetEnumerator()));
@@ -819,7 +819,7 @@ namespace VDS.RDF.Query.Spin.Model
             IEnumerator<Triple> it = cls.listProperties(SPIN.PropertyConstraint).GetEnumerator();
             while (it.MoveNext())
             {
-                IResource obj = Resource.Get(it.Current.Object, cls.getModel());
+                IResource obj = Resource.Get(it.Current.Object, cls.Graph, cls.getModel());
                 if (obj is INode && ((IResource)obj).hasProperty(RDF.PropertyType, SPL.ClassAttribute))
                 {
                     var a = (IAttribute)obj.As(typeof(AttributeImpl));

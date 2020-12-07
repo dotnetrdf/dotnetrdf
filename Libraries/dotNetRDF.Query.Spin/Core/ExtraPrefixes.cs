@@ -80,10 +80,9 @@ namespace VDS.RDF.Query.Spin.Core
          */
         public static void Add(IResource resource)
         {
-            if (!resource.isUri() || resource.getSource().Graph == null) return;
-            INamespaceMapper mapper = resource.getSource().Graph.NamespaceMap;
-            String prefix;
-            if (mapper.ReduceToQName(resource.Uri.ToString(), out prefix))
+            if (!resource.isUri() || resource.Graph == null) return;
+            INamespaceMapper mapper = resource.Graph.NamespaceMap;
+            if (mapper.ReduceToQName(resource.Uri.ToString(), out var prefix))
             {
                 prefix = prefix.Split(':')[0];
                 map.AddNamespace(prefix, mapper.GetNamespaceUri(prefix));

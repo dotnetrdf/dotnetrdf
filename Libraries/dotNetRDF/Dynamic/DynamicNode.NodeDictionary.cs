@@ -261,9 +261,9 @@ namespace VDS.RDF.Dynamic
                 if (@object != null)
                 {
                     yield return new Triple(
-                        this.CopyNode(predicate.Graph),
+                        this,
                         predicate,
-                        @object.AsNode(predicate.Graph));
+                        @object.AsNode(Graph));
                 }
             }
         }

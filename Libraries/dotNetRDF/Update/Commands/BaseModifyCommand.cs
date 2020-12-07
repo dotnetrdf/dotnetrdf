@@ -38,10 +38,6 @@ namespace VDS.RDF.Update.Commands
         : SparqlUpdateCommand
     {
         /// <summary>
-        /// URI from the WITH statement.
-        /// </summary>
-        protected Uri _graphUri;
-        /// <summary>
         /// URIs for the USING clauses.
         /// </summary>
         protected List<Uri> _usingUris;
@@ -96,17 +92,23 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the URI of the Graph specified in the WITH clause.
         /// </summary>
+        [Obsolete("Replaced by WithGraphName")]
         public Uri GraphUri
         {
             get
             {
-                return _graphUri;
+                return (WithGraphName as IUriNode)?.Uri;
             }
             internal set
             {
-                _graphUri = value;
+                WithGraphName = new UriNode(value);
             }
         }
+
+        /// <summary>
+        /// The name of the graph specified in the WITH clause.
+        /// </summary>
+        public IRefNode WithGraphName { get; protected internal set; }
 
         /// <summary>
         /// Adds a new USING URI.

@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Model
                 if (uri != null)
                 {
                     p.print(" ");
-                    p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(uri), getModel()));
+                    p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(uri), Graph, getModel()));
                 }
             }
             printNestedElementList(p);

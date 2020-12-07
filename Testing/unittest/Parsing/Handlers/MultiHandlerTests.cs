@@ -173,21 +173,5 @@ namespace VDS.RDF.Parsing.Handlers
             var parser = new TurtleParser();
             parser.Load(handler, "multi_handler_tests_temp.ttl");
         }
-
-        [Fact]
-        public void ParsingMultiHandlerGraphWithFactory()
-        {
-            EnsureTestData();
-
-            var g = new Graph();
-            var h = new GraphHandler(g);
-
-            var handler = new MultiHandler(new IRdfHandler[] { h }, g);
-
-            var parser = new TurtleParser();
-            parser.Load(handler, "multi_handler_tests_temp.ttl");
-
-            Assert.Same(g, g.Triples.First().Graph);
-        }
     }
 }

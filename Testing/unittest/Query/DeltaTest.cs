@@ -25,11 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using System.Linq;
 using Xunit;
-using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Query
 {
@@ -59,6 +56,9 @@ namespace VDS.RDF.Query
 <http://r2> <http://r2> <http://r2> .
 ";
 
+        private const string TestData5 = @"
+<http://r2> <http://r2> <http://r2> .
+";
 
         private const string MinusQuery = @"
 SELECT *
@@ -121,20 +121,15 @@ WHERE
 }
 ";
 
-        private void TestQuery(IInMemoryQueryableStore store, String query, String queryName, int differences)
+        private void TestQuery(IInMemoryQueryableStore store, string query, int differences)
         {
-            Console.WriteLine(queryName);
             SparqlQuery q = _sparqlParser.ParseFromString(query);
-            Console.WriteLine(q.ToAlgebra().ToString());
-
             var processor = new LeviathanQueryProcessor(store);
             using (var resultSet = processor.ProcessQuery(q) as SparqlResultSet)
             {
                 Assert.NotNull(resultSet);
-                TestTools.ShowResults(resultSet);
                 Assert.Equal(differences, resultSet.Count);
             }
-            Console.WriteLine();
         }
 
         private void TestDeltas(IGraph a, IGraph b, int differences)
@@ -146,89 +141,32 @@ WHERE
             store.Add(a);
             store.Add(b);
 
-            TestQuery(store, MinusQuery, "Minus", differences);
-            TestQuery(store, OptionalSameTermQuery1, "OptionalSameTerm1", differences);
-            TestQuery(store, OptionalSameTermQuery2, "OptionalSameTerm2", differences);
-            TestQuery(store, NotExistsQuery, "NotExists", differences);
+            TestQuery(store, MinusQuery, differences);
+            TestQuery(store, OptionalSameTermQuery1, differences);
+            TestQuery(store, OptionalSameTermQuery2, differences);
+            TestQuery(store, NotExistsQuery, differences);
         }
 
-        [Fact]
-        public void SparqlGraphDeltas1()
+        [Theory]
+        [InlineData(TestData, TestData, 0)]
+        [InlineData(TestData, TestData2, 0)]
+        [InlineData(TestData2, TestData, 1)]
+        [InlineData(TestData, TestData5, 1)]
+        [InlineData(TestData5, TestData, 0)]
+        [InlineData(TestData, null, 2)]
+        [InlineData(null, TestData, 0)]
+        [InlineData(TestData3, TestData, 2)]
+        [InlineData(TestData, TestData3, 0)]
+        [InlineData(TestData4, TestData, 6)]
+        [InlineData(TestData, TestData4, 0)]
+        public void SparqlGraphDeltas(string graphAData, string graphBData, int difference)
         {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            _parser.Load(a, new StringReader(TestData));
-            _parser.Load(b, new StringReader(TestData));
-
-            TestDeltas(a, b, 0);
-            TestDeltas(b, a, 0);
+            IGraph a = new Graph(new UriNode(new Uri("http://a")));
+            IGraph b = new Graph(new UriNode(new Uri("http://b")));
+            if (graphAData != null) _parser.Load(a, new StringReader(graphAData));
+            if (graphBData != null) _parser.Load(b, new StringReader(graphBData));
+            TestDeltas(a, b, difference);
         }
 
-        [Fact]
-        public void SparqlGraphDeltas2()
-        {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            _parser.Load(a, new StringReader(TestData));
-            _parser.Load(b, new StringReader(TestData2));
-
-            TestDeltas(a, b, 0);
-            TestDeltas(b, a, 1);
-        }
-
-        [Fact]
-        public void SparqlGraphDeltas3()
-        {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            _parser.Load(a, new StringReader(TestData));
-            _parser.Load(b, new StringReader(TestData));
-            b.Retract(b.GetTriplesWithSubject(new Uri("http://r1")).ToList());
-
-            TestDeltas(a, b, 1);
-            TestDeltas(b, a, 0);
-            // TODO This should pass
-        }
-
-        [Fact]
-        public void SparqlGraphDeltas4()
-        {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            _parser.Load(a, new StringReader(TestData));
-
-            TestDeltas(a, b, 2);
-            TestDeltas(b, a, 0);
-        }
-
-        [Fact]
-        public void SparqlGraphDeltas5()
-        {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            _parser.Load(a, new StringReader(TestData3));
-            _parser.Load(b, new StringReader(TestData));
-
-            TestDeltas(a, b, 2);
-            TestDeltas(b, a, 0);
-        }
-
-        [Fact]
-        public void SparqlGraphDeltas6()
-        {
-            IGraph a = new Graph();
-            IGraph b = new Graph();
-
-            _parser.Load(a, new StringReader(TestData4));
-            _parser.Load(b, new StringReader(TestData));
-
-            TestDeltas(a, b, 6);
-            TestDeltas(b, a, 0);
-        }
     }
 }

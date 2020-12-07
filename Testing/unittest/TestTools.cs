@@ -106,13 +106,12 @@ namespace VDS.RDF
         public static void ShowResults(Object results, ITestOutputHelper output = null)
         {
             if (output == null) return;
-            if (results is IGraph)
+            if (results is IGraph graph)
             {
-                ShowGraph((IGraph) results);
+                ShowGraph(graph);
             }
-            else if (results is SparqlResultSet)
+            else if (results is SparqlResultSet resultSet)
             {
-                var resultSet = (SparqlResultSet) results;
                 output.WriteLine("Result: " + resultSet.Result);
                 output.WriteLine(resultSet.Results.Count + " Results");
                 foreach (SparqlResult r in resultSet.Results)
@@ -172,9 +171,40 @@ namespace VDS.RDF
             }
         }
 
+        public static void ShowGraph(IGraph g, ITestOutputHelper _output)
+        {
+            try
+            {
+                if (g.BaseUri != null)
+                {
+                    _output.WriteLine("Graph Name: " + g.Name.ToString());
+                }
+                else
+                {
+                    _output.WriteLine("Graph Name: NULL");
+                }
+                _output.WriteLine(g.Triples.Count + " Triples");
+                var formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples.ToList())
+                {
+                    _output.WriteLine(t.ToString(formatter));
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Weird error that happens on the AppVeyor CI build
+                _output.WriteLine("ArgumentOutOfRangeException raised while formatting RDF graph");
+            }
+        }
+
         public static void ShowDifferences(GraphDiffReport report)
         {
             ShowDifferences(report, "1st Graph", "2nd Graph");
+        }
+
+        public static void ShowDifferences(GraphDiffReport report, ITestOutputHelper output)
+        {
+            ShowDifferences(report, "1st Graph", "2nd Graph", output);
         }
 
         public static void ShowDifferences(GraphDiffReport report, String lhsName, String rhsName)
@@ -240,6 +270,73 @@ namespace VDS.RDF
                             Console.WriteLine(t.ToString(formatter));
                         }
                         Console.WriteLine();
+                    }
+                }
+            }
+        }
+        public static void ShowDifferences(GraphDiffReport report, String lhsName, String rhsName, ITestOutputHelper output)
+        {
+            var formatter = new NTriplesFormatter();
+            lhsName = String.IsNullOrEmpty(lhsName) ? "1st Graph" : lhsName;
+            rhsName = String.IsNullOrEmpty(rhsName) ? "2nd Graph" : rhsName;
+
+            if (report.AreEqual)
+            {
+                output.WriteLine("Graphs are Equal");
+                output.WriteLine();
+                output.WriteLine("Blank Node Mapping between Graphs:");
+                foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+                {
+                    output.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
+                }
+            }
+            else
+            {
+                output.WriteLine("Graphs are non-equal");
+                output.WriteLine();
+                output.WriteLine("Triples added to " + lhsName + " to give " + rhsName + ":");
+                foreach (Triple t in report.AddedTriples)
+                {
+                    output.WriteLine(t.ToString(formatter));
+                }
+                output.WriteLine();
+                output.WriteLine("Triples removed from " + lhsName + " to give " + rhsName + ":");
+                foreach (Triple t in report.RemovedTriples)
+                {
+                    output.WriteLine(t.ToString(formatter));
+                }
+                output.WriteLine();
+                output.WriteLine("Blank Node Mapping between Graphs:");
+                foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+                {
+                    output.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
+                }
+                output.WriteLine();
+                if (report.AddedMSGs.Any())
+                {
+                    output.WriteLine("MSGs added to " + lhsName + " to give " + rhsName + ":");
+                    foreach (IGraph msg in report.AddedMSGs)
+                    {
+                        output.WriteLine(msg.Triples.Count + " Triple(s):");
+                        foreach (Triple t in msg.Triples)
+                        {
+                            output.WriteLine(t.ToString(formatter));
+                        }
+                        output.WriteLine();
+                    }
+                    output.WriteLine();
+                }
+                if (report.RemovedMSGs.Any())
+                {
+                    output.WriteLine("MSGs removed from " + lhsName + " to give " + rhsName + ":");
+                    foreach (IGraph msg in report.RemovedMSGs)
+                    {
+                        output.WriteLine(msg.Triples.Count + " Triple(s):");
+                        foreach (Triple t in msg.Triples)
+                        {
+                            output.WriteLine(t.ToString(formatter));
+                        }
+                        output.WriteLine();
                     }
                 }
             }

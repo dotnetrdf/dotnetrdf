@@ -65,8 +65,8 @@ namespace VDS.RDF.Shacl.Validation
             get
             {
                 return
-                    from result in Vocabulary.Result.ObjectsOf(report)
-                    select Result.Parse(result);
+                    from result in Vocabulary.Result.ObjectsOf(report, report.Graph)
+                    select Result.Parse(report.Graph, result);
             }
         }
 

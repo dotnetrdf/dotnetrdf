@@ -433,6 +433,20 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public virtual IEnumerable<string> ListGraphNames()
+        {
+            throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
+        }
+
+        /// <summary>
         /// Loads a Graph from the Protocol Server.
         /// </summary>
         /// <param name="g">Graph to load into.</param>

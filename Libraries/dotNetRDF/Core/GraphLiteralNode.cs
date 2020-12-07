@@ -35,19 +35,16 @@ namespace VDS.RDF
         : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
     {
         /// <summary>
-        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph.
+        /// Creates a new graph literal node whose value is an empty sub-graph.
         /// </summary>
-        /// <param name="g">Graph this node is in.</param>
-        protected internal GraphLiteralNode(IGraph g)
-            : base(g) { }
+        protected internal GraphLiteralNode() {}
 
         /// <summary>
-        /// Creates a new Graph Literal Node whose value is an empty Subgraph.
+        /// Creates a new Graph Literal Node whose value is the specified sub-graph.
         /// </summary>
-        /// <param name="g">Graph this node is in.</param>
-        /// <param name="subgraph">Sub-graph this node represents.</param>
-        protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
-            : base(g, subgraph) { }
+        /// <param name="subGraph">Sub-graph this node represents.</param>
+        protected internal GraphLiteralNode(IGraph subGraph)
+            : base(subGraph) { }
 
         /// <summary>
         /// Implementation of Compare To for Graph Literal Nodes.

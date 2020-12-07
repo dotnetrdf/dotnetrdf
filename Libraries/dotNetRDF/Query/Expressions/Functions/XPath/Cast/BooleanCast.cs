@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             bool b;
                             if (bool.TryParse(lit.Value, out b))
                             {
-                                return new BooleanNode(lit.Graph, b);
+                                return new BooleanNode(b);
                             }
                             else
                             {
@@ -103,11 +103,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 {
                                     if (dec.Equals(decimal.Zero))
                                     {
-                                        return new BooleanNode(lit.Graph, false);
+                                        return new BooleanNode(false);
                                     }
                                     else
                                     {
-                                        return new BooleanNode(lit.Graph, true);
+                                        return new BooleanNode(true);
                                     }
                                 }
                                 else
@@ -121,11 +121,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 {
                                     if (double.IsNaN(dbl) || dbl == 0.0d)
                                     {
-                                        return new BooleanNode(lit.Graph, false);
+                                        return new BooleanNode( false);
                                     }
                                     else
                                     {
-                                        return new BooleanNode(lit.Graph, true);
+                                        return new BooleanNode(true);
                                     }
                                 }
                                 else
@@ -139,11 +139,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 {
                                     if (i == 0)
                                     {
-                                        return new BooleanNode(lit.Graph, false);
+                                        return new BooleanNode(false);
                                     }
                                     else
                                     {
-                                        return new BooleanNode(lit.Graph, true);
+                                        return new BooleanNode( true);
                                     }
                                 }
                                 else
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     bool b;
                                     if (bool.TryParse(lit.Value, out b))
                                     {
-                                        return new BooleanNode(lit.Graph, b);
+                                        return new BooleanNode(b);
                                     }
                                     else
                                     {
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         bool b;
                         if (bool.TryParse(lit.Value, out b))
                         {
-                            return new BooleanNode(lit.Graph, b);
+                            return new BooleanNode(b);
                         }
                         else
                         {

@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF.Storage.Management;
@@ -127,7 +126,19 @@ namespace VDS.RDF.Storage
         /// Lists the Graphs in the Store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames")]
         public abstract IEnumerable<Uri> ListGraphs();
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public abstract IEnumerable<string> ListGraphNames();
 
         /// <summary>
         /// Indicates whether the Store is ready to accept requests.
@@ -337,9 +348,9 @@ namespace VDS.RDF.Storage
         /// <inheritdoc />
         public async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
         {
-            IEnumerable<Uri> graphUris = await Task.Run(ListGraphs, cancellationToken);
+            IEnumerable<string> graphUris = await Task.Run(ListGraphNames, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
-            return graphUris.Select(u => u?.AbsoluteUri);
+            return graphUris;
         }
     }
 }

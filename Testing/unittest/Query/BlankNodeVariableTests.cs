@@ -54,7 +54,7 @@ namespace VDS.RDF.Query
             }
             if (_processor == null)
             {
-                _processor = new LeviathanQueryProcessor(new InMemoryDataset(_data, _data.Graphs.First().BaseUri));
+                _processor = new LeviathanQueryProcessor(new InMemoryDataset(_data, _data.Graphs.First().Name));
             }
         }
 

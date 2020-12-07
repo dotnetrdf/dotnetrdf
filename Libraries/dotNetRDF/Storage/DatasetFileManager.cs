@@ -42,9 +42,8 @@ namespace VDS.RDF.Storage
     public class DatasetFileManager 
         : BaseAsyncSafeConnector, IQueryableStorage, IConfigurationSerializable
     {
-        private TripleStore _store = new TripleStore();
-        private bool _ready = false;
-        private string _filename;
+        private readonly TripleStore _store = new TripleStore();
+        private bool _ready;
 
         /// <summary>
         /// Creates a new Dataset File Manager.
@@ -54,7 +53,7 @@ namespace VDS.RDF.Storage
         public DatasetFileManager(string filename, bool isAsync)
         {
             if (!File.Exists(filename)) throw new RdfStorageException("Cannot connect to a Dataset File that doesn't exist");
-            _filename = filename;
+            SourceFile = filename;
 
             if (isAsync)
             {
@@ -132,16 +131,17 @@ namespace VDS.RDF.Storage
         public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
+            var graphName = new UriNode(graphUri);
             if (graphUri == null)
             {
-                if (_store.HasGraph(graphUri))
+                if (_store.HasGraph(graphName))
                 {
-                    g = _store[graphUri];
+                    g = _store[graphName];
                 }
             }
-            else if (_store.HasGraph(graphUri))
+            else if (_store.HasGraph(graphName))
             {
-                g = _store[graphUri];
+                g = _store[graphName];
             }
 
             if (g == null) return;
@@ -293,9 +293,35 @@ namespace VDS.RDF.Storage
         /// Gets the list of URIs of Graphs in the Store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames")]
         public override IEnumerable<Uri> ListGraphs()
         {
             return _store.Graphs.GraphUris;
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public override IEnumerable<string> ListGraphNames()
+        {
+            foreach (IRefNode name in _store.Graphs.GraphNames)
+            {
+                switch (name.NodeType)
+                {
+                    case NodeType.Uri:
+                        yield return ((IUriNode)name).Uri.AbsoluteUri;
+                        break;
+                    case NodeType.Blank:
+                        yield return "_:" + ((IBlankNode)name).InternalID;
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -313,13 +339,7 @@ namespace VDS.RDF.Storage
         /// Gets the Source File this manager represents a read-only view of.
         /// </summary>
         [Description("The Source File from which the dataset originates")]
-        public string SourceFile
-        {
-            get
-            {
-                return _filename;
-            }
-        }
+        public string SourceFile { get; }
 
         /// <summary>
         /// Gets the String representation of the Connection.
@@ -327,7 +347,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Dataset File] " + _filename;
+            return "[Dataset File] " + SourceFile;
         }
 
 
@@ -355,7 +375,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, file, context.Graph.CreateLiteralNode(_filename)));
+            context.Graph.Assert(new Triple(manager, file, context.Graph.CreateLiteralNode(SourceFile)));
         }
     }
 }

@@ -43,11 +43,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new decimal valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Decimal value.</param>
         /// <param name="lexicalValue">Lexical value.</param>
-        public DecimalNode(IGraph g, decimal value, string lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
+        public DecimalNode(decimal value, string lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
         {
             _value = value;
         }
@@ -55,10 +54,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new decimal valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Decimal value.</param>
-        public DecimalNode(IGraph g, decimal value)
-            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
+        public DecimalNode(decimal value)
+            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the integer value of the decimal.

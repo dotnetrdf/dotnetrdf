@@ -80,13 +80,13 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             Constraint validator = Validator;
 
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
-                where !validator.Validate(focusNode, valueNode.AsEnumerable(), null)
+                where !validator.Validate(dataGraph, focusNode, valueNode.AsEnumerable(), null)
                 select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);

@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                     if (_expr.Evaluate(context, id).AsSafeBoolean())
                     {
                         // As soon as we see a true we can return false
-                        return new BooleanNode(null, false);
+                        return new BooleanNode(false);
                     }
                 }
                 catch (RdfQueryException)
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             }
 
             // If everything is false then we return true;
-            return new BooleanNode(null, true);
+            return new BooleanNode(true);
         }
 
         /// <summary>

@@ -67,15 +67,15 @@ namespace VDS.RDF.Query.Operators.Numeric
                         var d = Divide(ns.Select(n => n.AsDecimal()));
                         if (decimal.Floor(d).Equals(d) && d >= long.MinValue && d <= long.MaxValue)
                         {
-                            return new LongNode(null, Convert.ToInt64(d));
+                            return new LongNode(Convert.ToInt64(d));
                         }
-                        return new DecimalNode(null, d);
+                        return new DecimalNode(d);
                     case SparqlNumericType.Float:
-                        return new FloatNode(null, Divide(ns.Select(n => n.AsFloat())));
+                        return new FloatNode(Divide(ns.Select(n => n.AsFloat())));
                     case SparqlNumericType.Double:
-                        return new DoubleNode(null, Divide(ns.Select(n => n.AsDouble())));
+                        return new DoubleNode(Divide(ns.Select(n => n.AsDouble())));
                     default:
-                        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                        throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
                 }
             }
             catch (DivideByZeroException)

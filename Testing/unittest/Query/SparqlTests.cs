@@ -82,9 +82,8 @@ namespace VDS.RDF.Query
             var data = @"<http://s> <http://p> <http://o> .
 <http://x> <http://y> <http://z> .";
 
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example/graph")));
             g.LoadFromString(data, new NTriplesParser());
-            g.BaseUri = new Uri("http://example/graph");
 
             var results = g.ExecuteQuery("ASK WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
             Assert.NotNull(results);
@@ -98,9 +97,8 @@ namespace VDS.RDF.Query
             var data = @"<http://s> <http://p> <http://o> .
 <http://x> <http://y> <http://z> .";
 
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example/graph")));
             g.LoadFromString(data, new NTriplesParser());
-            g.BaseUri = new Uri("http://example/graph");
 
             var results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
             Assert.NotNull(results);
@@ -451,7 +449,7 @@ WHERE
             object results = processor.ProcessQuery(query);
         }
 
-        private readonly String[] _langSpecCaseQueries = new string[]
+        private readonly string[] _langSpecCaseQueries =
                 {
                     @"SELECT * WHERE { ?s ?p 'example'@en-gb }",
                     @"SELECT * WHERE { ?s ?p 'example'@en-GB }",

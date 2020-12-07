@@ -44,12 +44,21 @@ namespace VDS.RDF
         /// </summary>
         public Graph() { }
 
+        public Graph(IRefNode name) : base(name)
+        {
+        }
+
         /// <summary>
         /// Creates a new instance of a Graph with an optionally empty Namespace Map.
         /// </summary>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty.</param>
         public Graph(bool emptyNamespaceMap)
             : this()
+        {
+            if (emptyNamespaceMap) _nsmapper.Clear();
+        }
+
+        public Graph(IRefNode name, bool emptyNamespaceMap) : base(name)
         {
             if (emptyNamespaceMap) _nsmapper.Clear();
         }
@@ -61,6 +70,10 @@ namespace VDS.RDF
         public Graph(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
+
+        public Graph(IRefNode name, BaseTripleCollection tripleCollection) 
+            : base(tripleCollection, name) { }
+
         /// <summary>
         /// Creates a new instance of a Graph using the given Triple Collection and an optionally empty Namespace Map.
         /// </summary>
@@ -68,6 +81,12 @@ namespace VDS.RDF
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty.</param>
         public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
+        {
+            if (emptyNamespaceMap) _nsmapper.Clear();
+        }
+
+        public Graph(IRefNode name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) : base(
+            tripleCollection, name)
         {
             if (emptyNamespaceMap) _nsmapper.Clear();
         }
@@ -145,17 +164,17 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists.</returns>
         public override IUriNode GetUriNode(Uri uri)
         {
-            return GetNode<IUriNode>(new UriNode(this, uri));
+            return GetNode<IUriNode>(new UriNode(uri));
         }
 
         /// <summary>
         /// Returns the UriNode with the given QName if it exists.
         /// </summary>
-        /// <param name="qname">The QName of the Node to select.</param>
+        /// <param name="qName">The QName of the Node to select.</param>
         /// <returns></returns>
-        public override IUriNode GetUriNode(string qname)
+        public override IUriNode GetUriNode(string qName)
         {
-            return GetNode<IUriNode>(new UriNode(this, qname));
+            return GetNode<IUriNode>(new UriNode(ResolveQName(qName)));
         }
 
         /// <summary>
@@ -166,18 +185,18 @@ namespace VDS.RDF
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set.</remarks>
         public override ILiteralNode GetLiteralNode(string literal)
         {
-            return GetNode<ILiteralNode>(new LiteralNode(this, literal, NormalizeLiteralValues));
+            return GetNode<ILiteralNode>(new LiteralNode(literal, NormalizeLiteralValues));
         }
 
         /// <summary>
         /// Returns the LiteralNode with the given Value in the given Language if it exists.
         /// </summary>
         /// <param name="literal">The literal value of the Node to select.</param>
-        /// <param name="langspec">The Language Specifier for the Node to select.</param>
+        /// <param name="langSpec">The Language Specifier for the Node to select.</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists.</returns>
-        public override ILiteralNode GetLiteralNode(string literal, string langspec)
+        public override ILiteralNode GetLiteralNode(string literal, string langSpec)
         {
-            return GetNode<ILiteralNode>(new LiteralNode(this, literal, langspec, NormalizeLiteralValues));
+            return GetNode<ILiteralNode>(new LiteralNode(literal, langSpec, NormalizeLiteralValues));
         }
 
         /// <summary>
@@ -188,7 +207,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists.</returns>
         public override ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            return GetNode<ILiteralNode>(new LiteralNode(this, literal, datatype, NormalizeLiteralValues));
+            return GetNode<ILiteralNode>(new LiteralNode(literal, datatype, NormalizeLiteralValues));
         }
 
         /// <summary>
@@ -198,9 +217,10 @@ namespace VDS.RDF
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists.</returns>
         public override IBlankNode GetBlankNode(string nodeId)
         {
-            return GetNode<IBlankNode>(new BlankNode(this, nodeId));
+            return GetNode<IBlankNode>(new BlankNode(nodeId));
         }
 
+        
         private T GetNode<T>(T node) where T: INode
         {
             var ret = (T) Triples.WithSubject(node).FirstOrDefault()?.Subject;
@@ -234,7 +254,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriples(Uri uri)
         {
-            return GetTriples(new UriNode(null, uri));
+            return GetTriples(new UriNode(uri));
         }
 
 

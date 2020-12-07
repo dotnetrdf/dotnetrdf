@@ -46,8 +46,8 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Boolean Value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>
-        public BooleanNode(IGraph g, bool value, string lexicalValue, bool normalizeValue = false)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
+        public BooleanNode(bool value, string lexicalValue, bool normalizeValue = false)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
         {
             _value = value;
         }
@@ -55,10 +55,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new boolean valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Boolean Value.</param>
-        public BooleanNode(IGraph g, bool value)
-            : this(g, value, value.ToString().ToLower()) { }
+        public BooleanNode(bool value)
+            : this(value, value.ToString().ToLower()) { }
 
         /// <summary>
         /// Gets the string value of the boolean.

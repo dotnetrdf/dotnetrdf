@@ -233,7 +233,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin NULL-LHS");
-            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(null, true)), mockContext);
+            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(true)), mockContext);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -242,7 +242,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin LHS-NULL");
-            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(null, true)), mockContext);
+            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(true)), mockContext);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -260,7 +260,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
            
             //Try a LeftOuterJoin
             Console.WriteLine("LeftJoin LHS-RHS");
-            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(null, true)), mockContext);
+            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(true)), mockContext);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());

@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         protected override IValuedNode ValueInternal(ILiteralNode stringLit)
         {
-            return new LongNode(null, stringLit.Value.Length);
+            return new LongNode(stringLit.Value.Length);
         }
 
         /// <summary>

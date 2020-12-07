@@ -34,8 +34,8 @@ namespace VDS.RDF.Shacl.Paths
     internal class Alternative : Unary
     {
         [DebuggerStepThrough]
-        internal Alternative(INode node)
-            : base(node)
+        internal Alternative(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -45,7 +45,7 @@ namespace VDS.RDF.Shacl.Paths
             {
                 return (
                     from member in Graph.GetListItems(Argument)
-                    let path = Path.Parse(member)
+                    let path = Path.Parse(member, Graph)
                     select path.SparqlPath)
                     .Aggregate((first, second) => new AlternativePath(first, second));
             }
@@ -56,7 +56,7 @@ namespace VDS.RDF.Shacl.Paths
             get
             {
                 return
-                    new Triple(this, Vocabulary.AlternativePath.CopyNode(Graph), Argument).AsEnumerable()
+                    new Triple(this, Vocabulary.AlternativePath, Argument).AsEnumerable()
                     .Concat(
                     Graph.GetListAsTriples(Argument));
             }

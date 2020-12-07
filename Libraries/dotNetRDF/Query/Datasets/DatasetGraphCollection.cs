@@ -66,12 +66,7 @@ namespace VDS.RDF.Query.Datasets
         /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
         public override bool Contains(IRefNode graphName)
         {
-            return graphName switch
-            {
-                null => _dataset.HasGraph(null),
-                IUriNode uriNode => _dataset.HasGraph(uriNode.Uri),
-                _ => false
-            };
+            return _dataset.HasGraph(graphName);
         }
 
         /// <summary>
@@ -220,8 +215,10 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                if (graphName == null && _dataset.HasGraph(null)) return _dataset[null];
-                if (graphName is IUriNode uriNode && _dataset.HasGraph(uriNode.Uri)) return _dataset[uriNode.Uri];
+                if (_dataset.HasGraph(graphName))
+                {
+                    return _dataset[graphName];
+                }
                 throw new RdfException("The graph with the given name does not exist in this graph collection");
             }
         }

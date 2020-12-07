@@ -38,8 +38,8 @@ namespace VDS.RDF.Query
 
     public class SequenceTests
     {
-        private SparqlQueryParser _queryParser = new SparqlQueryParser();
-        private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
+        private readonly SparqlQueryParser _queryParser = new SparqlQueryParser();
+        private readonly SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
         [Fact]
         public void SparqlSequenceUpdateThenQuery1()
@@ -53,12 +53,11 @@ namespace VDS.RDF.Query
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.Equal(3, dataset.Graphs.Count());
-            Assert.Single(dataset[UriFactory.Create("http://example.org/protocol-update-dataset-test/")].Triples);
+            Assert.Single(dataset[new UriNode(UriFactory.Create("http://example.org/protocol-update-dataset-test/"))].Triples);
 
             SparqlQuery query = _queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graph.rq");
 
             ISparqlAlgebra algebra = query.ToAlgebra();
-            Console.WriteLine(algebra.ToString());
 
             var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
             Assert.NotNull(results);

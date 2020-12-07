@@ -35,6 +35,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -46,18 +47,24 @@ namespace VDS.RDF.Update.Commands
     {
         private readonly GraphPattern _insertPattern, _wherePattern;
 
+        public InsertCommand(GraphPattern insertions, GraphPattern where, IRefNode graphName) : base(
+            SparqlUpdateCommandType.Insert)
+        {
+            _insertPattern = insertions;
+            _wherePattern = where;
+            WithGraphName = graphName;
+        }
+
         /// <summary>
         /// Creates a new INSERT command.
         /// </summary>
         /// <param name="insertions">Pattern to construct Triples to insert.</param>
         /// <param name="where">Pattern to select data which is then used in evaluating the insertions.</param>
         /// <param name="graphUri">URI of the affected Graph.</param>
+        [Obsolete("Replaced by InsertCommand(GraphPattern, GraphPattern, IRefNode)")]
         public InsertCommand(GraphPattern insertions, GraphPattern where, Uri graphUri)
-            : base(SparqlUpdateCommandType.Insert) 
+            : this(insertions, where, graphUri == null ? null : new UriNode(graphUri))
         {
-            _insertPattern = insertions;
-            _wherePattern = where;
-            _graphUri = graphUri;
         }
 
         /// <summary>
@@ -66,7 +73,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="insertions">Pattern to construct Triples to insert.</param>
         /// <param name="where">Pattern to select data which is then used in evaluating the insertions.</param>
         public InsertCommand(GraphPattern insertions, GraphPattern where)
-            : this(insertions, where, null) { }
+            : this(insertions, where, (IRefNode)null) { }
 
         /// <summary>
         /// Gets whether the Command affects a single Graph.
@@ -76,9 +83,9 @@ namespace VDS.RDF.Update.Commands
             get
             {
                 var affectedUris = new List<string>();
-                if (TargetUri != null)
+                if (TargetGraph != null)
                 {
-                    affectedUris.Add(TargetUri.AbsoluteUri);
+                    affectedUris.Add(TargetGraph.ToSafeString());
                 }
                 if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
                 if (_insertPattern.HasChildGraphPatterns)
@@ -97,6 +104,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
             var affectedUris = new List<string>();
@@ -121,15 +129,40 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            var affectedUris = new List<string> {TargetGraph.ToSafeString()};
+            if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
+            if (_insertPattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+            }
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
+            return affectedUris.Contains(graphName.ToSafeString());
+        }
+
+        /// <summary>
         /// Gets the URI of the Graph the insertions are made to.
         /// </summary>
+        [Obsolete("Replaced by TargetGraph")]
         public Uri TargetUri
         {
             get
             {
-                return _graphUri;
+                return (WithGraphName as IUriNode)?.Uri;
             }
         }
+
+        /// <summary>
+        /// Gets the name of the graph insertions are applied to.
+        /// </summary>
+        public IRefNode TargetGraph => WithGraphName;
 
         /// <summary>
         /// Gets the pattern used for insertions.
@@ -184,14 +217,14 @@ namespace VDS.RDF.Update.Commands
                 // so we can save ourselves the effort of doing this
                 if (!UsingUris.Any())
                 {
-                    if (_graphUri != null)
+                    if (WithGraphName != null)
                     {
-                        context.Data.SetActiveGraph(_graphUri);
+                        context.Data.SetActiveGraph(WithGraphName);
                         defGraphOk = true;
                     }
                     else
                     {
-                        context.Data.SetActiveGraph((Uri)null);
+                        context.Data.SetActiveGraph((IRefNode)null);
                         defGraphOk = true;
                     }
                 }
@@ -241,17 +274,16 @@ namespace VDS.RDF.Update.Commands
                 IGraph g = null;
                 if (_insertPattern.TriplePatterns.Count > 0)
                 {
-                    if (context.Data.HasGraph(_graphUri))
+                    if (context.Data.HasGraph(WithGraphName))
                     {
-                        g = context.Data.GetModifiableGraph(_graphUri);
+                        g = context.Data.GetModifiableGraph(WithGraphName);
                     }
                     else
                     {
                         // insertedGraphs.Add(this._graphUri);
-                        g = new Graph();
-                        g.BaseUri = _graphUri;
+                        g = new Graph(WithGraphName);
                         context.Data.AddGraph(g);
-                        g = context.Data.GetModifiableGraph(_graphUri);
+                        g = context.Data.GetModifiableGraph(WithGraphName);
                     }
                 }
 
@@ -332,23 +364,23 @@ namespace VDS.RDF.Update.Commands
                                 // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                                 IGraph h;
                                 Uri destUri = UriFactory.Create(graphUri);
+                                IRefNode destName = new UriNode(destUri);
                                 if (graphs.ContainsKey(destUri))
                                 {
                                     h = graphs[destUri];
                                 }
                                 else
                                 {
-                                    if (context.Data.HasGraph(destUri))
+                                    if (context.Data.HasGraph(destName))
                                     {
-                                        h = context.Data.GetModifiableGraph(destUri);
+                                        h = context.Data.GetModifiableGraph(destName);
                                     }
                                     else
                                     {
                                         // insertedGraphs.Add(destUri);
-                                        h = new Graph();
-                                        h.BaseUri = destUri;
+                                        h = new Graph(destName);
                                         context.Data.AddGraph(h);
-                                        h = context.Data.GetModifiableGraph(destUri);
+                                        h = context.Data.GetModifiableGraph(destName);
                                     }
                                     graphs.Add(destUri, h);
                                 }
@@ -409,11 +441,11 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             var output = new StringBuilder();
-            if (_graphUri != null)
+            var formatter = new SparqlFormatter();
+            if (WithGraphName != null)
             {
-                output.Append("WITH <");
-                output.Append(_graphUri.AbsoluteUri.Replace(">", "\\>"));
-                output.AppendLine(">");
+                output.Append("WITH ");
+                output.AppendLine(formatter.Format(WithGraphName));
             }
             output.AppendLine("INSERT");
             output.AppendLine(_insertPattern.ToString());

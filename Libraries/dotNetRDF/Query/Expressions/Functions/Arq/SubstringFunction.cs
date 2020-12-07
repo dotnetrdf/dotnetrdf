@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 IValuedNode end = CheckArgument(_end, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 try
                 {
@@ -87,24 +87,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     if (e < s)
                     {
                         // If no/negative characters are being selected the empty string is returned
-                        return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                        return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else if (s > input.Value.Length)
                     {
                         // If the start is after the end of the string the empty string is returned
-                        return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                        return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else
                     {
                         if (e > input.Value.Length)
                         {
                             // If the end is greater than the length of the string the string from the starts onwards is returned
-                            return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                            return new StringNode(input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                         }
                         else
                         {
                             // Otherwise do normal substring
-                            return new StringNode(null, input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                            return new StringNode(input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                         }
                     }
                 }
@@ -115,14 +115,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
             else
             {
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 try
                 {
                     var s = Convert.ToInt32(start.AsInteger());
                     if (s < 0) s = 0;
 
-                    return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 catch
                 {

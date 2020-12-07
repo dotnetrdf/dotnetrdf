@@ -54,8 +54,8 @@ namespace VDS.RDF.Shacl
             get
             {
                 return
-                    from constraintComponent in this.ShaclInstancesOf(Vocabulary.ConstraintComponent.CopyNode(this))
-                    select new ConstraintComponent(constraintComponent);
+                    from constraintComponent in this.ShaclInstancesOf(Vocabulary.ConstraintComponent)
+                    select new ConstraintComponent(constraintComponent, this._g);
             }
         }
 
@@ -98,22 +98,22 @@ SELECT DISTINCT ?shape {
                 return
                     from result in (SparqlResultSet)this.ExecuteQuery(query)
                     let shape = result["shape"]
-                    select Shape.Parse(shape);
+                    select Shape.Parse(shape, this);
             }
         }
 
         /// <summary>
         /// Checks the given data graph against this shapes graph for SHACL conformance and reports validation results.
         /// </summary>
-        /// <param name="dataGragh">The data graph to check for SHACL conformance.</param>
+        /// <param name="dataGraph">The data graph to check for SHACL conformance.</param>
         /// <returns>A SHACL validation report containing possible validation results.</returns>
-        public Report Validate(IGraph dataGragh)
+        public Report Validate(IGraph dataGraph)
         {
             var g = new Graph();
             g.NamespaceMap.AddNamespace("sh", UriFactory.Create(Vocabulary.BaseUri));
             var report = Report.Create(g);
 
-            Validate(dataGragh, report);
+            Validate(dataGraph, report);
 
             return report;
         }
@@ -121,18 +121,18 @@ SELECT DISTINCT ?shape {
         /// <summary>
         /// Checks the given data graph against this shapes graph for SHACL conformance.
         /// </summary>
-        /// <param name="dataGragh">The data graph to check for SHACL conformance.</param>
+        /// <param name="dataGraph">The data graph to check for SHACL conformance.</param>
         /// <returns>Whether the data graph SHACL conforms to this shapes graph.</returns>
-        public bool Conforms(IGraph dataGragh)
+        public bool Conforms(IGraph dataGraph)
         {
-            return Validate(dataGragh, null);
+            return Validate(dataGraph, null);
         }
 
-        private bool Validate(IGraph dataGragh, Report report)
+        private bool Validate(IGraph dataGraph, Report report)
         {
             return (
                 from shape in TargetedShapes
-                select shape.Validate(dataGragh, report))
+                select shape.Validate(dataGraph, report))
                 .Aggregate(true, (a, b) => a && b);
         }
     }

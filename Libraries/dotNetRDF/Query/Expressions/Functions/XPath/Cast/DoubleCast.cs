@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                 case NodeType.Literal:
                     if (n is DoubleNode) return n;
-                    if (n is FloatNode) return new DoubleNode(n.Graph, n.AsDouble());
+                    if (n is FloatNode) return new DoubleNode(n.AsDouble());
                     // See if the value can be cast
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
-                                return new DoubleNode(lit.Graph, d);
+                                return new DoubleNode(d);
                             }
                             else
                             {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
-                                return new DoubleNode(lit.Graph, d);
+                                return new DoubleNode(d);
                             }
                             else
                             {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                         {
                             // Parsed OK
-                            return new DoubleNode(lit.Graph, d);
+                            return new DoubleNode(d);
                         }
                         else
                         {

@@ -212,19 +212,19 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
 
                 case SparqlNumericType.Integer:
                     // Integer Values
-                    return new LongNode(null, lngmax);
+                    return new LongNode(lngmax);
 
                 case SparqlNumericType.Decimal:
                     // Decimal Values
-                    return new DecimalNode(null, decmax);
+                    return new DecimalNode(decmax);
 
                 case SparqlNumericType.Float:
                     // Float values
-                    return new FloatNode(null, fltmax);
+                    return new FloatNode(fltmax);
 
                 case SparqlNumericType.Double:
                     // Double Values
-                    return new DoubleNode(null, dblmax);
+                    return new DoubleNode(dblmax);
 
                 default:
                     throw new RdfQueryException("Failed to calculate a valid Maximum");

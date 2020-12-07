@@ -34,6 +34,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -51,16 +52,27 @@ namespace VDS.RDF.Update.Commands
         /// <param name="deletions">Pattern to construct Triples to delete.</param>
         /// <param name="insertions">Pattern to construct Triples to insert.</param>
         /// <param name="where">Pattern to select data which is then used in evaluating the insertions and deletions.</param>
-        /// <param name="graphUri">URI of the affected Graph.</param>
-        public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where, Uri graphUri)
-            : base(SparqlUpdateCommandType.Modify)
+        /// <param name="graphName">Name of the affected Graph.</param>
+        public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where,
+            IRefNode graphName = null) : base(SparqlUpdateCommandType.Modify)
         {
             if (!IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
 
             _deletePattern = deletions;
             _insertPattern = insertions;
             _wherePattern = where;
-            _graphUri = graphUri;
+            WithGraphName = graphName;
+        }
+        /// <summary>
+        /// Creates a new INSERT/DELETE command.
+        /// </summary>
+        /// <param name="deletions">Pattern to construct Triples to delete.</param>
+        /// <param name="insertions">Pattern to construct Triples to insert.</param>
+        /// <param name="where">Pattern to select data which is then used in evaluating the insertions and deletions.</param>
+        /// <param name="graphUri">URI of the affected Graph.</param>
+        public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where, Uri graphUri)
+            : this(deletions, insertions, where, graphUri == null ? null : new UriNode(graphUri))
+        {
         }
 
         /// <summary>
@@ -70,7 +82,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="insertions">Pattern to construct Triples to insert.</param>
         /// <param name="where">Pattern to select data which is then used in evaluating the insertions and deletions.</param>
         public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where)
-            : this(deletions, insertions, where, null) { }
+            : this(deletions, insertions, where, (IRefNode)null) { }
 
         /// <summary>
         /// Gets whether the Command affects a Single Graph.
@@ -80,9 +92,9 @@ namespace VDS.RDF.Update.Commands
             get
             {
                 var affectedUris = new List<string>();
-                if (TargetUri != null)
+                if (TargetGraph != null)
                 {
-                    affectedUris.Add(TargetUri.AbsoluteUri);
+                    affectedUris.Add(TargetGraph.ToSafeString());
                 }
                 if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
                 if (_deletePattern.HasChildGraphPatterns)
@@ -108,6 +120,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
             var affectedUris = new List<string>();
@@ -132,15 +145,48 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            var affectedUris = new List<string>() {TargetGraph.ToSafeString()};
+            if (_deletePattern.IsGraph) affectedUris.Add(_deletePattern.GraphSpecifier.Value);
+            if (_deletePattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in _deletePattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+            }
+            if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
+            if (_insertPattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+            }
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
+
+            return affectedUris.Contains(graphName.ToSafeString());
+        }
+
+        /// <summary>
         /// Gets the URI of the Graph the insertions are made to.
         /// </summary>
+        [Obsolete("Replaced by TargetGraph")]
         public Uri TargetUri
         {
             get
             {
-                return _graphUri;
+                return (WithGraphName as IUriNode)?.Uri;
             }
         }
+
+        /// <summary>
+        /// Gets the name of the graph to be modified.
+        /// </summary>
+        public IRefNode TargetGraph => WithGraphName;
 
         /// <summary>
         /// Gets the pattern used for deletions.
@@ -206,14 +252,14 @@ namespace VDS.RDF.Update.Commands
                 // so we can save ourselves the effort of doing this
                 if (!UsingUris.Any())
                 {
-                    if (_graphUri != null)
+                    if (WithGraphName != null)
                     {
-                        context.Data.SetActiveGraph(_graphUri);
+                        context.Data.SetActiveGraph(WithGraphName);
                         defGraphOk = true;
                     }
                     else
                     {
-                        context.Data.SetActiveGraph((Uri)null);
+                        context.Data.SetActiveGraph((IRefNode)null);
                         defGraphOk = true;
                     }
                 }
@@ -260,15 +306,15 @@ namespace VDS.RDF.Update.Commands
                 // Get the Graph to which we are deleting and inserting
                 IGraph g;
                 var newGraph = false;
-                if (context.Data.HasGraph(_graphUri))
+                if (context.Data.HasGraph(WithGraphName))
                 {
-                    g = context.Data.GetModifiableGraph(_graphUri);
+                    g = context.Data.GetModifiableGraph(WithGraphName);
                 }
                 else
                 {
                     // Inserting into a new graph. This will raise an exception if the dataset is immutable
-                    context.Data.AddGraph(new Graph { BaseUri = _graphUri });
-                    g = context.Data.GetModifiableGraph(_graphUri);
+                    context.Data.AddGraph(new Graph( WithGraphName));
+                    g = context.Data.GetModifiableGraph(WithGraphName);
                     newGraph = true;
                 }
 
@@ -346,11 +392,12 @@ namespace VDS.RDF.Update.Commands
                                     continue;
                             }
 
+                            var graphName = new UriNode(UriFactory.Create(graphUri));
                             // If the Dataset doesn't contain the Graph then no need to do the Deletions
-                            if (!context.Data.HasGraph(UriFactory.Create(graphUri))) continue;
+                            if (!context.Data.HasGraph(graphName)) continue;
 
                             // Do the actual Deletions
-                            IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
+                            IGraph h = context.Data.GetModifiableGraph(graphName);
                             var constructContext = new ConstructContext(h, s, true);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
@@ -393,7 +440,8 @@ namespace VDS.RDF.Update.Commands
                                 // so we continue anyway
                             }
                         }
-                        g.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(g)));
+                        //g.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(g)));
+                        g.Assert(insertedTriples);
                     }
                     catch (RdfQueryException)
                     {
@@ -401,10 +449,10 @@ namespace VDS.RDF.Update.Commands
                         // solution is ignored for this graph
                     }
 
-                    if (insertedTriples.Count == 0 && newGraph && _graphUri != null)
+                    if (insertedTriples.Count == 0 && newGraph && WithGraphName != null)
                     {
                         // Remove the named graph we added as we did not insert any triples
-                        context.Data.RemoveGraph(_graphUri);
+                        context.Data.RemoveGraph(WithGraphName);
                     }
 
                     // Triples from GRAPH clauses
@@ -452,17 +500,16 @@ namespace VDS.RDF.Update.Commands
 
                             // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                             IGraph h;
-                            Uri destUri = UriFactory.Create(graphUri);
-                            if (context.Data.HasGraph(destUri))
+                            IRefNode destGraph = new UriNode(UriFactory.Create(graphUri));
+                            if (context.Data.HasGraph(destGraph))
                             {
-                                h = context.Data.GetModifiableGraph(destUri);
+                                h = context.Data.GetModifiableGraph(destGraph);
                             }
                             else
                             {
-                                h = new Graph();
-                                h.BaseUri = destUri;
+                                h = new Graph(destGraph);
                                 context.Data.AddGraph(h);
-                                h = context.Data.GetModifiableGraph(destUri);
+                                h = context.Data.GetModifiableGraph(destGraph);
                             }
 
                             // Do the actual Insertions
@@ -472,7 +519,7 @@ namespace VDS.RDF.Update.Commands
                                 try
                                 {
                                     Triple t = p.Construct(constructContext);
-                                    t = new Triple(t.Subject, t.Predicate, t.Object, destUri);
+                                    t = new Triple(t.Subject, t.Predicate, t.Object);
                                     insertedTriples.Add(t);
                                 }
                                 catch (RdfQueryException)
@@ -481,7 +528,8 @@ namespace VDS.RDF.Update.Commands
                                     // triple so we continue anyway
                                 }
                             }
-                            h.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(h)));
+                            //h.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(h)));
+                            h.Assert(insertedTriples);
                         }
                         catch (RdfQueryException)
                         {
@@ -516,11 +564,11 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             var output = new StringBuilder();
-            if (_graphUri != null)
+            var formatter = new SparqlFormatter();
+            if (WithGraphName != null)
             {
-                output.Append("WITH <");
-                output.Append(_graphUri.AbsoluteUri.Replace(">", "\\>"));
-                output.AppendLine(">");
+                output.Append("WITH ");
+                output.AppendLine(formatter.Format(WithGraphName));
             }
             output.AppendLine("DELETE");
             output.AppendLine(_deletePattern.ToString());

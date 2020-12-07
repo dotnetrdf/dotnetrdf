@@ -50,9 +50,9 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            IEnumerable<INode> invalidValues = QualifiedValueNodes(focusNode, valueNodes).Skip(NumericValue);
+            IEnumerable<INode> invalidValues = QualifiedValueNodes(dataGraph, focusNode, valueNodes).Skip(NumericValue);
 
             return ReportFocusNode(focusNode, invalidValues, report);
         }

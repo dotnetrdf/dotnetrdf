@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new BooleanNode(null, _expr.Evaluate(context, bindingID) != null);
+            return new BooleanNode(_expr.Evaluate(context, bindingID) != null);
         }
 
         /// <summary>

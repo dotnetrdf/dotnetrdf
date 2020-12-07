@@ -95,10 +95,10 @@ namespace VDS.RDF.Writing
             writer.WriteAttributeString(GraphMLSpecsHelper.Edgedefault, GraphMLSpecsHelper.Directed);
 
             // Named graphs
-            if (graph.BaseUri != null)
+            if (graph.Name != null)
             {
                 //writer.WriteAttributeString(GraphMLSpecsHelper.Id, graph.BaseUri.AbsoluteUri);
-                WriteData(writer, GraphMLSpecsHelper.GraphLabel, graph.BaseUri.AbsoluteUri);
+                WriteData(writer, GraphMLSpecsHelper.GraphLabel, graph.Name.ToSafeString());
             }
 
             WriteTriples(writer, graph, collapseLiterals);

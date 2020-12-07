@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.FullText.Indexing
@@ -73,7 +74,15 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <remarks>
         /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
+        [Obsolete("This method is replaced by Index(IGraph, Triple). As triple no longer carry a reference to a parent graph, this method should no longer be used.", true)]
         void Index(Triple t);
+
+        /// <summary>
+        /// Indexes a triple in the context of a graph.
+        /// </summary>
+        /// <param name="g">The graph context of the triple.</param>
+        /// <param name="t">The triple to index.</param>
+        void Index(IGraph g, Triple t);
 
         /// <summary>
         /// Indexes a Graph.
@@ -100,7 +109,15 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <remarks>
         /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation.
         /// </remarks>
+        [Obsolete("Replaced by Unindex(IGraph, Triple). As triples no longer have a reference to a parent graph, this method should no longer be used.", true)]
         void Unindex(Triple t);
+
+        /// <summary>
+        /// Unindexes a triple in the context of a graph.
+        /// </summary>
+        /// <param name="g">The graph context of the triple.</param>
+        /// <param name="t">The triple to be unindexed.</param>
+        void Unindex(IGraph g, Triple t);
 
         /// <summary>
         /// Unindexes a Graph.
