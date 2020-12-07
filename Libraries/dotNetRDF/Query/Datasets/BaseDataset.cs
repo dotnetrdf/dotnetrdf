@@ -399,7 +399,11 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return ActiveGraphNames.OfType<IUriNode>().Select(x => x.Uri);
+                foreach (IRefNode n in ActiveGraphNames)
+                {
+                    if (n == null) yield return null;
+                    if (n is IUriNode uriNode) yield return uriNode.Uri;
+                }
             }
         }
 

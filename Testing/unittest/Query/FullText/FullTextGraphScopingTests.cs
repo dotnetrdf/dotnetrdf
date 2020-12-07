@@ -48,9 +48,9 @@ namespace VDS.RDF.Query.FullText
     {
         private const String FullTextPrefix = "PREFIX pf: <" + FullTextHelper.FullTextMatchNamespace + ">";
 
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private TripleStore _store;
-        private Directory _index;
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly TripleStore _store;
+        private readonly Directory _index;
 
         public FullTextGraphScopingTests()
         {
