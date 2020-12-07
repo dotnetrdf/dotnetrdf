@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class DeleteWhereImpl : UpdateImpl, IDeleteWhere
     {
 
-        public DeleteWhereImpl(INode node, SpinProcessor graph)
-            : base(node, graph)
+        public DeleteWhereImpl(INode node, IGraph graph, SpinProcessor processor)
+            : base(node, graph, processor)
         {
 
         }

@@ -31,8 +31,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class NotExistsImpl : ElementImpl, INotExists
     {
 
-        public NotExistsImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public NotExistsImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

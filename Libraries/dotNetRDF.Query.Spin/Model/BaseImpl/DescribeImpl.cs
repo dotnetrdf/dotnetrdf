@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class DescribeImpl : QueryImpl, IDescribe
     {
 
-        public DescribeImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public DescribeImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

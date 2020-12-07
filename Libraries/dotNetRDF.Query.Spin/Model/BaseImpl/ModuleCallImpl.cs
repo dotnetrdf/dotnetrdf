@@ -33,8 +33,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal abstract class ModuleCallImpl : AbstractSPINResource, IModuleCall
     {
 
-        public ModuleCallImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ModuleCallImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

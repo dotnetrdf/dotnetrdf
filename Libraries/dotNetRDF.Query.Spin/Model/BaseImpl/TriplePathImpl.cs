@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class TriplePathImpl : TupleImpl, ITriplePath
     {
 
-        public TriplePathImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public TriplePathImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }

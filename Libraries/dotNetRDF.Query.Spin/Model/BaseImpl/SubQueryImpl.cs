@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class SubQueryImpl : ElementImpl, ISubQuery
     {
 
-        public SubQueryImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public SubQueryImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }

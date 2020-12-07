@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Model
         public static IArgument asArgument(IResource resource)
         {
             if (resource == null) return null;
-            return new ArgumentImpl(resource, resource.getModel());
+            return new ArgumentImpl(resource, resource.Graph, resource.getModel());
         }
 
         /* *
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Spin.Model
             if (resource == null) return null;
             if (resource.hasProperty(SP.PropertyPredicate))
             {
-                return new TriplePatternImpl(resource, resource.getModel());
+                return new TriplePatternImpl(resource, resource.Graph, resource.getModel());
             }
             else
             {

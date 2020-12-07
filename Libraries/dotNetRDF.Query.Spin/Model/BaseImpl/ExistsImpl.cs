@@ -31,8 +31,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ExistsImpl : ElementImpl, IExists
     {
 
-        public ExistsImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ExistsImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

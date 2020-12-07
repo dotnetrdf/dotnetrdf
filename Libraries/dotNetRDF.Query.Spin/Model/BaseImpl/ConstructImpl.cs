@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ConstructImpl : QueryImpl, IConstruct
     {
 
-        public ConstructImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ConstructImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class TemplateCallImpl : ModuleCallImpl, ITemplateCall
     {
 
-        public TemplateCallImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public TemplateCallImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }

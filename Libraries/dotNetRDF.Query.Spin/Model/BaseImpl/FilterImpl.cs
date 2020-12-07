@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class FilterImpl : ElementImpl, IFilter
     {
 
-        public FilterImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public FilterImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

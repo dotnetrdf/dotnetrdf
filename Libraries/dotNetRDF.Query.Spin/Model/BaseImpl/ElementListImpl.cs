@@ -39,8 +39,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ElementListImpl : ElementImpl, IElementList
     {
 
-        public ElementListImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ElementListImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

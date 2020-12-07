@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class BindImpl : ElementImpl, IBind
     {
 
-        public BindImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public BindImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

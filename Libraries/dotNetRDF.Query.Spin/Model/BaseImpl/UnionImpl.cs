@@ -32,8 +32,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class UnionImpl : ElementImpl, IUnion
     {
 
-        public UnionImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public UnionImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }

@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal abstract class AbstractAttributeImpl : AbstractSPINResource, IAbstractAttribute
     {
 
-        public AbstractAttributeImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public AbstractAttributeImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

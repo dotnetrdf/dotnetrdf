@@ -32,8 +32,8 @@ using VDS.RDF.Query.Datasets;
 namespace  VDS.RDF.Query.Spin.Model {
     internal class LoadImpl : UpdateImpl, ILoad {
 
-    public LoadImpl(INode node, SpinProcessor spinModel)
-        : base(node, spinModel)
+    public LoadImpl(INode node, IGraph graph, SpinProcessor spinModel)
+        : base(node, graph, spinModel)
     {
 		
 	}

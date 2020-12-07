@@ -42,8 +42,8 @@ namespace VDS.RDF.Query.Spin.Model
         private static String SP_ARG = SP.PropertyArg.ToString();
 
 
-        public FunctionCallImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public FunctionCallImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node,graph, spinModel)
         {
         }
 

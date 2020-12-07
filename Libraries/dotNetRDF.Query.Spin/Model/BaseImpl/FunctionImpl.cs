@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class FunctionImpl : ModuleImpl, IFunction
     {
 
-        public FunctionImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public FunctionImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

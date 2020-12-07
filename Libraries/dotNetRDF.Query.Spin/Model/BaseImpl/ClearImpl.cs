@@ -33,8 +33,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ClearImpl : UpdateImpl, IClear
     {
 
-        public ClearImpl(INode node, SpinProcessor graph)
-            :base(node, graph)
+        public ClearImpl(INode node, IGraph graph, SpinProcessor processor)
+            :base(node, graph, processor)
         {
             
         }

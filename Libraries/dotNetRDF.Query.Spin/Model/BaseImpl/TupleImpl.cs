@@ -34,8 +34,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal abstract class TupleImpl : AbstractSPINResource
     {
 
-        public TupleImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public TupleImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }

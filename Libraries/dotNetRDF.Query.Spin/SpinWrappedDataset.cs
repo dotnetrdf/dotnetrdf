@@ -640,8 +640,8 @@ namespace VDS.RDF.Query.Spin
             {
                 _hasPendingChanges = false; // for security only
                 var commands = new List<IUpdate>();
-                commands.Add(new DeleteDataImpl(RDF.Nil, spinProcessor));
-                commands.Add(new InsertDataImpl(RDF.Nil, spinProcessor));
+                commands.Add(new DeleteDataImpl(RDF.Nil, null, spinProcessor));
+                commands.Add(new InsertDataImpl(RDF.Nil, null, spinProcessor));
                 ExecuteUpdate(commands);
             }
             ResetActiveGraph();
@@ -829,8 +829,8 @@ namespace VDS.RDF.Query.Spin
             {
                 CommandCalls.Add(command.ToString());
                 Storage.Update(command.ToString());
-                UpdateInternal(new DeleteDataImpl(RDF.Nil, spinProcessor), outputGraphUri);
-                UpdateInternal(new InsertDataImpl(RDF.Nil, spinProcessor), outputGraphUri);
+                UpdateInternal(new DeleteDataImpl(RDF.Nil, null, spinProcessor), outputGraphUri);
+                UpdateInternal(new InsertDataImpl(RDF.Nil, null, spinProcessor), outputGraphUri);
                 ResetActiveGraph();
                 return;
             }

@@ -31,8 +31,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class OptionalImpl : ElementImpl, IOptional
     {
 
-        public OptionalImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public OptionalImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }
