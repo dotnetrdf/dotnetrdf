@@ -346,7 +346,7 @@ namespace VDS.RDF.Storage
                 var h = new Graph();
                 try
                 {
-                    manager.LoadGraph(h, g.BaseUri);
+                    manager.LoadGraph(h, g.Name.ToString());
                 }
                 catch
                 {
