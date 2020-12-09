@@ -20,6 +20,8 @@ nugets/
 coverage
 test-*.xml
 dotcover.xml
+*.dcvr
+*.dcvr.settings
 
 # Files not to version control
 *.suo
