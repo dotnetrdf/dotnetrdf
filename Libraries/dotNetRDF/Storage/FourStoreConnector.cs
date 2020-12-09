@@ -275,12 +275,12 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfStorageException">Thrown if you try and save a Graph without a Base Uri or if there is an error communicating with the 4store instance.</exception>
         public void SaveGraph(IGraph g)
         {
-            if (g.BaseUri == null)
+            if (g.Name == null)
             {
                 throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
             }
 
-            var requestUri = new Uri(_baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.AbsoluteUri));
+            var requestUri = new Uri(_baseUri + "data/" + Uri.EscapeUriString(g.Name.ToSafeString()));
             var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
             {
                 Content = new GraphContent(g, new CompressingTurtleWriter(WriterCompressionLevel.High))
@@ -569,12 +569,12 @@ namespace VDS.RDF.Storage
         private HttpRequestMessage MakeSaveGraphRequestMessage(IGraph g)
         {
             // Set up the Request
-            if (g.BaseUri == null)
+            if (g.Name == null)
             {
-                throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
+                throw new RdfStorageException("Cannot save a Graph without a name to a 4store Server");
             }
 
-            var request = new HttpRequestMessage(HttpMethod.Put, _baseUri + "data/" + g.BaseUri.AbsoluteUri);
+            var request = new HttpRequestMessage(HttpMethod.Put, _baseUri + "data/" + g.Name);
             var writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
 
             // Write the Graph as Turtle to the Request Stream

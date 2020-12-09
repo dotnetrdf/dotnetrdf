@@ -813,15 +813,15 @@ namespace VDS.RDF.Storage
             HttpRequestMessage request;
             var serviceParams = new Dictionary<string, string>();
 
-            if (g.BaseUri != null)
+            if (g.Name != null)
             {
                 if (_fullContextEncoding)
                 {
-                    serviceParams.Add("context", "<" + g.BaseUri.AbsoluteUri + ">");
+                    serviceParams.Add("context", g.Name.ToString(new SparqlFormatter()));
                 }
                 else
                 {
-                    serviceParams.Add("context", g.BaseUri.AbsoluteUri);
+                    serviceParams.Add("context", g.Name.ToString());
                 }
 
                 request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Put, serviceParams);

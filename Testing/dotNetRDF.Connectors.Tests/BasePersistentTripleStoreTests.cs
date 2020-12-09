@@ -68,10 +68,10 @@ namespace VDS.RDF.Storage
             manager.SaveGraph(g);
         }
 
-        private void EnsureGraphDeleted(IStorageProvider manager, Uri graphUri)
+        private void EnsureGraphDeleted(IStorageProvider manager,  IRefNode graphUri)
         {
             Skip.IfNot(manager.DeleteSupported, "Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
-            manager.DeleteGraph(graphUri);
+            manager.DeleteGraph(graphUri.ToString());
         }
 
         [SkippableFact]
@@ -89,16 +89,20 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
+            var testGraph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            var testGraph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+            var testGraph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             try
             {
-                Assert.True(store.HasGraph(new Uri(TestGraphUri1)), "URI 1 should return true for HasGraph()");
-                Assert.True(store.Graphs.Contains(new Uri(TestGraphUri1)), "URI 1 should return true for Graphs.Contains()");
-                Assert.True(store.HasGraph(new Uri(TestGraphUri2)), "URI 2 should return true for HasGraph()");
-                Assert.True(store.Graphs.Contains(new Uri(TestGraphUri2)), "URI 2 should return true for Graphs.Contains()");
-                Assert.True(store.HasGraph(new Uri(TestGraphUri3)), "URI 3 should return true for HasGraph()");
-                Assert.True(store.Graphs.Contains(new Uri(TestGraphUri3)), "URI 3 should return true for Graphs.Contains()");
+                Assert.True(store.HasGraph(testGraph1), "URI 1 should return true for HasGraph()");
+                Assert.True(store.Graphs.Contains(testGraph1), "URI 1 should return true for Graphs.Contains()");
+                Assert.True(store.HasGraph(testGraph2), "URI 2 should return true for HasGraph()");
+                Assert.True(store.Graphs.Contains(testGraph2), "URI 2 should return true for Graphs.Contains()");
+                Assert.True(store.HasGraph(testGraph3), "URI 3 should return true for HasGraph()");
+                Assert.True(store.Graphs.Contains(testGraph3), "URI 3 should return true for Graphs.Contains()");
 
-                var noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
+                var noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
@@ -118,33 +122,32 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var aExpected = new Graph();
+                var aExpected = new Graph(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
                 aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-                aExpected.BaseUri = new Uri(TestGraphUri1);
-                IGraph aActual = store[aExpected.BaseUri];
+                IGraph aActual = store[aExpected.Name];
                 Assert.Equal(aExpected, aActual);
-                aActual = store.Graphs[aExpected.BaseUri];
+                aActual = store.Graphs[aExpected.Name];
                 Assert.Equal(aExpected, aActual);
 
-                var bExpected = new Graph();
+                var bExpected = new Graph(nodeFactory.CreateUriNode(new Uri(TestGraphUri2)));
                 bExpected.LoadFromFile("resources\\InferenceTest.ttl");
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
-                bExpected.BaseUri = new Uri(TestGraphUri2);
-                IGraph bActual = store[bExpected.BaseUri];
+                IGraph bActual = store[bExpected.Name];
                 Assert.Equal(bExpected, bActual);
-                bActual = store.Graphs[bExpected.BaseUri];
+                bActual = store.Graphs[bExpected.Name];
                 Assert.Equal(bExpected, bActual);
 
-                var cExpected = new Graph();
+                var cExpected = new Graph(nodeFactory.CreateUriNode(new Uri(TestGraphUri3)));
                 cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
                 cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 cExpected.BaseUri = new Uri(TestGraphUri3);
-                IGraph cActual = store[cExpected.BaseUri];
+                IGraph cActual = store[cExpected.Name];
                 Assert.Equal(cExpected, cActual);
-                cActual = store.Graphs[cExpected.BaseUri];
+                cActual = store.Graphs[cExpected.Name];
                 Assert.Equal(cExpected, cActual);
             }
             finally
@@ -159,13 +162,15 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesFlushed(IStorageProvider manager)
         {
-            EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
+            var nodeFactory = new NodeFactory();
+            var testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            EnsureGraphDeleted(manager, testGraphName);
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store[new Uri(TestGraphUri1)];
+                IGraph g = store[testGraphName];
 
                 var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
                 g.Assert(toAdd);
@@ -190,13 +195,15 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
-            EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
+            var nodeFactory = new NodeFactory();
+            var testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            EnsureGraphDeleted(manager, testGraphName);
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store[new Uri(TestGraphUri1)];
+                IGraph g = store[testGraphName];
 
                 var toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
                 g.Assert(toAdd);
@@ -228,23 +235,24 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                IGraph g = store[new Uri(TestGraphUri1)];
+                IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
 
                 INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, g.Name.ToString());
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store prior to Flush/Discard");
 
                 store.Flush();
 
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view after Flush");
                 h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, g.Name.ToString());
                 Assert.False(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should no longer be present in underlying store after Flush");
 
             }
@@ -259,23 +267,24 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory =new NodeFactory();
             try
             {
-                IGraph g = store[new Uri(TestGraphUri1)];
+                IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
 
                 INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, g.Name.ToString());
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store prior to Flush/Discard");
 
                 store.Discard();
 
                 Assert.True(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should now be present in in-memory view after Discard");
                 h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, g.Name.ToString());
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store after Discard");
 
             }
@@ -294,22 +303,21 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed")
-                };
-                EnsureGraphDeleted(manager, g.BaseUri);
+                var g = new Graph(
+                    nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/added/flushed")));
+                EnsureGraphDeleted(manager, g.Name);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
-                Assert.True(store.HasGraph(g.BaseUri), "Newly added graph should exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "Newly added graph should not yet exist in underlying store");
+                Assert.True(store.HasGraph(g.Name), "Newly added graph should exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "Newly added graph should not yet exist in underlying store");
 
                 store.Flush();
 
-                Assert.True(manager.ListGraphs().Contains(g.BaseUri), "After Flush() is called added graph should exist in underlying store");
+                Assert.True(manager.ListGraphNames().Contains(g.Name.ToString()), "After Flush() is called added graph should exist in underlying store");
             }
             finally
             {
@@ -322,18 +330,16 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded")
-                };
-                EnsureGraphDeleted(manager, g.BaseUri);
+                var g = new Graph(nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/added/discarded")));
+                EnsureGraphDeleted(manager, g.Name);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
-                Assert.True(store.HasGraph(g.BaseUri), "Newly added graph should exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "Newly added graph should not yet exist in underlying store");
+                Assert.True(store.HasGraph(g.Name), "Newly added graph should exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "Newly added graph should not yet exist in underlying store");
 
                 store.Discard();
 
@@ -363,9 +369,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = new Uri(TestGraphUri1);
+                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -376,7 +383,7 @@ namespace VDS.RDF.Storage
                 var handler = new AnyHandler();
                 try
                 {
-                    manager.LoadGraph(handler, toRemove);
+                    manager.LoadGraph(handler, toRemove.ToString());
                 }
                 catch
                 {
@@ -395,9 +402,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = new Uri(TestGraphUri1);
+                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -406,7 +414,7 @@ namespace VDS.RDF.Storage
 
                 Assert.True(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we removed as we Discarded that change");
                 var handler = new AnyHandler();
-                manager.LoadGraph(handler, toRemove);
+                manager.LoadGraph(handler, toRemove.ToString());
                 Assert.True(handler.Any, "Attempting to load Graph from underlying store should return something as the Discard() prevented the removal being persisted");
             }
             finally
@@ -424,27 +432,26 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/persistence/graphs/added/flushed")
-                };
-                EnsureGraphDeleted(manager, g.BaseUri);
+                var g = new Graph(
+                    nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/added/flushed")));
+                EnsureGraphDeleted(manager, g.Name);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
-                Assert.True(store.HasGraph(g.BaseUri), "Newly added graph should exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "Newly added graph should not yet exist in underlying store");
+                Assert.True(store.HasGraph(g.Name), "Newly added graph should exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "Newly added graph should not yet exist in underlying store");
 
-                store.Remove(g.BaseUri);
-                Assert.False(store.HasGraph(g.BaseUri), "Graph then removed before Flush/Discard() should no longer exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "Graph then removed should still not exist in underlying store");
+                store.Remove(g.Name);
+                Assert.False(store.HasGraph(g.Name), "Graph then removed before Flush/Discard() should no longer exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "Graph then removed should still not exist in underlying store");
 
                 store.Flush();
 
-                Assert.False(store.HasGraph(g.BaseUri), "After Flush() is called graph should not exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "After Flush() is called added then removed graph should not exist in underlying store");
+                Assert.False(store.HasGraph(g.Name), "After Flush() is called graph should not exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "After Flush() is called added then removed graph should not exist in underlying store");
             }
             finally
             {
@@ -457,27 +464,26 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/persistence/graphs/added/discarded")
-                };
-                EnsureGraphDeleted(manager, g.BaseUri);
+                var g = new Graph(
+                    nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/added/discarded")));
+                EnsureGraphDeleted(manager, g.Name);
                 g.Assert(g.CreateUriNode("rdf:subject"), g.CreateUriNode("rdf:predicate"), g.CreateUriNode("rdf:object"));
                 store.Add(g);
 
-                Assert.True(store.HasGraph(g.BaseUri), "Newly added graph should exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "Newly added graph should not yet exist in underlying store");
+                Assert.True(store.HasGraph(g.Name), "Newly added graph should exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "Newly added graph should not yet exist in underlying store");
 
-                store.Remove(g.BaseUri);
-                Assert.False(store.HasGraph(g.BaseUri), "Graph then removed before Flush/Discard() should no longer exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "Graph then removed should still not exist in underlying store");
+                store.Remove(g.Name);
+                Assert.False(store.HasGraph(g.Name), "Graph then removed before Flush/Discard() should no longer exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "Graph then removed should still not exist in underlying store");
 
                 store.Discard();
 
-                Assert.False(store.HasGraph(g.BaseUri), "After Discard() is called graph should not exist in in-memory view of store");
-                Assert.False(manager.ListGraphs().Contains(g.BaseUri), "After Discard() is called added then removed graph should not exist in underlying store");
+                Assert.False(store.HasGraph(g.Name), "After Discard() is called graph should not exist in in-memory view of store");
+                Assert.False(manager.ListGraphNames().Contains(g.Name.ToString()), "After Discard() is called added then removed graph should not exist in underlying store");
             }
             finally
             {
@@ -494,9 +500,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = new Uri(TestGraphUri1);
+                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -510,7 +517,7 @@ namespace VDS.RDF.Storage
 
                 Assert.True(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we added back after Flushing");
                 var handler = new AnyHandler();
-                manager.LoadGraph(handler, toRemove);
+                manager.LoadGraph(handler, toRemove.ToString());
                 Assert.True(handler.Any, "Attempting to load Graph from underlying store should return something after the Flush() operation since we didn't remove the graph in the end");
             }
             finally
@@ -524,9 +531,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = new Uri(TestGraphUri1);
+                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -540,7 +548,7 @@ namespace VDS.RDF.Storage
 
                 Assert.True(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we removed and added back regardless as we Discarded that change");
                 var handler = new AnyHandler();
-                manager.LoadGraph(handler, toRemove);
+                manager.LoadGraph(handler, toRemove.ToString());
                 Assert.True(handler.Any, "Attempting to load Graph from underlying store should return something as the Discard() prevented the removal and add back being persisted");
             }
             finally
@@ -558,9 +566,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                store.Remove(new Uri(TestGraphUri1));
+                store.Remove(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
 
                 store.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }");
             }
@@ -571,7 +580,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private void TestQuerySelect(IStorageProvider manager, String query)
+        private void TestQuerySelect(IStorageProvider manager, string query)
         {
             EnsureTestDataset(manager);
 
@@ -655,9 +664,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
-                store.Remove(new Uri(TestGraphUri1));
+                store.Remove(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
                 store.ExecuteUpdate($"LOAD <{_serverFixture.UriFor("/resource/Southampton")}>");
             }
             finally
@@ -670,7 +680,8 @@ namespace VDS.RDF.Storage
         private void TestUpdate(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
-            var updateUri = new Uri("http://example.org/persistence/update/temp");
+            var nodeFactory = new NodeFactory();
+            var updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
             EnsureGraphDeleted(manager, updateUri);
 
             var store = new PersistentTripleStore(manager);
@@ -678,7 +689,7 @@ namespace VDS.RDF.Storage
             {
                 Assert.False(store.HasGraph(updateUri), "Prior to SPARQL Update our target graph should not exist using HasGraph()");
                 Assert.False(store.Graphs.Contains(updateUri), "Prior to SPARQL Update out target graph should not exist using Graphs.Contains()");
-                Assert.False(manager.ListGraphs().Contains(updateUri), "Prior to SPARQL Update our target graph should not exist in the underlying store");
+                Assert.False(manager.ListGraphNames().Contains(updateUri.ToString()), "Prior to SPARQL Update our target graph should not exist in the underlying store");
 
                 store.ExecuteUpdate("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <" + updateUri.ToString() + ">");
 
@@ -686,7 +697,7 @@ namespace VDS.RDF.Storage
                 Assert.True(store.Graphs.Contains(updateUri), "SPARQL Update should have loaded into out target graph so that Graphs.Contains() returns true");
 
                 //Note that SPARQL Updates go directly to the underlying store so the change is persisted immediately
-                Assert.True(manager.ListGraphs().Contains(updateUri), "SPARQL Update should loaded into our target graph directly in the underlying store");
+                Assert.True(manager.ListGraphNames().Contains(updateUri.ToString()), "SPARQL Update should loaded into our target graph directly in the underlying store");
             }
             finally
             {

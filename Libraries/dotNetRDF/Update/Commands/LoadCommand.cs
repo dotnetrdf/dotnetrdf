@@ -197,8 +197,8 @@ namespace VDS.RDF.Update.Commands
             var silent = Silent ? "SILENT " : string.Empty;
             var formatter = new SparqlFormatter();
             return TargetGraphName == null
-                ? $"LOAD {silent}{formatter.FormatUri(SourceUri)}"
-                : $"LOAD {silent}{formatter.FormatUri(SourceUri)} INTO {formatter.Format(TargetGraphName)}";
+                ? $"LOAD {silent}<{formatter.FormatUri(SourceUri)}>"
+                : $"LOAD {silent}<{formatter.FormatUri(SourceUri)}> INTO {formatter.Format(TargetGraphName)}";
         }
     }
 }

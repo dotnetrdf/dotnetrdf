@@ -373,12 +373,12 @@ namespace VDS.RDF
                     _mimeTypes.Add(new MimeTypeDefinition("JSON-LD", JsonLd, new[] {DefaultJsonLdExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, null, typeof(GZippedJsonLdParser), null, null, typeof(GZippedJsonLdWriter), null));
 
                     // Define CSV
-                    _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new string[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped SPARQL CSV", Csv, new string[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlCsvParser), null, null, typeof(GZippedSparqlCsvWriter)));
+                    _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new string[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter), 0.1m));
+                    _mimeTypes.Add(new MimeTypeDefinition("GZipped SPARQL CSV", Csv, new string[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlCsvParser), null, null, typeof(GZippedSparqlCsvWriter), 0.1m));
 
                     // Define TSV
-                    _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new string[] { DefaultTsvExtension }, null, null, typeof(SparqlTsvParser), typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter)));
-                    _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new string[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlTsvParser), null, null, typeof(GZippedSparqlTsvWriter)));
+                    _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new string[] { DefaultTsvExtension }, null, null, typeof(SparqlTsvParser), typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter), 0.1m));
+                    _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new string[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlTsvParser), null, null, typeof(GZippedSparqlTsvWriter), 0.1m));
 
                     // Define HTML
                     _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new string[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
@@ -733,7 +733,15 @@ namespace VDS.RDF
                 {
                     if (definition.CanParseRdf)
                     {
-                        output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                        if (definition.Preference < 1.0m)
+                        {
+                            output.Append(string.Join(",",
+                                definition.MimeTypes.Select(m => m + ";q=" + definition.Preference.ToString("F"))));
+                        }
+                        else
+                        {
+                            output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                        }
                         output.Append(',');
                     }
                 }
@@ -760,7 +768,15 @@ namespace VDS.RDF
                 {
                     if (definition.CanParseSparqlResults)
                     {
-                        output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                        if (definition.Preference < 1.0m)
+                        {
+                            output.Append(string.Join(",",
+                                definition.MimeTypes.Select(m => m + ";q=" + definition.Preference.ToString("F"))));
+                        }
+                        else
+                        {
+                            output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                        }
                         output.Append(',');
                     }
                 }
@@ -786,7 +802,16 @@ namespace VDS.RDF
                 {
                     if (definition.CanParseRdf || definition.CanParseSparqlResults)
                     {
-                        output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                        if (definition.Preference < 1.0m)
+                        {
+                            output.Append(string.Join(",",
+                                definition.MimeTypes.Select(m => m + ";q=" + definition.Preference.ToString("F"))));
+                        }
+                        else
+                        {
+                            output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                        }
+
                         output.Append(',');
                     }
                 }

@@ -447,6 +447,21 @@ namespace VDS.RDF.Storage
             return u;
         }
 
+        private string UnmarshalName(IRefNode name)
+        {
+            if (name.NodeType == NodeType.Uri)
+            {
+                return UnmarshalUri(((IUriNode)name).Uri);
+            }
+
+            if (name.NodeType == NodeType.Blank)
+            {
+                return ((IBlankNode)name).InternalID;
+            }
+
+            throw new ArgumentException("Unexpected node type", nameof(name));
+        }
+
         private string UnmarshalUri(Uri u)
         {
             if (u.IsAbsoluteUri)
@@ -476,14 +491,14 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public override void SaveGraph(IGraph g)
         {
-            if (g.BaseUri == null) throw new RdfStorageException("Cannot save a Graph without a Base URI to Virtuoso");
+            if (g.Name == null) throw new RdfStorageException("Cannot save a Graph without a name to Virtuoso");
 
             try
             {
                 Open(false);
 
                 //Delete the existing Graph (if it exists)
-                ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + UnmarshalUri(g.BaseUri) + "')");
+                ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + UnmarshalName(g.Name) + "')");
 
                 //Make a call to the TTLP() Virtuoso function
                 var cmd = new VirtuosoCommand();
@@ -491,7 +506,8 @@ namespace VDS.RDF.Storage
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                 cmd.Parameters.Add("data", VirtDbType.VarChar);
                 cmd.Parameters["data"].Value = Writing.StringWriter.Write(g, new NTriplesWriter());
-                var baseUri = UnmarshalUri(g.BaseUri);
+                //var baseUri = UnmarshalUri(g.BaseUri);
+                var baseUri = UnmarshalName(g.Name);
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
                 cmd.Parameters.Add("graph", VirtDbType.VarChar);
                 cmd.Parameters["base"].Value = baseUri;

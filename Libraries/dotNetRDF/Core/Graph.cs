@@ -44,7 +44,19 @@ namespace VDS.RDF
         /// </summary>
         public Graph() { }
 
+        /// <summary>
+        /// Create a new instance of a graph with the specified name.
+        /// </summary>
+        /// <param name="name">The graph name, may be either a URI or a blank node.</param>
         public Graph(IRefNode name) : base(name)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of a graph with the specified URI as the graph name.
+        /// </summary>
+        /// <param name="name">The graph name as a URI.</param>
+        public Graph(Uri name) : base(new UriNode(name))
         {
         }
 
@@ -58,9 +70,24 @@ namespace VDS.RDF
             if (emptyNamespaceMap) _nsmapper.Clear();
         }
 
+        /// <summary>
+        /// Creates a new instance of a named graph with an optionally empty namespace map.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
         public Graph(IRefNode name, bool emptyNamespaceMap) : base(name)
         {
             if (emptyNamespaceMap) _nsmapper.Clear();
+        }
+
+        /// <summary>
+        /// Creates a new instance of a named graph with an optionally empty namespace map.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
+        public Graph(Uri name, bool emptyNamespaceMap) : this(new UriNode(name), emptyNamespaceMap)
+        {
+
         }
 
         /// <summary>
@@ -71,8 +98,21 @@ namespace VDS.RDF
             : base(tripleCollection) { }
 
 
+        /// <summary>
+        /// Creates a new instance of a named using the given triple collection.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="tripleCollection">The triple collection that will be the content of the new graph</param>
         public Graph(IRefNode name, BaseTripleCollection tripleCollection) 
             : base(tripleCollection, name) { }
+
+
+        /// <summary>
+        /// Creates a new instance of a named using the given triple collection.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
+        public Graph(Uri name, BaseTripleCollection tripleCollection) : this(new UriNode(name), tripleCollection) { }
 
         /// <summary>
         /// Creates a new instance of a Graph using the given Triple Collection and an optionally empty Namespace Map.
@@ -85,10 +125,27 @@ namespace VDS.RDF
             if (emptyNamespaceMap) _nsmapper.Clear();
         }
 
+        /// <summary>
+        /// Creates a new named graph  using the given triple collection and an optionally empty namespace map.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
+        /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
         public Graph(IRefNode name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) : base(
             tripleCollection, name)
         {
             if (emptyNamespaceMap) _nsmapper.Clear();
+        }
+
+        /// <summary>
+        /// Creates a new named graph  using the given triple collection and an optionally empty namespace map.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
+        /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
+        public Graph(Uri name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) : this(new UriNode(name),
+            tripleCollection, emptyNamespaceMap)
+        {
         }
 
         #endregion

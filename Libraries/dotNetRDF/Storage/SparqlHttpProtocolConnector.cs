@@ -427,6 +427,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs.</exception>
+        [Obsolete("Replaced by ListGraphNames")]
         public virtual IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
@@ -519,9 +520,9 @@ namespace VDS.RDF.Storage
         private HttpRequestMessage MakeSaveGraphRequestMessage(IGraph g)
         {
             var saveUri = _serviceUri;
-            if (g.BaseUri != null)
+            if (g.Name != null)
             {
-                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
+                saveUri += "?graph=" + Uri.EscapeDataString(g.Name.ToString());
             }
             else
             {

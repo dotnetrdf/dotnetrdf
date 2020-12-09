@@ -59,13 +59,11 @@ namespace VDS.RDF.Storage
                 Assert.NotNull(manager);
 
                 //Add the Test Date to Virtuoso
-                var testData = new Graph();
+                var testData = new Graph(new Uri("http://localhost/VirtuosoTest"));
                 FileLoader.Load(testData, @"resources\MergePart1.ttl");
-                testData.BaseUri = new Uri("http://localhost/VirtuosoTest");
                 manager.SaveGraph(testData);
-                testData = new Graph();
+                testData = new Graph(new Uri("http://localhost/TurtleImportTest"));
                 FileLoader.Load(testData, @"resources\Turtle.ttl");
-                testData.BaseUri = new Uri("http://localhost/TurtleImportTest");
                 manager.SaveGraph(testData);
 
                 //Try loading it back again
@@ -125,9 +123,8 @@ namespace VDS.RDF.Storage
                 Assert.NotNull(manager);
 
                 //Load in our Test Graph
-                var g = new Graph();
+                var g = new Graph(new Uri("http://example.org/storage/virtuoso/save"));
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.BaseUri = new Uri("http://example.org/storage/virtuoso/save");
 
                 Assert.False(g.IsEmpty, "Test Graph should be non-empty");
 
@@ -137,7 +134,7 @@ namespace VDS.RDF.Storage
 
                 //Try to retrieve
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, g.Name.ToString());
 
                 Assert.False(h.IsEmpty, "Retrieved Graph should be non-empty");
 
@@ -161,9 +158,8 @@ namespace VDS.RDF.Storage
 
                 //Load in our Test Graph
                 var ttlparser = new TurtleParser();
-                var g = new Graph();
+                var g = new Graph(new Uri("http://example.org/deleteMe"));
                 ttlparser.Load(g, "resources\\Turtle.ttl");
-                g.BaseUri = new Uri("http://example.org/deleteMe");
 
                 Assert.False(g.IsEmpty, "Test Graph should be non-empty");
 
@@ -655,38 +651,6 @@ namespace VDS.RDF.Storage
             finally
             {
                 manager?.Dispose();
-            }
-        }
-
-        [SkippableFact]
-        public void StorageVirtuosoRelativeUris()
-        {
-            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
-            try
-            {
-                //Load in our Test Graph
-                var g = new Graph();
-                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.BaseUri = new Uri("/storage/virtuoso/relative", UriKind.Relative);
-
-                virtuoso.SaveGraph(g);
-
-                // Load it back out again
-                var h = new Graph();
-                virtuoso.LoadGraph(h, g.BaseUri);
-                Assert.False(h.IsEmpty, "Graph loaded via relative URI should not be empty");
-                Assert.Equal(g, h);
-
-                // Load it back out using marshalled URI
-                var u = new Uri("virtuoso-relative:/storage/virtuoso/relative");
-                h = new Graph();
-                virtuoso.LoadGraph(h, u);
-                Assert.False(h.IsEmpty, "Graph loaded via marshalled URI should not be empty");
-                Assert.Equal(g, h);
-            }
-            finally
-            {
-                virtuoso.Dispose();
             }
         }
 
